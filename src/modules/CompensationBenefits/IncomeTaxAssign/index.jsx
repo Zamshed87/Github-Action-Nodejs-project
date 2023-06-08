@@ -13,18 +13,11 @@ import PrimaryButton from "../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { formatMoney } from "../../../utility/formatMoney";
-import {
-  createTaxAssign,
-  getTaxAssignLanding,
-  incomeTaxColumnData,
-} from "./helper";
+import { createTaxAssign, getTaxAssignLanding } from "./helper";
 import { MenuItem } from "@material-ui/core";
 import ResetButton from "../../../common/ResetButton";
 import { toast } from "react-toastify";
 import AsyncFormikSelect from "../../../common/AsyncFormikSelect";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../common/peopleDeskTable";
 
 const initData = {
   search: "",
@@ -59,11 +52,6 @@ export default function IncomeTaxAssign() {
   const [allData, setAllData] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [status, setStatus] = useState("");
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
-  });
 
   const { handleSubmit, values, errors, touched, setFieldValue } = useFormik({
     enableReinitialize: true,
@@ -76,12 +64,10 @@ export default function IncomeTaxAssign() {
       getTaxAssignLanding(
         buId,
         orgId,
-        pages,
         values,
         setRowDto,
-        setPages,
         setLoading,
-        ""
+        setAllData
       );
     };
     const payload = rowDto.map((item) => {
@@ -131,48 +117,6 @@ export default function IncomeTaxAssign() {
     const data = [...rowDto];
     data[index][name] = value;
     setRowDto(data);
-  };
-
-  const handleChangePage = (_, newPage, searchText) => {
-    setPages((prev) => {
-      return { ...prev, current: newPage };
-    });
-
-    getTaxAssignLanding(
-      buId,
-      orgId,
-      {
-        current: newPage,
-        pageSize: paginationSize,
-        total: pages?.total,
-      },
-      values,
-      setRowDto,
-      setPages,
-      setLoading,
-      searchText
-    );
-  };
-
-  const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
-      return { current: 1, total: pages?.total, pageSize: +event.target.value };
-    });
-
-    getTaxAssignLanding(
-      buId,
-      orgId,
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      },
-      values,
-      setRowDto,
-      setPages,
-      setLoading,
-      searchText
-    );
   };
 
   return (
@@ -267,14 +211,10 @@ export default function IncomeTaxAssign() {
                         getTaxAssignLanding(
                           buId,
                           orgId,
-                          {
-                            current: 1,
-                            pageSize: paginationSize,
-                          },
                           values,
                           setRowDto,
-                          setPages,
-                          setLoading
+                          setLoading,
+                          setAllData
                         );
                       }}
                     >
@@ -289,11 +229,13 @@ export default function IncomeTaxAssign() {
             <div>
               <div className="table-card-heading" style={{ marginTop: "12px" }}>
                 <div>
-                  {/* {rowDto?.length > 0 && (
-                    <> */}
-                  <h6 className="count">Total {rowDto?.length} employees</h6>
-                  {/* </>
-                  )} */}
+                  {rowDto?.length > 0 && (
+                    <>
+                      <h6 className="count">
+                        Total {rowDto?.length} employees
+                      </h6>
+                    </>
+                  )}
                 </div>
                 <ul className="d-flex flex-wrap">
                   {(isFilter || status) && (
@@ -324,73 +266,47 @@ export default function IncomeTaxAssign() {
                       }}
                     />
                   )}
-                  {/* {values?.businessUnit?.value && ( */}
-                  <li>
-                    <MasterFilter
-                      inputWidth="250px"
-                      width="250px"
-                      isHiddenFilter
-                      value={values?.search}
-                      setValue={(value) => {
-                        setFieldValue("search", value);
-                        debounce(() => {
+                  {values?.businessUnit?.value && (
+                    <li>
+                      <MasterFilter
+                        inputWidth="250px"
+                        width="250px"
+                        isHiddenFilter
+                        value={values?.search}
+                        setValue={(value) => {
+                          setFieldValue("search", value);
+                          debounce(() => {
+                            getTaxAssignLanding(
+                              buId,
+                              orgId,
+                              values,
+                              setRowDto,
+                              setLoading,
+                              setAllData
+                            );
+                          }, 500);
+                        }}
+                        cancelHandler={() => {
+                          setFieldValue("search", "");
                           getTaxAssignLanding(
                             buId,
                             orgId,
-                            {
-                              current: 1,
-                              pageSize: pages?.pageSize,
-                            },
                             values,
                             setRowDto,
-                            setPages,
                             setLoading,
-                            value
+                            setAllData
                           );
-                        }, 500);
-                      }}
-                      cancelHandler={() => {
-                        setFieldValue("search", "");
-                        getTaxAssignLanding(
-                          buId,
-                          orgId,
-                          pages,
-                          values,
-                          setRowDto,
-                          setPages,
-                          setLoading,
-                          ""
-                        );
-                      }}
-                    />
-                  </li>
-                  {/* )} */}
+                        }}
+                      />
+                    </li>
+                  )}
                 </ul>
               </div>
               <div className="row">
                 <div className="col-12">
                   {rowDto?.length > 0 ? (
                     <>
-                      <PeopleDeskTable
-                        columnData={incomeTaxColumnData(
-                          pages?.current,
-                          pages?.pageSize,
-                          rowDtoHandler,
-                          errors,
-                          touched
-                        )}
-                        pages={pages}
-                        rowDto={rowDto}
-                        setRowDto={setRowDto}
-                        handleChangePage={(e, newPage) =>
-                          handleChangePage(e, newPage, values?.search)
-                        }
-                        handleChangeRowsPerPage={(e) =>
-                          handleChangeRowsPerPage(e, values?.search)
-                        }
-                        uniqueKey="employeeCode"
-                      />
-                      {/* <div className="table-card-body">
+                      <div className="table-card-body">
                         <div className="table-card-styled tableOne">
                           <table className="table">
                             <thead>
@@ -543,7 +459,7 @@ export default function IncomeTaxAssign() {
                             </tbody>
                           </table>
                         </div>
-                      </div> */}
+                      </div>
                     </>
                   ) : (
                     <>
