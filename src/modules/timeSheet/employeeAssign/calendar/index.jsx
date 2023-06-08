@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import moment from "moment";
 
-import AntTable, { paginationSize } from "../../../../common/AntTable";
 import MasterFilter from "../../../../common/MasterFilter";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
@@ -14,11 +13,19 @@ import NoResult from "./../../../../common/NoResult";
 import AddEditFormComponent from "./addEditForm";
 import ResetButton from "./../../../../common/ResetButton";
 import "./calendar.css";
-import { columns, getCalendarAssignFilter } from "./helper";
+import { columns } from "./helper";
 import { Clear, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import Calender from "./component/Calender";
 import { IconButton, Popover } from "@mui/material";
 import { gray900 } from "../../../../utility/customColor";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import axios from "axios";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "../../../../common/peopleDeskTable/helper";
 
 const initData = {
   searchString: "",
@@ -42,7 +49,7 @@ function Calendar() {
   // row Data
   const [rowDto, setRowDto] = useState([]);
   const [singleData, setSingleData] = useState([]);
-  const [checked, setChecked] = useState([]);
+  // const [checked, setChecked] = useState([]);
   const [singleShiftData, setSingleShiftData] = useState([]);
   const [uniqueShift, setUniqueShift] = useState([]);
   const [uniqueShiftColor, setUniqueShiftColor] = useState({});
@@ -59,7 +66,7 @@ function Calendar() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -93,66 +100,209 @@ function Calendar() {
     total: 0,
   });
 
+  const initHeaderList = {
+    designationList: [],
+    departmentList: [],
+    supervisorNameList: [],
+    wingNameList: [],
+    soleDepoNameList: [],
+    regionNameList: [],
+    areaNameList: [],
+    territoryNameList: [],
+    employmentTypeList: [],
+  };
+  const [landingLoading, setLandingLoading] = useState(false);
+
+  const [filterOrderList, setFilterOrderList] = useState([]);
+  const [initialHeaderListData, setInitialHeaderListData] = useState({});
+  const [headerList, setHeaderList] = useState({});
+  const [checkedHeaderList, setCheckedHeaderList] = useState({
+    ...initHeaderList,
+  });
+  const [checkedList, setCheckedList] = useState([]);
+
+  // landing api call
+  const getDataApiCall = async (
+    modifiedPayload,
+    pagination,
+    searchText,
+    checkedList,
+    currentFilterSelection,
+    checkedHeaderList
+  ) => {
+    try {
+      const payload = {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        isNotAssign: null,
+        workplaceId: 0,
+        pageNo: pagination.current,
+        pageSize: pagination.pageSize,
+        isPaginated: true,
+        isHeaderNeed: true,
+        searchTxt: searchText || "",
+      };
+
+      const res = await axios.post(`/Employee/CalendarAssignFilter`, {
+        ...payload,
+        ...modifiedPayload,
+      });
+      if (res?.data?.data) {
+        setLandingLoading(true);
+
+        setHeaderListDataDynamically({
+          currentFilterSelection,
+          checkedHeaderList,
+          headerListKey: "calendarAssignHeader",
+          headerList,
+          setHeaderList,
+          response: res?.data,
+          filterOrderList,
+          setFilterOrderList,
+          initialHeaderListData,
+          setInitialHeaderListData,
+          // setEmpLanding,
+          setPages,
+        });
+
+        const modifiedData = res?.data?.data?.map((item, index) => ({
+          ...item,
+          initialSerialNumber: index + 1,
+          isSelected: checkedList?.find(
+            ({ employeeCode }) => item?.employeeCode === employeeCode
+          )
+            ? true
+            : false,
+        }));
+
+        setRowDto(modifiedData);
+
+        setLandingLoading(false);
+      }
+    } catch (error) {
+      setLandingLoading(false);
+    }
+  };
+  const getData = async (
+    pagination,
+    searchText = "",
+    checkedList = [],
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList }
+  ) => {
+    setLandingLoading(true);
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+
+    getDataApiCall(
+      modifiedPayload,
+      pagination,
+      searchText,
+      checkedList,
+      currentFilterSelection,
+      checkedHeaderList
+    );
+  };
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getData = (pagination, srcText, status = "") => {
-    getCalendarAssignFilter(
-      setRowDto,
-      setLoading,
-      {
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employmentTypeId: 0,
-        employeeId: 0,
-        workplaceGroupId: wgId,
-        Status: "all",
-        accountId: orgId,
-        businessUnitId: buId,
-        pageNo: pagination.current,
-        pageSize: pagination.pageSize,
-        searchText: srcText || "",
-      },
-      (res) => {
-        setPages({
-          ...pages,
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: res?.[0]?.totalCount,
-        });
-        const newData = res.map((item) => ({
-          ...item,
-          isAssigned:
-            status !== "saved" &&
-            checked.length > 0 &&
-            isAlreadyPresent(item) >= 0,
-        }));
+  // const getData = (pagination, srcText, status = "") => {
+  //   getCalendarAssignFilter(
+  //     setRowDto,
+  //     setLoading,
+  //     {
+  //       departmentId: 0,
+  //       designationId: 0,
+  //       supervisorId: 0,
+  //       employmentTypeId: 0,
+  //       employeeId: 0,
+  //       workplaceGroupId: wgId,
+  //       Status: "all",
+  //       accountId: orgId,
+  //       businessUnitId: buId,
+  //       pageNo: pagination.current,
+  //       pageSize: pagination.pageSize,
+  //       searchText: srcText || "",
+  //     },
+  //     (res) => {
+  //       setPages({
+  //         ...pages,
+  //         current: pagination.current,
+  //         pageSize: pagination.pageSize,
+  //         total: res?.[0]?.totalCount,
+  //       });
+  //       const newData = res.map((item) => ({
+  //         ...item,
+  //         isAssigned:
+  //           status !== "saved" &&
+  //           checked.length > 0 &&
+  //           isAlreadyPresent(item) >= 0,
+  //       }));
 
-        setRowDto(newData);
-      }
-    );
-  };
+  //       setRowDto(newData);
+  //     }
+  //   );
+  // };
 
   useEffect(() => {
     getData(pages);
-    setChecked([]);
+    // setChecked([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId]);
 
-  // single grid check
-  const rowDtoHandler = (record) => {
-    const modifiedRowDto = rowDto?.map((item) =>
-      item?.EmployeeId === record?.EmployeeId
-        ? { ...item, isAssigned: !item?.isAssigned }
-        : item
+  // // single grid check
+  // const rowDtoHandler = (record) => {
+  //   const modifiedRowDto = rowDto?.map((item) =>
+  //     item?.employeeId === record?.employeeId
+  //       ? { ...item, isSelec: !item?.isAssigned }
+  //       : item
+  //   );
+  //   setRowDto(modifiedRowDto);
+  // };
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      searchText,
+      checkedList,
+      -1,
+      filterOrderList,
+      checkedHeaderList
     );
-    setRowDto(modifiedRowDto);
   };
 
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      searchText,
+      checkedList,
+      -1,
+      filterOrderList,
+      checkedHeaderList
+    );
+  };
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -162,14 +312,15 @@ function Calendar() {
     }
   });
 
-  const isAlreadyPresent = (obj) => {
-    for (let i = 0; i < checked.length; i++) {
-      if (checked[i].EmployeeCode === obj.EmployeeCode) {
-        return i;
-      }
-    }
-    return -1;
-  };
+  // const isAlreadyPresent = (obj) => {
+  //   for (let i = 0; i < checkedList.length; i++) {
+  //     if (checkedList[i].EmployeeCode === obj.EmployeeCode) {
+  //       return i;
+  //     }
+  //   }
+  //   return -1;
+  // };
+
   useEffect(() => {
     setUniqueShift([]);
     if (singleShiftData?.length > 0) {
@@ -191,36 +342,36 @@ function Calendar() {
     // eslint-disable-next-line
   }, [singleShiftData]);
 
-  useEffect(() => {
-    if (checked.length) {
-      const newData = rowDto.map((item) => {
-        const idx = isAlreadyPresent(item);
-        if (idx >= 0) {
-          return {
-            ...checked[idx],
-          };
-        } else return item;
-      });
+  // useEffect(() => {
+  //   if (checkedList.length) {
+  //     const newData = rowDto.map((item) => {
+  //       const idx = isAlreadyPresent(item);
+  //       if (idx >= 0) {
+  //         return {
+  //           ...checkedList[idx],
+  //         };
+  //       } else return item;
+  //     });
 
-      setRowDto(newData);
-    }
-    // eslint-disable-next-line
-  }, []);
+  //     setRowDto(newData);
+  //   }
+  //   // eslint-disable-next-line
+  // }, []);
 
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getData(pagination, srcText);
-    }
-    if (pages?.current !== pagination?.current) {
-      return getData(pagination, srcText);
-    }
-  };
+  // const handleTableChange = (pagination, newRowDto, srcText) => {
+  //   if (newRowDto?.action === "filter") {
+  //     return;
+  //   }
+  //   if (
+  //     pages?.current === pagination?.current &&
+  //     pages?.pageSize !== pagination?.pageSize
+  //   ) {
+  //     return getData(pagination, srcText);
+  //   }
+  //   if (pages?.current !== pagination?.current) {
+  //     return getData(pagination, srcText);
+  //   }
+  // };
 
   return (
     <>
@@ -234,22 +385,23 @@ function Calendar() {
       >
         {({ handleSubmit, values, setFieldValue }) => (
           <>
-            {loading && <Loading />}
+            {landingLoading && <Loading />}
             <Form onSubmit={handleSubmit}>
               {permission?.isView ? (
                 <div className="table-card">
                   <div className="table-card-heading">
                     <div style={{ paddingLeft: "6px" }}>
-                      {checked.length > 0 && (
+                      {checkedList.length > 0 && (
                         <h6 className="count">
-                          Total {checked.length}{" "}
-                          {`employee${checked.length > 1 ? "s" : ""}`} selected
+                          Total {checkedList.length}{" "}
+                          {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
+                          selected
                         </h6>
                       )}
                     </div>
                     <div className="table-card-head-right">
                       <ul>
-                        {checked.length > 1 && (
+                        {checkedList.length > 1 && (
                           <li>
                             <ResetButton
                               title="reset"
@@ -259,14 +411,13 @@ function Calendar() {
                                 />
                               }
                               onClick={() => {
-                                setChecked([]);
                                 getData(
-                                  {
-                                    current: 1,
-                                    pageSize: paginationSize,
-                                  },
+                                  { current: 1, pageSize: paginationSize },
                                   "",
-                                  "saved"
+                                  [],
+                                  -1,
+                                  filterOrderList,
+                                  checkedHeaderList
                                 );
                                 // setRowDto(allData);
                                 setFieldValue("searchString", "");
@@ -276,7 +427,7 @@ function Calendar() {
                         )}
                         <li>
                           {rowDto &&
-                          rowDto?.filter((item) => item?.isAssigned).length >
+                          rowDto?.filter((item) => item?.isSelected).length >
                             0 ? (
                             <button
                               className="btn btn-green"
@@ -305,12 +456,20 @@ function Calendar() {
                               if (value) {
                                 getData(
                                   { current: 1, pageSize: paginationSize },
-                                  value
+                                  value,
+                                  checkedList,
+                                  -1,
+                                  filterOrderList,
+                                  checkedHeaderList
                                 );
                               } else {
                                 getData(
                                   { current: 1, pageSize: paginationSize },
-                                  ""
+                                  "",
+                                  [],
+                                  -1,
+                                  filterOrderList,
+                                  checkedHeaderList
                                 );
                               }
                             }}
@@ -318,7 +477,11 @@ function Calendar() {
                               setFieldValue("searchString", "");
                               getData(
                                 { current: 1, pageSize: paginationSize },
-                                ""
+                                "",
+                                [],
+                                -1,
+                                filterOrderList,
+                                checkedHeaderList
                               );
                             }}
                             handleClick={handleClick}
@@ -335,35 +498,90 @@ function Calendar() {
                   >
                     <div className="table-card-styled tableOne">
                       {rowDto?.length > 0 ? (
-                        <AntTable
-                          data={rowDto}
-                          columnsData={columns(
-                            permission,
+                        <PeopleDeskTable
+                          columnData={columns(
                             pages,
+                            permission,
                             rowDto,
                             setRowDto,
-                            checked,
-                            setChecked,
-                            isAlreadyPresent,
+                            checkedList,
+                            setCheckedList,
+                            // isAlreadyPresent,
                             setSingleData,
                             setCreateModal,
-                            rowDtoHandler,
+                            // rowDtoHandler,
                             setSingleShiftData,
                             setLoading,
-                            setAnchorEl2
+                            setAnchorEl2,
+                            headerList,
+                            wgName
                           )}
-                          onRowClick={(dataRow) => {}}
-                          pages={pages?.pageSize}
-                          pagination={pages}
-                          handleTableChange={({ pagination, newRowDto }) =>
-                            handleTableChange(
-                              pagination,
-                              newRowDto,
-                              values?.search || ""
-                            )
+                          pages={pages}
+                          rowDto={rowDto}
+                          setRowDto={setRowDto}
+                          checkedList={checkedList}
+                          setCheckedList={setCheckedList}
+                          checkedHeaderList={checkedHeaderList}
+                          setCheckedHeaderList={setCheckedHeaderList}
+                          handleChangePage={(e, newPage) =>
+                            handleChangePage(e, newPage, values?.search)
                           }
+                          handleChangeRowsPerPage={(e) =>
+                            handleChangeRowsPerPage(e, values?.search)
+                          }
+                          filterOrderList={filterOrderList}
+                          setFilterOrderList={setFilterOrderList}
+                          uniqueKey="employeeCode"
+                          getFilteredData={(
+                            currentFilterSelection,
+                            updatedFilterData,
+                            updatedCheckedHeaderData
+                          ) => {
+                            getData(
+                              {
+                                current: 1,
+                                pageSize: paginationSize,
+                                total: 0,
+                              },
+                              "",
+                              [],
+                              currentFilterSelection,
+                              updatedFilterData,
+                              updatedCheckedHeaderData
+                            );
+                          }}
+                          isCheckBox={true}
+                          isScrollAble={true}
                         />
                       ) : (
+                        // <AntTable
+                        //   data={rowDto}
+                        //   columnsData={columns(
+                        //     permission,
+                        //     pages,
+                        //     rowDto,
+                        //     setRowDto,
+                        //     checked,
+                        //     setChecked,
+                        //     isAlreadyPresent,
+                        //     setSingleData,
+                        //     setCreateModal,
+                        //     rowDtoHandler,
+                        //     setSingleShiftData,
+                        //     setLoading,
+                        //     setAnchorEl2
+                        //   )}
+                        //   onRowClick={(dataRow) => {}}
+                        //   pages={pages?.pageSize}
+                        //   pagination={pages}
+                        //   handleTableChange={({ pagination, newRowDto }) =>
+                        //     handleTableChange(
+                        //       pagination,
+                        //       newRowDto,
+                        //       values?.search || ""
+                        //     )
+                        //   }
+                        // />
                         !loading && <NoResult title="No Result Found" para="" />
                       )}
                     </div>
@@ -386,9 +604,18 @@ function Calendar() {
                 buId={buId}
                 singleData={singleData}
                 setSingleData={setSingleData}
-                checked={checked}
-                getData={(status = "") => getData(pages, "", status)}
-                setChecked={setChecked}
+                checked={checkedList}
+                getData={() =>
+                  getData(
+                    { current: 1, pageSize: paginationSize },
+                    "",
+                    checkedList,
+                    -1,
+                    filterOrderList,
+                    checkedHeaderList
+                  )
+                }
+                setChecked={setCheckedList}
                 setFieldValueParent={setFieldValue}
               />
 
