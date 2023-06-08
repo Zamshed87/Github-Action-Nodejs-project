@@ -107,7 +107,7 @@ const TableContent = ({
                   }}
                 >
                   {filterOrderList?.length &&
-                  filterOrderList[filterOrderList?.length - 1] ===
+                    filterOrderList[filterOrderList?.length - 1] ===
                     data?.dataIndex ? (
                     <div
                       style={{
@@ -158,12 +158,11 @@ const TableContent = ({
                             style={{
                               width: "14px",
                               height: "14px",
-                              color: `${
-                                currentSortValue.clickCount === 1 &&
-                                currentSortValue.current === data?.dataIndex
+                              color: `${currentSortValue.clickCount === 1 &&
+                                  currentSortValue.current === data?.dataIndex
                                   ? greenColor
                                   : gray300
-                              }`,
+                                }`,
                             }}
                           />
                           <IoMdArrowDropdown
@@ -171,12 +170,11 @@ const TableContent = ({
                               width: "14px",
                               height: "14px",
                               marginTop: "-6px",
-                              color: `${
-                                currentSortValue.clickCount === 2 &&
-                                currentSortValue.current === data?.dataIndex
+                              color: `${currentSortValue.clickCount === 2 &&
+                                  currentSortValue.current === data?.dataIndex
                                   ? greenColor
                                   : gray300
-                              }`,
+                                }`,
                             }}
                           />
                         </div>
@@ -188,12 +186,11 @@ const TableContent = ({
                             style={{
                               width: "14px",
                               height: "14px",
-                              color: `${
-                                checkedHeaderList[`${data?.dataIndex}List`]
+                              color: `${checkedHeaderList[`${data?.dataIndex}List`]
                                   ?.length > 0
                                   ? successColor
                                   : gray300
-                              }`,
+                                }`,
                               cursor: "pointer",
                             }}
                             onClick={(e) => {
@@ -218,9 +215,8 @@ const TableContent = ({
           return (
             <tr
               style={{
-                cursor: `${
-                  typeof onRowClick === "function" ? "pointer" : "default"
-                }`,
+                cursor: `${typeof onRowClick === "function" ? "pointer" : "default"
+                  }`,
               }}
               onClick={() => {
                 if (typeof onRowClick === "function") onRowClick(rowDto[index]);
@@ -230,11 +226,7 @@ const TableContent = ({
               {columnData?.map((columnItem, index1) => {
                 return (
                   <Fragment key={uuid()}>
-<<<<<<< HEAD
-                    {/* {isCheckBox && index1 === 1 && (
-=======
                     {isCheckBox && index1 === 1 && (
->>>>>>> c852bc5c0f4378629a443fa17736951a8dc44ec5
                       <td
                         style={{
                           width: `${columnItem?.width}px`,
@@ -256,12 +248,11 @@ const TableContent = ({
                       style={{
                         width: `${columnItem?.width}px`,
                         padding: "0px 3px",
-                        backgroundColor: `${
-                          currentSortValue?.current === columnItem?.dataIndex &&
-                          index1 !== 0
+                        backgroundColor: `${currentSortValue?.current === columnItem?.dataIndex &&
+                            index1 !== 0
                             ? gray50
                             : ""
-                        }`,
+                          }`,
                       }}
                       key={uuid()}
                     >
