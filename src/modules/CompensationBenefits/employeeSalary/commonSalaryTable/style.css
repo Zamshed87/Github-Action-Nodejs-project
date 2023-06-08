@@ -1,0 +1,15 @@
+.table-card-subHeader h6 {
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.148571px;
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 400;
+  padding-bottom: 8px;
+}
+.table-card-subHeader h6 small {
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.148571px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
+}

@@ -1,0 +1,236 @@
+.application-modal .input-field-main .form-container {
+  margin-bottom: 5px;
+}
+
+.application-modal .input-field-main label {
+  font-size     : 12px;
+  line-height   : 15px;
+  color         : rgba(0, 0, 0, 0.87);
+  margin-bottom : 2px;
+  /* font-weight: normal; */
+}
+
+.application-filter p {
+  font-weight: 500;
+  font-size  : 14px;
+  line-height: 16px;
+  color      : rgba(0, 0, 0, 0.7);
+}
+
+.application-filter .input-sm input.form-control {
+  border-radius: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24) !important;
+  border-top   : 0 !important;
+  border-left  : 0 !important;
+  border-right : 0 !important;
+}
+
+.application-filter .input-sm input.form-control:focus {
+  box-shadow   : none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24) !important;
+  border-top   : 0 !important;
+  border-left  : 0 !important;
+  border-right : 0 !important;
+}
+
+.application-filter .input-sm input.form-control:hover {
+  border-radius: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24) !important;
+  border-top   : 0 !important;
+  border-left  : 0 !important;
+  border-right : 0 !important;
+}
+
+.application-table .table-card-styled table thead tr th {
+  font-size     : 12px !important;
+  line-height   : 16px;
+  letter-spacing: 0.2px;
+  font-weight   : 600 !important;
+  color         : rgba(0, 0, 0, 0.6) !important;
+}
+
+.application-table .table-card-styled .table thead th {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.application-table .employeeName {
+  font-weight: 500;
+  font-size  : 18px;
+  line-height: 21px;
+  color      : rgba(0, 0, 0, 0.6);
+}
+
+.application-table .employeePosition {
+  font-size  : 14px;
+  line-height: 16px;
+  font-weight: 400;
+  color      : rgba(0, 0, 0, 0.6);
+  margin-top : 8px;
+}
+
+.application-table .table-card-styled table tbody tr td,
+.application-table .table-card-styled table tbody tr td .type {
+  font-weight: 500;
+  font-size  : 16px;
+  line-height: 19px;
+  color      : rgba(0, 0, 0, 0.6);
+}
+
+.application-table .file {
+  font-weight         : 500;
+  font-size           : 14px;
+  line-height         : 16px;
+  letter-spacing      : 0.2px;
+  text-decoration-line: underline;
+  color               : #009cde;
+  text-transform      : initial;
+  margin-top          : 6px;
+  word-break          : break-word;
+}
+
+.application-table .table-card-styled table tbody tr td small {
+  font-size  : 12px;
+  line-height: 16px;
+  font-weight: 400;
+  color      : rgba(0, 0, 0, 0.6);
+}
+
+/* .application-table .chips {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 3px 8px !important;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 400;
+  text-transform: capitalize;
+} */
+
+.application-tooltip h6 {
+  font-weight   : 600;
+  font-size     : 12px;
+  line-height   : 16px;
+  letter-spacing: 0.2px;
+  color         : rgba(0, 0, 0, 0.7);
+  margin-bottom : 6px;
+}
+
+.application-tooltip h5 {
+  letter-spacing: 0.2px;
+  font-size     : 12px;
+  line-height   : 16px;
+  font-weight   : 400;
+  color         : rgba(0, 0, 0, 0.6);
+}
+
+.application-tooltip {
+  padding: 10px 12px;
+}
+
+.application-modal .modal-body2 {
+  padding-top   : 8px;
+  padding-left  : 27px;
+  padding-bottom: 28px;
+  padding-right : 27px;
+  height        : 400px;
+  overflow-x    : hidden;
+  overflow-y    : auto;
+}
+
+.application-modal .modal-body2 label {
+  font-size  : 14px;
+  line-height: 24px;
+  font-weight: 400;
+  color      : rgba(0, 0, 0, 0.6);
+  margin-top : 20px;
+}
+
+.application-modal .modalFooter {
+  padding-right : 25px;
+  padding-top   : 12px;
+  padding-bottom: 12px;
+  text-align    : right;
+  box-shadow    : 0px -1px 4px rgba(0, 0, 0, 0.16);
+}
+
+.view-application-modal .modal-header2 {
+  border-bottom : 1px solid rgba(0, 0, 0, 0.12);
+  padding-left  : 10px;
+  padding-top   : 5px;
+  padding-bottom: 5px;
+}
+
+.view-application-modal .modal-body2 {
+  height    : 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.view-application-modal .modal-body2 .modal-main-body {
+  padding-left: 10px;
+}
+
+.view-application-modal .modal-header2 .avatar-icon {
+  width : 40px;
+  height: 40px;
+}
+
+.view-application-modal .modal-main-body .app-icon {
+  background-color: #f2f2f7;
+}
+
+.view-application-modal .modal-body2 .modal-header2 h6 {
+  font-weight: 500;
+  font-size  : 21px;
+  line-height: 25px;
+  color      : rgba(0, 0, 0, 0.7);
+}
+
+
+
+.view-application-modal .modal-main-body {
+  padding-bottom: 15px;
+}
+
+.view-application-modal .modal-main-body h5 {
+  font-weight  : 500;
+  font-size    : 16px;
+  line-height  : 19px;
+  color        : rgba(0, 0, 0, 0.6);
+  margin-top   : 16px;
+  margin-bottom: 8px;
+}
+
+.view-application-modal .modal-main-body h4 {
+  font-size    : 14px;
+  line-height  : 16px;
+  font-weight  : 400;
+  color        : rgba(0, 0, 0, 0.4);
+  margin-bottom: 16px;
+}
+
+.view-application-modal .modal-footer2 {
+  padding-right  : 25px;
+  padding-top    : 23px;
+  padding-bottom : 23px;
+  padding-left   : 27px;
+  box-shadow     : 0px -1px 4px rgba(0, 0, 0, 0.16);
+  display        : flex;
+  justify-content: space-between;
+}
+
+.view-application-modal .modal-footer2 button {
+  font-weight   : 500;
+  font-size     : 16px;
+  line-height   : 19px;
+  letter-spacing: 0.15px;
+  background    : transparent;
+  border        : 0;
+  text-transform: uppercase;
+  color         : rgba(0, 0, 0, 0.7);
+}
+
+.loan-attachment  .image-upload-box.with-img {
+  max-width: none !important;
+  display: flex;
+  justify-content: flex-start;
+}

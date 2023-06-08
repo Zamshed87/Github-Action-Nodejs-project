@@ -1,0 +1,663 @@
+.dashboard-scroll {
+  height: 94vh;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.dashboard-component .card-body {
+  padding: 10px 15px;
+}
+.management-card-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.greetings .welcome {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  color: var(--gray700);
+}
+
+.greetings .employeeName p {
+  font-style: normal;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  line-height: 16px !important;
+  /* identical to box height */
+  margin-right: 26px;
+  color: var(--gray700) !important;
+}
+
+.current-situation .date {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px !important;
+  line-height: 16px !important;
+  color: var(--gray900);
+}
+
+.current-situation .temperature {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+  color: var(--gray900);
+}
+.current-situation .position {
+  margin-left: 4px;
+  margin-right: 8px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: right;
+  color: var(--gray900);
+}
+.header-item {
+  border-left: 1px solid var(--gray200);
+  text-align: left;
+}
+.header-item:first-child {
+  border: none;
+}
+.single-header-item {
+  padding-left: 32px;
+  margin-left: 32px;
+}
+.top-header-card,
+.notice-card,
+.manager-card,
+.radial-chart-card,
+.employee-list-card,
+.management-top-header-card,
+.birthday-card {
+  background: var(--white);
+  /* no */
+  border: none;
+  box-shadow: 0px 0px 2px rgba(145, 158, 171, 0.24),
+    0px 16px 32px -4px rgba(145, 158, 171, 0.24);
+  border-radius: 4px;
+}
+
+.notice-card,
+.manager-card,
+.radial-chart-card,
+.birthday-card {
+  height: 380px;
+  overflow: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+}
+.self-card {
+  height: 212px;
+}
+.self-manager-card {
+  height: 160px;
+}
+.self-height-auto {
+  height: 380px;
+}
+.birthday-card::-webkit-scrollbar {
+  display: none;
+}
+
+.notice-card {
+  overflow: hidden;
+}
+.noticeboard-wrapper {
+  overflow: auto;
+}
+.manager-card {
+  justify-content: flex-start;
+}
+p.subTitle {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--gray500);
+}
+
+p.title {
+  margin-top: 0px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 18px;
+  color: var(--gray700);
+}
+
+.notice-card .title,
+.manager-card .title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  /* margin-bottom: 40px; */
+  color: var(--gray700);
+}
+
+.birthday-card .title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 23px;
+  margin-bottom: 10px;
+  color: var(--gray700);
+}
+.dashboard-body .radial-chart-card .title {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--gray700);
+}
+
+.dashboard-body .notice-card .notice-date {
+  height: 55px;
+  width: 55px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  margin-right: 16px;
+  color: var(--white);
+}
+
+.radial-chart-table .col-md-6 {
+  height: 60px;
+}
+
+.radial-chart-table .subTitle {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--gray500);
+}
+
+.radial-chart-table .title {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 29px;
+  margin-top: 8px;
+  color: var(--gray700);
+}
+
+.dashboard-body .notice-card .notice-body {
+  height: 50px;
+  border-bottom: 1px solid var(--gray200);
+}
+
+.dashboard-body .notice-card .notice-body .body-text {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+  color: var(--gray700);
+}
+
+.dashboard-body .notice-card .notice-list:last-child .notice-body {
+  border-bottom: none;
+}
+
+.manager-list-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.manager-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #f2f2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+}
+.self-manager-img {
+  width: 30px;
+  height: 30px;
+}
+
+.dashboard-body .manager-card .manager-info .manager-name {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: var(--gray900);
+}
+
+.dashboard-body .manager-card .manager-info .self-manager-name {
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.dashboard-body .manager-card .manager-info .manager-designation {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  margin-top: 5px;
+  color: var(--gray700);
+}
+
+.dashboard-body .manager-card .manager-info .self-manager-designation {
+  font-size: 11px;
+  line-height: 15px;
+}
+
+.dashboard-body .download-policy {
+  color: #009cde;
+  margin-top: 60px;
+  margin-bottom: 40px;
+}
+
+.dashboard-body .download-policy .download-label {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+  /* identical to box height */
+
+  letter-spacing: 0.2px;
+  text-decoration-line: underline;
+  margin-left: 16px;
+}
+
+.designation-dropdown {
+  margin-left: 58px;
+  background: #f4f6f8;
+  border-radius: 8px;
+  height: 41px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-family: Public Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+}
+.employee-list-card .card-body .table-empList {
+  height: 300px;
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.employee-list-card .card-body .table-empList::-webkit-scrollbar {
+  display: none;
+}
+.employee-list-card .card-body .form-container {
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+.employee-list-card .table thead tr {
+  background: var(--gray200);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  height: 56px;
+  color: var(--gray700);
+  text-align: center;
+}
+.employee-list-card .table thead tr th {
+  text-align: left;
+}
+.employee-list-card .table thead tr th:first-child {
+  padding-left: 34px !important;
+}
+.employee-list-card .table tbody {
+  width: 100%;
+}
+.employee-list-card .table tbody tr {
+  /* identical to box height */
+  border-bottom: 1px solid var(--gray200);
+  text-align: center;
+  height: 70px;
+}
+
+.employee-list-card .title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 23px;
+
+  color: var(--gray700);
+}
+
+.management-top-header-card .card-title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 23px;
+  /* padding    : 20px 0 10px 26px; */
+  color: var(--gray700);
+}
+.dash-card-title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--gray700);
+}
+.employee-list-card .table tbody tr td:first-child {
+  padding-left: 34px !important;
+}
+.employee-list-card .table tbody tr td {
+  height: 100%;
+  vertical-align: middle !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 16px !important;
+  line-height: 19px !important;
+  color: var(--gray900) !important;
+  text-align: left;
+}
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.birthday-card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.birthday-card .companyName {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19px;
+  /* identical to box height */
+
+  color: var(--gray700);
+}
+
+.birthday-card .position {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 5px;
+  color: var(--gray500);
+}
+
+.birthday-card .date {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: var(--gray700);
+}
+.arrow_box {
+  background: var(--white);
+  padding: 8px 16px;
+  box-shadow: 0px 7px 14px rgba(0, 0, 0, 0.08), 0px 6px 32px rgba(0, 0, 0, 0.16);
+  position: relative;
+}
+.tooltip_text {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #333333;
+  letter-spacing: 0.4px;
+}
+
+@media (max-width: 991px) {
+  .dashboard-body .top-header-card .header-item .d-flex {
+    padding: 20px 20px;
+  }
+
+  .dashboard-body .top-header-card .header-item:nth-child(2n) {
+    border-right: none;
+  }
+}
+
+/* toggle style */
+.set-as-default {
+  display: flex;
+  align-items: center;
+}
+.set-as-default .switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 14px;
+  /* border: 2px solid; */
+}
+
+.set-as-default .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.set-as-default .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(204, 204, 204, 0.63);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.set-as-default .slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 0px;
+  /* bottom: 0px; */
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #c7c7c7;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.set-as-default .switch input:checked + .slider {
+  background-color: rgba(52, 168, 83, 0.38);
+}
+
+.set-as-default .switch input:checked + .slider:before {
+  transform: translate(15px, -50%);
+  background-color: #34a853;
+}
+
+/* Rounded sliders */
+.set-as-default .slider.round {
+  border-radius: 34px;
+}
+
+.set-as-default .slider.round:before {
+  border-radius: 50%;
+}
+
+/* employeeChartGraph */
+.employeeChartGraphParent {
+  position: relative;
+  overflow: hidden;
+}
+.employeeChartGraph {
+  position: absolute;
+  top: 40%;
+  left: 39%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+span.employeeChartGraph-title {
+  font-size: 26px;
+}
+
+/* policy-card */
+.policy-card-wrapper {
+  height: 380px;
+  overflow: auto;
+}
+.policy-card {
+  padding: 10px;
+  margin-bottom: 0px;
+  border-bottom: 1px solid var(--gray200);
+}
+
+/* card-footer */
+.card-footer {
+  background-color: rgba(255, 255, 255, 1) !important;
+}
+.card-footer .btn-green,
+.card-footer .btn-green:hover,
+.card-footer .btn-green:focus,
+.card-footer .btn-green-less,
+.card-footer .btn-green-less:hover,
+.card-footer .btn-green-less:focus {
+  width: 110px;
+}
+/* responsive */
+@media (max-width: 1399px) {
+  .employeeChartGraph {
+    left: 35%;
+  }
+}
+/* employee self dashboard styles from Asif */
+/*  */
+/*  */
+.employee-self-dashboard .employee-self-dashboard-employee-name {
+  color: #667085;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.employee-self-dashboard .date-period-container > h4 {
+  font-weight: 400;
+  font-size: 14px;
+  color: #344054;
+  margin-bottom: 8px;
+}
+.employee-self-dashboard .date-period-container > p {
+  font-weight: 700;
+  font-size: 16px;
+  color: #475467;
+}
+
+.employee-self-dashboard .date-period-container-left-border {
+  margin-left: 12px;
+  padding-left: 12px;
+  border-left: 1px solid #d0d5dd;
+}
+/*  */
+/*  */
+/* header css end */
+/* csss for calendar */
+.employee-attendance-calendar-wrapper {
+  box-shadow: 0px 1px 4px 1px rgba(99, 115, 129, 0.3);
+}
+.employee-attendance-calendar-wrapper .heading {
+  padding: 12px;
+}
+
+.employee-attendance-calendar-wrapper .calendar-time-block-wrapper div {
+  margin-right: 12px;
+  border-left: 4px solid;
+  padding: 0 6px;
+}
+
+.employee-attendance-calendar-wrapper .calendar .calendar-heading {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.employee-attendance-calendar-wrapper .calendar .calendar-heading div {
+  display: grid;
+  place-items: center;
+  padding: 4px 4px;
+  background-color: #eff1f5;
+}
+.employee-attendance-calendar-wrapper .calendar .calendar-heading div p {
+  font-weight: 600;
+  font-size: 12px;
+  color: #0e7090;
+}
+.employee-attendance-calendar-wrapper .calendar .calendar-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.employee-attendance-calendar-wrapper
+  .calendar
+  .calendar-body
+  .calendar-date-cell {
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.employee-attendance-calendar-wrapper
+  .calendar
+  .calendar-body
+  .calendar-date-cell
+  > p {
+  padding: 4px 0px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #344054;
+}
+
+/*  */
+/*  */
+.employee-attendance-calendar-wrapper .checkInOutWrapper {
+  height: 24rem;
+  padding: 6px;
+}
+.employee-attendance-calendar-wrapper .checkInOutWrapper > div {
+  padding: 6px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  height: 100%;
+}
+.employee-attendance-calendar-wrapper
+  .checkInOutWrapper
+  .checkout-info-wrapper {
+  padding: 6px;
+  border: 1px solid #eaecf0;
+  margin-bottom: 6px;
+}
+/* manager list container */
+
+.employee-self-dashboard-manager-container {
+  height: 40%;
+  box-shadow: 0px 1px 4px 1px rgba(99, 115, 129, 0.3);
+  padding: 0 12px 12px;
+}
+.employee-self-dashboard-manager-container
+  .employee-self-dashboard-manager-picture {
+  width: 35px;
+  height: 35px;
+  margin-right: 6px;
+}
+
+.employee-self-dashboard-manager-container
+  .employee-self-dashboard-manager-details
+  > p:first-child {
+  color: #344054;
+  font-size: 12px;
+  font-weight: 500;
+}

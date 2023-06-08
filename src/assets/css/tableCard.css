@@ -1,0 +1,432 @@
+/* landing-wrapper */
+.landing-wrapper .heading {
+  padding-top: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.landing-wrapper .heading h3 {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.landing-wrapper .heading {
+  padding-top: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.landing-wrapper .actionIcon .muiIconHover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 15px;
+  width: 15px;
+  border-radius: 100px;
+  background: transparent;
+  cursor: pointer;
+}
+.table-hover-sm .actionIcon .muiIconHover {
+  height: 10px;
+  width: 10px;
+}
+
+.landing-wrapper .actionIcon .muiIconHover.success:hover {
+  background: #e7fede;
+}
+
+.landing-wrapper .actionIcon .muiIconHover.danger:hover {
+  background: #ffe3e3;
+}
+
+.mr .form-container {
+  margin-bottom: 0;
+  margin-top: 5px;
+}
+
+.table thead tr th {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  line-height: 18px !important;
+  color: var(--gray600) !important;
+}
+
+.table-card-styled table {
+  border-collapse: collapse;
+  border-spacing: 0px 0rem;
+  color: var(--gray600);
+}
+table.table.table-bordered.table-hover.m-0.th-table {
+  margin-top: 4px !important;
+}
+
+.table-card-styled.rowgap-0 table {
+  border-collapse: separate;
+  border-spacing: 0px 0rem;
+  color: var(--gray600);
+}
+
+.table-card-styled .create-table table tbody {
+  margin-left: 50px;
+}
+
+.table-card-styled table thead tr th {
+  border-top: none;
+  vertical-align: middle;
+}
+
+.table-card-styled table.table-bordered thead tr th {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.table-card-styled table.table-bordered thead tr th.green {
+  color: #000000 !important;
+  background: var(--success50) !important;
+}
+.table-card-styled table.table-bordered thead tr th.warnHead {
+  color: #000000 !important;
+  background: var(--warning-bg) !important;
+}
+.table-card-styled table.table-bordered thead tr th.infoHead {
+  color: #000000 !important;
+  background: var(--info-bg) !important;
+}
+.table-card-styled table.table-bordered thead tr th.th-inner-table {
+  padding: 3px 0 0 !important;
+}
+
+.table-card-styled table thead tr th .sortable span {
+  color: var(--gray600) !important;
+  color: none;
+}
+
+.table-card-styled table thead tr th .sortable {
+  cursor: pointer;
+  color: var(--gray600) !important;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.table-card-styled table thead th {
+  padding: 0.4rem !important;
+}
+.customAntTable
+  .ant-table-container
+  table
+  > thead
+  > tr:first-child
+  th:first-child {
+  width: 25px;
+}
+
+.table-card-styled table tbody tr td {
+  border-top: 1px solid var(--gray300);
+  border-bottom: 1px solid var(--gray300);
+  border-left: none;
+  border-right: none;
+  height: auto;
+  vertical-align: middle;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  font-size: 12px !important;
+}
+
+.table-card-styled table tbody tr .action-td {
+  /* background: red !important; */
+  width: 80px !important;
+}
+
+.table-card-styled table tbody tr td:first-child {
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+}
+
+.table-card-styled table tbody tr td:last-child {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  /* width        : 80px !important; */
+}
+
+.table-card-styled table tbody tr:hover {
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
+}
+
+.table-card-styled table tbody tr.boxShadowNone:hover {
+  box-shadow: none !important;
+}
+
+.table-card-styled table tbody tr.hasEvent:hover {
+  cursor: pointer;
+}
+
+.table-card-styled table.table-bordered tbody tr td {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.table-card-styled .tableBody-title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+  color: var(--gray600) !important;
+}
+
+.table-card-styled.card-table-sm table thead tr th {
+  border-top: 1px solid rgba(166, 159, 161, 0.5);
+}
+
+.table-card-styled.card-table-sm table tbody tr td,
+.table-card-styled.card-table-small table tbody tr td {
+  height: 56px !important;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* .table-card-styled table th .sortable {
+    position: relative;
+    cursor  : pointer;
+}
+
+.table-card-styled table th .sortable::after {
+    font-family   : FontAwesome;
+    content       : "\f0dc";
+    position      : relative;
+    margin-left   : 1rem;
+    right      : 8px;
+color : #999;
+}
+
+*/
+.table-card-styled .form-container {
+  margin-bottom: 0 !important;
+}
+
+.table-card-styled .muiIconHover,
+.card-iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.table-card-styled .muiIconHover.danger:hover {
+  background: #ffe3e3;
+}
+
+.table-card-styled .muiIconHover.success:hover {
+  background: #e7fede;
+}
+
+.table-card-styled .actionIcon {
+  display: none !important;
+}
+
+.table-card-styled .action-col {
+  width: 110px;
+}
+
+.table-card-styled table tbody tr:hover .actionIcon {
+  display: flex !important;
+}
+
+.table-card-styled table tbody tr:hover .actionChip {
+  display: none !important;
+}
+
+.table-card-styled .MuiFormControlLabel-root {
+  margin: 0;
+  height: 16px;
+  width: 16px;
+}
+
+.employeeInfo .MuiAvatar-root {
+  height: 25px;
+  width: 25px;
+}
+
+.employeeInfo .employeeName {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--gray600);
+}
+
+.table-card-styled .MuiAvatar-root,
+.small-avatar .MuiAvatar-root {
+  height: 22px !important;
+  width: 22px !important;
+}
+
+.small-avatar .MuiAvatar-root {
+  font-size: 12px !important;
+}
+
+.application-table .employeePosition {
+  margin-top: 0 !important;
+}
+
+.table-card-styled table tbody tr td p {
+  font-size: 12px;
+  margin-top: 0px;
+  font-weight: 500;
+}
+
+.table-card-styled table tbody tr td .MuiSvgIcon-root,
+.table-card-styled table thead tr th .MuiCheckbox-root .MuiSvgIcon-root,
+.table-card-head-right .MuiSvgIcon-root {
+  height: 15px !important;
+  width: 15px !important;
+}
+
+.table-card-styled table tbody tr td.small-icon .MuiSvgIcon-root {
+  height: 0.8rem !important;
+  width: 1rem !important;
+}
+
+.css-1iobotr-MuiButtonBase-root-MuiCheckbox-root {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* tableOne */
+
+.tableOne > .table > tbody > tr > td,
+.tableOne > .table > tbody > tr > th {
+  height: auto;
+  padding: 3px 5px !important;
+  color: var(--gray500);
+}
+
+.tableOne > table > thead > tr > th > .sortable {
+  cursor: pointer;
+  color: var(--gray600) !important;
+  display: flex;
+  align-items: center;
+}
+
+.tableOne > table > thead > tr > th > .sortable.center {
+  justify-content: center;
+}
+
+.tableOne > table > thead > tr > th > .sortable > span {
+  font-size: 12px;
+  font-weight: 600;
+  padding-left: 0;
+}
+.self-card .tableOne > table > thead > tr > th > .sortable > span {
+  font-size: 10px;
+}
+
+.tableOne > table > tbody > tr > td .tableBody-title,
+.tableOne table tbody tr td .application-tooltip span.tableBody-title,
+.MuiTooltip-tooltip .application-tooltip span.tableBody-title {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray600) !important;
+}
+.self-card .tableOne > table > tbody > tr > td .tableBody-title {
+  font-size: 10px;
+}
+
+.table-card-styled table tbody tr .iconButton,
+.tableOne > table > tbody > tr .iconButton {
+  width: 20px;
+  height: 20px;
+  background: var(--white);
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  opacity: 0;
+  transition: 0.3s;
+  margin-right: 15px;
+  color: var(--gray600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.table-card-styled table tbody tr .staticIconButton,
+.tableOne > table > tbody > tr .staticIconButton,
+.table-card-head-right .staticIconButton {
+  width: 20px;
+  height: 20px;
+  background: var(--white);
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  border-radius: 50%;
+  opacity: 1;
+  transition: 0.3s;
+  color: var(--gray600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-card-styled table tbody tr:hover .iconButton,
+.tableOne > table > tbody > tr:hover .iconButton {
+  opacity: 1;
+}
+
+.tableOne .table td,
+.tableOne .table th {
+  padding: 0;
+}
+
+.self-card .tableOne .table th {
+  background: #f2f2f7 !important;
+  color: var(--gray600) !important;
+}
+.self-card .tableOne .table td {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.tableOne {
+  max-width: 100%;
+  max-height: 75vh;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 0;
+  padding-left: 1px;
+  transition: all 0.3s ease-in-out;
+}
+.noOverflowTable {
+  overflow: visible;
+}
+.self-card .tableOne {
+  height: 152px;
+  overflow-x: hidden;
+}
+.manning-profile-table {
+  height: 260px;
+  overflow-x: hidden;
+}
+
+.managementt-dashboard .tableOne {
+  height: 315px;
+}
+
+.tableOne thead th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 9;
+}
+
+.tableOne > table > thead > tr > th .MuiSelect-select {
+  padding: 0 !important;
+  padding-right: 32px !important;
+  margin-top: 0;
+}
+
+.MuiTablePagination-selectLabel,
+.MuiTablePagination-select,
+.MuiTablePagination-displayedRows {
+  font-size: 12px !important;
+  line-height: 18px !important;
+  font-family: var(--interFont) !important;
+}

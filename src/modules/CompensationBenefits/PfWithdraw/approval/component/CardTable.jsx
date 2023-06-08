@@ -1,0 +1,384 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Cancel, CheckCircle } from "@mui/icons-material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { styled, Tooltip, tooltipClasses } from "@mui/material";
+import { useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import AvatarComponent from "../../../../../common/AvatarComponent";
+import Chips from "../../../../../common/Chips";
+import FormikCheckBox from "../../../../../common/FormikCheckbox";
+import IConfirmModal from "../../../../../common/IConfirmModal";
+import MuiIcon from "../../../../../common/MuiIcon";
+import NoResult from "../../../../../common/NoResult";
+import SortingIcon from "../../../../../common/SortingIcon";
+import { gray900, greenColor } from "../../../../../utility/customColor";
+import { dateFormatter } from "../../../../../utility/dateFormatter";
+import {
+  getWithdrawalListDataForApproval,
+  withdrawalApproveReject,
+} from "../helper";
+
+const CardTable = ({ propsObj }) => {
+  const {
+    setFieldValue,
+    applicationListData,
+    setApplicationListData,
+    appliedStatus,
+    allData,
+    setAllData,
+    setSingleData,
+    setViewModal,
+  } = propsObj;
+
+  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+
+  // eslint-disable-next-line no-unused-vars
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+  const [empOrder, setEmpOrder] = useState("desc");
+  const [desgOrder, setDesgOrder] = useState("desc");
+  const [deptOrder, setDeptOrder] = useState("desc");
+
+  const commonSortByFilter = (filterType, property) => {
+    const newRowData = [...allData?.listData];
+    let modifyRowData = [];
+
+    if (filterType === "asc") {
+      modifyRowData = newRowData?.sort((a, b) => {
+        if (a[property] > b[property]) return -1;
+        return 1;
+      });
+    } else {
+      modifyRowData = newRowData?.sort((a, b) => {
+        if (b[property] > a[property]) return -1;
+        return 1;
+      });
+    }
+    setApplicationListData({ listData: modifyRowData });
+  };
+
+  const demoPopup = (action, text, data) => {
+    let payload = [
+      {
+        applicationId: data?.application?.intPfwithdrawId,
+        approverEmployeeId: employeeId,
+        isReject: text === "Reject" ? true : false,
+        accountId: orgId,
+        isAdmin: isOfficeAdmin,
+      },
+    ];
+
+    const callback = () => {
+      getWithdrawalListDataForApproval(
+        {
+          applicationStatus: "Pending",
+          isAdmin: isOfficeAdmin,
+          approverId: employeeId,
+          workplaceGroupId: 0,
+          departmentId: 0,
+          designationId: 0,
+          applicantId: 0,
+          accountId: orgId,
+          intId: 0,
+        },
+        setApplicationListData,
+        setAllData,
+        setLoading
+      );
+    };
+    let confirmObject = {
+      closeOnClickOutside: false,
+      message: ` Do you want to ${action}? `,
+      yesAlertFunc: () => {
+        withdrawalApproveReject(payload, callback);
+      },
+      noAlertFunc: () => { },
+    };
+    IConfirmModal(confirmObject);
+  };
+
+  const LightTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: "#fff !important",
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: "#fff",
+      color: "rgba(0, 0, 0, 0.87)",
+      boxShadow:
+        "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
+      fontSize: 11,
+    },
+  }));
+
+  return (
+    <>
+      {applicationListData?.listData?.length > 0 ? (
+        <table className="table">
+          <thead>
+            <tr>
+              <th style={{ width: "25px", textAlign: "center" }}>SL</th>
+              {!(
+                appliedStatus?.label === "Approved" ||
+                appliedStatus?.label === "Rejected"
+              ) && (
+                  <th scope="col">
+                    <FormikCheckBox
+                      styleObj={{
+                        margin: "0 auto!important",
+                        color: gray900,
+                        checkedColor: greenColor,
+                      }}
+                      name="allSelected"
+                      checked={
+                        applicationListData?.listData?.length > 0 &&
+                        applicationListData?.listData?.every(
+                          (item) => item?.selectCheckbox
+                        )
+                      }
+                      onChange={(e) => {
+                        setApplicationListData({
+                          listData: applicationListData?.listData?.map(
+                            (item) => ({
+                              ...item,
+                              selectCheckbox: e.target.checked,
+                            })
+                          ),
+                        });
+                        setFieldValue("allSelected", e.target.checked);
+                      }}
+                    />
+                  </th>
+                )}
+              <th style={{ width: "100px" }}>Code</th>
+              <th scope="col">
+                <div
+                  className="d-flex align-items-center pointer ml-2"
+                  onClick={() => {
+                    setEmpOrder(empOrder === "desc" ? "asc" : "desc");
+                    commonSortByFilter(empOrder, "employeeName");
+                  }}
+                >
+                  Employee
+                  <SortingIcon viewOrder={empOrder} />
+                </div>
+              </th>
+              <th scope="col">
+                <div
+                  className="d-flex align-items-center pointer"
+                  onClick={() => {
+                    setDesgOrder(desgOrder === "desc" ? "asc" : "desc");
+                    commonSortByFilter(desgOrder, "designation");
+                  }}
+                >
+                  Designation
+                  <SortingIcon viewOrder={desgOrder} />
+                </div>
+              </th>
+              <th scope="col">
+                <div
+                  className="d-flex align-items-center pointer"
+                  onClick={() => {
+                    setDeptOrder(deptOrder === "desc" ? "asc" : "desc");
+                    commonSortByFilter(deptOrder, "department");
+                  }}
+                >
+                  Department
+                  <SortingIcon viewOrder={deptOrder} />
+                </div>
+              </th>
+              <th>Application Date</th>
+              <th>Withdraw Amount</th>
+              {isOfficeAdmin && (
+                <th scope="col">
+                  <div className="d-flex align-items-center">Waiting Stage</div>
+                </th>
+              )}
+              <th>
+                <div className="d-flex align-items-center justify-content-center">
+                  Status
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {applicationListData?.listData?.length > 0 &&
+              applicationListData?.listData?.map((data, i) => (
+                <tr
+                  className="hasEvent"
+                  // onClick={(e) => {
+                  //   e.stopPropagation();
+                  //   history.push(
+                  //     `/compensationAndBenefits/pfandgratuity/pfWithdraw`,
+                  //     {
+                  //       employeeId: data?.intEmployeeId,
+                  //       approval: true,
+                  //     }
+                  //   );
+                  //   setSingleData(data);
+                  //   setViewModal(true);
+                  // }}
+                  key={i}
+                >
+                  <td className="text-center">{i + 1}</td>
+                  {!(
+                    appliedStatus?.label === "Approved" ||
+                    appliedStatus?.label === "Rejected"
+                  ) && (
+                      <td
+                        className="m-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <FormikCheckBox
+                          styleObj={{
+                            margin: "0 0 0 1px",
+                            color: gray900,
+                            checkedColor: greenColor,
+                          }}
+                          name="selectCheckbox"
+                          color={greenColor}
+                          checked={
+                            applicationListData?.listData[i]?.selectCheckbox
+                          }
+                          onChange={(e) => {
+                            let data = [...applicationListData?.listData];
+                            data[i].selectCheckbox = e.target.checked;
+                            setApplicationListData({ listData: [...data] });
+                          }}
+                        />
+                      </td>
+                    )}
+                  <td>
+                    <div className="tableBody-title"> {data?.employeeCode}</div>
+                  </td>
+                  <td>
+                    <div className="employeeInfo d-flex align-items-center ml-2">
+                      <AvatarComponent
+                        letterCount={1}
+                        label={data?.strEmployee}
+                      />
+                      <div className="employeeTitle ml-2">
+                        <p className="employeeName tableBody-title">
+                          {data?.strEmployee}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <p className="tableBody-title">{data?.strDesignation}</p>
+                  </td>
+                  <td>
+                    <p className="tableBody-title">{data?.strDepartment}</p>
+                  </td>
+                  <td>
+                    <p className="tableBody-title">
+                      {dateFormatter(data?.application?.dteApplicationDate)}
+                    </p>
+                  </td>
+                  <td>
+                    <div className="d-flex align-items-center justify-content-start tableBody-title">
+                      <LightTooltip
+                        title={
+                          <div className="movement-tooltip p-1">
+                            <div>
+                              <p
+                                className="tooltip-title"
+                                style={{
+                                  fontSize: "12px",
+                                  fontWeight: "600",
+                                }}
+                              >
+                                Reason
+                              </p>
+                              <p
+                                className="tooltip-subTitle"
+                                style={{
+                                  fontSize: "12px",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                {data?.strReason}
+                              </p>
+                            </div>
+                          </div>
+                        }
+                        arrow
+                      >
+                        <InfoOutlinedIcon
+                          sx={{
+                            color: gray900,
+                          }}
+                        />
+                      </LightTooltip>
+                      <div className="tableBody-title pl-2">
+                        {data?.numWithdrawAmount}
+                      </div>
+                    </div>
+                  </td>
+                  {isOfficeAdmin && (
+                    <td>
+                      <div className="tableBody-title">
+                        {data?.currentStage}
+                      </div>
+                    </td>
+                  )}
+                  <td className="text-center" width="10%">
+                    {data?.application?.strStatus === "Pending" && (
+                      <>
+                        <div className="actionChip">
+                          <Chips label="Pending" classess=" warning" />
+                        </div>
+                        <div className="d-flex actionIcon justify-content-center">
+                          <Tooltip title="Accept">
+                            <div
+                              className="mx-2 muiIconHover success "
+                              onClick={(e) => {
+                                demoPopup("approve", "Approve", data);
+                                e.stopPropagation();
+                              }}
+                            >
+                              <MuiIcon
+                                icon={<CheckCircle sx={{ color: "#34A853" }} />}
+                              />
+                            </div>
+                          </Tooltip>
+                          <Tooltip title="Reject">
+                            <div
+                              className="muiIconHover danger"
+                              onClick={(e) => {
+                                demoPopup("reject", "Reject", data);
+                                e.stopPropagation();
+                              }}
+                            >
+                              <MuiIcon
+                                icon={<Cancel sx={{ color: "#FF696C" }} />}
+                              />
+                            </div>
+                          </Tooltip>
+                        </div>
+                      </>
+                    )}
+                    {data?.application?.strStatus === "Rejected" && (
+                      <Chips label="Rejected" classess="danger" />
+                    )}
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      ) : (
+        <NoResult />
+      )}
+    </>
+  );
+};
+
+export default CardTable;

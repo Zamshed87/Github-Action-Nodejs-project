@@ -1,0 +1,49 @@
+.print-preview-main .print-page-main-body .print-page-body {
+  width: 100%;
+}
+
+.print-preview-main .saleryPaySlip-table-main .scrollable-table-sm {
+  overflow-y: hidden;
+}
+.print-preview-main .saleryPaySlip-table-main table {
+  margin: auto;
+}
+
+.print-preview-main .saleryPaySlip-table-main table th {
+  text-align: center;
+  border: 1px solid #dee2e6;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 8px;
+  color: rgba(0, 0, 0, 0.7);
+  padding: 2px;
+}
+.print-preview-main .saleryPaySlip-table-main table td {
+  border: 1px solid #dee2e6;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 8px;
+  padding: 2px;
+  color: rgba(0, 0, 0, 0.7);
+  height: 120px;
+}
+.print-preview-main .saleryPaySlip-table-main table td {
+  color: rgba(0, 0, 0, 0.7) !important;
+  font-size: 8px !important;
+}
+.print-preview-main .saleryPaySlip-table-main table th.rotate {
+  transform: rotate(-90deg);
+  padding: 0.3rem 0.3rem 0.3rem 0;
+  height: 150px;
+}
+
+.print-preview-main .saleryPaySlip-table-main table tr:nth-child(2) th {
+  vertical-align: top;
+}
+.print-preview-main .saleryPaySlip-table-main table tr:nth-child(2) th.rotate {
+  vertical-align: middle;
+}
+.print-preview-main .saleryPaySlip-table-main table tr:first-child th:last-child.rotate {
+  transform: none;
+  padding: 1.5rem;
+}

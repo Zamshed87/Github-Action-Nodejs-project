@@ -1,0 +1,103 @@
+.reschedule-table tbody tr td p {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  /* identical to box height */
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.reschedule-table tbody tr td p.subTitle,
+.reschedule-table tbody tr td p.tooltip-subTitle {
+  margin-top: 8px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.tooltip-title {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.2px;
+
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.tooltip-subTitle {
+  margin-top: 8px;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.reschedule-table table thead tr th {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.reschedule-view-modal,
+.create-modal {
+  height: 400px;
+  overflow-y: auto;
+}
+
+.reschedule-view-modal .title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  /* identical to box height */
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.reschedule-view-modal .subTitle {
+  margin-top: 8px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+
+  color: rgba(0, 0, 0, 0.4);
+}
+.create-modal table tr td {
+  margin: 0px;
+  padding: 4px !important;
+}
+
+.create-modal table tr td:first-child {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 15px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.create-modal table tr td:last-child {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  /* identical to box height */
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content .formInput .form-container {
+  margin-bottom: 5px;
+}

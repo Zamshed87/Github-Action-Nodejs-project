@@ -1,0 +1,84 @@
+.organogram {
+  overflow: scroll;
+  height: 100%;
+  padding-bottom: 30px;
+}
+.organogram .btn{
+  position: relative;
+}
+.organogram .threedot{
+  position: absolute;
+  top: 4px;
+  right: -4px;
+}
+.organogram .btn img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.organogram .btn {
+  height: auto;
+  width: auto;
+  min-width: max-content;
+  margin: 0 auto;
+  font-size: 12px;
+  /* display: flex;
+  align-items: center; */
+  border-top: 2px solid #F78C12;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.16);
+  
+}
+.organogram .btn:hover{
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.32);
+}
+.organogram button p,
+.organogram button span {
+  font-size: 12px;
+}
+
+/* ====== ==> Add Child com style */
+.organugram_form_main .organugram_form_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 24px;
+  /* box-shadow: 0px 4px 9px rgb(0 0 0 / 10%); */
+}
+.organugram_form_main .organugram_form_header h3{
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 18px;
+    color: #333333;
+}
+.addChild_form_container .form-container {
+  margin-bottom: 5px;
+}
+.addChild_form_container .add_field_btn {
+  width: 30px;
+  height: 30px;
+  background: #ffffff;
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  /* box-shadow: 0px 4px 9px rgb(0 0 0 / 15%); */
+  border-radius: 50%;
+  opacity: 1;
+  transition: 0.3s;
+  margin-right: 15px;
+  color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.addChild_form_container p {
+  font-size: 12px;
+}
+
+.addChild_form_container .form-btn-save {
+  height: 30px;
+}
+.addChild_form_container .input-borderless input.form-control:focus {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24) !important;
+}
+
+/* ==> order by style  */

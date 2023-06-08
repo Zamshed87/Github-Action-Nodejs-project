@@ -1,0 +1,9 @@
+.salary-policy-details-page-wrapper > .table-card-heading {
+  padding-bottom: .3em;
+  border-bottom: 1px solid #eaecf0;
+}
+
+.salary-policy-details-page-wrapper > .policy-details {
+  min-height: 70vh;
+  padding: 25px;
+}

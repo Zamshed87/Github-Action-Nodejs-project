@@ -1,0 +1,35 @@
+.identification .item {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 33px;
+}
+.identification .item .item-info {
+	margin-top: -23px;
+}
+.identification .item .item-info h6 {
+	font-size: 16px;
+	font-weight: 700;
+	margin-left: -23px;
+}
+.identification .item .item-info p {
+	font-size: 14px;
+	font-weight: 400;
+	margin-top: -26px;
+	color: rgba(0, 0, 0, 0.4);
+}
+.btn-disable:disabled,
+.btn-disable[disabled] {
+	background-color: #f2f2f7;
+	color: rgba(0, 0, 0, 0.2);
+	border-color: #f2f2f7;
+}
+.identification .MuiAvatar-root {
+	height: 40px;
+	width: 40px;
+	background: rgba(242, 242, 247, 1);
+	margin-right: 16px;
+	margin-left: -4px;
+}
+.identification .MuiAvatar-root .MuiSvgIcon-root {
+	color: rgba(0, 0, 0, 0.6);
+}

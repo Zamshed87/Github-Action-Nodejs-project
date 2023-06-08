@@ -1,0 +1,11 @@
+.dept-wise-salary .view-btn:disabled {
+  background: rgb(242, 242, 247) !important;
+  border-color: rgb(242, 242, 247) !important;
+  color: rgba(102, 102, 102,.5)!important;
+}
+.dept-salary-print .goForPrintBody .table-body .table th{
+  font-size: 9px!important;
+}
+.dept-salary-width .print-preview-page .print-page-body{
+  width: 1111px!important;
+}

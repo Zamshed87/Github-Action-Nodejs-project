@@ -1,0 +1,177 @@
+/* modal header */
+.modal-header {
+  margin-bottom: 10px;
+}
+
+.default-modal .modalBody {
+  padding: 18px 27px;
+  height: 320px;
+  overflow-y: scroll;
+}
+/* for configure module */
+.default-modal.configure-modal .modalBody {
+  height: auto;
+  overflow-y: visible;
+}
+.modalBody p {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray500);
+  margin-bottom: 20px;
+}
+.modalBody label {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray700);
+  margin-bottom: 4px;
+}
+.modalBody label.lebel-bold {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 120%;
+  color: var(--gray500);
+}
+
+/* image-upload-box */
+.image-upload-box {
+  height: 64px;
+  border: 1px dashed var(--gray200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.image-upload-box.with-img {
+  max-width: 65px;
+  border: 0;
+}
+.manning-profile-form .image-upload-box.with-img {
+  max-width: 100%;
+  border: 0;
+  justify-content: left;
+}
+.image-upload-box.maxWidth100 {
+  max-width: 100%;
+}
+
+/* // modal activation style */
+.modalBody .modal-input-field .form-container {
+  margin-bottom: 5px;
+}
+
+h6.modal-activation-title {
+  font-size: 13px;
+  line-height: 17px;
+}
+p.modal-activation-desc {
+  font-size: 11px;
+  line-height: 15px;
+}
+
+/* ==> details modal style */
+a.link-company-web {
+  font-size: 12px !important;
+  line-height: 18px !important;
+  font-weight: 500;
+}
+span.subtitle-span {
+  font-size: 12px !important;
+  line-height: 18px !important;
+  font-weight: 400;
+  color: var(--gray500) !important;
+}
+p.subtitle-p {
+  font-size: 12px !important;
+  line-height: 18px !important;
+  font-weight: 500;
+  color: var(--gray700) !important;
+}
+.modal-company-img {
+  height: 60px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.modal-company-img > img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+h5.title-company-name {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray500);
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+h6.title-item-name {
+  font-weight: 600;
+  font-size: 12px !important;
+  line-height: 18px !important;
+  color: var(--gray700);
+  padding-bottom: 0px !important;
+}
+/* modal footer */
+.modal-footer {
+  padding: 8px 12px;
+  text-align: right;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--gray200);
+}
+.form-modal-footer {
+  justify-content: flex-end;
+}
+.view-modal-footer {
+  justify-content: space-between;
+}
+
+button.modal-btn {
+  width: auto;
+  height: 25px;
+  box-shadow: none;
+  outline: 0;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+button.modal-btn-cancel {
+  background: transparent;
+  color: var(--gray500);
+  border: transparent;
+  margin-right: 15px;
+}
+button.modal-btn-save {
+  width: 96px;
+  height: 30px;
+  border-radius: 0.25rem;
+  color: #fff;
+  background: #229a16;
+  border: 2px solid #229a16;
+}
+button.modal-btn-edit {
+  background: transparent;
+  color: var(--gray500);
+  border: transparent;
+}
+/* details modal style <== */
+
+/* create-modal-form */
+.create-modal-form > .modal-body {
+  padding-top: 20px;
+  padding-left: 24px;
+  padding-right: 21px;
+  padding-bottom: 40px;
+  height: 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

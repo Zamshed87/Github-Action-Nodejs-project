@@ -1,0 +1,120 @@
+/* holiday styles start */
+
+/* // holiday setup table header start */
+.roster-setup-main .table-card .table-card-body table th small {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+}
+.roster-setup-main .table-card .table-card-body table th {
+  color: rgba(0, 0, 0, 0.6);
+}
+.roster-setup-main .table-card .table-card-body table th:first-child {
+  width: 40%;
+  padding-left: 44px;
+}
+.roster-setup-main .table-card .table-card-body table th:nth-child(2) {
+  width: 40%;
+}
+.roster-setup-main .table-card .table-card-body table th:last-child {
+  width: 20%;
+}
+.roster-setup-main .table-card .table-card-body table thead th:hover {
+  cursor: pointer;
+}
+/*  holiday setup table header end <== */
+
+/* ==> holiday setup table body start */
+.roster-setup-main .table-card .table-card-body table tbody td:first-child {
+  padding-left: 44px;
+  width: 40%;
+}
+.roster-setup-main .table-card .table-card-body table tbody td:nth-child(2) {
+  width: 40%;
+}
+.roster-setup-main .table-card .table-card-body table tbody td:last-child {
+  width: 20%;
+}
+.roster-setup-main .table-card .table-card-body table tbody td .noOfDay-item {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.roster-setup-main .table-card .table-card-body table tbody td .noOfDay-item .hovered-copy-icon {
+  margin-right: 50px;
+}
+.roster-setup-main .table-card .table-card-body table tbody td .chip-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.roster-setup-main .table-card .table-card-body table tbody td .chip-main > div {
+  padding: 9px 22px;
+}
+
+/*  holiday setup table body end <== */
+
+/* holiday styles end */
+
+/* ==> holiday Group modal style start */
+
+.rosterSetupModal .modalBody {
+  padding-top: 18px;
+  padding-bottom: 16px;
+  padding-left: 25px;
+  padding-right: 25px;
+  height: 200px;
+}
+.rosterSetupModal .modalBody p {
+  font-size: 14px;
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.4);
+  padding-bottom: 0px;
+}
+.rosterSetupModal .modalBody label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.rosterSetupModal .modalBody .form-container {
+  margin-bottom: 20px;
+}
+.rosterSetupModal .modalFooter {
+  padding-right: 25px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: right;
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@media (max-width: 575.98px) {
+  .rosterSetupModal {
+    position: relative;
+    top: 22%;
+  }
+}
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .rosterSetupModal {
+    position: relative;
+    top: 22%;
+  }
+}
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .rosterSetupModal {
+    position: relative;
+    top: 22%;
+  }
+}
+/* ==> holiday Group modal style end */
+
+/* modal header margin bottom */
+.modal-header {
+  margin-bottom: 0.5rem;
+}

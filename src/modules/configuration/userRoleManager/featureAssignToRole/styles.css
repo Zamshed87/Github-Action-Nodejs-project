@@ -1,0 +1,46 @@
+.uNameFName-wrapper .table-card-heading .table-card-head-left h6 {
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 14px;
+}
+.uNameFName-wrapper .table-card-heading .table-card-head-right .form-btn-cancel {
+  color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(241, 241, 241);
+  padding: 0 14px;
+  margin-right: 0;
+  height: 30px;
+}
+
+.uNameFName-wrapper .form-add-feature {
+  background: #ffffff;
+  box-shadow: 0px 1px 5px rgb(0 0 0 / 5%), 0px 2px 10px rgb(0 0 0 / 8%), 0px 1px 5px rgb(0 0 0 / 5%);
+  padding: 8px;
+  margin: 12px auto;
+}
+.uNameFName-wrapper .form-add-feature .MuiFormGroup-root > label span svg {
+  height: 16px;
+  width: 16px;
+}
+.uNameFName-wrapper .form-add-feature .MuiFormGroup-root > label span {
+  font-size: 14px;
+  font-weight: 500;
+}
+/* table style */
+.table-user-feature-group .table-card-body table thead th {
+  text-align: center;
+}
+.table-user-feature-group .table-card-body table thead th .MuiFormGroup-root > label span {
+  font-size: 14px;
+}
+.table-user-feature-group .table-card-body table thead th small {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.00938em;
+  color: rgba(0, 0, 0, 0.6);
+}
+.table-user-feature-group .form-add-feature {
+  background: #ffffff;
+  box-shadow: 0px 1px 5px rgb(0 0 0 / 5%), 0px 2px 10px rgb(0 0 0 / 8%), 0px 1px 5px rgb(0 0 0 / 5%);
+  padding: 27px;
+  margin: 1.5rem auto;
+}

@@ -1,0 +1,73 @@
+.separation-approval-wrapper .table-card-styled table thead tr th {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+
+  color: rgba(0, 0, 0, 0.6);
+}
+.separation-approval-wrapper .type {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  /* identical to box height */
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.separation-approval-wrapper .sub-label {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  margin-top: 8px !important;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.separation-approval-wrapper
+  .table-card-styled
+  table
+  tbody
+  tr
+  td
+  .employeeInfo
+  .employeeTitle
+  .employeePosition {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  margin-top: 8px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.separation-approval-wrapper .actionIcon .muiIconHover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 100px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.separation-approval-wrapper .actionIcon .muiIconHover.success:hover {
+  background: #e7fede;
+}
+
+.separation-approval-wrapper .actionIcon .muiIconHover.danger:hover {
+  background: #ffe3e3;
+}
+
+.separation-approval-filter p.label {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+
+  color: rgba(0, 0, 0, 0.7);
+}

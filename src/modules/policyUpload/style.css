@@ -1,0 +1,21 @@
+.policy-attachment .image-upload-box.with-img {
+  max-width: 0px !important;
+  display: flex;
+  justify-content: flex-start;
+  height: auto !important;
+}
+.policy-category-ddl-wrapper {
+  display: flex;
+}
+.policy-category-ddl-wrapper .form-container {
+  margin-bottom: 0;
+  width: 100%;
+}
+.category-add {
+  position: relative;
+  top: 5px;
+  margin-left: 10px;
+}
+.create-approval-form .modal-body2 .btn.btn-category {
+  color: #ffffff !important;
+}

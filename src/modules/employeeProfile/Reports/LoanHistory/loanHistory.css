@@ -1,0 +1,27 @@
+.loan-history-filter p {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.loan-history-filter .input-sm input.form-control{
+  border-radius: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24)!important;
+  border-top: 0!important;
+  border-left: 0!important;
+  border-right: 0!important;
+}
+.loan-history-filter .input-sm input.form-control:focus{
+  box-shadow: none!important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24)!important;
+  border-top: 0!important;
+  border-left: 0!important;
+  border-right: 0!important;
+}
+.loan-history-filter .input-sm input.form-control:hover{
+  border-radius: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24)!important;
+  border-top: 0!important;
+  border-left: 0!important;
+  border-right: 0!important;
+}

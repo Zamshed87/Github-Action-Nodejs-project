@@ -1,0 +1,85 @@
+/* // table calendar setup start  */
+.calendarSetup-main .table-card .table-card-body table thead th:first-child {
+  padding-left: 43px;
+}
+.calendarSetup-main .table-card .table-card-body table thead th {
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+.calendarSetup-main .table-card .table-card-body table thead th small {
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.calendarSetup-main .table-card .table-card-body table tbody td {
+  text-align: center;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.calendarSetup-main .table-card .table-card-body table tbody td:first-child {
+  padding-left: 43px;
+  text-align: left;
+}
+.calendarSetup-main .table-card .table-card-body table tbody td:nth-child(2) {
+  text-align: center !important;
+}
+.calendarSetup-main .table-card .table-card-body table tbody td:nth-child(4) {
+  text-align: center;
+}
+
+/* // table calendar setup end  */
+
+/*==>  create calendar setup modal  */
+
+.calenderSetupModal .modalFooter {
+  padding-right: 25px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: right;
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.calenderSetupModal .modalFooter .form-btn-save {
+  padding: 12px 32px;
+}
+.calenderSetupModal .modalBody {
+  height: 400px;
+}
+
+/*  create calendar setup modal <== */
+
+/*  view calendar setup modal ==>  */
+
+.calenderViewModal .modalBody {
+  height: 400px;
+  padding-right: 0;
+}
+.calenderViewModal .modalBody .details-item .icon-details-item > div {
+  background-color: #f2f2f7;
+}
+.calenderViewModal .modalBody .details-item   p {
+  margin-bottom: 5px;
+}
+
+
+.calenderViewModal .modalBody .details-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 5px 0; 
+}
+.calenderViewModal .modalBody .details-item:last-child {
+  border-bottom: none;
+}
+.calenderViewModal .modalBody .details-item:first-child {
+  margin-top: 0;
+}
+
+
+/*  view calendar setup modal <== */

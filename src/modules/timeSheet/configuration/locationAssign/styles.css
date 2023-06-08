@@ -1,0 +1,110 @@
+.loacationAssign .table-card .table-card-body table {
+  width: 100%;
+}
+
+.loacationAssign .table-card .table-card-body table th small {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+}
+.loacationAssign .table-card .table-card-body table th {
+  color: rgba(0, 0, 0, 0.6);
+  width: 50%;
+}
+.loacationAssign .table-card .table-card-body table th:first-child {
+  padding-left: 44px;
+}
+
+.loacationAssign .table-card .table-card-body table thead th:hover {
+  cursor: pointer;
+}
+.loacationAssign .table-card .table-card-body table tbody td {
+  width: 50%;
+}
+.loacationAssign .table-card .table-card-body table tbody td:first-child {
+  padding-left: 5px;
+}
+.loacationAssign .table-card .table-card-body table tbody td:nth-last-child(1){
+  padding-left: 5px;
+}
+/* drawer style start */
+.locationAssignMain {
+  position: relative;
+  height: 100%;
+}
+.locationAssignMain .locationAssignHeader {
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.25);
+}
+.locationAssignMain .locationAssignHeader .headerTop h4 {
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 23px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.locationAssignMain .locationAssignHeader .headerTop {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.locationAssignMain .locationAssignHeader .header-main {
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.locationAssignMain .locationAssignHeader .header-main .form-container {
+  margin: 0;
+}
+.locationAssignMain .locationAssignHeader .header-main .form-container .form-group {
+  width: 300px;
+}
+.locationAssignMain .locationAssignBody {
+  padding: 20px 0;
+  height: 75%;
+  overflow-y: auto;
+}
+.locationAssignMain .locationAssignBody .row-user-info-main {
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 16px 32px;
+}
+.locationAssignMain .locationAssignBody .row-user-info-main:last-child {
+  border-bottom: none;
+}
+.locationAssignMain .locationAssignBody .row-user-info-main .avater-info-user .avater .MuiAvatar-root {
+  height: 50px;
+  width: 50px;
+}
+.locationAssignMain .locationAssignBody .row-user-info-main .info-user {
+  display: flex;
+  flex-direction: column;
+}
+.locationAssignMain .locationAssignBody .row-user-info-main .info-user small {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.locationAssignMain .locationAssignFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px 32px;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* z-index: 2; */
+}
+
+.locationAssignMain .locationAssignFooter .form-btn-cancel {
+  color: #34a853;
+}
+.locationAssignMain .locationAssignFooter .form-btn-save {
+  padding: 10px 30px;
+}
+
+/* drawer style end */

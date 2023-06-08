@@ -1,0 +1,34 @@
+.attendence-detais-date {
+  display: flex;
+  justify-content: space-between;
+}
+
+.attendence-details-heading p {
+  margin: 5px 0;
+  font-size: 12px;
+}
+.table-row {
+  margin: 10px 0 0 0;
+  padding: 20px 0 20px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  transition: 0.3s;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.si-width {
+  min-width: 50px !important;
+}
+/* .attendence-report .table-card-styled .table thead th {
+  font-size: 12px;
+  font-weight: 600;
+} */
+.attendence-report .tableBody-title.td-center,
+.attendence-report .tableBody-title.td-left {
+  margin: 0 auto;
+  width: 106px;
+  text-align: center !important;
+}
+.attendence-report .tableBody-title.td-left {
+  text-align: left !important;
+}

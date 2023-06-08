@@ -1,0 +1,747 @@
+/* eslint-disable no-unused-vars */
+import {
+  Attachment,
+  EditOutlined,
+  SettingsBackupRestoreOutlined
+} from "@mui/icons-material";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { Tooltip, tooltipClasses } from "@mui/material";
+import { styled } from "@mui/styles";
+import { Form, Formik } from "formik";
+import React, { useEffect, useRef, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
+import { APIUrl } from "../../../../App";
+import DemoImg from "../../../../assets/images/demo.png";
+import AntTable from "../../../../common/AntTable";
+import {
+  getPeopleDeskAllLanding,
+  makeAddress
+} from "../../../../common/api";
+import Chips from "../../../../common/Chips";
+import DefaultInput from "../../../../common/DefaultInput";
+import IConfirmModal from "../../../../common/IConfirmModal";
+import MasterFilter from "../../../../common/MasterFilter";
+import NoResult from "../../../../common/NoResult";
+import ResetButton from "../../../../common/ResetButton";
+import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import { gray500 } from "../../../../utility/customColor";
+import {
+  dateFormatter,
+  dateFormatterForInput,
+  monthFirstDate,
+  monthLastDate
+} from "../../../../utility/dateFormatter";
+import { getEmployeeLeaveBalanceAndHistoryWithFilter } from "../../../employeeProfile/leaveApplication/helper";
+import {
+  createLeaveApplication
+} from "../helper";
+import Loading from "./../../../../common/loading/Loading";
+import LeaveBalanceTable from "./component/LeaveBalanceTable";
+import PopOverFilter from "./component/PopOverFilter";
+import "./leaveApplication.css";
+import LeaveForm from "./leaveForm/LeaveForm";
+import ViewFormComponent from "./view-form";
+
+const initData = {
+  search: "",
+  leaveType: "",
+  fromDate: "",
+  toDate: "",
+  location: "",
+  reason: "",
+  filterToDate: monthLastDate(),
+  filterFromDate: monthFirstDate(),
+};
+
+const validationSchema = Yup.object().shape({
+  location: Yup.string().required("Location is required"),
+  reason: Yup.string().required("Reason is required"),
+  fromDate: Yup.string().required("From Date is required"),
+  toDate: Yup.string().required("To Date is required"),
+  leaveType: Yup.object()
+    .shape({
+      label: Yup.string().required("Leave type is required"),
+      value: Yup.string().required("Leave type is required"),
+    })
+    .typeError("Leave type is required"),
+});
+
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.arrow}`]: {
+    color: "#fff !important",
+  },
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "#fff",
+    color: "rgba(0, 0, 0, 0.87)",
+    boxShadow:
+      "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
+    fontSize: 11,
+  },
+}));
+
+function LeaveApplication() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Self Service"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const { userName, intProfileImageUrl, orgId, buId, employeeId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+
+  // row Data
+  const [rowDto, setRowDto] = useState([]);
+  const [allData, setAllData] = useState([]);
+  const [singleData, setSingleData] = useState("");
+  // const [empBasic, setEmpBasic] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [employee, setEmployee] = useState("");
+  const [imageFile, setImageFile] = useState("");
+  const [leaveHistoryData, setLeaveHistoryData] = useState([]);
+  const [viewModal, setViewModal] = useState(false);
+  const [othersEmployee, setOthersEmployee] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [empLocation, setEmpLocation] = useState("");
+  const [isFilter, setIsFilter] = useState(false);
+
+  useEffect(() => {
+    getPeopleDeskAllLanding(
+      "EmployeeBasicById",
+      orgId,
+      buId,
+      employee?.id ? employee?.id : employeeId,
+      setOthersEmployee,
+      null,
+      setLoading
+    );
+    getPeopleDeskAllLanding(
+      "AddressDetailsByEmployeeId",
+      orgId,
+      buId,
+      employee?.id ? employee?.id : employeeId,
+      setEmpLocation,
+      null,
+      setLoading
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employee?.id]);
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  const handleOpen = () => {
+    setViewModal(false);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  // for view Modal
+  const handleViewOpen = () => setViewModal(true);
+  const handleViewClose = () => setViewModal(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const demoPopup = (action, values, cb) => {
+    const callback = () => {
+      getData();
+      setSingleData("");
+      setIsEdit(false);
+      cb();
+      setImageFile("");
+    };
+    const payload = {
+      partId: singleData?.intApplicationId ? 2 : 1,
+      leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
+      leaveTypeId: values?.leaveType?.value,
+      employeeId: employee ? employee?.id : employeeId,
+      accountId: orgId,
+      businessUnitId: buId,
+      applicationDate: new Date(),
+      appliedFromDate: values?.fromDate,
+      appliedToDate: values?.toDate,
+      documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
+      leaveReason: values?.reason,
+      addressDuetoLeave: values?.location,
+      insertBy: employeeId,
+    };
+    let confirmObject = {
+      closeOnClickOutside: false,
+      message: `Do you want to ${action} ?`,
+      yesAlertFunc: () => {
+        if (employee) {
+          createLeaveApplication(payload, setLoading, callback);
+        } else {
+          createLeaveApplication(payload, setLoading, callback);
+        }
+      },
+      noAlertFunc: () => {},
+    };
+    IConfirmModal(confirmObject);
+  };
+
+  const scrollRef = useRef();
+
+  const saveHandler = (values, cb) => {
+    demoPopup("Apply", values, cb);
+  };
+  var LogoURL = "";
+
+  const getData = (values) => {
+    getEmployeeLeaveBalanceAndHistoryWithFilter(
+      values?.employee?.value ? values?.employee?.value : employeeId,
+      "LeaveHistory",
+      "",
+      "",
+      values?.filterFromDate || monthFirstDate(),
+      values?.filterToDate || monthLastDate(),
+      "",
+      setLeaveHistoryData,
+      setLoading,
+      setAllData
+    );
+  };
+
+  useEffect(() => {
+    getData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // useEffect(() => {
+  //   getEmployeeLeaveBalanceAndHistory(
+  //     employeeId,
+  //     "LeaveHistory",
+  //     setLeaveHistoryData,
+  //     setLoading,
+  //     setAllData
+  //   );
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [employee?.id]);
+
+  const searchData = (keywords, allData, setRowDto) => {
+    try {
+      const regex = new RegExp(keywords?.toLowerCase());
+      let newDta = allData?.filter((item) =>
+        regex.test(item?.LeaveType?.toLowerCase())
+      );
+      setRowDto(newDta);
+    } catch {
+      setRowDto([]);
+    }
+  };
+  let address = "";
+  if (empLocation?.Result?.length) {
+    address = makeAddress([
+      empLocation?.Result[0]?.strAddressDetails,
+      empLocation?.Result[0]?.strPostOfficeName,
+      empLocation?.Result[0]?.strDistrictName,
+      empLocation?.Result[0]?.strDivisionName,
+    ]);
+  }
+
+  const demoPopupForDelete = (item, values) => {
+    const payload = {
+      partId: 3,
+      leaveApplicationId: item?.intApplicationId,
+      leaveTypeId: item?.LeaveTypeId,
+      employeeId: employeeId,
+      accountId: orgId,
+      businessUnitId: buId,
+      applicationDate: item?.ApplicationDate,
+      appliedFromDate: item?.AppliedFromDate,
+      appliedToDate: item?.AppliedToDate,
+      documentFile: item?.DocumentFileUrl ? item?.DocumentFileUrl : 0,
+      leaveReason: item?.Reason,
+      addressDuetoLeave: item?.AddressDuetoLeave,
+      insertBy: employeeId,
+    };
+
+    const callback = () => {
+      getData(values);
+    };
+    let confirmObject = {
+      closeOnClickOutside: false,
+      message: "Are you want to sure you delete your leave?",
+      yesAlertFunc: () => {
+        createLeaveApplication(payload, setLoading, callback);
+      },
+      noAlertFunc: () => {
+        //   history.push("/components/dialogs")
+      },
+    };
+    IConfirmModal(confirmObject);
+  };
+
+  const columns = (setValues, values) => {
+    return [
+      {
+        title: "SL",
+        render: (text, record, index) => index + 1,
+        sorter: false,
+        filter: false,
+        className: "text-center",
+      },
+      {
+        title: "Leave Type",
+        render: (_, record) => (
+          <div className="d-flex align-items-center ">
+            <LightTooltip
+              title={
+                <div className="movement-tooltip p-2">
+                  <div className="border-bottom">
+                    <p className="tooltip-title">Reason</p>
+                    <p className="tooltip-subTitle">{record?.Reason}</p>
+                  </div>
+                  <div>
+                    <p className="tooltip-title mt-2">Location</p>
+                    <p className="tooltip-subTitle mb-0">
+                      {record?.AddressDuetoLeave}
+                    </p>
+                  </div>
+                </div>
+              }
+              arrow
+            >
+              <InfoOutlinedIcon
+                sx={{ marginRight: "12px", color: "rgba(0,0,0,0.6)" }}
+              />
+            </LightTooltip>
+            <div className="d-flex align-items-center">
+              {record?.LeaveType}
+              <p className="leave-application-document ml-1">
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(
+                      getDownlloadFileView_Action(record?.DocumentFileUrl)
+                    );
+                  }}
+                >
+                  {record?.DocumentFileUrl !== 0 && <Attachment />}
+                </span>
+              </p>
+            </div>
+          </div>
+        ),
+        sorter: false,
+        filter: false,
+      },
+      {
+        title: "From Date",
+        dataIndex: "AppliedFromDate",
+        render: (date) => dateFormatter(date),
+        sorter: false,
+        filter: false,
+      },
+      {
+        title: "To Date",
+        dataIndex: "AppliedToDate",
+        render: (date) => dateFormatter(date),
+        sorter: false,
+        filter: false,
+      },
+      {
+        title: "Application Date",
+        dataIndex: "ApplicationDate",
+        render: (date) => dateFormatter(date),
+        sorter: false,
+        filter: false,
+      },
+      {
+        // className: "text-center",
+        title: "Status",
+        dataIndex: "ApprovalStatus",
+        render: (data, record) => (
+          <div>
+            {data === "Approved" && <Chips label={data} classess="success" />}
+            {data === "Pending" && <Chips label={data} classess="warning" />}
+            {data === "Rejected" && <Chips label={data} classess="danger" />}
+            {data === "Process" && <Chips label={data} classess="primary" />}
+          </div>
+        ),
+        sorter: false,
+        filter: false,
+      },
+      {
+        className: "text-center",
+        render: (data, record) => (
+          <div className="d-flex justify-content-center">
+            {record?.ApprovalStatus === "Pending" && (
+              <Tooltip title="Edit" arrow>
+                <button className="iconButton" type="button">
+                  <EditOutlined
+                    onClick={(e) => {
+                      setIsEdit(true);
+                      e.stopPropagation();
+                      scrollRef.current.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                      setSingleData(record);
+                      setValues({
+                        ...values,
+                        leaveType: {
+                          value: record?.LeaveTypeId,
+                          label: record?.LeaveType,
+                        },
+                        fromDate: dateFormatterForInput(
+                          record?.AppliedFromDate
+                        ),
+                        toDate: dateFormatterForInput(record?.AppliedToDate),
+                        location: record?.AddressDuetoLeave,
+                        reason: record?.Reason,
+                      });
+
+                      setImageFile({ globalFileUrlId: data?.DocumentFileUrl });
+                    }}
+                  />
+                </button>
+              </Tooltip>
+            )}
+
+            {record?.ApprovalStatus === "Pending" && (
+              <Tooltip title="Delete" arrow>
+                <button type="button" className="iconButton">
+                  <DeleteOutlineOutlinedIcon
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSingleData("");
+                      demoPopupForDelete(data, values);
+                    }}
+                  />
+                </button>
+              </Tooltip>
+            )}
+          </div>
+        ),
+      },
+    ];
+  };
+
+
+  return (
+    <>
+      <Formik
+        enableReinitialize={true}
+        initialValues={{ ...initData, location: address ? address : "" }}
+        validationSchema={validationSchema}
+        onSubmit={(values, { setSubmitting, resetForm }) => {
+          saveHandler(values, () => {
+            resetForm(initData);
+          });
+        }}
+      >
+        {({
+          handleSubmit,
+          resetForm,
+          values,
+          setValues,
+          errors,
+          touched,
+          setFieldValue,
+          isValid,
+        }) => (
+          <>
+            {loading && <Loading />}
+            <Form onSubmit={handleSubmit}>
+              <div className="table-card">
+                <div ref={scrollRef} className="table-card-heading pb-1">
+                  <div className="employeeInfo d-flex align-items-center  ml-lg-0 ml-md-4">
+                    {employee?.id ? (
+                      <img
+                        src={
+                          othersEmployee?.[0]?.strProfileImageUrl
+                            ? `${APIUrl}/Document/DownloadFile?id=${othersEmployee?.[0]?.strProfileImageUrl}`
+                            : DemoImg
+                        }
+                        alt="Profile"
+                        style={{
+                          width: "35px",
+                          height: "35px",
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src={
+                          intProfileImageUrl
+                            ? `${APIUrl}/Document/DownloadFile?id=${intProfileImageUrl}`
+                            : DemoImg
+                        }
+                        alt="Profile"
+                        style={{
+                          width: "35px",
+                          height: "35px",
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    )}
+                    <div className="employeeTitle ml-2">
+                      <p className="employeeName">
+                        {employee?.name ? employee?.name : userName}
+                      </p>
+                      <p className="employeePosition">
+                        {othersEmployee?.[0]?.DesignationName}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="table-card-head-right">
+                    <ul>
+                      {(employee || isFilter) && (
+                        <li>
+                          <ResetButton
+                            classes="btn-filter-reset"
+                            title="reset"
+                            icon={
+                              <SettingsBackupRestoreOutlined
+                                sx={{ marginRight: "10px", fontSize: "16px" }}
+                              />
+                            }
+                            styles={{
+                              marginRight: "16px",
+                            }}
+                            onClick={() => {
+                              setIsFilter(false);
+                              setFieldValue("search", "");
+                              getData(values);
+                              resetForm();
+                            }}
+                          />
+                        </li>
+                      )}
+                      {/* <li>
+                        <MasterFilter
+                          isHiddenFilter
+                          width="200px"
+                          inputWidth="200px"
+                          value={values?.search}
+                          setValue={(value) => {
+                            searchData(value, allData, setLeaveHistoryData);
+                            setFieldValue("search", value);
+                          }}
+                          cancelHandler={() => {
+                            getData(values);
+                            setFieldValue("search", "");
+                          }}
+                          handleClick={handleClick}
+                        />
+                      </li> */}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="row justify-content-center">
+                  <div className="col-lg-6 col-md-10">
+                    <LeaveForm
+                      propsObj={{
+                        singleData,
+                        handleSubmit,
+                        initData,
+                        resetForm,
+                        values,
+                        setValues,
+                        errors,
+                        touched,
+                        setFieldValue,
+                        isValid,
+                        imageFile,
+                        setImageFile,
+                        setLeaveHistoryData,
+                        isEdit,
+                        setIsEdit,
+                        setSingleData,
+                        employee,
+                      }}
+                    />
+                  </div>
+                  <div className="col-lg-6 col-md-10 leave-movement-FormCard">
+                    <LeaveBalanceTable
+                      employee={employee}
+                      setAllData={setAllData}
+                      setLoading={setLoading}
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12 my-3">
+                    <div className="table-card-body pl-lg-1 pl-md-3">
+                      <div>
+                        <div className="d-flex align-items-center justify-content-between">
+                          <h2 style={{ color: gray500, fontSize: "14px" }}>
+                            Leave List
+                          </h2>
+                          <MasterFilter
+                            isHiddenFilter
+                            styles={{ marginRight: "0px" }}
+                            width="200px"
+                            inputWidth="200px"
+                            value={values?.search}
+                            setValue={(value) => {
+                              searchData(value, allData, setLeaveHistoryData);
+                              setFieldValue("search", value);
+                            }}
+                            cancelHandler={() => {
+                              getData(values);
+                              setFieldValue("search", "");
+                            }}
+                            handleClick={handleClick}
+                          />
+                        </div>
+
+                        <div className="card-style my-2">
+                          <div className="row">
+                            <div className="col-lg-3">
+                              <div className="input-field-main">
+                                <label>Leave From Date</label>
+                                <DefaultInput
+                                  classes="input-sm"
+                                  value={values?.filterFromDate}
+                                  name="filterFromDate"
+                                  type="date"
+                                  className="form-control"
+                                  onChange={(e) => {
+                                    setFieldValue(
+                                      "filterFromDate",
+                                      e.target.value
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            <div className="col-lg-3">
+                              <div className="input-field-main">
+                                <label>Leave To Date</label>
+                                <DefaultInput
+                                  classes="input-sm"
+                                  value={values?.filterToDate}
+                                  name="filterToDate"
+                                  type="date"
+                                  className="form-control"
+                                  onChange={(e) => {
+                                    setFieldValue(
+                                      "filterToDate",
+                                      e.target.value
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-lg-1">
+                              <button
+                                disabled={
+                                  !values?.filterToDate ||
+                                  !values?.filterFromDate
+                                }
+                                type="button"
+                                style={{ marginTop: "23px" }}
+                                className="btn btn-green"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  getEmployeeLeaveBalanceAndHistoryWithFilter(
+                                    values?.employee?.value
+                                      ? values?.employee?.value
+                                      : employeeId,
+                                    "LeaveHistory",
+                                    "",
+                                    "",
+                                    values?.filterFromDate || "",
+                                    values?.filterToDate || "",
+                                    "",
+                                    setLeaveHistoryData,
+                                    setLoading,
+                                    setAllData
+                                  );
+                                }}
+                              >
+                                View
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        className="table-card-styled table-responsive tableOne mt-2"
+                        style={{ height: "190px" }}
+                      >
+                        {leaveHistoryData?.length > 0 ? (
+                          <AntTable
+                            data={leaveHistoryData}
+                            columnsData={columns(setValues, values)}
+                            onRowClick={(item) => {
+                              setSingleData(item);
+                              setViewModal(true);
+                            }}
+                            removePagination
+                          />
+                        ) : (
+                          <>
+                            {!loading && (
+                              <NoResult title="No Result Found" para="" />
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* View Form Modal */}
+              <ViewFormComponent
+                show={viewModal}
+                title={"Leave Details"}
+                onHide={handleViewClose}
+                size="lg"
+                backdrop="static"
+                classes="default-modal"
+                handleOpen={handleOpen}
+                id={id}
+                orgId={orgId}
+                buId={buId}
+                singleData={singleData}
+                setSingleData={setSingleData}
+                setValues={setValues}
+                values={values}
+                setImageFile={setImageFile}
+                scrollRef={scrollRef}
+                setLeaveHistoryData={setLeaveHistoryData}
+                setIsEdit={setIsEdit}
+                employee={employee}
+                setAllData={setAllData}
+              />
+              <PopOverFilter
+                propsObj={{
+                  id,
+                  open,
+                  anchorEl,
+                  handleClose,
+                  setEmployee,
+                  setLeaveHistoryData,
+                  setLoading,
+                  setIsFilter,
+                }}
+                masterFilterHandler={handleClick}
+              />
+            </Form>
+          </>
+        )}
+      </Formik>
+    </>
+  );
+}
+export default LeaveApplication;

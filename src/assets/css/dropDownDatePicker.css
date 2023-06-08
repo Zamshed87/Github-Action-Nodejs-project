@@ -1,0 +1,38 @@
+#dropdown-date {
+    display        : flex !important;
+    justify-content: space-between !important;
+}
+
+#dropdown-year,
+#dropdown-month,
+#dropdown-day {
+    width: 80%;
+}
+
+
+
+#dropdown-year select,
+#dropdown-month select,
+#dropdown-day select {
+    height       : 50px !important;
+    width        : 100%;
+    background   : #FFFFFF;
+    border       : 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing   : border-box;
+    border-radius: 4px;
+}
+
+/* #dropdown-month select {
+    height          : 80px !important;
+    background-color: green;
+    margin          : 20px;
+    border-radius   : 10px;
+}
+
+#dropdown-day select {
+    height          : 50px !important;
+    width           : 200px;
+    background-color: yellow;
+    margin          : 20px;
+    border-radius   : 10px;
+} */

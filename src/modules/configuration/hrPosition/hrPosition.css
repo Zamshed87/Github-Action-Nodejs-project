@@ -1,0 +1,118 @@
+.modal-dialog .modal-content {
+  background-color: #fff;
+  border-radius: 4px;
+}
+.modal-dialog .modal-content .modal-body {
+  padding: 0;
+}
+/* // hr position header part style start  */
+
+/* // disable bootstrap difault column gap */
+
+/* .hr-position-main .container-hr-position .row-hr-position .col-md-10 {
+  padding: 0;
+}
+
+.hr-position-main .form-hr-position-main .container-hr-position .row-hr-position .table-card {
+  padding: 30px 32px 0 25px;
+} */
+@media (max-width: 500px) {
+  .container-hr-position .table-card {
+    overflow-x: auto;
+  }
+}
+
+.container-hr-position .table-card .table-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.container-hr-position .table-card .table-card-header .btn-download {
+  border: transparent;
+  width: 40px;
+  height: 40px;
+  background: #f2f2f7;
+  border-radius: 100px;
+}
+
+.container-hr-position .table-card .table-card-header .btn-download:focus {
+  outline: none;
+}
+
+.table-card-header .table-card-head-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-grow: 1;
+}
+
+.table-card-head-right .src-input-box .form-container {
+  margin-bottom: 0;
+}
+
+.table-card-head-right .src-input-box {
+  width: 30%;
+}
+
+@media (max-width: 800px) {
+  .table-card-head-right .src-input-box {
+    width: 50%;
+  }
+}
+
+.table-card-head-right .src-input-box .search-input {
+  width: 100%;
+}
+
+.table-card-head-right .btn-department {
+  margin-left: 24px;
+}
+
+/* // hr position header part style end  */
+
+/* hr position table card style start */
+
+.container-hr-position .row-hr-position .table-card-body {
+  margin: 0;
+}
+
+.table-card-body .table-thead {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 30px 0 5px 0;
+}
+
+.table-card-body .table-thead .table-th {
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+}
+
+.table-card-body {
+  width: 100%;
+}
+
+.table-card-body .table-tbody .row-table-single-item {
+  margin: 10px 0 0 0;
+  padding: 20px 0 20px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  transition: 0.3s;
+  justify-content: space-between;
+}
+
+.table-card-body .table-tbody .row-table-single-item:first-child {
+  margin: 8px 0 0 0;
+}
+
+.table-card-body .table-tbody .row-table-single-item:hover {
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+}
+
+/* hr position table card style end */

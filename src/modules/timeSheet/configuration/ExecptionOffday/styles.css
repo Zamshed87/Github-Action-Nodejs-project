@@ -1,0 +1,120 @@
+/* holiday styles start */
+
+/* // exception-offday table header start */
+.execption-offday-main .table-card .table-card-body table th small {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+}
+.execption-offday-main .table-card .table-card-body table th {
+  color: rgba(0, 0, 0, 0.6);
+}
+.execption-offday-main .table-card .table-card-body table th:first-child {
+  width: 40%;
+  padding-left: 44px;
+}
+.execption-offday-main .table-card .table-card-body table th:nth-child(2) {
+  width: 40%;
+}
+.execption-offday-main .table-card .table-card-body table th:last-child {
+  width: 20%;
+}
+.execption-offday-main .table-card .table-card-body table thead th:hover {
+  cursor: pointer;
+}
+/*  exception-offday table header end <== */
+
+/* ==> exception-offday table body start */
+.execption-offday-main .table-card .table-card-body table tbody td:first-child {
+  padding-left: 44px;
+  width: 40%;
+}
+.execption-offday-main .table-card .table-card-body table tbody td:nth-child(2) {
+  width: 40%;
+}
+.execption-offday-main .table-card .table-card-body table tbody td:last-child {
+  width: 20%;
+}
+.execption-offday-main .table-card .table-card-body table tbody td .noOfDay-item {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.execption-offday-main .table-card .table-card-body table tbody td .noOfDay-item .hovered-copy-icon {
+  margin-right: 50px;
+}
+/*  exception-offday table body end <== */
+
+/* holiday styles end */
+
+/* ==> holiday Group modal style start */
+
+.ExecptionOffdayModal .modalBody {
+  padding-top: 18px;
+  padding-bottom: 16px;
+  padding-left: 25px;
+  padding-right: 25px;
+  height: 250px;
+}
+.ExecptionOffdayModal .modalBody p {
+  font-size: 14px;
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.4);
+  padding-bottom: 0px;
+}
+.ExecptionOffdayModal .modalBody label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.ExecptionOffdayModal .modalBody .form-container {
+  margin-bottom: 20px;
+}
+.ExecptionOffdayModal .modalFooter {
+  padding-right: 25px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: right;
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@media (max-width: 575.98px) {
+  .ExecptionOffdayModal {
+    position: relative;
+    top: 22%;
+  }
+}
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .ExecptionOffdayModal {
+    position: relative;
+    top: 22%;
+  }
+}
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .ExecptionOffdayModal {
+    position: relative;
+    top: 22%;
+  }
+}
+/* ==> holiday Group modal style end */
+
+/* modal header margin bottom */
+.modal-header {
+  margin-bottom: 0.5rem;
+}
+
+.exception-checkbox .MuiCheckbox-root .MuiSvgIcon-root {
+  height: 18px !important;
+  width : 18px !important;
+}
+
+.exception-checkbox .css-j204z7-MuiFormControlLabel-root{
+  margin-right: 0px;
+}
