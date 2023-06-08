@@ -154,6 +154,8 @@ const PopoverDropdown = ({
     setCurrentHeaderListSelection(checkedHeaderList);
   }, [checkedHeaderList]);
 
+  console.log({ anchorEl });
+
   return (
     <Popover
       sx={{
