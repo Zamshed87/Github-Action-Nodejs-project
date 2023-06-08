@@ -4,7 +4,7 @@ import {
   ArrowDropDown,
   ArrowDropUp,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { MenuItem, Select } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -56,7 +56,7 @@ function HRPosition() {
   const [viewOrder, setViewOrder] = useState("desc");
   const [positionViewOrder, setPositionViewOrder] = useState("desc");
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
 
   //  Form modal hide show  func
   const [isFormModal, setIsFormModal] = useState(false);
@@ -224,7 +224,7 @@ function HRPosition() {
                     </ul>
                   </div>
                   <div className="table-card-body">
-                    <div className="table-card-styled">
+                    <div className="table-card-styled tableOne">
                       {rowDto?.length > 0 ? (
                         <>
                           <table className="table">
@@ -287,9 +287,9 @@ function HRPosition() {
                                         <Select
                                           sx={{
                                             "& .MuiOutlinedInput-notchedOutline":
-                                            {
-                                              border: "none !important",
-                                            },
+                                              {
+                                                border: "none !important",
+                                              },
                                             "& .MuiSelect-select": {
                                               paddingRight: "22px !important",
                                               marginTop: "-15px",

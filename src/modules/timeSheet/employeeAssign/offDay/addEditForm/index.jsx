@@ -66,7 +66,7 @@ export default function AddEditFormComponent({
               resetForm(initData);
               setFieldValueParent("search", "");
               setIsMulti(false);
-              getData("saved");
+              getData();
             },
           };
           offDayAssignCrud(obj);
