@@ -13,7 +13,7 @@ export const getSingleCalendar = async (
   monthId,
   yearId,
   empId,
-  setCalendarData, 
+  setCalendarData,
   setLoading
 ) => {
   setLoading(true);
@@ -41,162 +41,48 @@ export const offDayAssignDtoCol = (
   setEmpId,
   setSingleData,
   setIsMulti,
-  checked,
-  setChecked,
-  isAlreadyPresent,
-  setLanding,
-  resLanding,
+  checkedList,
+  setCheckedList,
+  // isAlreadyPresent,
+  // filterLanding,
+  // setFilterLanding,
+  setRowDto,
+  rowDto,
   setSelectedSingleEmployee,
   setAnchorEl,
   setCalendarData,
   setLoading,
-  loading
+  loading,
+  headerList,
+  wgName
 ) => {
+  console.log({ headerList });
   return [
     {
       title: "SL",
-      render: (text, record, index) => {
-        return (
-          <span>
-            {pages?.current === 1
-              ? index + 1
-              : (pages.current - 1) * pages?.pageSize + (index + 1)}
-          </span>
-        );
-      },
-      sorter: false,
+      render: (_, index) => (pages?.current - 1) * pages?.pageSize + index + 1,
+      sort: false,
       filter: false,
       className: "text-center",
     },
     {
-      width: "10px",
-      title: () => (
-        <FormikCheckBox
-          styleObj={{
-            margin: "0 auto!important",
-            padding: "0 !important",
-            color: gray900,
-            checkedColor: greenColor,
-          }}
-          name="allSelected"
-          checked={
-            resLanding?.length > 0
-              ? resLanding?.every((item) => item?.selectCheckbox)
-              : false
-          }
-          onChange={(e) => {
-            // let data = filterLanding.map((item) => ({
-            //   // 10
-            //   ...item,
-            //   selectCheckbox: e.target.checked,
-            // }));
-            // let data2 = resLanding.map((item) => ({
-            //   // 100
-            //   ...item,
-            //   selectCheckbox: e.target.checked,
-            // }));
-            // setFilterLanding(data);
-            // setLanding(data2);
-            let temp = [...checked];
-            let data = resLanding?.map((item) => {
-              const newItem = {
-                ...item,
-                selectCheckbox: e.target.checked,
-              };
-
-              if (!e.target.checked) {
-                const updatedChecked = temp.filter(
-                  (ele) => ele.EmployeeId !== item.EmployeeId
-                );
-                temp = [...updatedChecked];
-                setChecked(updatedChecked);
-              } else if (isAlreadyPresent(item) === -1) {
-                setChecked((prev) => [...prev, newItem]);
-              }
-
-              return newItem;
-            });
-            setLanding(data);
-          }}
-        />
-      ),
-      dataIndex: "EmployeeCode",
-      render: (_, record, index) => (
-        <div>
-          <FormikCheckBox
-            styleObj={{
-              margin: "0 auto!important",
-              color: gray900,
-              checkedColor: greenColor,
-              padding: "0px",
-            }}
-            name="selectCheckbox"
-            color={greenColor}
-            checked={record?.selectCheckbox}
-            onChange={(e) => {
-              // let data = filterLanding?.map((item) => {
-              //   if (item?.EmployeeId === record?.EmployeeId) {
-              //     return {
-              //       ...item,
-              //       selectCheckbox: e.target.checked,
-              //     };
-              //   } else return item;
-              // });
-              // let data2 = resLanding?.map((item) => {
-              //   if (item?.EmployeeId === record?.EmployeeId) {
-              //     return {
-              //       ...item,
-              //       selectCheckbox: e.target.checked,
-              //     };
-              //   } else return item;
-              // });
-              // setFilterLanding(data);
-              // setLanding(data2);
-              let data = resLanding?.map((item) => {
-                if (item?.EmployeeId === record?.EmployeeId) {
-                  const idx = isAlreadyPresent(item);
-                  if (idx >= 0) {
-                    let updatedChecked = [...checked];
-                    updatedChecked.splice(idx, 1);
-                    setChecked(updatedChecked);
-                  } else {
-                    setChecked((prev) => [
-                      ...prev,
-                      { ...item, selectCheckbox: true },
-                    ]);
-                  }
-                  return { ...item, selectCheckbox: !item?.selectCheckbox };
-                } else return item;
-              });
-              setLanding(data);
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      title: () => (
-        <div>
-          <span style={{ marginLeft: "5px" }}>Code</span>
-        </div>
-      ),
-      dataIndex: "EmployeeCode",
-      render: (_, record, index) => (
-        <div>
-          <span style={{ marginLeft: "5px" }}>{record?.EmployeeCode}</span>
-        </div>
-      ),
-      filter: true,
-      sorter: true,
-      isNumber: true,
+      title: "Code",
+      dataIndex: "employeeCode",
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Employee",
-      dataIndex: "EmployeeName",
-      render: (EmployeeName, record) => (
+      dataIndex: "",
+      render: (record) => (
         <div className="d-flex align-items-center">
-          <AvatarComponent classess="" letterCount={1} label={EmployeeName} />
-          <span className="ml-2">{EmployeeName}</span>
+          <AvatarComponent
+            classess=""
+            letterCount={1}
+            label={record?.employeeName}
+          />
+          <span className="ml-2">{record?.employeeName}</span>
           <InfoOutlined
             className="ml-2"
             sx={{ cursor: "pointer" }}
@@ -205,7 +91,7 @@ export const offDayAssignDtoCol = (
               getSingleCalendar(
                 moment().format("MM"),
                 moment().format("YYYY"),
-                record?.EmployeeId,
+                record?.employeeId,
                 setCalendarData,
                 setLoading
               );
@@ -215,35 +101,96 @@ export const offDayAssignDtoCol = (
           />
         </div>
       ),
-      sorter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+      sort: true,
       filter: true,
+      filterDropDownList: headerList[`departmentList`],
+      fieldType: "string",
     },
     {
       title: "Designation",
-      dataIndex: "DesignationName",
-      sorter: true,
+      dataIndex: "designation",
+      sort: true,
       filter: true,
-      onReset: (e) => {},
+      filterDropDownList: headerList[`designationList`],
+      fieldType: "string",
     },
     {
-      title: "Workplace",
-      dataIndex: "WorkplaceName",
-      sorter: true,
+      title: "Wing",
+      dataIndex: "wingName",
+      sort: true,
       filter: true,
+      filterDropDownList: headerList[`wingNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Sole Depo",
+      dataIndex: "soleDepoName",
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`soleDepoNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Region",
+      dataIndex: "regionName",
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`regionNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Area",
+      dataIndex: "areaName",
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`areaNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Territory",
+      dataIndex: "territoryName",
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`territoryNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "workplaceGroupName",
+      sort: true,
+      fieldType: "string",
     },
     {
       title: "Supervisor",
-      dataIndex: "SupervisorName",
-      sorter: true,
+      dataIndex: "supervisorName",
+      sort: true,
       filter: true,
+      filterDropDownList: headerList[`supervisorNameList`],
+      fieldType: "string",
     },
     {
       title: "Off Day",
       dataIndex: "offDayList",
     },
     {
+      title: "",
+      dataIndex: "",
+
       className: "text-center",
-      render: (_, record) => (
+
+      render: (record) => (
         <>
           {record?.offDay ? (
             <Tooltip title="Edit" arrow>
@@ -254,7 +201,7 @@ export const offDayAssignDtoCol = (
                     if (!permission?.isEdit)
                       return toast.warn("You don't have permission");
                     updateSingleData(record);
-                    setEmpId(record?.EmployeeId);
+                    setEmpId(record?.employeeId);
                     setCreateModal(true);
                   }}
                 />
@@ -268,6 +215,7 @@ export const offDayAssignDtoCol = (
                 fontSize: "12px",
                 padding: "0px 12px",
               }}
+              disabled={checkedList.length > 1}
               onClick={(e) => {
                 if (!permission?.isCreate)
                   return toast.warn("You don't have permission");
@@ -285,7 +233,7 @@ export const offDayAssignDtoCol = (
         </>
       ),
     },
-  ];
+  ].filter((item) => !item.hidden);
 };
 
 const printDays = (item) => {
@@ -403,10 +351,10 @@ export const offDayAssignCrud = async (obj) => {
 
     if (isMulti) {
       offDayLanding?.forEach((item) => {
-        if (item?.selectCheckbox) {
+        if (item?.isSelected) {
           payload.push({
             ...values,
-            employeeId: item?.EmployeeId,
+            employeeId: item?.employeeId,
             ...commonObj,
             employeeOffdayAssignId: item?.intEmployeeOffdayAssignId,
           });
@@ -416,7 +364,7 @@ export const offDayAssignCrud = async (obj) => {
       payload = [
         {
           ...values,
-          employeeId: singleData?.EmployeeId,
+          employeeId: singleData?.employeeId,
           ...commonObj,
           employeeOffdayAssignId: singleData?.intEmployeeOffdayAssignId || 0,
         },

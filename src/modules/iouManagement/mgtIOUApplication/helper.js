@@ -41,7 +41,9 @@ export const saveIOUApplication = async (payload, setLoading, cb) => {
     toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading && setLoading(false);
   }
-};
+}; 
+
+
 
 export const getAllIOULanding = async (
   partType = "",

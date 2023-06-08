@@ -19,15 +19,15 @@ export const salaryAdviceExcelData = (tableRow) => {
   newArr = tableRow.map((itm, index) => {
     return {
       sl: index + 1,
-      Reason: itm?.reason || " ",
-      BankAccountNumber: itm?.bankAccountNumber || " ",
-      strRoutingNumber: itm?.routingNumber || " ",
-      strAccountNo: itm?.accountNo || " ",
-      AccType: itm?.accType || " ",
+      Reason: itm?.Reason || " ",
+      BankAccountNumber: itm?.BankAccountNumber || " ",
+      strRoutingNumber: itm?.strRoutingNumber || " ",
+      strAccountNo: itm?.strAccountNo || " ",
+      AccType: itm?.AccType || " ",
       numNetPayable: numberWithCommas(itm?.numNetPayable) || " ",
-      strEmployeeCode: itm?.employeeCode || " ",
-      strAccountName: itm?.accountName || " ",
-      AdviceType: itm?.adviceType || " ",
+      strEmployeeCode: itm?.strEmployeeCode || " ",
+      strAccountName: itm?.strAccountName || " ",
+      AdviceType: itm?.AdviceType || " ",
     };
   });
 
@@ -75,6 +75,12 @@ const salaryAdviceExcelWorkSheetTotal = (
   total.eachCell((cell) => {
     cell.alignment = { horizontal: "right" };
     cell.font = { bold: true };
+    // cell.border = {
+    //   top: { style: "thin", color: { argb: "00000000" } },
+    //   left: { style: "thin", color: { argb: "00000000" } },
+    //   bottom: { style: "thin", color: { argb: "00000000" } },
+    //   right: { style: "thin", color: { argb: "00000000" } },
+    // };
   });
 
   amountCellArr.forEach((cell) => {

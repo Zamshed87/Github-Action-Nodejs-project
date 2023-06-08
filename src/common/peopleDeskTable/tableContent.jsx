@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import AllSelect from "./allSelect";
-import { sortDataList } from "./helper";
+import { sortDataList, uuid } from "./helper";
 import {
   gray300,
   gray50,
@@ -83,7 +83,7 @@ const TableContent = ({
           {columnData?.map((data, index) => {
             return (
               <Fragment>
-                {/* {isCheckBox && index === 1 && (
+                {isCheckBox && index === 1 && (
                   <th style={{ width: "15px" }} key={uuid()}>
                     <AllSelect
                       rowDto={rowDto}
@@ -93,7 +93,7 @@ const TableContent = ({
                       uniqueKey={uniqueKey}
                     />
                   </th>
-                )} */}
+                )}
                 <th
                   style={{
                     minWidth: `${data?.width}px`,
@@ -132,23 +132,10 @@ const TableContent = ({
                       cursor: `${data?.sort ? "pointer" : "default"}`,
                     }}
                   >
-                    <div className="d-flex">
-                      {isCheckBox && index === 1 && (
-                        <AllSelect
-                          rowDto={rowDto}
-                          setRowDto={setRowDto}
-                          checkedList={checkedList}
-                          setCheckedList={setCheckedList}
-                          uniqueKey={uniqueKey}
-                        />
-                      )}
-                      <div
-                        className={`${data?.className ? data?.className : ""} ${
-                          isCheckBox && index === 1 ? "ml-2" : "ml-0"
-                        }`}
-                      >
-                        {data?.title}
-                      </div>
+                    <div
+                      className={`${data?.className ? data?.className : ""}`}
+                    >
+                      {data?.title}
                     </div>
 
                     <div
@@ -210,6 +197,7 @@ const TableContent = ({
                             }}
                             onClick={(e) => {
                               e.stopPropagation();
+
                               setCurrentFilterSelection(index);
                               setAnchorEl(e.currentTarget);
                             }}
@@ -236,15 +224,15 @@ const TableContent = ({
               onClick={() => {
                 if (typeof onRowClick === "function") onRowClick(rowDto[index]);
               }}
-              // key={uuid()}
+              key={uuid()}
             >
               {columnData?.map((columnItem, index1) => {
                 return (
-                  <Fragment>
-                    {/* {isCheckBox && index1 === 1 && (
+                  <Fragment key={uuid()}>
+                    {isCheckBox && index1 === 1 && (
                       <td
                         style={{
-                          width: `15px`,
+                          width: `${columnItem?.width}px`,
                           padding: "0px 3px",
                         }}
                         key={uuid()}
@@ -258,7 +246,7 @@ const TableContent = ({
                           uniqueKey={uniqueKey}
                         />
                       </td>
-                    )} */}
+                    )}
                     <td
                       style={{
                         width: `${columnItem?.width}px`,
@@ -270,28 +258,14 @@ const TableContent = ({
                             : ""
                         }`,
                       }}
-                      // key={uuid()}
+                      key={uuid()}
                     >
-                      <div className="d-flex">
-                        {isCheckBox && index1 === 1 && (
-                          <SingleSelect
-                            index={index}
-                            rowDto={rowDto}
-                            setRowDto={setRowDto}
-                            checkedList={checkedList}
-                            setCheckedList={setCheckedList}
-                            uniqueKey={uniqueKey}
-                          />
-                        )}
-                        <div
-                          className={`content tableBody-title ${
-                            columnItem?.className
-                          } ${isCheckBox && index1 === 1 ? "ml-2" : "ml-0"}`}
-                        >
-                          {columnItem?.render
-                            ? columnItem.render(rowDto[index], index)
-                            : rowDto[index][columnItem.dataIndex]}
-                        </div>
+                      <div
+                        className={`content tableBody-title ${columnItem?.className}`}
+                      >
+                        {columnItem?.render
+                          ? columnItem.render(rowDto[index], index)
+                          : rowDto[index][columnItem.dataIndex]}
                       </div>
                     </td>
                   </Fragment>

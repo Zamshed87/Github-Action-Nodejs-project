@@ -33,7 +33,7 @@ const CommonAppPipeline = () => {
   );
   // const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   const [openModal, setOpenModal] = useState(false);
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
   const [loading, setLoading] = useState(false);
   const [landing, setLanding] = useState([]);
   const [rowDto, getRowDto, apiLoading, setRowDto] = useAxiosGet();
@@ -113,7 +113,6 @@ const CommonAppPipeline = () => {
   console.log({ permission });
   return (
     <>
-      hello
       <Formik
         enableReinitialize={true}
         initialValues={initData}
@@ -186,49 +185,51 @@ const CommonAppPipeline = () => {
                     </div>
                   </div>
                   <div className="table-card-body">
-                    {landing?.length > 0 ? (
-                      <PeopleDeskTable
-                        columnData={pipleLineColumn(
-                          pages?.current,
-                          pages?.pageSize,
-                          wgName,
-                          setOpenModal,
-                          setSingleData,
-                          permission
-                        )}
-                        pages={pages}
-                        rowDto={landing}
-                        setRowDto={setLanding}
-                        handleChangePage={(e, newPage) =>
-                          handleChangePage(e, newPage, values?.searchString)
-                        }
-                        handleChangeRowsPerPage={(e) =>
-                          handleChangeRowsPerPage(e, values?.searchString)
-                        }
-                        uniqueKey="intPipelineHeaderId"
-                        // getFilteredData={() => {
-                        //   getData(
-                        //     {
-                        //       current: 1,
-                        //       pageSize: paginationSize,
-                        //       total: 0,
-                        //     },
-                        //     ""
-                        //   );
-                        // }}
-                        isCheckBox={false}
-                        isScrollAble={false}
-                      />
-                    ) : (
-                      <NoResult />
-                      // <h2>1st</h2>
-                    )}
-                    {/* <CardTable
+                    <div className="table-card-styled tableOne">
+                      {landing?.length > 0 ? (
+                        <PeopleDeskTable
+                          columnData={pipleLineColumn(
+                            pages?.current,
+                            pages?.pageSize,
+                            wgName,
+                            setOpenModal,
+                            setSingleData,
+                            permission
+                          )}
+                          pages={pages}
+                          rowDto={landing}
+                          setRowDto={setLanding}
+                          handleChangePage={(e, newPage) =>
+                            handleChangePage(e, newPage, values?.searchString)
+                          }
+                          handleChangeRowsPerPage={(e) =>
+                            handleChangeRowsPerPage(e, values?.searchString)
+                          }
+                          uniqueKey="intPipelineHeaderId"
+                          // getFilteredData={() => {
+                          //   getData(
+                          //     {
+                          //       current: 1,
+                          //       pageSize: paginationSize,
+                          //       total: 0,
+                          //     },
+                          //     ""
+                          //   );
+                          // }}
+                          isCheckBox={false}
+                          isScrollAble={false}
+                        />
+                      ) : (
+                        <NoResult />
+                        // <h2>1st</h2>
+                      )}
+                      {/* <CardTable
                       landing={rowDto}
                       setOpenModal={setOpenModal}
                       setSingleData={setSingleData}
                       permission={permission}
                     /> */}
+                    </div>
                   </div>
                 </div>
               ) : (

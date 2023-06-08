@@ -77,6 +77,7 @@ const withLeaveApplication = (WrappedComponent) => {
         leaveReason: item?.Reason,
         addressDuetoLeave: item?.AddressDuetoLeave,
         insertBy: employeeId,
+        workplaceGroupId: wgId,
       };
 
       const callback = () => {
@@ -118,6 +119,7 @@ const withLeaveApplication = (WrappedComponent) => {
         leaveReason: values?.reason,
         addressDuetoLeave: values?.location,
         insertBy: employeeId,
+        workplaceGroupId: wgId,
       };
       let confirmObject = {
         closeOnClickOutside: false,

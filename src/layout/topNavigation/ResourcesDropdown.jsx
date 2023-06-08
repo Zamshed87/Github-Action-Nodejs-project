@@ -4,12 +4,7 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import {
-  getBuDDLAction,
-  getWGDDLAction,
-  updateBuAction,
-  updateWgAction,
-} from "../../commonRedux/auth/actions";
+import { getBuDDLAction, getWGDDLAction, updateBuAction, updateWgAction } from "../../commonRedux/auth/actions";
 
 const style = {
   marginTop: "3px",
@@ -46,10 +41,7 @@ export default function ResourcesDropdown() {
     shallowEqual
   );
 
-  const { businessUnitDDL, workplaceGroupDDL } = useSelector(
-    (state) => state?.auth,
-    shallowEqual
-  );
+  const { businessUnitDDL, workplaceGroupDDL } = useSelector((state) => state?.auth, shallowEqual);
 
   const dispatch = useDispatch();
 
@@ -95,6 +87,7 @@ export default function ResourcesDropdown() {
 
   return (
     <div className="d-flex">
+
       <FormControl sx={style}>
         <Select
           value={buId}
@@ -124,6 +117,8 @@ export default function ResourcesDropdown() {
           ))}
         </Select>
       </FormControl>
+
+
     </div>
   );
 }

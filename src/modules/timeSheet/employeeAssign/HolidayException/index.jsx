@@ -6,8 +6,11 @@ import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ViewModal from "../../../../common/ViewModal";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
+import CardTable from "./components/CardTable";
 import HolidayExceptionModal from "./components/HolidayExceptionModal";
 import "./holidayException.css";
+import { paginationSize } from "../../../../common/AntTable";
 import ResetButton from "../../../../common/ResetButton";
 import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import MasterFilter from "../../../../common/MasterFilter";
@@ -16,9 +19,7 @@ import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../../common/peopleDeskTable";
+import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import { columns } from "./helper";
 import NoResult from "../../../../common/NoResult";
 
@@ -28,7 +29,7 @@ const initData = {
 };
 
 const HolidayException = () => {
-  const { buId, wgId, wgName } = useSelector(
+  const { orgId, buId, wgId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -39,6 +40,8 @@ const HolidayException = () => {
   const [isMulti, setIsMulti] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [rowDto, setRowDto] = useState([]);
+  // const [holidayExceptionDto, setHolidayExceptionDto] = useState([]);
+  // const [checked, setChecked] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -113,6 +116,7 @@ const HolidayException = () => {
         ...payload,
         ...modifiedPayload,
       });
+      console.log({ res });
       if (res?.data?.data) {
         setLandingLoading(true);
 
@@ -174,11 +178,61 @@ const HolidayException = () => {
       checkedHeaderList
     );
   };
+  // const getData = (pagination, srcText, status = "") => {
+  //   const payload = {
+  //     departmentId: 0,
+  //     designationId: 0,
+  //     supervisorId: 0,
+  //     employmentTypeId: 0,
+  //     employeeId: 0,
+  //     workplaceGroupId: wgId,
+  //     accountId: orgId,
+  //     businessUnitId: buId,
+  //     isNotAssign: false,
+  //     pageNo: pagination?.current,
+  //     pageSize: pagination?.pageSize,
+  //     searchText: srcText || "",
+  //   };
+  //   getHolidayLanding(`/Employee/HolidayNExceptionFilter`, payload, (res) => {
+  //     setPages({
+  //       ...pages,
+  //       current: pagination.current,
+  //       pageSize: pagination.pageSize,
+  //       total: res?.[0]?.totalCount,
+  //     });
+
+  //     const newData = res.map((item) => ({
+  //       ...item,
+  //       selectCheckbox:
+  //         status !== "saved" &&
+  //         checked.length > 0 &&
+  //         isAlreadyPresent(item) >= 0,
+  //     }));
+
+  //     setHolidayLanding(newData);
+  //   });
+  // };
+
+  // const handleTableChange = ({ pagination, newRowDto }) => {
+  //   if (newRowDto?.action === "filter") {
+  //     return;
+  //   }
+  //   if (
+  //     pages?.current === pagination?.current &&
+  //     pages?.pageSize !== pagination?.pageSize
+  //   ) {
+  //     return getData(pagination, "");
+  //   }
+  //   if (pages?.current !== pagination?.current) {
+  //     return getData(pagination, "");
+  //   }
+  // };
 
   useEffect(() => {
     getData(pages);
-    // eslint-disable-next-line
-  }, [wgId, pages]);
+    // setChecked([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wgId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -188,6 +242,11 @@ const HolidayException = () => {
       permission = item;
     }
   });
+  console.log({ rowDto });
+  console.log({ landingLoading });
+  console.log({ checkedList });
+
+  console.log("Rendered!!");
 
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {
