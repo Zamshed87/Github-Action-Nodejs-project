@@ -152,6 +152,8 @@ export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
       value: itm[value],
       label: itm[label],
     }));
+
+    console.log(newDDL);
     setter(newDDL);
     cb && cb();
   } catch (error) {}

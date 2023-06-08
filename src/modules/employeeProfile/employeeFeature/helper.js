@@ -468,14 +468,14 @@ export const empListColumn = (
     },
     {
       title: "Pin Number",
-      dataIndex: "pinNo",
+      dataIndex: "PinNo",
       sort: true,
       filter: false,
       fieldType: "string",
     },
     {
       title: "Contact No",
-      dataIndex: "contactNo",
+      dataIndex: "ContactNo",
       sort: true,
       filter: false,
       fieldType: "string",
