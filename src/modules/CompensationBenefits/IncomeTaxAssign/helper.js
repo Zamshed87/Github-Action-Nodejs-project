@@ -4,12 +4,10 @@ import { toast } from "react-toastify";
 export const getTaxAssignLanding = async (
   buId,
   orgId,
-  pages,
   values,
   setter,
-  setPages,
   setLoading,
-  searchText = ""
+  setAllData
 ) => {
   setLoading && setLoading(true);
   try {
@@ -18,21 +16,10 @@ export const getTaxAssignLanding = async (
         values?.workplaceGroup?.value || 0
       }&IntWorkplaceId=${values?.workplace?.value || 0}&IntEmployeeId=${
         values?.employee?.value || 0
-      }&searchTxt=${searchText}&PageNo=${pages?.current}&PageSize=${
-        pages?.pageSize
       }`
-      // `/Employee/GetAllEmployeeForTaxAssign?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
-      //   values?.workplaceGroup?.value || 0
-      // }&IntWorkplaceId=${values?.workplace?.value || 0}&IntEmployeeId=${
-      //   values?.employee?.value || 0
-      // }`
     );
-    setter?.(res?.data?.data);
-    setPages?.({
-      current: res?.data?.currentPage,
-      total: res?.data?.totalCount,
-      pageSize: res?.data?.pageSize,
-    });
+    setter(res?.data);
+    setAllData(res?.data);
     setLoading && setLoading(false);
   } catch (error) {
     setLoading && setLoading(false);
@@ -50,91 +37,4 @@ export const createTaxAssign = async (payload, setLoading, cb) => {
     toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading && setLoading(false);
   }
-};
-
-export const incomeTaxColumnData = (
-  page,
-  paginationSize,
-  rowDtoHandler,
-  errors,
-  touched
-) => {
-  return [
-    {
-      title: "SL",
-      render: (_, index) => (page - 1) * paginationSize + index + 1,
-      sort: false,
-      filter: false,
-      className: "text-center",
-    },
-    {
-      title: "Employee Code",
-      dataIndex: "employeeCode",
-      width: 130,
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "employeeName",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-    {
-      title: "Designation",
-      dataIndex: "strDesignation",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-    {
-      title: "Take-Home Pay",
-      dataIndex: "isTakeHomePay",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-    {
-      title: "Gross Salary",
-      dataIndex: "numGrossSalary",
-      sort: true,
-      filter: false,
-      fieldType: "number",
-    },
-    {
-      title: "Tax Amount",
-      dataIndex: "numTaxAmount",
-      render: (record, index) => (
-        <div className="input-field-main pl-2" style={{ height: "25px" }}>
-          <input
-            style={{
-              height: "25px",
-              width: "140px",
-              fontSize: "12px",
-            }}
-            className="form-control text-right"
-            value={record?.numTaxAmount}
-            name={record?.numTaxAmount}
-            placeholder=" "
-            type="number"
-            onChange={(e) => {
-              rowDtoHandler("numTaxAmount", index, e.target.value);
-            }}
-            required
-            errors={errors}
-            touched={touched}
-          />
-        </div>
-      ),
-    },
-  ];
 };

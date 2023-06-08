@@ -5,26 +5,33 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loading from "../../../../common/loading/Loading";
-import AntTable, { paginationSize } from "../../../../common/AntTable";
+// import AntTable, { paginationSize } from "../../../../common/AntTable";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 import AddEditFormComponent from "./addEditForm";
-import { getOffDayLandingHandler, offDayAssignDtoCol } from "./helper";
+import { offDayAssignDtoCol } from "./helper";
 import "./offday.css";
 import MasterFilter from "../../../../common/MasterFilter";
 import { Popover } from "@mui/material";
 import profileImg from "../../../../assets/images/profile.jpg";
 import PopoverCalender from "../monthlyOffdayAssign/components/PopoverCalender";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "../../../../common/peopleDeskTable/helper";
+import axios from "axios";
 
 const initData = {
   search: "",
 };
 
 function OffDay() {
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -51,43 +58,152 @@ function OffDay() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
   }, []);
-  const [resLanding, getLanding, loadingLanding, setLanding] = useAxiosPost();
-  const [checked, setChecked] = useState([]);
+  // const [resLanding, getLanding, loadingLanding, setLanding] = useAxiosPost();
+  // const [checked, setChecked] = useState([]);
 
-  const isAlreadyPresent = (obj) => {
-    for (let i = 0; i < checked.length; i++) {
-      if (checked[i].EmployeeCode === obj.EmployeeCode) {
-        return i;
-      }
-    }
-    return -1;
+  // const isAlreadyPresent = (obj) => {
+  //   for (let i = 0; i < checked.length; i++) {
+  //     if (checked[i].EmployeeCode === obj.EmployeeCode) {
+  //       return i;
+  //     }
+  //   }
+  //   return -1;
+  // };
+
+  // const getData = (pagination, srcText, status = "") => {
+  //   getOffDayLandingHandler(
+  //     buId,
+  //     orgId,
+  //     wgId,
+  //     getLanding,
+  //     setLanding,
+  //     pagination,
+  //     setPages,
+  //     srcText,
+  //     status,
+  //     isAlreadyPresent,
+  //     checked
+  //   );
+  // };
+
+  const initHeaderList = {
+    designationList: [],
+    departmentList: [],
+    supervisorNameList: [],
+    employmentTypeList: [],
+    wingNameList: [],
+    soleDepoNameList: [],
+    regionNameList: [],
+    areaNameList: [],
+    territoryNameList: [],
   };
+  const [landingLoading, setLandingLoading] = useState(false);
+  const [rowDto, setRowDto] = useState([]);
+  const [filterOrderList, setFilterOrderList] = useState([]);
+  const [initialHeaderListData, setInitialHeaderListData] = useState({});
+  const [headerList, setHeaderList] = useState({});
+  const [checkedHeaderList, setCheckedHeaderList] = useState({
+    ...initHeaderList,
+  });
+  const [checkedList, setCheckedList] = useState([]);
 
-  const getData = (pagination, srcText, status = "") => {
-    getOffDayLandingHandler(
-      buId,
-      orgId,
-      wgId,
-      getLanding,
-      setLanding,
+  // landing api call
+  const getDataApiCall = async (
+    modifiedPayload,
+    pagination,
+    searchText,
+    checkedList,
+    currentFilterSelection,
+    checkedHeaderList
+  ) => {
+    try {
+      const payload = {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        isAssign: false,
+        workplaceId: 0,
+        pageNo: pagination.current,
+        pageSize: pagination.pageSize,
+        isPaginated: true,
+        isHeaderNeed: true,
+        searchTxt: searchText || "",
+      };
+
+      const res = await axios.post(`/Employee/OffdayLandingFilter`, {
+        ...payload,
+        ...modifiedPayload,
+      });
+      if (res?.data?.data) {
+        setLandingLoading(true);
+
+        setHeaderListDataDynamically({
+          currentFilterSelection,
+          checkedHeaderList,
+          headerListKey: "offdayAssignHeader",
+          headerList,
+          setHeaderList,
+          response: res?.data,
+          filterOrderList,
+          setFilterOrderList,
+          initialHeaderListData,
+          setInitialHeaderListData,
+          // setEmpLanding,
+          setPages,
+        });
+
+        const modifiedData = res?.data?.data?.map((item, index) => ({
+          ...item,
+          initialSerialNumber: index + 1,
+          isSelected: checkedList?.find(
+            ({ employeeCode }) => item?.employeeCode === employeeCode
+          )
+            ? true
+            : false,
+        }));
+
+        setRowDto(modifiedData);
+
+        setLandingLoading(false);
+      }
+    } catch (error) {
+      setLandingLoading(false);
+    }
+  };
+  const getData = async (
+    pagination,
+    searchText = "",
+    checkedList = [],
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList }
+  ) => {
+    setLandingLoading(true);
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+
+    getDataApiCall(
+      modifiedPayload,
       pagination,
-      setPages,
-      srcText,
-      status,
-      isAlreadyPresent,
-      checked
+      searchText,
+      checkedList,
+      currentFilterSelection,
+      checkedHeaderList
     );
   };
 
   useEffect(() => {
     getData(pages);
-    setChecked([])
+    // setChecked([]);
   }, [buId, orgId, wgId]);
 
   const updateSingleData = (item) => {
     const newRowData = {
       ...item,
-      effectiveDate: item?.EffectiveDate,
+      effectiveDate: item?.effectiveDate,
       isSaturday: item?.isSaturday,
       isSunday: item?.isSunday,
       isMonday: item?.isMonday,
@@ -108,21 +224,56 @@ function OffDay() {
       permission = item;
     }
   });
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getData(pagination, srcText);
-    }
-    if (pages?.current !== pagination?.current) {
-      return getData(pagination, srcText);
-    }
+  // const handleTableChange = (pagination, newRowDto, srcText) => {
+  //   if (newRowDto?.action === "filter") {
+  //     return;
+  //   }
+  //   if (
+  //     pages?.current === pagination?.current &&
+  //     pages?.pageSize !== pagination?.pageSize
+  //   ) {
+  //     return getData(pagination, srcText);
+  //   }
+  //   if (pages?.current !== pagination?.current) {
+  //     return getData(pagination, srcText);
+  //   }
+  // };
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      searchText,
+      checkedList,
+      -1,
+      filterOrderList,
+      checkedHeaderList
+    );
   };
 
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      searchText,
+      checkedList,
+      -1,
+      filterOrderList,
+      checkedHeaderList
+    );
+  };
   return (
     <>
       <Formik
@@ -134,22 +285,23 @@ function OffDay() {
       >
         {({ handleSubmit, values, setFieldValue }) => (
           <>
-            {loadingLanding && <Loading />}
+            {landingLoading && <Loading />}
             <Form onSubmit={handleSubmit}>
               {permission?.isView ? (
                 <div className="table-card">
                   <div className="table-card-heading">
                     <div style={{ paddingLeft: "6px" }}>
-                      {checked.length > 0 && (
+                      {checkedList.length > 0 && (
                         <h6 className="count">
-                          Total {checked.length}{" "}
-                          {`employee${checked.length > 1 ? "s" : ""}`} selected
+                          Total {checkedList.length}{" "}
+                          {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
+                          selected
                         </h6>
                       )}
                     </div>
                     <div className="table-card-head-right">
                       <ul>
-                        {checked.length > 0 && (
+                        {checkedList.length > 0 && (
                           <li>
                             <ResetButton
                               title="reset"
@@ -162,16 +314,18 @@ function OffDay() {
                                 getData(
                                   { current: 1, pageSize: paginationSize },
                                   "",
-                                  "saved"
+                                  [],
+                                  -1,
+                                  filterOrderList,
+                                  checkedHeaderList
                                 );
                                 setFieldValue("search", "");
-                                setChecked([]);
                               }}
                             />
                           </li>
                         )}
                         <li>
-                          {checked.length > 0 && (
+                          {checkedList?.length > 0 && (
                             <button
                               className="btn btn-green"
                               style={{ marginRight: "40px", height: "30px" }}
@@ -198,19 +352,31 @@ function OffDay() {
                               if (value) {
                                 getData(
                                   { current: 1, pageSize: paginationSize },
-                                  value
+                                  value,
+                                  checkedList,
+                                  -1,
+                                  filterOrderList,
+                                  checkedHeaderList
                                 );
                               } else {
                                 getData(
                                   { current: 1, pageSize: paginationSize },
-                                  ""
+                                  "",
+                                  [],
+                                  -1,
+                                  filterOrderList,
+                                  checkedHeaderList
                                 );
                               }
                             }}
                             cancelHandler={() => {
                               getData(
                                 { current: 1, pageSize: paginationSize },
-                                ""
+                                "",
+                                [],
+                                -1,
+                                filterOrderList,
+                                checkedHeaderList
                               );
                               setFieldValue("search", "");
                             }}
@@ -223,10 +389,9 @@ function OffDay() {
                   </div>
                   <div className="table-card-body">
                     <div className="table-card-styled tableOne">
-                      {resLanding.length > 0 ? (
-                        <AntTable
-                          data={resLanding}
-                          columnsData={offDayAssignDtoCol(
+                      {rowDto.length > 0 ? (
+                        <PeopleDeskTable
+                          columnData={offDayAssignDtoCol(
                             pages,
                             paginationSize,
                             permission,
@@ -235,34 +400,97 @@ function OffDay() {
                             setEmpId,
                             setSingleData,
                             setIsMulti,
-                            checked,
-                            setChecked,
-                            isAlreadyPresent,
+                            checkedList,
+                            setCheckedList,
+                            // isAlreadyPresent,
                             // filterLanding,
                             // setFilterLanding,
-                            setLanding,
-                            resLanding,
+                            setRowDto,
+                            rowDto,
                             setSelectedSingleEmployee,
                             setAnchorEl,
                             setCalendarData,
                             setLoading,
-                            loading
+                            loading,
+                            headerList,
+                            wgName
                           )}
-                          setColumnsData={(dataRow) => {}}
-                          pages={pages?.pageSize}
-                          pagination={pages}
-                          handleTableChange={({ pagination, newRowDto }) =>
-                            handleTableChange(
-                              pagination,
-                              newRowDto,
-                              values?.search || ""
-                            )
+                          pages={pages}
+                          rowDto={rowDto}
+                          setRowDto={setRowDto}
+                          checkedList={checkedList}
+                          setCheckedList={setCheckedList}
+                          checkedHeaderList={checkedHeaderList}
+                          setCheckedHeaderList={setCheckedHeaderList}
+                          handleChangePage={(e, newPage) =>
+                            handleChangePage(e, newPage, values?.search)
                           }
-                          rowKey={(record) => record?.EmployeeCode}
+                          handleChangeRowsPerPage={(e) =>
+                            handleChangeRowsPerPage(e, values?.search)
+                          }
+                          filterOrderList={filterOrderList}
+                          setFilterOrderList={setFilterOrderList}
+                          uniqueKey="employeeCode"
+                          getFilteredData={(
+                            currentFilterSelection,
+                            updatedFilterData,
+                            updatedCheckedHeaderData
+                          ) => {
+                            getData(
+                              {
+                                current: 1,
+                                pageSize: paginationSize,
+                                total: 0,
+                              },
+                              "",
+                              [],
+                              currentFilterSelection,
+                              updatedFilterData,
+                              updatedCheckedHeaderData
+                            );
+                          }}
+                          isCheckBox={true}
+                          isScrollAble={true}
                         />
                       ) : (
+                        // <AntTable
+                        //   data={resLanding}
+                        //   columnsData={offDayAssignDtoCol(
+                        //     pages,
+                        //     paginationSize,
+                        //     permission,
+                        //     updateSingleData,
+                        //     setCreateModal,
+                        //     setEmpId,
+                        //     setSingleData,
+                        //     setIsMulti,
+                        //     checked,
+                        //     setChecked,
+                        //     isAlreadyPresent,
+                        //     // filterLanding,
+                        //     // setFilterLanding,
+                        //     setLanding,
+                        //     resLanding,
+                        //     setSelectedSingleEmployee,
+                        //     setAnchorEl,
+                        //     setCalendarData,
+                        //     setLoading,
+                        //     loading
+                        //   )}
+                        //   setColumnsData={(dataRow) => {}}
+                        //   pages={pages?.pageSize}
+                        //   pagination={pages}
+                        //   handleTableChange={({ pagination, newRowDto }) =>
+                        //     handleTableChange(
+                        //       pagination,
+                        //       newRowDto,
+                        //       values?.search || ""
+                        //     )
+                        //   }
+                        //   rowKey={(record) => record?.EmployeeCode}
+                        // />
                         <>
-                          {!loadingLanding && (
+                          {!landingLoading && (
                             <NoResult title="No Result Found" para="" />
                           )}
                         </>
@@ -286,11 +514,20 @@ function OffDay() {
                 isMulti={isMulti}
                 setIsMulti={setIsMulti}
                 buId={buId}
-                offDayLanding={resLanding}
+                offDayLanding={rowDto}
                 singleData={singleData}
-                checked={checked}
-                setChecked={setChecked}
-                getData={(status) => getData(pages, "", status)}
+                checked={checkedList}
+                setChecked={setCheckedList}
+                getData={(status) =>
+                  getData(
+                    { current: 1, pageSize: paginationSize },
+                    "",
+                    [],
+                    -1,
+                    filterOrderList,
+                    checkedHeaderList
+                  )
+                }
                 setFieldValueParent={setFieldValue}
               />
             </Form>

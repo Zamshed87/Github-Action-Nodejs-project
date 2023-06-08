@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import AllSelect from "./allSelect";
-import { sortDataList } from "./helper";
+import { sortDataList, uuid } from "./helper";
 import {
   gray300,
   gray50,
@@ -95,7 +95,7 @@ const TableContent = ({
                   </th>
                 )} */}
                 <th
-                  // key={uuid()}
+                  key={uuid()}
                   style={{
                     minWidth: `${data?.width}px`,
                   }}
@@ -211,6 +211,7 @@ const TableContent = ({
                             }}
                             onClick={(e) => {
                               e.stopPropagation();
+
                               setCurrentFilterSelection(index);
                               setAnchorEl(e.currentTarget);
                             }}
@@ -237,11 +238,11 @@ const TableContent = ({
               onClick={() => {
                 if (typeof onRowClick === "function") onRowClick(rowDto[index]);
               }}
-              // key={uuid()}
+              key={uuid()}
             >
               {columnData?.map((columnItem, index1) => {
                 return (
-                  <Fragment>
+                  <Fragment key={uuid()}>
                     {/* {isCheckBox && index1 === 1 && (
                       <td
                         style={{
@@ -271,7 +272,7 @@ const TableContent = ({
                             : ""
                         }`,
                       }}
-                      // key={uuid()}
+                      key={uuid()}
                     >
                       <div className="d-flex">
                         {isCheckBox && index1 === 1 && (
