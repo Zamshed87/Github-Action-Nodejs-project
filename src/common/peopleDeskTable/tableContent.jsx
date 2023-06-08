@@ -83,7 +83,7 @@ const TableContent = ({
           {columnData?.map((data, index) => {
             return (
               <Fragment>
-                {/* {isCheckBox && index === 1 && (
+                {isCheckBox && index === 1 && (
                   <th style={{ width: "15px" }} key={uuid()}>
                     <AllSelect
                       rowDto={rowDto}
@@ -93,7 +93,7 @@ const TableContent = ({
                       uniqueKey={uniqueKey}
                     />
                   </th>
-                )} */}
+                )}
                 <th
                   key={uuid()}
                   style={{
@@ -133,23 +133,10 @@ const TableContent = ({
                       cursor: `${data?.sort ? "pointer" : "default"}`,
                     }}
                   >
-                    <div className="d-flex">
-                      {isCheckBox && index === 1 && (
-                        <AllSelect
-                          rowDto={rowDto}
-                          setRowDto={setRowDto}
-                          checkedList={checkedList}
-                          setCheckedList={setCheckedList}
-                          uniqueKey={uniqueKey}
-                        />
-                      )}
-                      <div
-                        className={`${data?.className ? data?.className : ""} ${
-                          isCheckBox && index === 1 ? "ml-2" : "ml-0"
-                        }`}
-                      >
-                        {data?.title}
-                      </div>
+                    <div
+                      className={`${data?.className ? data?.className : ""}`}
+                    >
+                      {data?.title}
                     </div>
 
                     <div
@@ -243,10 +230,14 @@ const TableContent = ({
               {columnData?.map((columnItem, index1) => {
                 return (
                   <Fragment key={uuid()}>
+<<<<<<< HEAD
                     {/* {isCheckBox && index1 === 1 && (
+=======
+                    {isCheckBox && index1 === 1 && (
+>>>>>>> c852bc5c0f4378629a443fa17736951a8dc44ec5
                       <td
                         style={{
-                          width: `15px`,
+                          width: `${columnItem?.width}px`,
                           padding: "0px 3px",
                         }}
                         key={uuid()}
@@ -260,7 +251,7 @@ const TableContent = ({
                           uniqueKey={uniqueKey}
                         />
                       </td>
-                    )} */}
+                    )}
                     <td
                       style={{
                         width: `${columnItem?.width}px`,
@@ -274,26 +265,12 @@ const TableContent = ({
                       }}
                       key={uuid()}
                     >
-                      <div className="d-flex">
-                        {isCheckBox && index1 === 1 && (
-                          <SingleSelect
-                            index={index}
-                            rowDto={rowDto}
-                            setRowDto={setRowDto}
-                            checkedList={checkedList}
-                            setCheckedList={setCheckedList}
-                            uniqueKey={uniqueKey}
-                          />
-                        )}
-                        <div
-                          className={`content tableBody-title ${
-                            columnItem?.className
-                          } ${isCheckBox && index1 === 1 ? "ml-2" : "ml-0"}`}
-                        >
-                          {columnItem?.render
-                            ? columnItem.render(rowDto[index], index)
-                            : rowDto[index][columnItem.dataIndex]}
-                        </div>
+                      <div
+                        className={`content tableBody-title ${columnItem?.className}`}
+                      >
+                        {columnItem?.render
+                          ? columnItem.render(rowDto[index], index)
+                          : rowDto[index][columnItem.dataIndex]}
                       </div>
                     </td>
                   </Fragment>

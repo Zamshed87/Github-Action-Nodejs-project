@@ -123,10 +123,10 @@ export default function AddEditFormComponent({
     const modifyFilterRowDto =
       singleData.length > 0
         ? singleData
-        : checked.filter((itm) => itm.isSelected === true);
+        : checked.filter((itm) => itm.isAssigned === true);
     const payload = modifyFilterRowDto.map((item) => {
       return {
-        employeeId: item?.employeeId,
+        employeeId: item?.EmployeeId,
         generateStartDate: values?.generateDate,
         IntCreatedBy: employeeId,
         runningCalendarId:

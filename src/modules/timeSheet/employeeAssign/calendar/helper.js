@@ -1,17 +1,17 @@
 import { toast } from "react-toastify";
 import moment from "moment";
 import axios from "axios";
-import { gray600 } from "../../../../utility/customColor";
+import FormikCheckBox from "../../../../common/FormikCheckbox";
+import { gray600, gray900, greenColor } from "../../../../utility/customColor";
+import AvatarComponent from "../../../../common/AvatarComponent";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import RoasterInfo from "./component/RosterInfo";
 import { InfoOutlined } from "@mui/icons-material";
-export const getShiftInfo = async (id, setter, setLoading) => {
+export const getShiftInfo = async (id,setter, setLoading) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `Employee/GetEmployeeShiftInfo?intEmployeeId=${id}&intYear=${moment().format(
-        "YYYY"
-      )}&intMonth=${moment().format("M")}`
+      `Employee/GetEmployeeShiftInfo?intEmployeeId=${id}&intYear=${moment().format("YYYY")}&intMonth=${moment().format("M")}`
     );
     if (res?.data) {
       setter && setter(res?.data);
@@ -59,223 +59,241 @@ export const rosterGenerateAction = async (payload, setLoading, cb) => {
 };
 
 export const columns = (
-  pages,
   permission,
+  pages,
   rowDto,
   setRowDto,
-  checkedList,
-  setCheckedList,
-  // isAlreadyPresent,
+  checked,
+  setChecked,
+  isAlreadyPresent,
   setSingleData,
   setCreateModal,
-  // rowDtoHandler,
+  rowDtoHandler,
   setSingleShiftData,
   setLoading,
-  setAnchorEl2,
-  headerList,
-  wgName
-) =>
-  [
-    {
-      title: "SL",
-      render: (_, index) => (pages?.current - 1) * pages?.pageSize + index + 1,
-      sort: false,
-      filter: false,
-      className: "text-center",
+  setAnchorEl2
+) => [
+  {
+    title: () => (
+      <span style={{ color: gray600, textAlign: "text-center" }}>SL</span>
+    ),
+    render: (text, record, index) => {
+      return (
+        <span>
+          {pages?.current === 1
+            ? index + 1
+            : (pages.current - 1) * pages?.pageSize + (index + 1)}
+        </span>
+      );
     },
-    {
-      title: "Code",
-      dataIndex: "employeeCode",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "",
-      render: (record) => {
-        return (
+
+    className: "text-center",
+  },
+  {
+    width: "10px",
+    title: () => (
+      <FormikCheckBox
+        styleObj={{
+          margin: "0 auto!important",
+          padding: "0 !important",
+          color: gray900,
+          checkedColor: greenColor,
+        }}
+        name="allSelected"
+        checked={
+          rowDto?.length > 0 && rowDto?.every((item) => item?.isAssigned)
+        }
+        onChange={(e) => {
+          let temp = [...checked];
+          let data = rowDto?.map((item) => {
+            const newItem = {
+              ...item,
+              isAssigned: e.target.checked,
+            };
+
+            if (!e.target.checked) {
+              const updatedChecked = temp.filter(
+                (ele) => ele.EmployeeId !== item.EmployeeId
+              );
+              temp = [...updatedChecked];
+              setChecked(updatedChecked);
+            } else if (isAlreadyPresent(item) === -1) {
+              setChecked((prev) => [...prev, newItem]);
+            }
+
+            return newItem;
+          });
+          setRowDto(data);
+        }}
+      />
+    ),
+    dataIndex: "EmployeeCode",
+    render: (_, record, index) => (
+      <div style={{ minWidth: "10px" }}>
+        <FormikCheckBox
+          styleObj={{
+            margin: "0 auto!important",
+            color: gray900,
+            checkedColor: greenColor,
+            padding: "0px",
+          }}
+          name="selectCheckbox"
+          color={greenColor}
+          checked={record?.isAssigned}
+          onChange={(e) => {
+            let data = rowDto?.map((item) => {
+              if (item?.EmployeeId === record?.EmployeeId) {
+                const idx = isAlreadyPresent(item);
+                if (idx >= 0) {
+                  let updatedChecked = [...checked];
+                  updatedChecked.splice(idx, 1);
+                  setChecked(updatedChecked);
+                } else {
+                  setChecked((prev) => [
+                    ...prev,
+                    { ...item, isAssigned: true },
+                  ]);
+                }
+                return { ...item, isAssigned: !item?.isAssigned };
+              } else return item;
+            });
+            setRowDto(data);
+          }}
+        />
+      </div>
+    ),
+  },
+  {
+    title: () => (
+      <div style={{ minWidth: "100px" }}>
+        <span style={{ marginLeft: "5px", color: gray600 }}>Employee ID</span>
+      </div>
+    ),
+    dataIndex: "EmployeeCode",
+    render: (_, record, index) => (
+      <div style={{ minWidth: "80px" }}>
+        <span style={{ marginLeft: "5px" }}>{record?.EmployeeCode}</span>
+      </div>
+    ),
+    filter: true,
+    sorter: true,
+    isNumber: true,
+  },
+  {
+    title: "Employee",
+    dataIndex: "EmployeeName",
+    render: (EmployeeName,record) => (
+      <div className="d-flex align-items-center">
+        <AvatarComponent classess="" letterCount={1} label={EmployeeName} />
+        <span className="ml-2">{EmployeeName}</span>
+        <InfoOutlined
+            style={{ cursor: "pointer" }}
+            className="ml-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSingleShiftData([]);
+              getShiftInfo(record?.EmployeeId, setSingleShiftData, setLoading);
+              setAnchorEl2(e.currentTarget);
+            }}
+          />
+      </div>
+    ),
+    sorter: true,
+    filter: true,
+  },
+  {
+    title: "Designation",
+    dataIndex: "DesignationName",
+    sorter: true,
+    filter: true,
+  },
+  {
+    title: "Department",
+    dataIndex: "DepartmentName",
+    sorter: true,
+    filter: true,
+  },
+  {
+    title: "Supervisor",
+    dataIndex: "SupervisorName",
+    sorter: true,
+    filter: true,
+  },
+  {
+    title: () => <span style={{ color: gray600 }}>Generate Date</span>,
+    dataIndex: "GenerateDate",
+    render: (GenerateDate) => dateFormatter(GenerateDate),
+    sorter: true,
+    filter: true,
+    isDate: true,
+  },
+  {
+    title: () => <span style={{ color: gray600 }}>Joining Date</span>,
+    dataIndex: "JoiningDate",
+    render: (JoiningDate) => dateFormatter(JoiningDate),
+    sorter: true,
+    filter: true,
+    isDate: true,
+  },
+  {
+    title: () => <span style={{ color: gray600 }}>Roster Name</span>,
+    dataIndex: "RosterGroupName",
+    sorter: true,
+    filter: true,
+  },
+  {
+    title: () => <span style={{ color: gray600 }}>Calender Name</span>,
+    dataIndex: "CalendarName",
+    sorter: true,
+    filter: true,
+    render: (_, record) => (
+      <>
+        {record?.CalendarName ? (
           <div className="d-flex align-items-center">
-            <span className="ml-2">{record?.employeeName}</span>
-            <InfoOutlined
-              style={{ cursor: "pointer" }}
-              className="ml-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSingleShiftData([]);
-                getShiftInfo(
-                  record?.employeeId,
-                  setSingleShiftData,
-                  setLoading
-                );
-                setAnchorEl2(e.currentTarget);
-              }}
-            />
+            <RoasterInfo item={record} />
+            <div className="pl-2">{record.CalendarName} </div>
           </div>
-        );
-      },
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-
-    {
-      title: "Department",
-      dataIndex: "department",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`departmentList`],
-      fieldType: "string",
-    },
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`designationList`],
-      fieldType: "string",
-    },
-    {
-      title: "Wing",
-      dataIndex: "wingName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`wingNameList`],
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Sole Depo",
-      dataIndex: "soleDepoName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`soleDepoNameList`],
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Region",
-      dataIndex: "regionName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`regionNameList`],
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Area",
-      dataIndex: "areaName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`areaNameList`],
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Territory",
-      dataIndex: "territoryName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`territoryNameList`],
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Supervisor",
-      dataIndex: "supervisorName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`supervisorNameList`],
-      fieldType: "string",
-    },
-    {
-      title: "Generate Date",
-      dataIndex: "generateDate",
-      render: (record) => dateFormatter(record?.generateDate),
-    },
-    // {
-    //   title: () => <span style={{ color: gray600 }}>Generate Date</span>,
-    //   dataIndex: "GenerateDate",
-    //   render: (GenerateDate) => dateFormatter(GenerateDate),
-    //   sorter: true,
-    //   filter: true,
-    //   isDate: true,
-    // },
-    {
-      title: "Joining Date",
-      dataIndex: "joiningDate",
-      render: (record) => dateFormatter(record?.joiningDate),
-    },
-    // {
-    //   title: () => <span style={{ color: gray600 }}>Joining Date</span>,
-    //   dataIndex: "JoiningDate",
-    //   render: (JoiningDate) => dateFormatter(JoiningDate),
-    //   sorter: true,
-    //   filter: true,
-    //   isDate: true,
-    // },
-    {
-      title: "Roster Name",
-      dataIndex: "rosterGroupName",
-      sort: true,
-      fieldType: "string",
-    },
-    // {
-    //   title: () => <span style={{ color: gray600 }}>Roster Name</span>,
-    //   dataIndex: "RosterGroupName",
-    //   sorter: true,
-    //   filter: true,
-    // },
-
-    {
-      title: () => <span style={{ color: gray600 }}>Calender Name</span>,
-      dataIndex: "calendarName",
-      render: (record) => (
-        <>
-          {record?.calendarName ? (
-            <div className="d-flex align-items-center">
-              <RoasterInfo item={record} />
-              <div className="pl-2">{record?.calendarName} </div>
-            </div>
-          ) : (
-            ""
-          )}
-        </>
-      ),
-    },
-    {
-      title: "",
-      className: "text-center",
-      dataIndex: "",
-      render: (record) => (
-        <div>
-          {!(record?.calendarAssignId || record?.isSelected) && (
-            <div className="assign-btn">
-              <button
-                style={{
-                  marginRight: "25px",
-                  height: "24px",
-                  fontSize: "12px",
-                  padding: "0px 12px 0px 12px",
-                }}
-                type="button"
-                className="btn btn-default"
-                onClick={(e) => {
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  setSingleData([record]);
-                  setCreateModal(true);
-                  // rowDtoHandler(record);
-                }}
-                disabled={checkedList.length > 1}
-              >
-                Assign
-              </button>
-            </div>
-          )}
-        </div>
-      ),
-    },
-  ].filter((item) => item.hidden !== true);
+        ) : (
+          ""
+        )}
+      </>
+    ),
+  },
+  {
+    className: "text-center",
+    render: (_, record, index) => (
+      <div>
+        {!(
+          record?.HolidayGroupId ||
+          record?.ExceptionOffdayGroupId ||
+          record?.selectCheckbox
+        ) && (
+          <div className="assign-btn">
+            <button
+              style={{
+                marginRight: "25px",
+                height: "24px",
+                fontSize: "12px",
+                padding: "0px 12px 0px 12px",
+              }}
+              type="button"
+              className="btn btn-default"
+              onClick={(e) => {
+                if (!permission?.isCreate)
+                  return toast.warn("You don't have permission");
+                if (!permission?.isCreate)
+                  return toast.warn("You don't have permission");
+                setSingleData([record]);
+                setCreateModal(true);
+                rowDtoHandler(record);
+              }}
+              disabled={checked.length > 1}
+            >
+              Assign
+            </button>
+          </div>
+        )}
+      </div>
+    ),
+  },
+];
