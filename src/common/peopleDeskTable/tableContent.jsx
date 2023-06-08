@@ -95,7 +95,6 @@ const TableContent = ({
                   </th>
                 )} */}
                 <th
-                  // key={uuid()}
                   style={{
                     minWidth: `${data?.width}px`,
                   }}
