@@ -18,7 +18,7 @@ export const getEmployeeProfileViewData = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/EmployeeProfileView?employeeId=${id}&businessUnitId=${buId}&workplaceGroupId=${wgId}`
+      `/Employee/GetEmpBasicInfoById?id=${id}&businessUnitId=${buId}&workplaceGroupId=${wgId}`
     );
     if (res?.data) {
       setter && setter(res?.data);
@@ -41,9 +41,7 @@ export const saveIOUApplication = async (payload, setLoading, cb) => {
     toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading && setLoading(false);
   }
-}; 
-
-
+};
 
 export const getAllIOULanding = async (
   partType = "",
@@ -58,7 +56,8 @@ export const getAllIOULanding = async (
   setLoading,
   pageNo,
   pageSize,
-  setPages
+  setPages,
+  employeeId = null
 ) => {
   setLoading && setLoading(true);
 
@@ -70,35 +69,54 @@ export const getAllIOULanding = async (
 
   docType && (apiUrl += `&strDocFor=${docType}`);
 
+  employeeId && (apiUrl += `&employeeId=${employeeId}`);
+
+  if (partType === "ViewById") {
+    apiUrl = `/Employee/IOULandingById?intIOUId=${iouId}`;
+  }
+
+  if (partType === "DocList") {
+    apiUrl = `/Employee/IouDocList?intIOUId=${iouId}&strDocFor=${docType}`;
+  }
+
   try {
     const res = await axios.get(apiUrl);
 
     if (res?.data) {
-      const modifiedData = res?.data?.iouApplicationLandings?.map(
-        (item, index) => ({
-          ...item,
-          sl: index + 1,
-          dteApplicationDate: item.dteApplicationDate
-            ? moment(item?.dteApplicationDate).format("DD MMM, yyyy")
-            : "N/A",
-          dteFromDate: item?.dteFromDate
-            ? moment(item?.dteFromDate).format("DD MMM, yyyy")
-            : "N/A",
-          dteToDate: item?.dteToDate
-            ? moment(item?.dteToDate).format("DD MMM, yyyy")
-            : "N/A",
-          AdjustmentStatus: item?.AdjustmentStatus || "",
-          Status: item?.Status || "",
-        })
-      );
+      if (partType === "Landing") {
+        const modifiedData = res?.data?.iouApplicationLandings?.map(
+          (item, index) => ({
+            ...item,
+            sl: index + 1,
+            dteApplicationDate: item.dteApplicationDate
+              ? moment(item?.dteApplicationDate).format("DD MMM, yyyy")
+              : "N/A",
+            dteFromDate: item?.dteFromDate
+              ? moment(item?.dteFromDate).format("DD MMM, yyyy")
+              : "N/A",
+            dteToDate: item?.dteToDate
+              ? moment(item?.dteToDate).format("DD MMM, yyyy")
+              : "N/A",
+            AdjustmentStatus: item?.AdjustmentStatus || "",
+            Status: item?.Status || "",
+          })
+        );
+        setter?.(modifiedData);
 
-      setter?.(modifiedData);
+        setPages({
+          current: res?.data?.currentPage,
+          pageSize: res?.data?.pageSize,
+          total: res?.data?.totalCount,
+        });
+      }
 
-      setPages({
-        current: res?.data?.currentPage,
-        pageSize: res?.data?.pageSize,
-        total: res?.data?.totalCount,
-      });
+      if (partType === "ViewById") {
+        setter?.(res?.data);
+      }
+
+      if (partType === "DocList") {
+        setter?.(res?.data);
+      }
 
       setLoading && setLoading(false);
     }
