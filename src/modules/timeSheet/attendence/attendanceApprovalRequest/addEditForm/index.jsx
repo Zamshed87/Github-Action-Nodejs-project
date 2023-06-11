@@ -60,7 +60,7 @@ export default function AddEditFormComponent({
 
   const [modifySingleData, setModifySingleData] = useState("");
 
-  const { buId, employeeId, orgId } = useSelector(
+  const { buId, employeeId, orgId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,13 +77,20 @@ export default function AddEditFormComponent({
             attendanceSummaryId: item?.AttendanceSummaryId,
             employeeId: employeeId,
             attendanceDate: item?.dteAttendanceDate,
-            inTime: item?.timeInTime || '',
-            outTime: item?.timeOutTime || '',
-            currentStatus: item?.isPresent === true ? "Present" :
-              item?.isLate === true ? "Late" :
-                item?.isLeave === true ? "Leave" :
-                  item?.isMovement === true ? "Movement" :
-                    item?.isAbsent === true ? "Absent" : "",
+            inTime: item?.timeInTime || "",
+            outTime: item?.timeOutTime || "",
+            currentStatus:
+              item?.isPresent === true
+                ? "Present"
+                : item?.isLate === true
+                ? "Late"
+                : item?.isLeave === true
+                ? "Leave"
+                : item?.isMovement === true
+                ? "Movement"
+                : item?.isAbsent === true
+                ? "Absent"
+                : "",
             requestStatus: values?.inputFieldType?.label,
             remarks: values?.code,
             isApproved: item?.isApproved || false,
@@ -91,7 +98,9 @@ export default function AddEditFormComponent({
             intCreatedBy: employeeId,
             dteCreatedAt: todayDate(),
             isManagement: false,
-            accountId: orgId
+            accountId: orgId,
+            workPlaceGroup: buId,
+            businessUnitId: wgId,
           });
         }
       });
@@ -101,14 +110,14 @@ export default function AddEditFormComponent({
         singleRowData?.isPresent === true
           ? "Present"
           : singleRowData?.isLate === true
-            ? "Late"
-            : singleRowData?.isLeave === true
-              ? "Leave"
-              : singleRowData?.isMovement === true
-                ? "Movement"
-                : singleRowData?.isAbsent === true
-                  ? "Absent"
-                  : "";
+          ? "Late"
+          : singleRowData?.isLeave === true
+          ? "Leave"
+          : singleRowData?.isMovement === true
+          ? "Movement"
+          : singleRowData?.isAbsent === true
+          ? "Absent"
+          : "";
 
       const payload = [
         {
@@ -116,8 +125,8 @@ export default function AddEditFormComponent({
           attendanceSummaryId: singleRowData?.AttendanceSummaryId,
           employeeId: employeeId,
           attendanceDate: singleRowData?.dteAttendanceDate,
-          inTime: singleRowData?.timeInTime || '',
-          outTime: singleRowData?.timeOutTime || '',
+          inTime: singleRowData?.timeInTime || "",
+          outTime: singleRowData?.timeOutTime || "",
           currentStatus: status,
           requestStatus: values?.inputFieldType?.label,
           remarks: values?.code,
@@ -126,7 +135,9 @@ export default function AddEditFormComponent({
           intCreatedBy: employeeId,
           dteCreatedAt: todayDate(),
           isManagement: false,
-          accountId: orgId
+          accountId: orgId,
+          workPlaceGroup: buId,
+          businessUnitId: wgId,
         },
       ];
       editManualAttendance(payload, setLoading, cb);

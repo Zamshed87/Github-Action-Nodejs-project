@@ -22,6 +22,7 @@ import { dateFormatter } from "./../../../../utility/dateFormatter";
 import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
 import AntTable from "../../../../common/AntTable";
 import { LightTooltip } from "../../LoanApplication/helper";
+import { paginationSize } from "../../../../common/peopleDeskTable";
 
 const initData = {
   status: "",
@@ -44,6 +45,11 @@ export default function SelfSeparation() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
   }, [dispatch]);
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
 
   const getData = () => {
     getSeparationLanding({
@@ -60,6 +66,7 @@ export default function SelfSeparation() {
       separationTypeId: null,
       setAllData,
       tableName: "EmployeeSeparationList",
+      pages,
     });
   };
 

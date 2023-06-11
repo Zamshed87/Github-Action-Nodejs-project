@@ -79,7 +79,7 @@ export default function RequisitionAssign() {
     const payload = modifyFilterRowDto.map((item) => {
       return {
         assetRequisitionId: item?.assetRequisitionId,
-        accountId: item?.accountId,
+        workPlaceGroupId: item?.WorkPlaceGroupId,
         businessUnitId: item?.businessUnitId,
         reqisitionQuantity: item?.reqisitionQuantity,
       };
@@ -305,7 +305,7 @@ export default function RequisitionAssign() {
                   )}
                   <li>
                     {rowDto &&
-                      rowDto?.filter((item) => item?.isAssigned).length > 0 ? (
+                    rowDto?.filter((item) => item?.isAssigned).length > 0 ? (
                       <button
                         className="btn btn-default"
                         style={{
