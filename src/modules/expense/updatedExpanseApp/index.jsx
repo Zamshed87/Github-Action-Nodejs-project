@@ -2,28 +2,31 @@ import {
   AddOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { Form, Formik } from "formik";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import AntTable from "../../../common/AntTable";
-import FormikInput from "../../../common/FormikInput";
 import Loading from "../../../common/loading/Loading";
 import MasterFilter from "../../../common/MasterFilter";
 import NoResult from "../../../common/NoResult";
 import PrimaryButton from "../../../common/PrimaryButton";
 import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import useDebounce from "../../../utility/customHooks/useDebounce";
-import { getDateOfYear } from "../../../utility/dateFormatter";
-import { empExpenceDtoCol } from "./helper";
+import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
+import {
+  expenseLandingTableColumn,
+  onGetExpenseApplicationLanding,
+} from "./helper";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../common/peopleDeskTable";
+import DefaultInput from "../../../common/DefaultInput";
 
 const initData = {
   search: "",
-  status: "",
-  fromDate: getDateOfYear("first"),
-  toDate: getDateOfYear("last"),
+  filterFromDate: monthFirstDate(),
+  filterToDate: monthLastDate(),
 };
 
 const UpdateExpenseApplication = () => {
@@ -31,222 +34,286 @@ const UpdateExpenseApplication = () => {
   const dispatch = useDispatch();
   const debounce = useDebounce();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { buId, wgId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const [, getExpenseApplication, loading] = useAxiosGet([]);
+  // const [, getExpenseApplication, loading] = useAxiosGet([]);
 
   const [, setfilterAnchorEl] = useState(null);
   // row data
   const [rowDto, setRowDto] = useState([]);
   const [isFilter, setIsFilter] = useState(false);
   const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
-  const [paginationSize, setPaginationSize] = useState(15);
+  // const [page, setPage] = useState(1);
+  // const [paginationSize, setPaginationSize] = useState(15);
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getData = (
-    orgId,
-    buId,
-    search = "",
-    docType = "",
-    fromDate,
-    toDate
-  ) => {
-    let searchTxt = search ? `&strSearchTxt=${search}` : "";
-    let docTypeTxt = docType ? `&strDocFor=${docType}` : "";
-    const filterDate = `&dteFromDate=${fromDate}&dteToDate=${toDate}`;
+  // const getData = (
+  //   orgId,
+  //   buId,
+  //   search = "",
+  //   docType = "",
+  //   fromDate,
+  //   toDate
+  // ) => {
+  //   let searchTxt = search ? `&strSearchTxt=${search}` : "";
+  //   let docTypeTxt = docType ? `&strDocFor=${docType}` : "";
+  //   const filterDate = `&dteFromDate=${fromDate}&dteToDate=${toDate}`;
 
-    getExpenseApplication(
-      `/Employee/ExpenseApplicationLanding?strPartName=Landing&intAccountId=${orgId}&intBusinessUnitId=${buId}&intEmployeeId=${employeeId}${filterDate}${searchTxt}${docTypeTxt}`,
-      (data) => {
-        setRowDto([...data]);
-      }
+  //   getExpenseApplication(
+  //     `/Employee/ExpenseApplicationLanding?strPartName=Landing&intAccountId=${orgId}&intWorkplaceGroupId=${wgId}&intBusinessUnitId=${buId}&intEmployeeId=${employeeId}${filterDate}${searchTxt}${docTypeTxt}`,
+  //     (data) => {
+  //       setRowDto([...data]);
+  //     }
+  //   );
+  // };
+
+  const { values, setFieldValue } = useFormik({
+    initialValues: initData,
+  });
+
+  const getData = (pagination) => {
+    onGetExpenseApplicationLanding(
+      buId,
+      wgId,
+      values?.filterFromDate || "",
+      values?.filterToDate || "",
+      "",
+      setRowDto,
+      setLoading,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages,
+      employeeId
     );
   };
 
   useEffect(() => {
-    getData(orgId, buId, "", "", initData?.fromDate, initData?.toDate);
+    onGetExpenseApplicationLanding(
+      buId,
+      wgId,
+      values?.filterFromDate || "",
+      values?.filterToDate || "",
+      "",
+      setRowDto,
+      setLoading,
+      1,
+      paginationSize,
+      setPages,
+      employeeId
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId]);
+  }, [buId, wgId]);
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData({
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData({
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
+  };
 
   return (
     <>
-      <Formik enableReinitialize={true} initialValues={initData}>
-        {({ values, setFieldValue }) => (
-          <>
-            <Form>
-              {loading && <Loading />}
-              <div className="table-card">
-                <div className="table-card-heading">
-                  <div className="d-flex align-items-center"></div>
-                  <ul className="d-flex flex-wrap">
-                    {(isFilter || status) && (
-                      <li>
-                        <ResetButton
-                          classes="btn-filter-reset"
-                          title="reset"
-                          icon={
-                            <SettingsBackupRestoreOutlined
-                              sx={{ marginRight: "10px", fontSize: "16px" }}
-                            />
-                          }
-                          styles={{
-                            marginRight: "16px",
-                          }}
-                          onClick={() => {
-                            setIsFilter(false);
-                            setFieldValue("search", "");
-                            setStatus("");
-                            getData(orgId, buId);
-                          }}
-                        />
-                      </li>
-                    )}
-                    <li>
-                      <MasterFilter
-                        styles={{
-                          marginRight: "10px",
-                        }}
-                        inputWidth="200px"
-                        width="200px"
-                        value={values?.search}
-                        setValue={(value) => {
-                          setFieldValue("search", value);
-                          debounce(() => {
-                            getData(orgId, buId, value || "");
-                          }, 500);
-                        }}
-                        cancelHandler={() => {
-                          setFieldValue("search", "");
-                          getData(orgId, buId, "");
-                        }}
-                        isHiddenFilter
-                        handleClick={(e) => setfilterAnchorEl(e.currentTarget)}
-                      />
-                    </li>
-                    <li>
-                      <PrimaryButton
-                        type="button"
-                        className="btn btn-default flex-center"
-                        label="Request Expense"
-                        icon={
-                          <AddOutlined
-                            sx={{
-                              marginRight: "0px",
-                              fontSize: "15px",
-                            }}
-                          />
-                        }
-                        onClick={() => {
-                          history.push(
-                            `/SelfService/expense/expenseApplication/create`
-                          );
-                        }}
-                      />
-                    </li>
-                  </ul>
-                </div>
-                <div className="table-card-body">
-                  <div
-                    className="card-style pb-0 mb-2"
-                    style={{ marginTop: "12px" }}
-                  >
-                    <div className="row">
-                      <div className="col-lg-3">
-                        <div className="input-field-main">
-                          <label>From Date</label>
-                          <FormikInput
-                            classes="input-sm"
-                            value={values?.fromDate}
-                            placeholder=""
-                            name="fromDate"
-                            type="date"
-                            className="form-control"
-                            onChange={(e) => {
-                              setFieldValue("fromDate", e.target.value);
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-3">
-                        <div className="input-field-main">
-                          <label>To Date</label>
-                          <FormikInput
-                            classes="input-sm"
-                            value={values?.toDate}
-                            placeholder="Month"
-                            name="toDate"
-                            type="date"
-                            className="form-control"
-                            onChange={(e) => {
-                              setFieldValue("toDate", e.target.value);
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-lg-1">
-                        <button
-                          disabled={!values?.toDate || !values?.fromDate}
-                          style={{ marginTop: "21px" }}
-                          className="btn btn-green"
-                          onClick={() => {
-                            getData(
-                              orgId,
-                              buId,
-                              "",
-                              "",
-                              values?.fromDate,
-                              values?.toDate
-                            );
-                          }}
-                        >
-                          View
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {rowDto?.length > 0 ? (
-                    <>
-                      <div className="table-card-styled employee-table-card table-responsive ant-scrolling-Table">
-                        <AntTable
-                          data={rowDto}
-                          columnsData={empExpenceDtoCol(
-                            history,
-                            page,
-                            paginationSize
-                          )}
-                          onRowClick={(item) => {
-                            history.push(
-                              `/SelfService/expense/expenseApplication/view/${item?.ExpenseId}`
-                            );
-                          }}
-                          rowClassName="pointer"
-                          setPage={setPage}
-                          setPaginationSize={setPaginationSize}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      {!loading && <NoResult title="No Result Found" para="" />}
-                    </>
-                  )}
+      {loading && <Loading />}
+      <div className="table-card">
+        <div className="table-card-heading">
+          <div className="d-flex align-items-center"></div>
+          <ul className="d-flex flex-wrap">
+            {(isFilter || status) && (
+              <li>
+                <ResetButton
+                  classes="btn-filter-reset"
+                  title="reset"
+                  icon={
+                    <SettingsBackupRestoreOutlined
+                      sx={{ marginRight: "10px", fontSize: "16px" }}
+                    />
+                  }
+                  styles={{
+                    marginRight: "16px",
+                  }}
+                  onClick={() => {
+                    setIsFilter(false);
+                    setFieldValue("search", "");
+                    setStatus("");
+                    getData(pages);
+                  }}
+                />
+              </li>
+            )}
+            <li>
+              <MasterFilter
+                styles={{
+                  marginRight: "10px",
+                }}
+                inputWidth="200px"
+                width="200px"
+                value={values?.search}
+                setValue={(value) => {
+                  setFieldValue("search", value);
+                  debounce(() => {
+                    getData(pages);
+                  }, 500);
+                }}
+                cancelHandler={() => {
+                  setFieldValue("search", "");
+                  getData(pages);
+                }}
+                isHiddenFilter
+                handleClick={(e) => setfilterAnchorEl(e.currentTarget)}
+              />
+            </li>
+            <li>
+              <PrimaryButton
+                type="button"
+                className="btn btn-default flex-center"
+                label="Request Expense"
+                icon={
+                  <AddOutlined
+                    sx={{
+                      marginRight: "0px",
+                      fontSize: "15px",
+                    }}
+                  />
+                }
+                onClick={() => {
+                  history.push(
+                    `/SelfService/expense/expenseApplication/create`
+                  );
+                }}
+              />
+            </li>
+          </ul>
+        </div>
+        <div className="table-card-body">
+          <div className="card-style pb-0 mb-2" style={{ marginTop: "12px" }}>
+            <div className="row">
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>From Date</label>
+                  <DefaultInput
+                    classes="input-sm"
+                    value={values?.filterFromDate}
+                    placeholder="Month"
+                    name="toDate"
+                    max={values?.filterToDate}
+                    type="date"
+                    className="form-control"
+                    onChange={(e) => {
+                      setFieldValue("filterFromDate", e.target.value);
+                    }}
+                  />
                 </div>
               </div>
-            </Form>
-          </>
-        )}
-      </Formik>
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>To Date</label>
+                  <DefaultInput
+                    classes="input-sm"
+                    value={values?.filterToDate}
+                    placeholder="Month"
+                    name="toDate"
+                    min={values?.filterFromDate}
+                    type="date"
+                    className="form-control"
+                    onChange={(e) => {
+                      setFieldValue("filterToDate", e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="col-lg-3">
+                <button
+                  className="btn btn-green btn-green-disable mt-4"
+                  type="button"
+                  disabled={!values?.filterFromDate || !values?.filterToDate}
+                  onClick={() => {
+                    onGetExpenseApplicationLanding(
+                      buId,
+                      wgId,
+                      values?.filterFromDate || "",
+                      values?.filterToDate || "",
+                      values?.search || "",
+                      setRowDto,
+                      setLoading,
+                      1,
+                      paginationSize,
+                      setPages,
+                      employeeId
+                    );
+                  }}
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {rowDto?.length > 0 ? (
+            <PeopleDeskTable
+              columnData={expenseLandingTableColumn(
+                pages?.current,
+                pages?.pageSize,
+                history
+              )}
+              pages={pages}
+              rowDto={rowDto}
+              setRowDto={setRowDto}
+              handleChangePage={(e, newPage) =>
+                handleChangePage(e, newPage, values?.search)
+              }
+              handleChangeRowsPerPage={(e) =>
+                handleChangeRowsPerPage(e, values?.search)
+              }
+              uniqueKey="expenseId"
+              isCheckBox={false}
+              isScrollAble={true}
+              onRowClick={(item) => {
+                history.push(
+                  `/SelfService/expense/expenseApplication/view/${item?.expenseId}`
+                );
+              }}
+            />
+          ) : (
+            <>
+              {!loading && (
+                <div className="col-12">
+                  <NoResult title={"No Data Found"} para={""} />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </>
   );
 };
