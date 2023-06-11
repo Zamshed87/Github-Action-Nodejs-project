@@ -34,6 +34,7 @@ import { dateFormatterForInput } from "../../../utility/dateFormatter";
 
 const initData = {
   date: todayDate(),
+  toDate: todayDate(),
   expenseAmount: "",
   expenseType: "",
   reason: "",
@@ -41,6 +42,7 @@ const initData = {
 
 const validationSchema = Yup.object().shape({
   date: Yup.date().required("Date is required"),
+  toDate: Yup.date().required("Date is required"),
   expenseAmount: Yup.number()
     .min(1, "Expense amount must be greater than zero")
     .required("Expense amount is required"),
@@ -54,7 +56,7 @@ const SelfExpanseApplicationAddForm = () => {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -96,13 +98,17 @@ const SelfExpanseApplicationAddForm = () => {
       intEmployeeId: employeeId,
       intExpenseTypeId: values?.expenseType?.value,
       strEntryType: params?.id ? "Update" : "Create",
-      dteExpenseDate: values?.date,
+      // dteExpenseDate: values?.date,
+      dteExpenseFromDate: values?.date,
+      dteExpenseToDate: values?.toDate,
       strDiscription: values?.reason,
       numExpenseAmount: +values?.expenseAmount,
       isActive: true,
       intCreatedBy: employeeId,
       dteCreatedBy: todayDate(),
       urlIdViewModelList: modifyImageArray,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: wgId,
     };
 
     saveExpenseType(
@@ -206,6 +212,7 @@ const SelfExpanseApplicationAddForm = () => {
           params?.id
             ? {
                 date: dateFormatterForInput(singleData[0]?.dteExpenseDate),
+                toDate: dateFormatterForInput(singleData[0]?.dteExpenseToDate),
                 expenseAmount: singleData[0]?.numExpenseAmount,
                 expenseType: {
                   value: singleData[0]?.intExpenseTypeId,
@@ -291,7 +298,7 @@ const SelfExpanseApplicationAddForm = () => {
                   <div className="row">
                     <div className="col-lg-3">
                       <div className="input-field-main">
-                        <label>Date</label>
+                        <label>From Date</label>
                         <FormikInput
                           placeholder=" "
                           classes="input-sm"
@@ -300,6 +307,23 @@ const SelfExpanseApplicationAddForm = () => {
                           type="date"
                           onChange={(e) => {
                             setFieldValue("date", e.target.value);
+                          }}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>To Date</label>
+                        <FormikInput
+                          placeholder=" "
+                          classes="input-sm"
+                          name="toDate"
+                          value={values?.toDate}
+                          type="date"
+                          onChange={(e) => {
+                            setFieldValue("toDate", e.target.value);
                           }}
                           errors={errors}
                           touched={touched}

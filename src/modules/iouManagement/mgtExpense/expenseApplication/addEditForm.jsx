@@ -88,10 +88,10 @@ const MgtExpenseApplicationCreate = () => {
   const saveHandler = (values, cb) => {
     const modifyImageArray = imageFile
       ? imageFile.map((image) => {
-        return {
-          intDocURLId: image?.globalFileUrlId,
-        };
-      })
+          return {
+            intDocURLId: image?.globalFileUrlId,
+          };
+        })
       : [];
 
     const payload = {
@@ -108,6 +108,8 @@ const MgtExpenseApplicationCreate = () => {
       intCreatedBy: employeeId,
       dteCreatedBy: todayDate(),
       urlIdViewModelList: modifyImageArray,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: wgId,
     };
 
     saveExpenseType(
@@ -136,7 +138,8 @@ const MgtExpenseApplicationCreate = () => {
 
   const getData = () => {
     params?.id &&
-      getExpenseDetail(`/Employee/GetExpenseDocList?intExpenseId=${params?.id}`,
+      getExpenseDetail(
+        `/Employee/GetExpenseDocList?intExpenseId=${params?.id}`,
         (data) => {
           setImgRow([...data]);
           setEditImageRow([...data]);
@@ -179,22 +182,22 @@ const MgtExpenseApplicationCreate = () => {
         initialValues={
           params?.id
             ? {
-              employeeName: {
-                value: singleData[0]?.intEmployeeId,
-                label: singleData[0]?.employeeName,
-              },
-              date: dateFormatterForInput(singleData[0]?.dteExpenseFromDate),
-              toDate: dateFormatterForInput(singleData[0]?.dteExpenseToDate),
-              expenseAmount: singleData[0]?.numExpenseAmount,
-              expenseType: {
-                value: singleData[0]?.intExpenseTypeId,
-                label: singleData[0]?.strExpenseType,
-              },
-              reason: singleData[0]?.strDiscription,
-            }
+                employeeName: {
+                  value: singleData[0]?.intEmployeeId,
+                  label: singleData[0]?.employeeName,
+                },
+                date: dateFormatterForInput(singleData[0]?.dteExpenseFromDate),
+                toDate: dateFormatterForInput(singleData[0]?.dteExpenseToDate),
+                expenseAmount: singleData[0]?.numExpenseAmount,
+                expenseType: {
+                  value: singleData[0]?.intExpenseTypeId,
+                  label: singleData[0]?.strExpenseType,
+                },
+                reason: singleData[0]?.strDiscription,
+              }
             : {
-              ...initData,
-            }
+                ...initData,
+              }
         }
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
@@ -215,6 +218,14 @@ const MgtExpenseApplicationCreate = () => {
                 reason: singleData[0]?.strDiscription,
               });
               setImageFile("");
+              if (params?.id) {
+                getExpenseApplicationById(
+                  +params?.id,
+                  buId,
+                  setSingleData,
+                  setLoading
+                );
+              }
             } else {
               setSubmitting(false);
               setImageFile("");
@@ -284,7 +295,9 @@ const MgtExpenseApplicationCreate = () => {
                           setFieldValue("employeeName", valueOption);
                         }}
                         placeholder="Search (min 3 letter)"
-                        loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+                        loadOptions={(v) =>
+                          getSearchEmployeeList(buId, wgId, v)
+                        }
                         isDisabled={params?.id}
                       />
                     </div>
@@ -426,83 +439,85 @@ const MgtExpenseApplicationCreate = () => {
                   </p>
                   {imageFile?.length
                     ? imageFile.map((image, i) => (
-                      <div
-                        key={i}
-                        className="d-flex align-items-center"
-                        style={{ width: "160px" }}
-                        onClick={() => {
-                          dispatch(
-                            getDownlloadFileView_Action(
-                              image?.globalFileUrlId || image?.intDocURLId
-                            )
-                          );
-                        }}
-                      >
-                        <AttachmentOutlined
-                          sx={{ marginRight: "5px", color: "#0072E5" }}
-                        />
                         <div
-                          style={{
-                            fontSize: "12px",
-                            fontWeight: "500",
-                            color: "#0072E5",
-                            cursor: "pointer",
+                          key={i}
+                          className="d-flex align-items-center"
+                          style={{ width: "160px" }}
+                          onClick={() => {
+                            dispatch(
+                              getDownlloadFileView_Action(
+                                image?.globalFileUrlId || image?.intDocURLId
+                              )
+                            );
                           }}
                         >
-                          {image?.fileName ||
-                            `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
-                            }`}{" "}
+                          <AttachmentOutlined
+                            sx={{ marginRight: "5px", color: "#0072E5" }}
+                          />
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: "500",
+                              color: "#0072E5",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {image?.fileName ||
+                              `Attachment_${
+                                i <= 8 ? `0${i + 1}` : `${i + 1}`
+                              }`}{" "}
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      ))
                     : ""}
                   {editImageRow?.length
                     ? editImageRow.map((image, i) => (
-                      <div
-                        key={i}
-                        className="d-flex align-items-center"
-                        style={{ width: "160px" }}
-                        onClick={() => {
-                          dispatch(
-                            getDownlloadFileView_Action(
-                              image?.globalFileUrlId || image?.intDocURLId
-                            )
-                          );
-                        }}
-                      >
-                        <AttachmentOutlined
-                          sx={{ marginRight: "5px", color: "#0072E5" }}
-                        />
                         <div
-                          style={{
-                            fontSize: "12px",
-                            fontWeight: "500",
-                            color: "#0072E5",
-                            cursor: "pointer",
+                          key={i}
+                          className="d-flex align-items-center"
+                          style={{ width: "160px" }}
+                          onClick={() => {
+                            dispatch(
+                              getDownlloadFileView_Action(
+                                image?.globalFileUrlId || image?.intDocURLId
+                              )
+                            );
                           }}
                         >
-                          {image?.fileName ||
-                            `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
-                            }`}{" "}
-                          {editImageRow?.length && (
-                            <IconButton
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteImageHandler(image?.globalFileUrlId);
-                              }}
-                              size="small"
-                              style={{
-                                fontSize: "18px",
-                                padding: "0px 5px",
-                                color: "#175CD3",
-                              }}
-                            >
-                              <CloseIcon fontSize="inherit"> </CloseIcon>
-                            </IconButton>
-                          )}
+                          <AttachmentOutlined
+                            sx={{ marginRight: "5px", color: "#0072E5" }}
+                          />
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: "500",
+                              color: "#0072E5",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {image?.fileName ||
+                              `Attachment_${
+                                i <= 8 ? `0${i + 1}` : `${i + 1}`
+                              }`}{" "}
+                            {editImageRow?.length && (
+                              <IconButton
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteImageHandler(image?.globalFileUrlId);
+                                }}
+                                size="small"
+                                style={{
+                                  fontSize: "18px",
+                                  padding: "0px 5px",
+                                  color: "#175CD3",
+                                }}
+                              >
+                                <CloseIcon fontSize="inherit"> </CloseIcon>
+                              </IconButton>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      ))
                     : ""}
                 </div>
               </div>

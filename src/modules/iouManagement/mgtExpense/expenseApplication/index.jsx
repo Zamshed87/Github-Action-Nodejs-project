@@ -125,7 +125,7 @@ const MgtExpenseApplication = () => {
       setPages
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId, values]);
+  }, [buId, wgId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
