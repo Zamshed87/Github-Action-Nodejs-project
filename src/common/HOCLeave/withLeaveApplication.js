@@ -170,7 +170,9 @@ const withLeaveApplication = (WrappedComponent) => {
         setLeaveHistoryData,
         setLoading,
         setAllData,
-        year
+        year,
+        buId,
+        wgId
       );
       getEmployeeLeaveBalanceAndHistory(
         empId ? empId : employeeId,
@@ -178,7 +180,9 @@ const withLeaveApplication = (WrappedComponent) => {
         setLeaveBalanceData,
         setLoading,
         "",
-        year
+        year,
+        buId,
+        wgId
       );
     };
 

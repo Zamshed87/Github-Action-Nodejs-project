@@ -13,14 +13,16 @@ export const getEmployeeLeaveBalanceAndHistory = async (
   setter,
   setLoading,
   setAllData,
-  year
+  year,
+  buId,
+  wgId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
       `/LeaveMovement/GetEmployeeLeaveBalanceAndHistory?EmployeeId=${employeeId}&ViewType=${viewType}&IntYear=${
         year || currentYear()
-      }`
+      }&WorkPlaceGroup=${wgId}&BusinessUnit=${buId}`
     );
     if (res?.data) {
       setter(res?.data);
