@@ -132,8 +132,6 @@ export const assetLandingTableColumn = (
                   e.stopPropagation();
                   const payload = {
                     assetId: item?.assetId || 0,
-                    accountId: orgId,
-                    businessUnitId: buId,
                     assetCode: "",
                     itemId: item?.itemName?.value,
                     itemName: item?.itemName?.label,
