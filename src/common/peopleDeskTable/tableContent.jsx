@@ -82,18 +82,18 @@ const TableContent = ({
         <tr>
           {columnData?.map((data, index) => {
             return (
-              <Fragment>
-                {isCheckBox && index === 1 && (
-                  <th style={{ width: "15px" }}>
-                    <AllSelect
-                      rowDto={rowDto}
-                      setRowDto={setRowDto}
-                      checkedList={checkedList}
-                      setCheckedList={setCheckedList}
-                      uniqueKey={uniqueKey}
-                    />
-                  </th>
-                )}
+              <Fragment key={index}>
+                {/* {isCheckBox && index === 1 && (
+                  // <th style={{ width: "15px" }}>
+                  <AllSelect
+                    rowDto={rowDto}
+                    setRowDto={setRowDto}
+                    checkedList={checkedList}
+                    setCheckedList={setCheckedList}
+                    uniqueKey={uniqueKey}
+                  />
+                  // </th>
+                )} */}
                 <th
                   style={{
                     minWidth: `${data?.width}px`,
@@ -135,7 +135,27 @@ const TableContent = ({
                     <div
                       className={`${data?.className ? data?.className : ""}`}
                     >
-                      {data?.title}
+                      {isCheckBox && index === 1 && (
+                        // <th style={{ width: "15px" }}>
+                        <AllSelect
+                          rowDto={rowDto}
+                          setRowDto={setRowDto}
+                          checkedList={checkedList}
+                          setCheckedList={setCheckedList}
+                          uniqueKey={uniqueKey}
+                        />
+                        // </th>
+                      )}
+                      <div
+                        className={`${
+                          isCheckBox && index === 1 ? "pl-2" : "pl-0"
+                        }`}
+                        style={{
+                          display: "inline-block",
+                        }}
+                      >
+                        {data?.title}
+                      </div>
                     </div>
 
                     <div
@@ -224,11 +244,12 @@ const TableContent = ({
               onClick={() => {
                 if (typeof onRowClick === "function") onRowClick(rowDto[index]);
               }}
+              key={index}
             >
               {columnData?.map((columnItem, index1) => {
                 return (
-                  <Fragment>
-                    {isCheckBox && index1 === 1 && (
+                  <Fragment key={index1}>
+                    {/* {isCheckBox && index1 === 1 && (
                       <td
                         style={{
                           width: `${columnItem?.width}px`,
@@ -244,7 +265,7 @@ const TableContent = ({
                           uniqueKey={uniqueKey}
                         />
                       </td>
-                    )}
+                    )} */}
                     <td
                       style={{
                         width: `${columnItem?.width}px`,
@@ -257,8 +278,31 @@ const TableContent = ({
                         }`,
                       }}
                     >
+                      {isCheckBox && index1 === 1 && (
+                        <div
+                          style={{
+                            display: "inline-block",
+                            //   width: `${columnItem?.width}px`,
+                            //   // padding: "0px 3px",
+                          }}
+                        >
+                          <SingleSelect
+                            index={index}
+                            rowDto={rowDto}
+                            setRowDto={setRowDto}
+                            checkedList={checkedList}
+                            setCheckedList={setCheckedList}
+                            uniqueKey={uniqueKey}
+                          />
+                        </div>
+                      )}
                       <div
-                        className={`content tableBody-title ${columnItem?.className}`}
+                        className={`content tableBody-title ${
+                          columnItem?.className
+                        } ${isCheckBox && index1 === 1 ? "pl-2" : "pl-0"}`}
+                        style={{
+                          display: "inline-block",
+                        }}
                       >
                         {columnItem?.render
                           ? columnItem.render(rowDto[index], index)

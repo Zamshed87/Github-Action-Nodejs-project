@@ -492,100 +492,100 @@ function Calendar() {
                       </ul>
                     </div>
                   </div>
-                  <div
+                  {/* <div
                     className="table-card-body"
                     style={{ marginTop: "-5px" }}
-                  >
-                    <div className="table-card-styled tableOne">
-                      {rowDto?.length > 0 ? (
-                        <PeopleDeskTable
-                          columnData={columns(
-                            pages,
-                            permission,
-                            rowDto,
-                            setRowDto,
-                            checkedList,
-                            setCheckedList,
-                            // isAlreadyPresent,
-                            setSingleData,
-                            setCreateModal,
-                            // rowDtoHandler,
-                            setSingleShiftData,
-                            setLoading,
-                            setAnchorEl2,
-                            headerList,
-                            wgName
-                          )}
-                          pages={pages}
-                          rowDto={rowDto}
-                          setRowDto={setRowDto}
-                          checkedList={checkedList}
-                          setCheckedList={setCheckedList}
-                          checkedHeaderList={checkedHeaderList}
-                          setCheckedHeaderList={setCheckedHeaderList}
-                          handleChangePage={(e, newPage) =>
-                            handleChangePage(e, newPage, values?.search)
-                          }
-                          handleChangeRowsPerPage={(e) =>
-                            handleChangeRowsPerPage(e, values?.search)
-                          }
-                          filterOrderList={filterOrderList}
-                          setFilterOrderList={setFilterOrderList}
-                          uniqueKey="employeeCode"
-                          getFilteredData={(
-                            currentFilterSelection,
-                            updatedFilterData,
-                            updatedCheckedHeaderData
-                          ) => {
-                            getData(
-                              {
-                                current: 1,
-                                pageSize: paginationSize,
-                                total: 0,
-                              },
-                              "",
-                              [],
-                              currentFilterSelection,
-                              updatedFilterData,
-                              updatedCheckedHeaderData
-                            );
-                          }}
-                          isCheckBox={true}
-                          isScrollAble={true}
-                        />
-                      ) : (
-                        // <AntTable
-                        //   data={rowDto}
-                        //   columnsData={columns(
-                        //     permission,
-                        //     pages,
-                        //     rowDto,
-                        //     setRowDto,
-                        //     checked,
-                        //     setChecked,
-                        //     isAlreadyPresent,
-                        //     setSingleData,
-                        //     setCreateModal,
-                        //     rowDtoHandler,
-                        //     setSingleShiftData,
-                        //     setLoading,
-                        //     setAnchorEl2
-                        //   )}
-                        //   onRowClick={(dataRow) => {}}
-                        //   pages={pages?.pageSize}
-                        //   pagination={pages}
-                        //   handleTableChange={({ pagination, newRowDto }) =>
-                        //     handleTableChange(
-                        //       pagination,
-                        //       newRowDto,
-                        //       values?.search || ""
-                        //     )
-                        //   }
-                        // />
-                        !loading && <NoResult title="No Result Found" para="" />
+                  > */}
+                  {/* <div className="table-card-styled tableOne"> */}
+                  {rowDto?.length > 0 ? (
+                    <PeopleDeskTable
+                      columnData={columns(
+                        pages,
+                        permission,
+                        rowDto,
+                        setRowDto,
+                        checkedList,
+                        setCheckedList,
+                        // isAlreadyPresent,
+                        setSingleData,
+                        setCreateModal,
+                        // rowDtoHandler,
+                        setSingleShiftData,
+                        setLoading,
+                        setAnchorEl2,
+                        headerList,
+                        wgName
                       )}
-                    </div>
-                  </div>
+                      pages={pages}
+                      rowDto={rowDto}
+                      setRowDto={setRowDto}
+                      checkedList={checkedList}
+                      setCheckedList={setCheckedList}
+                      checkedHeaderList={checkedHeaderList}
+                      setCheckedHeaderList={setCheckedHeaderList}
+                      handleChangePage={(e, newPage) =>
+                        handleChangePage(e, newPage, values?.search)
+                      }
+                      handleChangeRowsPerPage={(e) =>
+                        handleChangeRowsPerPage(e, values?.search)
+                      }
+                      filterOrderList={filterOrderList}
+                      setFilterOrderList={setFilterOrderList}
+                      uniqueKey="employeeCode"
+                      getFilteredData={(
+                        currentFilterSelection,
+                        updatedFilterData,
+                        updatedCheckedHeaderData
+                      ) => {
+                        getData(
+                          {
+                            current: 1,
+                            pageSize: paginationSize,
+                            total: 0,
+                          },
+                          "",
+                          [],
+                          currentFilterSelection,
+                          updatedFilterData,
+                          updatedCheckedHeaderData
+                        );
+                      }}
+                      isCheckBox={true}
+                      isScrollAble={true}
+                    />
+                  ) : (
+                    // <AntTable
+                    //   data={rowDto}
+                    //   columnsData={columns(
+                    //     permission,
+                    //     pages,
+                    //     rowDto,
+                    //     setRowDto,
+                    //     checked,
+                    //     setChecked,
+                    //     isAlreadyPresent,
+                    //     setSingleData,
+                    //     setCreateModal,
+                    //     rowDtoHandler,
+                    //     setSingleShiftData,
+                    //     setLoading,
+                    //     setAnchorEl2
+                    //   )}
+                    //   onRowClick={(dataRow) => {}}
+                    //   pages={pages?.pageSize}
+                    //   pagination={pages}
+                    //   handleTableChange={({ pagination, newRowDto }) =>
+                    //     handleTableChange(
+                    //       pagination,
+                    //       newRowDto,
+                    //       values?.search || ""
+                    //     )
+                    //   }
+                    // />
+                    !loading && <NoResult title="No Result Found" para="" />
+                  )}
+                  {/* </div> */}
+                  {/* </div> */}
                 </div>
               ) : (
                 <NotPermittedPage />
