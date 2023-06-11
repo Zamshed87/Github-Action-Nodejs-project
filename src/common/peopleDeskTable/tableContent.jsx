@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import AllSelect from "./allSelect";
-import { sortDataList, uuid } from "./helper";
+import { sortDataList } from "./helper";
 import {
   gray300,
   gray50,
@@ -84,7 +84,7 @@ const TableContent = ({
             return (
               <Fragment>
                 {isCheckBox && index === 1 && (
-                  <th style={{ width: "15px" }} key={uuid()}>
+                  <th style={{ width: "15px" }}>
                     <AllSelect
                       rowDto={rowDto}
                       setRowDto={setRowDto}
@@ -224,18 +224,16 @@ const TableContent = ({
               onClick={() => {
                 if (typeof onRowClick === "function") onRowClick(rowDto[index]);
               }}
-              key={uuid()}
             >
               {columnData?.map((columnItem, index1) => {
                 return (
-                  <Fragment key={uuid()}>
+                  <Fragment>
                     {isCheckBox && index1 === 1 && (
                       <td
                         style={{
                           width: `${columnItem?.width}px`,
                           padding: "0px 3px",
                         }}
-                        key={uuid()}
                       >
                         <SingleSelect
                           index={index}
@@ -258,7 +256,6 @@ const TableContent = ({
                             : ""
                         }`,
                       }}
-                      key={uuid()}
                     >
                       <div
                         className={`content tableBody-title ${columnItem?.className}`}
