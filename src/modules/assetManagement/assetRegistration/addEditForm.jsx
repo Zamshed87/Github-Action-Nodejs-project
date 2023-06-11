@@ -54,8 +54,6 @@ const AssetApplicationCreate = () => {
   const saveHandler = (values, cb) => {
     const payload = {
       assetId: params?.id || 0,
-      accountId: orgId,
-      businessUnitId: buId,
       assetCode: "",
       itemId: values?.itemName?.value,
       itemName: values?.itemName?.label,

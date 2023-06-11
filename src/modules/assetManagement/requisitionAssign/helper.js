@@ -16,7 +16,7 @@ export const getRequisitionAssignLanding = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/AssetManagement/GetAssetRequisition?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${
+      `/AssetManagement/GetAssetRequisition?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${
         values?.workplace?.value || 0
       }&employeeId=${values?.employee?.value || 0}`
     );
@@ -260,6 +260,9 @@ export const assetRequisitionAssignColumns = (
                 const payload = {
                   assetRequisitionId: item?.assetRequisitionId,
                   isDenied: true,
+                  businessUnitId: item?.businessUnitId,
+                  workPlaceGroupId: item?.WorkPlaceGroupId,
+                  employeeId: item?.employeeId,
                 };
                 deleteAssetRequisition(
                   `/AssetManagement/AssetRequisitionDenied`,

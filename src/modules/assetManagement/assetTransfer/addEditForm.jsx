@@ -72,7 +72,6 @@ const AssetTransferCreate = () => {
     };
     const payload = {
       assetTransferId: params?.id || 0,
-      accountId: orgId,
       businessUnitId: buId,
       fromEmployeeId: values?.employeeFromName?.value,
       itemId: values?.item?.value,
@@ -94,7 +93,7 @@ const AssetTransferCreate = () => {
 
   const getData = () => {
     if (!params?.id) return;
-    const assetUrl = `AssetManagement/GetAssetTransferById?accountId=${orgId}&businessUnitId=${buId}&assetTransferId=${params.id}`;
+    const assetUrl = `AssetManagement/GetAssetTransferById?assetTransferId=${params.id}`;
     getAssetAssignDetail(assetUrl, (data) => {
       const modifiedData = {
         ...data,

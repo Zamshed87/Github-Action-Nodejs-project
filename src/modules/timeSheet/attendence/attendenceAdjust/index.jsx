@@ -123,7 +123,7 @@ export default function AttendenceAdjust() {
         const payload = modifyFilterRowDto.map((item) => {
           return {
             id: item?.ManualAttendanceId || 0,
-            AccountId: orgId,
+            accountId: orgId,
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
@@ -141,6 +141,8 @@ export default function AttendenceAdjust() {
             isManagement: true,
             insertUserId: employeeId,
             insertDateTime: todayDate(),
+            workPlaceGroup: wgId,
+            businessUnitId: buId,
           };
         });
         const callBack = () => {

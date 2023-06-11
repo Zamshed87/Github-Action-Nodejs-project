@@ -5,7 +5,7 @@ import { gray600 } from "../../../utility/customColor";
 import {
   dateFormatter,
   monthFirstDate,
-  monthLastDate
+  monthLastDate,
 } from "../../../utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 
@@ -17,7 +17,7 @@ export const onGetAssetDirectAssignLanding = (
   setRowDto
 ) => {
   getAssetDirectAssign(
-    `/AssetManagement/GetDirectAssetAssign?accountId=${orgId}&businessUnitId=${buId}&fromDate=${
+    `/AssetManagement/GetDirectAssetAssign?fromDate=${
       values?.filterFromDate || monthFirstDate()
     }&toDate=${values?.filterToDate || monthLastDate()}`,
     (data) => {
@@ -53,7 +53,8 @@ export const directAssetAssignTableColumn = (
   orgId,
   buId,
   page,
-  paginationSize
+  paginationSize,
+  wgId
 ) => {
   return [
     {
@@ -147,6 +148,7 @@ export const directAssetAssignTableColumn = (
                         createdBy: employeeId,
                         updatedAt: todayDate(),
                         updatedBy: employeeId,
+                        workPlaceGroupId: wgId,
                       };
                       deleteDirectAsset(
                         `/AssetManagement/SaveDirectAssetAssign`,

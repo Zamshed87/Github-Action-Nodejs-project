@@ -28,9 +28,9 @@ const initData = {
 
 const validationSchema = Yup.object().shape({
   isAutoCode: Yup.boolean(),
-  itemCode: Yup.string().when('isAutoCode', {
+  itemCode: Yup.string().when("isAutoCode", {
     is: true,
-    then: Yup.string().required('Item code is required'),
+    then: Yup.string().required("Item code is required"),
     otherwise: Yup.string(),
   }),
   itemName: Yup.string().required("Item name is required"),
@@ -98,8 +98,6 @@ function AssetItemRegistration() {
     };
     const payload = {
       itemId: singleData ? singleData?.itemId : 0,
-      accountId: orgId,
-      businessUnitId: buId,
       isAutoCode: values?.isAutoCode,
       itemCode: values?.itemCode || "",
       itemName: values?.itemName,
