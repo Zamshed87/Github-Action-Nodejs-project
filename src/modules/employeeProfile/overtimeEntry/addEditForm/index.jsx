@@ -104,12 +104,37 @@ export default function AddEditOverTime() {
 
   const saveHandler = (values, cb) => {
     let payload = values?.otInfo?.map((data) => {
+      // let modifiedData = {
+      //   employeeCode: params?.id
+      //     ? values?.employee?.label
+      //     : values?.employee?.strEmployeeCode,
+      //   intAccountId: orgId,
+      //   intBusinessUnitId: buId,
+      //   intYear: +data?.date.split("-")[0],
+      //   intMonth: +data?.date.split("-")[1],
+      //   dteOverTimeDate:
+      //     values?.duration === "Monthly"
+      //       ? params.id
+      //         ? `${moment(data?.date).format("YYYY-MM")}-01`
+      //         : `${moment(data?.date).format("YYYY-MM")}-01`
+      //       : data?.date,
+      //   numOverTimeHour: +data?.overTimeHour,
+      //   strReason: data?.reason,
+      //   strDailyOrMonthly: values?.duration,
+      //   isActive: true,
+      //   intCreatedBy: employeeId,
+      //   dteCreatedAt: todayDate(),
+      //   intUpdatedBy: employeeId,
+      //   dteUpdatedAt: todayDate(),
+      // };
+
       let modifiedData = {
-        employeeCode: params?.id
-          ? values?.employee?.label
-          : values?.employee?.strEmployeeCode,
+        intOverTimeId: 0,
+        intEmployeeId: values?.employee?.employeeId,
+        employeeCode: values?.employee?.employeeCode,
         intAccountId: orgId,
         intBusinessUnitId: buId,
+        intWorkplaceGroupId: wgId,
         intYear: +data?.date.split("-")[0],
         intMonth: +data?.date.split("-")[1],
         dteOverTimeDate:
