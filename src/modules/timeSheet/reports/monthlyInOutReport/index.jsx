@@ -72,8 +72,8 @@ export default function MonthlyInOutReport() {
   const [rowDto, setRowDto] = useState(null);
   const [buDetails, setBuDetails] = useState({});
   const [pdfData, setPdfData] = useState(null);
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  // const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
+  // const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -104,7 +104,7 @@ export default function MonthlyInOutReport() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
 
   const getData = (fromDate, toDate) => {
     getRosterReport(
@@ -139,11 +139,17 @@ export default function MonthlyInOutReport() {
   }, [buId, wgId]);
 
   useEffect(() => {
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+    //   "intBusinessUnitId",
+    //   "strBusinessUnit",
+    //   setBusinessUnitDDL
+    // );
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
     );
   }, [orgId, buId, employeeId]);
 
@@ -164,7 +170,7 @@ export default function MonthlyInOutReport() {
       orgId,
       buId,
       workplace?.value || 0,
-      workplaceGroup?.value || 0,
+      wgId || 0,
       calendarType?.value || 0,
       department?.value || 0,
       designation?.value || 0,
@@ -290,10 +296,14 @@ export default function MonthlyInOutReport() {
                         const excelLanding = async () => {
                           try {
                             const res = await axios.get(
-                              `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_in_out_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate
-                              }&DteToDate=${values?.toDate
-                              }&EmployeeId=0&WorkplaceGroupId=${values?.workplaceGroup?.value || wgId || 0
-                              }&WorkplaceId=${values?.workplace?.value || 0
+                              `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_in_out_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
+                                values?.fromDate
+                              }&DteToDate=${
+                                values?.toDate
+                              }&EmployeeId=0&WorkplaceGroupId=${
+                                wgId || 0
+                              }&WorkplaceId=${
+                                values?.workplace?.value || 0
                               }&PageNo=1&PageSize=100000&IsPaginated=false`
                             );
                             if (res?.data) {
@@ -366,40 +376,40 @@ export default function MonthlyInOutReport() {
                   {(values?.workplace ||
                     values?.calendarType ||
                     values?.rosterGroupName ||
-                    values?.workplaceGroup ||
+                    // values?.workplaceGroup ||
                     values?.department ||
                     values?.designation ||
                     values?.date ||
                     values?.search) && (
-                      <div className="pr-2">
-                        <ResetButton
-                          classes="btn-filter-reset"
-                          title="reset"
-                          icon={
-                            <SettingsBackupRestoreOutlined
-                              sx={{
-                                marginRight: "10px",
-                                fontSize: "16px",
-                              }}
-                            />
-                          }
-                          onClick={() => {
-                            getData();
-                            setIsFilter({
-                              rosterGroupName: "",
-                              calendarType: "",
-                              workplace: "",
-                              workplaceGroup: "",
-                              department: "",
-                              designation: "",
-                              date: "",
-                            });
-                            resetForm(initData);
-                            setFieldValue("search", "");
-                          }}
-                        />
-                      </div>
-                    )}
+                    <div className="pr-2">
+                      <ResetButton
+                        classes="btn-filter-reset"
+                        title="reset"
+                        icon={
+                          <SettingsBackupRestoreOutlined
+                            sx={{
+                              marginRight: "10px",
+                              fontSize: "16px",
+                            }}
+                          />
+                        }
+                        onClick={() => {
+                          getData();
+                          setIsFilter({
+                            rosterGroupName: "",
+                            calendarType: "",
+                            workplace: "",
+                            workplaceGroup: "",
+                            department: "",
+                            designation: "",
+                            date: "",
+                          });
+                          resetForm(initData);
+                          setFieldValue("search", "");
+                        }}
+                      />
+                    </div>
+                  )}
                   <MasterFilter
                     styles={{ marginRight: "0px" }}
                     width="200px"
@@ -475,21 +485,21 @@ export default function MonthlyInOutReport() {
               </div>
               <div className="table-card-body">
                 <div className="card-style mb-2 row px-0 pb-0">
-                  <div className="col-lg-3">
+                  <div className="col-lg-3 d-none">
                     <div className="input-field-main">
                       <label>Business Unit</label>
                       <FormikSelect
                         name="businessUnit"
-                        options={businessUnitDDL || []}
+                        // options={businessUnitDDL || []}
                         value={values?.businessUnit}
                         onChange={(valueOption) => {
                           if (valueOption?.value) {
-                            getPeopleDeskAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}`,
-                              "intWorkplaceGroupId",
-                              "strWorkplaceGroup",
-                              setWorkplaceGroupDDL
-                            );
+                            // getPeopleDeskAllDDL(
+                            //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}`,
+                            //   "intWorkplaceGroupId",
+                            //   "strWorkplaceGroup",
+                            //   setWorkplaceGroupDDL
+                            // );
                             setValues((prev) => ({
                               ...prev,
                               businessUnit: valueOption,
@@ -511,12 +521,12 @@ export default function MonthlyInOutReport() {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-3">
+                  <div className="col-lg-3 d-none">
                     <div className="input-field-main">
                       <label>Workplace Group</label>
                       <FormikSelect
                         name="workplaceGroup"
-                        options={[...workplaceGroupDDL] || []}
+                        // options={[...workplaceGroupDDL] || []}
                         value={values?.workplaceGroup}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
@@ -525,12 +535,12 @@ export default function MonthlyInOutReport() {
                             workplaceGroup: valueOption,
                           }));
                           if (valueOption?.value) {
-                            getPeopleDeskAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                              "intWorkplaceId",
-                              "strWorkplace",
-                              setWorkplaceDDL
-                            );
+                            // getPeopleDeskAllDDL(
+                            //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                            //   "intWorkplaceId",
+                            //   "strWorkplace",
+                            //   setWorkplaceDDL
+                            // );
                           }
                           setTableRowDto([]);
                           setRowDto([]);

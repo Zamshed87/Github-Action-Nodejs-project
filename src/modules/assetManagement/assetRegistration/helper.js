@@ -4,7 +4,7 @@ import { gray600 } from "../../../utility/customColor";
 import {
   dateFormatter,
   monthFirstDate,
-  monthLastDate
+  monthLastDate,
 } from "../../../utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 
@@ -16,7 +16,7 @@ export const onGetAssetApplicationLanding = (
   setRowDto
 ) => {
   getAssetApplication(
-    `/AssetManagement/GetAsset?accountId=${orgId}&businessUnitId=${buId}&fromDate=${
+    `/AssetManagement/GetAsset?fromDate=${
       item?.filterFromDate || monthFirstDate()
     }&toDate=${item?.filterToDate || monthLastDate()}`,
     (data) => {
@@ -132,8 +132,6 @@ export const assetLandingTableColumn = (
                   e.stopPropagation();
                   const payload = {
                     assetId: item?.assetId || 0,
-                    accountId: orgId,
-                    businessUnitId: buId,
                     assetCode: "",
                     itemId: item?.itemName?.value,
                     itemName: item?.itemName?.label,

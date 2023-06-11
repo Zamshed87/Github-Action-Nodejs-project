@@ -12,18 +12,20 @@ import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 import { gray700 } from "../../../utility/customColor";
 import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
+import { getExpenseApplicationById } from "./helper";
 
 const SelfExpenseApplicationView = () => {
   const dispatch = useDispatch();
   const params = useParams();
 
-  const { orgId, buId } = useSelector(
+  const { buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
   const [singleData, setSingleData] = useState([]);
   const [imgRow, setImgRow] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [, getExpenseDetail, expenseDetailsLoading] = useAxiosGet([]);
 
@@ -35,15 +37,7 @@ const SelfExpenseApplicationView = () => {
   useEffect(() => {
     params?.id &&
       getExpenseDetail(
-        `/Employee/ExpenseApplicationLanding?strPartName=ExpenseById&intAccountId=${orgId}&intBusinessUnitId=${buId}&intExpenseId=${params?.id}`,
-        (data) => {
-          setSingleData([...data]);
-        }
-      );
-
-    params?.id &&
-      getExpenseDetail(
-        `/Employee/ExpenseApplicationLanding?strPartName=ExpenseDocList&intAccountId=${orgId}&intBusinessUnitId=${buId}&intExpenseId=${params?.id}`,
+        `/Employee/GetExpenseDocList?intExpenseId=${params?.id}`,
         (data) => {
           setImgRow([...data]);
         }
@@ -51,8 +45,15 @@ const SelfExpenseApplicationView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params?.id]);
 
+  useEffect(() => {
+    if (params?.id) {
+      getExpenseApplicationById(+params?.id, buId, setSingleData, setLoading);
+    }
+  }, [buId, params?.id]);
+
   return (
     <>
+      {(loading || expenseDetailsLoading) && <Loading />}
       <div>
         {expenseDetailsLoading && <Loading />}
         <div className="table-card">
@@ -64,11 +65,23 @@ const SelfExpenseApplicationView = () => {
           </div>
           <div className="card-style">
             <div className="row">
+              <div className="col-12" style={{ margin: "12px 0 0" }}></div>
+
               <div className="col-lg-2">
                 <CircleButton
                   icon={<DateRange style={{ fontSize: "24px" }} />}
-                  title={dateFormatter(singleData[0]?.dteExpenseDate) || "-"}
-                  subTitle="Date"
+                  title={
+                    dateFormatter(singleData[0]?.dteExpenseFromDate) || "-"
+                  }
+                  subTitle="From Date"
+                />
+              </div>
+
+              <div className="col-lg-2">
+                <CircleButton
+                  icon={<DateRange style={{ fontSize: "24px" }} />}
+                  title={dateFormatter(singleData[0]?.dteExpenseToDate) || "-"}
+                  subTitle="To Date"
                 />
               </div>
 

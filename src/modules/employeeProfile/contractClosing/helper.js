@@ -28,7 +28,8 @@ export const getContractClosingInfo = async (
   pages,
   srcText,
   setPages,
-  WorkplaceGroupId
+  WorkplaceGroupId,
+  IsPaginated = true
 ) => {
   setLoading && setLoading(true);
 
@@ -37,7 +38,7 @@ export const getContractClosingInfo = async (
   let intId = id ? `&intId=${id}` : "";
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&WorkplaceGroupId=${WorkplaceGroupId}&PageNo=${pages.current}&PageSize=${pages.pageSize}${status}${search}${intId}`
+      `/Employee/PeopleDeskAllLanding?businessUnitId=${busId}&workplaceGroupId=${WorkplaceGroupId}&IsPaginated=${IsPaginated}&pageNo=${pages.current}&pageSize=${pages.pageSize}${status}${search}${intId}`
     );
     if (res?.data) {
       setter && setter(res?.data);

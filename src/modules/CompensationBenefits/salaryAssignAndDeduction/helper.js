@@ -1,41 +1,108 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 import { toast } from "react-toastify";
+import AvatarComponent from "../../../common/AvatarComponent";
 
 let date = new Date();
 let initYear = date.getFullYear(); // 2022
 let initMonth = date.getMonth() + 1; // 6
 let modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
 
+export const allowanceAndDeductionColumn = (page, paginationSize) => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "strEmployeeName",
+      render: (record) => {
+        return (
+          <div className="d-flex align-items-center">
+            <AvatarComponent
+              classess=""
+              letterCount={1}
+              label={record?.strEmployeeName}
+            />
+            <span className="ml-2">{record?.strEmployeeName}</span>
+          </div>
+        );
+      },
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Designation",
+      dataIndex: "strDesignation",
+      sort: true,
+      filter: false,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroup",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Business Unit",
+      dataIndex: "strBusinessUnit",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+  ];
+};
+
 export const getSalaryAdditionAndDeductionLanding = async (
   fromMonth,
-  orgId,
   buId,
-  pageNo,
-  pageSize,
   setter,
   setLoading,
   search,
-  setAllData,
+  pages,
+  setPages,
   wgId
 ) => {
   setLoading && setLoading(true);
   let searchTxt = search ? `&searchTxt=${search}` : "";
-  const payload = [
-    {
-      strEntryType: "GetEmpSalaryAdditionNDeductionLanding",
-      intAccountId: orgId,
-      intBusinessUnitId: buId,
-      intYear: fromMonth ? +fromMonth?.split("-")[0] : initYear,
-      intMonth: fromMonth ? +fromMonth.split("-")[1] : +modifyMonthResult,
-      intWorkplaceGroupId: wgId,
-    },
-  ];
+  const intMonth = fromMonth ? +fromMonth.split("-")[1] : +modifyMonthResult;
+  const intYear = fromMonth ? +fromMonth?.split("-")[0] : initYear;
+
   try {
-    const res = await axios.post(`/Employee/SalaryAdditonNDeduction`, payload);
+    const res = await axios.get(
+      `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&searchTxt=${searchTxt}`
+    );
     if (res?.data) {
-      setter(res?.data);
-      setAllData && setAllData(res?.data);
+      const modifiedData = res.data.data.map((item, index) => ({
+        ...item,
+        initialSerialNumber: index + 1,
+      }));
+      setter?.(modifiedData);
+      setPages?.({
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
+      });
       setLoading && setLoading(false);
     }
   } catch (error) {

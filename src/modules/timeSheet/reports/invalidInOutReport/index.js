@@ -31,12 +31,12 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object().shape({
-  businessUnit: Yup.object()
-    .shape({
-      value: Yup.string().required("Business Unit is required"),
-      label: Yup.string().required("Business Unit is required"),
-    })
-    .typeError("Business Unit is required"),
+  // businessUnit: Yup.object()
+  //   .shape({
+  //     value: Yup.string().required("Business Unit is required"),
+  //     label: Yup.string().required("Business Unit is required"),
+  //   })
+  //   .typeError("Business Unit is required"),
 
   date: Yup.date()
     .required("From Date is required")
@@ -50,7 +50,7 @@ const MgmtInOutReport = () => {
   // redux
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -69,7 +69,7 @@ const MgmtInOutReport = () => {
   });
 
   // DDl section
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
+  // const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
 
@@ -104,11 +104,17 @@ const MgmtInOutReport = () => {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
     );
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+    //   "intBusinessUnitId",
+    //   "strBusinessUnit",
+    //   setBusinessUnitDDL
+    // );
   }, [orgId, buId, employeeId]);
 
   // filter data
@@ -184,20 +190,20 @@ const MgmtInOutReport = () => {
           <div className="table-card-body" style={{ marginTop: "12px" }}>
             <div className="card-style" style={{ margin: "14px 0px 12px 0px" }}>
               <div className="row">
-                <div className="col-lg-3">
+                <div className="col-lg-3 d-none">
                   <div className="input-field-main">
                     <label>Business Unit</label>
                     <FormikSelect
                       name="businessUnit"
-                      options={businessUnitDDL || []}
+                      // options={businessUnitDDL || []}
                       value={values?.businessUnit}
                       onChange={(valueOption) => {
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=0`,
-                          "intWorkplaceGroupId",
-                          "strWorkplaceGroup",
-                          setWorkplaceGroupDDL
-                        );
+                        // getPeopleDeskAllDDL(
+                        //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=0`,
+                        //   "intWorkplaceGroupId",
+                        //   "strWorkplaceGroup",
+                        //   setWorkplaceGroupDDL
+                        // );
                         setValues((prev) => ({
                           ...prev,
                           businessUnit: valueOption,
@@ -260,8 +266,8 @@ const MgmtInOutReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3">
-                  <div className="input-field-main">
+                <div className="col-lg-3 d-none">
+                  <div className="input-field-main ">
                     <label>Workplace Group</label>
                     <FormikSelect
                       name="workplaceGroup"
@@ -273,12 +279,12 @@ const MgmtInOutReport = () => {
                           workplace: "",
                           workplaceGroup: valueOption,
                         }));
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                          "intWorkplaceId",
-                          "strWorkplace",
-                          setWorkplaceDDL
-                        );
+                        // getPeopleDeskAllDDL(
+                        //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                        //   "intWorkplaceId",
+                        //   "strWorkplace",
+                        //   setWorkplaceDDL
+                        // );
                         setAllData([]);
                         setRowDto([]);
                         setWorkplaceDDL([]);
@@ -312,7 +318,7 @@ const MgmtInOutReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-3">
                   <button
                     className="btn btn-green btn-green-disable"
                     type="submit"
