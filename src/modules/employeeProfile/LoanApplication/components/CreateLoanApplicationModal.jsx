@@ -116,7 +116,17 @@ const CreateLoanApplicationModal = ({
           "Approve Installment number can't be greather than amount"
         );
     }
-    loanCrudAction(values, cb, setLoading, employeeId, fileId, orgId);
+    loanCrudAction(
+      values,
+      cb,
+      setLoading,
+      employeeId,
+      fileId,
+      orgId,
+      false,
+      buId,
+      wgId
+    );
   };
 
   useEffect(() => {
@@ -453,7 +463,7 @@ const CreateLoanApplicationModal = ({
                       className={fileId ? " mt-0 " : "mt-3"}
                       onClick={onButtonClick}
                       style={{ cursor: "pointer" }}
-                    // style={{ cursor: "pointer", position: "relative" }}
+                      // style={{ cursor: "pointer", position: "relative" }}
                     >
                       <input
                         onChange={(e) => {
