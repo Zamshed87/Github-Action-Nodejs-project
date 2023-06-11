@@ -2,12 +2,10 @@ import { InfoOutlined } from "@mui/icons-material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Tooltip } from "@mui/material";
 import axios from "axios";
+import moment from "moment";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../../common/AvatarComponent";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
-import { gray900, greenColor } from "../../../../utility/customColor";
 import { todayDate } from "../../../../utility/todayDate";
-import moment from "moment";
 
 export const getSingleCalendar = async (
   monthId,
