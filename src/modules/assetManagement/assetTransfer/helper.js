@@ -182,7 +182,6 @@ export const assetTransferTableColumn = (
                     e.stopPropagation();
                     const payload = {
                       assetTransferId: item?.assetTransferId,
-                      accountId: orgId,
                       businessUnitId: buId,
                       fromEmployeeId: item?.fromEmployeeId,
                       itemId: item?.itemId,
