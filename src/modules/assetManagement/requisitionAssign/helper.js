@@ -16,7 +16,7 @@ export const getRequisitionAssignLanding = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/AssetManagement/GetAssetRequisition?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${
+      `/AssetManagement/GetAssetRequisition?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${
         values?.workplace?.value || 0
       }&employeeId=${values?.employee?.value || 0}`
     );
