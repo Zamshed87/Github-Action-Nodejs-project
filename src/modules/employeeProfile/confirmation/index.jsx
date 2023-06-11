@@ -377,6 +377,7 @@ function Confirmation() {
                       {rowDto?.length > 0 ? (
                         <div className="table-card-styled employee-table-card tableOne mt-3">
                           <PeopleDeskTable
+                            scrollCustomClass="confirmationScrollTable"
                             columnData={empConfirmcolumns(
                               setAnchorEl,
                               setSingleData,
