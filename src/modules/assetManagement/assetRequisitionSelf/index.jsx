@@ -2,7 +2,7 @@
 
 import {
   AddOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
 import {
   assetRequisitionSelfTableColumn,
   filterAssetRequisitionLanding,
-  onGetAssetRequisitionLanding
+  onGetAssetRequisitionLanding,
 } from "./helper";
 
 const initData = {
@@ -36,7 +36,7 @@ const AssetRequisitionSelfLanding = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -45,9 +45,8 @@ const AssetRequisitionSelfLanding = () => {
   const [rowDto, setRowDto] = useState([]);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
-  const [, deleteAssetRequisition, deleteAssetRequisitionLoading] = useAxiosPost(
-    {}
-  );
+  const [, deleteAssetRequisition, deleteAssetRequisitionLoading] =
+    useAxiosPost({});
   const [assetRequisitionLanding, getAssetRequisitionLanding, loading] =
     useAxiosGet([]);
 
@@ -67,7 +66,8 @@ const AssetRequisitionSelfLanding = () => {
       buId,
       employeeId,
       values,
-      setRowDto
+      setRowDto,
+      wgId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
@@ -164,7 +164,8 @@ const AssetRequisitionSelfLanding = () => {
                           buId,
                           employeeId,
                           values,
-                          setRowDto
+                          setRowDto,
+                          wgId
                         );
                       },
                       orgId,

@@ -353,6 +353,7 @@ export default function MgtIOUApplication() {
 
             {rowDto.length > 0 ? (
               <PeopleDeskTable
+                customClass="iouManagementTable"
                 columnData={iouLandingTableColumn(
                   pages?.current,
                   pages?.pageSize,
