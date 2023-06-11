@@ -12,10 +12,11 @@ export const onGetAssetRequisitionLanding = (
   buId,
   employeeId,
   values,
-  setRowDto
+  setRowDto,
+  wgId,
 ) => {
   getAssetRequisitionApplication(
-    `/AssetManagement/GetAssetRequisitionForSelf?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=0&workPlaceId=0&employeeId=${employeeId}`,
+    `/AssetManagement/GetAssetRequisitionForSelf?accountId=${orgId}&businessUnitId=${buId}&workplaceGroupId=${wgId}`,
     (data) => {
       setRowDto(data);
     }
