@@ -260,6 +260,9 @@ export const assetRequisitionAssignColumns = (
                 const payload = {
                   assetRequisitionId: item?.assetRequisitionId,
                   isDenied: true,
+                  businessUnitId: item?.businessUnitId,
+                  workPlaceGroupId: item?.WorkPlaceGroupId,
+                  employeeId: item?.employeeId,
                 };
                 deleteAssetRequisition(
                   `/AssetManagement/AssetRequisitionDenied`,
