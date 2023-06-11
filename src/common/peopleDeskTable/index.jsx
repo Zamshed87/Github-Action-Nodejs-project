@@ -25,6 +25,8 @@ const PeopleDeskTable = ({
   isCheckBox = false,
   isScrollAble = false,
   isPagination = true,
+  scrollCustomClass = "",
+  customClass = ""
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentFilterSelection, setCurrentFilterSelection] = useState(null);
@@ -38,7 +40,7 @@ const PeopleDeskTable = ({
         {isScrollAble ? (
           <ScrollablePeopleDeskTable
             classes="salary-process-table"
-            secondClasses="table-card-styled tableOne scroll-table-height"
+            secondClasses={scrollCustomClass ? `table-card-styled tableOne scroll-table-height ${scrollCustomClass}` : `table-card-styled tableOne scroll-table-height`}
           >
             <TableContent
               pages={pages}
@@ -57,7 +59,7 @@ const PeopleDeskTable = ({
             />
           </ScrollablePeopleDeskTable>
         ) : (
-          <div className="table-card-styled employee-table-card tableOne">
+          <div className={customClass ? `table-card-styled employee-table-card tableOne ${customClass}` : `table-card-styled employee-table-card tableOne`}>
             <table className="table">
               <TableContent
                 pages={pages}

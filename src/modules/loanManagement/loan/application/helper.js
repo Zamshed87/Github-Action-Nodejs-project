@@ -2,7 +2,7 @@ import {
   Attachment,
   CreateOutlined,
   DeleteOutline,
-  InfoOutlined
+  InfoOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import axios from "axios";
@@ -48,7 +48,9 @@ export const loanCrudAction = async (
   employeeId,
   fileId,
   orgId,
-  isDelete = false
+  isDelete = false,
+  buId,
+  wgId
 ) => {
   try {
     setLoading(true);
@@ -85,6 +87,8 @@ export const loanCrudAction = async (
       isApprove: false,
       isReject: false,
       remainingBalance: 0,
+      businessUnitId: buId,
+      workPlaceGrop: wgId,
     };
     const res = await axios.post(`/Employee/LoanCRUD`, payload);
     setLoading(false);
@@ -141,7 +145,9 @@ export const selfServiceLoanReqDtoColumns = (
   setLoading,
   values,
   page,
-  paginationSize
+  paginationSize,
+  buId,
+  wgId
 ) => {
   return [
     {
@@ -380,7 +386,9 @@ export const selfServiceLoanReqDtoColumns = (
                           employeeId,
                           null,
                           orgId,
-                          true
+                          true,
+                          buId,
+                          wgId
                         );
                       }}
                     >

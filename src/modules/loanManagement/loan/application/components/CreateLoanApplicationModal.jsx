@@ -1,7 +1,7 @@
 import {
   AttachmentOutlined,
   FileUpload,
-  VisibilityOutlined
+  VisibilityOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
@@ -77,12 +77,20 @@ const CreateLoanApplicationModal = ({
   );
   const dispatch = useDispatch();
 
-
-
   const saveHandler = (values, cb) => {
     if (+values?.installmentNumber > +values?.loanAmount)
       return toast.warn("Installment number can't be greather than amount");
-    loanCrudAction(values, cb, setLoading, employeeId, fileId, orgId);
+    loanCrudAction(
+      values,
+      cb,
+      setLoading,
+      employeeId,
+      fileId,
+      orgId,
+      false,
+      buId,
+      wgId
+    );
   };
 
   useEffect(() => {
@@ -128,9 +136,9 @@ const CreateLoanApplicationModal = ({
         singleData?.loanApplicationId
           ? singleData
           : {
-            ...initData,
-            employee: { value: employeeId, label: strDisplayName },
-          }
+              ...initData,
+              employee: { value: employeeId, label: strDisplayName },
+            }
       }
       validationSchema={validationSchema}
       onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -325,7 +333,7 @@ const CreateLoanApplicationModal = ({
                       className={fileId ? " mt-0 " : "mt-3"}
                       onClick={onButtonClick}
                       style={{ cursor: "pointer" }}
-                    // style={{ cursor: "pointer", position: "relative" }}
+                      // style={{ cursor: "pointer", position: "relative" }}
                     >
                       <input
                         onChange={(e) => {
