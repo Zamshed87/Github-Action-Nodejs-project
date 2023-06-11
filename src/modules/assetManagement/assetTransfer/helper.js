@@ -6,7 +6,7 @@ import { gray600, gray900 } from "../../../utility/customColor";
 import {
   dateFormatter,
   monthFirstDate,
-  monthLastDate
+  monthLastDate,
 } from "../../../utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 
@@ -18,7 +18,7 @@ export const onGetAssetTransferLanding = (
   setRowDto
 ) => {
   getAssetTransfer(
-    `/AssetManagement/GetAssetTransfer?accountId=${orgId}&businessUnitId=${buId}&fromDate=${
+    `/AssetManagement/GetAssetTransfer?fromDate=${
       values?.filterFromDate || monthFirstDate()
     }&toDate=${values?.filterToDate || monthLastDate()}`,
     (data) => {
@@ -118,7 +118,7 @@ export const assetTransferTableColumn = (
           {item?.status === "Denied" && (
             <Chips label="Denied" classess="primary p-2" />
           )}
-           {item?.status === "Acknowledged" && (
+          {item?.status === "Acknowledged" && (
             <Chips label="Acknowledged" classess="" />
           )}
           {item?.status === "Rejected" && (
@@ -182,7 +182,6 @@ export const assetTransferTableColumn = (
                     e.stopPropagation();
                     const payload = {
                       assetTransferId: item?.assetTransferId,
-                      accountId: orgId,
                       businessUnitId: buId,
                       fromEmployeeId: item?.fromEmployeeId,
                       itemId: item?.itemId,

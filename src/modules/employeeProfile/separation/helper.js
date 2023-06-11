@@ -88,7 +88,7 @@ export const getSeparationLanding = async (obj) => {
       FromDate: fromDate || "",
       ToDate: toDate || "",
       searchTxt: srcText,
-      pageNo: pages.current,
+      pageNo: pages?.current,
       pageSize: pages.pageSize,
     };
     const res = await axios.post(
@@ -108,6 +108,7 @@ export const getSeparationLanding = async (obj) => {
         docArr: itm?.strDocumentId?.split(","),
       };
     });
+
     setter(modifyRes);
   } catch (error) {
     setLoading && setLoading(false);
