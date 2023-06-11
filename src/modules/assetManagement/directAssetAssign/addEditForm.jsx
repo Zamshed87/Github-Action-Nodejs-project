@@ -70,6 +70,7 @@ const DirectAssetAssignCreate = () => {
       createdBy: employeeId,
       updatedAt: todayDate(),
       updatedBy: employeeId,
+      workPlaceGroupId: wgId,
     };
     saveAssetDirectAssign(
       `/AssetManagement/SaveDirectAssetAssign`,

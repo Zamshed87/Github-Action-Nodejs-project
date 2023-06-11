@@ -53,7 +53,8 @@ export const directAssetAssignTableColumn = (
   orgId,
   buId,
   page,
-  paginationSize
+  paginationSize,
+  wgId
 ) => {
   return [
     {
@@ -147,6 +148,7 @@ export const directAssetAssignTableColumn = (
                         createdBy: employeeId,
                         updatedAt: todayDate(),
                         updatedBy: employeeId,
+                        workPlaceGroupId: wgId,
                       };
                       deleteDirectAsset(
                         `/AssetManagement/SaveDirectAssetAssign`,

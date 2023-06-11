@@ -2,7 +2,7 @@
 
 import {
   AddOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
@@ -25,7 +25,7 @@ import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
 import {
   directAssetAssignTableColumn,
   filterDirectAssetAssignLanding,
-  onGetAssetDirectAssignLanding
+  onGetAssetDirectAssignLanding,
 } from "./helper";
 
 const initData = {
@@ -39,7 +39,7 @@ const DirectAssetAssignLanding = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -247,7 +247,8 @@ const DirectAssetAssignLanding = () => {
                           orgId,
                           buId,
                           page,
-                          paginationSize
+                          paginationSize,
+                          wgId
                         )}
                         rowClassName="pointer"
                         setPage={setPage}
