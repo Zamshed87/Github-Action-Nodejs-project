@@ -119,8 +119,9 @@ const withLeaveApplication = (WrappedComponent) => {
         leaveReason: values?.reason,
         addressDuetoLeave: values?.location,
         insertBy: employeeId,
-        workplaceGroupId: wgId,
+        workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
       };
+
       let confirmObject = {
         closeOnClickOutside: false,
         message: `Do you want to ${action} ?`,
