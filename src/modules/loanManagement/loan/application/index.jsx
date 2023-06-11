@@ -72,7 +72,7 @@ const Application = () => {
 
   const [view, setView] = useState(false);
 
-  const { orgId, buId, employeeId, intProfileImageUrl } = useSelector(
+  const { orgId, buId, employeeId, intProfileImageUrl, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -312,7 +312,9 @@ const Application = () => {
                             setLoading,
                             values,
                             page,
-                            paginationSize
+                            paginationSize,
+                            buId,
+                            wgId
                           )}
                           onRowClick={(rowData) => {
                             setSingleDataAction(rowData);

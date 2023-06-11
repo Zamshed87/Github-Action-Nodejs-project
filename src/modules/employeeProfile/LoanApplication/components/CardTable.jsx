@@ -2,7 +2,7 @@ import {
   Attachment,
   CreateOutlined,
   DeleteOutline,
-  InfoOutlined
+  InfoOutlined,
 } from "@mui/icons-material";
 import { Tooltip, tooltipClasses } from "@mui/material";
 import { styled } from "@mui/system";
@@ -13,7 +13,7 @@ import Chips from "../../../../common/Chips";
 import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
 import {
   dateFormatter,
-  dateFormatterForInput
+  dateFormatterForInput,
 } from "../../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
 import "../application.css";
@@ -51,7 +51,7 @@ const CardTable = ({
   //   designationOrder: "desc",
   //   departmentOrder: "desc"
   // })
-  const { employeeId, orgId } = useSelector(
+  const { employeeId, orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -126,10 +126,7 @@ const CardTable = ({
           <td>
             <div className="tableBody-title">{data?.employeeCode}</div>
           </td>
-          <td
-            className="fixed-column"
-            style={{ left: "125px" }}
-          >
+          <td className="fixed-column" style={{ left: "125px" }}>
             <div className="employeeInfo d-flex align-items-center">
               <AvatarComponent letterCount={1} label={data?.employeeName} />
               <div className="employeeTitle ml-3">
@@ -274,7 +271,9 @@ const CardTable = ({
                             employeeId,
                             null,
                             orgId,
-                            true
+                            true,
+                            buId,
+                            wgId
                           );
                         }}
                       >
