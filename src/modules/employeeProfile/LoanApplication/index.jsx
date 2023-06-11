@@ -233,7 +233,9 @@ const EmLoanApplication = () => {
                       setSingleData,
                       setFileId,
                       page,
-                      paginationSize
+                      paginationSize,
+                      buId,
+                      wgId
                     )}
                     onRowClick={(rowData) => {
                       setSingleLoanApplication(

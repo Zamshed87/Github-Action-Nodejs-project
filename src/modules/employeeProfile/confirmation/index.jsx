@@ -127,7 +127,6 @@ function Confirmation() {
     });
   };
   const handleChangeRowsPerPage = (event, values) => {
-    console.log("first");
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
@@ -208,11 +207,11 @@ function Confirmation() {
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-      // onSubmit={(values, { setSubmitting, resetForm }) => {
-      //   saveHandler(values, () => {
-      //     resetForm(initData);
-      //   });
-      // }}
+        // onSubmit={(values, { setSubmitting, resetForm }) => {
+        //   saveHandler(values, () => {
+        //     resetForm(initData);
+        //   });
+        // }}
       >
         {({
           handleSubmit,
@@ -377,6 +376,7 @@ function Confirmation() {
                       {rowDto?.length > 0 ? (
                         <div className="table-card-styled employee-table-card tableOne mt-3">
                           <PeopleDeskTable
+                            scrollCustomClass="confirmationScrollTable"
                             columnData={empConfirmcolumns(
                               setAnchorEl,
                               setSingleData,
@@ -598,7 +598,7 @@ function Confirmation() {
       >
         <ViewForm
           setIsAddEditForm={setIsAddEditForm}
-        // singleSalaryData={singleSalaryData}
+          // singleSalaryData={singleSalaryData}
         />
       </ViewModal>
     </>

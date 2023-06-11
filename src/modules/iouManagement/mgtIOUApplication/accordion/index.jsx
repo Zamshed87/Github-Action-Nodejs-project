@@ -29,9 +29,9 @@ const Accordion = ({ empBasic, loading }) => {
                 htmlFor="contained-button-file"
                 className="label-add-image"
               >
-                {empBasic?.empEmployeePhotoIdentity ? (
+                {empBasic?.imageUrlId ? (
                   <img
-                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.empEmployeePhotoIdentity?.intProfilePicFileUrlId}`}
+                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.imageUrlId}`}
                     alt=""
                     style={{ maxHeight: "78px", minWidth: "78px" }}
                   />
@@ -51,9 +51,9 @@ const Accordion = ({ empBasic, loading }) => {
           <div className="content-about-info-card ml-3">
             <div className="d-flex justify-content-between">
               <h4 className="name-about-info" style={{ marginBottom: "5px" }}>
-                {empBasic?.employeeProfileLandingView?.strEmployeeName}
+                {empBasic?.employeeName}
                 <span style={{ fontWeight: "400", color: gray700 }}>
-                  [{empBasic?.employeeProfileLandingView?.strCardNumber}]
+                  [{empBasic?.cardNumber}]
                 </span>{" "}
               </h4>
             </div>
@@ -65,7 +65,7 @@ const Accordion = ({ empBasic, loading }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Department -
                 </small>{" "}
-                {empBasic?.employeeProfileLandingView?.strDepartment}
+                {empBasic?.strDepartment}
               </p>
             </div>
             <div className="single-info">
@@ -76,7 +76,7 @@ const Accordion = ({ empBasic, loading }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Designation -
                 </small>{" "}
-                {empBasic?.employeeProfileLandingView?.strDesignation}
+                {empBasic?.strDesignation}
               </p>
             </div>
             <div className="single-info">
@@ -87,7 +87,7 @@ const Accordion = ({ empBasic, loading }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Employment Type -
                 </small>{" "}
-                {empBasic?.employeeProfileLandingView?.strEmploymentType}
+                {empBasic?.employmentType}
               </p>
             </div>
             <AccordionCom empBasic={empBasic} isAccordion={isAccordion} />

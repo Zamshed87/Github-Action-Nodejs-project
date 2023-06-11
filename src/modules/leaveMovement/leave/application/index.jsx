@@ -56,7 +56,7 @@ function LeaveApplication(props) {
     orgId,
     buId,
     setAllData,
-    demoPopupForDelete
+    demoPopupForDelete,
   } = props?.propjObj;
 
   const scrollRef = useRef();
@@ -65,6 +65,8 @@ function LeaveApplication(props) {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log(leaveHistoryData, "all data");
 
   return (
     <>
@@ -263,14 +265,14 @@ function LeaveApplication(props) {
                           <AntTable
                             data={leaveHistoryData}
                             columnsData={empMgmtLeaveApplicationDtoColumn(
-                                setValues,
-                                values,
-                                dispatch,
-                                setIsEdit,
-                                scrollRef,
-                                setSingleData,
-                                setImageFile,
-                                demoPopupForDelete
+                              setValues,
+                              values,
+                              dispatch,
+                              setIsEdit,
+                              scrollRef,
+                              setSingleData,
+                              setImageFile,
+                              demoPopupForDelete
                             )}
                             onRowClick={(item) => {
                               setSingleData(item);
@@ -279,7 +281,7 @@ function LeaveApplication(props) {
                             removePagination
                             rowClassName="pointer"
                             rowKey={(item) => item?.intApplicationId}
-                            />
+                          />
                         ) : (
                           <>
                             {!loading && (

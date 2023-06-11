@@ -26,6 +26,8 @@ import { todayDate } from "../../../../utility/todayDate";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import { paginationSize } from "../../../../common/AntTable";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
+import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 
 const initData = {
   search: "",
@@ -61,7 +63,8 @@ export default function EmployeeList() {
   const [buDetails, setBuDetails] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [rowDto, setRowDto] = useState([]);
+  const [rowDto, getEmployeeReportLanding, loadingReport, setRowDto] =
+    useAxiosGet([]);
   const [allData, setAllData] = useState([]);
   const [status, setStatus] = useState("");
   const [pages, setPages] = useState({
@@ -69,57 +72,23 @@ export default function EmployeeList() {
     pageSize: paginationSize,
     total: 0,
   });
-  // const statusDDL = [
-  //   { value: "Active", label: "Active" },
-  //   { value: "Inactive", label: "Inactive" },
-  // ];
-
-  // const filterActiveInactive = (type) => {
-  //   const newData = allData.filter((item) => type === item?.EmpStatus);
-  //   setRowDto(newData);
-  // };
-
-  // const searchData = (keywords) => {
-  //   try {
-  //     if (!keywords) {
-  //       setRowDto(allData);
-  //       return;
-  //     }
-  //     setLoading(true);
-  //     const regex = new RegExp(keywords?.toLowerCase());
-  //     let newData = allData?.filter(
-  //       (item) =>
-  //         regex.test(item?.strDepartment?.toLowerCase()) ||
-  //         regex.test(item?.Designation?.toLowerCase()) ||
-  //         regex.test(item?.DepartmentSection?.toLowerCase()) ||
-  //         regex.test(item?.EmploymentType?.toLowerCase()) ||
-  //         regex.test(item?.EmployeeName?.toLowerCase()) ||
-  //         regex.test(item?.EmployeeCode?.toLowerCase())
-  //     );
-
-  //     setRowDto(newData);
-  //     setLoading(false);
-  //   } catch {
-  //     setRowDto([]);
-  //     setLoading(false);
-  //   }
-  // };
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
   useEffect(() => {
-    allEmployeeList(
-      { orgId, buId, wgId },
-      "",
-      setLoading,
-      setRowDto,
-      setAllData,
-      "",
-      pages,
-      "",
-      setPages
-    );
+    // allEmployeeList(
+    //   { orgId, buId, wgId },
+    //   "",
+    //   setLoading,
+    //   setRowDto,
+    //   setAllData,
+    //   "",
+    //   pages,
+    //   "",
+    //   setPages
+    // );
+    getLandingData(pages, "", "true");
     getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, wgId]);
@@ -128,17 +97,31 @@ export default function EmployeeList() {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, [dispatch]);
 
-  const getLandingData = (pages, srcText) => {
-    allEmployeeList(
-      { orgId, buId, wgId },
-      "",
-      setLoading,
-      setRowDto,
-      setAllData,
-      "",
-      pages,
-      srcText,
-      setPages
+  const getLandingData = (pages, srcText, IsPaginated = "true", cb) => {
+    // allEmployeeList(
+    //   { orgId, buId, wgId },
+    //   "",
+    //   setLoading,
+    //   setRowDto,
+    //   setAllData,
+    //   "",
+    //   pages,
+    //   srcText,
+    //   setPages
+    // );
+    getEmployeeReportLanding(
+      `/Employee/EmployeeReportWithFilter?businessUnitId=${buId}&workplaceGroupId=${wgId}&IsPaginated=${IsPaginated}&pageSize=${pages?.pageSize}&pageNo=${pages?.current}&searchTxt=${srcText}`,
+      (res) => {
+        cb?.(res?.data);
+        setRowDto(res?.data);
+        setAllData(res?.data);
+        setPages?.({
+          ...pages,
+          current: pages.current,
+          pageSize: pages.pageSize,
+          total: res?.totalCount,
+        });
+      }
     );
   };
   const saveHandler = (values) => {};
@@ -188,7 +171,7 @@ export default function EmployeeList() {
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              {loading && <Loading />}
+              {(loading || loadingReport) && <Loading />}
               {permission?.isView ? (
                 <div className="table-card">
                   <div className="table-card-heading pb-2">
@@ -203,7 +186,7 @@ export default function EmployeeList() {
                             const excelLanding = async () => {
                               try {
                                 const res = await axios.get(
-                                  `/Employee/EmployeeDetailsList?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`
+                                  `/Employee/EmployeeReportWithFilter?businessUnitId=${buId}&workplaceGroupId=${wgId}&IsPaginated=false&pageSize=${pages?.pageSize}&pageNo=${pages?.current}&searchTxt=`
                                 );
                                 if (res?.data) {
                                   const newData = res?.data?.map(

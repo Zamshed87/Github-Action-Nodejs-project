@@ -59,7 +59,9 @@ export const loanRequestLandingTableColumns = (
   setSingleData,
   setFileId,
   page,
-  paginationSize
+  paginationSize,
+  buId,
+  wgId
 ) => {
   return [
     {
@@ -284,7 +286,9 @@ export const loanRequestLandingTableColumns = (
                         employeeId,
                         null,
                         orgId,
-                        true
+                        true,
+                        buId,
+                        wgId
                       );
                     }}
                   >
@@ -340,7 +344,9 @@ export const loanCrudAction = async (
   employeeId,
   fileId,
   orgId,
-  isDelete = false
+  isDelete = false,
+  buId,
+  wgId
 ) => {
   try {
     setLoading?.(true);
@@ -383,6 +389,8 @@ export const loanCrudAction = async (
       intApproveNumberOfInstallment: values?.approveInstallmentNumber || null,
       intApproveNumberOfInstallmentAmount:
         values?.approveAmountPerInstallment || null,
+      businessUnitId: buId,
+      workPlaceGrop: wgId,
     };
     const res = await axios.post(`/Employee/LoanCRUD`, payload);
     setLoading?.(false);

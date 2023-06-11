@@ -37,8 +37,8 @@ const AccordionCom = ({ isAccordion, empBasic }) => {
         <>
           <div
             className={` ${isAccordion
-                ? "accordion-main active-accordion-main"
-                : "accordion-main"
+              ? "accordion-main active-accordion-main"
+              : "accordion-main"
               }`}
           >
             <div className="single-info">
@@ -49,9 +49,7 @@ const AccordionCom = ({ isAccordion, empBasic }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Date Of Joining -
                 </small>{" "}
-                {dateFormatter(
-                  empBasic?.employeeProfileLandingView?.dteJoiningDate
-                )}
+                {dateFormatter(empBasic?.joiningDate)}
               </p>
             </div>
             <div className="single-info">
@@ -62,10 +60,10 @@ const AccordionCom = ({ isAccordion, empBasic }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Work Length -
                 </small>{" "}
-                {empBasic?.employeeProfileLandingView?.strServiceLength}
+                {empBasic?.serviceLength}
               </p>
             </div>
-            <div className="single-info">
+            <div className="single-info ">
               <p
                 className="text-single-info"
                 style={{ fontWeight: "500", color: gray700 }}
@@ -73,7 +71,7 @@ const AccordionCom = ({ isAccordion, empBasic }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Shift -
                 </small>{" "}
-                {empBasic?.employeeProfileLandingView?.strCalenderName}
+                {empBasic?.strCalenderName}
               </p>
             </div>
             <div className="single-info">
@@ -84,7 +82,7 @@ const AccordionCom = ({ isAccordion, empBasic }) => {
                 <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                   Supervisor -
                 </small>{" "}
-                {empBasic?.employeeProfileLandingView?.strSupervisorName}
+                {empBasic?.supervisor}
               </p>
             </div>
           </div>

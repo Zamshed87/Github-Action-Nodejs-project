@@ -6,8 +6,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import AntTable from "../../../common/AntTable";
-import AvatarComponent from "../../../common/AvatarComponent";
 import BtnActionMenu from "../../../common/BtnActionMenu";
 import FilterBadgeComponent from "../../../common/FilterBadgeComponent";
 import Loading from "../../../common/loading/Loading";
@@ -19,9 +17,15 @@ import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStora
 import { gray500 } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import FilterModal from "./components/FilterModal";
-import { getSalaryAdditionAndDeductionLanding } from "./helper";
+import {
+  allowanceAndDeductionColumn,
+  getSalaryAdditionAndDeductionLanding,
+} from "./helper";
 import "./styles.css";
 import DefaultInput from "../../../common/DefaultInput";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../common/peopleDeskTable";
 
 let date = new Date();
 let initYear = date.getFullYear(); // 2022
@@ -47,21 +51,15 @@ function SalaryAssignAndDeduction() {
   const debounce = useDebounce();
   const dispatch = useDispatch();
   const history = useHistory();
-  const [filterBages, setFilterBages] = useState({});
+  const [filterBadges, setFilterBadges] = useState({});
   const [filterValues, setFilterValues] = useState({});
-  const [filterAnchorEl, setfilterAnchorEl] = useState(null);
+  const [filterAnchorEl, setFilterAnchorEl] = useState(null);
   const openFilter = Boolean(filterAnchorEl);
 
   const [loading, setLoading] = useState(false);
 
   // row data
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
-  // eslint-disable-next-line no-unused-vars
-  const [isFilter, setIsFilter] = useState(false);
-
-  const [page, setPage] = useState(1);
-  const [paginationSize, setPaginationSize] = useState(15);
 
   // master filter
   const [anchorEl] = useState(null);
@@ -76,19 +74,19 @@ function SalaryAssignAndDeduction() {
 
   const handleSearch = (values) => {
     getData(values);
-    setFilterBages(values);
-    setfilterAnchorEl(null);
+    setFilterBadges(values);
+    setFilterAnchorEl(null);
   };
   const clearBadge = (values, name) => {
     const data = values;
     data[name] = "";
-    setFilterBages(data);
+    setFilterBadges(data);
     setFilterValues(data);
     handleSearch(data);
   };
 
   const clearFilter = () => {
-    setFilterBages({});
+    setFilterBadges({});
     setFilterValues("");
     getData();
   };
@@ -97,9 +95,11 @@ function SalaryAssignAndDeduction() {
     setFilterValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  // page
-  const [pageSize] = useState(15);
-  const [pageNo] = useState(0);
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
 
   // useFormik hooks
   const {
@@ -122,14 +122,12 @@ function SalaryAssignAndDeduction() {
   const getData = () => {
     getSalaryAdditionAndDeductionLanding(
       "",
-      orgId,
       buId,
-      pageNo,
-      pageSize,
       setRowDto,
       setLoading,
       "",
-      setAllData,
+      pages,
+      setPages,
       wgId
     );
   };
@@ -137,14 +135,12 @@ function SalaryAssignAndDeduction() {
   useEffect(() => {
     getSalaryAdditionAndDeductionLanding(
       values?.fromMonth,
-      orgId,
       buId,
-      pageNo,
-      pageSize,
       setRowDto,
       setLoading,
       "",
-      setAllData,
+      pages,
+      setPages,
       wgId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,84 +160,45 @@ function SalaryAssignAndDeduction() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const searchData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter(
-        (item) =>
-          regex.test(item?.strEmployeeName?.toLowerCase()) ||
-          regex.test(item?.strDesignation?.toLowerCase()) ||
-          regex.test(item?.strDepartment?.toLowerCase()) ||
-          regex.test(item?.strWorkplace?.toLowerCase()) ||
-          regex.test(item?.strWorkplaceGroup?.toLowerCase()) ||
-          regex.test(item?.strBusinessUnit?.toLowerCase())
-      );
-      setRowDto(newDta);
-    } catch {
-      setRowDto([]);
-    }
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getSalaryAdditionAndDeductionLanding(
+      values?.fromMonth,
+      buId,
+      setRowDto,
+      setLoading,
+      searchText,
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      setPages,
+      wgId
+    );
   };
 
-  const allowanceAndDeductionColumn = (page, paginationSize) => {
-    return [
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getSalaryAdditionAndDeductionLanding(
+      values?.fromMonth,
+      buId,
+      setRowDto,
+      setLoading,
+      searchText,
       {
-        title: "SL",
-        render: (text, record, index) =>
-          (page - 1) * paginationSize + index + 1,
-        sorter: false,
-        filter: false,
-        className: "text-center",
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
       },
-      {
-        title: "Employee Name",
-        dataIndex: "strEmployeeName",
-        render: (_, record) => {
-          return (
-            <div className="d-flex align-items-center">
-              <AvatarComponent
-                classess=""
-                letterCount={1}
-                label={record?.strEmployeeName}
-              />
-              <span className="ml-2">{record?.strEmployeeName}</span>
-            </div>
-          );
-        },
-        sorter: true,
-        filter: true,
-        width: 300,
-      },
-      {
-        title: "Designation",
-        dataIndex: "strDesignation",
-        sorter: true,
-        filter: true,
-      },
-      {
-        title: "Department",
-        dataIndex: "strDepartment",
-        sorter: true,
-        filter: true,
-      },
-      {
-        title: "Workplace",
-        dataIndex: "strWorkplace",
-        sorter: true,
-        filter: true,
-      },
-      {
-        title: "Workplace Group",
-        dataIndex: "strWorkplaceGroup",
-        sorter: true,
-        filter: true,
-      },
-      {
-        title: "Business Unit",
-        dataIndex: "strBusinessUnit",
-        sorter: true,
-        filter: true,
-      },
-    ];
+      setPages,
+      wgId
+    );
   };
 
   return (
@@ -268,14 +225,12 @@ function SalaryAssignAndDeduction() {
                           setFieldValue("fromMonth", e.target.value);
                           getSalaryAdditionAndDeductionLanding(
                             e.target.value,
-                            orgId,
                             buId,
-                            pageNo,
-                            pageSize,
                             setRowDto,
                             setLoading,
                             "",
-                            setAllData,
+                            pages,
+                            setPages,
                             wgId
                           );
                         }}
@@ -295,14 +250,38 @@ function SalaryAssignAndDeduction() {
                       setValue={(value) => {
                         setFieldValue("searchString", value);
                         debounce(() => {
-                          searchData(value, allData, setRowDto);
+                          getSalaryAdditionAndDeductionLanding(
+                            values?.fromMonth,
+                            buId,
+                            setRowDto,
+                            setLoading,
+                            value,
+                            {
+                              current: 1,
+                              pageSize: pages?.pageSize,
+                            },
+                            setPages,
+                            wgId
+                          );
                         }, 500);
                       }}
                       cancelHandler={() => {
                         setFieldValue("searchString", "");
-                        getData();
+                        getSalaryAdditionAndDeductionLanding(
+                          values?.fromMonth,
+                          buId,
+                          setRowDto,
+                          setLoading,
+                          "",
+                          {
+                            current: 1,
+                            pageSize: pages?.pageSize,
+                          },
+                          setPages,
+                          wgId
+                        );
                       }}
-                      handleClick={(e) => setfilterAnchorEl(e.currentTarget)}
+                      handleClick={(e) => setFilterAnchorEl(e.currentTarget)}
                     />
                   </li>
                   <li>
@@ -372,7 +351,7 @@ function SalaryAssignAndDeduction() {
 
               <FilterBadgeComponent
                 propsObj={{
-                  filterBages,
+                  filterBadges,
                   setFieldValue,
                   clearBadge,
                   values: filterValues,
@@ -383,235 +362,35 @@ function SalaryAssignAndDeduction() {
               />
               <div className="table-card-body">
                 {rowDto?.length > 0 ? (
-                  <div className="table-card-styled employee-table-card tableOne">
-                    <AntTable
-                      data={rowDto?.length > 0 ? rowDto : []}
-                      // removePagination
-                      columnsData={allowanceAndDeductionColumn(
-                        page,
-                        paginationSize
-                      )}
-                      rowClassName="pointer"
-                      onRowClick={(item) => {
-                        history.push(
-                          "/compensationAndBenefits/employeeSalary/allowanceNDeduction/view",
-                          {
-                            state: {
-                              isView: true,
-                              empId: item?.intEmployeeBasicInfoId,
-                              businessUnitId: item?.intBusinessUnitId,
-                              workplaceGroupId: item?.intWorkplaceGroupId,
-                            },
-                          }
-                        );
-                      }}
-                      setPage={setPage}
-                      setPaginationSize={setPaginationSize}
-                    />
-                    {/* <table className="table">
-                            <thead>
-                              <tr>
-                                <th style={{ width: "30px" }}>SL</th>
-                                <th>
-                                  <div
-                                    onClick={(e) => {
-                                      setEmployeeOrder(
-                                        employeeOrder === "desc"
-                                          ? "asc"
-                                          : "desc"
-                                      );
-                                      commonSortByFilter(
-                                        employeeOrder,
-                                        "strEmployeeName"
-                                      );
-                                    }}
-                                    className="sortable"
-                                  >
-                                    <span>Employee</span>
-                                    <SortingIcon viewOrder={employeeOrder} />
-                                  </div>
-                                </th>
-                                <th>
-                                  <div
-                                    onClick={(e) => {
-                                      setDesignationOrder(
-                                        designationOrder === "desc"
-                                          ? "asc"
-                                          : "desc"
-                                      );
-                                      commonSortByFilter(
-                                        designationOrder,
-                                        "strDesignation"
-                                      );
-                                    }}
-                                    className="sortable"
-                                  >
-                                    <span>Designation</span>
-                                    <SortingIcon viewOrder={designationOrder} />
-                                  </div>
-                                </th>
-                                <th>
-                                  <div
-                                    onClick={(e) => {
-                                      setDepartmentOrder(
-                                        departmentOrder === "desc"
-                                          ? "asc"
-                                          : "desc"
-                                      );
-                                      commonSortByFilter(
-                                        departmentOrder,
-                                        "strDepartment"
-                                      );
-                                    }}
-                                    className="sortable"
-                                  >
-                                    <span>Department</span>
-                                    <SortingIcon viewOrder={departmentOrder} />
-                                  </div>
-                                </th>
-                                <th>
-                                  <div
-                                    onClick={(e) => {
-                                      setWorkplaceOrder(
-                                        workplaceOrder === "desc"
-                                          ? "asc"
-                                          : "desc"
-                                      );
-                                      commonSortByFilter(
-                                        workplaceOrder,
-                                        "strWorkplace"
-                                      );
-                                    }}
-                                    className="sortable"
-                                  >
-                                    <span>Workplace</span>
-                                    <SortingIcon viewOrder={workplaceOrder} />
-                                  </div>
-                                </th>
-                                <th>
-                                  <div
-                                    onClick={(e) => {
-                                      setworkplaceGroupOrder(
-                                        workplaceGroupOrder === "desc"
-                                          ? "asc"
-                                          : "desc"
-                                      );
-                                      commonSortByFilter(
-                                        workplaceGroupOrder,
-                                        "strWorkplaceGroup"
-                                      );
-                                    }}
-                                    className="sortable"
-                                  >
-                                    <span>Workplace Group</span>
-                                    <SortingIcon
-                                      viewOrder={workplaceGroupOrder}
-                                    />
-                                  </div>
-                                </th>
-                                <th>
-                                  <div
-                                    onClick={(e) => {
-                                      setbusinessUnitOrder(
-                                        businessUnitOrder === "desc"
-                                          ? "asc"
-                                          : "desc"
-                                      );
-                                      commonSortByFilter(
-                                        businessUnitOrder,
-                                        "strBusinessUnit"
-                                      );
-                                    }}
-                                    className="sortable"
-                                  >
-                                    <span>Business Unit</span>
-                                    <SortingIcon
-                                      viewOrder={businessUnitOrder}
-                                    />
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {rowDto?.map((item, index) => {
-                                return (
-                                  <tr
-                                    key={index}
-                                    className="hasEvent"
-                                    onClick={(e) =>
-                                      history.push(
-                                        "/compensationAndBenefits/employeeSalary/allowanceNDeduction/view",
-                                        {
-                                          state: {
-                                            isView: true,
-                                            empId: item?.intEmployeeBasicInfoId,
-                                          },
-                                        }
-                                      )
-                                    }
-                                  >
-                                    <td>
-                                      <div className="pl-1">{index + 1}</div>
-                                    </td>
-                                    <td>
-                                      <div className="d-flex align-items-center">
-                                        <div className="emp-avatar">
-                                          <AvatarComponent
-                                            classess=""
-                                            letterCount={1}
-                                            label={item?.strEmployeeName}
-                                          />
-                                        </div>
-                                        <div className="ml-2">
-                                          <span className="tableBody-title">
-                                            {item?.strEmployeeName}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div className="tableBody-title">
-                                        {" "}
-                                        {item?.strDesignation}
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div className="tableBody-title">
-                                        {item?.strDepartment}
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div className="tableBody-title">
-                                        {item?.strWorkplace}
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div className="tableBody-title">
-                                        {item?.strWorkplaceGroup}
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div className="tableBody-title">
-                                        {item?.strBusinessUnit}
-                                      </div>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table> */}
-                    {/* <div>
-                            <PaginationHandlerUI
-                              count={rowDto?.totalCount}
-                              setPaginationHandler={setPaginationHandler}
-                              pageNo={pageNo}
-                              setPageNo={setPageNo}
-                              pageSize={pageSize}
-                              setPageSize={setPageSize}
-                              isPaginatable={true}
-                            />
-                          </div> */}
-                  </div>
+                  <PeopleDeskTable
+                    columnData={allowanceAndDeductionColumn(
+                      pages?.current,
+                      pages?.pageSize
+                    )}
+                    pages={pages}
+                    rowDto={rowDto}
+                    setRowDto={setRowDto}
+                    handleChangePage={(e, newPage) =>
+                      handleChangePage(e, newPage, values?.searchString)
+                    }
+                    handleChangeRowsPerPage={(e) =>
+                      handleChangeRowsPerPage(e, values?.searchString)
+                    }
+                    onRowClick={(item) => {
+                      history.push(
+                        "/compensationAndBenefits/employeeSalary/allowanceNDeduction/view",
+                        {
+                          state: {
+                            isView: true,
+                            empId: item?.intEmployeeBasicInfoId,
+                            businessUnitId: item?.intBusinessUnitId,
+                            workplaceGroupId: item?.intWorkplaceGroupId,
+                          },
+                        }
+                      );
+                    }}
+                    uniqueKey="intEmployeeId"
+                  />
                 ) : (
                   <>
                     {!loading && (
@@ -632,7 +411,7 @@ function SalaryAssignAndDeduction() {
             id,
             open: openFilter,
             anchorEl: filterAnchorEl,
-            handleClose: () => setfilterAnchorEl(null),
+            handleClose: () => setFilterAnchorEl(null),
             handleSearch,
             values: filterValues,
             dirty,

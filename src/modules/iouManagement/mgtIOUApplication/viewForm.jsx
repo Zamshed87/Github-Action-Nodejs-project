@@ -58,7 +58,7 @@ export default function MgtIOUApplicationView() {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
-  const [singleData, setSingleData] = useState([]);
+  const [singleData, setSingleData] = useState("");
   const [imgRow, setImgRow] = useState([]);
   const [billImgRow, setBillImgRow] = useState([]);
   const [empBasic, setEmpBasic] = useState([]);
@@ -85,13 +85,13 @@ export default function MgtIOUApplicationView() {
   }, []);
 
   useEffect(() => {
-    if (singleData[0]?.employeeId) {
+    if (singleData?.employeeId) {
       getEmployeeProfileViewData(
-        singleData[0]?.employeeId,
+        singleData?.employeeId,
         setEmpBasic,
         setLoading,
-        singleData[0]?.businessUnitId,
-        singleData[0]?.workplaceGroupId
+        singleData?.businessUnitId,
+        singleData?.workplaceGroupId
       );
     }
   }, [singleData, buId, wgId]);
@@ -224,19 +224,19 @@ export default function MgtIOUApplicationView() {
     const payload = {
       strEntryType: params?.id ? "EDIT" : "ENTRY",
       intIOUId: params?.id ? params?.id : 0,
-      intEmployeeId: singleData[0]?.intEmployeeId,
-      dteFromDate: dateFormatterForInput(singleData[0]?.dteFromDate),
-      dteToDate: dateFormatterForInput(singleData[0]?.dteToDate),
-      numIOUAmount: singleData[0]?.numIOUAmount,
+      intEmployeeId: singleData?.employeeId,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: params?.id ? singleData?.workplaceGroupId : wgId,
+      dteFromDate: dateFormatterForInput(singleData?.dteFromDate),
+      dteToDate: dateFormatterForInput(singleData?.dteToDate),
+      numIOUAmount: singleData?.numIOUAmount,
       numAdjustedAmount: values?.adjustedAmount,
       numPayableAmount: values?.payableAmount,
       numReceivableAmount: values?.receivableAmount,
-      strDiscription: singleData[0]?.discription,
+      strDiscription: singleData?.discription,
       isAdjustment: true,
-      intIOUAdjustmentId: singleData[0]?.intIOUAdjustmentId || 0,
+      intIOUAdjustmentId: singleData?.intIOUAdjustmentId || 0,
       isActive: true,
-      intCreatedBy: employeeId,
-      intUpdatedBy: employeeId,
       urlIdViewModelList: modifyImageArray,
     };
 
@@ -245,8 +245,8 @@ export default function MgtIOUApplicationView() {
 
   // pending amount
   pendingAmount =
-    +singleData[0]?.numIOUAmount -
-    (+singleData[0]?.numAdjustedAmount + +singleData[0]?.numReceivableAmount);
+    +singleData?.numIOUAmount -
+    (+singleData?.numAdjustedAmount + +singleData?.numReceivableAmount);
 
   return (
     <>
@@ -256,10 +256,10 @@ export default function MgtIOUApplicationView() {
         initialValues={
           params?.id
             ? {
-              adjustedAmount: singleData[0]?.numAdjustedAmount,
-              receivableAmount: singleData[0]?.numReceivableAmount,
+              adjustedAmount: singleData?.numAdjustedAmount,
+              receivableAmount: singleData?.numReceivableAmount,
               pendingAmount: pendingAmount > 0 ? pendingAmount : 0,
-              payableAmount: singleData[0]?.numPayableAmount,
+              payableAmount: singleData?.numPayableAmount,
             }
             : initData
         }
@@ -267,9 +267,9 @@ export default function MgtIOUApplicationView() {
           saveHandler(values, () => {
             if (params?.id) {
               resetForm({
-                adjustedAmount: singleData[0]?.numAdjustedAmount,
-                payableAmount: singleData[0]?.numPayableAmount,
-                receivableAmount: singleData[0]?.numReceivableAmount,
+                adjustedAmount: singleData?.numAdjustedAmount,
+                payableAmount: singleData?.numPayableAmount,
+                receivableAmount: singleData?.numReceivableAmount,
               });
             } else {
               resetForm(initData);
@@ -330,7 +330,7 @@ export default function MgtIOUApplicationView() {
                       <CircleButton
                         icon={<DateRange style={{ fontSize: "24px" }} />}
                         title={
-                          dateFormatter(singleData[0]?.applicationDate) ||
+                          dateFormatter(singleData?.applicationDate) ||
                           "-"
                         }
                         subTitle="Application Date"
@@ -339,14 +339,14 @@ export default function MgtIOUApplicationView() {
                     <div className="col-lg-2">
                       <CircleButton
                         icon={<DateRange style={{ fontSize: "24px" }} />}
-                        title={dateFormatter(singleData[0]?.dteFromDate) || "-"}
+                        title={dateFormatter(singleData?.dteFromDate) || "-"}
                         subTitle="From Date"
                       />
                     </div>
                     <div className="col-lg-2">
                       <CircleButton
                         icon={<DateRange style={{ fontSize: "24px" }} />}
-                        title={dateFormatter(singleData[0]?.dteToDate) || "-"}
+                        title={dateFormatter(singleData?.dteToDate) || "-"}
                         subTitle="To Date"
                       />
                     </div>
@@ -354,7 +354,7 @@ export default function MgtIOUApplicationView() {
                       <CircleButton
                         icon={<img src={moneyIcon} alt="iBOS" />}
                         title={
-                          numberWithCommas(singleData[0]?.numIOUAmount) || "-"
+                          numberWithCommas(singleData?.numIOUAmount) || "-"
                         }
                         subTitle="IOU Amount"
                       />
@@ -367,7 +367,7 @@ export default function MgtIOUApplicationView() {
                         <div className="row">
                           <div className="col-6">
                             <h2>Description</h2>
-                            {singleData[0]?.discription && (
+                            {singleData?.discription && (
                               <p
                                 style={{
                                   margin: "6px 0 0",
@@ -377,7 +377,7 @@ export default function MgtIOUApplicationView() {
                                   color: gray700,
                                 }}
                               >
-                                {singleData[0]?.discription || "N/A"}
+                                {singleData?.discription || "N/A"}
                               </p>
                             )}
                           </div>
@@ -445,7 +445,7 @@ export default function MgtIOUApplicationView() {
                                   onChange={(e) => {
                                     // pending amount
                                     pendingAmount =
-                                      +singleData[0]?.numIOUAmount -
+                                      +singleData?.numIOUAmount -
                                       (+e.target.value +
                                         +values?.receivableAmount);
 
@@ -464,7 +464,7 @@ export default function MgtIOUApplicationView() {
 
                                     if (
                                       +e.target.value >
-                                      +singleData[0]?.numIOUAmount
+                                      +singleData?.numIOUAmount
                                     ) {
                                       setFieldValue("receivableAmount", 0);
                                     }
@@ -496,7 +496,7 @@ export default function MgtIOUApplicationView() {
                                   onChange={(e) => {
                                     // pending amount
                                     pendingAmount =
-                                      +singleData[0]?.numIOUAmount -
+                                      +singleData?.numIOUAmount -
                                       (+values?.adjustedAmount +
                                         +e.target.value);
 
@@ -722,7 +722,7 @@ export default function MgtIOUApplicationView() {
                                 icon={<img src={moneyIcon} alt="iBOS" />}
                                 title={
                                   numberWithCommas(
-                                    singleData[0]?.numAdjustedAmount
+                                    singleData?.numAdjustedAmount
                                   ) || "-"
                                 }
                                 subTitle="Adjusted Amount"
@@ -733,7 +733,7 @@ export default function MgtIOUApplicationView() {
                                 icon={<img src={moneyIcon} alt="iBOS" />}
                                 title={
                                   numberWithCommas(
-                                    singleData[0]?.numReceivableAmount
+                                    singleData?.numReceivableAmount
                                   ) || "-"
                                 }
                                 subTitle="Cash Received Amount"
@@ -753,7 +753,7 @@ export default function MgtIOUApplicationView() {
                                 icon={<img src={moneyIcon} alt="iBOS" />}
                                 title={
                                   numberWithCommas(
-                                    singleData[0]?.numPayableAmount
+                                    singleData?.numPayableAmount
                                   ) || "-"
                                 }
                                 subTitle="Receive from Accounts"
@@ -761,13 +761,13 @@ export default function MgtIOUApplicationView() {
                             </div>
                             <div className="col-lg-2"></div>
                             {!edit &&
-                              singleData[0]?.status === "Approved" &&
-                              singleData[0]?.adjustmentStatus !==
+                              singleData?.status === "Approved" &&
+                              singleData?.adjustmentStatus !==
                               "Adjusted" && (
                                 <div className="col-lg-2 text-right">
-                                  {(singleData[0]?.adjustmentStatus !==
+                                  {(singleData?.adjustmentStatus !==
                                     "Completed" ||
-                                    singleData[0]?.adjustmentStatus !==
+                                    singleData?.adjustmentStatus !==
                                     "Rejected") && (
                                       <button
                                         type="button"

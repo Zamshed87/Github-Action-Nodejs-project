@@ -48,12 +48,12 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object().shape({
-  businessUnit: Yup.object()
-    .shape({
-      value: Yup.string().required("Business Unit is required"),
-      label: Yup.string().required("Business Unit is required"),
-    })
-    .typeError("Business Unit is required"),
+  // businessUnit: Yup.object()
+  //   .shape({
+  //     value: Yup.string().required("Business Unit is required"),
+  //     label: Yup.string().required("Business Unit is required"),
+  //   })
+  //   .typeError("Business Unit is required"),
 
   date: Yup.date().required("Date is required").typeError("Date is required"),
 });
@@ -83,8 +83,8 @@ const MgmtDailyAttendance = () => {
   });
 
   // DDl section
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  // const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
+  // const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
 
   //  menu permission
@@ -183,11 +183,17 @@ const MgmtDailyAttendance = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+    //   "intBusinessUnitId",
+    //   "strBusinessUnit",
+    //   setBusinessUnitDDL
+    // );
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
     );
   }, [orgId, buId, employeeId]);
 
@@ -214,20 +220,21 @@ const MgmtDailyAttendance = () => {
           <div className="table-card-body" style={{ marginTop: "12px" }}>
             <div className="card-style" style={{ margin: "14px 0px 12px 0px" }}>
               <div className="row">
-                <div className="col-lg-3">
+                {/* bu */}
+                <div className="col-lg-3 d-none">
                   <div className="input-field-main">
                     <label>Business Unit</label>
                     <FormikSelect
                       name="businessUnit"
-                      options={businessUnitDDL || []}
+                      // options={businessUnitDDL || []}
                       value={values?.businessUnit}
                       onChange={(valueOption) => {
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
-                          "intWorkplaceGroupId",
-                          "strWorkplaceGroup",
-                          setWorkplaceGroupDDL
-                        );
+                        // getPeopleDeskAllDDL(
+                        //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+                        //   "intWorkplaceGroupId",
+                        //   "strWorkplaceGroup",
+                        //   setWorkplaceGroupDDL
+                        // );
                         setValues((prev) => ({
                           ...prev,
                           businessUnit: valueOption,
@@ -271,12 +278,13 @@ const MgmtDailyAttendance = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3">
+                {/* wg */}
+                <div className="col-lg-3 d-none">
                   <div className="input-field-main">
                     <label>Workplace Group</label>
                     <FormikSelect
                       name="workplaceGroup"
-                      options={[...workplaceGroupDDL] || []}
+                      // options={[...workplaceGroupDDL] || []}
                       value={values?.workplaceGroup}
                       onChange={(valueOption) => {
                         setValues((prev) => ({
@@ -284,12 +292,12 @@ const MgmtDailyAttendance = () => {
                           workplace: "",
                           workplaceGroup: valueOption,
                         }));
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                          "intWorkplaceId",
-                          "strWorkplace",
-                          setWorkplaceDDL
-                        );
+                        // getPeopleDeskAllDDL(
+                        //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                        //   "intWorkplaceId",
+                        //   "strWorkplace",
+                        //   setWorkplaceDDL
+                        // );
                         setAllData([]);
                         setRowDto([]);
                         setWorkplaceDDL([]);
@@ -323,7 +331,7 @@ const MgmtDailyAttendance = () => {
                     />
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-lg-3 mt-3 pt-2">
                   <button
                     className="btn btn-green btn-green-disable"
                     type="submit"

@@ -3,7 +3,7 @@ import {
   Attachment,
   CreateOutlined,
   DeleteOutline,
-  InfoOutlined
+  InfoOutlined,
 } from "@mui/icons-material";
 import { Tooltip, tooltipClasses } from "@mui/material";
 import { styled } from "@mui/system";
@@ -13,7 +13,7 @@ import Chips from "../../../../../common/Chips";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import {
   dateFormatter,
-  dateFormatterForInput
+  dateFormatterForInput,
 } from "../../../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../../../utility/numberWithCommas";
 import "../application.css";
@@ -45,7 +45,7 @@ const CardTable = ({
     },
   }));
 
-  const { employeeId, orgId } = useSelector(
+  const { employeeId, orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -240,7 +240,9 @@ const CardTable = ({
                             employeeId,
                             null,
                             orgId,
-                            true
+                            true,
+                            buId,
+                            wgId
                           );
                         }}
                       >

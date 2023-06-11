@@ -100,7 +100,7 @@ export const customStyles = {
   }),
   menu: (provided, state) => ({
     ...provided,
-    zIndex: 2,
+    zIndex: 999,
   }),
   valueContainer: (provided, state) => ({
     ...provided,
