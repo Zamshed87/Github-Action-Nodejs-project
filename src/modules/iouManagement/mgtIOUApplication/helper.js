@@ -87,7 +87,8 @@ export const getAllIOULanding = async (
         const modifiedData = res?.data?.iouApplicationLandings?.map(
           (item, index) => ({
             ...item,
-            sl: index + 1,
+            // sl: index + 1,
+            initialSerialNumber: index + 1,
             dteApplicationDate: item.dteApplicationDate
               ? moment(item?.dteApplicationDate).format("DD MMM, yyyy")
               : "N/A",
