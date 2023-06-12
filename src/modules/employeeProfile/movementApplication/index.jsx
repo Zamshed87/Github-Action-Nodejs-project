@@ -147,6 +147,7 @@ export default function EmMovementApplication() {
       location: values?.location,
       accountId: orgId,
       businessUnitId: buId,
+      workplaceGroupId: wgId,
       isActive: true,
       insertBy: employeeId,
     };
@@ -262,6 +263,7 @@ export default function EmMovementApplication() {
           location: data?.Location,
           accountId: orgId,
           businessUnitId: buId,
+          workplaceGroupId: wgId,
           isActive: true,
           insertBy: employeeId,
         };
