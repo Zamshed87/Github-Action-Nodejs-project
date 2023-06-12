@@ -3,7 +3,7 @@ import {
   Clear,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { IconButton, Popover } from "@mui/material";
+import { IconButton, Popover, MenuItem, Pagination, Select } from "@mui/material";
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -43,18 +43,28 @@ const initialValues = {
 const validationSchema = Yup.object({});
 
 export default function TransferAndPromotion() {
+  // hook
   const dispatch = useDispatch();
   const history = useHistory();
   const debounce = useDebounce();
 
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // redux
+  const { orgId, buId, employeeId, wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
+  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 217) {
+      permission = item;
+    }
+  });
+
+  // state
   const [singleData, setSingleData] = useState({});
-  const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [substituteEmployeeDDL, setSubstituteEmployeeDDL] = useState([]);
   const [isFilter, setIsFilter] = useState(false);
@@ -63,42 +73,82 @@ export default function TransferAndPromotion() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  // landing table
+  const paginationSize = 25;
+  const [rowDto, setRowDto] = useState([]);
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
 
-  // const { setValues } = useFormik({
-  //   enableReinitialize: true,
-  //   validationSchema,
-  //   initialValues,
-  //   onSubmit: () => {},
-  // });
-
-  const getData = (fromDate, toDate) => {
+  const getData = (pagination, fromDate, toDate) => {
     getAllTransferAndPromotionLanding(
-      orgId,
       buId,
+      wgId,
       "all",
-      setAllData,
-      setRowDto,
-      setLoading,
       fromDate ? fromDate : getDateOfYear("first"),
       toDate ? toDate : getDateOfYear("last"),
-      wgId
+      setRowDto,
+      setLoading,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages
+    );
+  };
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+    );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      }
     );
   };
 
   useEffect(() => {
-    getData();
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getAllTransferAndPromotionLanding(
+      buId,
+      wgId,
+      "all",
+      getDateOfYear("first"),
+      getDateOfYear("last"),
+      setRowDto,
+      setLoading,
+      1,
+      paginationSize,
+      setPages
+    );
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
       "EmployeeId",
       "EmployeeName",
       setSubstituteEmployeeDDL
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [buId, wgId]);
 
   const releaseHandler = (values) => {
     releaseEmpTransferNPromotion(
@@ -115,35 +165,13 @@ export default function TransferAndPromotion() {
     );
   };
 
-  //Search Filter
-  const filterData = (keywords) => {
-    const regex = new RegExp(keywords?.toLowerCase());
-    let newDta = allData?.filter(
-      (item) =>
-        regex.test(item?.strEmployeeName?.toLowerCase()) ||
-        regex.test(item?.strTransferNpromotionType?.toLowerCase())
-    );
-    setRowDto(newDta);
-  };
-
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-  let permission = null;
-  permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 217) {
-      permission = item;
-    }
-  });
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          // saveHandler(values, () => {
-          //   resetForm(initData);
-          // });
-        }}
+        onSubmit={(values, { setSubmitting, resetForm }) => { }}
       >
         {({
           handleSubmit,
@@ -159,6 +187,7 @@ export default function TransferAndPromotion() {
               {permission?.isView ? (
                 <div>
                   <div className="table-card">
+
                     <div className="table-card-heading">
                       <div></div>
                       <div className="table-card-head-right">
@@ -175,7 +204,18 @@ export default function TransferAndPromotion() {
                                 onClick={() => {
                                   setIsFilter(false);
                                   setFieldValue("search", "");
-                                  getData();
+                                  getAllTransferAndPromotionLanding(
+                                    buId,
+                                    wgId,
+                                    "all",
+                                    getDateOfYear("first"),
+                                    getDateOfYear("last"),
+                                    setRowDto,
+                                    setLoading,
+                                    1,
+                                    paginationSize,
+                                    setPages
+                                  );
                                 }}
                               />
                             </li>
@@ -189,16 +229,37 @@ export default function TransferAndPromotion() {
                               setValue={(value) => {
                                 setFieldValue("search", value);
                                 debounce(() => {
-                                  filterData(value);
+                                  getAllTransferAndPromotionLanding(
+                                    buId,
+                                    wgId,
+                                    "all",
+                                    values?.filterFromDate || "",
+                                    values?.filterToDate || "",
+                                    setRowDto,
+                                    setLoading,
+                                    1,
+                                    paginationSize,
+                                    setPages,
+                                    value || ""
+                                  );
                                 }, 500);
                               }}
                               cancelHandler={() => {
                                 setFieldValue("search", "");
-                                getData();
+                                getAllTransferAndPromotionLanding(
+                                  buId,
+                                  wgId,
+                                  "all",
+                                  values?.filterFromDate || "",
+                                  values?.filterToDate || "",
+                                  setRowDto,
+                                  setLoading,
+                                  1,
+                                  paginationSize,
+                                  setPages,
+                                  ""
+                                );
                               }}
-                            // handleClick={(e) =>
-
-                            // }
                             />
                           </li>
                           <li>
@@ -228,6 +289,7 @@ export default function TransferAndPromotion() {
                         </ul>
                       </div>
                     </div>
+
                     <div className="table-card-body mt-2 pt-1">
                       <div className="card-style my-2">
                         <div className="row">
@@ -286,7 +348,7 @@ export default function TransferAndPromotion() {
                           </div>
                         </div>
                       </div>
-                      <div className="table-card-styled tableOne">
+                      <div className="table-card-styled tableOne formCardTwoWithTable">
                         {rowDto?.length > 0 ? (
                           <table className="table table-bordered table-colored">
                             <thead>
@@ -408,6 +470,36 @@ export default function TransferAndPromotion() {
                           <NoResult />
                         )}
                       </div>
+
+                      {rowDto?.length > 0 ? (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "right",
+                            alignItems: "center",
+                            marginTop: "10px",
+                          }}
+                        >
+                          <Select
+                            value={pages?.pageSize}
+                            onChange={handleChangeRowsPerPage}
+                            variant="outlined"
+                            size="small"
+                            sx={{ marginRight: "16px", fontSize: "14px" }}
+                          >
+                            <MenuItem value={25}>25 per page</MenuItem>
+                            <MenuItem value={50}>50 per page</MenuItem>
+                            <MenuItem value={100}>100 per page</MenuItem>
+                            <MenuItem value={500}>500 per page</MenuItem>
+                          </Select>
+                          <Pagination
+                            count={Math.ceil(pages?.total / pages?.pageSize)}
+                            page={pages.current}
+                            onChange={handleChangePage}
+                            size="small"
+                          />
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -415,6 +507,7 @@ export default function TransferAndPromotion() {
                 <NotPermittedPage />
               )}
             </div>
+
             <Popover
               sx={{
                 "& .MuiPaper-root": {
@@ -537,6 +630,7 @@ export default function TransferAndPromotion() {
                 </div>
               </div>
             </Popover>
+
           </form>
         )}
       </Formik>

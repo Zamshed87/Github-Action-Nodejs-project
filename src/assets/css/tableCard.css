@@ -394,6 +394,9 @@ color : #999;
   padding-left: 1px;
   transition: all 0.3s ease-in-out;
 }
+.tableOne.formCardTwoWithTable {
+  max-height: 67vh;
+}
 .noOverflowTable {
   overflow: visible;
 }
