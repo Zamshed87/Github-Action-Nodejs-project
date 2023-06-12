@@ -8,13 +8,30 @@ import { getPeopleDeskAllLanding } from "../../../../../common/api";
 import Chips from "../../../../../common/Chips";
 import IConfirmModal from "../../../../../common/IConfirmModal";
 import NoResult from "../../../../../common/NoResult";
-import { dateFormatter, dateFormatterForInput } from "../../../../../utility/dateFormatter";
+import {
+  dateFormatter,
+  dateFormatterForInput,
+} from "../../../../../utility/dateFormatter";
 import { timeFormatter } from "../../../../../utility/timeFormatter";
 import { createMovementApplication } from "../../helper";
 
 const CardTable = ({ propsObj }) => {
-  const { orgId, buId, employeeId } = useSelector((state) => state?.auth?.profileData, shallowEqual);
-  const { rowDto, setRowDto, setSingleData, setLoading, setAllData, setValues, scrollRef, setIsEdit, employee, loading } = propsObj;
+  const { orgId, buId, employeeId, wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+  const {
+    rowDto,
+    setRowDto,
+    setSingleData,
+    setLoading,
+    setAllData,
+    setValues,
+    scrollRef,
+    setIsEdit,
+    employee,
+    loading,
+  } = propsObj;
 
   const demoPopup = (data) => {
     let confirmObject = {
@@ -34,11 +51,20 @@ const CardTable = ({ propsObj }) => {
           location: data?.Location,
           accountId: orgId,
           businessUnitId: buId,
+          workplaceGroupId: wgId,
           isActive: true,
           insertBy: employeeId,
         };
         const callback = () => {
-          getPeopleDeskAllLanding("MovementApplication", orgId, buId, employee?.id ? employee?.id : employeeId, setRowDto, setAllData, setLoading);
+          getPeopleDeskAllLanding(
+            "MovementApplication",
+            orgId,
+            buId,
+            employee?.id ? employee?.id : employeeId,
+            setRowDto,
+            setAllData,
+            setLoading
+          );
           setSingleData("");
         };
         createMovementApplication(payload, callback);
@@ -50,14 +76,17 @@ const CardTable = ({ propsObj }) => {
     };
     IConfirmModal(confirmObject);
   };
-  const LightTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(({ theme }) => ({
+  const LightTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
     [`& .${tooltipClasses.arrow}`]: {
       color: "#fff !important",
     },
     [`& .${tooltipClasses.tooltip}`]: {
       backgroundColor: "#fff",
       color: "rgba(0, 0, 0, 0.87)",
-      boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
+      boxShadow:
+        "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
       fontSize: 11,
     },
   }));
@@ -71,37 +100,40 @@ const CardTable = ({ propsObj }) => {
                 <div>SL</div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>Movement Type </span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>From Date </span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>Start Time</span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>To Date</span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>End Time</span>
                 </div>
               </th>
               <th>
-                <div className="sortable justify-content-start" onClick={() => { }}>
+                <div
+                  className="sortable justify-content-start"
+                  onClick={() => {}}
+                >
                   <span> Application Date</span>
                 </div>
               </th>
               <th>
-                <div className="sortable center" onClick={() => { }}>
+                <div className="sortable center" onClick={() => {}}>
                   <span>Status</span>
                 </div>
               </th>
@@ -126,15 +158,22 @@ const CardTable = ({ propsObj }) => {
                             </div>
                             <div>
                               <p className="tooltip-title mt-2">Location</p>
-                              <p className="tooltip-subTitle mb-0">{data?.Location}</p>
+                              <p className="tooltip-subTitle mb-0">
+                                {data?.Location}
+                              </p>
                             </div>
                           </div>
                         }
                         arrow
                       >
-                        <InfoOutlinedIcon sx={{ marginRight: "12px", color: "rgba(0,0,0,0.6)" }} />
+                        <InfoOutlinedIcon
+                          sx={{ marginRight: "12px", color: "rgba(0,0,0,0.6)" }}
+                        />
                       </LightTooltip>
-                      <span className="content tableBody-title"> {data?.MovementType}</span>
+                      <span className="content tableBody-title">
+                        {" "}
+                        {data?.MovementType}
+                      </span>
                     </div>
                   </td>
                   <td>
@@ -157,7 +196,11 @@ const CardTable = ({ propsObj }) => {
                       {timeFormatter(data?.ToTime)}
                     </div>
                   </td>
-                  <td><div className="text-left tableBody-title">{dateFormatter(data?.ApplicationDate)}</div></td>
+                  <td>
+                    <div className="text-left tableBody-title">
+                      {dateFormatter(data?.ApplicationDate)}
+                    </div>
+                  </td>
                   <td className="text-center">
                     {data?.Status === "Approved" && (
                       <Chips label="Approved" classess="success" />

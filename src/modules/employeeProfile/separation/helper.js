@@ -59,7 +59,6 @@ export const getSeparationLanding = async (obj) => {
     empId,
     workId,
     buId,
-    orgId,
     setter,
     setLoading,
     separationTypeId,
