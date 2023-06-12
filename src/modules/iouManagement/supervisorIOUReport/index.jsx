@@ -82,6 +82,8 @@ export default function SupervisorIOUReport() {
       setLoading,
       pagination?.current,
       pagination?.pageSize,
+      setPages,
+      employeeId
     );
   };
 
@@ -136,8 +138,10 @@ export default function SupervisorIOUReport() {
       setLoading,
       1,
       paginationSize,
+      setPages,
+      employeeId
     );
-  }, [wgId, buId, values]);
+  }, [wgId, buId, values, employeeId]);
 
   // filter
   const [filterBages, setFilterBages] = useState({});
@@ -175,6 +179,8 @@ export default function SupervisorIOUReport() {
       setLoading,
       1,
       paginationSize,
+      setPages,
+      employeeId
     );
   };
   const getFilterValues = (name, value) => {
@@ -203,6 +209,8 @@ export default function SupervisorIOUReport() {
         setLoading,
         1,
         paginationSize,
+        setPages,
+        employeeId
       );
     };
 
@@ -273,6 +281,8 @@ export default function SupervisorIOUReport() {
                             setLoading,
                             1,
                             paginationSize,
+                            setPages,
+                            employeeId
                           );
                         }}
                       />
@@ -321,6 +331,8 @@ export default function SupervisorIOUReport() {
                           setLoading,
                           1,
                           paginationSize,
+                          setPages,
+                          employeeId
                         );
                       }}
                       handleClick={(e) =>
@@ -396,6 +408,8 @@ export default function SupervisorIOUReport() {
                           setLoading,
                           1,
                           paginationSize,
+                          setPages,
+                          employeeId
                         );
                       }}
                     >
@@ -426,7 +440,7 @@ export default function SupervisorIOUReport() {
                     isScrollAble={false}
                     onRowClick={(res) => {
                       history.push(
-                        `/SelfService/iOU/report/${res?.intIOUId}`
+                        `/SelfService/iOU/report/${res?.iouId}`
                       );
                     }}
                   />
