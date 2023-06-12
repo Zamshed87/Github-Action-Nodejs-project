@@ -66,8 +66,6 @@ function LeaveApplication(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(leaveHistoryData, "all data");
-
   return (
     <>
       <Formik
