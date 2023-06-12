@@ -231,7 +231,7 @@ export const getCreateDDLs = ({
     setDepartmentDDL
   );
   getPeopleDeskWithoutAllDDL(
-    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${buId}&intId=${employeeId}`,
+    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
     "intWorkplaceGroupId",
     "strWorkplaceGroup",
     setWorkplaceGroupDDL
