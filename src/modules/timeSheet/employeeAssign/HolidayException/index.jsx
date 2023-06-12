@@ -1,27 +1,25 @@
+import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
+import axios from "axios";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { paginationSize } from "../../../../common/AntTable";
+import MasterFilter from "../../../../common/MasterFilter";
+import NoResult from "../../../../common/NoResult";
+import ResetButton from "../../../../common/ResetButton";
+import ViewModal from "../../../../common/ViewModal";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import ViewModal from "../../../../common/ViewModal";
-import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
-import CardTable from "./components/CardTable";
-import HolidayExceptionModal from "./components/HolidayExceptionModal";
-import "./holidayException.css";
-import { paginationSize } from "../../../../common/AntTable";
-import ResetButton from "../../../../common/ResetButton";
-import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
-import MasterFilter from "../../../../common/MasterFilter";
-import axios from "axios";
+import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
-import PeopleDeskTable from "../../../../common/peopleDeskTable";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import HolidayExceptionModal from "./components/HolidayExceptionModal";
 import { columns } from "./helper";
-import NoResult from "../../../../common/NoResult";
+import "./holidayException.css";
 
 const initData = {
   search: "",
@@ -29,7 +27,7 @@ const initData = {
 };
 
 const HolidayException = () => {
-  const { orgId, buId, wgId, wgName } = useSelector(
+  const { buId, wgId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -315,8 +313,7 @@ const HolidayException = () => {
                     <div className="ml-2">
                       <h6 className="count">
                         {checkedList.length > 0 &&
-                          `Total ${checkedList.length} employee${
-                            checkedList.length > 1 ? "s" : ""
+                          `Total ${checkedList.length} employee${checkedList.length > 1 ? "s" : ""
                           } selected`}
                       </h6>
                     </div>

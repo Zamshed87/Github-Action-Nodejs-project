@@ -51,15 +51,13 @@ export default function MgtIOUApplicationCreate() {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
-  const [singleData, setSingleData] = useState([]);
+  const [singleData, setSingleData] = useState("");
   const [imgRow, setImgRow] = useState([]);
 
   const { orgId, buId, employeeId, userName, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
-  const [employeeDDL, setEmployeeDDL] = useState([]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -132,15 +130,6 @@ export default function MgtIOUApplicationCreate() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}`,
-      "employeeId",
-      "employeeNameWithCode",
-      setEmployeeDDL
-    );
-  }, [buId, wgId]);
-
   const deleteImageHandler = (id) => {
     attachment_delete_action(id, () => { });
   };
@@ -151,6 +140,7 @@ export default function MgtIOUApplicationCreate() {
     }
     const callback = () => {
       cb();
+      getData();
     };
 
     const modifyImageArray = imageFile
@@ -165,6 +155,8 @@ export default function MgtIOUApplicationCreate() {
       strEntryType: params?.id ? "EDIT" : "ENTRY",
       intIOUId: params?.id ? params?.id : 0,
       intEmployeeId: values?.employeeName?.value,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: params?.id ? singleData?.workplaceGroupId : wgId,
       dteFromDate: values?.formDate,
       dteToDate: values?.toDate,
       numIOUAmount: values?.amount,
@@ -172,11 +164,9 @@ export default function MgtIOUApplicationCreate() {
       numPayableAmount: 0,
       numReceivableAmount: 0,
       strDiscription: values?.description,
+      isActive: true,
       isAdjustment: false,
       intIOUAdjustmentId: 0,
-      isActive: true,
-      intCreatedBy: employeeId,
-      intUpdatedBy: employeeId,
       urlIdViewModelList: modifyImageArray,
     };
     saveIOUApplication(payload, setLoading, callback);
@@ -190,13 +180,13 @@ export default function MgtIOUApplicationCreate() {
         initialValues={
           params?.id
             ? {
-              formDate: dateFormatterForInput(singleData[0]?.dteFromDate),
-              toDate: dateFormatterForInput(singleData[0]?.dteToDate),
-              amount: singleData[0]?.numIOUAmount,
-              description: singleData[0]?.discription,
+              formDate: dateFormatterForInput(singleData?.dteFromDate),
+              toDate: dateFormatterForInput(singleData?.dteToDate),
+              amount: singleData?.numIOUAmount,
+              description: singleData?.discription,
               employeeName: {
-                value: singleData[0]?.employeeId,
-                label: singleData[0]?.employeeName,
+                value: singleData?.employeeId,
+                label: singleData?.employeeName,
               },
             }
             : {
@@ -211,10 +201,10 @@ export default function MgtIOUApplicationCreate() {
           saveHandler(values, () => {
             if (params?.id) {
               resetForm({
-                formDate: dateFormatterForInput(singleData[0]?.dteFromDate),
-                toDate: dateFormatterForInput(singleData[0]?.dteToDate),
-                amount: singleData[0]?.numIOUAmount,
-                description: singleData[0]?.discription,
+                formDate: dateFormatterForInput(singleData?.dteFromDate),
+                toDate: dateFormatterForInput(singleData?.dteToDate),
+                amount: singleData?.numIOUAmount,
+                description: singleData?.discription,
               });
             } else {
               resetForm(initData);

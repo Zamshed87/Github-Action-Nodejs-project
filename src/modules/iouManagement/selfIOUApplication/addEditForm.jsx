@@ -37,7 +37,6 @@ const validationSchema = Yup.object().shape({
   amount: Yup.number()
     .min(1, "Amount must be greater than zero")
     .required("Amount is required"),
-  // description: Yup.string().required("Description is required"),
 });
 
 export default function SelfIOUApplicationCreate() {
@@ -155,6 +154,8 @@ export default function SelfIOUApplicationCreate() {
       intEmployeeId: isSupNLMORManagement
         ? values?.employeeName?.value
         : employeeId,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: params?.id ? singleData?.workplaceGroupId : wgId,
       dteFromDate: values?.formDate,
       dteToDate: values?.toDate,
       numIOUAmount: values?.amount,
@@ -165,8 +166,6 @@ export default function SelfIOUApplicationCreate() {
       isAdjustment: false,
       intIOUAdjustmentId: 0,
       isActive: true,
-      intCreatedBy: employeeId,
-      intUpdatedBy: employeeId,
       urlIdViewModelList: modifyImageArray,
     };
     saveIOUApplication(payload, setLoading, callback);
@@ -180,13 +179,13 @@ export default function SelfIOUApplicationCreate() {
         initialValues={
           params?.id
             ? {
-              formDate: dateFormatterForInput(singleData[0]?.dteFromDate),
-              toDate: dateFormatterForInput(singleData[0]?.dteToDate),
-              amount: singleData[0]?.numIOUAmount,
-              description: singleData[0]?.strDiscription,
+              formDate: dateFormatterForInput(singleData?.dteFromDate),
+              toDate: dateFormatterForInput(singleData?.dteToDate),
+              amount: singleData?.numIOUAmount,
+              description: singleData?.discription,
               employeeName: {
-                value: singleData[0]?.intEmployeeId,
-                label: singleData[0]?.strEmployeeName,
+                value: singleData?.employeeId,
+                label: singleData?.employeeName,
               },
             }
             : {
@@ -201,10 +200,10 @@ export default function SelfIOUApplicationCreate() {
           saveHandler(values, () => {
             if (params?.id) {
               resetForm({
-                formDate: dateFormatterForInput(singleData[0]?.dteFromDate),
-                toDate: dateFormatterForInput(singleData[0]?.dteToDate),
-                amount: singleData[0]?.numIOUAmount,
-                description: singleData[0]?.strDiscription,
+                formDate: dateFormatterForInput(singleData?.dteFromDate),
+                toDate: dateFormatterForInput(singleData?.dteToDate),
+                amount: singleData?.numIOUAmount,
+                description: singleData?.discription,
               });
             } else {
               resetForm(initData);

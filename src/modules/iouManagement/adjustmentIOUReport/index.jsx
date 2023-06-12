@@ -17,13 +17,8 @@ import PeopleDeskTable, { paginationSize } from "../../../common/peopleDeskTable
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
-import {
-  iouLandingTableColumn
-} from "../mgtIOUApplication/helper";
 import SelfIOUFilterModal from "./component/SelfIOUFilterModal";
-import { getAllIOULanding } from "./helper";
-
-// status DDL
+import { getAllIOULanding, iouAdjustmentLandingTableColumn } from "./helper";
 
 // adjustment status DDL
 
@@ -76,6 +71,7 @@ export default function AdjustmentIOUReport() {
       setLoading,
       pagination?.current,
       pagination?.pageSize,
+      setPages
     );
   };
 
@@ -119,7 +115,8 @@ export default function AdjustmentIOUReport() {
       setRowDto,
       setLoading,
       1,
-      paginationSize
+      paginationSize,
+      setPages
     );
   }, [buId, wgId]);
 
@@ -166,7 +163,8 @@ export default function AdjustmentIOUReport() {
       setRowDto,
       setLoading,
       1,
-      paginationSize
+      paginationSize,
+      setPages
     );
   };
   const getFilterValues = (name, value) => {
@@ -241,7 +239,8 @@ export default function AdjustmentIOUReport() {
                           setRowDto,
                           setLoading,
                           1,
-                          paginationSize
+                          paginationSize,
+                          setPages
                         );
                       }}
                     />
@@ -272,6 +271,7 @@ export default function AdjustmentIOUReport() {
                           setLoading,
                           1,
                           paginationSize,
+                          setPages
                         );
                       }, 500);
                     }}
@@ -290,6 +290,7 @@ export default function AdjustmentIOUReport() {
                         setLoading,
                         1,
                         paginationSize,
+                        setPages
                       );
                     }}
                     handleClick={(e) => setfilterAnchorEl(e.currentTarget)}
@@ -369,7 +370,7 @@ export default function AdjustmentIOUReport() {
 
             {rowDto.length > 0 ? (
               <PeopleDeskTable
-                columnData={iouLandingTableColumn(
+                columnData={iouAdjustmentLandingTableColumn(
                   pages?.current,
                   pages?.pageSize,
                   history
@@ -388,7 +389,7 @@ export default function AdjustmentIOUReport() {
                 isScrollAble={false}
                 onRowClick={(res) => {
                   history.push(
-                    `/profile/iOU/adjustmentReport/${res?.intIOUId}`
+                    `/profile/iOU/adjustmentReport/${res?.iouId}`
                   );
                 }}
               />

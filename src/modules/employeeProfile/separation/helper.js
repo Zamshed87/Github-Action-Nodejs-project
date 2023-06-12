@@ -83,7 +83,6 @@ export const getSeparationLanding = async (obj) => {
       applicationFromDate: fromDate,
       applicationToDate: toDate,
       businessUnitId: buId || 0,
-      accountId: orgId || 0,
       tableName: tableName,
       FromDate: fromDate || "",
       ToDate: toDate || "",

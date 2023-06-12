@@ -23,23 +23,6 @@ import PeopleDeskTable, { paginationSize } from "../../../common/peopleDeskTable
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import DefaultInput from "../../../common/DefaultInput";
 
-/* // status DDL
-const statusDDL = [
-  { value: "Pending", label: "Pending" },
-  { value: "Approved", label: "Approved" },
-  { value: "Process", label: "Process" },
-  { value: "Rejected", label: "Rejected" },
-];
-
-// adjustment status DDL
-const adjustmentStatusDDL = [
-  { value: "Pending", label: "Pending" },
-  { value: "Adjusted", label: "Adjusted" },
-  { value: "Process", label: "Process" },
-  { value: "Completed", label: "Completed" },
-  { value: "Rejected", label: "Rejected" },
-];
- */
 const initData = {
   search: "",
   // master filter
@@ -98,6 +81,8 @@ export default function SelfIOUApplication() {
       setLoading,
       pagination?.current,
       pagination?.pageSize,
+      setPages,
+      employeeId
     );
   };
 
@@ -152,9 +137,11 @@ export default function SelfIOUApplication() {
       setLoading,
       1,
       paginationSize,
+      setPages,
+      employeeId
     );
     // eslint-disable-next-line no-use-before-define
-  }, [buId, wgId, values]);
+  }, [buId, wgId, values, employeeId]);
 
   // filter
   const [filterBages, setFilterBages] = useState({});
@@ -191,6 +178,8 @@ export default function SelfIOUApplication() {
       setLoading,
       1,
       paginationSize,
+      setPages,
+      employeeId
     );
   };
 
@@ -220,6 +209,8 @@ export default function SelfIOUApplication() {
         setLoading,
         1,
         paginationSize,
+        setPages,
+        employeeId
       );
     };
 
@@ -275,6 +266,8 @@ export default function SelfIOUApplication() {
                         setLoading,
                         1,
                         paginationSize,
+                        setPages,
+                        employeeId
                       );
                     }}
                   />
@@ -304,6 +297,8 @@ export default function SelfIOUApplication() {
                         setLoading,
                         1,
                         paginationSize,
+                        setPages,
+                        employeeId
                       );
                     }, 500);
                   }}
@@ -322,6 +317,8 @@ export default function SelfIOUApplication() {
                       setLoading,
                       1,
                       paginationSize,
+                      setPages,
+                      employeeId
                     );
                   }}
                   isHiddenFilter
@@ -414,6 +411,8 @@ export default function SelfIOUApplication() {
                       setLoading,
                       1,
                       paginationSize,
+                      setPages,
+                      employeeId
                     );
                   }}
                 >
@@ -444,7 +443,7 @@ export default function SelfIOUApplication() {
                   isScrollAble={false}
                   onRowClick={(res) => {
                     history.push(
-                      `/SelfService/iOU/application/${res?.intIOUId}`
+                      `/SelfService/iOU/application/${res?.iouId}`
                     );
                   }}
                 />
