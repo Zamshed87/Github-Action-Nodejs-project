@@ -38,7 +38,7 @@ export default function LeaveSingleViewModal({
   setAllData,
   getData,
 }) {
-  const { userId, orgId, buId, employeeId } = useSelector(
+  const { userId, orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -64,6 +64,7 @@ export default function LeaveSingleViewModal({
       leaveReason: singleData?.Reason,
       addressDuetoLeave: singleData?.AddressDuetoLeave,
       insertBy: employeeId,
+      workplaceGroupId: wgId,
     };
 
     const callback = () => {

@@ -246,7 +246,7 @@ const FilterModal = ({ propsObj, children }) => {
                     supId: null,
                     emTypId: null,
                     empId: values?.employee?.value,
-                    workId: null,
+                    workId: wgId,
                     buId,
                     setter: setRowDto,
                     setLoading,

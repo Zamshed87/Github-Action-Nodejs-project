@@ -66,7 +66,7 @@ export default function ManagementReleaseSeparationForm() {
     const payload = {
       intSeparationId: +params?.id,
       status: "",
-      workplaceGroupId: 0,
+      workplaceGroupId: wgId,
       departmentId: 0,
       designationId: 0,
       supervisorId: 0,
@@ -79,7 +79,7 @@ export default function ManagementReleaseSeparationForm() {
       tableName: "EmployeeSeparationReportBySeparationId",
     };
     getSeparationLandingById(payload, setSingleData, setLoading);
-  }, [orgId, buId, employeeId, params?.id]);
+  }, [orgId, buId, employeeId, params?.id, wgId]);
 
   useEffect(() => {
     if (singleData?.EmployeeId) {
@@ -109,7 +109,7 @@ export default function ManagementReleaseSeparationForm() {
       const payloadData = {
         intSeparationId: +params?.id,
         status: "",
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
         departmentId: 0,
         designationId: 0,
         supervisorId: 0,
