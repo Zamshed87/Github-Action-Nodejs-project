@@ -85,10 +85,8 @@ const LightTooltip = styled(({ className, ...props }) => (
 
 export default function MovementApplication() {
   const dispatch = useDispatch();
-  const { userName, intProfileImageUrl, orgId, buId, employeeId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { userName, intProfileImageUrl, orgId, buId, employeeId, wgId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
   const [anchorEl, setAnchorEl] = useState(null);
   const [employee, setEmployee] = useState("");
   const [rowDto, setRowDto] = useState([]);
@@ -150,6 +148,7 @@ export default function MovementApplication() {
       location: values?.location,
       accountId: orgId,
       businessUnitId: buId,
+      workplaceGroupId: wgId,
       isActive: true,
       insertBy: employeeId,
     };
@@ -260,6 +259,7 @@ export default function MovementApplication() {
           location: data?.Location,
           accountId: orgId,
           businessUnitId: buId,
+          workplaceGroupId: wgId,
           isActive: true,
           insertBy: employeeId,
         };

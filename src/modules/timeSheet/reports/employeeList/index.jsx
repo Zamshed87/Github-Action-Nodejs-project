@@ -10,7 +10,6 @@ import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import FilterModal from "./components/FilterModal";
 import {
-  allEmployeeList,
   columnForExcel,
   columnForMarketingForExcel,
   empReportListColumns,
@@ -27,7 +26,6 @@ import { dateFormatter } from "../../../../utility/dateFormatter";
 import { paginationSize } from "../../../../common/AntTable";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
-import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 
 const initData = {
   search: "",

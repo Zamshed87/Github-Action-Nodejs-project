@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowDropDown, ArrowDropUp, FilePresentOutlined } from '@mui/icons-material';
-import { useParams } from 'react-router-dom';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import BackButton from '../../../../../common/BackButton';
-import Chips from '../../../../../common/Chips';
-import Loading from '../../../../../common/loading/Loading';
-import { gray700, gray900 } from '../../../../../utility/customColor';
-import { getSeparationLandingById } from '../../helper';
-import { setFirstLevelNameAction } from '../../../../../commonRedux/reduxForLocalStorage/actions';
-import { dateFormatter } from '../../../../../utility/dateFormatter';
-import { getDownlloadFileView_Action } from '../../../../../commonRedux/auth/actions';
-import NotPermittedPage from '../../../../../common/notPermitted/NotPermittedPage';
+import React, { useState, useEffect } from "react";
+import {
+  ArrowDropDown,
+  ArrowDropUp,
+  FilePresentOutlined,
+} from "@mui/icons-material";
+import { useParams } from "react-router-dom";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import BackButton from "../../../../../common/BackButton";
+import Chips from "../../../../../common/Chips";
+import Loading from "../../../../../common/loading/Loading";
+import { gray700, gray900 } from "../../../../../utility/customColor";
+import { getSeparationLandingById } from "../../helper";
+import { setFirstLevelNameAction } from "../../../../../commonRedux/reduxForLocalStorage/actions";
+import { dateFormatter } from "../../../../../utility/dateFormatter";
+import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
+import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 
 export default function ManagementViewSeparationForm() {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -43,7 +47,7 @@ export default function ManagementViewSeparationForm() {
     const payload = {
       intSeparationId: +params?.id,
       status: "",
-      workplaceGroupId: 0,
+      workplaceGroupId: wgId,
       departmentId: 0,
       designationId: 0,
       supervisorId: 0,
@@ -56,17 +60,14 @@ export default function ManagementViewSeparationForm() {
       tableName: "EmployeeSeparationReportBySeparationId",
     };
     getSeparationLandingById(payload, setSingleData, setLoading);
-  }, [orgId, buId, employeeId, params?.id]);
+  }, [orgId, buId, employeeId, params?.id, wgId]);
 
   return (
     <>
       {loading && <Loading />}
       {permission?.isView ? (
         <div className="table-card">
-          <div
-            className="table-card-heading"
-            style={{ marginBottom: "12px" }}
-          >
+          <div className="table-card-heading" style={{ marginBottom: "12px" }}>
             <div className="d-flex align-items-center">
               <BackButton />
               <h2>{`View Separation`}</h2>
@@ -86,9 +87,12 @@ export default function ManagementViewSeparationForm() {
                           className="text-single-info"
                           style={{ fontWeight: "500", color: gray700 }}
                         >
-                          <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                          <small
+                            style={{ fontSize: "12px", lineHeight: "1.5" }}
+                          >
                             Separation Type -
-                          </small>{singleData?.SeparationTypeName}
+                          </small>
+                          {singleData?.SeparationTypeName}
                         </p>
                       </div>
                       <div className="single-info">
@@ -96,9 +100,12 @@ export default function ManagementViewSeparationForm() {
                           className="text-single-info"
                           style={{ fontWeight: "500", color: gray700 }}
                         >
-                          <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                          <small
+                            style={{ fontSize: "12px", lineHeight: "1.5" }}
+                          >
                             Application Date -
-                          </small>{dateFormatter(singleData?.SeparationDate)}
+                          </small>
+                          {dateFormatter(singleData?.SeparationDate)}
                         </p>
                       </div>
                       <div className="single-info">
@@ -106,37 +113,28 @@ export default function ManagementViewSeparationForm() {
                           className="text-single-info"
                           style={{ fontWeight: "500", color: gray700 }}
                         >
-                          <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                          <small
+                            style={{ fontSize: "12px", lineHeight: "1.5" }}
+                          >
                             Last Working Date -
-                          </small>{dateFormatter(singleData?.LastWorkingDay)}
+                          </small>
+                          {dateFormatter(singleData?.LastWorkingDay)}
                         </p>
                       </div>
                     </div>
                     <div>
                       {singleData?.ApprovalStatus === "Approve" && (
-                        <Chips
-                          label="Approved"
-                          classess="success p-2"
-                        />
+                        <Chips label="Approved" classess="success p-2" />
                       )}
                       {singleData?.ApprovalStatus === "Pending" && (
-                        <Chips
-                          label="Pending"
-                          classess="warning p-2"
-                        />
+                        <Chips label="Pending" classess="warning p-2" />
                       )}
                       {singleData?.ApprovalStatus === "Process" && (
-                        <Chips
-                          label="Process"
-                          classess="primary p-2"
-                        />
+                        <Chips label="Process" classess="primary p-2" />
                       )}
                       {singleData?.ApprovalStatus === "Reject" && (
                         <>
-                          <Chips
-                            label="Rejected"
-                            classess="danger p-2 mr-2"
-                          />
+                          <Chips label="Rejected" classess="danger p-2 mr-2" />
                         </>
                       )}
                     </div>
@@ -166,37 +164,35 @@ export default function ManagementViewSeparationForm() {
                 {isAccordion && (
                   <>
                     <div>
-                      <h2 style={{ marginBottom: "12px", marginTop: '24px' }}>
+                      <h2 style={{ marginBottom: "12px", marginTop: "24px" }}>
                         Attachment
                       </h2>
                       {singleData?.docArr?.length
                         ? singleData?.docArr.map((image, i) => (
-                          <p
-                            style={{
-                              margin: "6px 0 0",
-                              fontWeight: "400",
-                              fontSize: "12px",
-                              lineHeight: "18px",
-                              color: "#009cde",
-                              cursor: "pointer",
-                            }}
-                            key={i}
-                          >
-                            <span
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                dispatch(
-                                  getDownlloadFileView_Action(image)
-                                );
+                            <p
+                              style={{
+                                margin: "6px 0 0",
+                                fontWeight: "400",
+                                fontSize: "12px",
+                                lineHeight: "18px",
+                                color: "#009cde",
+                                cursor: "pointer",
                               }}
+                              key={i}
                             >
-                              <>
-                                <FilePresentOutlined />{" "}
-                                {`Attachment_${i + 1}`}
-                              </>
-                            </span>
-                          </p>
-                        ))
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  dispatch(getDownlloadFileView_Action(image));
+                                }}
+                              >
+                                <>
+                                  <FilePresentOutlined />{" "}
+                                  {`Attachment_${i + 1}`}
+                                </>
+                              </span>
+                            </p>
+                          ))
                         : ""}
                     </div>
                   </>
@@ -247,5 +243,5 @@ export default function ManagementViewSeparationForm() {
         <NotPermittedPage />
       )}
     </>
-  )
+  );
 }
