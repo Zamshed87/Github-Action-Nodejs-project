@@ -142,9 +142,9 @@ export const getBuDDLAction = (accId, buId, employeeId) => (dispatch) => {
     });
 };
 
-export const getWGDDLAction = (buId, employeeId) => (dispatch) => {
+export const getWGDDLAction = (buId, wgId, employeeId) => (dispatch) => {
   requestFromServer
-    .getWGDDL(buId, employeeId)
+    .getWGDDL(buId, wgId, employeeId)
     .then((res) => {
       dispatch(slice.setWGDDL(res?.data));
     })
