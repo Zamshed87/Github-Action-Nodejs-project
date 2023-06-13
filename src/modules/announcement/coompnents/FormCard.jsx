@@ -7,7 +7,11 @@ import FormikError from "../../../common/login/FormikError";
 import { gray600, success500 } from "../../../utility/customColor";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import { todayDate } from "../../../utility/todayDate";
-import { getAllWorkPlace, getDDLForAnnouncement, getPeopleDeskAllDDL } from "../helper";
+import {
+  getAllWorkPlace,
+  getDDLForAnnouncement,
+  getPeopleDeskAllDDL,
+} from "../helper";
 
 const FormCard = ({ propsObj }) => {
   const {
@@ -30,6 +34,19 @@ const FormCard = ({ propsObj }) => {
   const [departmentDDL, setDepartmentDDL] = useState([]);
   const [designationDDL, setDesignationDDL] = useState([]);
   const [userGroupDDL, setUserGroupDDL] = useState([]);
+
+  // const modules = {
+  //   toolbar: [
+  //     [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  //     ["bold", "italic", "underline", "strike"],
+
+  //     [{ script: "sub" }, { script: "super" }],
+  //     [{ list: "ordered" }, { list: "bullet" }],
+  //     [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
+  //     ["link", "image", "video"],
+  //     ["code-block"],
+  //   ],
+  // };
 
   useEffect(() => {
     if (!params?.id) {
@@ -392,6 +409,7 @@ const FormCard = ({ propsObj }) => {
             <label>Announcement Body</label>
             <ReactQuill
               value={values?.body || " "}
+              // modules={modules}
               onChange={(value) => setFieldValue("body", value)}
             />
           </div>
