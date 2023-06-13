@@ -113,7 +113,9 @@ const MgmtDailyAttendance = () => {
           intDepartmentId,
           "",
           pages,
-          setPages
+          setPages,
+          false,
+          wgId
         );
       },
     });
@@ -157,7 +159,9 @@ const MgmtDailyAttendance = () => {
         intDepartmentId,
         srcText,
         pagination,
-        setPages
+        setPages,
+        true,
+        wgId
       );
     }
     if (pages?.current !== pagination?.current) {
@@ -173,7 +177,9 @@ const MgmtDailyAttendance = () => {
         intDepartmentId,
         srcText,
         pagination,
-        setPages
+        setPages,
+        true,
+        wgId
       );
     }
   };
@@ -310,7 +316,7 @@ const MgmtDailyAttendance = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3">
+                <div className="col-lg-3 d-none">
                   <div className="input-field-main">
                     <label>Workplace</label>
                     <FormikSelect
@@ -392,10 +398,7 @@ const MgmtDailyAttendance = () => {
                                   const res = await axios.get(
                                     `/Employee/DailyAttendanceReport?IntAccountId=${orgId}&AttendanceDate=${
                                       values?.date
-                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
-                                      values?.workplaceGroup
-                                        ?.intWorkplaceGroupId || 0
-                                    }&IntWorkplaceId=${
+                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${
                                       values?.workplace?.intWorkplaceId || 0
                                     }&PageNo=1&PageSize=1000000&IntDepartmentId=${0}&IsPaginated=false`
                                   );
@@ -557,7 +560,7 @@ const MgmtDailyAttendance = () => {
                         if (e.target.value) {
                           getDailyAttendanceData(
                             orgId,
-                            values?.businessUnit?.intBusinessUnitId,
+                            buId,
                             values?.date,
                             values,
                             setRowDto,
@@ -567,12 +570,14 @@ const MgmtDailyAttendance = () => {
                             intDepartmentId,
                             e.target.value,
                             pages,
-                            setPages
+                            setPages,
+                            true,
+                            wgId
                           );
                         } else {
                           getDailyAttendanceData(
                             orgId,
-                            values?.businessUnit?.intBusinessUnitId,
+                            buId,
                             values?.date,
                             values,
                             setRowDto,
@@ -582,7 +587,9 @@ const MgmtDailyAttendance = () => {
                             intDepartmentId,
                             "",
                             pages,
-                            setPages
+                            setPages,
+                            true,
+                            wgId
                           );
                         }
                       }}
