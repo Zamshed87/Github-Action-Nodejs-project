@@ -1,7 +1,3 @@
-import {
-  SearchOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { IconButton, Tooltip } from "@mui/material";
 import { useFormik } from "formik";
@@ -11,27 +7,22 @@ import { useHistory, useLocation } from "react-router-dom";
 import * as Yup from "yup";
 import AvatarComponent from "../../../common/AvatarComponent";
 import BackButton from "../../../common/BackButton";
-import DefaultInput from "../../../common/DefaultInput";
 import Loading from "../../../common/loading/Loading";
 import PrimaryButton from "../../../common/PrimaryButton";
-import ResetButton from "../../../common/ResetButton";
 import ScrollableTable from "../../../common/ScrollableTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
-import { getRowTotal } from "../../../utility/getRowTotal";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 import HeaderInfoBar from "./components/HeaderInfoBar";
-import { generateBonusAction } from "./excel/bonusExcel";
 import {
   bonusGenerateApproveReject,
   createBonusGenExcelHandeler,
   getBonusGenerateLanding,
   getBuDetails,
 } from "./helper";
-import { allBonusExcelColumn, allBonusExcelData } from "./utility/excelColum";
-import { createSalaryDetailsReportExcelHandeler } from "../salaryGenerate/helper";
 import { toast } from "react-toastify";
-import moment from "moment";
+import { getPDFAction } from "../../../utility/downloadFile";
+import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 
 const initData = {
   search: "",
@@ -46,13 +37,13 @@ const BonusGenerateView = () => {
   const { state } = useLocation();
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
+  // const [allData, setAllData] = useState([]);
   const [buDetails, setBuDetails] = useState({});
-  const [totalSalary, setTotalSalary] = useState(0);
-  const [totalBasic, setTotalBasic] = useState(0);
-  const [totalBonus, setTotalBonus] = useState(0);
+  // const [totalSalary, setTotalSalary] = useState(0);
+  // const [totalBasic, setTotalBasic] = useState(0);
+  // const [totalBonus, setTotalBonus] = useState(0);
 
-  const { values, errors, touched, setFieldValue, handleSubmit } = useFormik({
+  const { handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
     validationSchema: validationSchema,
@@ -70,27 +61,27 @@ const BonusGenerateView = () => {
     shallowEqual
   );
 
-  useEffect(() => {
-    if (rowDto.length > 0) {
-      setTotalSalary(
-        Number(
-          rowDto?.reduce((acc, item) => acc + item?.numSalary, 0).toFixed(2)
-        )
-      );
-      setTotalBasic(
-        Number(
-          rowDto?.reduce((acc, item) => acc + item?.numBasic, 0).toFixed(2)
-        )
-      );
-      setTotalBonus(
-        Number(
-          rowDto
-            ?.reduce((acc, item) => acc + item?.numBonusAmount, 0)
-            .toFixed(2)
-        )
-      );
-    }
-  }, [rowDto]);
+  // useEffect(() => {
+  //   if (rowDto.length > 0) {
+  //     setTotalSalary(
+  //       Number(
+  //         rowDto?.reduce((acc, item) => acc + item?.numSalary, 0).toFixed(2)
+  //       )
+  //     );
+  //     setTotalBasic(
+  //       Number(
+  //         rowDto?.reduce((acc, item) => acc + item?.numBasic, 0).toFixed(2)
+  //       )
+  //     );
+  //     setTotalBonus(
+  //       Number(
+  //         rowDto
+  //           ?.reduce((acc, item) => acc + item?.numBonusAmount, 0)
+  //           .toFixed(2)
+  //       )
+  //     );
+  //   }
+  // }, [rowDto]);
 
   useEffect(() => {
     if (state?.intBonusHeaderId) {
@@ -110,7 +101,7 @@ const BonusGenerateView = () => {
           intCreatedBy: employeeId,
         },
         setRowDto,
-        setAllData,
+        "",
         setLoading
       );
     } else {
@@ -130,7 +121,7 @@ const BonusGenerateView = () => {
           intCreatedBy: employeeId,
         },
         setRowDto,
-        setAllData,
+        "",
         setLoading
       );
     }
@@ -144,19 +135,19 @@ const BonusGenerateView = () => {
   }, [buId]);
 
   // filter data
-  const filterData = (keywords) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter(
-        (item) =>
-          regex.test(item?.strBusinessUnit?.toLowerCase()) ||
-          regex.test(item?.strBonusName?.toLowerCase())
-      );
-      setRowDto(newDta);
-    } catch {
-      setRowDto([]);
-    }
-  };
+  // const filterData = (keywords) => {
+  //   try {
+  //     const regex = new RegExp(keywords?.toLowerCase());
+  //     let newDta = allData?.filter(
+  //       (item) =>
+  //         regex.test(item?.strBusinessUnit?.toLowerCase()) ||
+  //         regex.test(item?.strBonusName?.toLowerCase())
+  //     );
+  //     setRowDto(newDta);
+  //   } catch {
+  //     setRowDto([]);
+  //   }
+  // };
 
   const approveNRejectHandler = (text) => {
     let payload = [
@@ -175,20 +166,20 @@ const BonusGenerateView = () => {
   };
 
   // excel column set up
-  const excelColumnFunc = (processId) => {
-    switch (processId) {
-      default:
-        return allBonusExcelColumn;
-    }
-  };
+  // const excelColumnFunc = (processId) => {
+  //   switch (processId) {
+  //     default:
+  //       return allBonusExcelColumn;
+  //   }
+  // };
 
-  // excel data set up
-  const excelDataFunc = (processId) => {
-    switch (processId) {
-      default:
-        return allBonusExcelData(rowDto);
-    }
-  };
+  // // excel data set up
+  // const excelDataFunc = (processId) => {
+  //   switch (processId) {
+  //     default:
+  //       return allBonusExcelData(rowDto);
+  //   }
+  // };
 
   const [lastRow, setLastRow] = useState({});
   const [landingData, setLandingData] = useState([]);
@@ -274,7 +265,7 @@ const BonusGenerateView = () => {
               </div>
               <div>
                 <ul className="d-flex flex-wrap align-items-center justify-content-center">
-                 {/*  <li
+                  {/*  <li
                     className="pr-2"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -307,7 +298,6 @@ const BonusGenerateView = () => {
                     </Tooltip>
                   </li> */}
                   <li
-                    className="pr-2"
                     onClick={(e) => {
                       e.stopPropagation();
                       if (!landingData?.length > 0) {
@@ -329,6 +319,26 @@ const BonusGenerateView = () => {
                         style={{ color: "#101828", cursor: "pointer" }}
                       >
                         <DownloadIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </li>
+                  <li
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!landingData?.length > 0) {
+                        return toast.warn("No Data Found");
+                      }
+                      getPDFAction(
+                        `/PdfAndExcelReport/EmpBonusReportPdf?PartType=BonusGenerateViewById&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${state?.intWorkplaceGroupId}&BonusHeaderId=${intBonusHeaderId}&BonusId=${state?.intBonusId}`,
+                        setLoading
+                      );
+                    }}
+                  >
+                    <Tooltip title="Print" arrow>
+                      <IconButton
+                        style={{ color: "#101828", cursor: "pointer" }}
+                      >
+                        <LocalPrintshopIcon />
                       </IconButton>
                     </Tooltip>
                   </li>
