@@ -17,7 +17,10 @@ import Loading from "../../../common/loading/Loading";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../common/ResetButton";
-import { compensationBenefitsLSAction, setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
+import {
+  compensationBenefitsLSAction,
+  setFirstLevelNameAction,
+} from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../utility/customColor";
 import {
   dateFormatter,
@@ -92,7 +95,7 @@ const BonusGenerateLanding = () => {
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -148,7 +151,7 @@ const BonusGenerateLanding = () => {
         intBusinessUnitId: buId,
         intBonusId: 0,
         intPayrollGroupId: 0,
-        intWorkplaceGroupId: 0,
+        intWorkplaceGroupId: wgId,
         intReligionId: 0,
         dteEffectedDate: todayDate(),
         intCreatedBy: employeeId,
@@ -184,8 +187,10 @@ const BonusGenerateLanding = () => {
       validationSchema,
       initialValues: {
         ...initialValues,
-        filterFromDate: compensationBenefits?.bonusGenerate?.fromDate || monthFirstDate(),
-        filterToDate: compensationBenefits?.bonusGenerate?.toDate || monthLastDate(),
+        filterFromDate:
+          compensationBenefits?.bonusGenerate?.fromDate || monthFirstDate(),
+        filterToDate:
+          compensationBenefits?.bonusGenerate?.toDate || monthLastDate(),
       },
       onSubmit: (values) => saveHandler(values),
     });
@@ -318,8 +323,8 @@ const BonusGenerateLanding = () => {
         filter: true,
       },
       {
-        title: "Business Unit",
-        dataIndex: "strBusinessUnit",
+        title: "Workplace Group",
+        dataIndex: "strWorkplaceGroup",
         sorter: true,
         filter: true,
       },
@@ -418,8 +423,7 @@ const BonusGenerateLanding = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       history.push({
-                        pathname:
-                          `/compensationAndBenefits/payrollProcess/bonusGenerate/edit/${data?.intBonusHeaderId}`,
+                        pathname: `/compensationAndBenefits/payrollProcess/bonusGenerate/edit/${data?.intBonusHeaderId}`,
                         state: {
                           bonusObj: data,
                         },
@@ -776,13 +780,15 @@ const BonusGenerateLanding = () => {
                       type="date"
                       className="form-control"
                       onChange={(e) => {
-                        dispatch(compensationBenefitsLSAction({
-                          ...compensationBenefits,
-                          bonusGenerate: {
-                            ...compensationBenefits?.bonusGenerate,
-                            fromDate: e.target.value
-                          }
-                        }));
+                        dispatch(
+                          compensationBenefitsLSAction({
+                            ...compensationBenefits,
+                            bonusGenerate: {
+                              ...compensationBenefits?.bonusGenerate,
+                              fromDate: e.target.value,
+                            },
+                          })
+                        );
                         setFieldValue("filterFromDate", e.target.value);
                       }}
                     />
@@ -800,13 +806,15 @@ const BonusGenerateLanding = () => {
                       type="date"
                       className="form-control"
                       onChange={(e) => {
-                        dispatch(compensationBenefitsLSAction({
-                          ...compensationBenefits,
-                          bonusGenerate: {
-                            ...compensationBenefits?.bonusGenerate,
-                            toDate: e.target.value
-                          }
-                        }));
+                        dispatch(
+                          compensationBenefitsLSAction({
+                            ...compensationBenefits,
+                            bonusGenerate: {
+                              ...compensationBenefits?.bonusGenerate,
+                              toDate: e.target.value,
+                            },
+                          })
+                        );
                         setFieldValue("filterToDate", e.target.value);
                       }}
                     />

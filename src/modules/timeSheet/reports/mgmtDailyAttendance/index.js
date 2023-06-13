@@ -103,7 +103,7 @@ const MgmtDailyAttendance = () => {
       onSubmit: () => {
         getDailyAttendanceData(
           orgId,
-          values?.businessUnit?.intBusinessUnitId,
+          buId,
           values?.date,
           values,
           setRowDto,
@@ -147,7 +147,7 @@ const MgmtDailyAttendance = () => {
     ) {
       return getDailyAttendanceData(
         orgId,
-        values?.businessUnit?.intBusinessUnitId,
+        buId,
         values?.date,
         values,
         setRowDto,
@@ -163,7 +163,7 @@ const MgmtDailyAttendance = () => {
     if (pages?.current !== pagination?.current) {
       return getDailyAttendanceData(
         orgId,
-        values?.businessUnit?.intBusinessUnitId,
+        buId,
         values?.date,
         values,
         setRowDto,
@@ -195,6 +195,7 @@ const MgmtDailyAttendance = () => {
       "strWorkplace",
       setWorkplaceDDL
     );
+    getBuDetails(buId, setBuDetails, setLoading);
   }, [orgId, buId, employeeId]);
 
   useEffect(() => {
@@ -391,9 +392,7 @@ const MgmtDailyAttendance = () => {
                                   const res = await axios.get(
                                     `/Employee/DailyAttendanceReport?IntAccountId=${orgId}&AttendanceDate=${
                                       values?.date
-                                    }&IntBusinessUnitId=${
-                                      values?.businessUnit?.intBusinessUnitId
-                                    }&IntWorkplaceGroupId=${
+                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
                                       values?.workplaceGroup
                                         ?.intWorkplaceGroupId || 0
                                     }&IntWorkplaceId=${
