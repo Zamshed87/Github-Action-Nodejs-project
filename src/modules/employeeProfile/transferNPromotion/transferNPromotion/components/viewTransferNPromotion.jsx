@@ -28,8 +28,6 @@ const ViewTransferNPromotion = () => {
     shallowEqual
   );
 
-  console.log(location?.state);
-
   const getSingleData = () => {
     getTransferNpromotion(`/Employee/GetEmpTransferNpromotionById?id=${id}`);
     getEmployeeProfileViewData(

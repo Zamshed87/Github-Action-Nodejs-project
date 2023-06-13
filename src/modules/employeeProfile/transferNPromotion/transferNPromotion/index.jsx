@@ -3,7 +3,13 @@ import {
   Clear,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { IconButton, Popover, MenuItem, Pagination, Select } from "@mui/material";
+import {
+  IconButton,
+  Popover,
+  MenuItem,
+  Pagination,
+  Select,
+} from "@mui/material";
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -102,26 +108,22 @@ export default function TransferAndPromotion() {
       return { ...prev, current: newPage };
     });
 
-    getData(
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      },
-    );
+    getData({
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getData(
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
   };
 
   useEffect(() => {
@@ -171,7 +173,7 @@ export default function TransferAndPromotion() {
         enableReinitialize={true}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => { }}
+        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
         {({
           handleSubmit,
@@ -187,9 +189,15 @@ export default function TransferAndPromotion() {
               {permission?.isView ? (
                 <div>
                   <div className="table-card">
-
                     <div className="table-card-heading">
-                      <div></div>
+                      <div>
+                        {pages?.total > 0 && (
+                          <h6 className="count">
+                            Total {pages?.total}{" "}
+                            {`application${pages?.total > 1 ? "s" : ""}`}
+                          </h6>
+                        )}
+                      </div>
                       <div className="table-card-head-right">
                         <ul>
                           {isFilter && (
@@ -290,7 +298,7 @@ export default function TransferAndPromotion() {
                       </div>
                     </div>
 
-                    <div className="table-card-body mt-2 pt-1">
+                    <div className="table-card-body pt-1">
                       <div className="card-style my-2">
                         <div className="row">
                           <div className="col-lg-3">
@@ -630,7 +638,6 @@ export default function TransferAndPromotion() {
                 </div>
               </div>
             </Popover>
-
           </form>
         )}
       </Formik>

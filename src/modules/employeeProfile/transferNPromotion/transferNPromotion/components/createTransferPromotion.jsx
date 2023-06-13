@@ -269,7 +269,7 @@ function CreateTransferPromotion() {
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [departmentDDL, setDepartmentDDL] = useState([]);
   const [designationDDL, setDesignationDDL] = useState([]);
-  const [supNLineManagerDDL, setSupNLineManagerDDL] = useState([]);
+  // const [supNLineManagerDDL, setSupNLineManagerDDL] = useState([]);
   const [userRoleDDL, setUserRoleDDL] = useState([]);
   const [organizationDDL, setOrganizationDDL] = useState([]);
 
@@ -339,14 +339,14 @@ function CreateTransferPromotion() {
         "DesignationName",
         setDesignationDDL
       );
-      getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${
-          state?.singleData?.intBusinessUnitId
-        }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
-        "EmployeeId",
-        "EmployeeName",
-        setSupNLineManagerDDL
-      );
+      // getPeopleDeskAllDDL(
+      //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${
+      //     state?.singleData?.intBusinessUnitId
+      //   }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
+      //   "EmployeeId",
+      //   "EmployeeName",
+      //   setSupNLineManagerDDL
+      // );
       getPeopleDeskAllDDL(
         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${
           state?.singleData?.intBusinessUnitId
@@ -485,7 +485,7 @@ function CreateTransferPromotion() {
       intSupervisorId: values?.supervisor?.value,
       intLineManagerId: values?.lineManager?.value,
       intDottedSupervisorId: 0,
-      intWingId: values?.wing?.value,
+      intWingId: values?.wing?.value || 0,
       intSoldDepoId: values?.soleDepo?.value || 0,
       intRegionId: values?.region?.value || 0,
       intAreaId: values?.area?.value || 0,
@@ -811,16 +811,16 @@ function CreateTransferPromotion() {
                         "DesignationName",
                         setDesignationDDL
                       );
-                      getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${
-                          valueOption?.value
-                        }&WorkplaceGroupId=${
-                          values?.workplaceGroup?.value || wgId
-                        }`,
-                        "EmployeeId",
-                        "EmployeeName",
-                        setSupNLineManagerDDL
-                      );
+                      // getPeopleDeskAllDDL(
+                      //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${
+                      //     valueOption?.value
+                      //   }&WorkplaceGroupId=${
+                      //     values?.workplaceGroup?.value || wgId
+                      //   }`,
+                      //   "EmployeeId",
+                      //   "EmployeeName",
+                      //   setSupNLineManagerDDL
+                      // );
 
                       // wing DDL
                       if (
@@ -937,6 +937,7 @@ function CreateTransferPromotion() {
                     errors={errors}
                     touched={touched}
                     isDisabled={!values?.workplaceGroup}
+                    isClearable={false}
                   />
                 </div>
               </div>
@@ -972,6 +973,7 @@ function CreateTransferPromotion() {
                       placeholder=""
                       errors={errors}
                       touched={touched}
+                      isClearable={false}
                     />
                   </div>
                 </div>
@@ -1006,6 +1008,7 @@ function CreateTransferPromotion() {
                       placeholder=""
                       errors={errors}
                       touched={touched}
+                      isClearable={false}
                     />
                   </div>
                 </div>
@@ -1039,6 +1042,7 @@ function CreateTransferPromotion() {
                       placeholder=""
                       errors={errors}
                       touched={touched}
+                      isClearable={false}
                     />
                   </div>
                 </div>
@@ -1070,6 +1074,7 @@ function CreateTransferPromotion() {
                       placeholder=""
                       errors={errors}
                       touched={touched}
+                      isClearable={false}
                     />
                   </div>
                 </div>
@@ -1094,6 +1099,7 @@ function CreateTransferPromotion() {
                       placeholder=""
                       errors={errors}
                       touched={touched}
+                      isClearable={false}
                     />
                   </div>
                 </div>
@@ -1120,6 +1126,7 @@ function CreateTransferPromotion() {
                     errors={errors}
                     touched={touched}
                     isDisabled={!values?.businessUnit}
+                    isClearable={false}
                   />
                 </div>
               </div>
@@ -1147,13 +1154,14 @@ function CreateTransferPromotion() {
                     errors={errors}
                     touched={touched}
                     isDisabled={!values?.businessUnit}
+                    isClearable={false}
                   />
                 </div>
               </div>
               <div className="col-md-3">
                 <div className="input-field-main">
                   <label>Supervisor</label>
-                  <FormikSelect
+                  {/* <FormikSelect
                     name="supervisor"
                     placeholder=""
                     options={supNLineManagerDDL || []}
@@ -1168,13 +1176,26 @@ function CreateTransferPromotion() {
                     errors={errors}
                     touched={touched}
                     isDisabled={!values?.businessUnit}
+                  /> */}
+                  <AsyncFormikSelect
+                    selectedValue={values?.supervisor}
+                    isSearchIcon={true}
+                    handleChange={(valueOption) => {
+                      setValues((prev) => ({
+                        ...prev,
+                        supervisor: valueOption,
+                      }));
+                    }}
+                    placeholder="Search (min 3 letter)"
+                    loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+                    isDisabled={!values?.businessUnit}
                   />
                 </div>
               </div>
               <div className="col-md-3">
                 <div className="input-field-main">
                   <label>Line Manager</label>
-                  <FormikSelect
+                  {/* <FormikSelect
                     name="lineManager"
                     placeholder=""
                     options={supNLineManagerDDL || []}
@@ -1188,6 +1209,19 @@ function CreateTransferPromotion() {
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
+                    isDisabled={!values?.businessUnit}
+                  /> */}
+                  <AsyncFormikSelect
+                    selectedValue={values?.lineManager}
+                    isSearchIcon={true}
+                    handleChange={(valueOption) => {
+                      setValues((prev) => ({
+                        ...prev,
+                        lineManager: valueOption,
+                      }));
+                    }}
+                    placeholder="Search (min 3 letter)"
+                    loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
                     isDisabled={!values?.businessUnit}
                   />
                 </div>
