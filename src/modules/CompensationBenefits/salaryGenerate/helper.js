@@ -60,7 +60,7 @@ export const getSalaryGenerateRequestLanding = async (
 
   try {
     const res = await axios.get(
-      `/Payroll/SalarySelectQueryAll?partName=${partName}&intAccountId=${orgId}&intBusinessUnitId=${buId}&intMonthId=${
+      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
         monthId || +currentMonth()
       }&intYearId=${
         yearId || currentYear
@@ -208,7 +208,7 @@ export const getSalaryGenerateRequestLandingById = async (
 
   try {
     const res = await axios.get(
-      `/Payroll/SalarySelectQueryAll?partName=${partName}&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${salaryRequestIdParams}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${salaryRequestIdParams}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
     );
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
@@ -225,7 +225,7 @@ export const getSalaryGenerateRequestLandingById = async (
         try {
           setLoading && setLoading(false);
           const secondRes = await axios.get(
-            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intAccountId=${orgId}&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
           );
 
           if (secondRes?.data) {
