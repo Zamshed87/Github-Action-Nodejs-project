@@ -201,6 +201,7 @@ const MgmtDailyAttendance = () => {
       "strWorkplace",
       setWorkplaceDDL
     );
+    getBuDetails(buId, setBuDetails, setLoading);
   }, [orgId, buId, employeeId]);
 
   useEffect(() => {
