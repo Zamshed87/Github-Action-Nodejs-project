@@ -10,11 +10,17 @@ import { gray900 } from "../../../utility/customColor";
 import { Tooltip } from "@mui/material";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 
-export const getEmployeeProfileViewData = async (id, setter, setLoading) => {
+export const getEmployeeProfileViewData = async (
+  id,
+  setter,
+  setLoading,
+  buId,
+  wgId
+) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/EmployeeProfileView?employeeId=${id}`
+      `/Employee/GetEmpBasicInfoById?id=${id}&businessUnitId=${buId}&workplaceGroupId=${wgId}`
     );
     if (res?.data) {
       setter && setter(res?.data);
@@ -51,19 +57,57 @@ export const getAllIOULanding = async (
   setter,
   setLoading,
   pageNo,
-  pageSize
+  pageSize,
+  setPages,
+  employeeId = null
 ) => {
   setLoading && setLoading(true);
 
-  let searchTxt = search ? `&searchTxt=${search}` : "";
-  let docTypeTxt = docType ? `&strDocFor=${docType}` : "";
+  let apiUrl = `/Employee/GetIOULanding?businessUnitId=${buId}&workplaceGroupId=${wgId}&fromDate=${fromDate}&toDate=${toDate}&pageNo=${pageNo}&pageSize=${pageSize}`;
+
+  iouId >= 0 && (apiUrl += `&intIOUId=${iouId}`);
+
+  search && (apiUrl += `&searchTxt=${search}`);
+
+  docType && (apiUrl += `&strDocFor=${docType}`);
+
+  employeeId && (apiUrl += `&employeeId=${employeeId}`);
+
+  if (partType === "ViewById") {
+    apiUrl = `/Employee/IOULandingById?intIOUId=${iouId}`;
+  }
+
+  if (partType === "DocList") {
+    apiUrl = `/Employee/IouDocList?intIOUId=${iouId}&strDocFor=${docType}`;
+  }
 
   try {
-    const res = await axios.get(
-      `/Employee/GetAllIOULanding?strReportType=${partType}&intBusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intIOUId=${iouId}&fromDate=${fromDate}&toDate=${toDate}&pageNo=${pageNo}&pageSize=${pageSize}${searchTxt}${docTypeTxt}`
-    );
+    const res = await axios.get(apiUrl);
     if (res?.data) {
-      setter(res?.data);
+      if (partType === "IOULandingBySupervisorId") {
+        const modifiedData = res?.data?.iouApplicationLandings?.map(
+          (item, index) => ({
+            ...item,
+            initialSerialNumber: index + 1,
+          })
+        );
+        setter(modifiedData);
+
+        setPages({
+          current: res?.data?.currentPage,
+          pageSize: res?.data?.pageSize,
+          total: res?.data?.totalCount,
+        });
+      }
+
+      if (partType === "ViewById") {
+        setter?.(res?.data);
+      }
+
+      if (partType === "DocList") {
+        setter?.(res?.data);
+      }
+
       setLoading && setLoading(false);
     }
   } catch (error) {
@@ -87,7 +131,7 @@ export const iouReportDtoCol = (
     },
     {
       title: "Employee",
-      dataIndex: "strEmployeeName",
+      dataIndex: "employeeName",
       sort: true,
       filter: false,
       render: (item) => {
@@ -97,11 +141,11 @@ export const iouReportDtoCol = (
               <AvatarComponent
                 classess=""
                 letterCount={1}
-                label={item?.strEmployeeName}
+                label={item?.employeeName}
               />
             </div>
             <div className="ml-2">
-              <span>{item?.strEmployeeName}</span>
+              <span>{item?.employeeName}</span>
             </div>
           </div>
         );
@@ -110,18 +154,18 @@ export const iouReportDtoCol = (
     },
     {
       title: "IOU Code",
-      dataIndex: "strIOUCode",
+      dataIndex: "iouCode",
       sort: true,
       filter: false,
       fieldType: "string",
     },
     {
       title: "Application Date",
-      dataIndex: "dteApplicationDate",
+      dataIndex: "applicationDate",
       sort: true,
       filter: false,
       fieldType: "date",
-      render: (record) => dateFormatter(record?.dteApplicationDate),
+      render: (record) => dateFormatter(record?.applicationDate),
     },
     {
       title: "From Date",
@@ -178,22 +222,22 @@ export const iouReportDtoCol = (
     },
     {
       title: "Status",
-      dataIndex: "Status",
+      dataIndex: "status",
       width: 100,
       filter: false,
       render: (item) => {
         return (
           <div>
-            {item?.Status === "Approved" && (
+            {item?.status === "Approved" && (
               <Chips label="Approved" classess="success p-2" />
             )}
-            {item?.Status === "Pending" && (
+            {item?.status === "Pending" && (
               <Chips label="Pending" classess="warning p-2" />
             )}
-            {item?.Status === "Process" && (
+            {item?.status === "Process" && (
               <Chips label="Process" classess="primary p-2" />
             )}
-            {item?.Status === "Rejected" && (
+            {item?.status === "Rejected" && (
               <>
                 <Chips label="Rejected" classess="danger p-2 mr-2" />
                 {item?.RejectedBy && (
@@ -231,25 +275,25 @@ export const iouReportDtoCol = (
     },
     {
       title: "Adjustment Status",
-      dataIndex: "AdjustmentStatus",
+      dataIndex: "adjustmentStatus",
       filter: false,
       sort: true,
       render: (item) => {
         return (
           <div>
-            {item?.AdjustmentStatus === "Adjusted" && (
+            {item?.adjustmentStatus === "Adjusted" && (
               <Chips label="Adjusted" classess="success p-2" />
             )}
-            {item?.AdjustmentStatus === "Pending" && (
+            {item?.adjustmentStatus === "Pending" && (
               <Chips label="Pending" classess="warning p-2" />
             )}
-            {item?.AdjustmentStatus === "Process" && (
+            {item?.adjustmentStatus === "Process" && (
               <Chips label="Process" classess="primary p-2" />
             )}
-            {item?.AdjustmentStatus === "Completed" && (
+            {item?.adjustmentStatus === "Completed" && (
               <Chips label="Completed" classess="indigo p-2" />
             )}
-            {item?.AdjustmentStatus === "Rejected" && (
+            {item?.adjustmentStatus === "Rejected" && (
               <>
                 <Chips label="Rejected" classess="danger p-2 mr-2" />
               </>
@@ -264,21 +308,21 @@ export const iouReportDtoCol = (
       render: (item) => {
         return (
           <div className="d-flex">
-            {item?.Status === "Pending" && (
+            {item?.status === "Pending" && (
               <Tooltip title="Edit" arrow>
                 <button className="iconButton" type="button">
                   <EditOutlined
                     onClick={(e) => {
                       e.stopPropagation();
                       history.push(
-                        `/SelfService/iOU/report/edit/${item?.intIOUId}`
+                        `/SelfService/iOU/report/edit/${item?.iouId}`
                       );
                     }}
                   />
                 </button>
               </Tooltip>
             )}
-            {item?.AdjustmentStatus === "Adjusted" && (
+            {item?.adjustmentStatus === "Adjusted" && (
               <Tooltip title="Acknowledged" arrow>
                 <button className="iconButton" type="button">
                   <CheckOutlined

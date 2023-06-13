@@ -82,13 +82,13 @@ export default function SupervisorIOUReportView() {
   }, []);
 
   useEffect(() => {
-    if (singleData[0]?.intEmployeeId) {
+    if (singleData?.employeeId) {
       getEmployeeProfileViewData(
-        singleData[0]?.intEmployeeId,
+        singleData?.employeeId,
         setEmpBasic,
         setLoading,
-        singleData[0]?.businessUnitId,
-        singleData[0]?.workplaceGroupId
+        singleData?.businessUnitId,
+        singleData?.workplaceGroupId
       );
     }
   }, [singleData]);
@@ -212,28 +212,28 @@ export default function SupervisorIOUReportView() {
     const modifyImageArray =
       imageFile?.length > 0
         ? imageFile.map((image) => {
-            return {
-              intDocURLId: image?.globalFileUrlId,
-            };
-          })
+          return {
+            intDocURLId: image?.globalFileUrlId,
+          };
+        })
         : [];
 
     const payload = {
       strEntryType: params?.id ? "EDIT" : "ENTRY",
       intIOUId: params?.id ? params?.id : 0,
-      intEmployeeId: singleData[0]?.intEmployeeId,
-      dteFromDate: singleData[0]?.dteFromDate,
-      dteToDate: singleData[0]?.dteToDate,
-      numIOUAmount: singleData[0]?.numIOUAmount,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: params?.id ? singleData?.workplaceGroupId : wgId,
+      intEmployeeId: singleData?.employeeId,
+      dteFromDate: singleData?.dteFromDate,
+      dteToDate: singleData?.dteToDate,
+      numIOUAmount: singleData?.numIOUAmount,
       numAdjustedAmount: values?.adjustedAmount,
       numPayableAmount: values?.payableAmount,
       numReceivableAmount: values?.receivableAmount,
-      strDiscription: singleData[0]?.strDiscription,
+      strDiscription: singleData?.discription,
       isAdjustment: true,
-      intIOUAdjustmentId: singleData[0]?.intIOUAdjustmentId || 0,
+      intIOUAdjustmentId: singleData?.intIOUAdjustmentId || 0,
       isActive: true,
-      intCreatedBy: employeeId,
-      intUpdatedBy: employeeId,
       urlIdViewModelList: modifyImageArray,
     };
 
@@ -242,8 +242,8 @@ export default function SupervisorIOUReportView() {
 
   // pending amount
   pendingAmount =
-    +singleData[0]?.numIOUAmount -
-    (+singleData[0]?.numAdjustedAmount + +singleData[0]?.numReceivableAmount);
+    +singleData?.numIOUAmount -
+    (+singleData?.numAdjustedAmount + +singleData?.numReceivableAmount);
 
   return (
     <>
@@ -253,20 +253,20 @@ export default function SupervisorIOUReportView() {
         initialValues={
           params?.id
             ? {
-                adjustedAmount: singleData[0]?.numAdjustedAmount,
-                receivableAmount: singleData[0]?.numReceivableAmount,
-                pendingAmount: pendingAmount > 0 ? pendingAmount : 0,
-                payableAmount: singleData[0]?.numPayableAmount,
-              }
+              adjustedAmount: singleData?.numAdjustedAmount,
+              receivableAmount: singleData?.numReceivableAmount,
+              pendingAmount: pendingAmount > 0 ? pendingAmount : 0,
+              payableAmount: singleData?.numPayableAmount,
+            }
             : initData
         }
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
             if (params?.id) {
               resetForm({
-                adjustedAmount: singleData[0]?.numAdjustedAmount,
-                payableAmount: singleData[0]?.numPayableAmount,
-                receivableAmount: singleData[0]?.numReceivableAmount,
+                adjustedAmount: singleData?.numAdjustedAmount,
+                payableAmount: singleData?.numPayableAmount,
+                receivableAmount: singleData?.numReceivableAmount,
               });
             } else {
               resetForm(initData);
@@ -327,7 +327,7 @@ export default function SupervisorIOUReportView() {
                       <CircleButton
                         icon={<DateRange style={{ fontSize: "24px" }} />}
                         title={
-                          dateFormatter(singleData[0]?.dteApplicationDate) ||
+                          dateFormatter(singleData?.applicationDate) ||
                           "-"
                         }
                         subTitle="Application Date"
@@ -336,14 +336,14 @@ export default function SupervisorIOUReportView() {
                     <div className="col-lg-2">
                       <CircleButton
                         icon={<DateRange style={{ fontSize: "24px" }} />}
-                        title={dateFormatter(singleData[0]?.dteFromDate) || "-"}
+                        title={dateFormatter(singleData?.dteFromDate) || "-"}
                         subTitle="From Date"
                       />
                     </div>
                     <div className="col-lg-2">
                       <CircleButton
                         icon={<DateRange style={{ fontSize: "24px" }} />}
-                        title={dateFormatter(singleData[0]?.dteToDate) || "-"}
+                        title={dateFormatter(singleData?.dteToDate) || "-"}
                         subTitle="To Date"
                       />
                     </div>
@@ -351,7 +351,7 @@ export default function SupervisorIOUReportView() {
                       <CircleButton
                         icon={<img src={moneyIcon} alt="iBOS" />}
                         title={
-                          numberWithCommas(singleData[0]?.numIOUAmount) || "-"
+                          numberWithCommas(singleData?.numIOUAmount) || "-"
                         }
                         subTitle="IOU Amount"
                       />
@@ -364,7 +364,7 @@ export default function SupervisorIOUReportView() {
                         <div className="row">
                           <div className="col-6">
                             <h2>Description</h2>
-                            {singleData[0]?.strDiscription && (
+                            {singleData?.discription && (
                               <p
                                 style={{
                                   margin: "6px 0 0",
@@ -374,7 +374,7 @@ export default function SupervisorIOUReportView() {
                                   color: gray700,
                                 }}
                               >
-                                {singleData[0]?.strDiscription || "N/A"}
+                                {singleData?.discription || "N/A"}
                               </p>
                             )}
                           </div>
@@ -383,36 +383,36 @@ export default function SupervisorIOUReportView() {
                             <div className="d-flex flex-wrap">
                               {imgRow?.length
                                 ? imgRow.map((image, i) => (
-                                    <p
-                                      key={i}
-                                      style={{
-                                        margin: "6px 0 0",
-                                        fontWeight: "400",
-                                        fontSize: "12px",
-                                        lineHeight: "18px",
-                                        color: "#009cde",
-                                        cursor: "pointer",
+                                  <p
+                                    key={i}
+                                    style={{
+                                      margin: "6px 0 0",
+                                      fontWeight: "400",
+                                      fontSize: "12px",
+                                      lineHeight: "18px",
+                                      color: "#009cde",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    <span
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        dispatch(
+                                          getDownlloadFileView_Action(
+                                            image?.intDocURLId
+                                          )
+                                        );
                                       }}
                                     >
-                                      <span
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          dispatch(
-                                            getDownlloadFileView_Action(
-                                              image?.intDocURLId
-                                            )
-                                          );
-                                        }}
-                                      >
-                                        {image?.intDocURLId !== 0 && (
-                                          <div className="mr-1">
-                                            <FilePresentOutlined />{" "}
-                                            {`Attachment_${i + 1}`}
-                                          </div>
-                                        )}
-                                      </span>
-                                    </p>
-                                  ))
+                                      {image?.intDocURLId !== 0 && (
+                                        <div className="mr-1">
+                                          <FilePresentOutlined />{" "}
+                                          {`Attachment_${i + 1}`}
+                                        </div>
+                                      )}
+                                    </span>
+                                  </p>
+                                ))
                                 : ""}
                             </div>
                           </div>
@@ -443,7 +443,7 @@ export default function SupervisorIOUReportView() {
                                   onChange={(e) => {
                                     // pending amount
                                     pendingAmount =
-                                      +singleData[0]?.numIOUAmount -
+                                      +singleData?.numIOUAmount -
                                       (+e.target.value +
                                         +values?.receivableAmount);
 
@@ -462,7 +462,7 @@ export default function SupervisorIOUReportView() {
 
                                     if (
                                       +e.target.value >
-                                      +singleData[0]?.numIOUAmount
+                                      +singleData?.numIOUAmount
                                     ) {
                                       setFieldValue("receivableAmount", 0);
                                     }
@@ -494,7 +494,7 @@ export default function SupervisorIOUReportView() {
                                   onChange={(e) => {
                                     // pending amount
                                     pendingAmount =
-                                      +singleData[0]?.numIOUAmount -
+                                      +singleData?.numIOUAmount -
                                       (+values?.adjustedAmount +
                                         +e.target.value);
 
@@ -672,38 +672,37 @@ export default function SupervisorIOUReportView() {
                               </p>
                               {imageFile?.length
                                 ? imageFile.map((image, i) => (
+                                  <div
+                                    className="d-flex align-items-center"
+                                    onClick={() => {
+                                      dispatch(
+                                        getDownlloadFileView_Action(
+                                          image?.globalFileUrlId ||
+                                          image?.intDocURLId
+                                        )
+                                      );
+                                    }}
+                                  >
+                                    <AttachmentOutlined
+                                      sx={{
+                                        marginRight: "5px",
+                                        color: "#0072E5",
+                                      }}
+                                    />
                                     <div
-                                      className="d-flex align-items-center"
-                                      onClick={() => {
-                                        dispatch(
-                                          getDownlloadFileView_Action(
-                                            image?.globalFileUrlId ||
-                                              image?.intDocURLId
-                                          )
-                                        );
+                                      style={{
+                                        fontSize: "12px",
+                                        fontWeight: "500",
+                                        color: "#0072E5",
+                                        cursor: "pointer",
                                       }}
                                     >
-                                      <AttachmentOutlined
-                                        sx={{
-                                          marginRight: "5px",
-                                          color: "#0072E5",
-                                        }}
-                                      />
-                                      <div
-                                        style={{
-                                          fontSize: "12px",
-                                          fontWeight: "500",
-                                          color: "#0072E5",
-                                          cursor: "pointer",
-                                        }}
-                                      >
-                                        {image?.fileName ||
-                                          `Attachment_${
-                                            i <= 8 ? `0${i + 1}` : `${i + 1}`
-                                          }`}{" "}
-                                      </div>
+                                      {image?.fileName ||
+                                        `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
+                                        }`}{" "}
                                     </div>
-                                  ))
+                                  </div>
+                                ))
                                 : ""}
                             </div>
                           </div>
@@ -721,7 +720,7 @@ export default function SupervisorIOUReportView() {
                                 icon={<img src={moneyIcon} alt="iBOS" />}
                                 title={
                                   numberWithCommas(
-                                    singleData[0]?.numAdjustedAmount
+                                    singleData?.numAdjustedAmount
                                   ) || "-"
                                 }
                                 subTitle="Adjusted Amount"
@@ -732,7 +731,7 @@ export default function SupervisorIOUReportView() {
                                 icon={<img src={moneyIcon} alt="iBOS" />}
                                 title={
                                   numberWithCommas(
-                                    singleData[0]?.numReceivableAmount
+                                    singleData?.numReceivableAmount
                                   ) || "-"
                                 }
                                 subTitle="Cash Received Amount"
@@ -743,41 +742,41 @@ export default function SupervisorIOUReportView() {
                                 icon={<img src={moneyIcon} alt="iBOS" />}
                                 title={
                                   numberWithCommas(
-                                    singleData[0]?.numPayableAmount
+                                    singleData?.numPayableAmount
                                   ) || "-"
-                                }
+                                } singleData
                                 subTitle="Receive from Accounts"
                               />
                             </div>
                             <div className="col-lg-2"></div>
                             <div className="col-lg-2"></div>
                             {!edit &&
-                              singleData[0]?.Status === "Approved" &&
-                              singleData[0]?.AdjustmentStatus !==
-                                "Adjusted" && (
+                              singleData?.status === "Approved" &&
+                              singleData?.adjustmentStatus !==
+                              "Adjusted" && (
                                 <div className="col-lg-2 text-right">
-                                  {(singleData[0]?.AdjustmentStatus !==
+                                  {(singleData?.adjustmentStatus !==
                                     "Completed" ||
-                                    singleData[0]?.AdjustmentStatus !==
-                                      "Rejected") && (
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setEdit(true);
-                                      }}
-                                      className="btn btn-edit"
-                                    >
-                                      <ModeEditOutlined
-                                        sx={{
-                                          color: gray900,
-                                          fontSize: "16px",
-                                          marginRight: "10px",
+                                    singleData?.adjustmentStatus !==
+                                    "Rejected") && (
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setEdit(true);
                                         }}
-                                      />
-                                      Edit
-                                    </button>
-                                  )}
+                                        className="btn btn-edit"
+                                      >
+                                        <ModeEditOutlined
+                                          sx={{
+                                            color: gray900,
+                                            fontSize: "16px",
+                                            marginRight: "10px",
+                                          }}
+                                        />
+                                        Edit
+                                      </button>
+                                    )}
                                 </div>
                               )}
                           </div>
@@ -805,15 +804,14 @@ export default function SupervisorIOUReportView() {
                                     dispatch(
                                       getDownlloadFileView_Action(
                                         image?.globalFileUrlId ||
-                                          image?.intDocURLId
+                                        image?.intDocURLId
                                       )
                                     );
                                   }}
                                 >
                                   <FilePresentOutlined />
                                   {image?.fileName ||
-                                    `Attachment_${
-                                      i <= 8 ? `0${i + 1}` : `${i + 1}`
+                                    `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
                                     }`}{" "}
                                 </span>
                               </p>

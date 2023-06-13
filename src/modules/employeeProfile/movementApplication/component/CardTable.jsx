@@ -15,7 +15,7 @@ import { timeFormatter } from "../../../../utility/timeFormatter";
 import Chips from "../../../../common/Chips";
 
 const CardTable = ({ propsObj }) => {
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -49,6 +49,7 @@ const CardTable = ({ propsObj }) => {
           location: data?.Location,
           accountId: orgId,
           businessUnitId: buId,
+          workplaceGroupId: wgId,
           isActive: true,
           insertBy: employeeId,
         };
@@ -97,37 +98,37 @@ const CardTable = ({ propsObj }) => {
                 <div>SL</div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>Movement Type </span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>From Date </span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>Start Time</span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>To Date</span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span>End Time</span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => { }}>
+                <div className="sortable" onClick={() => {}}>
                   <span> Application Date</span>
                 </div>
               </th>
               <th>
-                <div className="sortable center" onClick={() => { }}>
+                <div className="sortable center" onClick={() => {}}>
                   <span>Status</span>
                 </div>
               </th>
@@ -160,7 +161,9 @@ const CardTable = ({ propsObj }) => {
                         }
                         arrow
                       >
-                        <InfoOutlinedIcon sx={{ marginRight: "12px", color: "rgba(0,0,0,0.6)" }} />
+                        <InfoOutlinedIcon
+                          sx={{ marginRight: "12px", color: "rgba(0,0,0,0.6)" }}
+                        />
                       </LightTooltip>
                       <span className="content tableBody-title">
                         {" "}

@@ -59,7 +59,6 @@ export const getSeparationLanding = async (obj) => {
     empId,
     workId,
     buId,
-    orgId,
     setter,
     setLoading,
     separationTypeId,
@@ -407,13 +406,17 @@ export const employeeSeparationCrud = async (
   values,
   setLoading,
   getData,
-  orgId
+  orgId,
+  buId,
+  wgId
 ) => {
   try {
     setLoading(true);
     let payload = {
       partId: partId,
       intSeparationId: values?.autoId || 0,
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
       intEmployeeId: values?.employee?.value || 0,
       strEmployeeName: values?.employee?.label || "",
       strEmployeeCode: values?.employee?.strEmployeeCode || "",

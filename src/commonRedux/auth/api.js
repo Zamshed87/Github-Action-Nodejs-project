@@ -38,9 +38,9 @@ export function geBuDDL(accId, buId, employeeId) {
   );
 }
 
-export function getWGDDL(buId, employeeId) {
+export function getWGDDL(buId, wgId, employeeId) {
   return axios.get(
-    `PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${buId}&intId=${
+    `PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${
       employeeId || 0
     }`
   );

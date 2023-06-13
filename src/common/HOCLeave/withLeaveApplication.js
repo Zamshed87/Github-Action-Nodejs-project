@@ -119,8 +119,9 @@ const withLeaveApplication = (WrappedComponent) => {
         leaveReason: values?.reason,
         addressDuetoLeave: values?.location,
         insertBy: employeeId,
-        workplaceGroupId: wgId,
+        workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
       };
+
       let confirmObject = {
         closeOnClickOutside: false,
         message: `Do you want to ${action} ?`,
@@ -170,7 +171,9 @@ const withLeaveApplication = (WrappedComponent) => {
         setLeaveHistoryData,
         setLoading,
         setAllData,
-        year
+        year,
+        buId,
+        wgId
       );
       getEmployeeLeaveBalanceAndHistory(
         empId ? empId : employeeId,
@@ -178,7 +181,9 @@ const withLeaveApplication = (WrappedComponent) => {
         setLeaveBalanceData,
         setLoading,
         "",
-        year
+        year,
+        buId,
+        wgId
       );
     };
 

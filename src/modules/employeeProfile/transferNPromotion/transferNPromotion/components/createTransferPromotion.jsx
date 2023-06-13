@@ -225,14 +225,14 @@ function CreateTransferPromotion() {
     },
     role: state?.singleData?.empTransferNpromotionUserRoleVMList
       ? state?.singleData?.empTransferNpromotionUserRoleVMList.map((item) => {
-        return {
-          intTransferNpromotionUserRoleId:
-            item?.intTransferNpromotionUserRoleId,
-          intTransferNpromotionId: item?.intTransferNpromotionId,
-          value: item?.intUserRoleId,
-          label: item?.strUserRoleName,
-        };
-      })
+          return {
+            intTransferNpromotionUserRoleId:
+              item?.intTransferNpromotionUserRoleId,
+            intTransferNpromotionId: item?.intTransferNpromotionId,
+            value: item?.intUserRoleId,
+            label: item?.strUserRoleName,
+          };
+        })
       : [],
     remarks: state?.singleData?.strRemarks,
     isRoleExtension: state?.singleData?.empTransferNpromotionRoleExtensionVMList
@@ -285,7 +285,7 @@ function CreateTransferPromotion() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&WorkplaceGroupId=0&intId=${employeeId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
@@ -324,25 +324,35 @@ function CreateTransferPromotion() {
         0
       );
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${state?.singleData?.intBusinessUnitId}&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId}`,
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${
+          state?.singleData?.intBusinessUnitId
+        }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
         "DepartmentId",
         "DepartmentName",
         setDepartmentDDL
       );
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&BusinessUnitId=${state?.singleData?.intBusinessUnitId}&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId}`,
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&BusinessUnitId=${
+          state?.singleData?.intBusinessUnitId
+        }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
         "DesignationId",
         "DesignationName",
         setDesignationDDL
       );
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${state?.singleData?.intBusinessUnitId}&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId}`,
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${
+          state?.singleData?.intBusinessUnitId
+        }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
         "EmployeeId",
         "EmployeeName",
         setSupNLineManagerDDL
       );
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${state?.singleData?.intBusinessUnitId}&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId}&intId=${employeeId}`,
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${
+          state?.singleData?.intBusinessUnitId
+        }&WorkplaceGroupId=${
+          state?.singleData?.intWorkplaceGroupId || wgId
+        }&intId=${employeeId}`,
         "intWorkplaceId",
         "strWorkplace",
         setWorkplaceDDL
@@ -510,10 +520,11 @@ function CreateTransferPromotion() {
           <div className="table-card-heading">
             <div className="d-flex align-items-center">
               <BackButton
-                title={`${!id
-                  ? "Create Transfer And Promotion"
-                  : "Edit Transfer And Promotion"
-                  }`}
+                title={`${
+                  !id
+                    ? "Create Transfer And Promotion"
+                    : "Edit Transfer And Promotion"
+                }`}
               />
             </div>
             <div className="table-card-head-right">
@@ -617,7 +628,9 @@ function CreateTransferPromotion() {
                       orgId,
                       valueOption?.value,
                       setHistoryData,
-                      setLoading
+                      setLoading,
+                      buId,
+                      wgId
                     );
                   }}
                   placeholder="Search (min 3 letter)"
@@ -764,7 +777,7 @@ function CreateTransferPromotion() {
                     value={values?.businessUnit}
                     onChange={(valueOption) => {
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=0`,
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
                         "intWorkplaceGroupId",
                         "strWorkplaceGroup",
                         setWorkplaceGroupDDL
@@ -779,19 +792,31 @@ function CreateTransferPromotion() {
                         0
                       );
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${valueOption?.value}&WorkplaceGroupId=${values?.workplaceGroup?.value}`,
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${
+                          valueOption?.value
+                        }&WorkplaceGroupId=${
+                          values?.workplaceGroup?.value || wgId
+                        }`,
                         "DepartmentId",
                         "DepartmentName",
                         setDepartmentDDL
                       );
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&BusinessUnitId=${valueOption?.value}&WorkplaceGroupId=${values?.workplaceGroup?.value}`,
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&BusinessUnitId=${
+                          valueOption?.value
+                        }&WorkplaceGroupId=${
+                          values?.workplaceGroup?.value || wgId
+                        }`,
                         "DesignationId",
                         "DesignationName",
                         setDesignationDDL
                       );
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${valueOption?.value}&WorkplaceGroupId=${values?.workplaceGroup?.value}`,
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${
+                          valueOption?.value
+                        }&WorkplaceGroupId=${
+                          values?.workplaceGroup?.value || wgId
+                        }`,
                         "EmployeeId",
                         "EmployeeName",
                         setSupNLineManagerDDL
@@ -803,7 +828,11 @@ function CreateTransferPromotion() {
                         values?.workplaceGroup?.label === "Marketing"
                       ) {
                         getPeopleDeskWithoutAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${valueOption?.value}&WorkplaceGroupId=${values?.workplaceGroup?.value}&ParentTerritoryId=0`,
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${
+                            valueOption?.value
+                          }&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || wgId
+                          }&ParentTerritoryId=0`,
                           "WingId",
                           "WingName",
                           setWingDDL
@@ -1274,7 +1303,7 @@ function CreateTransferPromotion() {
                   className={fileId ? " mt-0 " : "mt-3"}
                   onClick={onButtonClick}
                   style={{ cursor: "pointer" }}
-                // style={{ cursor: "pointer", position: "relative" }}
+                  // style={{ cursor: "pointer", position: "relative" }}
                 >
                   <input
                     onChange={(e) => {
@@ -1443,9 +1472,9 @@ function CreateTransferPromotion() {
                         let roleExist = rowDto?.some(
                           (item) =>
                             item?.intOrganizationTypeId ===
-                            values?.orgType?.value &&
+                              values?.orgType?.value &&
                             item?.intOrganizationReffId ===
-                            values?.orgName?.value
+                              values?.orgName?.value
                         );
 
                         if (roleExist)

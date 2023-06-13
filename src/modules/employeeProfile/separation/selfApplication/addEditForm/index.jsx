@@ -91,7 +91,7 @@ export default function SelfApplicationSeparationForm() {
       const payload = {
         intSeparationId: +params?.id,
         status: "",
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
         departmentId: 0,
         designationId: 0,
         supervisorId: 0,
@@ -105,7 +105,7 @@ export default function SelfApplicationSeparationForm() {
       };
       getSeparationLandingById(payload, setSingleData, setLoading);
     }
-  }, [orgId, buId, employeeId, params?.id]);
+  }, [orgId, buId, employeeId, params?.id, wgId]);
 
   useEffect(() => {
     if (+params?.id) {
@@ -151,6 +151,8 @@ export default function SelfApplicationSeparationForm() {
     let payload = {
       intEmployeeId: employeeId,
       strEmployeeName: strDisplayName,
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
       strEmployeeCode: "",
       intSeparationTypeId: values?.separationType?.value || 0,
       strSeparationTypeName: values?.separationType?.label || "",
@@ -186,24 +188,24 @@ export default function SelfApplicationSeparationForm() {
       validationSchema: validationSchema,
       initialValues: +params?.id
         ? {
-          separationType: {
-            value: singleData?.SeparationTypeId,
-            label: singleData?.SeparationTypeName,
-          },
-          applicationDate: dateFormatterForInput(singleData?.SeparationDate),
-          lastWorkingDay: dateFormatterForInput(singleData?.LastWorkingDay),
-          applicationBody: `${singleData?.Reason}`,
-        }
+            separationType: {
+              value: singleData?.SeparationTypeId,
+              label: singleData?.SeparationTypeName,
+            },
+            applicationDate: dateFormatterForInput(singleData?.SeparationDate),
+            lastWorkingDay: dateFormatterForInput(singleData?.LastWorkingDay),
+            applicationBody: `${singleData?.Reason}`,
+          }
         : {
-          ...initData,
-        },
+            ...initData,
+          },
       onSubmit: (values, { setSubmitting, resetForm }) => {
         saveHandler(values, () => {
           if (params?.id) {
             const payload = {
               intSeparationId: +params?.id,
               status: "",
-              workplaceGroupId: 0,
+              workplaceGroupId: wgId,
               departmentId: 0,
               designationId: 0,
               supervisorId: 0,
@@ -228,7 +230,7 @@ export default function SelfApplicationSeparationForm() {
       const payload = {
         intSeparationId: +params?.id,
         status: "",
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
         departmentId: 0,
         designationId: 0,
         supervisorId: 0,
@@ -401,86 +403,88 @@ export default function SelfApplicationSeparationForm() {
                     </p>
                     {imageFile?.length
                       ? imageFile.map((image, i) => (
-                        <div
-                          className="d-flex align-items-center"
-                          style={{ width: "160px" }}
-                          onClick={() => {
-                            dispatch(
-                              getDownlloadFileView_Action(
-                                image?.globalFileUrlId || image?.intDocURLId
-                              )
-                            );
-                          }}
-                          key={i}
-                        >
-                          <AttachmentOutlined
-                            sx={{ marginRight: "5px", color: "#0072E5" }}
-                          />
                           <div
-                            style={{
-                              fontSize: "12px",
-                              fontWeight: "500",
-                              color: "#0072E5",
-                              cursor: "pointer",
+                            className="d-flex align-items-center"
+                            style={{ width: "160px" }}
+                            onClick={() => {
+                              dispatch(
+                                getDownlloadFileView_Action(
+                                  image?.globalFileUrlId || image?.intDocURLId
+                                )
+                              );
                             }}
+                            key={i}
                           >
-                            {image?.fileName ||
-                              `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
-                              }`}{" "}
+                            <AttachmentOutlined
+                              sx={{ marginRight: "5px", color: "#0072E5" }}
+                            />
+                            <div
+                              style={{
+                                fontSize: "12px",
+                                fontWeight: "500",
+                                color: "#0072E5",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {image?.fileName ||
+                                `Attachment_${
+                                  i <= 8 ? `0${i + 1}` : `${i + 1}`
+                                }`}{" "}
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        ))
                       : ""}
                   </div>
                   <div className="col-12">
                     <h2 style={{ marginBottom: "12px" }}>Attachment List</h2>
                     {editImageRow?.length
                       ? editImageRow.map((image, i) => (
-                        <div
-                          className="d-flex align-items-center"
-                          style={{ width: "160px" }}
-                          onClick={() => {
-                            dispatch(
-                              getDownlloadFileView_Action(
-                                image?.globalFileUrlId || image?.intDocURLId
-                              )
-                            );
-                          }}
-                          key={i}
-                        >
-                          <AttachmentOutlined
-                            sx={{ marginRight: "5px", color: "#0072E5" }}
-                          />
                           <div
-                            style={{
-                              fontSize: "12px",
-                              fontWeight: "500",
-                              color: "#0072E5",
-                              cursor: "pointer",
+                            className="d-flex align-items-center"
+                            style={{ width: "160px" }}
+                            onClick={() => {
+                              dispatch(
+                                getDownlloadFileView_Action(
+                                  image?.globalFileUrlId || image?.intDocURLId
+                                )
+                              );
                             }}
+                            key={i}
                           >
-                            {image?.fileName ||
-                              `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
-                              }`}{" "}
-                            {editImageRow?.length && (
-                              <IconButton
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteImageHandler(image?.globalFileUrlId);
-                                }}
-                                size="small"
-                                style={{
-                                  fontSize: "18px",
-                                  padding: "0px 5px",
-                                  color: "#175CD3",
-                                }}
-                              >
-                                <Close fontSize="inherit" />
-                              </IconButton>
-                            )}
+                            <AttachmentOutlined
+                              sx={{ marginRight: "5px", color: "#0072E5" }}
+                            />
+                            <div
+                              style={{
+                                fontSize: "12px",
+                                fontWeight: "500",
+                                color: "#0072E5",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {image?.fileName ||
+                                `Attachment_${
+                                  i <= 8 ? `0${i + 1}` : `${i + 1}`
+                                }`}{" "}
+                              {editImageRow?.length && (
+                                <IconButton
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    deleteImageHandler(image?.globalFileUrlId);
+                                  }}
+                                  size="small"
+                                  style={{
+                                    fontSize: "18px",
+                                    padding: "0px 5px",
+                                    color: "#175CD3",
+                                  }}
+                                >
+                                  <Close fontSize="inherit" />
+                                </IconButton>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        ))
                       : ""}
                   </div>
 
