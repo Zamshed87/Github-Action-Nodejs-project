@@ -1,11 +1,11 @@
 import {
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { IconButton, Tooltip } from "@mui/material";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import * as Yup from "yup";
@@ -22,7 +22,11 @@ import { getRowTotal } from "../../../utility/getRowTotal";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { generateBonusAction } from "./excel/bonusExcel";
-import { bonusGenerateApproveReject, getBonusGenerateLanding, getBuDetails } from "./helper";
+import {
+  bonusGenerateApproveReject,
+  getBonusGenerateLanding,
+  getBuDetails,
+} from "./helper";
 import { allBonusExcelColumn, allBonusExcelData } from "./utility/excelColum";
 
 const initData = {
@@ -55,8 +59,7 @@ const BonusGenerateView = () => {
 
   const { intBonusHeaderId } = !state?.data ? state : state?.data;
 
-  let saveHandler = () => {
-  };
+  let saveHandler = () => {};
 
   const { orgId, buId, employeeId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
@@ -133,7 +136,7 @@ const BonusGenerateView = () => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
   }, [dispatch]);
   useEffect(() => {
-   getBuDetails(buId,setBuDetails,setLoading)
+    getBuDetails(buId, setBuDetails, setLoading);
   }, [buId]);
 
   // filter data
@@ -182,6 +185,36 @@ const BonusGenerateView = () => {
         return allBonusExcelData(rowDto);
     }
   };
+
+  const [lastRow, setLastRow] = useState({});
+  const [landingData, setLandingData] = useState([]);
+  useEffect(() => {
+    setLastRow(rowDto[rowDto?.length - 1]);
+    let temp = [];
+    let prev = { ...rowDto?.[0] };
+    temp.push(prev);
+    for (let i = 1; i < rowDto?.length - 1; i++) {
+      if (rowDto?.[i].DeptName?.length > 0) {
+        temp[i - 1] = { ...rowDto[i - 1], DeptName: "Sub-Total:" };
+        prev = { ...rowDto?.[i] };
+        temp.push(rowDto?.[i]);
+      } else {
+        temp.push(rowDto?.[i]);
+      }
+    }
+    temp[rowDto?.length - 2] = {
+      ...rowDto?.[rowDto?.length - 2],
+      DeptName: "Sub-Total:",
+    };
+    setLandingData(temp);
+  }, [rowDto]);
+
+  const empCount = useMemo(() => {
+    const len = landingData?.filter((item) => item?.SL);
+    return len?.length;
+  }, [landingData]);
+
+  console.table(landingData);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -234,7 +267,7 @@ const BonusGenerateView = () => {
                     color: "#667085",
                   }}
                 >
-                  Total employee {rowDto?.length}
+                  Total employee {empCount || 0}
                 </p>
               </div>
               <div>
@@ -316,8 +349,250 @@ const BonusGenerateView = () => {
             <ScrollableTable
               classes="salary-process-table"
               secondClasses="table-card-styled tableOne scroll-table-height"
+              customClass="bonus-generate-custom"
             >
-              <thead>
+              <thead style={{ textAlign: "center" }}>
+                <tr>
+                  <th
+                    rowSpan="2"
+                    style={{ minWidth: "200px", textAlign: "center" }}
+                  >
+                    SL
+                  </th>
+                  <th
+                    rowSpan="2"
+                    style={{ textAlign: "center", minWidth: "130px" }}
+                  >
+                    Employee ID
+                  </th>
+                  <th rowSpan="2">Employee Name</th>
+                  <th rowSpan="2">Designation</th>
+                  <th rowSpan="2">Date of Joining</th>
+                  <th rowSpan="2">Job Duration</th>
+                  <th
+                    style={{ textAlign: "center" }}
+                    className="th-inner-table"
+                  >
+                    <span className="mr-2">Gross Salary</span>
+                    <table className="table table-bordered table-hover m-0 th-table">
+                      <thead>
+                        <tr>
+                          <th className="green" style={{ textAlign: "right" }}>
+                            {numberWithCommas(lastRow?.numSalary)}
+                          </th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </th>
+                  <th
+                    style={{ textAlign: "center" }}
+                    className="th-inner-table"
+                  >
+                    <span className="mr-2">Basic Salary</span>
+                    <table className="table table-bordered table-hover m-0 th-table">
+                      <thead>
+                        <tr>
+                          <th className="green" style={{ textAlign: "right" }}>
+                            {numberWithCommas(lastRow?.numBasic)}
+                          </th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </th>
+                  <th
+                    style={{ textAlign: "center" }}
+                    className="th-inner-table"
+                  >
+                    <span className="mr-2">Bonus Amount</span>
+                    <table className="table table-bordered table-hover m-0 th-table">
+                      <thead>
+                        <tr>
+                          <th className="green" style={{ textAlign: "right" }}>
+                            {numberWithCommas(lastRow?.numBonusAmount)}
+                          </th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </th>
+                  <th rowSpan="2">Bonus Percentage</th>
+                  <th rowSpan="2">Workplace</th>
+                  <th rowSpan="2">Workplace Group</th>
+                </tr>
+              </thead>
+              <tbody>
+                {landingData?.map((item, index) => (
+                  <tr key={index}>
+                    <td
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {item?.DeptName?.trim() ? (
+                        item?.DeptName === "Sub-Total:" ? (
+                          <b>Sub-Total:</b>
+                        ) : (
+                          <b>Depertment: {item?.DeptName}</b>
+                        )
+                      ) : (
+                        item?.SL
+                      )}
+                    </td>
+                    <td
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {!item?.DeptName?.trim() ? (
+                        <div className="text-center">
+                          {" "}
+                          {item?.intEmployeeId}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </td>
+                    <td
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {!item?.DeptName ? (
+                        <div className="d-flex align-items-center">
+                          <div className="emp-avatar">
+                            <AvatarComponent
+                              classess=""
+                              letterCount={1}
+                              label={item?.strEmployeeName}
+                            />
+                          </div>
+                          <div className="ml-2">
+                            <span className="tableBody-title">
+                              {item?.strEmployeeName}
+                            </span>
+                          </div>
+                        </div>
+                      ) : null}
+                    </td>
+                    <td
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {!item?.DeptName?.trim()
+                        ? item?.strDesignationName
+                        : null}
+                    </td>
+                    <td
+                      style={{ textAlign: "center" }}
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {!item?.DeptName?.trim()
+                        ? dateFormatter(item?.dteJoiningDate)
+                        : null}
+                    </td>
+                    <td
+                      style={{ textAlign: "center" }}
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {!item?.DeptName?.trim() ? item?.strServiceLength : ""}
+                    </td>
+                    <td
+                      style={{ textAlign: "right" }}
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {/* {!item?.DeptName?.trim()
+                            ? numberWithCommas(item?.numSalary)
+                            : null} */}
+                      {item?.DeptName ? (
+                        item?.DeptName === "Sub-Total:" ? (
+                          <b>{numberWithCommas(item?.numSalary) || 0}</b>
+                        ) : (
+                          <></>
+                        )
+                      ) : (
+                        numberWithCommas(item?.numSalary) || 0
+                      )}
+                    </td>
+                    <td
+                      style={{ textAlign: "right" }}
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {item?.DeptName ? (
+                        item?.DeptName === "Sub-Total:" ? (
+                          <b>{numberWithCommas(item?.numBasic) || 0}</b>
+                        ) : (
+                          <></>
+                        )
+                      ) : (
+                        numberWithCommas(item?.numBasic) || 0
+                      )}
+                    </td>
+                    <td
+                      style={{ textAlign: "right" }}
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {item?.DeptName ? (
+                        item?.DeptName === "Sub-Total:" ? (
+                          <b>{numberWithCommas(item?.numBonusAmount) || 0}</b>
+                        ) : (
+                          <></>
+                        )
+                      ) : (
+                        numberWithCommas(item?.numBonusAmount) || 0
+                      )}
+                    </td>
+                    <td
+                      style={{ textAlign: "center" }}
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {!item?.DeptName?.trim()
+                        ? item?.numBonusPercentage + " %"
+                        : ""}
+                    </td>
+                    <td
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {!item?.DeptName?.trim()
+                        ? numberWithCommas(item?.strWorkPlaceName)
+                        : null}
+                    </td>
+                    <td
+                      className={
+                        item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                      }
+                    >
+                      {!item?.DeptName?.trim()
+                        ? numberWithCommas(item?.strWorkPlaceGroupName)
+                        : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </ScrollableTable>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+};
+export default BonusGenerateView;
+
+/* 
+<thead>
                 <tr>
                   <th
                     rowSpan="2"
@@ -412,11 +687,6 @@ const BonusGenerateView = () => {
                   </tr>
                 ))}
               </tbody>
-            </ScrollableTable>
-          </div>
-        </div>
-      </div>
-    </form>
-  );
-};
-export default BonusGenerateView;
+
+
+*/

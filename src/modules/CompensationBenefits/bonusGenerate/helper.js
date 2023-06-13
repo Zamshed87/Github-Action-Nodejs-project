@@ -37,6 +37,7 @@ export const getBonusGenerateLanding = async (
   try {
     const res = await axios.post(`/Employee/BonusAllLanding`, payload);
     if (res?.data) {
+      console.log("res", res?.data)
       setAllData && setAllData(res?.data);
       setter(res?.data);
       setLoading && setLoading(false);
