@@ -36,8 +36,27 @@ import {
 } from "./helper";
 
 const SalaryGenerateCreate = () => {
+  // hooks
   const { state } = useLocation();
   const params = useParams();
+  const dispatch = useDispatch();
+
+  // redux
+  const { orgId, buId, employeeId, wgId, buName, wgName } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+
+  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 77) {
+      permission = item;
+    }
+  });
+
+  // state
   const [loading, setLoading] = useState(false);
   const [singleData, setSingleData] = useState(null);
   const [rowDto, setRowDto] = useState([]);
@@ -59,11 +78,6 @@ const SalaryGenerateCreate = () => {
     setOpen(false);
   };
 
-  const { orgId, buId, employeeId, wgId, buName, wgName } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-
   // DDl section
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
 
@@ -80,18 +94,7 @@ const SalaryGenerateCreate = () => {
     );
   };
 
-  useEffect(() => {
-    if (+params?.id) {
-      getSalaryGenerateRequestHeaderId(
-        "SalaryGenerateRequestByRequestId",
-        +params?.id,
-        setSingleData,
-        setLoading,
-        wgId
-      );
-    }
-  }, [params, wgId]);
-
+  // for initial
   useEffect(() => {
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
@@ -101,8 +104,24 @@ const SalaryGenerateCreate = () => {
     );
   }, [orgId, buId, employeeId]);
 
-  // for edit
+  useEffect(() => {
+    getPeopleDeskWithoutAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=0`,
+      "WingId",
+      "WingName",
+      setWingDDL
+    );
+  }, [orgId, buId, wgId]);
 
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+  }, [dispatch]);
+
+  useEffect(() => {
+    setRowDto([]);
+  }, [wgId]);
+
+  // for edit
   useEffect(() => {
     if (+params?.id) {
       getSalaryGenerateRequestHeaderId(
@@ -110,10 +129,25 @@ const SalaryGenerateCreate = () => {
         +params?.id,
         setSingleData,
         setLoading,
-        wgId
+        wgId,
+        buId
       );
     }
-  }, [params, wgId]);
+  }, [params, wgId, buId]);
+
+  useEffect(() => {
+    if (+params?.id) {
+      getSalaryGenerateRequestRowId(
+        "SalaryGenerateRequestRowByRequestId",
+        +params?.id,
+        setRowDto,
+        setAllData,
+        setLoading,
+        wgId,
+        buId
+      );
+    }
+  }, [params, orgId, wgId, buId]);
 
   useEffect(() => {
     if (+params?.id) {
@@ -131,15 +165,6 @@ const SalaryGenerateCreate = () => {
       });
     }
   }, [orgId, buId, wgId, singleData, params]);
-
-  useEffect(() => {
-    getPeopleDeskWithoutAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=0`,
-      "WingId",
-      "WingName",
-      setWingDDL
-    );
-  }, [orgId, buId, wgId]);
 
   // on form submit
   const saveHandler = async (values) => {
@@ -231,20 +256,6 @@ const SalaryGenerateCreate = () => {
         : createSalaryGenerateRequest(payload, setLoading, callback);
     }
   };
-
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-
-  let permission = null;
-  permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 77) {
-      permission = item;
-    }
-  });
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
-  }, [dispatch]);
 
   const columns = [
     {
@@ -367,23 +378,6 @@ const SalaryGenerateCreate = () => {
       filter: true,
     },
   ];
-
-  useEffect(() => {
-    if (+params?.id) {
-      getSalaryGenerateRequestRowId(
-        "SalaryGenerateRequestRowByRequestId",
-        +params?.id,
-        setRowDto,
-        setAllData,
-        setLoading,
-        wgId
-      );
-    }
-  }, [params, orgId, wgId]);
-
-  useEffect(() => {
-    setRowDto([]);
-  }, [wgId]);
 
   // marketingEmployee
   const isSameWgEmployee = rowDto.every(
