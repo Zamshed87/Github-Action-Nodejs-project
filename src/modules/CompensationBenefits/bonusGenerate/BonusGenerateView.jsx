@@ -24,10 +24,14 @@ import HeaderInfoBar from "./components/HeaderInfoBar";
 import { generateBonusAction } from "./excel/bonusExcel";
 import {
   bonusGenerateApproveReject,
+  createBonusGenExcelHandeler,
   getBonusGenerateLanding,
   getBuDetails,
 } from "./helper";
 import { allBonusExcelColumn, allBonusExcelData } from "./utility/excelColum";
+import { createSalaryDetailsReportExcelHandeler } from "../salaryGenerate/helper";
+import { toast } from "react-toastify";
+import moment from "moment";
 
 const initData = {
   search: "",
@@ -96,7 +100,7 @@ const BonusGenerateView = () => {
             ? "ArrearBonusGenerateViewById"
             : "BonusGenerateViewById",
           intBonusHeaderId: state?.intBonusHeaderId,
-          intAccountId: state?.intAccountId,
+          // intAccountId: state?.intAccountId,
           intBusinessUnitId: state?.intBusinessUnitId,
           intBonusId: state?.intBonusId,
           intPayrollGroupId: state?.intPayrollGroupId,
@@ -116,7 +120,7 @@ const BonusGenerateView = () => {
             ? "ArrearBonusGenerateViewById"
             : "BonusGenerateViewById",
           intBonusHeaderId: state?.data?.intBonusHeaderId,
-          intAccountId: state?.data?.intAccountId,
+          // intAccountId: state?.data?.intAccountId,
           intBusinessUnitId: state?.data?.intBusinessUnitId,
           intBonusId: state?.data?.intBonusId,
           intPayrollGroupId: state?.data?.intPayrollGroupId,
@@ -214,8 +218,6 @@ const BonusGenerateView = () => {
     return len?.length;
   }, [landingData]);
 
-  console.table(landingData);
-
   return (
     <form onSubmit={handleSubmit}>
       {loading && <Loading />}
@@ -272,7 +274,7 @@ const BonusGenerateView = () => {
               </div>
               <div>
                 <ul className="d-flex flex-wrap align-items-center justify-content-center">
-                  <li
+                 {/*  <li
                     className="pr-2"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -303,9 +305,35 @@ const BonusGenerateView = () => {
                         <DownloadIcon />
                       </IconButton>
                     </Tooltip>
+                  </li> */}
+                  <li
+                    className="pr-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!landingData?.length > 0) {
+                        return toast.warn("No Data Found");
+                      }
+                      createBonusGenExcelHandeler({
+                        monthYear: dateFormatter(state?.dteEffectedDateTime),
+                        buAddress: buDetails?.strBusinessUnitAddress,
+                        businessUnit: buDetails?.strBusinessUnit,
+                        data: landingData,
+                        lastRow: lastRow,
+                        effectiveDate: state?.dteEffectedDateTime,
+                        headeTitle: `Bonus Sheet of ${state?.strWorkplaceGroup} (${state?.strBonusName})`,
+                      });
+                    }}
+                  >
+                    <Tooltip title="Export CSV" arrow>
+                      <IconButton
+                        style={{ color: "#101828", cursor: "pointer" }}
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                    </Tooltip>
                   </li>
-                  {values?.search && (
-                    <li>
+
+                  {/*   <li>
                       <ResetButton
                         classes="btn-filter-reset"
                         title="Reset"
@@ -315,9 +343,8 @@ const BonusGenerateView = () => {
                           setFieldValue("search", "");
                         }}
                       />
-                    </li>
-                  )}
-                  <li>
+                    </li> */}
+                  {/*  <li>
                     <DefaultInput
                       classes="search-input fixed-width mt-2 mt-md-0 mb-2 mb-md-0 tableCardHeaderSeach"
                       inputClasses="search-inner-input"
@@ -340,7 +367,7 @@ const BonusGenerateView = () => {
                       errors={errors}
                       touched={touched}
                     />
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
@@ -445,7 +472,7 @@ const BonusGenerateView = () => {
                       {!item?.DeptName?.trim() ? (
                         <div className="text-center">
                           {" "}
-                          {item?.intEmployeeId}
+                          {item?.strEmployeeCode}
                         </div>
                       ) : (
                         <></>
