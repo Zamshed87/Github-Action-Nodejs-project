@@ -259,7 +259,8 @@ export const getSalaryGenerateRequestHeaderId = async (
   id,
   setter,
   setLoading,
-  wgId
+  wgId,
+  buId
 ) => {
   setLoading && setLoading(true);
 
@@ -267,7 +268,7 @@ export const getSalaryGenerateRequestHeaderId = async (
 
   try {
     const res = await axios.get(
-      `/Payroll/SalarySelectQueryAll?partName=${partName}${idParams}&intWorkplaceGroupId=${wgId}`
+      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${idParams}`
     );
     if (res?.data) {
       // month default
@@ -331,7 +332,8 @@ export const getSalaryGenerateRequestRowId = async (
   setter,
   setAllData,
   setLoading,
-  wgId
+  wgId,
+  buId
 ) => {
   setLoading && setLoading(true);
 
@@ -339,7 +341,7 @@ export const getSalaryGenerateRequestRowId = async (
 
   try {
     const res = await axios.get(
-      `/Payroll/SalarySelectQueryAll?partName=${partName}${idParams}&intWorkplaceGroupId=${wgId}`
+      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${idParams}`
     );
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
