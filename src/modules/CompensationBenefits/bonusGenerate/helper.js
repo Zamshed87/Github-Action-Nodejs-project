@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 import FormikCheckBox from "../../../common/FormikCheckbox";
-import { gray900, greenColor } from "../../../utility/customColor";
+import { gray500, gray900, greenColor } from "../../../utility/customColor";
 import { createCommonExcelFile } from "../../../utility/customExcel/generateExcelAction";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../utility/dateFormatter";
@@ -392,5 +392,142 @@ const bonusExcelFooter = (lastRow) => {
     " ",
     numberWithCommas(lastRow.numBonusAmount.toFixed(2)),
     " ",
+  ];
+};
+
+export const bonusGenerateColumn = (
+  page,
+  paginationSize,
+  sendForApprovalHandler,
+  values,
+  history
+) => {
+  return [
+    {
+      title: "SL",
+      render: (text, record, index) => (page - 1) * paginationSize + index + 1,
+      sorter: false,
+      filter: false,
+    },
+    {
+      title: "Bonus System",
+      dataIndex: "strBonusSystem",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Bonus Name",
+      dataIndex: "strBonusName",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroup",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Effected Date",
+      dataIndex: "strSalaryPolicyName",
+      sorter: false,
+      filter: false,
+      render: (_, item) => dateFormatter(item?.dteEffectedDateTime),
+    },
+    {
+      title: "Net Amount",
+      dataIndex: "numBonusAmount",
+      sorter: false,
+      filter: false,
+      className: "text-right",
+      render: (_, item) => (
+        <>
+          {item?.numBonusAmount ? numberWithCommas(item?.numBonusAmount) : "0"}
+        </>
+      ),
+    },
+    {
+      title: "Approval Status",
+      dataIndex: "numNetPayableSalary",
+      sorter: false,
+      filter: false,
+      className: "text-right",
+      render: (_, data) => (
+        <>
+          {data?.strStatus.includes("Approved") && (
+            <p style={{ fontSize: "12px", color: gray500, fontWeight: "400" }}>
+              {data?.strStatus}
+            </p>
+          )}
+          {!data?.strStatus && (
+            <div className="d-flex align-items-center justify-content-end">
+              <button
+                style={{
+                  height: "24px",
+                  fontSize: "12px",
+                  padding: "0px 12px 0px 12px",
+                  backgroundColor: "#0BA5EC",
+                }}
+                className="btn btn-default"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  sendForApprovalHandler(data, values);
+                }}
+              >
+                Send for Approval
+              </button>
+            </div>
+          )}
+          {data?.strStatus.includes("Pending") && (
+            <p style={{ fontSize: "12px", color: gray500, fontWeight: "400" }}>
+              {data?.strStatus}
+            </p>
+          )}
+          {data?.strStatus.includes("Reject") && (
+            <p style={{ fontSize: "12px", color: gray500, fontWeight: "400" }}>
+              {data?.strStatus}
+            </p>
+          )}
+        </>
+      ),
+    },
+    {
+      title: "",
+      dataIndex: "",
+      sorter: false,
+      filter: false,
+      className: "text-right",
+      render: (_, data) => {
+        return (
+          <>
+            {!data?.strStatus && (
+              <div>
+                <button
+                  style={{
+                    height: "24px",
+                    fontSize: "12px",
+                    padding: "0px 12px 0px 12px",
+                  }}
+                  className="btn btn-default"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    history.push({
+                      pathname: `/compensationAndBenefits/payrollProcess/bonusGenerate/edit/${data?.intBonusHeaderId}`,
+                      state: {
+                        bonusObj: data,
+                      },
+                    });
+                  }}
+                >
+                  Re-Generate
+                </button>
+              </div>
+            )}
+          </>
+        );
+      },
+    },
   ];
 };
