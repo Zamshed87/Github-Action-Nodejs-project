@@ -7,14 +7,15 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import AntTable, { paginationSize } from "../../../../common/AntTable";
+import { paginationSize } from "../../../../common/AntTable";
 import DefaultInput from "../../../../common/DefaultInput";
-import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PrimaryButton from "../../../../common/PrimaryButton";
 import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   getSeparationLanding,
@@ -33,10 +34,12 @@ const initData = {
 };
 
 export default function ManagementSeparation() {
+  // hook
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { orgId, buId, wgId } = useSelector(
+  // redux
+  const { buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -50,62 +53,62 @@ export default function ManagementSeparation() {
     }
   });
 
+  // state
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
-  const [rowDto, setRowDto] = useState([]);
 
+  // landing
+  const [rowDto, setRowDto] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
   });
 
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
-  }, [dispatch]);
-
   const getData = (pagination, searchText) => {
-    getSeparationLanding({
-      status: null,
-      depId: null,
-      desId: null,
-      supId: null,
-      empId: 0,
-      workId: wgId,
+    getSeparationLanding(
+      "EmployeeSeparationList",
       buId,
-      orgId,
-      setter: setRowDto,
+      wgId,
+      values?.filterFromDate || "",
+      values?.filterToDate || "",
+      "",
+      setRowDto,
       setLoading,
-      separationTypeId: null,
-      tableName: "EmployeeSeparationList",
-      fromDate: values?.filterFromDate,
-      toDate: values?.filterToDate,
-      srcText: searchText || "",
-      pages: pagination || pages,
-      setPages,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages
+    );
+  };
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
     });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      }
+    );
   };
 
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getData(pagination, srcText);
-    }
-    if (pages?.current !== pagination?.current) {
-      return getData(pagination, srcText);
-    }
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      }
+    );
   };
 
-  useEffect(() => {
-    getData(pages, "");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wgId]);
-
+  // useFormik
   const { setFieldValue, values, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
@@ -113,6 +116,28 @@ export default function ManagementSeparation() {
       resetForm(initData);
     },
   });
+
+  // initial
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+  }, [dispatch]);
+
+  useEffect(() => {
+    getSeparationLanding(
+      "EmployeeSeparationList",
+      buId,
+      wgId,
+      values?.filterFromDate || "",
+      values?.filterToDate || "",
+      "",
+      setRowDto,
+      setLoading,
+      1,
+      paginationSize,
+      setPages
+    );
+  }, [buId, wgId, values]);
+
   return (
     <>
       {loading && <Loading />}
@@ -139,7 +164,20 @@ export default function ManagementSeparation() {
                         setFieldValue("status", "");
                         setFieldValue("search", "");
                         setStatus("");
-                        getData({ current: 1, pageSize: paginationSize }, "");
+
+                        getSeparationLanding(
+                          "EmployeeSeparationList",
+                          buId,
+                          wgId,
+                          values?.filterFromDate || "",
+                          values?.filterToDate || "",
+                          "",
+                          setRowDto,
+                          setLoading,
+                          1,
+                          paginationSize,
+                          setPages
+                        );
                       }}
                     />
                   </li>
@@ -153,17 +191,50 @@ export default function ManagementSeparation() {
                     setValue={(value) => {
                       setFieldValue("search", value);
                       if (value) {
-                        getData(
-                          { current: 1, pageSize: paginationSize },
-                          value
+                        getSeparationLanding(
+                          "EmployeeSeparationList",
+                          buId,
+                          wgId,
+                          values?.filterFromDate || "",
+                          values?.filterToDate || "",
+                          value,
+                          setRowDto,
+                          setLoading,
+                          1,
+                          paginationSize,
+                          setPages
                         );
                       } else {
-                        getData({ current: 1, pageSize: paginationSize }, "");
+                        getSeparationLanding(
+                          "EmployeeSeparationList",
+                          buId,
+                          wgId,
+                          values?.filterFromDate || "",
+                          values?.filterToDate || "",
+                          "",
+                          setRowDto,
+                          setLoading,
+                          1,
+                          paginationSize,
+                          setPages
+                        );
                       }
                     }}
                     cancelHandler={() => {
                       setFieldValue("search", "");
-                      getData({ current: 1, pageSize: paginationSize }, "");
+                      getSeparationLanding(
+                        "EmployeeSeparationList",
+                        buId,
+                        wgId,
+                        values?.filterFromDate || "",
+                        values?.filterToDate || "",
+                        "",
+                        setRowDto,
+                        setLoading,
+                        1,
+                        paginationSize,
+                        setPages
+                      );
                     }}
                   />
                 </li>
@@ -236,34 +307,33 @@ export default function ManagementSeparation() {
             </div>
             {rowDto?.length > 0 ? (
               <>
-                <div className="table-card-body">
-                  <div className="table-card-styled employee-table-card table-responsive ant-scrolling-Table">
-                    <AntTable
-                      data={rowDto}
-                      columnsData={separationApplicationLandingTableColumn(
-                        dispatch,
-                        history,
-                        permission,
-                        pages
-                      )}
-                      onRowClick={(data) => {
-                        history.push(
-                          `/profile/separation/view/${data?.SeparationId}`
-                        );
-                      }}
-                      rowClassName="pointer"
-                      pages={pages?.pageSize}
-                      pagination={pages}
-                      handleTableChange={({ pagination, newRowDto }) =>
-                        handleTableChange(
-                          pagination,
-                          newRowDto,
-                          values?.search || ""
-                        )
-                      }
-                    />
-                  </div>
-                </div>
+                <PeopleDeskTable
+                  customClass="iouManagementTable"
+                  columnData={separationApplicationLandingTableColumn(
+                    pages?.current,
+                    pages?.pageSize,
+                    history,
+                    dispatch,
+                    permission
+                  )}
+                  pages={pages}
+                  rowDto={rowDto}
+                  setRowDto={setRowDto}
+                  handleChangePage={(e, newPage) =>
+                    handleChangePage(e, newPage, values?.search)
+                  }
+                  handleChangeRowsPerPage={(e) =>
+                    handleChangeRowsPerPage(e, values?.search)
+                  }
+                  uniqueKey="strEmployeeCode"
+                  isCheckBox={false}
+                  isScrollAble={false}
+                  onRowClick={(data) => {
+                    history.push(
+                      `/profile/separation/view/${data?.separationId}`
+                    );
+                  }}
+                />
               </>
             ) : (
               <>{!loading && <NoResult title="No Result Found" para="" />}</>
