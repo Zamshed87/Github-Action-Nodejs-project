@@ -18,7 +18,6 @@ import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { todayDate } from "../../../../utility/todayDate";
 import { getOvertimeById, saveOvertime } from "../helper";
-import { getEmployeeProfileViewData } from "./../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 
 const initData = {
@@ -56,7 +55,6 @@ export default function AddEditOverTime() {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const [loading, setLoading] = useState(false);
-  const [empBasic, setEmpBasic] = useState([]);
   const [singleData, setSingleData] = useState("");
   const history = useHistory();
 
@@ -77,8 +75,6 @@ export default function AddEditOverTime() {
       permission = item;
     }
   });
-
-  console.log(state);
 
   useEffect(() => {
     if (params?.id) {
@@ -131,12 +127,12 @@ export default function AddEditOverTime() {
       // };
 
       let modifiedData = {
-        intOverTimeId: 0,
+        intOverTimeId: state?.OvertimeId || 0,
         intEmployeeId: values?.employee?.employeeId,
         employeeCode: values?.employee?.employeeCode,
         intAccountId: orgId,
         intBusinessUnitId: buId,
-        intWorkplaceGroupId: wgId,
+        intWorkplaceGroupId: state?.WorkplaceGroupId || wgId,
         intYear: +data?.date.split("-")[0],
         intMonth: +data?.date.split("-")[1],
         dteOverTimeDate:
@@ -185,19 +181,17 @@ export default function AddEditOverTime() {
     saveOvertime(payload, setLoading, callback);
   };
 
-  useEffect(() => {
-    if (params?.id) {
-      getEmployeeProfileViewData(
-        state?.EmployeeId,
-        setEmpBasic,
-        setLoading,
-        buId,
-        wgId
-      );
-    }
-  }, [params?.id, state?.EmployeeId, buId, wgId]);
-
-  console.log(singleData, "singleData");
+  // useEffect(() => {
+  //   if (params?.id) {
+  //     getEmployeeProfileViewData(
+  //       state?.EmployeeId,
+  //       setEmpBasic,
+  //       setLoading,
+  //       buId,
+  //       wgId
+  //     );
+  //   }
+  // }, [params?.id, state?.EmployeeId, buId, wgId]);
 
   const forms = useFormik({
     enableReinitialize: true,
@@ -205,8 +199,8 @@ export default function AddEditOverTime() {
       ? {
           ...singleData,
           employee: {
-            value: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
-            label: empBasic?.employeeProfileLandingView?.strEmployeeCode,
+            value: state?.EmployeeId,
+            label: state?.EmployeeName,
           },
           duration: singleData?.strDailyOrMonthly,
           otInfo: [
@@ -315,6 +309,7 @@ export default function AddEditOverTime() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+                    isDisabled={params?.id && true}
                   />
                 </div>
 
@@ -341,7 +336,7 @@ export default function AddEditOverTime() {
                         setFieldValue("duration", e.target.value);
                       }}
                       checked={values?.duration === "Daily"}
-                      disabled={params?.id && true}
+                      disabled={values?.duration === "Monthly"}
                     />
                     <FormikRadio
                       styleObj={{
@@ -363,7 +358,7 @@ export default function AddEditOverTime() {
                         setFieldValue("duration", e.target.value);
                       }}
                       checked={values?.duration === "Monthly"}
-                      disabled={params?.id && true}
+                      disabled={values?.duration === "Daily"}
                     />
                   </div>
                 </div>
