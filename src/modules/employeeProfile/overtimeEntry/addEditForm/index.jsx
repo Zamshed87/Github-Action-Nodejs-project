@@ -78,6 +78,8 @@ export default function AddEditOverTime() {
     }
   });
 
+  console.log(state);
+
   useEffect(() => {
     if (params?.id) {
       getOvertimeById(
@@ -89,7 +91,7 @@ export default function AddEditOverTime() {
           designationId: 0,
           supervisorId: 0,
           employeeId: state?.EmployeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: state?.WorkplaceGroupId,
           businessUnitId: buId,
           loggedEmployeeId: employeeId,
           FormDate: state?.fromDate,
@@ -168,7 +170,7 @@ export default function AddEditOverTime() {
             designationId: 0,
             supervisorId: 0,
             employeeId: singleData?.employee?.value,
-            workplaceGroupId: 0,
+            workplaceGroupId: state?.WorkplaceGroupId,
             businessUnitId: buId,
             loggedEmployeeId: employeeId,
             FormDate: state?.fromDate,
@@ -194,6 +196,8 @@ export default function AddEditOverTime() {
       );
     }
   }, [params?.id, state?.EmployeeId, buId, wgId]);
+
+  console.log(singleData, "singleData");
 
   const forms = useFormik({
     enableReinitialize: true,
