@@ -31,15 +31,15 @@ const Accordion = ({ empBasic }) => {
                 htmlFor="contained-button-file"
                 className="label-add-image"
               >
-                {empBasic?.empEmployeePhotoIdentity ? (
+                {empBasic?.intEmployeeImageUrlId ? (
                   <img
-                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.empEmployeePhotoIdentity?.intProfilePicFileUrlId}`}
+                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.intEmployeeImageUrlId?.intProfilePicFileUrlId}`}
                     alt=""
                     style={{ maxHeight: "78px", minWidth: "78px" }}
                   />
                 ) : (
                   <img
-                    src="http://localhost:3000/static/media/profile.a29e843a.jpg"
+                    src={profileImg}
                     alt="Peopledesk"
                     height="78px"
                     width="78px"

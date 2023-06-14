@@ -8,12 +8,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Chips from "../../../common/Chips";
 import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
-import {
-  gray500,
-  gray600,
-  gray700,
-  gray900,
-} from "../../../utility/customColor";
+import { gray500, gray700, gray900 } from "../../../utility/customColor";
 import {
   dateFormatter,
   dateFormatterForInput,
@@ -50,117 +45,98 @@ export const separationCrud = async (payload, setLoading, cb) => {
 };
 
 // self separation landing
-export const getSeparationLanding = async (obj) => {
-  const {
-    status,
-    depId,
-    desId,
-    supId,
-    empId,
-    workId,
-    buId,
-    setter,
-    setLoading,
-    separationTypeId,
-    tableName,
-    fromDate,
-    toDate,
-    srcText,
-    pages,
-    setPages,
-  } = obj;
+export const getSeparationLanding = async (
+  partType = "",
+  buId,
+  wgId,
+  fromDate,
+  toDate,
+  search,
+  setter,
+  setLoading,
+  pageNo,
+  pageSize,
+  setPages
+) => {
   try {
     setLoading && setLoading(true);
-    const payload = {
-      status: status || "",
-      workplaceGroupId: workId || 0,
-      departmentId: depId || 0,
-      designationId: desId || 0,
-      supervisorId: supId || 0,
-      employeeId: empId || 0,
-      separationTypeId: separationTypeId || 0,
-      applicationFromDate: fromDate,
-      applicationToDate: toDate,
-      businessUnitId: buId || 0,
-      tableName: tableName,
-      FromDate: fromDate || "",
-      ToDate: toDate || "",
-      searchTxt: srcText,
-      pageNo: pages?.current,
-      pageSize: pages.pageSize,
-    };
-    const res = await axios.post(
-      "/Employee/EmployeeSeparationListFilter",
-      payload
-    );
-    setPages({
-      ...pages,
-      current: pages.current,
-      pageSize: pages.pageSize,
-      total: res?.[0]?.totalCount,
-    });
-    setLoading && setLoading(false);
-    const modifyRes = res?.data?.map((itm) => {
-      return {
-        ...itm,
-        docArr: itm?.strDocumentId?.split(","),
-      };
-    });
 
-    setter(modifyRes);
+    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}`;
+
+    search && (apiUrl += `&searchTxt=${search}`);
+
+    const res = await axios.get(apiUrl);
+
+    if (res?.data) {
+      if (partType === "EmployeeSeparationList") {
+        const modifiedData = res?.data?.data?.map((item, index) => ({
+          ...item,
+          initialSerialNumber: index + 1,
+          docArr: item?.strDocumentId?.split(","),
+        }));
+        setter?.(modifiedData);
+
+        setPages({
+          current: res?.data?.currentPage,
+          pageSize: res?.data?.pageSize,
+          total: res?.data?.totalCount,
+        });
+      }
+    }
+
+    setLoading && setLoading(false);
   } catch (error) {
     setLoading && setLoading(false);
   }
 };
 
 export const separationApplicationLandingTableColumn = (
-  dispatch,
+  page,
+  paginationSize,
   history,
-  permission,
-  pages
+  dispatch,
+  permission
 ) => {
   return [
     {
-      title: () => <span style={{ color: gray600 }}>SL</span>,
-      render: (text, record, index) => {
-        return (
-          <span>
-            {pages?.current === 1
-              ? index + 1
-              : (pages.current - 1) * pages?.pageSize + (index + 1)}
-          </span>
-        );
-      },
+      title: "SL",
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
+      filter: false,
       className: "text-center",
-      width: "50px",
     },
     {
       title: "Code",
-      dataIndex: "EmployeeCode",
-      sorter: true,
-      filter: true,
+      dataIndex: "strEmployeeCode",
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Employee",
-      dataIndex: "EmployeeName",
-      sorter: true,
+      dataIndex: "strEmployeeName",
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Designation",
-      dataIndex: "DesignationName",
-      sorter: true,
-      filter: true,
+      dataIndex: "strDesignation",
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Department",
-      dataIndex: "DepartmentName",
-      sorter: true,
-      filter: true,
+      dataIndex: "strDepartment",
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
-      title: () => <span>Separation Type</span>,
-      dataIndex: "SeparationTypeName",
-      render: (_, item) => (
+      title: "Separation Type",
+      dataIndex: "strSeparationTypeName",
+      render: (item) => (
         <div className="content tableBody-title d-flex align-items-center">
           <LightTooltip
             title={
@@ -185,7 +161,7 @@ export const separationApplicationLandingTableColumn = (
                       color: gray500,
                     }}
                     dangerouslySetInnerHTML={{
-                      __html: item?.Reason,
+                      __html: item?.strReason,
                     }}
                   />
                   {item?.docArr?.length && item?.docArr?.[0] !== ""
@@ -226,61 +202,78 @@ export const separationApplicationLandingTableColumn = (
             />
           </LightTooltip>
           <span className="ml-2" style={{ fontSize: "11px" }}>
-            {item?.SeparationTypeName}
+            {item?.strSeparationTypeName}
           </span>
         </div>
       ),
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
-      title: () => <span style={{ color: gray600 }}>Application Date</span>,
-      render: (_, data) => (
+      title: "Application Date",
+      dataIndex: "dteSeparationDate",
+      render: (data) => (
         <>
-          {data?.SeparationDate ? dateFormatter(data?.SeparationDate) : "N/A"}
+          {data?.dteSeparationDate
+            ? dateFormatter(data?.dteSeparationDate)
+            : "N/A"}
         </>
       ),
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
-      title: () => <span style={{ color: gray600 }}>Last Working Date</span>,
-      render: (_, data) => (
+      title: "Last Working Date",
+      dataIndex: "dteLastWorkingDate",
+      render: (data) => (
         <>
-          {data?.LastWorkingDay ? dateFormatter(data?.LastWorkingDay) : "N/A"}
+          {data?.dteLastWorkingDate
+            ? dateFormatter(data?.dteLastWorkingDate)
+            : "N/A"}
         </>
       ),
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
       title: "Status",
-      dataIndex: "ApprovalStatus",
-      filter: true,
-      render: (_, item) => (
+      dataIndex: "approvalStatus",
+      sort: true,
+      filter: false,
+      render: (item) => (
         <>
-          {item?.ApprovalStatus === "Approve" && (
+          {item?.approvalStatus === "Approve" && (
             <Chips label="Approved" classess="success p-2" />
           )}
-          {item?.ApprovalStatus === "Pending" && (
+          {item?.approvalStatus === "Pending" && (
             <Chips label="Pending" classess="warning p-2" />
           )}
-          {item?.ApprovalStatus === "Process" && (
+          {item?.approvalStatus === "Process" && (
             <Chips label="Process" classess="primary p-2" />
           )}
-          {item?.ApprovalStatus === "Reject" && (
+          {item?.approvalStatus === "Reject" && (
             <>
               <Chips label="Rejected" classess="danger p-2 mr-2" />
             </>
           )}
-          {item?.ApprovalStatus === "Released" && (
+          {item?.approvalStatus === "Released" && (
             <>
               <Chips label="Released" classess=" p-2 mr-2" />
             </>
           )}
         </>
       ),
+      fieldType: "string",
     },
     {
       title: "",
-      render: (_, item) => (
+      dataIndex: "approvalStatus",
+      render: (item) => (
         <div className="d-flex">
-          {item?.ApprovalStatus === "Pending" && (
+          {item?.approvalStatus === "Pending" && (
             <Tooltip title="Edit" arrow>
               <button className="iconButton" type="button">
                 <EditOutlined
@@ -289,14 +282,14 @@ export const separationApplicationLandingTableColumn = (
                     if (!permission?.isEdit)
                       return toast.warn("You don't have permission");
                     history.push(
-                      `/profile/separation/edit/${item?.SeparationId}`
+                      `/profile/separation/edit/${item?.separationId}`
                     );
                   }}
                 />
               </button>
             </Tooltip>
           )}
-          {item?.ApprovalStatus === "Approve" && (
+          {item?.approvalStatus === "Approve" && (
             <button
               style={{
                 height: "24px",
@@ -305,14 +298,11 @@ export const separationApplicationLandingTableColumn = (
               }}
               className="btn btn-default btn-assign"
               type="button"
-              // disabled={
-              //   dateFormatterForInput(item?.LastWorkingDay) + "T00:00:00" >
-              //   todayDate() + "T00:00:00"
-              // }
               onClick={(e) => {
                 e.stopPropagation();
                 if (
-                  dateFormatterForInput(item?.LastWorkingDay) + "T00:00:00" >
+                  dateFormatterForInput(item?.dteLastWorkingDate) +
+                    "T00:00:00" >
                   todayDate() + "T00:00:00"
                 ) {
                   return toast.warn(
@@ -322,7 +312,7 @@ export const separationApplicationLandingTableColumn = (
                 if (!permission?.isCreate)
                   return toast.warn("You don't have permission");
                 history.push(
-                  `/profile/separation/release/${item?.SeparationId}`
+                  `/profile/separation/release/${item?.separationId}`
                 );
               }}
             >
@@ -331,6 +321,9 @@ export const separationApplicationLandingTableColumn = (
           )}
         </div>
       ),
+      sort: false,
+      filter: false,
+      fieldType: "string",
     },
   ];
 };
@@ -438,6 +431,7 @@ export const employeeSeparationCrud = async (
     toast.warn(error?.response?.data?.message || "Failed, try again");
   }
 };
+
 export const getBuDetails = async (buId, setter, setLoading) => {
   try {
     const res = await axios.get(
@@ -452,6 +446,7 @@ export const getBuDetails = async (buId, setter, setLoading) => {
     setter([]);
   }
 };
+
 export const getEmployeeSeparationLanding = async (obj) => {
   const {
     status,

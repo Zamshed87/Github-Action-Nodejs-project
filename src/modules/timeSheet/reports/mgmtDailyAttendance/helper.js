@@ -31,18 +31,17 @@ export const getDailyAttendanceData = async (
   srcTxt,
   pages,
   setPages,
-  isPaginated = true
+  isPaginated = true,
+  wgId
 ) => {
   setLoading && setLoading(true);
   let search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
 
   try {
     const res = await axios.get(
-      `/Employee/DailyAttendanceReport?IntAccountId=${orgId}&AttendanceDate=${date}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
-        values?.workplaceGroup?.intWorkplaceGroupId || 0
-      }&IntWorkplaceId=${values?.workplace?.intWorkplaceId || 0}&PageNo=${
-        pages.current
-      }&PageSize=${
+      `/Employee/DailyAttendanceReport?IntAccountId=${orgId}&AttendanceDate=${date}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${
+        values?.workplace?.intWorkplaceId || 0
+      }&PageNo=${pages.current}&PageSize=${
         pages.pageSize
       }&IntDepartmentId=${0}&IsPaginated=${isPaginated}${search}`
     );

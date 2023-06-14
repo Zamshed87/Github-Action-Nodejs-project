@@ -135,12 +135,12 @@ const createExcelFile = ({
             },
           ],
           [fromDate && toDate ? dateStringRangeObj : null],
-          [subHeaderInfoModifed.length > 0 ? "_blank*2" : null],
+          [subHeaderInfoModifed.length > 0 ? "_blank" : null],
           ...subHeaderInfoModifed,
-          [subHeaderInfoModifed.length > 0 ? "_blank*2" : null],
+          [subHeaderInfoModifed.length > 0 ? "_blank" : null],
           subHeaderList.length > 0 ? [...subHeaderList] : [null],
           subTableBody.length > 0 ? subTableBody : [null],
-          ["_blank*2"],
+          ["_blank"],
           [...tableHeader],
           ...tableBody,
           [...tableFooterData],
@@ -161,7 +161,7 @@ const createExcelFile = ({
       },
     ],
   };
-  // console.lo000g(excel?.sheets?.[0]?.rows);
+  // console.log(excel?.sheets?.[0]?.rows);
   createFile(excel, widthList);
 };
 

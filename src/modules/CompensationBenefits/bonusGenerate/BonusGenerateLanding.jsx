@@ -1,7 +1,4 @@
-import {
-  SearchOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -17,22 +14,23 @@ import Loading from "../../../common/loading/Loading";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../common/ResetButton";
-import { compensationBenefitsLSAction, setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500 } from "../../../utility/customColor";
 import {
-  dateFormatter,
-  monthFirstDate,
-  monthLastDate,
-} from "../../../utility/dateFormatter";
-import { numberWithCommas } from "../../../utility/numberWithCommas";
+  compensationBenefitsLSAction,
+  setFirstLevelNameAction,
+} from "../../../commonRedux/reduxForLocalStorage/actions";
+import { gray500 } from "../../../utility/customColor";
+import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
 // import { customStyles } from "../../../utility/selectCustomStyle";
 import { todayDate } from "../../../utility/todayDate";
 import {
+  bonusGenerateColumn,
   createBonusGenerateRequest,
   // getBonusNameDDL,
   getBonusGenerateLanding,
 } from "./helper";
 import "./salaryGenerate.css";
+import useDebounce from "../../../utility/customHooks/useDebounce";
+import MasterFilter from "../../../common/MasterFilter";
 
 const initialValues = {
   bonusSystemType: { value: 1, label: "Bonus Generator" },
@@ -91,8 +89,9 @@ const BonusGenerateLanding = () => {
 
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
+  const debounce = useDebounce();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -148,7 +147,7 @@ const BonusGenerateLanding = () => {
         intBusinessUnitId: buId,
         intBonusId: 0,
         intPayrollGroupId: 0,
-        intWorkplaceGroupId: 0,
+        intWorkplaceGroupId: wgId,
         intReligionId: 0,
         dteEffectedDate: todayDate(),
         intCreatedBy: employeeId,
@@ -178,17 +177,18 @@ const BonusGenerateLanding = () => {
   };
 
   // useFormik hooks
-  const { setFieldValue, values, errors, touched, handleSubmit, resetForm } =
-    useFormik({
-      enableReinitialize: true,
-      validationSchema,
-      initialValues: {
-        ...initialValues,
-        filterFromDate: compensationBenefits?.bonusGenerate?.fromDate || monthFirstDate(),
-        filterToDate: compensationBenefits?.bonusGenerate?.toDate || monthLastDate(),
-      },
-      onSubmit: (values) => saveHandler(values),
-    });
+  const { setFieldValue, values, handleSubmit, resetForm } = useFormik({
+    enableReinitialize: true,
+    validationSchema,
+    initialValues: {
+      ...initialValues,
+      filterFromDate:
+        compensationBenefits?.bonusGenerate?.fromDate || monthFirstDate(),
+      filterToDate:
+        compensationBenefits?.bonusGenerate?.toDate || monthLastDate(),
+    },
+    onSubmit: (values) => saveHandler(values),
+  });
 
   // on form submit
   const saveHandler = (values) => {
@@ -295,147 +295,6 @@ const BonusGenerateLanding = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
   }, [dispatch]);
-
-  const bonusGenerateColumn = (page, paginationSize) => {
-    return [
-      {
-        title: "SL",
-        render: (text, record, index) =>
-          (page - 1) * paginationSize + index + 1,
-        sorter: false,
-        filter: false,
-      },
-      {
-        title: "Bonus System",
-        dataIndex: "strBonusSystem",
-        sorter: true,
-        filter: true,
-      },
-      {
-        title: "Bonus Name",
-        dataIndex: "strBonusName",
-        sorter: true,
-        filter: true,
-      },
-      {
-        title: "Business Unit",
-        dataIndex: "strBusinessUnit",
-        sorter: true,
-        filter: true,
-      },
-      {
-        title: "Effected Date",
-        dataIndex: "strSalaryPolicyName",
-        sorter: false,
-        filter: false,
-        render: (_, item) => dateFormatter(item?.dteEffectedDateTime),
-      },
-      {
-        title: "Net Amount",
-        dataIndex: "numBonusAmount",
-        sorter: false,
-        filter: false,
-        className: "text-right",
-        render: (_, item) => (
-          <>
-            {item?.numBonusAmount
-              ? numberWithCommas(item?.numBonusAmount)
-              : "0"}
-          </>
-        ),
-      },
-      {
-        title: "Approval Status",
-        dataIndex: "numNetPayableSalary",
-        sorter: false,
-        filter: false,
-        className: "text-right",
-        render: (_, data) => (
-          <>
-            {data?.strStatus.includes("Approved") && (
-              <p
-                style={{ fontSize: "12px", color: gray500, fontWeight: "400" }}
-              >
-                {data?.strStatus}
-              </p>
-            )}
-            {!data?.strStatus && (
-              <div className="d-flex align-items-center justify-content-end">
-                <button
-                  style={{
-                    height: "24px",
-                    fontSize: "12px",
-                    padding: "0px 12px 0px 12px",
-                    backgroundColor: "#0BA5EC",
-                  }}
-                  className="btn btn-default"
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    sendForApprovalHandler(data, values);
-                  }}
-                >
-                  Send for Approval
-                </button>
-              </div>
-            )}
-            {data?.strStatus.includes("Pending") && (
-              <p
-                style={{ fontSize: "12px", color: gray500, fontWeight: "400" }}
-              >
-                {data?.strStatus}
-              </p>
-            )}
-            {data?.strStatus.includes("Reject") && (
-              <p
-                style={{ fontSize: "12px", color: gray500, fontWeight: "400" }}
-              >
-                {data?.strStatus}
-              </p>
-            )}
-          </>
-        ),
-      },
-      {
-        title: "",
-        dataIndex: "",
-        sorter: false,
-        filter: false,
-        className: "text-right",
-        render: (_, data) => {
-          return (
-            <>
-              {!data?.strStatus && (
-                <div>
-                  <button
-                    style={{
-                      height: "24px",
-                      fontSize: "12px",
-                      padding: "0px 12px 0px 12px",
-                    }}
-                    className="btn btn-default"
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      history.push({
-                        pathname:
-                          `/compensationAndBenefits/payrollProcess/bonusGenerate/edit/${data?.intBonusHeaderId}`,
-                        state: {
-                          bonusObj: data,
-                        },
-                      });
-                    }}
-                  >
-                    Re-Generate
-                  </button>
-                </div>
-              )}
-            </>
-          );
-        },
-      },
-    ];
-  };
 
   return (
     <>
@@ -720,27 +579,24 @@ const BonusGenerateLanding = () => {
                   </li>
                 )}
                 <li>
-                  <DefaultInput
-                    classes="search-input"
-                    inputClasses="search-inner-input"
-                    placeholder="Search"
-                    value={values?.search}
-                    name="search"
-                    type="text"
-                    trailicon={
-                      <SearchOutlined
-                        sx={{
-                          color: "#323232",
-                          fontSize: "18px",
-                        }}
-                      />
-                    }
-                    onChange={(e) => {
-                      filterData(e.target.value);
-                      setFieldValue("search", e.target.value);
+                  <MasterFilter
+                    styles={{
+                      marginRight: "0px",
                     }}
-                    errors={errors}
-                    touched={touched}
+                    isHiddenFilter
+                    width="200px"
+                    inputWidth="200px"
+                    value={values?.search}
+                    setValue={(value) => {
+                      debounce(() => {
+                        filterData(value);
+                        setFieldValue("search", value);
+                      }, 500);
+                      setFieldValue("search", value);
+                    }}
+                    cancelHandler={() => {
+                      setFieldValue("search", "");
+                    }}
                   />
                 </li>
                 <li>
@@ -762,7 +618,7 @@ const BonusGenerateLanding = () => {
                 </li>
               </ul>
             </div>
-            <div className="card-style pb-0 mb-2">
+            <div className="card-style pb-0 my-2">
               <div className="row">
                 <div className="col-lg-3">
                   <div className="input-field-main">
@@ -776,13 +632,15 @@ const BonusGenerateLanding = () => {
                       type="date"
                       className="form-control"
                       onChange={(e) => {
-                        dispatch(compensationBenefitsLSAction({
-                          ...compensationBenefits,
-                          bonusGenerate: {
-                            ...compensationBenefits?.bonusGenerate,
-                            fromDate: e.target.value
-                          }
-                        }));
+                        dispatch(
+                          compensationBenefitsLSAction({
+                            ...compensationBenefits,
+                            bonusGenerate: {
+                              ...compensationBenefits?.bonusGenerate,
+                              fromDate: e.target.value,
+                            },
+                          })
+                        );
                         setFieldValue("filterFromDate", e.target.value);
                       }}
                     />
@@ -800,13 +658,15 @@ const BonusGenerateLanding = () => {
                       type="date"
                       className="form-control"
                       onChange={(e) => {
-                        dispatch(compensationBenefitsLSAction({
-                          ...compensationBenefits,
-                          bonusGenerate: {
-                            ...compensationBenefits?.bonusGenerate,
-                            toDate: e.target.value
-                          }
-                        }));
+                        dispatch(
+                          compensationBenefitsLSAction({
+                            ...compensationBenefits,
+                            bonusGenerate: {
+                              ...compensationBenefits?.bonusGenerate,
+                              toDate: e.target.value,
+                            },
+                          })
+                        );
                         setFieldValue("filterToDate", e.target.value);
                       }}
                     />
@@ -852,7 +712,13 @@ const BonusGenerateLanding = () => {
               {rowDto?.length > 0 ? (
                 <AntTable
                   data={rowDto?.length > 0 ? rowDto : []}
-                  columnsData={bonusGenerateColumn(page, paginationSize)}
+                  columnsData={bonusGenerateColumn(
+                    page,
+                    paginationSize,
+                    sendForApprovalHandler,
+                    values,
+                    history
+                  )}
                   rowClassName="pointer"
                   onRowClick={(data) => {
                     if (data?.intBonusHeaderId) {
