@@ -233,8 +233,11 @@ const FilterModal = ({ propsObj, masterFilterHandler }) => {
                     <FormikInput
                       classes="input-borderless input-sm"
                       placeholder="Month"
-                      value={values?.monthYear
-                        || `${new Date().getFullYear()}-${new Date().getMonth() + 1}`
+                      value={
+                        values?.monthYear ||
+                        `${new Date().getFullYear()}-${
+                          new Date().getMonth() + 1
+                        }`
                       }
                       name="monthYear"
                       type="month"
@@ -303,7 +306,6 @@ const FilterModal = ({ propsObj, masterFilterHandler }) => {
                       value={values?.employee}
                       onChange={(valueOption) => {
                         setFieldValue("employee", valueOption);
-                        console.log(valueOption);
                       }}
                       placeholder=""
                       styles={borderlessSelectStyle}

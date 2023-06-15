@@ -110,7 +110,6 @@ const CommonAppPipeline = () => {
       permission = item;
     }
   });
-  console.log({ permission });
   return (
     <>
       <Formik

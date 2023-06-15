@@ -144,7 +144,9 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
             name={item?.numHours}
             type="number"
             onChange={(e) => {
-              // if(e.target.value){
+              if (e.target.value < 0) {
+                return toast.warning("ot hours should be positive");
+              }
               rowDtoHandler("numHours", index, e.target.value);
             }}
           />
