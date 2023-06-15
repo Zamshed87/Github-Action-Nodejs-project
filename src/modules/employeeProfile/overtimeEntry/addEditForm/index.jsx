@@ -100,6 +100,8 @@ export default function AddEditOverTime() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params?.id, state?.EmployeeId, buId]);
 
+  console.log(state);
+
   const saveHandler = (values, cb) => {
     let payload = values?.otInfo?.map((data) => {
       // let modifiedData = {
@@ -128,8 +130,8 @@ export default function AddEditOverTime() {
 
       let modifiedData = {
         intOverTimeId: state?.OvertimeId || 0,
-        intEmployeeId: values?.employee?.employeeId,
-        employeeCode: values?.employee?.employeeCode,
+        intEmployeeId: state?.EmployeeId || values?.employee?.employeeId,
+        employeeCode: state?.EmployeeCode || values?.employee?.employeeCode,
         intAccountId: orgId,
         intBusinessUnitId: buId,
         intWorkplaceGroupId: state?.WorkplaceGroupId || wgId,
