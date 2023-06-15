@@ -127,7 +127,7 @@ Axios.interceptors.response.use(
           window.location.reload();
           // return Axios(originalConfig);
         }
-      } catch (error) { }
+      } catch (error) {}
     }
 
     if (process.env.NODE_ENV === "development") {
