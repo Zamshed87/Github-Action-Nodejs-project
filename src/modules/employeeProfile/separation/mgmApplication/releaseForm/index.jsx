@@ -37,7 +37,7 @@ export default function ManagementReleaseSeparationForm() {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -63,34 +63,24 @@ export default function ManagementReleaseSeparationForm() {
   }, []);
 
   useEffect(() => {
-    const payload = {
-      intSeparationId: +params?.id,
-      status: "",
-      workplaceGroupId: wgId,
-      departmentId: 0,
-      designationId: 0,
-      supervisorId: 0,
-      employeeId: employeeId,
-      separationTypeId: 0,
-      applicationFromDate: null,
-      applicationToDate: null,
-      businessUnitId: buId,
-      accountId: orgId,
-      tableName: "EmployeeSeparationReportBySeparationId",
-    };
-    getSeparationLandingById(payload, setSingleData, setLoading);
-  }, [orgId, buId, employeeId, params?.id, wgId]);
+    getSeparationLandingById(
+      "EmployeeSeparationReportBySeparationId",
+      +params?.id,
+      setSingleData,
+      setLoading
+    );
+  }, [params?.id]);
 
   useEffect(() => {
-    if (singleData?.EmployeeId) {
+    if (singleData?.intEmployeeId) {
       getEmployeeProfileViewData(
-        singleData?.EmployeeId,
+        singleData?.intEmployeeId,
         setEmpBasic,
         setLoading,
         buId,
         wgId
       );
-      getRoleAssigneToUser(buId, wgId, singleData?.EmployeeId, setUserRole);
+      getRoleAssigneToUser(buId, wgId, singleData?.intEmployeeId, setUserRole);
     }
   }, [singleData, buId, wgId]);
 
@@ -99,29 +89,17 @@ export default function ManagementReleaseSeparationForm() {
       return toast.warning("Please select isRelease checkbox!!!");
     }
     const payload = {
-      intSeparationId: singleData?.SeparationId,
+      intSeparationId: singleData?.separationId,
       isReleased: values?.isReleased,
-      intAccountId: orgId,
-      intCreatedBy: employeeId,
     };
     const callBack = () => {
       cb();
-      const payloadData = {
-        intSeparationId: +params?.id,
-        status: "",
-        workplaceGroupId: wgId,
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employeeId: employeeId,
-        separationTypeId: 0,
-        applicationFromDate: null,
-        applicationToDate: null,
-        businessUnitId: buId,
-        accountId: orgId,
-        tableName: "EmployeeSeparationReportBySeparationId",
-      };
-      getSeparationLandingById(payloadData, setSingleData, setLoading);
+      getSeparationLandingById(
+        "EmployeeSeparationReportBySeparationId",
+        +params?.id,
+        setSingleData,
+        setLoading
+      );
     };
     releasedEmployeeSeparation(payload, setLoading, callBack);
   };
@@ -190,7 +168,7 @@ export default function ManagementReleaseSeparationForm() {
                               >
                                 Separation Type -
                               </small>
-                              {singleData?.SeparationTypeName}
+                              {singleData?.strSeparationTypeName}
                             </p>
                           </div>
                           <div className="single-info">
@@ -203,7 +181,7 @@ export default function ManagementReleaseSeparationForm() {
                               >
                                 Application Date -
                               </small>
-                              {dateFormatter(singleData?.SeparationDate)}
+                              {dateFormatter(singleData?.dteSeparationDate)}
                             </p>
                           </div>
                           <div className="single-info">
@@ -216,21 +194,21 @@ export default function ManagementReleaseSeparationForm() {
                               >
                                 Last Working Date -
                               </small>
-                              {dateFormatter(singleData?.LastWorkingDay)}
+                              {dateFormatter(singleData?.dteLastWorkingDate)}
                             </p>
                           </div>
                         </div>
                         <div>
-                          {singleData?.ApprovalStatus === "Approve" && (
+                          {singleData?.approvalStatus === "Approved" && (
                             <Chips label="Approved" classess="success p-2" />
                           )}
-                          {singleData?.ApprovalStatus === "Pending" && (
+                          {singleData?.approvalStatus === "Pending" && (
                             <Chips label="Pending" classess="warning p-2" />
                           )}
-                          {singleData?.ApprovalStatus === "Process" && (
+                          {singleData?.approvalStatus === "Process" && (
                             <Chips label="Process" classess="primary p-2" />
                           )}
-                          {singleData?.ApprovalStatus === "Reject" && (
+                          {singleData?.approvalStatus === "Rejected" && (
                             <>
                               <Chips
                                 label="Rejected"
@@ -272,32 +250,32 @@ export default function ManagementReleaseSeparationForm() {
                           </h2>
                           {singleData?.docArr?.length
                             ? singleData?.docArr.map((image, i) => (
-                                <p
-                                  style={{
-                                    margin: "6px 0 0",
-                                    fontWeight: "400",
-                                    fontSize: "12px",
-                                    lineHeight: "18px",
-                                    color: "#009cde",
-                                    cursor: "pointer",
+                              <p
+                                style={{
+                                  margin: "6px 0 0",
+                                  fontWeight: "400",
+                                  fontSize: "12px",
+                                  lineHeight: "18px",
+                                  color: "#009cde",
+                                  cursor: "pointer",
+                                }}
+                                key={i}
+                              >
+                                <span
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    dispatch(
+                                      getDownlloadFileView_Action(image)
+                                    );
                                   }}
-                                  key={i}
                                 >
-                                  <span
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      dispatch(
-                                        getDownlloadFileView_Action(image)
-                                      );
-                                    }}
-                                  >
-                                    <>
-                                      <FilePresentOutlined />{" "}
-                                      {`Attachment_${i + 1}`}
-                                    </>
-                                  </span>
-                                </p>
-                              ))
+                                  <>
+                                    <FilePresentOutlined />{" "}
+                                    {`Attachment_${i + 1}`}
+                                  </>
+                                </span>
+                              </p>
+                            ))
                             : ""}
                         </div>
                       </>

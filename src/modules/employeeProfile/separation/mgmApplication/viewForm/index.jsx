@@ -20,11 +20,6 @@ export default function ManagementViewSeparationForm() {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -36,7 +31,7 @@ export default function ManagementViewSeparationForm() {
 
   const [loading, setLoading] = useState(false);
   const [isAccordion, setIsAccordion] = useState(false);
-  const [singleData, setSingleData] = useState([]);
+  const [singleData, setSingleData] = useState("");
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -44,23 +39,13 @@ export default function ManagementViewSeparationForm() {
   }, []);
 
   useEffect(() => {
-    const payload = {
-      intSeparationId: +params?.id,
-      status: "",
-      workplaceGroupId: wgId,
-      departmentId: 0,
-      designationId: 0,
-      supervisorId: 0,
-      employeeId: employeeId,
-      separationTypeId: 0,
-      applicationFromDate: null,
-      applicationToDate: null,
-      businessUnitId: buId,
-      accountId: orgId,
-      tableName: "EmployeeSeparationReportBySeparationId",
-    };
-    getSeparationLandingById(payload, setSingleData, setLoading);
-  }, [orgId, buId, employeeId, params?.id, wgId]);
+    getSeparationLandingById(
+      "EmployeeSeparationReportBySeparationId",
+      +params?.id,
+      setSingleData,
+      setLoading
+    );
+  }, [params?.id]);
 
   return (
     <>
@@ -92,7 +77,7 @@ export default function ManagementViewSeparationForm() {
                           >
                             Separation Type -
                           </small>
-                          {singleData?.SeparationTypeName}
+                          {singleData?.strSeparationTypeName}
                         </p>
                       </div>
                       <div className="single-info">
@@ -105,7 +90,7 @@ export default function ManagementViewSeparationForm() {
                           >
                             Application Date -
                           </small>
-                          {dateFormatter(singleData?.SeparationDate)}
+                          {dateFormatter(singleData?.dteSeparationDate)}
                         </p>
                       </div>
                       <div className="single-info">
@@ -118,21 +103,21 @@ export default function ManagementViewSeparationForm() {
                           >
                             Last Working Date -
                           </small>
-                          {dateFormatter(singleData?.LastWorkingDay)}
+                          {dateFormatter(singleData?.dteLastWorkingDate)}
                         </p>
                       </div>
                     </div>
                     <div>
-                      {singleData?.ApprovalStatus === "Approve" && (
+                      {singleData?.approvalStatus === "Approved" && (
                         <Chips label="Approved" classess="success p-2" />
                       )}
-                      {singleData?.ApprovalStatus === "Pending" && (
+                      {singleData?.approvalStatus === "Pending" && (
                         <Chips label="Pending" classess="warning p-2" />
                       )}
-                      {singleData?.ApprovalStatus === "Process" && (
+                      {singleData?.approvalStatus === "Processed" && (
                         <Chips label="Process" classess="primary p-2" />
                       )}
-                      {singleData?.ApprovalStatus === "Reject" && (
+                      {singleData?.approvalStatus === "Rejected" && (
                         <>
                           <Chips label="Rejected" classess="danger p-2 mr-2" />
                         </>
@@ -169,30 +154,30 @@ export default function ManagementViewSeparationForm() {
                       </h2>
                       {singleData?.docArr?.length
                         ? singleData?.docArr.map((image, i) => (
-                            <p
-                              style={{
-                                margin: "6px 0 0",
-                                fontWeight: "400",
-                                fontSize: "12px",
-                                lineHeight: "18px",
-                                color: "#009cde",
-                                cursor: "pointer",
+                          <p
+                            style={{
+                              margin: "6px 0 0",
+                              fontWeight: "400",
+                              fontSize: "12px",
+                              lineHeight: "18px",
+                              color: "#009cde",
+                              cursor: "pointer",
+                            }}
+                            key={i}
+                          >
+                            <span
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                dispatch(getDownlloadFileView_Action(image));
                               }}
-                              key={i}
                             >
-                              <span
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  dispatch(getDownlloadFileView_Action(image));
-                                }}
-                              >
-                                <>
-                                  <FilePresentOutlined />{" "}
-                                  {`Attachment_${i + 1}`}
-                                </>
-                              </span>
-                            </p>
-                          ))
+                              <>
+                                <FilePresentOutlined />{" "}
+                                {`Attachment_${i + 1}`}
+                              </>
+                            </span>
+                          </p>
+                        ))
                         : ""}
                     </div>
                   </>
