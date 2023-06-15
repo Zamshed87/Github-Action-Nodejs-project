@@ -79,37 +79,32 @@ export default function SelfApplicationSeparationForm() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&IsView=true&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
       "SeparationTypeId",
       "SeparationType",
       setSeparationTypeDDL
     );
-  }, [wgId]);
+  }, [buId, wgId]);
 
   useEffect(() => {
     if (+params?.id) {
-      const payload = {
-        intSeparationId: +params?.id,
-        status: "",
-        workplaceGroupId: wgId,
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employeeId: employeeId,
-        separationTypeId: 0,
-        applicationFromDate: null,
-        applicationToDate: null,
-        businessUnitId: buId,
-        accountId: orgId,
-        tableName: "EmployeeSeparationReportBySeparationId",
-      };
-      getSeparationLandingById(payload, setSingleData, setLoading);
+      getSeparationLandingById(
+        "EmployeeSeparationReportBySeparationId",
+        +params?.id,
+        setSingleData,
+        setLoading
+      );
     }
   }, [orgId, buId, employeeId, params?.id, wgId]);
 
   useEffect(() => {
     if (+params?.id) {
-      setImgRow(singleData?.docArr);
+      if (singleData?.docArr?.length > 0) {
+        setImgRow(singleData?.docArr);
+      } else {
+        setImgRow([]);
+      }
+
     }
   }, [params?.id, singleData]);
 
@@ -159,9 +154,7 @@ export default function SelfApplicationSeparationForm() {
       dteSeparationDate: values?.applicationDate || "",
       dteLastWorkingDate: values?.lastWorkingDay,
       strReason: values?.applicationBody,
-      intAccountId: orgId,
       isActive: true,
-      intCreatedBy: employeeId,
     };
 
     if (params?.id) {
@@ -188,36 +181,26 @@ export default function SelfApplicationSeparationForm() {
       validationSchema: validationSchema,
       initialValues: +params?.id
         ? {
-            separationType: {
-              value: singleData?.SeparationTypeId,
-              label: singleData?.SeparationTypeName,
-            },
-            applicationDate: dateFormatterForInput(singleData?.SeparationDate),
-            lastWorkingDay: dateFormatterForInput(singleData?.LastWorkingDay),
-            applicationBody: `${singleData?.Reason}`,
-          }
-        : {
-            ...initData,
+          separationType: {
+            value: singleData?.intSeparationTypeId,
+            label: singleData?.strSeparationTypeName,
           },
+          applicationDate: dateFormatterForInput(singleData?.dteSeparationDate),
+          lastWorkingDay: dateFormatterForInput(singleData?.dteLastWorkingDate),
+          applicationBody: `${singleData?.strReason}`,
+        }
+        : {
+          ...initData,
+        },
       onSubmit: (values, { setSubmitting, resetForm }) => {
         saveHandler(values, () => {
           if (params?.id) {
-            const payload = {
-              intSeparationId: +params?.id,
-              status: "",
-              workplaceGroupId: wgId,
-              departmentId: 0,
-              designationId: 0,
-              supervisorId: 0,
-              employeeId: employeeId,
-              separationTypeId: 0,
-              applicationFromDate: null,
-              applicationToDate: null,
-              businessUnitId: buId,
-              accountId: orgId,
-              tableName: "EmployeeSeparationReportBySeparationId",
-            };
-            getSeparationLandingById(payload, setSingleData, setLoading);
+            getSeparationLandingById(
+              "EmployeeSeparationReportBySeparationId",
+              +params?.id,
+              setSingleData,
+              setLoading
+            );
           } else {
             resetForm(initData);
           }
@@ -227,22 +210,12 @@ export default function SelfApplicationSeparationForm() {
 
   const deleteImageHandler = (documentId) => {
     deleteSeparationAttachment(+params?.id, documentId, () => {
-      const payload = {
-        intSeparationId: +params?.id,
-        status: "",
-        workplaceGroupId: wgId,
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employeeId: employeeId,
-        separationTypeId: 0,
-        applicationFromDate: null,
-        applicationToDate: null,
-        businessUnitId: buId,
-        accountId: orgId,
-        tableName: "EmployeeSeparationReportBySeparationId",
-      };
-      getSeparationLandingById(payload, setSingleData, setLoading);
+      getSeparationLandingById(
+        "EmployeeSeparationReportBySeparationId",
+        +params?.id,
+        setSingleData,
+        setLoading
+      );
       setImgRow(singleData?.docArr);
     });
   };
@@ -403,88 +376,86 @@ export default function SelfApplicationSeparationForm() {
                     </p>
                     {imageFile?.length
                       ? imageFile.map((image, i) => (
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ width: "160px" }}
+                          onClick={() => {
+                            dispatch(
+                              getDownlloadFileView_Action(
+                                image?.globalFileUrlId || image?.intDocURLId
+                              )
+                            );
+                          }}
+                          key={i}
+                        >
+                          <AttachmentOutlined
+                            sx={{ marginRight: "5px", color: "#0072E5" }}
+                          />
                           <div
-                            className="d-flex align-items-center"
-                            style={{ width: "160px" }}
-                            onClick={() => {
-                              dispatch(
-                                getDownlloadFileView_Action(
-                                  image?.globalFileUrlId || image?.intDocURLId
-                                )
-                              );
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: "500",
+                              color: "#0072E5",
+                              cursor: "pointer",
                             }}
-                            key={i}
                           >
-                            <AttachmentOutlined
-                              sx={{ marginRight: "5px", color: "#0072E5" }}
-                            />
-                            <div
-                              style={{
-                                fontSize: "12px",
-                                fontWeight: "500",
-                                color: "#0072E5",
-                                cursor: "pointer",
-                              }}
-                            >
-                              {image?.fileName ||
-                                `Attachment_${
-                                  i <= 8 ? `0${i + 1}` : `${i + 1}`
-                                }`}{" "}
-                            </div>
+                            {image?.fileName ||
+                              `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
+                              }`}{" "}
                           </div>
-                        ))
+                        </div>
+                      ))
                       : ""}
                   </div>
                   <div className="col-12">
                     <h2 style={{ marginBottom: "12px" }}>Attachment List</h2>
                     {editImageRow?.length
                       ? editImageRow.map((image, i) => (
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ width: "160px" }}
+                          onClick={() => {
+                            dispatch(
+                              getDownlloadFileView_Action(
+                                image?.globalFileUrlId || image?.intDocURLId
+                              )
+                            );
+                          }}
+                          key={i}
+                        >
+                          <AttachmentOutlined
+                            sx={{ marginRight: "5px", color: "#0072E5" }}
+                          />
                           <div
-                            className="d-flex align-items-center"
-                            style={{ width: "160px" }}
-                            onClick={() => {
-                              dispatch(
-                                getDownlloadFileView_Action(
-                                  image?.globalFileUrlId || image?.intDocURLId
-                                )
-                              );
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: "500",
+                              color: "#0072E5",
+                              cursor: "pointer",
                             }}
-                            key={i}
                           >
-                            <AttachmentOutlined
-                              sx={{ marginRight: "5px", color: "#0072E5" }}
-                            />
-                            <div
-                              style={{
-                                fontSize: "12px",
-                                fontWeight: "500",
-                                color: "#0072E5",
-                                cursor: "pointer",
-                              }}
-                            >
-                              {image?.fileName ||
-                                `Attachment_${
-                                  i <= 8 ? `0${i + 1}` : `${i + 1}`
-                                }`}{" "}
-                              {editImageRow?.length && (
-                                <IconButton
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    deleteImageHandler(image?.globalFileUrlId);
-                                  }}
-                                  size="small"
-                                  style={{
-                                    fontSize: "18px",
-                                    padding: "0px 5px",
-                                    color: "#175CD3",
-                                  }}
-                                >
-                                  <Close fontSize="inherit" />
-                                </IconButton>
-                              )}
-                            </div>
+                            {image?.fileName ||
+                              `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
+                              }`}{" "}
+                            {editImageRow?.length && (
+                              <IconButton
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteImageHandler(image?.globalFileUrlId);
+                                }}
+                                size="small"
+                                style={{
+                                  fontSize: "18px",
+                                  padding: "0px 5px",
+                                  color: "#175CD3",
+                                }}
+                              >
+                                <Close fontSize="inherit" />
+                              </IconButton>
+                            )}
                           </div>
-                        ))
+                        </div>
+                      ))
                       : ""}
                   </div>
 
