@@ -67,10 +67,12 @@ export const getBreakdownListDDL = async (
           setLoading && setLoading(false);
         }
       } catch (error) {
+        console.log(error);
         setLoading && setLoading(false);
       }
     }
   } catch (error) {
+    console.log(error);
     setLoading && setLoading(false);
   }
 };
@@ -184,10 +186,12 @@ export const getByIdBreakdownListDDL = async (
           setLoading && setLoading(false);
         }
       } catch (error) {
+        console.log(error);
         setLoading && setLoading(false);
       }
     }
   } catch (error) {
+    console.log(error);
     setLoading && setLoading(false);
   }
 };

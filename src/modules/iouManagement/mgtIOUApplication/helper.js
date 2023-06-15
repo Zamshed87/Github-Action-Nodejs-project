@@ -25,6 +25,7 @@ export const getEmployeeProfileViewData = async (
       setLoading && setLoading(false);
     }
   } catch (error) {
+    console.log(error.message);
     setLoading && setLoading(false);
   }
 };

@@ -39,7 +39,6 @@ export const separationCrud = async (payload, setLoading, cb) => {
       toastId: 1,
     });
   } catch (error) {
-    console.log("error", error?.response?.data);
     setLoading && setLoading(false);
     toast.warn(error?.response?.data?.message || "Failed, try again");
   }
@@ -57,8 +56,7 @@ export const getSeparationLanding = async (
   setLoading,
   pageNo,
   pageSize,
-  setPages,
-  employeeId = null
+  setPages
 ) => {
   try {
     setLoading && setLoading(true);
@@ -66,8 +64,6 @@ export const getSeparationLanding = async (
     let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}`;
 
     search && (apiUrl += `&searchTxt=${search}`);
-
-    employeeId && (apiUrl += `&EmployeeId=${employeeId}`);
 
     const res = await axios.get(apiUrl);
 
@@ -249,7 +245,7 @@ export const separationApplicationLandingTableColumn = (
       filter: false,
       render: (item) => (
         <>
-          {item?.approvalStatus === "Approved" && (
+          {item?.approvalStatus === "Approve" && (
             <Chips label="Approved" classess="success p-2" />
           )}
           {item?.approvalStatus === "Pending" && (
@@ -258,7 +254,7 @@ export const separationApplicationLandingTableColumn = (
           {item?.approvalStatus === "Process" && (
             <Chips label="Process" classess="primary p-2" />
           )}
-          {item?.approvalStatus === "Rejected" && (
+          {item?.approvalStatus === "Reject" && (
             <>
               <Chips label="Rejected" classess="danger p-2 mr-2" />
             </>
@@ -293,7 +289,7 @@ export const separationApplicationLandingTableColumn = (
               </button>
             </Tooltip>
           )}
-          {item?.approvalStatus === "Approved" && (
+          {item?.approvalStatus === "Approve" && (
             <button
               style={{
                 height: "24px",
@@ -333,38 +329,27 @@ export const separationApplicationLandingTableColumn = (
 };
 
 // self separation get by id
-export const getSeparationLandingById = async (
-  partType,
-  id,
-  setter,
-  setLoading
-) => {
+export const getSeparationLandingById = async (payload, setter, setLoading) => {
   setLoading && setLoading(true);
-
   try {
-    let apiUrl = `/Employee/EmployeeSeparationById?SeparationId=${id}`;
-
-    const res = await axios.get(apiUrl);
-
-    if (res?.data) {
-      if (partType === "EmployeeSeparationReportBySeparationId") {
-        const modifyRes = {
-          ...res?.data,
-          docArr:
-            res?.data?.strDocumentId?.length > 0
-              ? res?.data?.strDocumentId?.split(",")
-              : "",
-          halfReason:
-            res?.data?.strReason?.length > 120
-              ? res?.data?.strReason.slice(0, 120)
-              : `${res?.data?.strReason.slice(0, 120)}...`,
-          fullReason: res?.data?.strReason,
-        };
-        setter(modifyRes);
-      }
-    }
-
+    const res = await axios.post(
+      "/Employee/EmployeeSeparationListFilter",
+      payload
+    );
     setLoading && setLoading(false);
+    const modifyRes = res?.data?.map((itm) => {
+      return {
+        ...itm,
+        docArr:
+          itm?.strDocumentId?.length > 0 ? itm?.strDocumentId?.split(",") : [],
+        halfReason:
+          itm?.Reason?.length > 120
+            ? itm?.Reason.slice(0, 120)
+            : `${itm?.Reason.slice(0, 120)}...`,
+        fullReason: itm?.Reason,
+      };
+    });
+    setter(modifyRes[0]);
   } catch (error) {
     setLoading && setLoading(false);
   }

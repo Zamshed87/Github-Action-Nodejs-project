@@ -18,6 +18,7 @@ import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { todayDate } from "../../../../utility/todayDate";
 import { getOvertimeById, saveOvertime } from "../helper";
+import { getEmployeeProfileViewData } from "./../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 
 const initData = {
@@ -55,6 +56,7 @@ export default function AddEditOverTime() {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const [loading, setLoading] = useState(false);
+  const [empBasic, setEmpBasic] = useState([]);
   const [singleData, setSingleData] = useState("");
   const history = useHistory();
 
@@ -87,7 +89,7 @@ export default function AddEditOverTime() {
           designationId: 0,
           supervisorId: 0,
           employeeId: state?.EmployeeId,
-          workplaceGroupId: state?.WorkplaceGroupId,
+          workplaceGroupId: 0,
           businessUnitId: buId,
           loggedEmployeeId: employeeId,
           FormDate: state?.fromDate,
@@ -134,7 +136,7 @@ export default function AddEditOverTime() {
         employeeCode: state?.EmployeeCode || values?.employee?.employeeCode,
         intAccountId: orgId,
         intBusinessUnitId: buId,
-        intWorkplaceGroupId: state?.WorkplaceGroupId || wgId,
+        intWorkplaceGroupId: wgId,
         intYear: +data?.date.split("-")[0],
         intMonth: +data?.date.split("-")[1],
         dteOverTimeDate:
@@ -168,7 +170,7 @@ export default function AddEditOverTime() {
             designationId: 0,
             supervisorId: 0,
             employeeId: singleData?.employee?.value,
-            workplaceGroupId: state?.WorkplaceGroupId,
+            workplaceGroupId: 0,
             businessUnitId: buId,
             loggedEmployeeId: employeeId,
             FormDate: state?.fromDate,
@@ -183,17 +185,17 @@ export default function AddEditOverTime() {
     saveOvertime(payload, setLoading, callback);
   };
 
-  // useEffect(() => {
-  //   if (params?.id) {
-  //     getEmployeeProfileViewData(
-  //       state?.EmployeeId,
-  //       setEmpBasic,
-  //       setLoading,
-  //       buId,
-  //       wgId
-  //     );
-  //   }
-  // }, [params?.id, state?.EmployeeId, buId, wgId]);
+  useEffect(() => {
+    if (params?.id) {
+      getEmployeeProfileViewData(
+        state?.EmployeeId,
+        setEmpBasic,
+        setLoading,
+        buId,
+        wgId
+      );
+    }
+  }, [params?.id, state?.EmployeeId, buId, wgId]);
 
   const forms = useFormik({
     enableReinitialize: true,
@@ -201,8 +203,8 @@ export default function AddEditOverTime() {
       ? {
           ...singleData,
           employee: {
-            value: state?.EmployeeId,
-            label: state?.EmployeeName,
+            value: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
+            label: empBasic?.employeeProfileLandingView?.strEmployeeCode,
           },
           duration: singleData?.strDailyOrMonthly,
           otInfo: [
@@ -311,7 +313,6 @@ export default function AddEditOverTime() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
-                    isDisabled={params?.id && true}
                   />
                 </div>
 
@@ -338,7 +339,7 @@ export default function AddEditOverTime() {
                         setFieldValue("duration", e.target.value);
                       }}
                       checked={values?.duration === "Daily"}
-                      disabled={values?.duration === "Monthly"}
+                      disabled={params?.id && true}
                     />
                     <FormikRadio
                       styleObj={{
@@ -360,7 +361,7 @@ export default function AddEditOverTime() {
                         setFieldValue("duration", e.target.value);
                       }}
                       checked={values?.duration === "Monthly"}
-                      disabled={values?.duration === "Daily"}
+                      disabled={params?.id && true}
                     />
                   </div>
                 </div>
