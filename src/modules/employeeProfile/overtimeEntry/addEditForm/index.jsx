@@ -100,8 +100,6 @@ export default function AddEditOverTime() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params?.id, state?.EmployeeId, buId]);
 
-  console.log(state);
-
   const saveHandler = (values, cb) => {
     let payload = values?.otInfo?.map((data) => {
       // let modifiedData = {

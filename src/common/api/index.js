@@ -571,8 +571,6 @@ export const testApi = async (setLoading, cb) => {
     cb && cb();
     toast.success(res.data?.message || "Successfully");
     setLoading && setLoading(false);
-
-    console.log("res", res?.data);
   } catch (error) {
     toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading && setLoading(false);
