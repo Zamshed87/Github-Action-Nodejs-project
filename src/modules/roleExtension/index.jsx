@@ -263,6 +263,7 @@ export default function UserRoleExtentionLanding() {
                               handleChangeRowsPerPage(e, values?.searchString)
                             }
                             onRowClick={(dataRow) => {
+                              console.log(dataRow);
                               history.push(
                                 `/administration/roleManagement/userRoleExtension/view/${dataRow?.intEmployeeBasicInfoId}`,
                                 {

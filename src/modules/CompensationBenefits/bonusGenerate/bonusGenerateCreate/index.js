@@ -133,7 +133,7 @@ const BonusGenerateCreate = () => {
         intBusinessUnitId: buId,
         intBonusId: 0,
         intPayrollGroupId: 0,
-        intWorkplaceGroupId: wgId,
+        intWorkplaceGroupId: 0,
         intReligionId: 0,
         dteEffectedDate: todayDate(),
         intCreatedBy: employeeId,
@@ -237,8 +237,7 @@ const BonusGenerateCreate = () => {
         setValues,
         setEmployeeList,
         setRowDto,
-        setSingleData,
-        wgId
+        setSingleData
       );
     }
     // eslint-disable-next-line

@@ -297,19 +297,7 @@ export default function ManagementSeparation() {
                     type="button"
                     disabled={!values?.filterFromDate || !values?.filterToDate}
                     onClick={() => {
-                      getSeparationLanding(
-                        "EmployeeSeparationList",
-                        buId,
-                        wgId,
-                        values?.filterFromDate || "",
-                        values?.filterToDate || "",
-                        "",
-                        setRowDto,
-                        setLoading,
-                        1,
-                        paginationSize,
-                        setPages
-                      );
+                      getData();
                     }}
                   >
                     View

@@ -76,7 +76,7 @@ export default function ManagementApplicationSeparationForm() {
 
   const [loading, setLoading] = useState(false);
   const [separationTypeDDL, setSeparationTypeDDL] = useState([]);
-  const [singleData, setSingleData] = useState("");
+  const [singleData, setSingleData] = useState([]);
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -101,23 +101,28 @@ export default function ManagementApplicationSeparationForm() {
 
   useEffect(() => {
     if (+params?.id) {
-      getSeparationLandingById(
-        "EmployeeSeparationReportBySeparationId",
-        +params?.id,
-        setSingleData,
-        setLoading
-      );
+      const payload = {
+        intSeparationId: +params?.id,
+        status: "",
+        workplaceGroupId: wgId,
+        departmentId: 0,
+        designationId: 0,
+        supervisorId: 0,
+        employeeId: employeeId,
+        separationTypeId: 0,
+        applicationFromDate: null,
+        applicationToDate: null,
+        businessUnitId: buId,
+        accountId: orgId,
+        tableName: "EmployeeSeparationReportBySeparationId",
+      };
+      getSeparationLandingById(payload, setSingleData, setLoading);
     }
-  }, [buId, params?.id, wgId]);
+  }, [orgId, buId, employeeId, params?.id, wgId]);
 
   useEffect(() => {
     if (+params?.id) {
-      if (singleData?.docArr?.length > 0) {
-        setImgRow(singleData?.docArr);
-      } else {
-        setImgRow([]);
-      }
-
+      setImgRow(singleData?.docArr);
     }
   }, [params?.id, singleData]);
 
@@ -159,7 +164,9 @@ export default function ManagementApplicationSeparationForm() {
       dteSeparationDate: values?.applicationDate || "",
       dteLastWorkingDate: values?.lastWorkingDay,
       strReason: values?.applicationBody,
+      intAccountId: orgId,
       isActive: true,
+      intCreatedBy: employeeId,
     };
 
     if (params?.id) {
@@ -186,30 +193,40 @@ export default function ManagementApplicationSeparationForm() {
       validationSchema: validationSchema,
       initialValues: +params?.id
         ? {
-          employeeName: {
-            value: singleData?.intEmployeeId,
-            label: singleData?.strEmployeeName,
-          },
-          separationType: {
-            value: singleData?.intSeparationTypeId,
-            label: singleData?.strSeparationTypeName,
-          },
-          applicationDate: dateFormatterForInput(singleData?.dteSeparationDate),
-          lastWorkingDay: dateFormatterForInput(singleData?.dteLastWorkingDate),
-          applicationBody: `${singleData?.strReason}`,
-        }
+            employeeName: {
+              value: singleData?.EmployeeId,
+              label: singleData?.EmployeeName,
+            },
+            separationType: {
+              value: singleData?.SeparationTypeId,
+              label: singleData?.SeparationTypeName,
+            },
+            applicationDate: dateFormatterForInput(singleData?.SeparationDate),
+            lastWorkingDay: dateFormatterForInput(singleData?.LastWorkingDay),
+            applicationBody: `${singleData?.Reason}`,
+          }
         : {
-          ...initData,
-        },
+            ...initData,
+          },
       onSubmit: (values, { setSubmitting, resetForm }) => {
         saveHandler(values, () => {
           if (params?.id) {
-            getSeparationLandingById(
-              "EmployeeSeparationReportBySeparationId",
-              +params?.id,
-              setSingleData,
-              setLoading
-            );
+            const payload = {
+              intSeparationId: +params?.id,
+              status: "",
+              workplaceGroupId: wgId,
+              departmentId: 0,
+              designationId: 0,
+              supervisorId: 0,
+              employeeId: employeeId,
+              separationTypeId: 0,
+              applicationFromDate: null,
+              applicationToDate: null,
+              businessUnitId: buId,
+              accountId: orgId,
+              tableName: "EmployeeSeparationReportBySeparationId",
+            };
+            getSeparationLandingById(payload, setSingleData, setLoading);
           } else {
             resetForm(initData);
           }
@@ -219,12 +236,22 @@ export default function ManagementApplicationSeparationForm() {
 
   const deleteImageHandler = (documentId) => {
     deleteSeparationAttachment(+params?.id, documentId, () => {
-      getSeparationLandingById(
-        "EmployeeSeparationReportBySeparationId",
-        +params?.id,
-        setSingleData,
-        setLoading
-      );
+      const payload = {
+        intSeparationId: +params?.id,
+        status: "",
+        workplaceGroupId: wgId,
+        departmentId: 0,
+        designationId: 0,
+        supervisorId: 0,
+        employeeId: employeeId,
+        separationTypeId: 0,
+        applicationFromDate: null,
+        applicationToDate: null,
+        businessUnitId: buId,
+        accountId: orgId,
+        tableName: "EmployeeSeparationReportBySeparationId",
+      };
+      getSeparationLandingById(payload, setSingleData, setLoading);
       setImgRow(singleData?.docArr);
     });
   };
@@ -277,7 +304,6 @@ export default function ManagementApplicationSeparationForm() {
                         loadOptions={(v) =>
                           getSearchEmployeeList(buId, wgId, v)
                         }
-                        isDisabled={+params?.id}
                       />
                     </div>
                     <div className="col-12"></div>
@@ -381,88 +407,90 @@ export default function ManagementApplicationSeparationForm() {
                       </p>
                       {imageFile?.length
                         ? imageFile.map((image, i) => (
-                          <div
-                            className="d-flex align-items-center"
-                            style={{ width: "160px" }}
-                            onClick={() => {
-                              dispatch(
-                                getDownlloadFileView_Action(
-                                  image?.globalFileUrlId || image?.intDocURLId
-                                )
-                              );
-                            }}
-                            key={i}
-                          >
-                            <AttachmentOutlined
-                              sx={{ marginRight: "5px", color: "#0072E5" }}
-                            />
                             <div
-                              style={{
-                                fontSize: "12px",
-                                fontWeight: "500",
-                                color: "#0072E5",
-                                cursor: "pointer",
+                              className="d-flex align-items-center"
+                              style={{ width: "160px" }}
+                              onClick={() => {
+                                dispatch(
+                                  getDownlloadFileView_Action(
+                                    image?.globalFileUrlId || image?.intDocURLId
+                                  )
+                                );
                               }}
+                              key={i}
                             >
-                              {image?.fileName ||
-                                `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
-                                }`}{" "}
+                              <AttachmentOutlined
+                                sx={{ marginRight: "5px", color: "#0072E5" }}
+                              />
+                              <div
+                                style={{
+                                  fontSize: "12px",
+                                  fontWeight: "500",
+                                  color: "#0072E5",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {image?.fileName ||
+                                  `Attachment_${
+                                    i <= 8 ? `0${i + 1}` : `${i + 1}`
+                                  }`}{" "}
+                              </div>
                             </div>
-                          </div>
-                        ))
+                          ))
                         : ""}
                     </div>
                     <div className="col-12">
                       <h2 style={{ marginBottom: "12px" }}>Attachment List</h2>
                       {editImageRow?.length
                         ? editImageRow.map((image, i) => (
-                          <div
-                            className="d-flex align-items-center"
-                            style={{ width: "160px" }}
-                            onClick={() => {
-                              dispatch(
-                                getDownlloadFileView_Action(
-                                  image?.globalFileUrlId || image?.intDocURLId
-                                )
-                              );
-                            }}
-                            key={i}
-                          >
-                            <AttachmentOutlined
-                              sx={{ marginRight: "5px", color: "#0072E5" }}
-                            />
                             <div
-                              style={{
-                                fontSize: "12px",
-                                fontWeight: "500",
-                                color: "#0072E5",
-                                cursor: "pointer",
+                              className="d-flex align-items-center"
+                              style={{ width: "160px" }}
+                              onClick={() => {
+                                dispatch(
+                                  getDownlloadFileView_Action(
+                                    image?.globalFileUrlId || image?.intDocURLId
+                                  )
+                                );
                               }}
+                              key={i}
                             >
-                              {image?.fileName ||
-                                `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
-                                }`}{" "}
-                              {editImageRow?.length && (
-                                <IconButton
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    deleteImageHandler(
-                                      image?.globalFileUrlId
-                                    );
-                                  }}
-                                  size="small"
-                                  style={{
-                                    fontSize: "18px",
-                                    padding: "0px 5px",
-                                    color: "#175CD3",
-                                  }}
-                                >
-                                  <Close fontSize="inherit" />
-                                </IconButton>
-                              )}
+                              <AttachmentOutlined
+                                sx={{ marginRight: "5px", color: "#0072E5" }}
+                              />
+                              <div
+                                style={{
+                                  fontSize: "12px",
+                                  fontWeight: "500",
+                                  color: "#0072E5",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {image?.fileName ||
+                                  `Attachment_${
+                                    i <= 8 ? `0${i + 1}` : `${i + 1}`
+                                  }`}{" "}
+                                {editImageRow?.length && (
+                                  <IconButton
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      deleteImageHandler(
+                                        image?.globalFileUrlId
+                                      );
+                                    }}
+                                    size="small"
+                                    style={{
+                                      fontSize: "18px",
+                                      padding: "0px 5px",
+                                      color: "#175CD3",
+                                    }}
+                                  >
+                                    <Close fontSize="inherit" />
+                                  </IconButton>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        ))
+                          ))
                         : ""}
                     </div>
 
