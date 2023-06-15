@@ -66,7 +66,8 @@ export const getBonusInformationOnRegenerate = (
   setValues,
   setEmployeeList,
   setRowDto,
-  setSingleData
+  setSingleData,
+  wgId
 ) => {
   setIsEdit(true);
   const data = location?.state?.bonusObj;
@@ -78,7 +79,7 @@ export const getBonusInformationOnRegenerate = (
     intBusinessUnitId: data?.intBusinessUnitId,
     intBonusId: data?.intBonusId,
     intPayrollGroupId: 0,
-    intWorkplaceGroupId: 0,
+    intWorkplaceGroupId: wgId,
     intWorkplaceId: 0,
     intReligionId: 0,
     dteEffectedDate: data?.dteEffectedDateTime,
