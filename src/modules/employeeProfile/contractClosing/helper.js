@@ -2,6 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 import { dateFormatter } from "../../../utility/dateFormatter";
+
 export const getBuDetails = async (buId, setter, setLoading) => {
   try {
     const res = await axios.get(
@@ -16,40 +17,41 @@ export const getBuDetails = async (buId, setter, setLoading) => {
     setter([]);
   }
 };
+
 export const getContractClosingInfo = async (
-  tableName,
-  accId,
-  busId,
-  id,
+  buId,
+  wgId,
   setter,
-  setAllData,
   setLoading,
-  statusId,
-  pages,
-  srcText,
+  search,
+  pageNo,
+  pageSize,
   setPages,
-  WorkplaceGroupId,
   IsPaginated = true
 ) => {
   setLoading && setLoading(true);
 
-  let status = statusId ? `&intStatusId=${statusId}` : "";
-  let search = srcText ? `&SearchTxt=${srcText}` : "";
-  let intId = id ? `&intId=${id}` : "";
   try {
-    const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?businessUnitId=${busId}&workplaceGroupId=${WorkplaceGroupId}&IsPaginated=${IsPaginated}&pageNo=${pages.current}&pageSize=${pages.pageSize}${status}${search}${intId}`
-    );
+    let apiUrl = `/Employee/ContractualClosing?businessUnitId=${buId}&workplaceGroupId=${wgId}&IsPaginated=${IsPaginated}${search}&pageNo=${pageNo}&pageSize=${pageSize}`;
+
+    search && (apiUrl += `&searchTxt=${search}`);
+
+    const res = await axios.get(apiUrl);
+
     if (res?.data) {
-      setter && setter(res?.data);
-      setAllData && setAllData(res?.data);
-      setLoading && setLoading(false);
+      const modifiedData = res?.data?.data?.map((item, index) => ({
+        ...item,
+        initialSerialNumber: index + 1,
+      }));
+      setter && setter?.(modifiedData);
+
       setPages({
-        ...pages,
-        current: pages.current,
-        pageSize: pages.pageSize,
-        total: res?.data[0]?.totalCount,
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
       });
+
+      setLoading && setLoading(false);
     }
   } catch (error) {
     setLoading && setLoading(false);
@@ -83,31 +85,31 @@ export const extendContractEmpAction = async (
 };
 
 export const contactClosingColumns = (
+  page,
+  paginationSize,
   permission,
   setAnchorEl,
-  setSingleData,
-  page,
-  paginationSize
+  setSingleData
 ) => {
   return [
     {
       title: "SL",
-      render: (_, record, index) => (page - 1) * paginationSize + index + 1,
-      sorter: false,
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
       filter: false,
       className: "text-center",
     },
     {
       title: "Employee Id",
       dataIndex: "EmployeeCode",
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Employee Name",
       dataIndex: "EmployeeName",
-      fixed: "left",
-      render: (_, record) => {
+      render: (record) => {
         return (
           <div className="d-flex align-items-center">
             <AvatarComponent
@@ -119,50 +121,60 @@ export const contactClosingColumns = (
           </div>
         );
       },
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Employment Type",
       dataIndex: "strEmploymentType",
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Department",
       dataIndex: "DepartmentName",
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Designation",
       dataIndex: "DesignationName",
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Contractual From Date",
       dataIndex: "dteContactFromDate",
-      isDate: true,
-      render: (_, record) => dateFormatter(record?.dteContactFromDate),
+      render: (record) => dateFormatter(record?.dteContactFromDate),
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
       title: "Contractual To Date",
       dataIndex: "dteContactToDate",
-      isDate: true,
-      render: (dteContactToDate) => dateFormatter(dteContactToDate),
+      render: (record) => dateFormatter(record?.dteContactToDate),
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
       title: "Joining Date",
       dataIndex: "dteJoiningDate",
-      isDate: true,
-      render: (dteJoiningDate) => dateFormatter(dteJoiningDate),
+      render: (record) => dateFormatter(record?.dteJoiningDate),
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
       title: "",
-      dataIndex: "action",
+      dataIndex: "",
       width: 150,
-      render: (_, item) => {
+      render: (item) => {
         return (
           <div className="d-flex justify-content-center">
             <button
@@ -185,6 +197,9 @@ export const contactClosingColumns = (
           </div>
         );
       },
+      sort: false,
+      filter: false,
+      fieldType: "string",
     },
   ];
 };
