@@ -222,6 +222,7 @@ export default function AnnouncementCreate() {
     };
 
     cb();
+    console.log(payload);
     createAnnouncement(payload, setLoading, "");
   };
 
