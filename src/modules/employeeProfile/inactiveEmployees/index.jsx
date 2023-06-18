@@ -1,15 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  SaveAlt,
-  SearchOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import AntTable, { paginationSize } from "../../../common/AntTable";
 import FormikInput from "../../../common/FormikInput";
 import NoResult from "../../../common/NoResult";
 import ResetButton from "../../../common/ResetButton";
@@ -22,13 +17,18 @@ import {
   activeEmployeeHandler,
   column,
   getBuDetails,
-  getInactiveEmployeesInfo,
+  getNewInactiveEmpInfo,
   getTableDataInactiveEmployees,
   inactiveEmpColumns,
 } from "./helper";
 import "./inactiveEmployees.css";
 import IConfirmModal from "../../../common/IConfirmModal";
 import { createCommonExcelFile } from "../../../utility/customExcel/generateExcelAction";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../common/peopleDeskTable";
+import MasterFilter from "../../../common/MasterFilter";
+import useDebounce from "../../../utility/customHooks/useDebounce";
 
 const initData = {
   search: "",
@@ -40,7 +40,7 @@ export default function ActiveInactiveEmployeeReport() {
   const dispatch = useDispatch();
 
   // eslint-disable-next-line no-unused-vars
-  const { orgId, buId, buName, wgId } = useSelector(
+  const { buId, buName, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -48,7 +48,6 @@ export default function ActiveInactiveEmployeeReport() {
 
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -56,94 +55,39 @@ export default function ActiveInactiveEmployeeReport() {
   });
   // sorting
   const [buDetails, setBuDetails] = useState({});
+  const debounce = useDebounce();
 
-  const getData = (fromDate, toDate, pages, srcText) => {
-    getInactiveEmployeesInfo(
-      "InactiveEmployees",
-      orgId,
+  const getData = (
+    fromDate = getDateOfYear("first"),
+    toDate = getDateOfYear("last"),
+    pagination = { current: 1, pageSize: paginationSize },
+    srcTxt = "",
+    isExcel = false
+  ) => {
+    getNewInactiveEmpInfo({
       buId,
-      "",
-      setRowDto,
-      setAllData,
-      setLoading,
-      "",
-      fromDate ? fromDate : getDateOfYear("first"),
-      toDate ? toDate : getDateOfYear("last"),
       wgId,
-      srcText,
-      pages,
-      setPages
-    );
+      isExcel,
+      pageNo: pagination?.current,
+      pageSize: pagination?.pageSize,
+      srcTxt,
+      setLoading,
+      setter: setRowDto,
+      setPages,
+      fromDate,
+      toDate,
+    });
   };
 
   useEffect(() => {
-    getInactiveEmployeesInfo(
-      "InactiveEmployees",
-      orgId,
-      buId,
-      "",
-      setRowDto,
-      setAllData,
-      setLoading,
-      "",
-      getDateOfYear("first"),
-      getDateOfYear("last"),
-      wgId,
-      "",
-      pages,
-      setPages
-    );
+    getData();
     getBuDetails(buId, setBuDetails, setLoading);
-  }, []);
+  }, [wgId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
 
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getInactiveEmployeesInfo(
-        "InactiveEmployees",
-        orgId,
-        buId,
-        "",
-        setRowDto,
-        setAllData,
-        setLoading,
-        "",
-        getDateOfYear("first"),
-        getDateOfYear("last"),
-        wgId,
-        srcText,
-        pagination,
-        setPages
-      );
-    }
-    if (pages?.current !== pagination?.current) {
-      return getInactiveEmployeesInfo(
-        "InactiveEmployees",
-        orgId,
-        buId,
-        "",
-        setRowDto,
-        setAllData,
-        setLoading,
-        "",
-        getDateOfYear("first"),
-        getDateOfYear("last"),
-        wgId,
-        srcText,
-        pagination,
-        setPages
-      );
-    }
-  };
   const saveHandler = (values) => {};
 
   let permission = null;
@@ -155,7 +99,7 @@ export default function ActiveInactiveEmployeeReport() {
 
   const activeUserHandler = (item, values) => {
     const paylaod = {
-      intEmployeeId: item?.EmployeeId,
+      intEmployeeId: item?.intEmployeeId,
     };
 
     const callback = () => {
@@ -188,8 +132,44 @@ export default function ActiveInactiveEmployeeReport() {
   //   return contractualExcelData(rowDto);
   // };
 
+  const handleChangePage = (_, newPage, searchText, fromDate, toDate) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      fromDate,
+      toDate,
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      searchText
+    );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText, fromDate, toDate) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      fromDate,
+      toDate,
+      {
+        current: 1,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      searchText
+    );
+  };
+
+  console.log(rowDto);
+
   return (
     <>
+      {loading && <Loading />}
       <Formik
         enableReinitialize={true}
         initialValues={initData}
@@ -202,7 +182,6 @@ export default function ActiveInactiveEmployeeReport() {
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              {loading && <Loading />}
               {permission?.isView ? (
                 <>
                   <div className="table-card">
@@ -267,10 +246,10 @@ export default function ActiveInactiveEmployeeReport() {
                           </div>
                         </Tooltip>
                         <div className="ml-2">
-                          {rowDto?.length > 0 ? (
+                          {rowDto?.totalCount > 0 ? (
                             <>
                               <h6 className="count">
-                                Total {rowDto?.length} employees
+                                Total {rowDto?.totalCount} employees
                               </h6>
                             </>
                           ) : (
@@ -296,138 +275,140 @@ export default function ActiveInactiveEmployeeReport() {
                                   />
                                 }
                                 onClick={() => {
-                                  setRowDto(allData);
                                   setFieldValue("search", "");
+                                  getData();
                                 }}
                               />
                             </li>
                           )}
                           <li>
-                            <FormikInput
-                              classes="search-input fixed-width mr-0"
-                              inputClasses="search-inner-input"
-                              placeholder="Search"
-                              value={values?.search}
-                              name="search"
-                              type="text"
-                              trailicon={
-                                <SearchOutlined sx={{ color: "#323232" }} />
-                              }
-                              onChange={(e) => {
-                                // filterData(e.target.value, allData, setRowDto);
-                                setFieldValue("search", e.target.value);
-                                if (e.target.value) {
-                                  getData(
-                                    values?.filterFromDate,
-                                    values?.filterToDate,
-                                    { current: 1, pageSize: paginationSize },
-                                    e.target.value
-                                  );
-                                } else {
-                                  getData(
-                                    values?.filterFromDate,
-                                    values?.filterToDate,
-                                    { current: 1, pageSize: paginationSize },
-                                    ""
-                                  );
-                                }
+                            <MasterFilter
+                              isHiddenFilter
+                              styles={{
+                                marginRight: "10px",
                               }}
-                              errors={errors}
-                              touched={touched}
+                              inputWidth="200px"
+                              width="200px"
+                              value={values?.search}
+                              setValue={(value) => {
+                                setFieldValue("search", value);
+                                debounce(() => {
+                                  getData(
+                                    values?.filterFromDate,
+                                    values?.filterToDate,
+                                    { current: 1, pageSize: paginationSize },
+                                    value
+                                  );
+                                }, 500);
+                              }}
+                              cancelHandler={() => {
+                                setFieldValue("search", "");
+                                getData(
+                                  values?.filterFromDate,
+                                  values?.filterToDate,
+                                  { current: 1, pageSize: paginationSize }
+                                );
+                              }}
                             />
                           </li>
                         </ul>
                       </div>
                     </div>
-                    <div className="table-card-styled employee-table-card tableOne  table-responsive">
-                      <div className="card-style my-2">
-                        <div className="row mb-3">
-                          <div className="col-lg-3">
-                            <div className="input-field-main">
-                              <label>From Date</label>
-                              <FormikInput
-                                classes="input-sm"
-                                value={values?.filterFromDate}
-                                placeholder=""
-                                name="filterFromDate"
-                                type="date"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "filterFromDate",
-                                    e.target.value
-                                  );
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-3">
-                            <div className="input-field-main">
-                              <label>To Date</label>
-                              <FormikInput
-                                classes="input-sm"
-                                value={values?.filterToDate}
-                                placeholder="Month"
-                                name="filterToDate"
-                                type="date"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue("filterToDate", e.target.value);
-                                }}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="col-lg-1">
-                            <button
-                              disabled={
-                                !values?.filterToDate || !values?.filterFromDate
-                              }
-                              style={{ marginTop: "21px" }}
-                              className="btn btn-green"
-                              onClick={() => {
-                                getData(
-                                  values?.filterFromDate,
-                                  values?.filterToDate,
-                                  pages,
-                                  values?.search
-                                );
+                    <div className="card-style my-2">
+                      <div className="row mb-3">
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>From Date</label>
+                            <FormikInput
+                              classes="input-sm"
+                              value={values?.filterFromDate}
+                              placeholder=""
+                              name="filterFromDate"
+                              type="date"
+                              className="form-control"
+                              onChange={(e) => {
+                                setFieldValue("filterFromDate", e.target.value);
                               }}
-                            >
-                              View
-                            </button>
+                            />
                           </div>
+                        </div>
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>To Date</label>
+                            <FormikInput
+                              classes="input-sm"
+                              value={values?.filterToDate}
+                              placeholder="Month"
+                              name="filterToDate"
+                              type="date"
+                              className="form-control"
+                              onChange={(e) => {
+                                setFieldValue("filterToDate", e.target.value);
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="col-lg-1">
+                          <button
+                            disabled={
+                              !values?.filterToDate || !values?.filterFromDate
+                            }
+                            style={{ marginTop: "21px" }}
+                            className="btn btn-green"
+                            onClick={() => {
+                              getData(
+                                values?.filterFromDate,
+                                values?.filterToDate,
+                                pages,
+                                values?.search
+                              );
+                            }}
+                          >
+                            View
+                          </button>
                         </div>
                       </div>
-                      {rowDto?.length > 0 ? (
-                        <div className="" style={{ maxHeight: "500px" }}>
-                          <AntTable
-                            data={rowDto}
-                            columnsData={inactiveEmpColumns(
-                              pages.current,
-                              pages.pageSize,
-                              activeUserHandler,
-                              values
-                            )}
-                            handleTableChange={({ pagination, newRowDto }) =>
-                              handleTableChange(
-                                pagination,
-                                newRowDto,
-                                values?.search || ""
-                              )
-                            }
-                            pages={pages?.pageSize}
-                            pagination={pages}
-                          />
-                        </div>
-                      ) : (
-                        <>
-                          {!loading && (
-                            <NoResult title="No Result Found" para="" />
-                          )}
-                        </>
-                      )}
                     </div>
+                    {rowDto?.data?.length > 0 ? (
+                      <PeopleDeskTable
+                        columnData={inactiveEmpColumns(
+                          pages?.current,
+                          pages?.pageSize,
+                          activeUserHandler,
+                          values
+                        )}
+                        pages={pages}
+                        rowDto={rowDto?.data}
+                        setRowDto={setRowDto}
+                        handleChangePage={(e, newPage) =>
+                          handleChangePage(
+                            e,
+                            newPage,
+                            values?.search,
+                            values.filterFromDate,
+                            values.filterToDate
+                          )
+                        }
+                        handleChangeRowsPerPage={(e) =>
+                          handleChangeRowsPerPage(
+                            e,
+                            values?.search,
+                            values.filterFromDate,
+                            values.filterToDate
+                          )
+                        }
+                        uniqueKey="strEmployeeCode"
+                        isCheckBox={false}
+                        isScrollAble={true}
+                      />
+                    ) : (
+                      <>
+                        {!loading && (
+                          <NoResult title="No Result Found" para="" />
+                        )}
+                      </>
+                    )}
                   </div>
                 </>
               ) : (
