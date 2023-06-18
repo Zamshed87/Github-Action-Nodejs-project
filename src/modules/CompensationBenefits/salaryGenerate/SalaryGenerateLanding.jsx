@@ -88,11 +88,6 @@ const SalaryGenerateLanding = () => {
 
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
-  });
 
   // for create state
   const [open, setOpen] = useState(false);
@@ -124,14 +119,7 @@ const SalaryGenerateLanding = () => {
       values?.filterToDate,
       setRowDto,
       setAllData,
-      setLoading,
-      0,
-      0,
-      0,
-      0,
-      0,
-      pages,
-      setPages
+      setLoading
     );
   };
 
@@ -147,14 +135,7 @@ const SalaryGenerateLanding = () => {
       values?.filterToDate,
       setRowDto,
       setAllData,
-      setLoading,
-      0,
-      0,
-      0,
-      0,
-      0,
-      pages,
-      setPages
+      setLoading
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId, wgId]);
