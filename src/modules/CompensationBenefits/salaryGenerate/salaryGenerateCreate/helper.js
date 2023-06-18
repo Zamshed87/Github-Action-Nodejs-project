@@ -3,6 +3,8 @@ import AvatarComponent from "../../../../common/AvatarComponent";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import { gray900, greenColor } from "../../../../utility/customColor";
 import * as Yup from "yup";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export const salaryGenerateValidationSchema = Yup.object().shape({
   monthYear: Yup.date().required("Payroll month is required"),
@@ -193,4 +195,43 @@ export const columnsData = (
   ];
 
   return columns;
+};
+
+export const getSoleDepoDDL = async (buId, wgId, setLoading, setter) => {
+  try {
+    setLoading(true);
+    const res = await axios.get(
+      `/Payroll/GetSoledepoDdl?businessUnitId=${buId}&WorkplaceGroupId=${wgId}`
+    );
+    if (res?.data) {
+      setter(res?.data);
+    }
+    setLoading(false);
+  } catch (err) {
+    setLoading(false);
+
+    toast.error("Sole Depo Data Not Found");
+  }
+};
+export const getAreaDepoDDL = async (
+  buId,
+  wgId,
+  solDepo,
+  setLoading,
+  setter
+) => {
+  try {
+    setLoading(true);
+    const res = await axios.get(
+      `/Payroll/GetAreaBySoleDepoDdl?businessUnitId=${buId}&WorkplaceGroupId=${wgId}&soleDepoId=${solDepo}`
+    );
+    if (res?.data) {
+      setter(res?.data);
+    }
+    setLoading(false);
+  } catch (err) {
+    setLoading(false);
+
+    toast.error("Area Data Not Found");
+  }
 };

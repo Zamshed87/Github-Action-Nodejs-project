@@ -451,3 +451,54 @@
 }
 
 /* custom salary summary report css end -------------- */
+
+
+/* bonus custom table css here ----------------------------------- ] */
+.salary-process-table
+  > .bonus-generate-custom
+  table
+  thead
+  tr:first-child
+  th:first-child {
+  left: -3px !important;
+  /* background-color: red !important; */
+  min-width: 165px !important;
+  z-index: 999999 !important;
+}
+.salary-process-table
+  > .bonus-generate-custom
+  table
+  thead
+  tr:first-child
+  th:nth-child(2) {
+  left: 160px !important;
+  z-index: 999999 !important;
+  /* background-color: green !important; */
+}
+.salary-process-table
+  > .bonus-generate-custom
+  table
+  thead
+  tr:first-child
+  th:nth-child(3) {
+  left: 285px !important;
+  z-index: 999999 !important;
+  /* background-color: green !important; */
+}
+.salary-process-table > .bonus-generate-custom table tbody tr td:first-child {
+  left: -3px !important;
+  /* background-color: red !important; */
+  min-width: 120px !important;
+}
+
+.salary-process-table > .bonus-generate-custom table tbody tr td:nth-child(2) {
+  left: 160px !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+}
+.salary-process-table > .bonus-generate-custom table tbody tr td:nth-child(3) {
+  left: 285px !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+}
+/* bonus custom table css end ----------------------------------- ] */

@@ -35,7 +35,8 @@ export const getBonusGenerateLanding = async (
   payload,
   setter,
   setAllData,
-  setLoading
+  setLoading,
+  cb
 ) => {
   setLoading && setLoading(true);
   try {
@@ -43,6 +44,7 @@ export const getBonusGenerateLanding = async (
     if (res?.data) {
       setAllData && setAllData(res?.data);
       setter(res?.data);
+      cb?.(res?.data)
       setLoading && setLoading(false);
     }
   } catch (error) {
@@ -238,7 +240,7 @@ const bonusExcelHeader = {
   employeeName: "Employee Name",
   strDesignationName: "Designation",
   dteJoiningDate: "Joining Date",
-  strServiceLength: "Service Length",
+  strServiceLength: "Job Duration",
   numSalary: "Gross Salary (TK)",
   numBonusPercentage: "Bonus Percentage",
   numBonusAmount: "Bonus Amount(TK)",

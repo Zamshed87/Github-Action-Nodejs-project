@@ -44,19 +44,27 @@ export const getSalaryGenerateRequestLanding = async (
   soleDepo = 0,
   region = 0,
   area = 0,
-  territory = 0
+  territory = 0,
+  pages,
+  setPages,
+  searchText
 ) => {
   setLoading && setLoading(true);
+  const territoryValueString =
+    territory?.length > 0
+      ? territory?.map((item) => item?.value.toString()).join(",")
+      : "";
 
   let fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
   let toDateParams = toDate ? `&GenerateToDate=${toDate}` : "";
 
   // DDL
-  let wingParams = wing ? `&WingId=${wing}` : "";
+  // let wingParams = wing ? `&WingId=${wing}` : "";
   let soleDepoParams = soleDepo ? `&SoleDepoId=${soleDepo}` : "";
-  let regionParams = region ? `&RegionId=${region}` : "";
+  // let regionParams = region ? `&RegionId=${region}` : "";
   let areaParams = area ? `&AreaId=${area}` : "";
-  let territoryParams = territory ? `&TerritoryId=${territory}` : "";
+  let territoryParams = territory ? `&TerritoryId=${territoryValueString}` : "";
+  let search = searchText ? `&searchText=${searchText}` : "";
 
   try {
     const res = await axios.get(
@@ -64,7 +72,9 @@ export const getSalaryGenerateRequestLanding = async (
         monthId || +currentMonth()
       }&intYearId=${
         yearId || currentYear
-      }&intWorkplaceGroupId=${wgId}&intBankOrWalletType=0${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+      }&intWorkplaceGroupId=${wgId}&intBankOrWalletType=0${fromDateParams}${toDateParams}${soleDepoParams}${areaParams}${territoryParams}&IntPageNo=${
+        pages?.current
+      }&IntPageSize=${pages?.pageSize}${search}`
     );
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
@@ -73,6 +83,7 @@ export const getSalaryGenerateRequestLanding = async (
           isSalaryGenerate: false,
         };
       });
+      setPages({ ...pages, total: res?.data?.[0]?.totalCount });
       setAllData && setAllData(modifyRowData);
       setter && setter(modifyRowData);
       setLoading && setLoading(false);

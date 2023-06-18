@@ -28,14 +28,17 @@ const getTableDataForExcel = (row) => {
       new Cell(item?.numSalary, "right", "text").getCell(),
       new Cell(item?.numBasic || 0, "right", "text").getCell(),
       new Cell(item?.numBonusAmount || 0, "right", "text").getCell(),
-      new Cell(moment(item?.dteJoiningDate).format('ll') || "N/A", "center", "text").getCell(),
+      new Cell(
+        moment(item?.dteJoiningDate).format("ll") || "N/A",
+        "center",
+        "text"
+      ).getCell(),
       new Cell(item?.strWorkPlaceName, "left", "text").getCell(),
       new Cell(item?.strWorkPlaceGroupName, "left", "text").getCell(),
     ];
   });
   return data;
 };
-
 
 const createExcelFile = (
   comapanyNameHeader,
@@ -73,7 +76,7 @@ const createExcelFile = (
           ],
           [
             {
-              text:   buAddress,
+              text: buAddress,
               fontSize: 15,
               bold: true,
               cellRange: "A1:J1",
@@ -83,7 +86,7 @@ const createExcelFile = (
           ],
           [
             {
-              text:   `${comapanyNameHeader}-${date}`,
+              text: `${comapanyNameHeader}-${date}`,
               fontSize: 15,
               bold: true,
               cellRange: "A1:J1",
@@ -127,7 +130,7 @@ const createExcelFile = (
               border: "all 000000 thin",
             },
             {
-              text: "Service Length",
+              text: "Job Duration",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
@@ -158,7 +161,7 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-          
+
             {
               text: "Workplace Name",
               fontSize: 8.5,
@@ -172,7 +175,6 @@ const createExcelFile = (
               border: "all 000000 thin",
               alignment: "center",
             },
-         
           ],
           ...getTableDataForExcel(rowDto),
           [
@@ -233,7 +235,7 @@ const createExcelFile = (
               alignment: "right:middle",
             },
             {
-              text: '',
+              text: "",
               fontSize: 9,
               bold: true,
               textFormat: "money",
@@ -241,7 +243,7 @@ const createExcelFile = (
               alignment: "right:middle",
             },
             {
-              text: '',
+              text: "",
               fontSize: 9,
               bold: true,
               textFormat: "money",
@@ -249,19 +251,18 @@ const createExcelFile = (
               alignment: "right:middle",
             },
             {
-              text: '',
+              text: "",
               fontSize: 9,
               bold: true,
               textFormat: "money",
               border: "all 000000 thin",
               alignment: "right:middle",
             },
-           
           ],
           ["_blank*2"],
           [
             {
-              text: `System Generated Report-${moment().format('ll')}`,
+              text: `System Generated Report-${moment().format("ll")}`,
               fontSize: 18,
               bold: true,
               cellRange: "A1:J1",
@@ -269,7 +270,6 @@ const createExcelFile = (
               alignment: "center:middle",
             },
           ],
-          
         ],
       },
     ],

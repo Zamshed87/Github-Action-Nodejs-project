@@ -27,9 +27,9 @@ const Accordion = ({ empBasic, loading, userRole }) => {
                 htmlFor="contained-button-file"
                 className="label-add-image sm-size"
               >
-                {empBasic?.employeeProfileLandingView?.intEmployeeImageUrlId ? (
+                {empBasic?.empEmployeePhotoIdentity ? (
                   <img
-                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.employeeProfileLandingView?.intEmployeeImageUrlId}`}
+                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.empEmployeePhotoIdentity?.intProfilePicFileUrlId}`}
                     alt=""
                     style={{ maxHeight: "36px", minWidth: "36px" }}
                   />
