@@ -63,6 +63,40 @@ export const getInactiveEmployeesInfo = async (
   }
 };
 
+export const getNewInactiveEmpInfo = async ({
+  buId,
+  wgId,
+  isExcel,
+  pageNo,
+  pageSize,
+  srcTxt,
+  setLoading,
+  setter,
+  setPages,
+  fromDate,
+  toDate,
+}) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IsXls=${isExcel}&PageNo=${pageNo}&PageSize=${pageSize}&searchTxt=${srcTxt}&FromDate=${fromDate}&ToDate=${toDate}`
+    );
+    if (res?.data) {
+      setter(res?.data);
+
+      setPages({
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
+      });
+
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
+
 export const activeInactiveEmployee = async (values, setLoading, cb) => {
   try {
     setLoading(true);
@@ -103,72 +137,78 @@ export const inactiveEmpColumns = (
   return [
     {
       title: "SL",
-      render: (_, record, idx) => (page - 1) * paginationSize + idx + 1,
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
+      filter: false,
       className: "text-center",
+      width: 50,
     },
     {
       title: "Code",
-      dataIndex: "EmployeeCode",
-      sorter: true,
-      filter: true,
+      dataIndex: "strEmployeeCode",
+      sort: false,
+      filter: false,
       width: 100,
     },
     {
       title: "Employee Name",
-      dataIndex: "EmployeeName",
-      render: (_, record) => {
-        return (
-          <div className="d-flex align-items-center">
+      dataIndex: "strEmployeeName",
+      sort: true,
+      filter: false,
+      render: (item) => (
+        <div className="d-flex align-items-center justify-content-start">
+          <div className="emp-avatar">
             <AvatarComponent
               classess=""
               letterCount={1}
-              label={record?.EmployeeName}
+              label={item?.strEmployeeName}
             />
-            <span className="ml-2">{record?.EmployeeName}</span>
           </div>
-        );
-      },
-      sorter: true,
-      filter: true,
+          <div className="ml-2">
+            <span>{item?.strEmployeeName}</span>
+          </div>
+        </div>
+      ),
+      fieldType: "string",
     },
     {
       title: "Designation",
-      dataIndex: "DesignationName",
-      sorter: true,
-      filter: true,
+      dataIndex: "strDesignation",
+      sort: false,
+      filter: false,
     },
     {
       title: "Department",
-      dataIndex: "DepartmentName",
-      sorter: true,
-      filter: true,
+      dataIndex: "strDepartment",
+      sort: false,
+      filter: false,
     },
     {
       title: "Joining Date",
       dataIndex: "dteJoiningDate",
       isDate: true,
-      render: (dteJoiningDate) => dateFormatter(dteJoiningDate),
+      sort: false,
+      filter: false,
     },
     {
       title: "Service Length",
       dataIndex: "serviceLength",
       key: "serviceLength",
-      sorter: true,
-      filter: true,
+      sort: false,
+      filter: false,
     },
     {
       title: "Status",
-      dataIndex: "strEmployeeStatus",
-      key: "strEmployeeStatus",
-      sorter: true,
-      filter: true,
+      dataIndex: "strStatus",
+      sort: false,
+      filter: false,
       width: "150px",
-      render: (_, item) => {
+      render: (item) => {
         return (
           <div className="d-flex align-items-center justify-content-center">
             <div>
-              {item?.strEmployeeStatus === "Inactive" && (
-                <Chips label={item?.strEmployeeStatus} classess="danger" />
+              {item?.strStatus === "Inactive" && (
+                <Chips label={item?.strStatus} classess="danger" />
               )}
             </div>
 
@@ -208,11 +248,11 @@ export const getTableDataInactiveEmployees = (row, keys, totalKey) => {
 // excel columns
 export const column = {
   sl: "SL",
-  EmployeeCode: "Code",
-  EmployeeName: "Employee Name",
-  DesignationName: "Designation",
-  DepartmentName: "Department",
+  strEmployeeCode: "Code",
+  strEmployeeName: "Employee Name",
+  strDesignation: "Designation",
+  strDepartment: "Department",
   dteJoiningDate: "Joining Date",
   serviceLength: "Service Length",
-  strEmployeeStatus: "Status",
+  strStatus: "Status",
 };

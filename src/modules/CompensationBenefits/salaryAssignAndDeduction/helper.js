@@ -65,7 +65,7 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
     },
     {
       title: "Business Unit",
-      dataIndex: "strBusinessUnit",
+      dataIndex: "businessUnit",
       sort: true,
       filter: false,
       fieldType: "string",
@@ -154,6 +154,7 @@ export const getSalaryAdditionAndDeductionById = async (
   } catch (error) {
     setLoading && setLoading(false);
     setter([]);
+    toast.warn(error?.response?.data?.message);
   }
 };
 

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import AntTable, { paginationSize } from "../../../../common/AntTable";
+import AntTable from "../../../../common/AntTable";
 import {
   getPeopleDeskAllDDL,
   getPeopleDeskWithoutAllDDL,
@@ -17,13 +17,7 @@ import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { useLocation, useParams } from "react-router-dom";
 import BackButton from "../../../../common/BackButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import {
-  gray500,
-  gray600,
-  gray900,
-  greenColor,
-  success500,
-} from "../../../../utility/customColor";
+import { gray500, gray900, greenColor } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import TaxAssignCheckerModal from "../components/taxAssignChekerModal";
 import {
@@ -37,8 +31,6 @@ import {
 import { lastDayOfMonth } from "./../../../../utility/dateFormatter";
 import { toast } from "react-toastify";
 import {
-  getAreaDepoDDL,
-  getSoleDepoDDL,
   salaryGenerateInitialValues,
   salaryGenerateValidationSchema,
 } from "./helper";
@@ -71,16 +63,11 @@ const SalaryGenerateCreate = () => {
   const [allData, setAllData] = useState([]);
   const [takeHomePayTax, setTakeHomePayTax] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
-  });
 
   // DDL
-  // const [wingDDL, setWingDDL] = useState([]);
+  const [wingDDL, setWingDDL] = useState([]);
   const [soleDepoDDL, setSoleDepoDDL] = useState([]);
-  // const [regionDDL, setRegionDDL] = useState([]);
+  const [regionDDL, setRegionDDL] = useState([]);
   const [areaDDL, setAreaDDL] = useState([]);
   const [territoryDDL, setTerritoryDDL] = useState([]);
 
@@ -95,27 +82,15 @@ const SalaryGenerateCreate = () => {
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
 
   //get landing data
-  const getLandingData = (pages, search) => {
+  const getLandingData = (values) => {
     getSalaryGenerateRequestLanding(
       "EmployeeListForSalaryGenerateRequest",
       orgId,
       buId,
       wgId,
-      values?.monthId,
-      values?.yearId,
-      values?.fromDate,
-      values?.toDate,
       setRowDto,
       setAllData,
-      setLoading,
-      values?.wing?.value,
-      values?.soleDepo?.value,
-      values?.region?.value,
-      values?.area?.value,
-      values?.territory,
-      pages,
-      setPages,
-      search
+      setLoading
     );
   };
 
@@ -130,13 +105,12 @@ const SalaryGenerateCreate = () => {
   }, [orgId, buId, employeeId]);
 
   useEffect(() => {
-    // getPeopleDeskWithoutAllDDL(
-    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=0`,
-    //   "WingId",
-    //   "WingName",
-    //   setWingDDL
-    // );
-    getSoleDepoDDL(buId, wgId, setLoading, setSoleDepoDDL);
+    getPeopleDeskWithoutAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=0`,
+      "WingId",
+      "WingName",
+      setWingDDL
+    );
   }, [orgId, buId, wgId]);
 
   useEffect(() => {
@@ -183,9 +157,9 @@ const SalaryGenerateCreate = () => {
         orgId,
         buId,
         wgId,
-        // setWingDDL,
+        setWingDDL,
         setSoleDepoDDL,
-        // setRegionDDL,
+        setRegionDDL,
         setAreaDDL,
         setTerritoryDDL,
       });
@@ -202,11 +176,6 @@ const SalaryGenerateCreate = () => {
           strEmployeeName: itm?.strEmployeeName,
           intPayrollGroupId: itm?.intPayrollGroupId,
           strPayrollGroup: itm?.strPayrollGroup,
-          intWingId: itm?.intWingId,
-          intSoleDepoId: itm?.intSoleDepoId,
-          intRegionId: itm?.intRegionId,
-          intAreaId: itm?.intAreaId,
-          intTerritoryId: itm?.intTerritoryId,
         };
       });
 
@@ -230,7 +199,7 @@ const SalaryGenerateCreate = () => {
       intSoleDepoId: values?.soleDepo?.value || 0,
       intRegionId: values?.region?.value || 0,
       intAreaId: values?.area?.value || 0,
-      // intTerritoryId: values?.territory?.value || 0,
+      intTerritoryId: values?.territory?.value || 0,
       intMonthId: values?.monthId,
       intYearId: values?.yearId,
       strDescription: values?.description,
@@ -425,21 +394,7 @@ const SalaryGenerateCreate = () => {
 
     return isCheck;
   };
-  // table pagination option
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getLandingData(pagination, srcText);
-    }
-    if (pages?.current !== pagination?.current) {
-      return getLandingData(pagination, srcText);
-    }
-  };
+
   // useFormik hooks
   const {
     setFieldValue,
@@ -632,7 +587,7 @@ const SalaryGenerateCreate = () => {
                   {/* marketing setup */}
                   {"Marketing" === wgName && (
                     <>
-                      {/* <div className="col-lg-3">
+                      <div className="col-lg-3">
                         <div className="input-field-main">
                           <label>Wing</label>
                           <FormikSelect
@@ -673,7 +628,7 @@ const SalaryGenerateCreate = () => {
                             }
                           />
                         </div>
-                      </div> */}
+                      </div>
                       <div className="col-lg-3">
                         <div className="input-field-main">
                           <label>Sole Depo</label>
@@ -683,21 +638,18 @@ const SalaryGenerateCreate = () => {
                             options={soleDepoDDL || []}
                             value={values?.soleDepo}
                             onChange={(valueOption) => {
-                              // setAreaDDL([]);
-                              setFieldValue("area", "");
-
-                              console.log({ valueOption });
-                              getAreaDepoDDL(
-                                buId,
-                                wgId,
-                                valueOption?.value,
-                                setLoading,
-                                setAreaDDL
+                              getPeopleDeskWithoutAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RegionDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=${valueOption?.value}`,
+                                "RegionId",
+                                "RegionName",
+                                setRegionDDL
                               );
 
+                              setAreaDDL([]);
                               setTerritoryDDL([]);
 
-                              // setFieldValue("region", "");
+                              setFieldValue("region", "");
+                              setFieldValue("area", "");
                               setFieldValue("territory", "");
                               setFieldValue("soleDepo", valueOption);
                             }}
@@ -706,19 +658,19 @@ const SalaryGenerateCreate = () => {
                             errors={errors}
                             touched={touched}
                             isClearable={false}
-                            // isDisabled={
-                            //   (+params?.id &&
-                            //     isSameMaketingAreaHandler(
-                            //       rowDto,
-                            //       singleData?.intSoleDepoId,
-                            //       "intSoleDepoId"
-                            //     )) ||
-                            //   !values?.wing
-                            // }
+                            isDisabled={
+                              (+params?.id &&
+                                isSameMaketingAreaHandler(
+                                  rowDto,
+                                  singleData?.intSoleDepoId,
+                                  "intSoleDepoId"
+                                )) ||
+                              !values?.wing
+                            }
                           />
                         </div>
                       </div>
-                      {/* <div className="col-lg-3">
+                      <div className="col-lg-3">
                         <div className="input-field-main">
                           <label>Region</label>
                           <FormikSelect
@@ -756,7 +708,7 @@ const SalaryGenerateCreate = () => {
                             }
                           />
                         </div>
-                      </div> */}
+                      </div>
                       <div className="col-lg-3">
                         <div className="input-field-main">
                           <label>Area</label>
@@ -787,77 +739,12 @@ const SalaryGenerateCreate = () => {
                                   singleData?.intAreaId,
                                   "intAreaId"
                                 )) ||
-                              !values?.soleDepo
+                              !values?.region
                             }
                           />
                         </div>
                       </div>
-                      <div className="col-lg-4">
-                        <div>
-                          <label>Territory</label>
-                          <FormikSelect
-                            placeholder=" "
-                            classes="input-sm"
-                            styles={{
-                              ...customStyles,
-                              control: (provided, state) => ({
-                                ...provided,
-                                minHeight: "auto",
-                                height:
-                                  values?.territory?.length > 1
-                                    ? "auto"
-                                    : "30px",
-                                borderRadius: "4px",
-                                boxShadow: `${success500}!important`,
-                                ":hover": {
-                                  borderColor: `${gray600}!important`,
-                                },
-                                ":focus": {
-                                  borderColor: `${gray600}!important`,
-                                },
-                              }),
-                              valueContainer: (provided, state) => ({
-                                ...provided,
-                                height:
-                                  values?.territory?.length > 1
-                                    ? "auto"
-                                    : "30px",
-                                padding: "0 6px",
-                              }),
-                              multiValue: (styles) => {
-                                return {
-                                  ...styles,
-                                  position: "relative",
-                                  top: "-1px",
-                                };
-                              },
-                              multiValueLabel: (styles) => ({
-                                ...styles,
-                                padding: "0",
-                              }),
-                            }}
-                            name="designation"
-                            options={territoryDDL || []}
-                            value={values?.territory}
-                            onChange={(valueOption) => {
-                              setFieldValue("territory", valueOption);
-                            }}
-                            isMulti
-                            errors={errors}
-                            touched={touched}
-                            isDisabled={
-                              (+params?.id &&
-                                isSameMaketingAreaHandler(
-                                  rowDto,
-                                  singleData?.intTerritoryId,
-                                  "intTerritoryId"
-                                )) ||
-                              !values?.area
-                            }
-                          />
-                        </div>
-                      </div>
-                      {/* <div className="col-lg-3">
+                      <div className="col-lg-3">
                         <div className="input-field-main">
                           <label>Territory</label>
                           <FormikSelect
@@ -884,7 +771,7 @@ const SalaryGenerateCreate = () => {
                             }
                           />
                         </div>
-                      </div> */}
+                      </div>
                     </>
                   )}
 
@@ -1069,10 +956,7 @@ const SalaryGenerateCreate = () => {
                               values?.soleDepo?.value,
                               values?.region?.value,
                               values?.area?.value,
-                              values?.territory,
-                              pages,
-                              setPages,
-                              ""
+                              values?.territory?.value
                             );
                           }
                         }}
@@ -1194,15 +1078,6 @@ const SalaryGenerateCreate = () => {
                       setColumnsData={(newRow) => {
                         setRowDto(newRow);
                       }}
-                      handleTableChange={({ pagination, newRowDto }) =>
-                        handleTableChange(
-                          pagination,
-                          newRowDto,
-                          values?.search || ""
-                        )
-                      }
-                      pages={pages?.pageSize}
-                      pagination={pages}
                     />
                   </div>
                 </>
