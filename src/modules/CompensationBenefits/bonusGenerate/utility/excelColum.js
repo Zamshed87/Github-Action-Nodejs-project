@@ -9,7 +9,7 @@ export const allBonusExcelColumn = {
   intEmployeeId: "Employee Id",
   strDesignationName: "Designation",
   strEmploymentTypeName: "Employment Type",
-  strServiceLength: "Service Length",
+  strServiceLength: "Job Duration",
   numSalary: "Salary",
   numBasic: "Basic",
   numBonusAmount: "Bonus Amount",
