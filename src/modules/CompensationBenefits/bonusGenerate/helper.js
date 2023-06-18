@@ -240,7 +240,7 @@ const bonusExcelHeader = {
   employeeName: "Employee Name",
   strDesignationName: "Designation",
   dteJoiningDate: "Joining Date",
-  strServiceLength: "Service Length",
+  strServiceLength: "Job Duration",
   numSalary: "Gross Salary (TK)",
   numBonusPercentage: "Bonus Percentage",
   numBonusAmount: "Bonus Amount(TK)",
