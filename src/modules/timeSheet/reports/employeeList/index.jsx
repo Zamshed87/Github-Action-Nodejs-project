@@ -1,5 +1,5 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
-import { Popover, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,6 @@ import MasterFilter from "../../../../common/MasterFilter";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import FilterModal from "./components/FilterModal";
 import {
   columnForExcel,
   columnForMarketingForExcel,
@@ -19,18 +18,39 @@ import {
 import axios from "axios";
 import { gray900 } from "../../../../utility/customColor";
 // import { generateExcelAction } from "./excel/generateExcelList";
-import AntScrollTable from "../../../../common/AntScrollTable";
 import NoResult from "../../../../common/NoResult";
 import { todayDate } from "../../../../utility/todayDate";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import { paginationSize } from "../../../../common/AntTable";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
-import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import PeopleDeskTable from "../../../../common/peopleDeskTable";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "../../../../common/peopleDeskTable/helper";
+
+// const initData = {
+//   search: "",
+//   email: "",
+//   workplaceGroup: "",
+//   payrollGroup: "",
+//   supervisor: "",
+//   rosterGroup: "",
+//   department: "",
+//   designation: "",
+//   calendar: "",
+//   gender: "",
+//   religion: "",
+//   employmentType: "",
+//   joiningDate: "",
+//   confirmDate: "",
+//   birthCertificate: { value: 0, label: "All" },
+//   isNID: { value: 0, label: "All" },
+//   status: "",
+// };
 
 const initData = {
-  search: "",
-  email: "",
-  workplaceGroup: "",
+  searchString: "",
   payrollGroup: "",
   supervisor: "",
   rosterGroup: "",
@@ -39,18 +59,31 @@ const initData = {
   calendar: "",
   gender: "",
   religion: "",
-  employmentType: "",
-  joiningDate: "",
-  confirmDate: "",
-  birthCertificate: { value: 0, label: "All" },
-  isNID: { value: 0, label: "All" },
-  status: "",
+  employementType: "",
+  joiningFromDate: "",
+  joiningToDate: "",
+  contractualFromDate: "",
+  contractualToDate: "",
+  employmentStatus: "",
+};
+
+const initHeaderList = {
+  strDesignationList: [],
+  strDepartmentList: [],
+  strSupervisorNameList: [],
+  strEmploymentTypeList: [],
+  strLinemanagerList: [],
+  wingNameList: [],
+  soleDepoNameList: [],
+  regionNameList: [],
+  areaNameList: [],
+  territoryNameList: [],
 };
 
 export default function EmployeeList() {
   // redux
   const dispatch = useDispatch();
-  const { orgId, buId, buName, wgId } = useSelector(
+  const { buId, buName, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -60,69 +93,96 @@ export default function EmployeeList() {
   const [loading, setLoading] = useState(false);
   const [buDetails, setBuDetails] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [rowDto, getEmployeeReportLanding, loadingReport, setRowDto] =
-    useAxiosGet([]);
-  const [allData, setAllData] = useState([]);
   const [status, setStatus] = useState("");
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
   });
+  const [resEmpLanding, setEmpLanding] = useState([]);
+  const [headerList, setHeaderList] = useState({});
+  const [filterOrderList, setFilterOrderList] = useState([]);
+  const [initialHeaderListData, setInitialHeaderListData] = useState({});
+  const [landingLoading, setLandingLoading] = useState(false);
+  const [checkedHeaderList, setCheckedHeaderList] = useState({
+    ...initHeaderList,
+  });
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  // useEffect(() => {
+  //   // allEmployeeList(
+  //   //   { orgId, buId, wgId },
+  //   //   "",
+  //   //   setLoading,
+  //   //   setRowDto,
+  //   //   setAllData,
+  //   //   "",
+  //   //   pages,
+  //   //   "",
+  //   //   setPages
+  //   // );
+  //   getLandingData(pages, "", "true");
+
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [orgId, buId, wgId]);
 
   useEffect(() => {
-    // allEmployeeList(
-    //   { orgId, buId, wgId },
-    //   "",
-    //   setLoading,
-    //   setRowDto,
-    //   setAllData,
-    //   "",
-    //   pages,
-    //   "",
-    //   setPages
-    // );
-    getLandingData(pages, "", "true");
+    setHeaderList({});
+    setEmpLanding([]);
+    getData(pages);
     getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId, wgId]);
+  }, [buId, wgId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, [dispatch]);
 
-  const getLandingData = (pages, srcText, IsPaginated = "true", cb) => {
-    // allEmployeeList(
-    //   { orgId, buId, wgId },
-    //   "",
-    //   setLoading,
-    //   setRowDto,
-    //   setAllData,
-    //   "",
-    //   pages,
-    //   srcText,
-    //   setPages
-    // );
-    getEmployeeReportLanding(
-      `/Employee/EmployeeReportWithFilter?businessUnitId=${buId}&workplaceGroupId=${wgId}&IsPaginated=${IsPaginated}&pageSize=${pages?.pageSize}&pageNo=${pages?.current}&searchTxt=${srcText}`,
-      (res) => {
-        cb?.(res?.data);
-        setRowDto(res?.data);
-        setAllData(res?.data);
-        setPages?.({
-          ...pages,
-          current: pages.current,
-          pageSize: pages.pageSize,
-          total: res?.totalCount,
+  const getDataApiCall = async (
+    modifiedPayload,
+    pagination,
+    searchText,
+    currentFilterSelection = -1,
+    checkedHeaderList
+  ) => {
+    try {
+      const payload = {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: 0,
+        pageNo: pagination.current,
+        pageSize: pagination.pageSize,
+        isPaginated: true,
+        isHeaderNeed: true,
+        searchTxt: searchText || "",
+      };
+
+      const res = await axios.post(`/Employee/EmployeeReportWithFilter`, {
+        ...payload,
+        ...modifiedPayload,
+      });
+
+      if (res?.data?.data) {
+        setHeaderListDataDynamically({
+          currentFilterSelection,
+          checkedHeaderList,
+          headerListKey: "employeeHeader",
+          headerList,
+          setHeaderList,
+          response: res?.data,
+          filterOrderList,
+          setFilterOrderList,
+          initialHeaderListData,
+          setInitialHeaderListData,
+          setEmpLanding,
+          setPages,
         });
+
+        setLandingLoading(false);
       }
-    );
+    } catch (error) {
+      setLandingLoading(false);
+    }
   };
-  const saveHandler = (values) => {};
 
   // menu permission
   let permission = null;
@@ -132,19 +192,67 @@ export default function EmployeeList() {
     }
   });
 
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getLandingData(pagination, srcText);
-    }
-    if (pages?.current !== pagination?.current) {
-      return getLandingData(pagination, srcText);
-    }
+  const getData = async (
+    pagination,
+    IsForXl = "false",
+    searchText = "",
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList }
+  ) => {
+    setLandingLoading(true);
+
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+
+    getDataApiCall(
+      modifiedPayload,
+      pagination,
+      searchText,
+      currentFilterSelection,
+      checkedHeaderList
+    );
+  };
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      "false",
+      searchText,
+      -1,
+      filterOrderList,
+      checkedHeaderList
+    );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      "false",
+      searchText,
+      -1,
+      filterOrderList,
+      checkedHeaderList
+    );
   };
 
   return (
@@ -152,11 +260,7 @@ export default function EmployeeList() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
+        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
         {({
           handleSubmit,
@@ -169,7 +273,7 @@ export default function EmployeeList() {
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              {(loading || loadingReport) && <Loading />}
+              {(loading || landingLoading) && <Loading />}
               {permission?.isView ? (
                 <div className="table-card">
                   <div className="table-card-heading pb-2">
@@ -183,11 +287,31 @@ export default function EmployeeList() {
                             setLoading(true);
                             const excelLanding = async () => {
                               try {
-                                const res = await axios.get(
-                                  `/Employee/EmployeeReportWithFilter?businessUnitId=${buId}&workplaceGroupId=${wgId}&IsPaginated=false&pageSize=${pages?.pageSize}&pageNo=${pages?.current}&searchTxt=`
+                                const res = await axios.post(
+                                  `/Employee/EmployeeReportWithFilter`,
+                                  {
+                                    businessUnitId: buId,
+                                    workplaceGroupId: wgId,
+                                    workplaceId: 0,
+                                    pageNo: 0,
+                                    pageSize: 0,
+                                    isPaginated: false,
+                                    isHeaderNeed: false,
+                                    searchTxt: "",
+                                    strDesignationList: [],
+                                    strDepartmentList: [],
+                                    strSupervisorNameList: [],
+                                    strLinemanagerList: [],
+                                    strEmploymentTypeList: [],
+                                    wingNameList: [],
+                                    soleDepoNameList: [],
+                                    regionNameList: [],
+                                    areaNameList: [],
+                                    territoryNameList: [],
+                                  }
                                 );
-                                if (res?.data) {
-                                  const newData = res?.data?.map(
+                                if (res?.data?.data) {
+                                  const newData = res?.data?.data?.map(
                                     (item, index) => {
                                       return {
                                         ...item,
@@ -267,7 +391,7 @@ export default function EmployeeList() {
                             };
                             excelLanding();
                           }}
-                          disabled={rowDto?.data?.length <= 0}
+                          disabled={resEmpLanding?.data?.length <= 0}
                         >
                           <SaveAlt
                             sx={{
@@ -278,10 +402,10 @@ export default function EmployeeList() {
                         </button>
                       </Tooltip>
                       <div className="ml-2">
-                        {rowDto?.length > 0 ? (
+                        {resEmpLanding?.length > 0 ? (
                           <>
                             <h6 className="count">
-                              Total {rowDto[0]?.totalCount} employees
+                              Total {pages?.total} employees
                             </h6>
                           </>
                         ) : (
@@ -292,7 +416,7 @@ export default function EmployeeList() {
                       </div>
                     </div>
                     <ul className="d-flex flex-wrap">
-                      {(isFilter || status || values?.search) && (
+                      {(isFilter || status || values?.searchString) && (
                         <li>
                           <ResetButton
                             classes="btn-filter-reset"
@@ -307,74 +431,122 @@ export default function EmployeeList() {
                             }
                             onClick={() => {
                               setIsFilter(false);
-                              getLandingData(
-                                { current: 1, pageSize: paginationSize },
-                                ""
-                              );
                               setStatus("");
-                              setFieldValue("search", "");
+                              setFieldValue("searchString", "");
+                              getData(
+                                { current: 1, pageSize: paginationSize },
+                                "false",
+                                "",
+                                -1,
+                                filterOrderList,
+                                checkedHeaderList
+                              );
                             }}
                           />
                         </li>
                       )}
                       <li>
                         <MasterFilter
+                          inputWidth="250px"
+                          width="250px"
                           isHiddenFilter
-                          inputWidth="200px"
-                          width="200px"
-                          value={values?.search}
+                          value={values?.searchString}
                           setValue={(value) => {
-                            setFieldValue("search", value);
+                            setFieldValue("searchString", value);
                             if (value) {
-                              getLandingData(
+                              getData(
                                 { current: 1, pageSize: paginationSize },
-                                value
+                                "false",
+                                value,
+                                -1,
+                                filterOrderList,
+                                checkedHeaderList
                               );
                             } else {
-                              getLandingData(
+                              getData(
                                 { current: 1, pageSize: paginationSize },
-                                ""
+                                "false",
+                                "",
+                                -1,
+                                filterOrderList,
+                                checkedHeaderList
                               );
                             }
                           }}
                           cancelHandler={() => {
-                            setFieldValue("search", "");
-                            getLandingData(
+                            setFieldValue("searchString", "");
+                            getData(
                               { current: 1, pageSize: paginationSize },
-                              ""
+                              "false",
+                              "",
+                              -1,
+                              filterOrderList,
+                              checkedHeaderList
                             );
                           }}
-                          handleClick={(e) => setAnchorEl(e.currentTarget)}
                         />
                       </li>
                     </ul>
                   </div>
                   <div className="table-card-body">
-                    {rowDto?.length > 0 ? (
-                      <div className="table-card-styled employee-table-card table-responsive ant-scrolling-Table">
-                        <AntScrollTable
-                          data={rowDto}
-                          columnsData={empReportListColumns(pages, wgId)}
-                          handleTableChange={({ pagination, newRowDto }) =>
-                            handleTableChange(
-                              pagination,
-                              newRowDto,
-                              values?.searchString || ""
-                            )
-                          }
-                          pages={pages?.pageSize}
-                          pagination={pages}
-                        />
-                      </div>
+                    {resEmpLanding.length > 0 ? (
+                      <PeopleDeskTable
+                        columnData={empReportListColumns(
+                          pages?.current,
+                          pages?.pageSize,
+                          wgId,
+                          headerList
+                        )}
+                        pages={pages}
+                        rowDto={resEmpLanding}
+                        setRowDto={setEmpLanding}
+                        checkedHeaderList={checkedHeaderList}
+                        setCheckedHeaderList={setCheckedHeaderList}
+                        handleChangePage={(e, newPage) =>
+                          handleChangePage(e, newPage, values?.searchString)
+                        }
+                        handleChangeRowsPerPage={(e) =>
+                          handleChangeRowsPerPage(e, values?.searchString)
+                        }
+                        filterOrderList={filterOrderList}
+                        setFilterOrderList={setFilterOrderList}
+                        uniqueKey="strEmployeeCode"
+                        getFilteredData={(
+                          currentFilterSelection,
+                          updatedFilterData,
+                          updatedCheckedHeaderData
+                        ) => {
+                          getData(
+                            {
+                              current: 1,
+                              pageSize: paginationSize,
+                              total: 0,
+                            },
+                            "false",
+                            "",
+                            currentFilterSelection,
+                            updatedFilterData,
+                            updatedCheckedHeaderData
+                          );
+                        }}
+                        isCheckBox={false}
+                        isScrollAble={true}
+                      />
                     ) : (
-                      !loading && <NoResult title="No Result Found" para="" />
+                      <>
+                        {!loading && (
+                          <div className="col-12">
+                            <NoResult title={"No Data Found"} para={""} />
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
               ) : (
                 <NotPermittedPage />
               )}
-              <Popover
+              {/* <Popover
                 sx={{
                   "& .MuiPaper-root": {
                     width: "675px",
@@ -408,7 +580,7 @@ export default function EmployeeList() {
                     initData,
                   }}
                 />
-              </Popover>
+              </Popover> */}
             </Form>
           </>
         )}
