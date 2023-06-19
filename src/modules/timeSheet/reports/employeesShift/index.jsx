@@ -1,164 +1,45 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
+import { SaveAlt } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { SaveAlt } from "@mui/icons-material";
-import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import AntTable from "../../../../common/AntTable";
 import { paginationSize } from "../../../../common/AntTable";
-import { getSearchEmployeeList } from "../../../../common/api";
+import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import DefaultInput from "../../../../common/DefaultInput";
-import Loading from "../../../../common/loading/Loading";
 import NoResult from "../../../../common/NoResult";
-import PrimaryButton from "../../../../common/PrimaryButton";
+import { getSearchEmployeeList } from "../../../../common/api";
+import Loading from "../../../../common/loading/Loading";
+import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import { gray600 } from "../../../../utility/customColor";
-import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import {
-  monthFirstDate,
-  monthLastDate,
+  monthFirstDate
 } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
 import { getBuDetails } from "../helper";
 import { generateExcelAction } from "./excel/excelConvert";
 import {
   employeesShiftInformationTableColumn,
-  onGetEmployeeInfoForEmployeesShift,
+  getEmployeeInfo,
   onGetEmployeeShiftInformation,
 } from "./helper";
-import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+
 const initialValues = {
   employee: "",
   fromDate: monthFirstDate?.(),
   toDate: todayDate?.(),
 };
 const EmployeesShift = () => {
+  // redux
   const { intBusinessUnitId, buName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const {
     permissionList,
-    profileData: { orgId, buId, employeeId, wgId },
+    profileData: { orgId, buId, employeeId, wgId, strDisplayName },
     keywords: { supervisor },
   } = useSelector((state) => state?.auth, shallowEqual);
-  const [buDetails, setBuDetails] = useState({});
-  const [loading, setLoading] = useState({});
-
-  const [
-    employeeInformation,
-    getEmployeeInformation,
-    loadingOnGetEmployeeInformation,
-    setEmployeeInformation,
-  ] = useAxiosGet();
-
-  const [
-    employeesShiftInformation,
-    getEmployeesShiftImpormation,
-    loadingOnGetEmployeeShift,
-    setEmployeesShiftInfo,
-  ] = useAxiosGet();
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
-  });
-  // const [page, setPage] = useState(1);
-  // const [paginationSize, setPaginationSize] = useState(15);
-
-  useEffect(() => {
-    getBuDetails(intBusinessUnitId, setBuDetails, setLoading);
-  }, [intBusinessUnitId]);
-
-  useEffect(() => {
-    if (employeeId) {
-      onGetEmployeeInfoForEmployeesShift(
-        getEmployeeInformation,
-        orgId,
-        buId,
-        employeeId,
-        (data) => {
-          setValues((prev) => ({
-            ...prev,
-            employee: {
-              ...data,
-              label: data?.EmployeeName,
-              value: data?.EmployeeId,
-            },
-            fromDate: monthFirstDate(),
-            toDate: monthLastDate(),
-          }));
-          onGetEmployeeShiftInformation(
-            getEmployeesShiftImpormation,
-            orgId,
-            employeeId,
-            data?.WorkplaceGroupId,
-            data?.WorkplaceId,
-            monthFirstDate?.(),
-            monthLastDate?.(),
-            pages,
-            setPages
-          );
-        }
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    if (employeesShiftInformation.length > 0) {
-      setPages((prev) => {
-        return {
-          ...prev,
-          current: pages?.current,
-          pageSize: pages?.pageSize,
-          total: employeesShiftInformation?.[0]?.totalCount,
-        };
-      });
-    }
-  }, [employeesShiftInformation]);
-  // page
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    setPages((prev) => ({
-      ...prev,
-      current: pagination?.current,
-      pageSize: pagination?.pageSize,
-      total: pagination?.total,
-    }));
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return onGetEmployeeShiftInformation(
-        getEmployeesShiftImpormation,
-        orgId,
-        employeeId,
-        employeeInformation?.[0]?.WorkplaceGroupId,
-        employeeInformation?.[0]?.WorkplaceId,
-        values?.fromDate,
-        values?.toDate,
-        pagination,
-        setPages
-      );
-    }
-
-    if (pages?.current !== pagination?.current) {
-      return onGetEmployeeShiftInformation(
-        getEmployeesShiftImpormation,
-        orgId,
-        employeeId,
-        employeeInformation?.[0]?.WorkplaceGroupId,
-        employeeInformation?.[0]?.WorkplaceId,
-        values?.fromDate,
-        values?.toDate,
-        pagination,
-        setPages
-      );
-    }
-  };
 
   let permission = null;
   permissionList.forEach((item) => {
@@ -166,29 +47,135 @@ const EmployeesShift = () => {
       permission = item;
     }
   });
-  // formik
-  const { values, handleSubmit, setFieldValue, setValues } = useFormik({
-    initialValues,
-    onSubmit: (formValues) => {
-      onGetEmployeeShiftInformation(
-        getEmployeesShiftImpormation,
-        orgId,
-        formValues?.employee?.value,
-        employeeInformation?.[0]?.WorkplaceGroupId,
-        employeeInformation?.[0]?.WorkplaceId,
-        formValues?.fromDate,
-        formValues?.toDate,
-        pages,
-        setPages
-      );
-    },
+
+  // state
+  const [buDetails, setBuDetails] = useState({});
+  const [employeeInformation, setEmployeeInformation] = useState([]);
+  const [loading, setLoading] = useState({});
+
+  // landing data
+  const [rowDto, setRowDto] = useState([]);
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
   });
+
+  const getData = (pagination, searchText) => {
+
+    onGetEmployeeShiftInformation(
+      buId,
+      wgId,
+      values?.employee?.value,
+      values?.fromDate,
+      values?.toDate,
+      setRowDto,
+      setLoading,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages,
+      true
+    );
+  };
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      }
+    );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      }
+    );
+  };
+
+  const saveHandler = (values) => {
+    onGetEmployeeShiftInformation(
+      buId,
+      wgId,
+      values?.employee?.value,
+      values?.fromDate,
+      values?.toDate,
+      setRowDto,
+      setLoading,
+      1,
+      paginationSize,
+      setPages,
+      true
+    );
+    getEmployeeInfo(
+      orgId,
+      buId,
+      values?.employee?.value,
+      setEmployeeInformation,
+      setLoading
+    );
+  };
+
+  // formik
+  const { values, handleSubmit, setFieldValue } = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      ...initialValues,
+      employee: {
+        value: employeeId,
+        label: strDisplayName
+      },
+    },
+    onSubmit: (values) => saveHandler(values),
+  });
+
+  // initial
+  useEffect(() => {
+    onGetEmployeeShiftInformation(
+      buId,
+      wgId,
+      employeeId,
+      values?.fromDate,
+      values?.toDate,
+      setRowDto,
+      setLoading,
+      1,
+      paginationSize,
+      setPages,
+      true
+    );
+  }, [buId, wgId, employeeId, values]);
+
+  useEffect(() => {
+    getEmployeeInfo(
+      orgId,
+      buId,
+      employeeId,
+      setEmployeeInformation,
+      setLoading
+    );
+  }, [orgId, buId, employeeId]);
+
+  useEffect(() => {
+    getBuDetails(intBusinessUnitId, setBuDetails, setLoading);
+  }, [intBusinessUnitId]);
 
   return (
     <>
-      {(loadingOnGetEmployeeInformation || loadingOnGetEmployeeShift) && (
-        <Loading />
-      )}
+      {loading && <Loading />}
+
       {permission?.isView && (
         <div className="table-card">
           <div className="table-card-heading">
@@ -199,8 +186,8 @@ const EmployeesShift = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                     if (
-                      employeesShiftInformation?.length <= 0 ||
-                      employeesShiftInformation?.length === undefined
+                      rowDto?.length <= 0 ||
+                      rowDto?.length === undefined
                     ) {
                       return toast.warning("Data is empty !!!!", {
                         toastId: 1,
@@ -212,7 +199,7 @@ const EmployeesShift = () => {
                         values?.fromDate,
                         values?.toDate,
                         buName,
-                        employeesShiftInformation,
+                        rowDto,
                         buDetails?.strBusinessUnitAddress,
                         employeeInformation
                       );
@@ -226,27 +213,30 @@ const EmployeesShift = () => {
               </Tooltip>
             </div>
           </div>
-          <div className="card-style pb-0 mb-2 mt-4">
+          <div className="card-style pb-0s mb-2 mt-4">
             <div className="row">
               <div className="col-lg-3">
                 <div className="input-field-main">
-                  <label>From Date</label>
+                  <label>Employee</label>
                   <AsyncFormikSelect
                     selectedValue={values?.employee}
                     isSearchIcon={true}
                     handleChange={(valueOption) => {
                       setFieldValue("employee", valueOption);
-                      setEmployeesShiftInfo?.([]);
                       if (valueOption?.value) {
-                        onGetEmployeeInfoForEmployeesShift(
-                          getEmployeeInformation,
-                          orgId,
+                        onGetEmployeeShiftInformation(
                           buId,
-                          valueOption?.value,
-                          null
+                          wgId,
+                          valueOption?.value || "",
+                          values?.fromDate,
+                          values?.toDate,
+                          setRowDto,
+                          setLoading,
+                          1,
+                          paginationSize,
+                          setPages,
+                          true
                         );
-                      } else {
-                        setEmployeeInformation?.([]);
                       }
                     }}
                     placeholder="Search (min 3 letter)"
@@ -381,27 +371,26 @@ const EmployeesShift = () => {
               </div>
             </div>
           )}
-          {employeesShiftInformation?.length > 0 ? (
-            <div className="table-card-body mt-2">
-              <div className="table-card-styled tableOne">
-                <AntTable
-                  columnsData={employeesShiftInformationTableColumn?.(
-                    pages?.current,
-                    pages?.pageSize
-                  )}
-                  data={employeesShiftInformation}
-                  pages={pages?.pageSize}
-                  pagination={pages}
-                  handleTableChange={({ pagination, newRowDto }) =>
-                    handleTableChange(
-                      pagination,
-                      newRowDto,
-                      values?.search || ""
-                    )
-                  }
-                />
-              </div>
-            </div>
+          {rowDto?.length > 0 ? (
+            <PeopleDeskTable
+              customClass="iouManagementTable"
+              columnData={employeesShiftInformationTableColumn(
+                pages?.current,
+                pages?.pageSize
+              )}
+              pages={pages}
+              rowDto={rowDto}
+              setRowDto={setRowDto}
+              handleChangePage={(e, newPage) =>
+                handleChangePage(e, newPage, values?.search)
+              }
+              handleChangeRowsPerPage={(e) =>
+                handleChangeRowsPerPage(e, values?.search)
+              }
+              uniqueKey="strEmployeeCode"
+              isCheckBox={false}
+              isScrollAble={false}
+            />
           ) : (
             <>
               <NoResult />
