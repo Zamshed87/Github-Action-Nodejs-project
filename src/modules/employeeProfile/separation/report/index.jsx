@@ -3,26 +3,25 @@ import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import AntScrollTable from "../../../../common/AntScrollTable";
+import { paginationSize } from "../../../../common/AntTable";
 import FormikInput from "../../../../common/FormikInput";
-import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray600 } from "../../../../utility/customColor";
 import { getDateOfYear } from "../../../../utility/dateFormatter";
 import { getPDFAction } from "../../../../utility/downloadFile";
 import {
   getBuDetails,
-  getEmployeeSeparationLanding,
-  searchData,
+  getEmployeeSeparationLanding
 } from "../helper";
 import FilterModal from "./component/FilterModal";
 import { generateExcelAction } from "./excel/excelConvert";
 import { empSeparationCol } from "./helper";
-import { paginationSize } from "../../../../common/AntTable";
-import NoResult from "../../../../common/NoResult";
 
 const initData = {
   search: "",
@@ -39,29 +38,30 @@ const initData = {
 };
 
 const SeparationReport = () => {
+  // hook
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const { buId, orgId, wgId } = useSelector(
+
+  // redux
+  const { buId, wgId, buName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const saveHandler = (values) => {};
-  const [loading, setLoading] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [rowDto, setRowDto] = useState([]);
-  const [buDetails, setBuDetails] = useState({});
-  const [allData, setAllData] = useState([]);
-  const [isFilter, setIsFilter] = useState(false);
-  const [tableRowDto, setTableRowDto] = useState([]);
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
+  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 96) {
+      permission = item;
+    }
   });
+
+  // state
+  const [loading, setLoading] = useState(false);
+  const [isFilter, setIsFilter] = useState(false);
+  const [buDetails, setBuDetails] = useState({});
+
+  // modal
+  const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -71,74 +71,83 @@ const SeparationReport = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const handleTableChange = (
-    fromDate,
-    toDate,
-    pagination,
-    newRowDto,
-    srcText
-  ) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getData(fromDate, toDate, srcText, pagination);
-    }
-    if (pages?.current !== pagination?.current) {
-      return getData(fromDate, toDate, srcText, pagination);
-    }
+  // landing data
+  const [rowDto, setRowDto] = useState([]);
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
+
+  const getData = (pagination, searchText) => {
+    getEmployeeSeparationLanding(
+      buId,
+      wgId,
+      getDateOfYear("first"),
+      getDateOfYear("last"),
+      "",
+      false,
+      setRowDto,
+      setLoading,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages
+    );
   };
 
-  const getData = (
-    fromDate,
-    toDate,
-    srcText = "",
-    pages = { current: 1, pageSize: paginationSize }
-  ) => {
-    getEmployeeSeparationLanding({
-      status: null,
-      depId: null,
-      desId: null,
-      supId: null,
-      emTypId: null,
-      empId: null,
-      workId: wgId,
-      buId,
-      orgId,
-      setter: setRowDto,
-      setLoading,
-      separationTypeId: null,
-      setAllData,
-      tableName: "EmployeeSeparationListForReport",
-      setTableRowDto,
-      fromDate: fromDate || getDateOfYear("first"),
-      toDate: toDate || getDateOfYear("last"),
-      searchTxt: srcText,
-      pages,
-      setPages,
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
     });
-    getBuDetails(buId, setBuDetails, setLoading);
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      }
+    );
   };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      }
+    );
+  };
+
+  // initial
 
   useEffect(() => {
-    getData();
+    dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-  const { buName } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-  let permission = null;
-  permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 96) {
-      permission = item;
-    }
-  });
+  useEffect(() => {
+    getEmployeeSeparationLanding(
+      buId,
+      wgId,
+      getDateOfYear("first"),
+      getDateOfYear("last"),
+      "",
+      false,
+      setRowDto,
+      setLoading,
+      1,
+      paginationSize,
+      setPages
+    );
+  }, [buId, wgId]);
+
+  useEffect(() => {
+    getBuDetails(buId, setBuDetails, setLoading);
+  }, [buId]);
 
   return (
     <>
@@ -146,9 +155,7 @@ const SeparationReport = () => {
         enableReinitialize={true}
         initialValues={initData}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+          resetForm(initData);
         }}
       >
         {({
@@ -179,12 +186,12 @@ const SeparationReport = () => {
                                 "",
                                 "",
                                 buName,
-                                tableRowDto?.data,
+                                rowDto,
                                 buDetails?.strBusinessUnitAddress
                               );
                             }}
                             style={{ cursor: "pointer" }}
-                            disabled={tableRowDto?.data?.length <= 0}
+                            disabled={rowDto?.data?.length <= 0}
                           >
                             <SaveAlt
                               sx={{ color: gray600, fontSize: "16px" }}
@@ -205,7 +212,19 @@ const SeparationReport = () => {
                                 }
                                 onClick={() => {
                                   setIsFilter(false);
-                                  getData();
+                                  getEmployeeSeparationLanding(
+                                    buId,
+                                    wgId,
+                                    getDateOfYear("first"),
+                                    getDateOfYear("last"),
+                                    "",
+                                    false,
+                                    setRowDto,
+                                    setLoading,
+                                    1,
+                                    paginationSize,
+                                    setPages
+                                  );
                                 }}
                               />
                             </li>
@@ -219,16 +238,35 @@ const SeparationReport = () => {
                               styles={{ marginRight: "0px !important" }}
                               setValue={(value) => {
                                 setFieldValue("search", value);
-                                searchData(
-                                  value,
-                                  allData,
+                                getEmployeeSeparationLanding(
+                                  buId,
+                                  wgId,
+                                  values?.filterFromDate,
+                                  values?.filterToDate,
+                                  value || "",
+                                  false,
                                   setRowDto,
-                                  setLoading
+                                  setLoading,
+                                  1,
+                                  paginationSize,
+                                  setPages
                                 );
                               }}
                               cancelHandler={() => {
                                 setFieldValue("search", "");
-                                getData();
+                                getEmployeeSeparationLanding(
+                                  buId,
+                                  wgId,
+                                  values?.filterFromDate,
+                                  values?.filterToDate,
+                                  "",
+                                  false,
+                                  setRowDto,
+                                  setLoading,
+                                  1,
+                                  paginationSize,
+                                  setPages
+                                );
                               }}
                               handleClick={handleClick}
                             />
@@ -292,11 +330,18 @@ const SeparationReport = () => {
                               style={{ marginTop: "21px" }}
                               className="btn btn-green"
                               onClick={() => {
-                                getData(
+                                getEmployeeSeparationLanding(
+                                  buId,
+                                  wgId,
                                   values?.filterFromDate,
                                   values?.filterToDate,
-                                  values?.search,
-                                  pages
+                                  "",
+                                  false,
+                                  setRowDto,
+                                  setLoading,
+                                  1,
+                                  paginationSize,
+                                  setPages
                                 );
                               }}
                             >
@@ -305,40 +350,38 @@ const SeparationReport = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="table-card-styled employee-table-card table-responsive ant-scrolling-Table">
-                        {rowDto?.length > 0 ? (
-                          <AntScrollTable
-                            data={rowDto}
-                            columnsData={empSeparationCol(pages)}
-                            onRowClick={(data) => {
-                              getPDFAction(
-                                `/PdfAndExcelReport/SeparationReportByEmployee?EmployeeId=${data?.EmployeeId}`,
-                                setLoading
-                              );
-                            }}
-                            setColumnsData={(newRow) =>
-                              setTableRowDto((prev) => ({
-                                ...prev,
-                                data: newRow,
-                                totalCount: newRow?.length,
-                              }))
-                            }
-                            handleTableChange={({ pagination, newRowDto }) =>
-                              handleTableChange(
-                                values.filterFromDate,
-                                values.filterToDate,
-                                pagination,
-                                newRowDto,
-                                values?.search || ""
-                              )
-                            }
-                            pages={pages?.pageSize}
-                            pagination={pages}
-                          />
-                        ) : (
-                          !loading && <NoResult />
-                        )}
-                      </div>
+
+                      {rowDto?.length > 0 ? (
+                        <PeopleDeskTable
+                          customClass="iouManagementTable"
+                          columnData={empSeparationCol(
+                            pages?.current,
+                            pages?.pageSize
+                          )}
+                          pages={pages}
+                          rowDto={rowDto}
+                          setRowDto={setRowDto}
+                          handleChangePage={(e, newPage) =>
+                            handleChangePage(e, newPage, values?.search)
+                          }
+                          handleChangeRowsPerPage={(e) =>
+                            handleChangeRowsPerPage(e, values?.search)
+                          }
+                          onRowClick={(data) => {
+                            getPDFAction(
+                              `/PdfAndExcelReport/SeparationReportByEmployee?EmployeeId=${data?.intEmployeeId}`,
+                              setLoading
+                            );
+                          }}
+                          uniqueKey="strEmployeeCode"
+                          isCheckBox={false}
+                          isScrollAble={true}
+                        />
+                      ) : (
+                        <>
+                          <NoResult />
+                        </>
+                      )}
                     </div>
                   </div>
                 ) : (
