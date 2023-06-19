@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Clear,
   SaveAlt,
@@ -10,19 +9,17 @@ import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import AntTable from "../../../common/AntTable";
-import { PeopleDeskSaasDDL } from "../../../common/api";
+import { paginationSize } from "../../../common/AntTable";
 import FormikInput from "../../../common/FormikInput";
 import FormikSelect from "../../../common/FormikSelect";
 import NoResult from "../../../common/NoResult";
-import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../common/ResetButton";
+import { PeopleDeskSaasDDL } from "../../../common/api";
+import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
+import PeopleDeskTable from "../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray600, gray900 } from "../../../utility/customColor";
-import { paginationSize } from "../../../common/AntTable";
-
 import {
-
   dateFormatterForInput,
 } from "../../../utility/dateFormatter";
 import { customStyles } from "../../../utility/selectCustomStyle";
@@ -48,64 +45,96 @@ const initData = {
 };
 
 export default function ContactClosingReport() {
+  // hook
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
-  }, []);
 
-  // eslint-disable-next-line no-unused-vars
-  const { orgId, buId, buName, wgId } = useSelector(
+  // redux
+  const { buId, buName, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const [loading, setLoading] = useState(false);
-  const [rowDto, setRowDto] = useState([]);
-  const [buDetails, setBuDetails] = useState({});
-  const [allData, setAllData] = useState([]);
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
+  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 91) {
+      permission = item;
+    }
   });
-  // sorting
+
+  // state
+  const [loading, setLoading] = useState(false);
+
+  const [buDetails, setBuDetails] = useState({});
   const [designationDDL, setDesignationDDL] = useState([]);
-
-  const getData = (pages, srcText) => {
-    getContractClosingInfo(
-      "ContractualClosing",
-      orgId,
-      buId,
-      "",
-      setRowDto,
-      setAllData,
-      setLoading,
-      "",
-      pages,
-      srcText,
-      setPages,
-      wgId
-    );
-  };
-
-  useEffect(() => {
-    getData(pages, "");
-  }, []);
-
-  useEffect(() => {
-    getBuDetails(buId, setBuDetails, setLoading);
-  }, []);
 
   //Modal
   const [singleData, setSingleData] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  // const [page, setPage] = useState(1);
-  // const [paginationSize, setPaginationSize] = useState(15);
-
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
+  // landing data
+  const [rowDto, setRowDto] = useState([]);
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
+
+  const getData = (pagination, searchText) => {
+    getContractClosingInfo(
+      buId,
+      wgId,
+      setRowDto,
+      setLoading,
+      "",
+      pagination?.current,
+      pagination?.pageSize,
+      setPages,
+      true
+    );
+  };
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      }
+    );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      }
+    );
+  };
+
+  // initial
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getBuDetails(buId, setBuDetails, setLoading);
+  }, [buId]);
 
   useEffect(() => {
     PeopleDeskSaasDDL(
@@ -118,56 +147,24 @@ export default function ContactClosingReport() {
     );
   }, [buId, wgId]);
 
-  // search
-  // const filterData = (keywords, allData, setRowDto) => {
-  //   try {
-  //     const regex = new RegExp(keywords?.toLowerCase());
-  //     let newDta = allData?.filter(
-  //       (item) =>
-  //         regex.test(item?.EmployeeName?.toLowerCase()) ||
-  //         regex.test(item?.DepartmentName?.toLowerCase()) ||
-  //         regex.test(dateFormatter(item?.dteJoiningDate)?.toLowerCase()) ||
-  //         regex.test(dateFormatter(item?.dteContactFromDate)?.toLowerCase()) ||
-  //         regex.test(dateFormatter(item?.dteContactToDate)?.toLowerCase())
-  //     );
-  //     setRowDto(newDta);
-  //   } catch {
-  //     setRowDto([]);
-  //   }
-  // };
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getData(pagination, srcText);
-    }
-    if (pages?.current !== pagination?.current) {
-      return getData(pagination, srcText);
-    }
-  };
-
-  const saveHandler = (values) => { };
-
   const confirmation = (values) => {
     extendContractEmpAction(values, singleData, setLoading, () => {
       setSingleData(false);
       setIsEdit(false);
       setAnchorEl(null);
-      getData(pages, "");
+      getContractClosingInfo(
+        buId,
+        wgId,
+        setRowDto,
+        setLoading,
+        "",
+        1,
+        paginationSize,
+        setPages,
+        true
+      );
     });
   };
-
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-  let permission = null;
-  permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 91) {
-      permission = item;
-    }
-  });
 
   // excel column set up
   const excelColumnFunc = () => {
@@ -197,9 +194,7 @@ export default function ContactClosingReport() {
             : "",
         }}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+          resetForm(initData);
         }}
       >
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
@@ -276,8 +271,18 @@ export default function ContactClosingReport() {
                                   />
                                 }
                                 onClick={() => {
-                                  setRowDto(allData);
                                   setFieldValue("search", "");
+                                  getContractClosingInfo(
+                                    buId,
+                                    wgId,
+                                    setRowDto,
+                                    setLoading,
+                                    "",
+                                    1,
+                                    paginationSize,
+                                    setPages,
+                                    true
+                                  );
                                 }}
                               />
                             </li>
@@ -294,17 +299,30 @@ export default function ContactClosingReport() {
                                 <SearchOutlined sx={{ color: "#323232" }} />
                               }
                               onChange={(e) => {
-                                // filterData(e.target.value, allData, setRowDto);
                                 setFieldValue("search", e.target.value);
                                 if (e.target.value) {
-                                  getData(
-                                    { current: 1, pageSize: paginationSize },
-                                    e.target.value
+                                  getContractClosingInfo(
+                                    buId,
+                                    wgId,
+                                    setRowDto,
+                                    setLoading,
+                                    e.target.value || "",
+                                    1,
+                                    paginationSize,
+                                    setPages,
+                                    true
                                   );
                                 } else {
-                                  getData(
-                                    { current: 1, pageSize: paginationSize },
-                                    ""
+                                  getContractClosingInfo(
+                                    buId,
+                                    wgId,
+                                    setRowDto,
+                                    setLoading,
+                                    "",
+                                    1,
+                                    paginationSize,
+                                    setPages,
+                                    true
                                   );
                                 }
                               }}
@@ -315,36 +333,39 @@ export default function ContactClosingReport() {
                         </ul>
                       </div>
                     </div>
-                    <div className="table-card-body">
-                      {rowDto?.length > 0 ? (
-                        <div className="table-card-styled employee-table-card tableOne  table-responsive ">
-                          <AntTable
-                            data={rowDto?.length > 0 ? rowDto : []}
-                            columnsData={contactClosingColumns(
-                              permission,
-                              setAnchorEl,
-                              setSingleData,
-                              pages.current,
-                              pages.paginationSize
-                            )}
-                            pages={pages?.pageSize}
-                            pagination={pages}
-                            handleTableChange={({ pagination, newRowDto }) =>
-                              handleTableChange(
-                                pagination,
-                                newRowDto,
-                                values?.search || ""
-                              )
-                            }
-                          // setPage={setPage}
-                          // setPaginationSize={setPaginationSize}
-                          />
-                        </div>
-                      ) : (
-                        <NoResult />
-                      )}
-                    </div>
+
+                    {rowDto?.length > 0 ? (
+                      <>
+                        <PeopleDeskTable
+                          customClass="iouManagementTable"
+                          columnData={contactClosingColumns(
+                            pages?.current,
+                            pages?.pageSize,
+                            permission,
+                            setAnchorEl,
+                            setSingleData,
+                          )}
+                          pages={pages}
+                          rowDto={rowDto}
+                          setRowDto={setRowDto}
+                          handleChangePage={(e, newPage) =>
+                            handleChangePage(e, newPage, values?.search)
+                          }
+                          handleChangeRowsPerPage={(e) =>
+                            handleChangeRowsPerPage(e, values?.search)
+                          }
+                          uniqueKey="strEmployeeCode"
+                          isCheckBox={false}
+                          isScrollAble={false}
+                        />
+                      </>
+                    ) : (
+                      <>{!loading && <NoResult title="No Result Found" para="" />}</>
+                    )}
+
                   </div>
+
+                  {/* popover */}
                   <Popover
                     sx={{
                       "& .MuiPaper-root": {
@@ -373,7 +394,17 @@ export default function ContactClosingReport() {
                         <IconButton
                           onClick={() => {
                             setAnchorEl(null);
-                            setRowDto(allData);
+                            getContractClosingInfo(
+                              buId,
+                              wgId,
+                              setRowDto,
+                              setLoading,
+                              "",
+                              1,
+                              paginationSize,
+                              setPages,
+                              true
+                            );
                             setSingleData(false);
                             setIsEdit(false);
                             setFieldValue("contractFromDate", "");
@@ -464,7 +495,17 @@ export default function ContactClosingReport() {
                             onClick={(e) => {
                               e.stopPropagation();
                               setAnchorEl(null);
-                              setRowDto(allData);
+                              getContractClosingInfo(
+                                buId,
+                                wgId,
+                                setRowDto,
+                                setLoading,
+                                "",
+                                1,
+                                paginationSize,
+                                setPages,
+                                true
+                              );
                               setSingleData(false);
                               setIsEdit(false);
                               setFieldValue("contractFromDate", "");
@@ -490,6 +531,7 @@ export default function ContactClosingReport() {
                       </div>
                     </div>
                   </Popover>
+
                 </>
               ) : (
                 <NotPermittedPage />
