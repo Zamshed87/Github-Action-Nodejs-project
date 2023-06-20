@@ -42,7 +42,7 @@ const Checkbox = ({
       style={{
         marginBottom: "4px",
         display: "flex",
-        alignItems: "center",
+        alignItems: "start",
         justifyContent: "flex-start",
         backgroundColor: checked ? success25 : "",
         padding: "4px 10px 4px 18px",
@@ -81,11 +81,13 @@ const Checkbox = ({
       }}
     >
       {!checked ? (
-        <RiCheckboxBlankLine />
+        <RiCheckboxBlankLine style={{ flexShrink: 0, marginTop: "2px" }} />
       ) : (
-        <RiCheckboxFill style={{ color: greenColor }} />
+        <RiCheckboxFill
+          style={{ color: greenColor, flexShrink: 0, marginTop: "2px" }}
+        />
       )}
-      <p style={{ paddingLeft: "8px" }}>{item.label}</p>
+      <p style={{ paddingLeft: "8px", textAlign: "left" }}>{item.label}</p>
     </button>
   );
 };
