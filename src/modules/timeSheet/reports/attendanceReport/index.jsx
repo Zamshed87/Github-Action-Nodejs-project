@@ -1,35 +1,30 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip, Typography } from "@mui/material";
+import axios from "axios";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import AvatarComponent from "../../../../common/AvatarComponent";
 import FormikInput from "../../../../common/FormikInput";
+import PrimaryButton from "../../../../common/PrimaryButton";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import PrimaryButton from "../../../../common/PrimaryButton";
-import ScrollableTable from "../../../../common/ScrollableTable";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray600 } from "../../../../utility/customColor";
 import { dateFormatterForInput } from "../../../../utility/dateFormatter";
 import { getPDFAction } from "../../../../utility/downloadFile";
-import axios from "axios";
 
 import {
-  getAllLveLeaveType,
-  getAttendenceReport,
-  getBuDetails,
+  getBuDetails
 } from "../helper";
-import { TablePagination } from "@mui/material";
 
-import ResetButton from "./../../../../common/ResetButton";
-import "./attendanceReport.css";
-import { generateExcelAction } from "./excel/excelConvert";
-import PopOverFilter from "./PopOverFilter";
 import { toast } from "react-toastify";
 import PeopleDeskTable, {
   paginationSize,
 } from "../../../../common/peopleDeskTable";
+import ResetButton from "./../../../../common/ResetButton";
+import PopOverFilter from "./PopOverFilter";
+import "./attendanceReport.css";
+import { generateExcelAction } from "./excel/excelConvert";
 import { attendanceReportColumn, getAttendanceReport } from "./helper";
 
 const todayDate = dateFormatterForInput(new Date());
@@ -55,7 +50,6 @@ export default function AttendanceReport() {
   );
   // hooks
   const [rowDto, setRowDto] = useState([]);
-  const [leaveTypeList, setLeaveTypeList] = useState([]);
   const [tempLoading, setTempLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -81,22 +75,9 @@ export default function AttendanceReport() {
       setPages,
       ""
     );
-    // getAttendenceReport(
-    //   orgId,
-    //   buId,
-    //   todayDate,
-    //   todayDate,
-    //   setRowDto,
-    //   setLoading,
-    //   wgId,
-    //   pages,
-    //   setPages,
-    //   ""
-    // );
     // eslint-disable-next-line
   }, [buId, orgId, wgId]);
   useEffect(() => {
-    getAllLveLeaveType(orgId, setLeaveTypeList, setTempLoading);
     getBuDetails(buId, setBuDetails, setTempLoading);
   }, [buId, orgId]);
 
@@ -132,22 +113,6 @@ export default function AttendanceReport() {
       setPages,
       ""
     );
-    // getAttendenceReport(
-    //   orgId,
-    //   buId,
-    //   todayDate,
-    //   todayDate,
-    //   setRowDto,
-    //   setLoading,
-    //   wgId,
-    //   {
-    //     current: newPage === 0 ? 1 : newPage,
-    //     pageSize: pages?.pageSize,
-    //     total: pages?.total,
-    //   },
-    //   setPages,
-    //   ""
-    // );
   };
   //handleChangeRowsPerPage
   const handleChangeRowsPerPage = (event) => {
@@ -169,22 +134,6 @@ export default function AttendanceReport() {
       setPages,
       ""
     );
-    // getAttendenceReport(
-    //   orgId,
-    //   buId,
-    //   todayDate,
-    //   todayDate,
-    //   setRowDto,
-    //   setLoading,
-    //   wgId,
-    //   {
-    //     current: pages?.current,
-    //     pageSize: +event.target.value,
-    //     total: pages?.total,
-    //   },
-    //   setPages,
-    //   ""
-    // );
   };
 
   const saveHandler = (values) => {
@@ -199,19 +148,6 @@ export default function AttendanceReport() {
       setPages,
       ""
     );
-    // getAttendenceReport(
-    //   orgId,
-    //   buId,
-    //   values?.fromDate,
-    //   values?.toDate,
-    //   setRowDto,
-    //   setLoading,
-    //   wgId,
-    //   pages,
-    //   setPages,
-    //   ""
-    // );
-    // getAllLveLeaveType(orgId, setLeaveTypeList, setTempLoading);
   };
 
   const activity_day_total = (fieldName) => {
@@ -265,12 +201,9 @@ export default function AttendanceReport() {
                                 setLoading && setLoading(true);
                                 try {
                                   const res = await axios.get(
-                                    `/TimeSheetReport/GetEmpAttendanceReport?FromDate=${
-                                      values?.fromDate
-                                    }&ToDate=${
-                                      values?.toDate
-                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${
-                                      values?.search || ""
+                                    `/TimeSheetReport/GetEmpAttendanceReport?FromDate=${values?.fromDate
+                                    }&ToDate=${values?.toDate
+                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${values?.search || ""
                                     }&IsXls=true`
                                     // `/TimeSheetReport/GetAttendanceReport?FromDate=${
                                     //   values?.fromDate
@@ -416,7 +349,7 @@ export default function AttendanceReport() {
                                   type="submit"
                                   className="btn btn-default flex-center"
                                   label={"Apply"}
-                                  onClick={() => {}}
+                                  onClick={() => { }}
                                   onSubmit={() => handleSubmit()}
                                 />
                               </div>
@@ -448,210 +381,6 @@ export default function AttendanceReport() {
                       uniqueKey="employeeCode"
                       isScrollAble={true}
                     />
-                    {/* <div className="table-card-body"> */}
-                    {/* <ScrollableTable
-                        classes="salary-process-table"
-                        secondClasses="table-card-styled tableOne scroll-table-height"
-                      > */}
-                    {/* <thead>
-                          <tr>
-                            <th style={{ width: "30px" }}>
-                              <div className="text-center">SL</div>
-                            </th>
-                            <th style={{ minWidth: "80px" }}>
-                              <div>Code</div>
-                            </th>
-                            <th
-                              className="fixed-column"
-                              style={{ left: "125px" }}
-                            >
-                              <div>Employee</div>
-                            </th>
-                            <th>
-                              <div>Designation</div>
-                            </th>
-                            <th>Department</th>
-                            <th>Employment Type</th>
-                            <th
-                              className="text-center"
-                              style={{ minWidth: "100px" }}
-                            >
-                              Days
-                            </th>
-                            <th
-                              className="text-center"
-                              style={{ minWidth: "100px" }}
-                            >
-                              Present
-                            </th>
-                            <th
-                              className="text-center"
-                              style={{ minWidth: "100px" }}
-                            >
-                              Absent
-                            </th>
-                            <th
-                              className="text-center"
-                              style={{ minWidth: "100px" }}
-                            >
-                              Late
-                            </th>
-                            <th
-                              className="text-center"
-                              style={{ minWidth: "100px" }}
-                            >
-                              Movement
-                            </th>
-                            {leaveTypeList?.length > 0 &&
-                              leaveTypeList?.map((itm, i) => {
-                                return (
-                                  <th
-                                    className="text-center"
-                                    style={{ minWidth: "100px" }}
-                                    key={i}
-                                  >
-                                    {itm?.strLeaveType}
-                                  </th>
-                                );
-                              })}
-                            <th
-                              className="text-center"
-                              style={{ minWidth: "100px" }}
-                            >
-                              Off Day
-                            </th>
-                            <th
-                              className="text-center"
-                              style={{ minWidth: "100px" }}
-                            >
-                              Holiday
-                            </th>
-                          </tr>
-                        </thead> */}
-                    {/* <tbody>
-                          {rowDto?.length > 0 &&
-                            rowDto.map((data, index) => (
-                              <tr
-                                className="hasEvent"
-                                key={data?.employeeId}
-                                onClick={() => {
-                                  getPDFAction(
-                                    `/PdfAndExcelReport/DailyAttendanceReportByEmployee?TypeId=0&EmployeeId=${data?.employeeId}&FromDate=${values?.fromDate}&ToDate=${values?.toDate}`,
-                                    setLoading
-                                  );
-                                }}
-                              >
-                                <td>
-                                  <div className="tableBody-title text-center">
-                                    {index + 1}
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="tableBody-title">
-                                    {data?.employeeCode}
-                                  </div>
-                                </td>
-                                <td
-                                  className="fixed-column"
-                                  style={{ left: "125px" }}
-                                >
-                                  <div className="d-flex align-items-center">
-                                    <div className="emp-avatar">
-                                      <AvatarComponent
-                                        classess=""
-                                        letterCount={1}
-                                        label={data?.employeeName}
-                                      />
-                                    </div>
-                                    <div className="ml-2">
-                                      <div className="tableBody-title">
-                                        {data?.employeeName}{" "}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="tableBody-title">
-                                    {data?.designationName}
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="tableBody-title">
-                                    {data?.departmentName}
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="tableBody-title">
-                                    {data?.employmentTypeName}
-                                  </div>
-                                </td>
-                                <td className="text-center">
-                                  <div className="tableBody-title">
-                                    {data?.workingDays}
-                                  </div>
-                                </td>
-                                <td className="text-center">
-                                  <div className="tableBody-title">
-                                    {data?.present}
-                                  </div>
-                                </td>
-                                <td className="text-center">
-                                  <div className="tableBody-title">
-                                    {data?.absent}
-                                  </div>
-                                </td>
-                                <td className="text-center">
-                                  <div className="tableBody-title">
-                                    {data?.late}
-                                  </div>
-                                </td>
-                                <td className="text-center">
-                                  <div className="tableBody-title">
-                                    {data?.movement}
-                                  </div>
-                                </td>
-                                {data?.leaveTypeWiseList?.length > 0 &&
-                                  data?.leaveTypeWiseList.map((itm, i) => {
-                                    return (
-                                      <td className="text-center" key={i}>
-                                        <div className="tableBody-title">
-                                          {itm?.totalLeave}
-                                        </div>
-                                      </td>
-                                    );
-                                  })}
-                                <td className="text-center">
-                                  <div className="tableBody-title">
-                                    {data?.offDay}
-                                  </div>
-                                </td>
-                                <td className="text-center">
-                                  <div className="tableBody-title">
-                                    {data?.holiday}
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                        </tbody> */}
-                    {/* </ScrollableTable> */}
-                    {/* {rowDto?.length > 0 ? (
-                        <TablePagination
-                          rowsPerPageOptions={[5, 10, 15, 25, 100]}
-                          component="div"
-                          count={pages?.total || 50}
-                          rowsPerPage={pages?.pageSize}
-                          page={pages.current}
-                          onPageChange={handleChangePage}
-                          onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                      ) : null} */}
-                    {/*    <div className="table-card-styled employee-table-card table-responsive ant-scrolling-Table">
-                        <AntScrollTable
-                          data={rowDto}
-                          columnsData={attendenceReportDtoCol(rowDto)}
-                        />
-                      </div> */}
-                    {/* </div> */}
                   </div>
                 ) : (
                   <NotPermittedPage />

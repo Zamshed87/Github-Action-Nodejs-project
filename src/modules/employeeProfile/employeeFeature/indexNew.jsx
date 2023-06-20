@@ -70,7 +70,7 @@ function EmployeeFeatureNew() {
   const history = useHistory();
 
   // redux
-  const { orgId, buId, buName, employeeId, wgId, wgName } = useSelector(
+  const { orgId, buId, buName, wgId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -238,7 +238,7 @@ function EmployeeFeatureNew() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
+        onSubmit={(values, { setSubmitting, resetForm }) => { }}
       >
         {({ handleSubmit, values, setFieldValue }) => (
           <>
@@ -307,8 +307,8 @@ function EmployeeFeatureNew() {
                                         ConfirmationDate:
                                           item?.dteConfirmationDate
                                             ? dateFormatter(
-                                                item?.dteConfirmationDate
-                                              )
+                                              item?.dteConfirmationDate
+                                            )
                                             : item?.ConfirmationDate || " ",
                                         strSupervisorName:
                                           item?.strSupervisorName ||
@@ -369,14 +369,14 @@ function EmployeeFeatureNew() {
                                         contractualFromDate:
                                           item?.dteContractFromDate
                                             ? dateFormatter(
-                                                item?.dteContractFromDate
-                                              )
+                                              item?.dteContractFromDate
+                                            )
                                             : item?.dteContactFromDate || "",
                                         contractualToDate:
                                           item?.dteContractToDate
                                             ? dateFormatter(
-                                                item?.dteContractToDate
-                                              )
+                                              item?.dteContractToDate
+                                            )
                                             : item?.dteContactToDate || "",
                                       })
                                     );
@@ -405,27 +405,27 @@ function EmployeeFeatureNew() {
                                       widthList:
                                         wgId === 3
                                           ? {
-                                              C: 30,
-                                              E: 30,
-                                              F: 30,
-                                              G: 15,
-                                              H: 15,
-                                              I: 15,
-                                              J: 15,
-                                              K: 20,
-                                              L: 30,
-                                              M: 25,
-                                              N: 25,
-                                            }
+                                            C: 30,
+                                            E: 30,
+                                            F: 30,
+                                            G: 15,
+                                            H: 15,
+                                            I: 15,
+                                            J: 15,
+                                            K: 20,
+                                            L: 30,
+                                            M: 25,
+                                            N: 25,
+                                          }
                                           : {
-                                              C: 30,
-                                              E: 30,
-                                              F: 30,
-                                              G: 30,
-                                              H: 25,
-                                              I: 25,
-                                              J: 20,
-                                            },
+                                            C: 30,
+                                            E: 30,
+                                            F: 30,
+                                            G: 30,
+                                            H: 25,
+                                            I: 25,
+                                            J: 20,
+                                          },
                                       commonCellRange: "A1:J1",
                                       CellAlignment: "left",
                                     });
