@@ -4,7 +4,6 @@ import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import AntTable from "../../../../common/AntTable";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import FormikInput from "../../../../common/FormikInput";
 import Loading from "../../../../common/loading/Loading";
@@ -16,10 +15,12 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { getPDFAction } from "../../../../utility/downloadFile";
 import { todayDate } from "../../../../utility/todayDate";
-// import { downloadFile } from "../../../../utility/downloadFile";
 import FilterModal from "./component/FilterModal";
 import { generateExcelAction } from "./excel/excelConvert";
 import { getBuDetails, getMovementHistory } from "./helper";
+import PeopleDeskTable, {
+  paginationSize,
+} from "./../../../../common/peopleDeskTable/index";
 
 let initStartData = monthFirstDate();
 let initEndDate = todayDate();
@@ -40,120 +41,16 @@ const initData = {
 };
 
 const EmMovementHistory = () => {
+  // hook
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const { orgId, buId, wgId } = useSelector(
+
+  // redux
+  const { orgId, buId, wgId, buName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
-  const saveHandler = (values) => {};
-  const [loading, setLoading] = useState(false);
-
-  const [allValues, setAllValues] = useState(null);
-
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
-  const [rowDto, setRowDto] = useState(null);
-  const [allData, setAllData] = useState([]);
-  const [buDetails, setBuDetails] = useState([]);
-
-  const [page, setPage] = useState(1);
-  const [paginationSize, setPaginationSize] = useState(15);
-
-  useEffect(() => {
-    getMovementHistory(
-      buId,
-      orgId,
-      wgId,
-      0,
-      0,
-      0,
-      0,
-      initStartData,
-      initEndDate,
-      "all",
-      setRowDto,
-      setLoading,
-      setAllData
-    );
-    getBuDetails(buId, setBuDetails, setLoading);
-  }, [orgId, buId, wgId]);
-
-  const getData = (fromDate, toDate) => {
-    getMovementHistory(
-      buId,
-      orgId,
-      0,
-      0,
-      0,
-      0,
-      0,
-      fromDate,
-      toDate,
-      "all",
-      setRowDto,
-      setLoading,
-      setAllData
-    );
-  };
-
-  const searchData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter((item) =>
-        regex.test(item?.EmployeeName?.toLowerCase())
-      );
-      setRowDto(newDta);
-    } catch {
-      setRowDto([]);
-    }
-  };
-  const masterFilterHandler = ({
-    appStatus,
-    department,
-    designation,
-    employee,
-    movementType,
-    workplace,
-    fromDate,
-    toDate,
-  }) => {
-    getMovementHistory(
-      buId,
-      orgId,
-      workplace?.value || 0,
-      department?.value || 0,
-      designation?.value || 0,
-      movementType?.value || 0,
-      employee?.value || 0,
-      fromDate || initStartData,
-      toDate || initEndDate,
-      appStatus?.label || "all",
-      setRowDto,
-      setLoading,
-      setAllData
-    );
-  };
-
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-  const { buName } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+
   let permission = null;
   permissionList.forEach((item) => {
     if (item?.menuReferenceId === 101) {
@@ -161,56 +58,149 @@ const EmMovementHistory = () => {
     }
   });
 
+  // state
+  const [loading, setLoading] = useState(false);
+  const [buDetails, setBuDetails] = useState([]);
+  const [allValues, setAllValues] = useState(null);
+
+  // modal
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  // landing data
+  const [rowDto, setRowDto] = useState([]);
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
+
+  const getData = (pagination, searchText) => {
+    getMovementHistory(
+      buId,
+      wgId,
+      initStartData,
+      initEndDate,
+      "",
+      setRowDto,
+      setLoading,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages,
+      true
+    );
+  };
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData({
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData({
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
+  };
+
+  // initial
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getBuDetails(buId, setBuDetails, setLoading);
+  }, [buId]);
+
+  useEffect(() => {
+    getMovementHistory(
+      buId,
+      wgId,
+      initStartData,
+      initEndDate,
+      "",
+      setRowDto,
+      setLoading,
+      1,
+      paginationSize,
+      setPages,
+      true
+    );
+  }, [buId, wgId]);
+
   const columns = (page, paginationSize) => {
     return [
       {
         title: "SL",
-        render: (text, record, index) =>
-          (page - 1) * paginationSize + index + 1,
-        sorter: false,
+        render: (_, index) => (page - 1) * paginationSize + index + 1,
+        sort: false,
         filter: false,
         className: "text-center",
+        width: 60,
       },
       {
         title: "Code",
         dataIndex: "employeeCode",
-        sorter: true,
-        filter: true,
+        sort: true,
+        filter: false,
+        fieldType: "string",
       },
       {
         title: "Employee",
-        dataIndex: "EmployeeName",
-        render: (strEmployeeName) => (
+        dataIndex: "employeeName",
+        render: (item) => (
           <div className="d-flex align-items-center">
             <AvatarComponent
               classess=""
               letterCount={1}
-              label={strEmployeeName}
+              label={item?.employeeName}
             />
-            <span className="ml-2">{strEmployeeName}</span>
+            <span className="ml-2">{item?.employeeName}</span>
           </div>
         ),
-        sorter: true,
-        filter: true,
+        sort: true,
+        filter: false,
+        fieldType: "string",
       },
       {
         title: "Designation",
-        dataIndex: "DesignationName",
-        sorter: true,
-        filter: true,
+        dataIndex: "designationName",
+        sort: true,
+        filter: false,
+        fieldType: "string",
       },
       {
         title: "Department",
-        dataIndex: "DepartmentName",
-        sorter: true,
-        filter: true,
+        dataIndex: "departmentName",
+        sort: true,
+        filter: false,
+        fieldType: "string",
       },
       {
         title: "Duration (Day)",
-        dataIndex: "Duration",
-        sorter: true,
-        filter: true,
-        isNumber: true,
+        dataIndex: "rawDuration",
+        sort: true,
+        filter: false,
+        fieldType: "number",
       },
     ];
   };
@@ -221,9 +211,7 @@ const EmMovementHistory = () => {
         enableReinitialize={true}
         initialValues={initData}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+          resetForm(initData);
         }}
       >
         {({
@@ -248,28 +236,6 @@ const EmMovementHistory = () => {
                             type="button"
                             className="btn-save "
                             onClick={() => {
-                              // downloadFile(
-                              //   `/PdfAndExcelReport/MovementReportExportAsExcel?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${
-                              //     allValues?.workplace?.value || 0
-                              //   }&DeptId=${
-                              //     allValues?.department?.value || 0
-                              //   }&DesigId=${
-                              //     allValues?.designation?.value || 0
-                              //   }&MovementTypeId=${
-                              //     allValues?.movementType?.value || 0
-                              //   }&EmployeeId=${
-                              //     allValues?.employee?.value || 0
-                              //   }&FromDate=${
-                              //     allValues?.fromDate || initStartData
-                              //   }&ToDate=${
-                              //     allValues?.toDate || initEndDate
-                              //   }&applicationStatus=${
-                              //     allValues?.appStatus?.label || "all"
-                              //   }`,
-                              //   "Movement History",
-                              //   "xlsx",
-                              //   setLoading
-                              // );
                               generateExcelAction(
                                 "Movement Report",
                                 "",
@@ -352,18 +318,16 @@ const EmMovementHistory = () => {
                                 setFieldValue("search", "");
                                 getMovementHistory(
                                   buId,
-                                  orgId,
-                                  0,
-                                  0,
-                                  0,
-                                  0,
-                                  0,
+                                  wgId,
                                   initStartData,
                                   initEndDate,
-                                  "all",
+                                  "",
                                   setRowDto,
                                   setLoading,
-                                  setAllData
+                                  1,
+                                  paginationSize,
+                                  setPages,
+                                  true
                                 );
                               }}
                             />
@@ -376,25 +340,35 @@ const EmMovementHistory = () => {
                             inputWidth="200px"
                             value={values?.search}
                             setValue={(value) => {
-                              searchData(value, allData, setRowDto);
                               setFieldValue("search", value);
+                              getMovementHistory(
+                                buId,
+                                wgId,
+                                values?.fromDate || "",
+                                values?.toDate || "",
+                                value || "",
+                                setRowDto,
+                                setLoading,
+                                1,
+                                paginationSize,
+                                setPages,
+                                true
+                              );
                             }}
                             cancelHandler={() => {
                               setFieldValue("search", "");
                               getMovementHistory(
                                 buId,
-                                orgId,
-                                0,
-                                0,
-                                0,
-                                0,
-                                0,
-                                initStartData,
-                                initEndDate,
-                                "all",
+                                wgId,
+                                values?.fromDate || "",
+                                values?.toDate || "",
+                                "",
                                 setRowDto,
                                 setLoading,
-                                setAllData
+                                1,
+                                paginationSize,
+                                setPages,
+                                true
                               );
                             }}
                             handleClick={handleClick}
@@ -444,7 +418,19 @@ const EmMovementHistory = () => {
                               style={{ marginTop: "21px" }}
                               className="btn btn-green"
                               onClick={() => {
-                                getData(values?.fromDate, values?.toDate);
+                                getMovementHistory(
+                                  buId,
+                                  wgId,
+                                  values?.fromDate || "",
+                                  values?.toDate || "",
+                                  "",
+                                  setRowDto,
+                                  setLoading,
+                                  1,
+                                  paginationSize,
+                                  setPages,
+                                  true
+                                );
                               }}
                             >
                               View
@@ -453,22 +439,28 @@ const EmMovementHistory = () => {
                         </div>
                       </div>
 
-                      <div className="table-card-styled tableOne">
-                        {rowDto?.length > 0 ? (
-                          <AntTable
-                            data={rowDto?.length > 0 && rowDto}
-                            columnsData={columns(page, paginationSize)}
-                            setPage={setPage}
-                            setPaginationSize={setPaginationSize}
-                          />
-                        ) : (
-                          <>
-                            {!loading && (
-                              <NoResult title="No Result Found" para="" />
-                            )}
-                          </>
-                        )}
-                      </div>
+                      {rowDto?.length > 0 ? (
+                        <PeopleDeskTable
+                          customClass="iouManagementTable"
+                          columnData={columns(pages?.current, pages?.pageSize)}
+                          pages={pages}
+                          rowDto={rowDto}
+                          setRowDto={setRowDto}
+                          handleChangePage={(e, newPage) =>
+                            handleChangePage(e, newPage, values?.search)
+                          }
+                          handleChangeRowsPerPage={(e) =>
+                            handleChangeRowsPerPage(e, values?.search)
+                          }
+                          uniqueKey="employeeCode"
+                          isCheckBox={false}
+                          isScrollAble={false}
+                        />
+                      ) : (
+                        <>
+                          <NoResult />
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -476,6 +468,7 @@ const EmMovementHistory = () => {
                 <NotPermittedPage />
               )}
             </Form>
+
             <FilterModal
               propsObj={{
                 id,
@@ -489,7 +482,7 @@ const EmMovementHistory = () => {
                 touched,
               }}
               setAllValues={setAllValues}
-              masterFilterHandler={masterFilterHandler}
+              // masterFilterHandler={masterFilterHandler}
             />
           </>
         )}

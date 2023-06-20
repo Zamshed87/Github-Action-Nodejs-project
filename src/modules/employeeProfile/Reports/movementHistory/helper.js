@@ -17,27 +17,42 @@ export const getBuDetails = async (buId, setter, setLoading) => {
 };
 export const getMovementHistory = async (
   buId,
-  orgId,
   wgId,
-  deptId,
-  desId,
-  movementId,
-  EmpId,
   fromDate,
   toDate,
-  status,
+  search,
   setter,
   setLoading,
-  setAllData
+  pageNo,
+  pageSize,
+  setPages,
+  isPaginated = true
 ) => {
+  setLoading && setLoading(true);
+
   try {
-    setLoading && setLoading(true);
-    const res = await axios.get(
-      `/Employee/AllEmployeeMovementReport?BusinessUnitId=${buId}&AccountId=${orgId}&WorkplaceGroupId=${wgId}&DeptId=${deptId}&DesigId=${desId}&MovementTypeId=${movementId}&EmployeeId=${EmpId}&FromDate=${fromDate}&ToDate=${toDate}&applicationStatus=${status}`
-    );
-    setLoading && setLoading(false);
-    setter(res?.data);
-    setAllData && setAllData(res?.data);
+    let apiUrl = `/Employee/EmployeeMovementReportAll?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&PageNo=${pageNo}&PageSize=${pageSize}&IsPaginated=${isPaginated}`;
+
+    search = search && (apiUrl += `&SearchText=${search}`);
+
+    const res = await axios.get(apiUrl);
+
+    if (res?.data) {
+      const modifiedData = res?.data?.data?.map((item, index) => ({
+        ...item,
+        initialSerialNumber: index + 1,
+      }));
+
+      setter && setter?.(modifiedData);
+
+      setPages({
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
+      });
+
+      setLoading && setLoading(false);
+    }
   } catch (error) {
     setLoading && setLoading(false);
     toast.error(error?.response?.data?.message);
