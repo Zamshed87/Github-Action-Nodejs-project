@@ -1,11 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import AntTable from "../../../../common/AntTable";
 import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
@@ -13,30 +10,35 @@ import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { getPDFAction } from "../../../../utility/downloadFile";
-import FilterModal from "./component/FilterModal";
 import { generateExcelAction } from "./excel/excelConvert";
-import {
-  contractualExcelColumn,
-  contractualExcelData,
-} from "./excel/excelStyle";
 import {
   getBuDetails,
   getLeaveHistoryAction,
   hasLeave,
   leaveHistoryCol,
 } from "./helper";
-let date = new Date();
-let year = date.getFullYear();
+import { yearDDLAction } from "../../../../utility/yearDDL";
+import FormikSelect from "../../../../common/FormikSelect";
+import { customStyles } from "../../../../utility/selectCustomStyle";
+import { currentYear } from "../../../CompensationBenefits/reports/salaryReport/helper";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import { toast } from "react-toastify";
+import useDebounce from "../../../../utility/customHooks/useDebounce";
 const initData = {
   search: "",
+  yearDDL: { label: currentYear(), value: currentYear() },
 };
 
 const EmLeaveHistory = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { buId, orgId, buName, wgId } = useSelector(
+  const { buId, buName, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -44,89 +46,41 @@ const EmLeaveHistory = () => {
   const saveHandler = (values) => {};
   const [loading, setLoading] = useState(false);
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [isFilter, setIsFilter] = useState(false);
-
-  const [page, setPage] = useState(1);
-  const [paginationSize, setPaginationSize] = useState(15);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
   const [buDetails, setBuDetails] = useState({});
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
+  const [, getExcelData, apiLoading] = useAxiosGet();
+  const debounce = useDebounce();
 
-  const getData = () => {
-    let date = new Date();
+  const getData = (
+    year = currentYear(),
+    pagination = { current: 1, pageSize: paginationSize },
+    srcTxt = "",
+    isPaginated = true
+  ) => {
     getLeaveHistoryAction(
-      setAllData,
       buId,
-      orgId,
       wgId,
-      date.getFullYear(),
+      year,
       setLoading,
       setRowDto,
-      setTableRowDto
+      srcTxt,
+      isPaginated,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages
     );
   };
 
   useEffect(() => {
     getData();
     getBuDetails(buId, setBuDetails, setLoading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId]);
-
-  const searchData = (keywords) => {
-    try {
-      if (!keywords) {
-        setRowDto(allData);
-        return;
-      }
-      setLoading(true);
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newData = allData?.filter(
-        (item) =>
-          regex.test(item?.employee?.toLowerCase()) ||
-          regex.test(item?.designation?.toLowerCase()) ||
-          regex.test(item?.department?.toLowerCase())
-      );
-      setRowDto(newData);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      setRowDto([]);
-    }
-  };
-
-  const masterFilterHandler = ({
-    workplace,
-    department,
-    designation,
-    employee,
-    year,
-  }) => {
-    let date = new Date();
-    getLeaveHistoryAction(
-      setAllData,
-      buId,
-      orgId,
-      year?.value || date.getFullYear(),
-      setLoading,
-      setRowDto,
-      workplace?.value,
-      department?.value,
-      designation?.value,
-      employee?.value
-    );
-  };
-  const [tableRowDto, setTableRowDto] = useState([]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -136,15 +90,36 @@ const EmLeaveHistory = () => {
       permission = item;
     }
   });
-  // excel column set up
-  const excelColumnFunc = () => {
-    return contractualExcelColumn;
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      searchText
+    );
   };
 
-  // excel data set up
-  const excelDataFunc = () => {
-    return contractualExcelData(rowDto);
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      searchText
+    );
   };
+
   return (
     <>
       <Formik
@@ -167,15 +142,15 @@ const EmLeaveHistory = () => {
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              {loading && <Loading />}
+              {(loading || apiLoading) && <Loading />}
               {permission?.isView ? (
-                <div className="loan-application">
+                <div>
                   <div className="table-card">
-                    <div className="table-card-heading justify-content-between pb-2">
+                    <div className="table-card-heading justify-content-between">
                       <div className="d-flex">
                         <Tooltip title="Export CSV" arrow>
                           <button
-                            disabled={tableRowDto?.data?.length <= 0}
+                            disabled={rowDto?.length <= 0}
                             type="button"
                             className="btn-save"
                             onClick={(e) => {
@@ -185,20 +160,21 @@ const EmLeaveHistory = () => {
                                   toastId: 1,
                                 });
                               }
-                              const excelLanding = () => {
-                                generateExcelAction(
-                                  "Leave History Report",
-                                  "",
-                                  "",
-                                  excelColumnFunc(),
-                                  excelDataFunc(),
-                                  buName,
-                                  0,
-                                  tableRowDto?.data,
-                                  buDetails?.strBusinessUnitAddress
-                                );
-                              };
-                              excelLanding();
+
+                              getExcelData(
+                                `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${values.yearDDL?.value}&WorkplaceGroupId=${wgId}&SearchText=${values?.search}&IsPaginated=false&PageNo=0&PageSize=0`,
+                                (res) => {
+                                  const excelLanding = () => {
+                                    generateExcelAction(
+                                      "Leave History Report",
+                                      buName,
+                                      res?.data,
+                                      buDetails?.strBusinessUnitAddress
+                                    );
+                                  };
+                                  excelLanding();
+                                }
+                              );
                             }}
                           >
                             <SaveAlt
@@ -206,11 +182,24 @@ const EmLeaveHistory = () => {
                             />
                           </button>
                         </Tooltip>
+                        <div className="ml-2">
+                          {pages?.total > 0 ? (
+                            <>
+                              <h6 className="count">
+                                Total {pages?.total} results
+                              </h6>
+                            </>
+                          ) : (
+                            <>
+                              <h6 className="count">Total result 0</h6>
+                            </>
+                          )}
+                        </div>
                       </div>
                       <div></div>
                       <div className="table-card-head-right">
                         <ul>
-                          {(values?.search || isFilter) && (
+                          {values?.search && (
                             <li>
                               <ResetButton
                                 classes="btn-filter-reset"
@@ -224,14 +213,29 @@ const EmLeaveHistory = () => {
                                   />
                                 }
                                 onClick={() => {
-                                  setRowDto(allData);
-                                  setIsFilter(false);
                                   getData();
-                                  setFieldValue("search", "");
+                                  resetForm();
                                 }}
                               />
                             </li>
                           )}
+                          <li style={{ width: "200px" }}>
+                            <FormikSelect
+                              name="yearDDL"
+                              options={yearDDLAction(2, 0) || []}
+                              value={values?.yearDDL}
+                              onChange={(valueOption) => {
+                                setFieldValue("yearDDL", valueOption);
+                                getData(valueOption?.value);
+                              }}
+                              placeholder=""
+                              styles={customStyles}
+                              errors={errors}
+                              touched={touched}
+                              isDisabled={false}
+                              isClearable={false}
+                            />
+                          </li>
                           <li>
                             <MasterFilter
                               width="200px"
@@ -239,14 +243,19 @@ const EmLeaveHistory = () => {
                               value={values?.search}
                               setValue={(value) => {
                                 setFieldValue("search", value);
-                                searchData(value);
+                                debounce(() => {
+                                  getData(
+                                    values?.yearDDL?.value,
+                                    { current: 1, pageSize: paginationSize },
+                                    value
+                                  );
+                                }, 500);
                               }}
                               cancelHandler={() => {
                                 getData();
                                 setFieldValue("search", "");
                               }}
                               isHiddenFilter
-                              handleClick={handleClick}
                             />
                           </li>
                         </ul>
@@ -257,34 +266,32 @@ const EmLeaveHistory = () => {
                         setLoading={setLoading}
                         rowDto={rowDto}
                       /> */}
-                      {rowDto?.length > 0 ? (
-                        <>
-                          <div className="table-card-styled employee-table-card tableOne">
-                            <AntTable
-                              data={rowDto}
-                              columnsData={leaveHistoryCol(
-                                page,
-                                paginationSize
-                              )}
-                              onRowClick={(data) => {
-                                hasLeave(data) &&
-                                  getPDFAction(
-                                    `/PdfAndExcelReport/LeaveHistoryReport?EmployeeId=${data?.employeeId}&fromDate=${year}-01-01&toDate=${year}-12-31`,
-                                    setLoading
-                                  );
-                              }}
-                              setColumnsData={(newRow) =>
-                                setTableRowDto((prev) => ({
-                                  ...prev,
-                                  data: newRow,
-                                  totalCount: newRow?.length,
-                                }))
-                              }
-                              setPage={setPage}
-                              setPaginationSize={setPaginationSize}
-                            />
-                          </div>
-                        </>
+                      {rowDto?.data?.length > 0 ? (
+                        <PeopleDeskTable
+                          columnData={leaveHistoryCol(
+                            pages?.current,
+                            pages?.pageSize
+                          )}
+                          pages={pages}
+                          rowDto={rowDto?.data}
+                          setRowDto={setRowDto}
+                          handleChangePage={(e, newPage) =>
+                            handleChangePage(e, newPage, values?.search)
+                          }
+                          handleChangeRowsPerPage={(e) =>
+                            handleChangeRowsPerPage(e, values?.search)
+                          }
+                          onRowClick={(data) => {
+                            hasLeave(data) &&
+                              getPDFAction(
+                                `/PdfAndExcelReport/LeaveHistoryReport?EmployeeId=${data?.employeeId}&fromDate=${values?.yearDDL?.value}-01-01&toDate=${values?.yearDDL?.value}-12-31`,
+                                setLoading
+                              );
+                          }}
+                          uniqueKey="employeeId"
+                          isCheckBox={false}
+                          isScrollAble={false}
+                        />
                       ) : (
                         <>
                           <NoResult title="No Result Found" para="" />
@@ -297,7 +304,7 @@ const EmLeaveHistory = () => {
                 <NotPermittedPage />
               )}
             </Form>
-            <FilterModal
+            {/* <FilterModal
               propsObj={{
                 id,
                 open,
@@ -312,7 +319,7 @@ const EmLeaveHistory = () => {
               }}
               getData={getData}
               masterFilterHandler={masterFilterHandler}
-            />
+            /> */}
           </>
         )}
       </Formik>
