@@ -24,39 +24,52 @@ const getTableDataForExcel = (row) => {
       new Cell(item?.employeeCode || "N/A", "left", "text").getCell(),
       new Cell(item?.department || "N/A", "center", "text").getCell(),
       new Cell(item?.designation || "N/A", "center", "text").getCell(),
-       // eslint-disable-next-line
-      new Cell(`${item?.clTaken || 0}`+ '/' + `${item?.clBalance || 0}` || "N/A", "center", "text").getCell(),
-       // eslint-disable-next-line
-      new Cell(`${item?.slTaken || 0}`+ '/' +`${item?.slBalance || 0}` || "N/A", "center", "text").getCell(),
-       // eslint-disable-next-line
-      new Cell(`${item?.elTaken || 0}`+ `/` + `${item?.elBalance || 0}`|| "N/A", "center", "text").getCell(),
-       // eslint-disable-next-line
-      new Cell(`${item?.lwpTaken || 0}`+ "/"+`${item?.lwpBalance || 0}` || "N/A", "center", "text").getCell(),
-       // eslint-disable-next-line
-       new Cell(`${item?.mlTaken || 0 }`+ "/"+`${item?.mlBalance || 0}` || "N/A", "center", "text").getCell(),
-     
+      // eslint-disable-next-line
+      new Cell(
+        `${item?.clTaken || 0}` + "/" + `${item?.clBalance || 0}` || "N/A",
+        "center",
+        "text"
+      ).getCell(),
+      // eslint-disable-next-line
+      new Cell(
+        `${item?.slTaken || 0}` + "/" + `${item?.slBalance || 0}` || "N/A",
+        "center",
+        "text"
+      ).getCell(),
+      // eslint-disable-next-line
+      new Cell(
+        `${item?.elTaken || 0}` + `/` + `${item?.elBalance || 0}` || "N/A",
+        "center",
+        "text"
+      ).getCell(),
+      // eslint-disable-next-line
+      new Cell(
+        `${item?.lwpTaken || 0}` + "/" + `${item?.lwpBalance || 0}` || "N/A",
+        "center",
+        "text"
+      ).getCell(),
+      // eslint-disable-next-line
+      new Cell(
+        `${item?.mlTaken || 0}` + "/" + `${item?.mlBalance || 0}` || "N/A",
+        "center",
+        "text"
+      ).getCell(),
     ];
   });
   return data;
 };
 const createExcelFile = (
   comapanyNameHeader,
-  tableHeader,
-  tableData,
-  fromDate,
-  toDate,
   businessUnit,
-  moneyProcessId,
   rowDto,
-  buAddress,
-  tableHeaderArr
+  buAddress
 ) => {
   const excel = {
-    name:  `${comapanyNameHeader} Report ${moment().format('ll')}`,
+    name: `${comapanyNameHeader} Report ${moment().format("ll")}`,
     sheets: [
       {
         // name: `Salary Report-${monthYear}`,
-        name:  `${comapanyNameHeader} Report ${moment().format('ll')}`,
+        name: `${comapanyNameHeader} Report ${moment().format("ll")}`,
         gridLine: false,
         rows: [
           ["_blank*2"],
@@ -72,7 +85,7 @@ const createExcelFile = (
           ],
           [
             {
-              text:buAddress,
+              text: buAddress,
               fontSize: 15,
               bold: true,
               cellRange: "A1:J1",
@@ -82,7 +95,7 @@ const createExcelFile = (
           ],
           [
             {
-              text: `${comapanyNameHeader}-${moment().format('LL')}`,
+              text: `${comapanyNameHeader}-${moment().format("LL")}`,
               fontSize: 15,
               bold: true,
               cellRange: "A1:J1",
@@ -90,7 +103,7 @@ const createExcelFile = (
               alignment: "center",
             },
           ],
-          
+
           ["_blank*2"],
 
           [
@@ -116,7 +129,7 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-          
+
             {
               text: "Department",
               fontSize: 9,
@@ -129,7 +142,7 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-           
+
             {
               text: "CL",
               fontSize: 9,
@@ -160,13 +173,12 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-            
           ],
           ...getTableDataForExcel(rowDto),
           ["_blank*2"],
           [
             {
-              text: `System Generated Report ${moment().format('ll')}`,
+              text: `System Generated Report ${moment().format("ll")}`,
               fontSize: 12,
               bold: true,
               cellRange: "A1:J1",
@@ -265,29 +277,8 @@ const getTableData = (row, keys, totalKey) => {
   return data;
 };
 
-export const generateExcelAction = (
-  title,
-  fromDate,
-  toDate,
-  column,
-  data,
-  businessUnit,
-  moneyProcessId,
-  rowDto,
-  buAddress,
-  tableHeaderArr
-) => {
-  const tableDataInfo = getTableData(data, Object.keys(column));
-  createExcelFile(
-    title,
-    Object.values(column),
-    tableDataInfo,
-    fromDate,
-    toDate,
-    businessUnit,
-    moneyProcessId,
-    rowDto,
-    buAddress,
-    tableHeaderArr
-  );
+export const generateExcelAction = (title, businessUnit, rowDto, buAddress) => {
+  // const tableDataInfo = getTableData(data, Object.keys(column));
+
+  createExcelFile(title, businessUnit, rowDto, buAddress);
 };

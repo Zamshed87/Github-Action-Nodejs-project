@@ -202,7 +202,7 @@ const EmLoanHistory = () => {
                               }}
                               onClick={() => {
                                 getPDFAction(
-                                  `/PdfAndExcelReport/LoanReportAll?accountId=${orgId}&BusinessUnitId=${buId}&DepartmentId=${
+                                  `/PdfAndExcelReport/LoanReportAll?accountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&DepartmentId=${
                                     values?.department?.value || 0
                                   }&DesignationId=${
                                     values?.designation?.value || 0
