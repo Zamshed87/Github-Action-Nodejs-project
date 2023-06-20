@@ -269,9 +269,13 @@ export const createBonusGenExcelHandeler = ({
       A: 25,
       B: 20,
       C: 30,
-      D: 30,
+      D: 20,
+      E: 20,
+      F: 25,
+      J: 30,
+
     },
-    commonCellRange: "A1:K1",
+    commonCellRange: "A1:J1",
     CellAlignment: "right",
     subHeaderInfoArr: [`Effective Data: ${dateFormatter(effectiveDate)}`],
     // extraInfo: {
@@ -332,7 +336,7 @@ const getExcelTableData = (row) => {
       ).getCell(),
       new Cell(
         !item?.DeptName?.trim() ? item?.strServiceLength : " ",
-        "center",
+        "left",
         "text",
         item?.DeptName?.trim() ? true : false,
         item?.DeptName?.trim() ? 10 : 9

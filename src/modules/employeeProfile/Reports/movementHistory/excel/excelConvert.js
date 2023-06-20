@@ -20,12 +20,11 @@ const getTableDataForExcel = (row) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
-      new Cell(item?.EmployeeName || "N/A", "left", "text").getCell(),
-      new Cell(item?.DepartmentName || "N/A", "center", "text").getCell(),
-      new Cell(item?.DesignationName || "N/A", "center", "text").getCell(),
-      new Cell(item?.EmploymentTypeName || "N/A", "center", "text").getCell(),
-      new Cell(item?.Duration || 0, "center", "text").getCell(),
-     
+      new Cell(item?.employeeName || "N/A", "left", "text").getCell(),
+      new Cell(item?.departmentName || "N/A", "center", "text").getCell(),
+      new Cell(item?.designationName || "N/A", "center", "text").getCell(),
+      new Cell(item?.employmentType || "N/A", "center", "text").getCell(),
+      new Cell(item?.rawDuration || 0, "center", "text").getCell(),
     ];
   });
   return data;
@@ -39,11 +38,11 @@ const createExcelFile = (
   buAddress
 ) => {
   const excel = {
-    name: `${comapanyNameHeader} Report ${moment().format('ll')}`,
+    name: `${comapanyNameHeader} Report ${moment().format("ll")}`,
     sheets: [
       {
         // name: `Salary Report-${monthYear}`,
-        name:`${comapanyNameHeader} Report ${moment().format('ll')}`,
+        name: `${comapanyNameHeader} Report ${moment().format("ll")}`,
         gridLine: false,
         rows: [
           ["_blank*2"],
@@ -69,7 +68,7 @@ const createExcelFile = (
           ],
           [
             {
-              text: `${comapanyNameHeader}-${moment().format('LL')}`,
+              text: `${comapanyNameHeader}-${moment().format("LL")}`,
               fontSize: 15,
               bold: true,
               cellRange: "A1:E1",
@@ -77,7 +76,7 @@ const createExcelFile = (
               alignment: "center",
             },
           ],
-       
+
           ["_blank*2"],
 
           [
@@ -93,7 +92,7 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-          
+
             {
               text: "Department",
               fontSize: 9,
@@ -112,9 +111,9 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-           
+
             {
-              text: "Duration",
+              text: "Duration (Day)",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
@@ -124,7 +123,7 @@ const createExcelFile = (
           ["_blank*2"],
           [
             {
-              text: `System Generated Report ${moment().format('ll')}`,
+              text: `System Generated Report ${moment().format("ll")}`,
               fontSize: 12,
               bold: true,
               cellRange: "A1:E1",
@@ -137,7 +136,6 @@ const createExcelFile = (
     ],
   };
   createFile(excel);
-  
 };
 
 export const generateExcelAction = (
@@ -148,12 +146,5 @@ export const generateExcelAction = (
   rowDto,
   buAddress
 ) => {
-  createExcelFile(
-    title,
-    fromDate,
-    toDate,
-    businessUnit,
-    rowDto,
-    buAddress
-  );
+  createExcelFile(title, fromDate, toDate, businessUnit, rowDto, buAddress);
 };

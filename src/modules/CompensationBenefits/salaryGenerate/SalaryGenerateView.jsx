@@ -446,7 +446,7 @@ const SalaryGenerateView = () => {
                               !state?.data
                                 ? state?.strSalaryCode
                                 : state?.data?.strSalaryCode
-                            }`,
+                            }&isDownload=false`,
                             setLoading
                           );
                         }}

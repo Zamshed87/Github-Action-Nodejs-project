@@ -17,29 +17,46 @@ class Cell {
   }
 }
 const getTableDataForExcel = (row) => {
-  const data= row?.map((item, index) => {
+  const data = row?.map((item, index) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
       new Cell(item?.employeeName || "N/A", "left", "text").getCell(),
       new Cell(item?.employeeCode || "N/A", "left", "text").getCell(),
-      new Cell(item?.departmentName || "N/A", "left", "text").getCell(),
-      new Cell(item?.designationName || "N/A", "left", "text").getCell(),
-      new Cell(item?.employmentTypeName || "N/A", "left", "text").getCell(),
+      new Cell(item?.department || "N/A", "left", "text").getCell(),
+      new Cell(item?.designation || "N/A", "left", "text").getCell(),
+      new Cell(item?.employmentType || "N/A", "left", "text").getCell(),
       new Cell(item?.workingDays || 0, "center", "text").getCell(),
       new Cell(item?.present || 0, "center", "text").getCell(),
       new Cell(item?.absent || 0, "center", "text").getCell(),
       new Cell(item?.late || 0, "center", "text").getCell(),
       new Cell(item?.movement || 0, "center", "text").getCell(),
-      new Cell(item?.leaveTypeWiseList[0]?.totalLeave || 0, "center", "text").getCell(),
-      new Cell(item?.leaveTypeWiseList[1]?.totalLeave || 0, "center", "text").getCell(),
-      new Cell(item?.leaveTypeWiseList[2]?.totalLeave || 0, "center", "text").getCell(),
-      // new Cell(item?.leaveTypeWiseList[3]?.totalLeave || 0, "center", "text").getCell(),
-      // new Cell(item?.leaveTypeWiseList[4]?.totalLeave || 0, "center", "text").getCell(),
-      new Cell(item?.offDay || 0, "center", "text").getCell(),
+      new Cell(item?.casualLeave || 0, "center", "text").getCell(),
+      new Cell(item?.medicalLeave || 0, "center", "text").getCell(),
+      new Cell(item?.leaveWithoutPay || 0, "center", "text").getCell(),
+      new Cell(item?.weekend || 0, "center", "text").getCell(),
       new Cell(item?.holiday || 0, "center", "text").getCell(),
+
+      // new Cell(String(index + 1), "center", "text").getCell(),
+      // new Cell(item?.employeeName || "N/A", "left", "text").getCell(),
+      // new Cell(item?.employeeCode || "N/A", "left", "text").getCell(),
+      // new Cell(item?.departmentName || "N/A", "left", "text").getCell(),
+      // new Cell(item?.designationName || "N/A", "left", "text").getCell(),
+      // new Cell(item?.employmentTypeName || "N/A", "left", "text").getCell(),
+      // new Cell(item?.workingDays || 0, "center", "text").getCell(),
+      // new Cell(item?.present || 0, "center", "text").getCell(),
+      // new Cell(item?.absent || 0, "center", "text").getCell(),
+      // new Cell(item?.late || 0, "center", "text").getCell(),
+      // new Cell(item?.movement || 0, "center", "text").getCell(),
+      // new Cell(item?.leaveTypeWiseList[0]?.totalLeave || 0, "center", "text").getCell(),
+      // new Cell(item?.leaveTypeWiseList[1]?.totalLeave || 0, "center", "text").getCell(),
+      // new Cell(item?.leaveTypeWiseList[2]?.totalLeave || 0, "center", "text").getCell(),
+      // // new Cell(item?.leaveTypeWiseList[3]?.totalLeave || 0, "center", "text").getCell(),
+      // // new Cell(item?.leaveTypeWiseList[4]?.totalLeave || 0, "center", "text").getCell(),
+      // new Cell(item?.offDay || 0, "center", "text").getCell(),
+      // new Cell(item?.holiday || 0, "center", "text").getCell(),
     ];
   });
-return data
+  return data;
 };
 
 const createExcelFile = (
@@ -52,13 +69,12 @@ const createExcelFile = (
   dateFrom,
   dateto
 ) => {
- 
   const excel = {
-    name:  `${comapanyNameHeader} Report ${moment().format('ll')}`,
+    name: `${comapanyNameHeader} Report ${moment().format("ll")}`,
     sheets: [
       {
         // name: `Salary Report-${monthYear}`,
-        name: `${comapanyNameHeader} Report ${moment().format('ll')}`,
+        name: `${comapanyNameHeader} Report ${moment().format("ll")}`,
         gridLine: false,
         rows: [
           ["_blank*2"],
@@ -84,7 +100,9 @@ const createExcelFile = (
           ],
           [
             {
-              text: `${comapanyNameHeader}- from ${moment(dateFrom).format('LL')} to ${moment(dateto).format('LL')}`,
+              text: `${comapanyNameHeader}- from ${moment(dateFrom).format(
+                "LL"
+              )} to ${moment(dateto).format("LL")}`,
               fontSize: 15,
               bold: true,
               cellRange: "A1:J1",
@@ -118,24 +136,24 @@ const createExcelFile = (
               border: "all 000000 thin",
             },
             {
-                text: "Department",
-                fontSize: 9,
-                bold: true,
-                border: "all 000000 thin",
-              },
-              {
-                text: "Designation",
-                fontSize: 9,
-                bold: true,
-                border: "all 000000 thin",
-              },
-              {
-                text: "Employment Type",
-                fontSize: 9,
-                bold: true,
-                border: "all 000000 thin",
-              },
-             
+              text: "Department",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Designation",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Employment Type",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+
             {
               text: "Working Days",
               fontSize: 9,
@@ -166,8 +184,7 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-        
-           
+
             {
               text: "Casual Leave",
               fontSize: 9,
@@ -210,13 +227,12 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-            
           ],
           ...getTableDataForExcel(rowDto),
           ["_blank*2"],
           [
             {
-              text: `System Generated Report ${moment().format('ll')}`,
+              text: `System Generated Report ${moment().format("ll")}`,
               fontSize: 12,
               bold: true,
               cellRange: "A1:J1",
@@ -308,7 +324,6 @@ const createExcelFile = (
   //   fs.saveAs(blob, `${comapanyNameHeader}.xlsx`);
   // });
 };
-
 
 export const generateExcelAction = (
   title,

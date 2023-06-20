@@ -70,7 +70,7 @@ function EmployeeFeatureNew() {
   const history = useHistory();
 
   // redux
-  const { orgId, buId, buName, employeeId, wgId, wgName } = useSelector(
+  const { orgId, buId, buName, wgId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -260,8 +260,23 @@ function EmployeeFeatureNew() {
                               setLoading(true);
                               const excelLanding = async () => {
                                 try {
-                                  const res = await axios.get(
-                                    `/Employee/EmployeeProfileLandingPagination?accountId=${orgId}&businessUnitId=${buId}&EmployeeId=${employeeId}&PageNo=1&PageSize=1000000&searchTxt=&WorkplaceGroupId=${wgId}&IsForXl=true`
+                                  // const res = await axios.get(
+                                  //   `/Employee/EmployeeProfileLandingPagination?accountId=${orgId}&businessUnitId=${buId}&EmployeeId=${employeeId}&PageNo=1&PageSize=1000000&searchTxt=&WorkplaceGroupId=${wgId}&IsForXl=true`
+                                  // );
+                                  const payload = {
+                                    businessUnitId: buId,
+                                    workplaceGroupId: wgId,
+                                    workplaceId: 0,
+                                    pageNo: 0,
+                                    pageSize: 0,
+                                    isPaginated: false,
+                                    isHeaderNeed: false,
+                                    searchTxt: values?.searchString,
+                                    ...checkedHeaderList,
+                                  };
+                                  const res = await axios.post(
+                                    `/Employee/EmployeeProfileLandingPaginationWithMasterFilter`,
+                                    payload
                                   );
                                   if (res?.data) {
                                     if (!res?.data?.data?.length > 0) {
