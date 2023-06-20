@@ -3,7 +3,10 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form } from "formik";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Tooltip, tooltipClasses } from "@mui/material";
-import { InfoOutlined, SettingsBackupRestoreOutlined } from "@mui/icons-material";
+import {
+  InfoOutlined,
+  SettingsBackupRestoreOutlined,
+} from "@mui/icons-material";
 import { styled } from "@mui/system";
 import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
@@ -50,7 +53,9 @@ const LoanHistory = () => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
   }, []);
 
-  const LightTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(({ theme }) => ({
+  const LightTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
     [`& .${tooltipClasses.arrow}`]: {
       color: "#fff !important",
     },
@@ -58,7 +63,8 @@ const LoanHistory = () => {
       backgroundColor: "#fff",
       color: "rgba(0, 0, 0, 0.87)",
       maxWidth: 300,
-      boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
+      boxShadow:
+        "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
       fontSize: 11,
     },
   }));
@@ -87,7 +93,8 @@ const LoanHistory = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const { buId, employeeId, fullname, designationId, designationName } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { buId, employeeId, fullname, designationId, designationName, wgId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   useEffect(() => {
     getLoanApplicationByAdvanceFilter(
@@ -120,13 +127,21 @@ const LoanHistory = () => {
     const newRowData = [...allData];
     let modifyRowData = [];
     if (statusType === "Completed") {
-      modifyRowData = newRowData?.filter((item) => item?.installmentStatus === "Completed");
+      modifyRowData = newRowData?.filter(
+        (item) => item?.installmentStatus === "Completed"
+      );
     } else if (statusType === "Running") {
-      modifyRowData = newRowData?.filter((item) => item?.installmentStatus === "Running");
+      modifyRowData = newRowData?.filter(
+        (item) => item?.installmentStatus === "Running"
+      );
     } else if (statusType === "Hold") {
-      modifyRowData = newRowData?.filter((item) => item?.installmentStatus === "Hold");
+      modifyRowData = newRowData?.filter(
+        (item) => item?.installmentStatus === "Hold"
+      );
     } else {
-      modifyRowData = newRowData?.filter((item) => item?.installmentStatus === "Not Started");
+      modifyRowData = newRowData?.filter(
+        (item) => item?.installmentStatus === "Not Started"
+      );
     }
     setRowDto(modifyRowData);
   };
@@ -194,7 +209,15 @@ const LoanHistory = () => {
           });
         }}
       >
-        {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid }) => (
+        {({
+          handleSubmit,
+          resetForm,
+          values,
+          errors,
+          touched,
+          setFieldValue,
+          isValid,
+        }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -214,18 +237,32 @@ const LoanHistory = () => {
                         }}
                         onClick={() => {
                           getPDFAction(
-                            `/emp/PdfAndExcelReport/LoanReportAll?BusinessUnitId=${buId}&DepartmentId=${values?.department?.value || 0}&DesignationId=${
+                            `/emp/PdfAndExcelReport/LoanReportAll?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&DepartmentId=${
+                              values?.department?.value || 0
+                            }&DesignationId=${
                               values?.designation?.value || 0
-                            }&EmployeeId=${values?.employee?.value || 0}&LoanTypeId=${values?.loanType?.value || 0}&FromDate=${values?.fromDate || ""}&ToDate=${
+                            }&EmployeeId=${
+                              values?.employee?.value || 0
+                            }&LoanTypeId=${
+                              values?.loanType?.value || 0
+                            }&FromDate=${values?.fromDate || ""}&ToDate=${
                               values?.toDate || ""
-                            }&MinimumAmount=${values?.minimumAmount || 0}&MaximumAmount=${values?.maximumAmount || 0}&ApplicationStatus=${
+                            }&MinimumAmount=${
+                              values?.minimumAmount || 0
+                            }&MaximumAmount=${
+                              values?.maximumAmount || 0
+                            }&ApplicationStatus=${
                               values?.applicationStatus?.label || ""
-                            }&InstallmentStatus=${values?.installmentStatus?.label || ""}`,
+                            }&InstallmentStatus=${
+                              values?.installmentStatus?.label || ""
+                            }`,
                             setLoading
                           );
                         }}
                       >
-                        <PrintIcon sx={{ color: "#637381", fontSize: "16px" }} />
+                        <PrintIcon
+                          sx={{ color: "#637381", fontSize: "16px" }}
+                        />
                       </button>
                     </Tooltip>
                   </div>
@@ -235,7 +272,11 @@ const LoanHistory = () => {
                         <li>
                           <ResetButton
                             title="reset"
-                            icon={<SettingsBackupRestoreOutlined sx={{ marginRight: "10px" }} />}
+                            icon={
+                              <SettingsBackupRestoreOutlined
+                                sx={{ marginRight: "10px" }}
+                              />
+                            }
                             onClick={() => {
                               getLoanApplicationByAdvanceFilter(
                                 setAllData,
@@ -312,13 +353,20 @@ const LoanHistory = () => {
                                 <div
                                   className="sortable"
                                   onClick={() => {
-                                    setViewOrder(viewOrder === "desc" ? "asc" : "desc");
-                                    commonSortByFilter(viewOrder, "employeeName");
+                                    setViewOrder(
+                                      viewOrder === "desc" ? "asc" : "desc"
+                                    );
+                                    commonSortByFilter(
+                                      viewOrder,
+                                      "employeeName"
+                                    );
                                   }}
                                 >
                                   <span>Employee</span>
                                   <div>
-                                    <SortingIcon viewOrder={viewOrder}></SortingIcon>
+                                    <SortingIcon
+                                      viewOrder={viewOrder}
+                                    ></SortingIcon>
                                   </div>
                                 </div>
                               </th>
@@ -326,13 +374,22 @@ const LoanHistory = () => {
                                 <div
                                   className="sortable"
                                   onClick={() => {
-                                    setDesignationOrder(designationOrder === "desc" ? "asc" : "desc");
-                                    commonSortByFilter(designationOrder, "designationName");
+                                    setDesignationOrder(
+                                      designationOrder === "desc"
+                                        ? "asc"
+                                        : "desc"
+                                    );
+                                    commonSortByFilter(
+                                      designationOrder,
+                                      "designationName"
+                                    );
                                   }}
                                 >
                                   <span>Designation</span>
                                   <div>
-                                    <SortingIcon viewOrder={designationOrder}></SortingIcon>
+                                    <SortingIcon
+                                      viewOrder={designationOrder}
+                                    ></SortingIcon>
                                   </div>
                                 </div>
                               </th>
@@ -350,13 +407,20 @@ const LoanHistory = () => {
                                 <div
                                   className="sortable"
                                   onClick={() => {
-                                    setDateOrder(dateOrder === "desc" ? "asc" : "desc");
-                                    commonSortByFilter(dateOrder, "applicationDate");
+                                    setDateOrder(
+                                      dateOrder === "desc" ? "asc" : "desc"
+                                    );
+                                    commonSortByFilter(
+                                      dateOrder,
+                                      "applicationDate"
+                                    );
                                   }}
                                 >
                                   <span>Loan Amount & Date</span>
                                   <div>
-                                    <SortingIcon viewOrder={dateOrder}></SortingIcon>
+                                    <SortingIcon
+                                      viewOrder={dateOrder}
+                                    ></SortingIcon>
                                   </div>
                                 </div>
                               </th>
@@ -431,26 +495,39 @@ const LoanHistory = () => {
                                     key={index}
                                     className="hasEvent"
                                     onClick={() => {
-                                      getPDFAction(`/emp/PdfAndExcelReport/LoanReportDetails?LoanApplicationId=${item?.loanApplicationId}`, setLoading);
+                                      getPDFAction(
+                                        `/emp/PdfAndExcelReport/LoanReportDetails?LoanApplicationId=${item?.loanApplicationId}`,
+                                        setLoading
+                                      );
                                     }}
                                   >
                                     <td>
                                       <div className="d-flex align-items-center">
                                         <div className="emp-avatar">
-                                          <AvatarComponent classess="" letterCount={1} label={item?.employeeName} />
+                                          <AvatarComponent
+                                            classess=""
+                                            letterCount={1}
+                                            label={item?.employeeName}
+                                          />
                                         </div>
                                         <div className="ml-2">
                                           <span className="tableBody-title">
-                                            {item?.employeeName} {item?.employeeCode && `[${item?.employeeCode}]`}
+                                            {item?.employeeName}{" "}
+                                            {item?.employeeCode &&
+                                              `[${item?.employeeCode}]`}
                                           </span>
                                         </div>
                                       </div>
                                     </td>
                                     <td>
-                                      <div className="tableBody-title">{item?.designationName}</div>
+                                      <div className="tableBody-title">
+                                        {item?.designationName}
+                                      </div>
                                     </td>
                                     <td>
-                                      <div className="tableBody-title">{item?.departmentName}</div>
+                                      <div className="tableBody-title">
+                                        {item?.departmentName}
+                                      </div>
                                     </td>
                                     <td>
                                       <div className="tableBody-title">
@@ -459,37 +536,83 @@ const LoanHistory = () => {
                                           title={
                                             <div className="application-tooltip">
                                               <h6>Reason</h6>
-                                              <span className="tableBody-title">{item?.description}</span>
+                                              <span className="tableBody-title">
+                                                {item?.description}
+                                              </span>
                                             </div>
                                           }
                                           arrow
                                         >
-                                          <InfoOutlined sx={{ marginLeft: "12px" }} />
+                                          <InfoOutlined
+                                            sx={{ marginLeft: "12px" }}
+                                          />
                                         </LightTooltip>
                                       </div>
                                     </td>
                                     <td>
-                                      <div className="tableBody-title">BDT {item?.approveLoanAmount}</div>
-                                      <div className="tableBody-title">{dateFormatter(item?.applicationDate)}</div>
+                                      <div className="tableBody-title">
+                                        BDT {item?.approveLoanAmount}
+                                      </div>
+                                      <div className="tableBody-title">
+                                        {dateFormatter(item?.applicationDate)}
+                                      </div>
                                     </td>
                                     <td>
-                                      <div className="tableBody-title text-center">{item?.approveNumberOfInstallment}</div>
+                                      <div className="tableBody-title text-center">
+                                        {item?.approveNumberOfInstallment}
+                                      </div>
                                     </td>
                                     <td>
                                       <div className="d-flex align-center">
                                         <div className="mr-1">
-                                          {item?.applicationStatus === "Approved" && <Chips label="Approved" classess="success" />}
-                                          {item?.applicationStatus === "Pending" && <Chips label="Pending" classess="warning" />}
-                                          {item?.applicationStatus === "Rejected" && <Chips label="Rejected" classess="danger" />}
+                                          {item?.applicationStatus ===
+                                            "Approved" && (
+                                            <Chips
+                                              label="Approved"
+                                              classess="success"
+                                            />
+                                          )}
+                                          {item?.applicationStatus ===
+                                            "Pending" && (
+                                            <Chips
+                                              label="Pending"
+                                              classess="warning"
+                                            />
+                                          )}
+                                          {item?.applicationStatus ===
+                                            "Rejected" && (
+                                            <Chips
+                                              label="Rejected"
+                                              classess="danger"
+                                            />
+                                          )}
                                         </div>
                                       </div>
                                     </td>
                                     <td>
                                       <div className="d-flex align-center">
                                         <div className="mr-1">
-                                          {item?.installmentStatus === "Completed" && <Chips label="Completed" classess="success" />}
-                                          {item?.installmentStatus === "Running" && <Chips label="Running" classess="warning" />}
-                                          {item?.installmentStatus === "Not Started" && <Chips label="Not Started" classess="danger" />}
+                                          {item?.installmentStatus ===
+                                            "Completed" && (
+                                            <Chips
+                                              label="Completed"
+                                              classess="success"
+                                            />
+                                          )}
+                                          {item?.installmentStatus ===
+                                            "Running" && (
+                                            <Chips
+                                              label="Running"
+                                              classess="warning"
+                                            />
+                                          )}
+                                          {item?.installmentStatus ===
+                                            "Not Started" && (
+                                            <Chips
+                                              label="Not Started"
+                                              classess="danger"
+                                            />
+                                          )}
                                         </div>
                                       </div>
                                     </td>
@@ -501,7 +624,11 @@ const LoanHistory = () => {
                         </table>
                       </>
                     ) : (
-                      <>{!loading && <NoResult title="No Result Found" para="" />}</>
+                      <>
+                        {!loading && (
+                          <NoResult title="No Result Found" para="" />
+                        )}
+                      </>
                     )}
                   </div>
                 </div>

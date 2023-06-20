@@ -28,34 +28,28 @@ export const hasLeave = (data) => {
 export const getLeaveHistoryAction = async (
   setAllData,
   buId,
-  orgId,
   wgId,
   yearId,
   setLoading,
   setter,
-  setTableRowDto,
-  workplaceGroupId,
-  departmentId,
-  designationId,
-  empId
+  srcTxt,
+  isPaginated,
+  pageNo,
+  pageSize,
+  setPages
 ) => {
   try {
     setLoading(true);
     const res = await axios.get(
-      `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${yearId}&accountId=${
-        orgId || 0
-      }&DeptId=${departmentId || 0}&DesigId=${
-        designationId || 0
-      }&WorkplaceGroupId=${wgId}&EmployeeId=${empId || 0}`
+      `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${yearId}&WorkplaceGroupId=${wgId}&SearchText=${srcTxt}&IsPaginated=${isPaginated}&PageNo=${pageNo}&PageSize=${pageSize}`
     );
     setLoading(false);
     setter(res?.data);
-    setTableRowDto((prev) => ({
-      ...prev,
-      data: res?.data,
-      totalCount: res?.data?.length,
-    }));
-    setAllData(res?.data);
+    setPages({
+      current: res?.data?.currentPage,
+      pageSize: res?.data?.pageSize,
+      total: res?.data?.totalCount,
+    });
   } catch (error) {
     setLoading(false);
     setter([]);
@@ -66,47 +60,50 @@ export const leaveHistoryCol = (page, paginationSize) => {
   return [
     {
       title: "SL",
-      render: (text, record, index) => (page - 1) * paginationSize + index + 1,
-      sorter: false,
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
       filter: false,
       className: "text-center",
-      width: 60,
+      width: 50,
     },
     {
       title: "Employee Id",
       dataIndex: "employeeCode",
-      sorter: true,
-      filter: true,
+      sorter: false,
+      filter: false,
     },
     {
-      title: "Employee Name",
+      title: "Employee",
       dataIndex: "employee",
-      render: (_, record) => {
-        return (
-          <div className="d-flex align-items-center">
+      sort: true,
+      filter: false,
+      render: (item) => (
+        <div className="d-flex align-items-center justify-content-start">
+          <div className="emp-avatar">
             <AvatarComponent
               classess=""
               letterCount={1}
-              label={record?.employee}
+              label={item?.employee}
             />
-            <span className="ml-2">{record?.employee}</span>
           </div>
-        );
-      },
-      sorter: true,
-      filter: true,
+          <div className="ml-2">
+            <span>{item?.employee}</span>
+          </div>
+        </div>
+      ),
+      fieldType: "string",
     },
     {
       title: "Designation",
       dataIndex: "designation",
-      sorter: true,
-      filter: true,
+      sorter: false,
+      filter: false,
     },
     {
       title: "Department",
       dataIndex: "department",
-      sorter: true,
-      filter: true,
+      sorter: false,
+      filter: false,
     },
     {
       title: "CL",
@@ -118,6 +115,8 @@ export const leaveHistoryCol = (page, paginationSize) => {
           </span>
         );
       },
+      sorter: false,
+      filter: false,
     },
     {
       title: "SL",
@@ -129,6 +128,8 @@ export const leaveHistoryCol = (page, paginationSize) => {
           </span>
         );
       },
+      sorter: false,
+      filter: false,
     },
     {
       title: "EL",
@@ -140,6 +141,8 @@ export const leaveHistoryCol = (page, paginationSize) => {
           </span>
         );
       },
+      sorter: false,
+      filter: false,
     },
     {
       title: "LWP",
@@ -151,6 +154,8 @@ export const leaveHistoryCol = (page, paginationSize) => {
           </span>
         );
       },
+      sorter: false,
+      filter: false,
     },
     {
       title: "ML",
@@ -162,6 +167,8 @@ export const leaveHistoryCol = (page, paginationSize) => {
           </span>
         );
       },
+      sorter: false,
+      filter: false,
     },
   ];
 };
