@@ -20,15 +20,19 @@ const getTableDataForExcel = (row) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
-      new Cell(item?.EmployeeName || "N/A", "left", "text").getCell(),
-      new Cell(item?.DesignationName || "N/A", "center", "text").getCell(),
-      new Cell(item?.DepartmentName || "N/A", "center", "text").getCell(),
-      new Cell(item?.SeparationTypeName || "N/A", "center", "text").getCell(),
-      new Cell(item?.JoiningDate || "N/A", "center", "text").getCell(),
-      new Cell(item?.ServiceLength || "N/A", "center", "text").getCell(),
-      new Cell(item?.InsertDate || "N/A", "center", "text").getCell(),
-      new Cell(item?.AdjustedAmount || 0, "center", "text").getCell(),
-      new Cell(item?.ApprovalStatus || "N/A", "center", "text").getCell(),
+      new Cell(item?.strEmployeeName || "N/A", "left", "text").getCell(),
+      new Cell(item?.strDesignation || "N/A", "center", "text").getCell(),
+      new Cell(item?.strDepartment || "N/A", "center", "text").getCell(),
+      new Cell(
+        item?.strSeparationTypeName || "N/A",
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(item?.dteJoiningDate || "N/A", "center", "text").getCell(),
+      new Cell(item?.serviceLength || "N/A", "center", "text").getCell(),
+      new Cell(item?.dteSeparationDate || "N/A", "center", "text").getCell(),
+      new Cell(item?.intAdjustedAmount || 0, "center", "text").getCell(),
+      new Cell(item?.approvalStatus || "N/A", "center", "text").getCell(),
     ];
   });
   return data;
@@ -41,13 +45,12 @@ const createExcelFile = (
   rowDto,
   buAddress
 ) => {
-
   const excel = {
-    name: `${comapanyNameHeader} ${moment().format('ll')}`,
+    name: `${comapanyNameHeader} ${moment().format("ll")}`,
     sheets: [
       {
         // name: `Salary Report-${monthYear}`,
-        name:`${comapanyNameHeader} ${moment().format('ll')}`,
+        name: `${comapanyNameHeader} ${moment().format("ll")}`,
         gridLine: false,
         rows: [
           ["_blank*2"],
@@ -73,7 +76,7 @@ const createExcelFile = (
           ],
           [
             {
-              text: `${comapanyNameHeader}-${moment().format('LL')}`,
+              text: `${comapanyNameHeader}-${moment().format("LL")}`,
               fontSize: 15,
               bold: true,
               cellRange: "A1:J1",
@@ -116,7 +119,7 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-            
+
             {
               text: "Joining Date",
               fontSize: 9,
@@ -147,13 +150,12 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-            
           ],
           ...getTableDataForExcel(rowDto),
           ["_blank*2"],
           [
             {
-              text: `System Generated Report ${moment().format('ll')}`,
+              text: `System Generated Report ${moment().format("ll")}`,
               fontSize: 12,
               bold: true,
               cellRange: "A1:J1",
@@ -166,10 +168,7 @@ const createExcelFile = (
     ],
   };
   createFile(excel);
-
 };
-
-
 
 export const generateExcelAction = (
   title,
@@ -179,12 +178,5 @@ export const generateExcelAction = (
   rowDto,
   buAddress
 ) => {
-  createExcelFile(
-    title,
-    fromDate,
-    toDate,
-    businessUnit,
-    rowDto,
-    buAddress
-  );
+  createExcelFile(title, fromDate, toDate, businessUnit, rowDto, buAddress);
 };

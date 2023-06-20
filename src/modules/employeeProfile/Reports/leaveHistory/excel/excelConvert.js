@@ -26,31 +26,31 @@ const getTableDataForExcel = (row) => {
       new Cell(item?.designation || "N/A", "center", "text").getCell(),
       // eslint-disable-next-line
       new Cell(
-        `${item?.clTaken || 0}` + "/" + `${item?.clBalance || 0}` || "N/A",
+        `${item?.clTaken || 0}/${item?.clBalance || 0}` || "N/A",
         "center",
         "text"
       ).getCell(),
       // eslint-disable-next-line
       new Cell(
-        `${item?.slTaken || 0}` + "/" + `${item?.slBalance || 0}` || "N/A",
+        `${item?.slTaken || 0}/${item?.slBalance || 0}` || "N/A",
         "center",
         "text"
       ).getCell(),
       // eslint-disable-next-line
       new Cell(
-        `${item?.elTaken || 0}` + `/` + `${item?.elBalance || 0}` || "N/A",
+        `${item?.elTaken || 0}/${item?.elBalance || 0}` || "N/A",
         "center",
         "text"
       ).getCell(),
       // eslint-disable-next-line
       new Cell(
-        `${item?.lwpTaken || 0}` + "/" + `${item?.lwpBalance || 0}` || "N/A",
+        `${item?.lwpTaken || 0}/${item?.lwpBalance || 0}` || "N/A",
         "center",
         "text"
       ).getCell(),
       // eslint-disable-next-line
       new Cell(
-        `${item?.mlTaken || 0}` + "/" + `${item?.mlBalance || 0}` || "N/A",
+        `${item?.mlTaken || 0}/${item?.mlBalance || 0}` || "N/A",
         "center",
         "text"
       ).getCell(),
@@ -270,12 +270,12 @@ const createExcelFile = (
   // });
 };
 
-const getTableData = (row, keys, totalKey) => {
-  const data = row?.map((item, index) => {
-    return keys?.map((key) => item[key]);
-  });
-  return data;
-};
+// const getTableData = (row, keys, totalKey) => {
+//   const data = row?.map((item, index) => {
+//     return keys?.map((key) => item[key]);
+//   });
+//   return data;
+// };
 
 export const generateExcelAction = (title, businessUnit, rowDto, buAddress) => {
   // const tableDataInfo = getTableData(data, Object.keys(column));

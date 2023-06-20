@@ -20,74 +20,68 @@ const LightTooltip = styled(({ className, ...props }) => (
   },
 }));
 
-export const empSeparationCol = (pages) => {
+export const empSeparationCol = (page, paginationSize) => {
   return [
     {
       title: "SL",
-      render: (text, record, index) => {
-        return (
-          <span>
-            {pages?.current === 1
-              ? index + 1
-              : (pages.current - 1) * pages?.pageSize + (index + 1)}
-          </span>
-        );
-      },
-      sorter: false,
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
       filter: false,
       className: "text-center",
-      fixed: "left",
       width: 60,
     },
     {
       title: "Code",
-      dataIndex: "EmployeeCode",
-      sorter: true,
-      filter: true,
+      dataIndex: "strEmployeeCode",
+      sort: true,
+      filter: false,
+      fieldType: "string",
       width: 100,
-      fixed: "left",
     },
     {
       title: "Employee Name",
-      dataIndex: "EmployeeName",
-      render: (_, record) => {
+      dataIndex: "strEmployeeName",
+      render: (record) => {
         return (
           <div className="d-flex align-items-center">
             <AvatarComponent
               classess=""
               letterCount={1}
-              label={record?.EmployeeName}
+              label={record?.strEmployeeName}
             />
-            <span className="ml-2">{record?.EmployeeName}</span>
+            <span className="ml-2">{record?.strEmployeeName}</span>
           </div>
         );
       },
-      sorter: true,
-      filter: true,
-      fixed: "left",
+      sort: true,
+      filter: false,
+      fieldType: "string",
       width: 250,
     },
     {
       title: "Designation",
-      dataIndex: "DesignationName",
-      sorter: true,
-      filter: true,
+      dataIndex: "strDesignation",
+      sort: true,
+      filter: false,
       width: 200,
+      fieldType: "string",
     },
     {
       title: "Department",
-      dataIndex: "DepartmentName",
-      sorter: true,
-      filter: true,
+      dataIndex: "strDesignation",
+      sort: true,
+      filter: false,
       width: 200,
+      fieldType: "string",
     },
     {
       title: "Separation Type",
-      dataIndex: "SeparationTypeName",
-      sorter: true,
-      filter: true,
+      dataIndex: "strSeparationTypeName",
+      sort: true,
+      filter: false,
       width: 200,
-      render: (_, item) => {
+      fieldType: "string",
+      render: (item) => {
         return (
           <div className="d-flex align-items-center">
             <LightTooltip
@@ -95,66 +89,82 @@ export const empSeparationCol = (pages) => {
                 <div className="movement-tooltip p-2">
                   <div className="application-tooltip">
                     <h6>Employement Type</h6>
-                    <h5 className="tableBody-title">{item?.EmployementType}</h5>
+                    <h5 className="tableBody-title">
+                      {item?.strEmploymentType}
+                    </h5>
                   </div>
-                  <div className="application-tooltip">{item?.Reason}</div>
+                  <div
+                    className="application-tooltip"
+                    dangerouslySetInnerHTML={{
+                      __html: item?.strReason,
+                    }}
+                  />
                 </div>
               }
               arrow
             >
               <InfoOutlinedIcon sx={{ fontSize: "1rem" }} />
             </LightTooltip>
-            <span>{item?.SeparationTypeName}</span>
+            <span>{item?.strSeparationTypeName}</span>
           </div>
         );
       },
     },
     {
       title: "Joining Date",
-      dataIndex: "JoiningDate",
+      dataIndex: "dteJoiningDate",
       isDate: true,
       width: 200,
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
       title: "Service Length",
-      dataIndex: "ServiceLength",
-      sorter: true,
-      filter: true,
+      dataIndex: "serviceLength",
+      sort: true,
+      filter: false,
+      fieldType: "string",
       width: 200,
     },
     {
       title: "Application Date",
-      dataIndex: "InsertDate",
-      isDate: true,
-      render: (InsertDate) => dateFormatter(InsertDate),
+      dataIndex: "dteSeparationDate",
+      render: (item) => dateFormatter(item?.dteSeparationDate),
+      sort: true,
+      filter: false,
+      fieldType: "date",
       width: 200,
     },
-    {
-      title: "Adjusted Amount",
-      dataIndex: "AdjustedAmount",
-      isDate: true,
-      render: (AdjustedAmount) => dateFormatter(AdjustedAmount),
-      width: 200,
-    },
+    // {
+    //   title: "Adjusted Amount",
+    //   dataIndex: "intAdjustedAmount",
+    //   render: (item) => dateFormatter(item?.intAdjustedAmount),
+    //   width: 200,
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "number",
+    // },
     {
       title: "Status",
-      dataIndex: "ApprovalStatus",
+      dataIndex: "approvalStatus",
       sorter: true,
-      filter: true,
+      filter: false,
+      fieldType: "string",
       width: 200,
-      render: (_, item) => {
+      render: (item) => {
         return (
           <div className="tableBody-title">
-            {item?.ApprovalStatus === "Approve" && (
+            {item?.approvalStatus === "Approved" && (
               <Chips label="Approved" classess="success" />
             )}
-            {item?.ApprovalStatus === "Pending" && (
+            {item?.approvalStatus === "Pending" && (
               <Chips label="Pending" classess=" warning" />
             )}
-            {item?.ApprovalStatus === "Reject" && (
+            {item?.approvalStatus === "Rejected" && (
               <Chips label="Rejected" classess="danger" />
             )}
-            {item?.ApprovalStatus === "Released" && (
+            {item?.approvalStatus === "Released" && (
               <>
                 <Chips label="Released" classess=" p-2 mr-2" />
               </>

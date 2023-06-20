@@ -12,7 +12,6 @@ import { gray500, gray700, gray900 } from "../../../utility/customColor";
 import {
   dateFormatter,
   dateFormatterForInput,
-  getDateOfYear,
 } from "../../../utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 import { LightTooltip } from "../LoanApplication/helper";
@@ -447,68 +446,46 @@ export const getBuDetails = async (buId, setter, setLoading) => {
   }
 };
 
-export const getEmployeeSeparationLanding = async (obj) => {
-  const {
-    status,
-    depId,
-    desId,
-    supId,
-    emTypId,
-    empId,
-    workId,
-    buId,
-    orgId,
-    setter,
-    setLoading,
-    separationTypeId,
-    setAllData,
-    tableName,
-    setTableRowDto,
-    fromDate,
-    toDate,
-    searchTxt,
-    pages,
-    setPages,
-  } = obj;
+export const getEmployeeSeparationLanding = async (
+  buId,
+  wgId,
+  formData,
+  toData,
+  search,
+  isForXl = false,
+  setter,
+  setLoading,
+  pageNo,
+  pageSize,
+  setPages
+) => {
+  setLoading && setLoading(true);
+
   try {
-    setLoading(true);
-    const payload = {
-      status: status || "",
-      departmentId: depId || 0,
-      designationId: desId || 0,
-      supervisorId: supId || 0,
-      employmentTypeId: emTypId || 0,
-      employeeId: empId || 0,
-      workplaceGroupId: workId || 0,
-      applicationFromDate: fromDate || getDateOfYear("first"),
-      applicationToDate: toDate || getDateOfYear("last"),
-      businessUnitId: buId || 0,
-      accountId: orgId || 0,
-      separationTypeId: separationTypeId || 0,
-      tableName: tableName,
-      searchTxt,
-      pageNo: pages?.current,
-      pageSize: pages?.pageSize,
-    };
-    const res = await axios.post(
-      "/Employee/EmployeeSeparationListFilter",
-      payload
-    );
-    setLoading(false);
-    setter(res?.data);
-    setPages({
-      current: pages?.current,
-      pageSize: pages?.pageSize,
-      total: res?.data[0]?.totalCount,
-    });
-    setTableRowDto((prev) => ({
-      ...prev,
-      data: res?.data,
-      totalCount: res?.data?.length,
-    }));
-    setAllData(res?.data);
+    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${formData}&ToDate=${toData}&IsForXl=${isForXl}&PageNo=${pageNo}&PageSize=${pageSize}`;
+
+    search = search && (apiUrl += `&searchTxt=${search}`);
+
+    const res = await axios.get(apiUrl);
+
+    if (res?.data) {
+      const modifiedData = res?.data?.data?.map((item, index) => ({
+        ...item,
+        initialSerialNumber: index + 1,
+      }));
+
+      setter && setter?.(modifiedData);
+
+      setPages({
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
+      });
+
+      setLoading && setLoading(false);
+    }
   } catch (error) {
-    setLoading(false);
+    setLoading && setLoading(false);
   }
 };
 
