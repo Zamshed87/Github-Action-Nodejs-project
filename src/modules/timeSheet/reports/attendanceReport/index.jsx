@@ -27,6 +27,10 @@ import "./attendanceReport.css";
 import { generateExcelAction } from "./excel/excelConvert";
 import PopOverFilter from "./PopOverFilter";
 import { toast } from "react-toastify";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import { attendanceReportColumn, getAttendanceReport } from "./helper";
 
 const todayDate = dateFormatterForInput(new Date());
 const initData = {
@@ -58,7 +62,7 @@ export default function AttendanceReport() {
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 25,
+    pageSize: paginationSize,
     total: 0,
   });
 
@@ -66,8 +70,7 @@ export default function AttendanceReport() {
   const id = open ? "simple-popover" : undefined;
 
   useEffect(() => {
-    getAttendenceReport(
-      orgId,
+    getAttendanceReport(
       buId,
       todayDate,
       todayDate,
@@ -78,6 +81,18 @@ export default function AttendanceReport() {
       setPages,
       ""
     );
+    // getAttendenceReport(
+    //   orgId,
+    //   buId,
+    //   todayDate,
+    //   todayDate,
+    //   setRowDto,
+    //   setLoading,
+    //   wgId,
+    //   pages,
+    //   setPages,
+    //   ""
+    // );
     // eslint-disable-next-line
   }, [buId, orgId, wgId]);
   useEffect(() => {
@@ -98,12 +113,11 @@ export default function AttendanceReport() {
     setAnchorEl(null);
   };
   // handleChangePage
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (_, newPage) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
-    getAttendenceReport(
-      orgId,
+    getAttendanceReport(
       buId,
       todayDate,
       todayDate,
@@ -118,14 +132,29 @@ export default function AttendanceReport() {
       setPages,
       ""
     );
+    // getAttendenceReport(
+    //   orgId,
+    //   buId,
+    //   todayDate,
+    //   todayDate,
+    //   setRowDto,
+    //   setLoading,
+    //   wgId,
+    //   {
+    //     current: newPage === 0 ? 1 : newPage,
+    //     pageSize: pages?.pageSize,
+    //     total: pages?.total,
+    //   },
+    //   setPages,
+    //   ""
+    // );
   };
   //handleChangeRowsPerPage
   const handleChangeRowsPerPage = (event) => {
     setPages((prev) => {
       return { ...prev, pageSize: +event.target.value };
     });
-    getAttendenceReport(
-      orgId,
+    getAttendanceReport(
       buId,
       todayDate,
       todayDate,
@@ -140,11 +169,26 @@ export default function AttendanceReport() {
       setPages,
       ""
     );
+    // getAttendenceReport(
+    //   orgId,
+    //   buId,
+    //   todayDate,
+    //   todayDate,
+    //   setRowDto,
+    //   setLoading,
+    //   wgId,
+    //   {
+    //     current: pages?.current,
+    //     pageSize: +event.target.value,
+    //     total: pages?.total,
+    //   },
+    //   setPages,
+    //   ""
+    // );
   };
 
   const saveHandler = (values) => {
-    getAttendenceReport(
-      orgId,
+    getAttendanceReport(
       buId,
       values?.fromDate,
       values?.toDate,
@@ -155,7 +199,19 @@ export default function AttendanceReport() {
       setPages,
       ""
     );
-    getAllLveLeaveType(orgId, setLeaveTypeList, setTempLoading);
+    // getAttendenceReport(
+    //   orgId,
+    //   buId,
+    //   values?.fromDate,
+    //   values?.toDate,
+    //   setRowDto,
+    //   setLoading,
+    //   wgId,
+    //   pages,
+    //   setPages,
+    //   ""
+    // );
+    // getAllLveLeaveType(orgId, setLeaveTypeList, setTempLoading);
   };
 
   const activity_day_total = (fieldName) => {
@@ -167,10 +223,11 @@ export default function AttendanceReport() {
   //  permission
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 91) {
+    if (item?.menuReferenceId === 30315) {
       permission = item;
     }
   });
+
   return (
     <>
       <Formik
@@ -208,11 +265,18 @@ export default function AttendanceReport() {
                                 setLoading && setLoading(true);
                                 try {
                                   const res = await axios.get(
-                                    `/TimeSheetReport/GetAttendanceReport?FromDate=${
+                                    `/TimeSheetReport/GetEmpAttendanceReport?FromDate=${
                                       values?.fromDate
                                     }&ToDate=${
                                       values?.toDate
-                                    }&BusinessUnitId=${buId}&AccountId=${orgId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=1000000&IsPaginated=${false}`
+                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${
+                                      values?.search || ""
+                                    }&IsXls=true`
+                                    // `/TimeSheetReport/GetAttendanceReport?FromDate=${
+                                    //   values?.fromDate
+                                    // }&ToDate=${
+                                    //   values?.toDate
+                                    // }&BusinessUnitId=${buId}&AccountId=${orgId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=1000000&IsPaginated=${false}`
                                   );
                                   if (res?.data) {
                                     if (res?.data < 1) {
@@ -224,7 +288,7 @@ export default function AttendanceReport() {
                                       "",
                                       "",
                                       buName,
-                                      res?.data,
+                                      res?.data?.data,
                                       buDetails?.strBusinessUnitAddress,
                                       values?.fromDate,
                                       values?.toDate
@@ -361,12 +425,35 @@ export default function AttendanceReport() {
                         </ul>
                       </div>
                     </div>
-                    <div className="table-card-body">
-                      <ScrollableTable
+                    <PeopleDeskTable
+                      columnData={attendanceReportColumn(
+                        pages?.current,
+                        pages?.pageSize
+                      )}
+                      pages={pages}
+                      rowDto={rowDto}
+                      setRowDto={setRowDto}
+                      handleChangePage={(e, newPage) =>
+                        handleChangePage(e, newPage, values?.search)
+                      }
+                      handleChangeRowsPerPage={(e) =>
+                        handleChangeRowsPerPage(e, values?.search)
+                      }
+                      onRowClick={(record) => {
+                        getPDFAction(
+                          `/PdfAndExcelReport/DailyAttendanceReportByEmployee?TypeId=0&EmployeeId=${record?.employeeId}&FromDate=${values?.fromDate}&ToDate=${values?.toDate}`,
+                          setLoading
+                        );
+                      }}
+                      uniqueKey="employeeCode"
+                      isScrollAble={true}
+                    />
+                    {/* <div className="table-card-body"> */}
+                    {/* <ScrollableTable
                         classes="salary-process-table"
                         secondClasses="table-card-styled tableOne scroll-table-height"
-                      >
-                        <thead>
+                      > */}
+                    {/* <thead>
                           <tr>
                             <th style={{ width: "30px" }}>
                               <div className="text-center">SL</div>
@@ -440,9 +527,8 @@ export default function AttendanceReport() {
                               Holiday
                             </th>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {/* {rowDto?.length === 0 && <Loading />} */}
+                        </thead> */}
+                    {/* <tbody>
                           {rowDto?.length > 0 &&
                             rowDto.map((data, index) => (
                               <tr
@@ -546,9 +632,9 @@ export default function AttendanceReport() {
                                 </td>
                               </tr>
                             ))}
-                        </tbody>
-                      </ScrollableTable>
-                      {rowDto?.length > 0 ? (
+                        </tbody> */}
+                    {/* </ScrollableTable> */}
+                    {/* {rowDto?.length > 0 ? (
                         <TablePagination
                           rowsPerPageOptions={[5, 10, 15, 25, 100]}
                           component="div"
@@ -558,14 +644,14 @@ export default function AttendanceReport() {
                           onPageChange={handleChangePage}
                           onRowsPerPageChange={handleChangeRowsPerPage}
                         />
-                      ) : null}
-                      {/*    <div className="table-card-styled employee-table-card table-responsive ant-scrolling-Table">
+                      ) : null} */}
+                    {/*    <div className="table-card-styled employee-table-card table-responsive ant-scrolling-Table">
                         <AntScrollTable
                           data={rowDto}
                           columnsData={attendenceReportDtoCol(rowDto)}
                         />
                       </div> */}
-                    </div>
+                    {/* </div> */}
                   </div>
                 ) : (
                   <NotPermittedPage />
