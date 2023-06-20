@@ -195,7 +195,7 @@ export default function ActiveInactiveEmployeeReport() {
                             onClick={(e) => {
                               e.stopPropagation();
                               getExcelData(
-                                `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IsXls=true&PageNo=1&PageSize=10000&searchTxt=&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}`,
+                                `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IsXls=true&PageNo=1&PageSize=10000&searchTxt=${values?.search}&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}`,
                                 (res) => {
                                   const newData = res?.data?.map(
                                     (item, index) => {

@@ -297,7 +297,7 @@ export default function EmployeeList() {
                                     pageSize: 0,
                                     isPaginated: false,
                                     isHeaderNeed: false,
-                                    searchTxt: "",
+                                    searchTxt: values?.searchString,
                                     strDesignationList: [],
                                     strDepartmentList: [],
                                     strSupervisorNameList: [],

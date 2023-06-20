@@ -48,7 +48,7 @@ export default function ContactBook() {
     total: 0,
   });
   const debounce = useDebounce();
-  const [excelData, getExcelData, apiLoading] = useAxiosGet();
+  const [, getExcelData, apiLoading] = useAxiosGet();
 
   const getData = (
     pagination = { current: 1, pageSize: paginationSize },
@@ -138,17 +138,17 @@ export default function ContactBook() {
                         }}
                         onClick={() => {
                           getExcelData(
-                            `/Employee/EmployeeContactInfo?businessUnitId=${buId}&pageSize=${10000}&pageNo=${1}&isForEXL=${true}&searchText=${
-                              values?.search
-                            }`
-                          );
-                          generateExcelAction(
-                            "Employee Contact Report",
-                            "",
-                            "",
-                            buDetails?.strBusinessUnit,
-                            excelData,
-                            buDetails?.strBusinessUnitAddress
+                            `/Employee/EmployeeContactInfo?businessUnitId=${buId}&pageSize=10000&pageNo=1&isForEXL=true&searchText=${values?.search}`,
+                            (res) => {
+                              generateExcelAction(
+                                "Employee Contact Report",
+                                "",
+                                "",
+                                buDetails?.strBusinessUnit,
+                                res,
+                                buDetails?.strBusinessUnitAddress
+                              );
+                            }
                           );
                         }}
                       >
