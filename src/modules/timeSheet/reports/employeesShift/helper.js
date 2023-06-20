@@ -1,6 +1,6 @@
-import { gray600 } from "../../../../utility/customColor";
-import moment from "moment";
 import axios from "axios";
+import moment from "moment";
+
 export const getBuDetails = async (buId, setter, setLoading) => {
   try {
     const res = await axios.get(
@@ -15,55 +15,81 @@ export const getBuDetails = async (buId, setter, setLoading) => {
     setter([]);
   }
 };
-export const onGetEmployeeInfoForEmployeesShift = (
-  getEmployeeInformation,
+
+export const getEmployeeInfo = async (
   accId,
   buId,
   employeeId,
-  cb
+  setter,
+  setLoading
 ) => {
-  getEmployeeInformation(
-    `/Employee/PeopleDeskAllLanding?TableName=EmployeeBasicById&AccountId=${accId}&BusinessUnitId=${buId}&intId=${employeeId}`,
-    (response) => {
-      cb?.(response?.[0]);
-    }
-  );
-};
-export const onGetEmployeeShiftInformation = (
-  getEmployeesShiftImpormation,
-  orgId,
-  employeeId,
-  workplaceGroupId,
-  workplaceId,
-  fromDate,
-  toDate,
-  pages,
-  setPages,
-  isPaginated=true
-) => {
-  getEmployeesShiftImpormation(
-    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_single_employee&AccountId=${orgId}&DteFromDate=${fromDate}&DteToDate=${toDate}&EmployeeId=${employeeId}&WorkplaceGroupId=${
-      workplaceGroupId || 0
-    }&WorkplaceId=${workplaceId || 0}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&IsPaginated=${isPaginated}`
-  );
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `/Employee/PeopleDeskAllLanding?TableName=EmployeeBasicById&AccountId=${accId}&BusinessUnitId=${buId}&intId=${employeeId}`
+    );
+
+    setter && setter(res?.data);
+
+    setLoading && setLoading(false);
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
 };
 
-export const employeesShiftInformationTableColumn = (page,
-  paginationSize) => {
+export const onGetEmployeeShiftInformation = async (
+  buId,
+  wgId,
+  employeeId,
+  formDate,
+  toDate,
+  setter,
+  setLoading,
+  pageNo,
+  pageSize,
+  setPages,
+  IsPaginated = true
+) => {
+  setLoading && setLoading(true);
+
+  try {
+    let apiUrl = `/TimeSheetReport/MonthlyRosterReportForSingleEmployee?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&EmployeeId=${employeeId}&FromDate=${formDate}&ToDate=${toDate}&PageNo=${pageNo}&PageSize=${pageSize}`;
+
+    const res = await axios.get(apiUrl);
+
+    if (res?.data) {
+      const modifiedData = res?.data?.data?.map((item, index) => ({
+        ...item,
+        initialSerialNumber: index + 1,
+      }));
+      setter && setter?.(modifiedData);
+
+      setPages({
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
+      });
+
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
+
+export const employeesShiftInformationTableColumn = (page, paginationSize) => {
   return [
     {
-      title: () => (
-        <div style={{ color: gray600, textAlign: "center" }}>SL</div>
-      ),
-      render: (_, __, index) => (
-        <>{(page - 1) * paginationSize + index + 1}</>
-      ),
-      width: 40,
-      className:"text-center"
+      title: "SL",
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
     },
     {
-      title: () => <span style={{ color: gray600 }}>Attendance Date</span>,
-      render: (_, record) => (
+      title: "Attendance Date",
+      dataIndex: "dteAttendanceDate",
+      render: (record) => (
         <>
           {record?.dteAttendanceDate
             ? moment(record?.dteAttendanceDate, "YYYY-MM-DDThh:mm:ss").format(
@@ -72,27 +98,37 @@ export const employeesShiftInformationTableColumn = (page,
             : "-"}
         </>
       ),
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
       title: "Calendar Name",
       dataIndex: "strCalendarName",
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
-      title: () => <span style={{ color: gray600 }}>Start Time</span>,
+      title: "Start Time",
       dataIndex: "dteStartTime",
-      className: "text-center",
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
-      title: () => <span style={{ color: gray600 }}>Extended Start Time</span>,
+      title: "Extended Start Time",
       dataIndex: "dteLastStartTime",
-      className: "text-center",
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
-      title: () => <span style={{ color: gray600 }}>End Time</span>,
+      title: "End Time",
       dataIndex: "dteEndTime",
-      className: "text-center",
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
   ];
 };

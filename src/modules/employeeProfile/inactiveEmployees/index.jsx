@@ -4,7 +4,6 @@ import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import FormikInput from "../../../common/FormikInput";
 import NoResult from "../../../common/NoResult";
 import ResetButton from "../../../common/ResetButton";
@@ -29,6 +28,7 @@ import PeopleDeskTable, {
 } from "../../../common/peopleDeskTable";
 import MasterFilter from "../../../common/MasterFilter";
 import useDebounce from "../../../utility/customHooks/useDebounce";
+import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 
 const initData = {
   search: "",
@@ -56,6 +56,7 @@ export default function ActiveInactiveEmployeeReport() {
   // sorting
   const [buDetails, setBuDetails] = useState({});
   const debounce = useDebounce();
+  const [, getExcelData, apiLoading] = useAxiosGet();
 
   const getData = (
     fromDate = getDateOfYear("first"),
@@ -165,11 +166,9 @@ export default function ActiveInactiveEmployeeReport() {
     );
   };
 
-  console.log(rowDto);
-
   return (
     <>
-      {loading && <Loading />}
+      {(loading || apiLoading) && <Loading />}
       <Formik
         enableReinitialize={true}
         initialValues={initData}
@@ -195,48 +194,51 @@ export default function ActiveInactiveEmployeeReport() {
                             className="btn-save"
                             onClick={(e) => {
                               e.stopPropagation();
-                              if (rowDto?.length <= 0) {
-                                return toast.warning("Data is empty !!!!", {
-                                  toastId: 1,
-                                });
-                              }
-                              const newData = rowDto?.map((item, index) => {
-                                return {
-                                  ...item,
-                                  sl: index + 1,
-                                };
-                              });
-                              const excelLanding = () => {
-                                createCommonExcelFile({
-                                  titleWithDate: `Inactive Employees Report`,
-                                  fromDate: "",
-                                  toDate: "",
-                                  buAddress: buDetails?.strBusinessUnitAddress,
-                                  businessUnit: buName,
-                                  tableHeader: column,
-                                  getTableData: () =>
-                                    getTableDataInactiveEmployees(
-                                      newData,
-                                      Object.keys(column)
-                                    ),
-                                  tableFooter: [],
-                                  extraInfo: {},
-                                  tableHeadFontSize: 10,
-                                  widthList: {
-                                    C: 30,
-                                    D: 30,
-                                    E: 25,
-                                    F: 20,
-                                    G: 25,
-                                    H: 25,
-                                    I: 25,
-                                    K: 20,
-                                  },
-                                  commonCellRange: "A1:J1",
-                                  CellAlignment: "left",
-                                });
-                              };
-                              excelLanding();
+                              getExcelData(
+                                `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IsXls=true&PageNo=1&PageSize=10000&searchTxt=${values?.search}&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}`,
+                                (res) => {
+                                  const newData = res?.data?.map(
+                                    (item, index) => {
+                                      return {
+                                        ...item,
+                                        sl: index + 1,
+                                      };
+                                    }
+                                  );
+                                  const excelLanding = () => {
+                                    createCommonExcelFile({
+                                      titleWithDate: `Inactive Employees Report`,
+                                      fromDate: "",
+                                      toDate: "",
+                                      buAddress:
+                                        buDetails?.strBusinessUnitAddress,
+                                      businessUnit: buName,
+                                      tableHeader: column,
+                                      getTableData: () =>
+                                        getTableDataInactiveEmployees(
+                                          newData,
+                                          Object.keys(column)
+                                        ),
+                                      tableFooter: [],
+                                      extraInfo: {},
+                                      tableHeadFontSize: 10,
+                                      widthList: {
+                                        C: 30,
+                                        D: 30,
+                                        E: 25,
+                                        F: 20,
+                                        G: 25,
+                                        H: 25,
+                                        I: 25,
+                                        K: 20,
+                                      },
+                                      commonCellRange: "A1:J1",
+                                      CellAlignment: "left",
+                                    });
+                                  };
+                                  excelLanding();
+                                }
+                              );
                             }}
                             style={{ cursor: "pointer" }}
                           >

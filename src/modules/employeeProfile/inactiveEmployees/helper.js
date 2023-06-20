@@ -248,11 +248,11 @@ export const getTableDataInactiveEmployees = (row, keys, totalKey) => {
 // excel columns
 export const column = {
   sl: "SL",
-  EmployeeCode: "Code",
-  EmployeeName: "Employee Name",
-  DesignationName: "Designation",
-  DepartmentName: "Department",
+  strEmployeeCode: "Code",
+  strEmployeeName: "Employee Name",
+  strDesignation: "Designation",
+  strDepartment: "Department",
   dteJoiningDate: "Joining Date",
   serviceLength: "Service Length",
-  strEmployeeStatus: "Status",
+  strStatus: "Status",
 };

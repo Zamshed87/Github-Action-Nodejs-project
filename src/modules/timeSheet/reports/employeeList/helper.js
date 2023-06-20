@@ -74,59 +74,58 @@ export const allEmployeeList = async (
   }
 };
 // UI Table Columns
-export const empReportListColumns = (pages, wgId) => {
+export const empReportListColumns = (
+  page,
+  paginationSize,
+  wgId,
+  headerList
+) => {
   return [
     {
       title: "SL",
-      render: (text, record, index) => {
-        return (
-          <span>
-            {pages?.current === 1
-              ? index + 1
-              : (pages.current - 1) * pages?.pageSize + (index + 1)}
-          </span>
-        );
-      },
-      sorter: false,
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
       filter: false,
       className: "text-center",
-      fixed: "left",
       width: 50,
     },
     {
       title: "Code",
       dataIndex: "employeeCode",
-      sorter: true,
-      filter: true,
+      sorter: false,
+      filter: false,
       width: 100,
       fixed: "left",
     },
     {
       title: "Employee Name",
       dataIndex: "employeeName",
-      fixed: "left",
-      width: 200,
-      render: (_, record) => {
-        return (
-          <div className="d-flex align-items-center">
+      sort: false,
+      filter: false,
+      render: (item) => (
+        <div className="d-flex align-items-center justify-content-start">
+          <div className="emp-avatar">
             <AvatarComponent
               classess=""
               letterCount={1}
-              label={record?.employeeName}
+              label={item?.employeeName}
             />
-            <span className="ml-2">{record?.employeeName}</span>
           </div>
-        );
-      },
-      sorter: true,
-      filter: true,
+          <div className="ml-2">
+            <span>{item?.employeeName}</span>
+          </div>
+        </div>
+      ),
+      fieldType: "string",
     },
     {
       title: "Designation",
-      dataIndex: "designation",
+      dataIndex: "strDesignation",
       sorter: true,
       filter: true,
       width: "200px",
+      filterDropDownList: headerList[`strDesignationList`],
+      fieldType: "string",
     },
     {
       title: "Department",
@@ -134,12 +133,14 @@ export const empReportListColumns = (pages, wgId) => {
       sorter: true,
       filter: true,
       width: "200px",
+      filterDropDownList: headerList[`strDepartmentList`],
+      fieldType: "string",
     },
     {
       title: "Pin No.",
       dataIndex: "strPinNo",
-      sorter: true,
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "200px",
     },
     {
@@ -148,7 +149,9 @@ export const empReportListColumns = (pages, wgId) => {
       sorter: true,
       filter: true,
       width: "200px",
-      hidden: wgId !== 3 ? true : false,
+      filterDropDownList: headerList[`wingNameList`],
+      hidden: wgId === "Marketing" ? false : true,
+      fieldType: "string",
     },
     {
       title: "Sole Depo",
@@ -157,14 +160,18 @@ export const empReportListColumns = (pages, wgId) => {
       filter: true,
       width: "200px",
       hidden: wgId !== 3 ? true : false,
+      filterDropDownList: headerList[`soleDepoNameList`],
+      fieldType: "string",
     },
     {
       title: "Region",
-      dataIndex: "religion",
+      dataIndex: "regionName",
       sorter: true,
       filter: true,
       width: "200px",
       hidden: wgId !== 3 ? true : false,
+      filterDropDownList: headerList[`regionNameList`],
+      fieldType: "string",
     },
     {
       title: "Area",
@@ -173,6 +180,8 @@ export const empReportListColumns = (pages, wgId) => {
       filter: true,
       width: "200px",
       hidden: wgId !== 3 ? true : false,
+      filterDropDownList: headerList[`areaNameList`],
+      fieldType: "string",
     },
     {
       title: "Territory",
@@ -181,140 +190,183 @@ export const empReportListColumns = (pages, wgId) => {
       filter: true,
       width: "200px",
       hidden: wgId !== 3 ? true : false,
+      filterDropDownList: headerList[`territoryNameList`],
+      fieldType: "string",
     },
     {
       title: "Employment Type",
-      dataIndex: "employmentType",
+      dataIndex: "strEmploymentType",
       sorter: true,
       filter: true,
       width: "200px",
-      render: (_, record) => {
+      render: (record) => {
         return (
-          <div>{record?.employmentType ? record?.employmentType : "-"}</div>
+          <div>
+            {record?.strEmploymentType ? record?.strEmploymentType : "-"}
+          </div>
         );
       },
+      fieldType: "string",
+      filterDropDownList: headerList[`strEmploymentTypeList`],
     },
     {
       title: "Date of Joining",
       dataIndex: "dateOfJoining",
       isDate: true,
-      render: (dateOfJoining) => dateFormatter(dateOfJoining),
+      render: (item) => dateFormatter(item?.dateOfJoining),
       width: "150px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Payroll Group",
       dataIndex: "payrollGroup",
-      sorter: true,
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "200px",
     },
     {
       title: "Supervisor",
-      dataIndex: "supervisor",
+      dataIndex: "strSupervisorName",
       sorter: true,
       filter: true,
       width: "200px",
+      filterDropDownList: headerList[`strSupervisorNameList`],
+      fieldType: "string",
+    },
+    {
+      title: "Line Manager",
+      dataIndex: "strLinemanager",
+      sorter: true,
+      filter: true,
+      width: "200px",
+      filterDropDownList: headerList[`strLinemanagerList`],
+      fieldType: "string",
     },
     {
       title: "Date of Permanent",
       dataIndex: "dateOfConfirmation",
       isDate: true,
-      render: (dateOfConfirmation) => dateFormatter(dateOfConfirmation),
+      render: (item) => dateFormatter(item?.dateOfConfirmation),
       width: "150px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Father's Name",
       dataIndex: "fatherName",
       width: "200px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Mother's Name",
       dataIndex: "motherName",
       width: "200px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Present Address",
       dataIndex: "presentAddress",
-      filter: true,
       width: "250px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Permanent Address",
       dataIndex: "permanentAddress",
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "250px",
     },
     {
       title: "Employee Email",
       dataIndex: "email",
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "180px",
     },
     {
       title: "DoB",
       dataIndex: "dateOfBirth",
       isDate: true,
-      render: (dateOfBirth) => dateFormatter(dateOfBirth),
+      render: (item) => dateFormatter(item?.dateOfBirth),
       width: "150px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Religion",
       dataIndex: "religion",
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "100px",
     },
     {
       title: "Gender",
       dataIndex: "gender",
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "80px",
     },
     {
       title: "Marital Status",
       dataIndex: "maritialStatus",
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "180px",
     },
     {
       title: "Blood Group",
       dataIndex: "bloodGroup",
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "180px",
     },
     {
       title: "Mobile",
       dataIndex: "strPersonalMobile",
-      // filter: true,
+      sorter: false,
+      filter: false,
       width: "150px",
     },
     {
       title: "NID",
       dataIndex: "nid",
       width: "180px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Vehicle Number",
       dataIndex: "strVehicleNo",
       width: "180px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "BID",
       dataIndex: "birthID",
       key: "birthID",
       width: "180px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Bank Name",
       dataIndex: "bankName",
       key: "bankName",
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "200px",
     },
     {
       title: "Branch",
       dataIndex: "branchName",
       key: "branchName",
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "200px",
     },
     {
@@ -322,26 +374,33 @@ export const empReportListColumns = (pages, wgId) => {
       dataIndex: "accountNo",
       key: "accountNo",
       width: "150px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Gross Salary",
       dataIndex: "grossSalary",
       key: "grossSalary",
       width: "150px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Routing",
       dataIndex: "routingNo",
       key: "routingNo",
       width: "150px",
+      sorter: false,
+      filter: false,
     },
     {
       title: "Status",
       dataIndex: "empStatus",
       key: "empStatus",
-      filter: true,
+      sorter: false,
+      filter: false,
       width: "100px",
-      render: (_, record) => {
+      render: (record) => {
         return (
           <div>
             {record?.empStatus === "Active" ? (
@@ -358,6 +417,8 @@ export const empReportListColumns = (pages, wgId) => {
       dataIndex: "strRemarks",
       key: "strRemarks",
       width: "150px",
+      sorter: false,
+      filter: false,
     },
   ].filter((item) => !item.hidden);
 };
@@ -367,18 +428,18 @@ export const columnForMarketingForExcel = {
   sl: "SL",
   employeeName: "Employee Name",
   employeeCode: "Code",
-  designation: "Designation",
+  strDesignation: "Designation",
   strDepartment: "Department",
   strPinNo: "Pin No.",
   wingName: "Wing",
   soleDepoName: "Sole Depo",
-  religion: "Region",
+  regionName: "Region",
   areaName: "Area/Depo",
   territoryName: "Territory",
-  employmentType: "Employment Type",
+  strEmploymentType: "Employment Type",
   dateOfJoining: "Date of Joining",
   payrollGroup: "Payroll Group",
-  supervisor: "Supervisor",
+  strSupervisorName: "Supervisor",
   dateOfConfirmation: "Date of Permanent",
   fatherName: "Father's Name",
   motherName: "Mother's Name",
@@ -386,7 +447,7 @@ export const columnForMarketingForExcel = {
   permanentAddress: "Permanent Address",
   email: "Employee Email",
   dateOfBirth: "Date Of Birth",
-  strReligion: "Religion",
+  religion: "Religion",
   gender: "Gender",
   maritialStatus: "Maritial Status",
   bloodGroup: "Blood Group",
@@ -407,13 +468,13 @@ export const columnForExcel = {
   sl: "SL",
   employeeName: "Employee Name",
   employeeCode: "Code",
-  designation: "Designation",
+  strDesignation: "Designation",
   strDepartment: "Department",
   strPinNo: "Pin No.",
-  employmentType: "Employment Type",
+  strEmploymentType: "Employment Type",
   dateOfJoining: "Date of Joining",
   payrollGroup: "Payroll Group",
-  supervisor: "Supervisor",
+  strSupervisorName: "Supervisor",
   dateOfConfirmation: "Date of Permanent",
   fatherName: "Father's Name",
   motherName: "Mother's Name",
