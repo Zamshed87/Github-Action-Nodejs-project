@@ -26,7 +26,6 @@ export const hasLeave = (data) => {
   else return false;
 };
 export const getLeaveHistoryAction = async (
-  setAllData,
   buId,
   wgId,
   yearId,
@@ -53,7 +52,6 @@ export const getLeaveHistoryAction = async (
   } catch (error) {
     setLoading(false);
     setter([]);
-    setAllData([]);
   }
 };
 export const leaveHistoryCol = (page, paginationSize) => {

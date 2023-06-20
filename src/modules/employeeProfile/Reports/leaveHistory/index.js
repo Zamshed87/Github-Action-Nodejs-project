@@ -26,8 +26,7 @@ import PeopleDeskTable, {
 } from "../../../../common/peopleDeskTable";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { toast } from "react-toastify";
-let date = new Date();
-let year = date.getFullYear();
+import useDebounce from "../../../../utility/customHooks/useDebounce";
 const initData = {
   search: "",
   yearDDL: { label: currentYear(), value: currentYear() },
@@ -47,10 +46,7 @@ const EmLeaveHistory = () => {
   const saveHandler = (values) => {};
   const [loading, setLoading] = useState(false);
 
-  const [isFilter, setIsFilter] = useState(false);
-
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
     current: 1,
@@ -58,6 +54,7 @@ const EmLeaveHistory = () => {
     total: 0,
   });
   const [, getExcelData, apiLoading] = useAxiosGet();
+  const debounce = useDebounce();
 
   const getData = (
     year = currentYear(),
@@ -66,7 +63,6 @@ const EmLeaveHistory = () => {
     isPaginated = true
   ) => {
     getLeaveHistoryAction(
-      setAllData,
       buId,
       wgId,
       year,
@@ -85,28 +81,6 @@ const EmLeaveHistory = () => {
     getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId]);
-
-  const searchData = (keywords) => {
-    try {
-      if (!keywords) {
-        setRowDto(allData);
-        return;
-      }
-      setLoading(true);
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newData = allData?.filter(
-        (item) =>
-          regex.test(item?.employee?.toLowerCase()) ||
-          regex.test(item?.designation?.toLowerCase()) ||
-          regex.test(item?.department?.toLowerCase())
-      );
-      setRowDto(newData);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      setRowDto([]);
-    }
-  };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -181,9 +155,14 @@ const EmLeaveHistory = () => {
                             className="btn-save"
                             onClick={(e) => {
                               e.stopPropagation();
+                              if (rowDto?.length <= 0) {
+                                return toast.warning("Data is empty !!!!", {
+                                  toastId: 1,
+                                });
+                              }
 
                               getExcelData(
-                                `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${values.yearDDL?.value}&WorkplaceGroupId=${wgId}&SearchText=&IsPaginated=false&PageNo=0&PageSize=0`,
+                                `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${values.yearDDL?.value}&WorkplaceGroupId=${wgId}&SearchText=${values?.search}&IsPaginated=false&PageNo=0&PageSize=0`,
                                 (res) => {
                                   const excelLanding = () => {
                                     generateExcelAction(
@@ -203,11 +182,24 @@ const EmLeaveHistory = () => {
                             />
                           </button>
                         </Tooltip>
+                        <div className="ml-2">
+                          {pages?.total > 0 ? (
+                            <>
+                              <h6 className="count">
+                                Total {pages?.total} results
+                              </h6>
+                            </>
+                          ) : (
+                            <>
+                              <h6 className="count">Total result 0</h6>
+                            </>
+                          )}
+                        </div>
                       </div>
                       <div></div>
                       <div className="table-card-head-right">
                         <ul>
-                          {(values?.search || isFilter) && (
+                          {values?.search && (
                             <li>
                               <ResetButton
                                 classes="btn-filter-reset"
@@ -221,10 +213,8 @@ const EmLeaveHistory = () => {
                                   />
                                 }
                                 onClick={() => {
-                                  setRowDto(allData);
-                                  setIsFilter(false);
                                   getData();
-                                  setFieldValue("search", "");
+                                  resetForm();
                                 }}
                               />
                             </li>
@@ -253,7 +243,13 @@ const EmLeaveHistory = () => {
                               value={values?.search}
                               setValue={(value) => {
                                 setFieldValue("search", value);
-                                searchData(value);
+                                debounce(() => {
+                                  getData(
+                                    values?.yearDDL?.value,
+                                    { current: 1, pageSize: paginationSize },
+                                    value
+                                  );
+                                }, 500);
                               }}
                               cancelHandler={() => {
                                 getData();
@@ -288,7 +284,7 @@ const EmLeaveHistory = () => {
                           onRowClick={(data) => {
                             hasLeave(data) &&
                               getPDFAction(
-                                `/PdfAndExcelReport/LeaveHistoryReport?EmployeeId=${data?.employeeId}&fromDate=${year}-01-01&toDate=${year}-12-31`,
+                                `/PdfAndExcelReport/LeaveHistoryReport?EmployeeId=${data?.employeeId}&fromDate=${values?.yearDDL?.value}-01-01&toDate=${values?.yearDDL?.value}-12-31`,
                                 setLoading
                               );
                           }}
