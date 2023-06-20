@@ -51,7 +51,7 @@ export const getOvertimeReportLanding = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/OvertimeReportLanding?PartType=${partType}&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&WorkplaceId=0&DepartmentId=${deptId}&DesignationId=${desigId}&EmployeeId=${employeeId}&FromDate=${formDate}&ToDate=${toDate}`
+      `/Employee/OvertimeReportLanding?PartType=${partType}&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&FromDate=${formDate}&ToDate=${toDate}`
     );
     if (res?.data) {
       setAllData && setAllData(res.data);
@@ -67,7 +67,7 @@ export const getOvertimeReportLanding = async (
     setLoading && setLoading(false);
   }
 };
-export const empOverTimeDtoCol = (page,paginationSize) => {
+export const empOverTimeDtoCol = (page, paginationSize) => {
   return [
     {
       title: "SL",

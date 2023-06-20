@@ -106,9 +106,9 @@ export default function EmOverTimeReport() {
     getData();
     getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId]);
+  }, [buId, wgId]);
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
 
   // masterHandler
   const masterFilterHandler = (values) => {
@@ -173,7 +173,7 @@ export default function EmOverTimeReport() {
                             onClick={() => {
                               rowDto?.length &&
                                 generateExcelAction(
-                                  "Overtime  Report",
+                                  "Overtime Report",
                                   "",
                                   "",
                                   buName,
@@ -199,42 +199,42 @@ export default function EmOverTimeReport() {
                             // values?.fromDate ||
                             // values?.toDate ||
                             values?.search) && (
-                              <li>
-                                <ResetButton
-                                  classes="btn-filter-reset"
-                                  title="Reset"
-                                  icon={
-                                    <SettingsBackupRestoreOutlined
-                                      sx={{ marginRight: "10px" }}
-                                    />
-                                  }
-                                  onClick={() => {
-                                    getOvertimeReportLanding(
-                                      "CalculatedHistoryReportForAllEmployee",
-                                      orgId,
-                                      buId,
-                                      wgId,
-                                      0,
-                                      0,
-                                      0,
-                                      monthOfSatrtDate,
-                                      monthOfEndDate,
-                                      setAllData,
-                                      setRowDto,
-                                      setLoading
-                                    );
-                                    setRowDto(allData);
-                                    setFieldValue("workplace", "");
-                                    setFieldValue("department", "");
-                                    setFieldValue("designation", "");
-                                    setFieldValue("employee", "");
-                                    setFieldValue("fromDate", "");
-                                    setFieldValue("toDate", "");
-                                    setFieldValue("search", "");
-                                  }}
-                                />
-                              </li>
-                            )}
+                            <li>
+                              <ResetButton
+                                classes="btn-filter-reset"
+                                title="Reset"
+                                icon={
+                                  <SettingsBackupRestoreOutlined
+                                    sx={{ marginRight: "10px" }}
+                                  />
+                                }
+                                onClick={() => {
+                                  getOvertimeReportLanding(
+                                    "CalculatedHistoryReportForAllEmployee",
+                                    orgId,
+                                    buId,
+                                    wgId,
+                                    0,
+                                    0,
+                                    0,
+                                    monthOfSatrtDate,
+                                    monthOfEndDate,
+                                    setAllData,
+                                    setRowDto,
+                                    setLoading
+                                  );
+                                  setRowDto(allData);
+                                  setFieldValue("workplace", "");
+                                  setFieldValue("department", "");
+                                  setFieldValue("designation", "");
+                                  setFieldValue("employee", "");
+                                  setFieldValue("fromDate", "");
+                                  setFieldValue("toDate", "");
+                                  setFieldValue("search", "");
+                                }}
+                              />
+                            </li>
+                          )}
                           <li>
                             <MasterFilter
                               isHiddenFilter
@@ -310,7 +310,10 @@ export default function EmOverTimeReport() {
                             <AntScrollTable
                               data={rowDto}
                               removePagination
-                              columnsData={empOverTimeDtoCol(page, paginationSize)}
+                              columnsData={empOverTimeDtoCol(
+                                page,
+                                paginationSize
+                              )}
                               setColumnsData={(newRow) =>
                                 setTableRowDto((prev) => ({
                                   ...prev,
