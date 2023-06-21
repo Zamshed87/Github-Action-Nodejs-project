@@ -35,8 +35,6 @@ export const getLoanApplicationByAdvanceFilter = async (
       payload
     );
 
-    console.log("res?.data", res?.data);
-
     if (res?.data) {
       const modifiedData = res?.data?.data?.map((item, index) => ({
         ...item,
@@ -55,7 +53,6 @@ export const getLoanApplicationByAdvanceFilter = async (
     }
   } catch (err) {
     setLoading && setLoading(false);
-    setter([]);
   }
 };
 
