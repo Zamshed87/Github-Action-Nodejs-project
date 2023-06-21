@@ -44,7 +44,7 @@ const EmLoanHistory = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, orgId, wgId } = useSelector(
+  const { buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -173,8 +173,8 @@ const EmLoanHistory = () => {
         maximumAmount: 0,
         applicationStatus: "",
         installmentStatus: "",
-        pageSize: 1,
-        pageNo: paginationSize,
+        pageSize: paginationSize,
+        pageNo: 1,
         ispaginated: true,
         searchText: "",
         workplaceGroupId: wgId,
@@ -182,7 +182,7 @@ const EmLoanHistory = () => {
     );
   }, [buId, wgId]);
 
-  console.log("rowDto", rowDto)
+  console.log("rowDto", rowDto);
 
   return (
     <>
@@ -207,7 +207,7 @@ const EmLoanHistory = () => {
                         }}
                         onClick={() => {
                           getPDFAction(
-                            `/PdfAndExcelReport/LoanReportAll?accountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&DepartmentId=${values?.department?.value || 0
+                            `/PdfAndExcelReport/LoanReportAll?&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&DepartmentId=${values?.department?.value || 0
                             }&DesignationId=${values?.designation?.value || 0
                             }&EmployeeId=${values?.employee?.value || 0
                             }&LoanTypeId=${values?.loanType?.value || 0
@@ -276,8 +276,8 @@ const EmLoanHistory = () => {
                                   maximumAmount: 0,
                                   applicationStatus: "",
                                   installmentStatus: "",
-                                  pageSize: 1,
-                                  pageNo: paginationSize,
+                                  pageSize: paginationSize,
+                                  pageNo: 1,
                                   ispaginated: true,
                                   searchText: "",
                                   workplaceGroupId: wgId,
@@ -310,8 +310,8 @@ const EmLoanHistory = () => {
                               maximumAmount: 0,
                               applicationStatus: "",
                               installmentStatus: "",
-                              pageSize: 1,
-                              pageNo: paginationSize,
+                              pageSize: paginationSize,
+                              pageNo: 1,
                               ispaginated: true,
                               searchText: values || "",
                               workplaceGroupId: wgId,
@@ -336,8 +336,8 @@ const EmLoanHistory = () => {
                               maximumAmount: 0,
                               applicationStatus: "",
                               installmentStatus: "",
-                              pageSize: 1,
-                              pageNo: paginationSize,
+                              pageSize: paginationSize,
+                              pageNo: 1,
                               ispaginated: true,
                               searchText: "",
                               workplaceGroupId: wgId,
@@ -409,11 +409,11 @@ const EmLoanHistory = () => {
                               maximumAmount: 0,
                               applicationStatus: "",
                               installmentStatus: "",
-                              pageSize: 1,
-                              pageNo: paginationSize,
+                              pageSize: paginationSize,
+                              pageNo: 1,
                               ispaginated: true,
                               searchText: "",
-                              workplaceGroupId: wgId,
+                              workplaceGroupId: wgId
                             }
                           );
                         }}
@@ -442,7 +442,7 @@ const EmLoanHistory = () => {
                     }
                     onRowClick={(dataRow) => {
                       getPDFAction(
-                        `/PdfAndExcelReport/LoanReportDetails?LoanApplicationId=${dataRow?.loanApplicationId}`,
+                        `/PdfAndExcelReport/LoanReportDetails?LoanApplicationId=${dataRow?.loanApplicationId}&BusinessUintId=${buId}&WorkplaceGroupId=${wgId}&EmployeeId=${dataRow?.employeeId}`,
                         setLoading
                       );
                     }}

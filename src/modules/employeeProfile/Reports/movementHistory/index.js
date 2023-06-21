@@ -45,7 +45,7 @@ const EmMovementHistory = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { orgId, buId, wgId, buName } = useSelector(
+  const { buId, wgId, buName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -257,21 +257,11 @@ const EmMovementHistory = () => {
                             type="button"
                             onClick={(e) => {
                               getPDFAction(
-                                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&AccountId=${orgId}&WorkplaceGroupId=${
-                                  allValues?.workplace?.value || 0
-                                }&DeptId=${
-                                  allValues?.department?.value || 0
-                                }&DesigId=${
-                                  allValues?.designation?.value || 0
-                                }&MovementTypeId=${
-                                  allValues?.movementType?.value || 0
-                                }&EmployeeId=${0}&FromDate=${
+                                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${
                                   allValues?.fromDate || initStartData
                                 }&ToDate=${
                                   allValues?.toDate || initEndDate
-                                }&applicationStatus=${
-                                  allValues?.appStatus?.label || "all"
-                                }`,
+                                }&SearchText=${values?.search}`,
                                 setLoading
                               );
                             }}
