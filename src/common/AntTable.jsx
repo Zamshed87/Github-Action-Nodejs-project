@@ -36,32 +36,32 @@ const AntTable = ({
         ? item?.isNumber
           ? (a, b) => a?.[item?.dataIndex] - b?.[item?.dataIndex]
           : item?.isDate
-            ? (a, b) => {
+          ? (a, b) => {
               return (
                 new Date(dateFormatter(a?.[item?.dataIndex])) -
                 new Date(dateFormatter(b?.[item?.dataIndex]))
               );
             }
-            : (a, b) => a?.[item?.dataIndex].length - b?.[item?.dataIndex].length
+          : (a, b) => a?.[item?.dataIndex].length - b?.[item?.dataIndex].length
         : "",
       filters: item?.filter
         ? item?.isDate
           ? _.uniqWith(
-            antFilterData(filterList)((i) =>
-              dateFormatter(i?.[item?.dataIndex])
-            ),
-            _.isEqual
-          )
+              antFilterData(filterList)((i) =>
+                dateFormatter(i?.[item?.dataIndex])
+              ),
+              _.isEqual
+            )
           : _.uniqWith(
-            antFilterData(filterList)((i) => i?.[item?.dataIndex]),
-            _.isEqual
-          )
+              antFilterData(filterList)((i) => i?.[item?.dataIndex]),
+              _.isEqual
+            )
         : "",
       filteredValue: filteredInfo?.[item?.dataIndex] || null,
       onFilter: (value, record) =>
         item?.isDate
-          ? dateFormatter(record?.[item?.dataIndex]).startsWith(value)
-          : record?.[item?.dataIndex].startsWith(value),
+          ? dateFormatter(record?.[item?.dataIndex]) === value
+          : record?.[item?.dataIndex] === value,
       filterSearch: true,
     };
   });
@@ -84,12 +84,12 @@ const AntTable = ({
           removePagination
             ? !removePagination
             : pagination
-              ? {
+            ? {
                 ...pagination,
                 totalBoundaryShowSizeChanger: 25,
                 pageSizeOptions: ["25", "100", "500"],
               }
-              : {
+            : {
                 onChange(current, pageSize) {
                   setPage?.(current);
                   setPaginationSize?.(pageSize);

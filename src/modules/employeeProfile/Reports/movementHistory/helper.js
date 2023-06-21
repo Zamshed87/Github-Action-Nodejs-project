@@ -15,6 +15,7 @@ export const getBuDetails = async (buId, setter, setLoading) => {
     setter([]);
   }
 };
+
 export const getMovementHistory = async (
   buId,
   wgId,

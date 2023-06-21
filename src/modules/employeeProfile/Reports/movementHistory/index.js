@@ -265,9 +265,7 @@ const EmMovementHistory = () => {
                                   allValues?.designation?.value || 0
                                 }&MovementTypeId=${
                                   allValues?.movementType?.value || 0
-                                }&EmployeeId=${
-                                  allValues?.employee?.value || 0
-                                }&FromDate=${
+                                }&EmployeeId=${0}&FromDate=${
                                   allValues?.fromDate || initStartData
                                 }&ToDate=${
                                   allValues?.toDate || initEndDate
