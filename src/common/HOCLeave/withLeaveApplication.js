@@ -189,12 +189,12 @@ const withLeaveApplication = (WrappedComponent) => {
 
     useEffect(() => {
       getData();
-      getPeopleDeskAllDDL(
-        `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}`,
-        "intEmployeeBasicInfoId",
-        "strEmployeeName",
-        setEmployeeDDL
-      );
+      // getPeopleDeskAllDDL(
+      //   `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      //   "intEmployeeBasicInfoId",
+      //   "strEmployeeName",
+      //   setEmployeeDDL
+      // );
     }, [wgId]);
 
     useEffect(() => {
