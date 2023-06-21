@@ -63,6 +63,7 @@ export const getMovementApplicationFilterEmpManagement = async (
   setAllData,
   setLoading
 ) => {
+  console.log(data);
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
