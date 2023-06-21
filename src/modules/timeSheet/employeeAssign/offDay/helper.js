@@ -30,6 +30,22 @@ export const getSingleCalendar = async (
   }
 };
 
+export const printDays = (item) => {
+  let data = [];
+  item?.isFriday && data.push("Friday");
+  item?.isSaturday && data.push("Saturday");
+  item?.isSunday && data.push("Sunday");
+  item?.isMonday && data.push("Monday");
+  item?.isTuesday && data.push("Tuesday");
+  item?.isWednesday && data.push("Wednesday");
+  item?.isThursday && data.push("Thursday");
+  let str = "";
+  data.forEach((item, index) => {
+    str = str + `${index > 0 ? ", " : ""}` + item;
+  });
+  return str;
+};
+
 export const offDayAssignDtoCol = (
   pages,
   paginationSize,
@@ -54,7 +70,6 @@ export const offDayAssignDtoCol = (
   headerList,
   wgName
 ) => {
-  console.log({ headerList });
   return [
     {
       title: "SL",
@@ -234,22 +249,6 @@ export const offDayAssignDtoCol = (
   ].filter((item) => !item.hidden);
 };
 
-const printDays = (item) => {
-  let data = [];
-  item?.isFriday && data.push("Friday");
-  item?.isSaturday && data.push("Saturday");
-  item?.isSunday && data.push("Sunday");
-  item?.isMonday && data.push("Monday");
-  item?.isTuesday && data.push("Tuesday");
-  item?.isWednesday && data.push("Wednesday");
-  item?.isThursday && data.push("Thursday");
-  let str = "";
-  data.forEach((item, index) => {
-    str = str + `${index > 0 ? ", " : ""}` + item;
-  });
-  return str;
-};
-
 export const getOffDayLandingHandler = (
   buId,
   orgId,
@@ -354,7 +353,7 @@ export const offDayAssignCrud = async (obj) => {
             ...values,
             employeeId: item?.employeeId,
             ...commonObj,
-            employeeOffdayAssignId: item?.intEmployeeOffdayAssignId,
+            employeeOffdayAssignId: item?.employeeOffdayAssignId,
           });
         }
       });
@@ -364,7 +363,7 @@ export const offDayAssignCrud = async (obj) => {
           ...values,
           employeeId: singleData?.employeeId,
           ...commonObj,
-          employeeOffdayAssignId: singleData?.intEmployeeOffdayAssignId || 0,
+          employeeOffdayAssignId: singleData?.employeeOffdayAssignId || 0,
         },
       ];
     }

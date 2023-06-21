@@ -12,7 +12,6 @@ export const createMovementApplication = async (payload, setLoading, cb) => {
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading && setLoading(false);
   } catch (error) {
-    console.log(error);
     toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading && setLoading(false);
   }
@@ -64,7 +63,6 @@ export const getMovementApplicationFilterEmpManagement = async (
   setAllData,
   setLoading
 ) => {
-  console.log(data);
   setLoading && setLoading(true);
   try {
     const res = await axios.get(

@@ -125,12 +125,12 @@ export default function EmMovementApplication() {
       "EmployeeBasicById",
       orgId,
       buId,
-      employee?.EmployeeId ? employee?.EmployeeId : employeeId,
+      employee?.employeeId ? employee?.employeeId : employeeId,
       setOthersEmployee,
       null,
       setLoading
     );
-  }, [employee?.EmployeeId]);
+  }, [employee?.employeeId]);
 
   const saveHandler = (values, cb) => {
     const payload = {
@@ -432,6 +432,8 @@ export default function EmMovementApplication() {
     ];
   };
 
+  console.log(othersEmployee, "otemp");
+
   return (
     <>
       <Formik
@@ -471,7 +473,7 @@ export default function EmMovementApplication() {
                   <div className="table-card">
                     <div className="table-card-heading pb-1 pr-0">
                       <div className="employeeInfo d-flex align-items-center">
-                        {employee?.EmployeeId ? (
+                        {employee?.employeeId ? (
                           <img
                             src={
                               othersEmployee?.[0]?.strProfileImageUrl
