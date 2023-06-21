@@ -1,6 +1,7 @@
 import axios from "axios";
 import { gray600 } from "../../../../utility/customColor";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
+import AvatarComponent from "../../../../common/AvatarComponent";
 
 export const getBuDetails = async (buId, setter, setLoading) => {
   try {
@@ -19,139 +20,158 @@ export const getBuDetails = async (buId, setter, setLoading) => {
 
 // daily attendance generate landing
 export const getDailyAttendanceData = async (
-  orgId,
   buId,
   date,
-  values,
   setter,
-  setAllData,
   setLoading,
-  setTableRowDto,
-  intDepartmentId,
   srcTxt,
-  pages,
-  setPages,
-  isPaginated = true,
-  wgId
+  pageNo,
+  pageSize,
+  forExcel = false,
+  wgId,
+  setPages
 ) => {
   setLoading && setLoading(true);
-  let search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
 
   try {
     const res = await axios.get(
-      `/Employee/DailyAttendanceReport?IntAccountId=${orgId}&AttendanceDate=${date}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${
-        values?.workplace?.intWorkplaceId || 0
-      }&PageNo=${pages.current}&PageSize=${
-        pages.pageSize
-      }&IntDepartmentId=${0}&IsPaginated=${isPaginated}${search}`
+      `/Employee/GetDateWiseAttendanceReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&attendanceDate=${date}&IsXls=${forExcel}&PageNo=${pageNo}&PageSize=${pageSize}&searchTxt=${srcTxt}`
     );
+
+    console.log(res);
+
     if (res?.data) {
-      setAllData && setAllData(res?.data);
-      setter(res?.data?.employeeAttendanceSummaryVM);
-      setTableRowDto(res?.data?.employeeAttendanceSummaryVM);
-      setLoading && setLoading(false);
+      setter(res?.data?.data);
       setPages({
-        ...pages,
-        current: pages.current,
-        pageSize: pages.pageSize,
-        total: res?.data?.employeeAttendanceSummaryVM[0]?.totalCount,
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
       });
+      setLoading && setLoading(false);
     }
   } catch (error) {
     setLoading && setLoading(false);
   }
 };
 // UI Table columns
-export const dailyAttendenceDtoCol = [
-  {
-    title: () => <span style={{ color: gray600 }}>SL</span>,
-    render: (_, __, index) => index + 1,
-    sorter: false,
-    filter: false,
-    className: "text-center",
-  },
-  {
-    title: "Code",
-    dataIndex: "employeeCode",
-    sorter: true,
-    filter: true,
-    width: 100,
-    render: (_, record) => record?.employeeCode || "N/A",
-  },
-  {
-    title: "Employee Name",
-    dataIndex: "employeeName",
-    key: "employeeName",
-    sorter: true,
-    filter: true,
-    render: (_, record) => record?.employeeName || "N/A",
-  },
-  {
-    title: "Department",
-    dataIndex: "department",
-    sorter: true,
-    filter: true,
-    render: (_, record) => record?.department || "N/A",
-  },
-  {
-    title: "Designation",
-    dataIndex: "designation",
-    sorter: true,
-    filter: true,
-    render: (_, record) => record?.designation || "N/A",
-  },
-  {
-    title: "Employment Type",
-    dataIndex: "employmentType",
-    sorter: true,
-    filter: true,
-    render: (_, record) => record?.employmentType || "N/A",
-  },
-  {
-    title: "Calendar Name",
-    dataIndex: "calendarName",
-    // sorter: true,
-    filter: true,
-    // render: (_, record) => record?.employmentType || "N/A",
-  },
-  {
-    title: () => <span style={{ color: gray600 }}>In Time</span>,
-    dataIndex: "inTime",
-    render: (_, record) => record?.inTime || "N/A",
-  },
-  {
-    title: () => <span style={{ color: gray600 }}>Out Time</span>,
-    dataIndex: "outTime",
-    render: (_, record) => record?.outTime || "N/A",
-  },
-  {
-    title: () => <span style={{ color: gray600 }}>Duration</span>,
-    dataIndex: "dutyHours",
-    render: (_, record) => record?.dutyHours || "N/A",
-  },
-  {
-    title: () => <span style={{ color: gray600 }}>Status</span>,
-    dataIndex: "actualStatus",
-    render: (_, record) => record?.actualStatus || "N/A",
-    filter: true,
-  },
-  {
-    title: () => <span style={{ color: gray600 }}>Manual Status</span>,
-    dataIndex: "manualStatus",
-    render: (_, record) => record?.manualStatus || "N/A",
-    filter: true,
-  },
-  {
-    title: () => <span style={{ color: gray600 }}>Address</span>,
-    dataIndex: "location",
-    render: (_, record) => record?.location || "N/A",
-  },
-  {
-    title: () => <span style={{ color: gray600 }}>Remarks</span>,
-    dataIndex: "remarks",
-    render: (_, record) => record?.remarks || "N/A",
-  },
-];
+export const dailyAttendenceDtoCol = (page, paginationSize) => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+      width: 50,
+    },
+    {
+      title: "Code",
+      dataIndex: "employeeCode",
+      sort: false,
+      filter: false,
+      width: 100,
+      render: (record) => record?.employeeCode || "N/A",
+    },
+    {
+      title: "Employee",
+      dataIndex: "employeeName",
+      sort: false,
+      filter: false,
+      render: (item) => (
+        <div className="d-flex align-items-center justify-content-start">
+          <div className="emp-avatar">
+            <AvatarComponent
+              classess=""
+              letterCount={1}
+              label={item?.employeeName}
+            />
+          </div>
+          <div className="ml-2">
+            <span>{item?.employeeName}</span>
+          </div>
+        </div>
+      ),
+      fieldType: "string",
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+      sort: false,
+      filter: false,
+      render: (record) => record?.department || "N/A",
+    },
+    {
+      title: "Designation",
+      dataIndex: "designation",
+      sort: false,
+      filter: false,
+      render: (record) => record?.designation || "N/A",
+    },
+    {
+      title: "Employment Type",
+      dataIndex: "employmentType",
+      sort: false,
+      filter: false,
+      render: (record) => record?.employmentType || "N/A",
+    },
+    {
+      title: "Calendar Name",
+      dataIndex: "calendarName",
+      sort: false,
+      filter: false,
+      // render: (_, record) => record?.employmentType || "N/A",
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>In Time</span>,
+      dataIndex: "inTime",
+      render: (record) => record?.inTime || "N/A",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Out Time</span>,
+      dataIndex: "outTime",
+      render: (record) => record?.outTime || "N/A",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Duration</span>,
+      dataIndex: "dutyHours",
+      render: (record) => record?.dutyHours || "N/A",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Status</span>,
+      dataIndex: "actualStatus",
+      render: (record) => record?.actualStatus || "N/A",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Manual Status</span>,
+      dataIndex: "manualStatus",
+      render: (record) => record?.manualStatus || "N/A",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Address</span>,
+      dataIndex: "location",
+      render: (record) => record?.location || "N/A",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: () => <span style={{ color: gray600 }}>Remarks</span>,
+      dataIndex: "remarks",
+      render: (record) => record?.remarks || "N/A",
+      sort: false,
+      filter: false,
+    },
+  ];
+};
 
 // excel columns
 export const column = {

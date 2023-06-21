@@ -1,8 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  SearchOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { IconButton, Tooltip, Typography } from "@mui/material";
@@ -11,8 +8,6 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import AntTable from "../../../../common/AntTable";
-import { paginationSize } from "../../../../common/AntTable";
 import { getPeopleDeskAllDDL } from "../../../../common/api";
 import DefaultInput from "../../../../common/DefaultInput";
 import FormikSelect from "../../../../common/FormikSelect";
@@ -22,7 +17,6 @@ import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../../utility/customColor";
-import { getPDFAction } from "../../../../utility/downloadFile";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import axios from "axios";
 import moment from "moment";
@@ -38,23 +32,20 @@ import {
 } from "./helper";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
 import { dateFormatter } from "../../../../utility/dateFormatter";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import { todayDate } from "../../../../utility/todayDate";
 
 const initialValues = {
   businessUnit: "",
-  date: "",
+  date: todayDate(),
   workplaceGroup: "",
   workplace: "",
   search: "",
 };
 
 const validationSchema = Yup.object().shape({
-  // businessUnit: Yup.object()
-  //   .shape({
-  //     value: Yup.string().required("Business Unit is required"),
-  //     label: Yup.string().required("Business Unit is required"),
-  //   })
-  //   .typeError("Business Unit is required"),
-
   date: Yup.date().required("Date is required").typeError("Date is required"),
 });
 
@@ -62,7 +53,7 @@ const MgmtDailyAttendance = () => {
   // redux
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId, intDepartmentId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -74,8 +65,6 @@ const MgmtDailyAttendance = () => {
   const [rowDto, setRowDto] = useState([]);
   const [allData, setAllData] = useState({});
   const [buDetails, setBuDetails] = useState({});
-  const [tableRowDto, setTableRowDto] = useState([]);
-  const [, setEmployeeList] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -94,6 +83,30 @@ const MgmtDailyAttendance = () => {
       permission = item;
     }
   });
+
+  const getData = (
+    pagination = { current: 1, pageSize: paginationSize },
+    srcTxt = "",
+    date = todayDate(),
+    isExcel = false
+  ) => {
+    getDailyAttendanceData(
+      buId,
+      date,
+      setRowDto,
+      setLoading,
+      srcTxt,
+      pagination?.current,
+      pagination?.pageSize,
+      isExcel,
+      wgId
+    );
+  };
+
+  useEffect(() => {
+    getData();
+  }, [wgId]);
+
   // formik
   const { setFieldValue, values, errors, touched, setValues, handleSubmit } =
     useFormik({
@@ -101,100 +114,16 @@ const MgmtDailyAttendance = () => {
       validationSchema,
       initialValues,
       onSubmit: () => {
-        getDailyAttendanceData(
-          orgId,
-          buId,
-          values?.date,
-          values,
-          setRowDto,
-          setAllData,
-          setLoading,
-          setTableRowDto,
-          intDepartmentId,
-          "",
-          pages,
-          setPages,
-          false,
-          wgId
-        );
+        getData();
       },
     });
 
-  // filter data
-  // const filterData = (keywords) => {
-  //   try {
-  //     const regex = new RegExp(keywords?.toLowerCase());
-  //     let newDta = allData?.employeeAttendanceSummaryVM?.filter(
-  //       (item) =>
-  //         regex.test(item?.employeeName?.toLowerCase()) ||
-  //         regex.test(item?.employeeCode?.toLowerCase()) ||
-  //         regex.test(item?.department?.toLowerCase()) ||
-  //         regex.test(item?.designation?.toLowerCase()) ||
-  //         regex.test(item?.employmentType?.toLowerCase()) ||
-  //         regex.test(item?.status?.toLowerCase()) ||
-  //         regex.test(item?.location?.toLowerCase())
-  //     );
-  //     setRowDto(newDta);
-  //   } catch {
-  //     setRowDto([]);
-  //   }
-  // };
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getDailyAttendanceData(
-        orgId,
-        buId,
-        values?.date,
-        values,
-        setRowDto,
-        setAllData,
-        setLoading,
-        setTableRowDto,
-        intDepartmentId,
-        srcText,
-        pagination,
-        setPages,
-        true,
-        wgId
-      );
-    }
-    if (pages?.current !== pagination?.current) {
-      return getDailyAttendanceData(
-        orgId,
-        buId,
-        values?.date,
-        values,
-        setRowDto,
-        setAllData,
-        setLoading,
-        setTableRowDto,
-        intDepartmentId,
-        srcText,
-        pagination,
-        setPages,
-        true,
-        wgId
-      );
-    }
-  };
   //set to module
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, [dispatch]);
 
   useEffect(() => {
-    // getPeopleDeskAllDDL(
-    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-    //   "intBusinessUnitId",
-    //   "strBusinessUnit",
-    //   setBusinessUnitDDL
-    // );
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceId",
@@ -204,12 +133,34 @@ const MgmtDailyAttendance = () => {
     getBuDetails(buId, setBuDetails, setLoading);
   }, [orgId, buId, employeeId]);
 
-  useEffect(() => {
-    if (tableRowDto?.length > 0) {
-      const list = tableRowDto?.map((item) => item?.employeeId);
-      setEmployeeList(list);
-    }
-  }, [tableRowDto]);
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      searchText
+    );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      searchText
+    );
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -495,28 +446,28 @@ const MgmtDailyAttendance = () => {
                             style={{ color: "#101828" }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              getPDFAction(
-                                `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${
-                                  values?.date
-                                }${
-                                  values?.businessUnit?.value
-                                    ? `&IntBusinessUnitId=${values?.businessUnit?.value}`
-                                    : ""
-                                }${
-                                  values?.workplaceGroup?.value
-                                    ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
-                                    : ""
-                                }${
-                                  tableRowDto?.length > 0
-                                    ? `&EmployeeIdList=${null}`
-                                    : ""
-                                }${
-                                  values?.workplace?.value
-                                    ? `&IntWorkplaceId=${values?.workplace?.value}`
-                                    : ""
-                                }`,
-                                setLoading
-                              );
+                              // getPDFAction(
+                              //   `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${
+                              //     values?.date
+                              //   }${
+                              //     values?.businessUnit?.value
+                              //       ? `&IntBusinessUnitId=${values?.businessUnit?.value}`
+                              //       : ""
+                              //   }${
+                              //     values?.workplaceGroup?.value
+                              //       ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
+                              //       : ""
+                              //   }${
+                              //     tableRowDto?.length > 0
+                              //       ? `&EmployeeIdList=${null}`
+                              //       : ""
+                              //   }${
+                              //     values?.workplace?.value
+                              //       ? `&IntWorkplaceId=${values?.workplace?.value}`
+                              //       : ""
+                              //   }`,
+                              //   setLoading
+                              // );
                             }}
                           >
                             <LocalPrintshopIcon />
@@ -539,7 +490,7 @@ const MgmtDailyAttendance = () => {
                     </li>
                   )}
                   <li>
-                    <DefaultInput
+                    {/* <DefaultInput
                       classes="search-input fixed-width mt-1 tableCardHeaderSeach"
                       inputClasses="search-inner-input"
                       placeholder="Search"
@@ -595,13 +546,13 @@ const MgmtDailyAttendance = () => {
                       }}
                       errors={errors}
                       touched={touched}
-                    />
+                    /> */}
                   </li>
                 </ul>
               </div>
             </div>
             {rowDto?.length > 0 ? (
-              <div className="table-card-styled tableOne employee-table-card tableOne  table-responsive">
+              <div>
                 <div
                   style={{ marginLeft: "-7px" }}
                   className=" d-flex justify-content-between align-items-center my-2"
@@ -735,9 +686,9 @@ const MgmtDailyAttendance = () => {
                     </Typography>
                   </div>
                 </div>
-                <AntTable
+                {/* <AntTable
                   data={rowDto}
-                  columnsData={dailyAttendenceDtoCol}
+                  columnsData={dailyAttendenceDtoCol()}
                   setColumnsData={(newRow) => {
                     setTableRowDto(newRow);
                   }}
@@ -750,6 +701,25 @@ const MgmtDailyAttendance = () => {
                   }
                   pages={pages?.pageSize}
                   pagination={pages}
+                /> */}
+
+                <PeopleDeskTable
+                  columnData={dailyAttendenceDtoCol(
+                    pages?.current,
+                    pages?.pageSize
+                  )}
+                  pages={pages}
+                  rowDto={rowDto}
+                  setRowDto={setRowDto}
+                  handleChangePage={(e, newPage) =>
+                    handleChangePage(e, newPage, values?.search)
+                  }
+                  handleChangeRowsPerPage={(e) =>
+                    handleChangeRowsPerPage(e, values?.search)
+                  }
+                  uniqueKey="expenseId"
+                  isCheckBox={false}
+                  isScrollAble={true}
                 />
               </div>
             ) : (

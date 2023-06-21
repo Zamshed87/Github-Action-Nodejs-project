@@ -11,7 +11,7 @@ import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import AddEditFormComponent from "./addEditForm";
-import { offDayAssignDtoCol } from "./helper";
+import { offDayAssignDtoCol, printDays } from "./helper";
 import "./offday.css";
 import MasterFilter from "../../../../common/MasterFilter";
 import { Popover } from "@mui/material";
@@ -135,14 +135,40 @@ function OffDay() {
       });
       if (res?.data?.data) {
         setLandingLoading(true);
-
+        let newData =
+          res?.data?.data?.length > 0
+            ? res?.data?.data?.map((item) => {
+                return {
+                  ...item,
+                  offDayList:
+                    !item?.isFriday &&
+                    !item?.isSaturday &&
+                    !item?.isSunday &&
+                    !item?.isMonday &&
+                    !item?.isThursday &&
+                    !item?.isTuesday &&
+                    !item?.isWednesday
+                      ? "N/A"
+                      : printDays(item),
+                  offDay:
+                    item?.isFriday ||
+                    item?.isSaturday ||
+                    item?.isSunday ||
+                    item?.isMonday ||
+                    item?.isThursday ||
+                    item?.isTuesday ||
+                    item?.isWednesday,
+                };
+              })
+            : [];
+        // setLanding(newData);
         setHeaderListDataDynamically({
           currentFilterSelection,
           checkedHeaderList,
           headerListKey: "offdayAssignHeader",
           headerList,
           setHeaderList,
-          response: res?.data,
+          response: { ...res?.data, data: newData },
           filterOrderList,
           setFilterOrderList,
           initialHeaderListData,
@@ -159,6 +185,24 @@ function OffDay() {
           )
             ? true
             : false,
+          offDayList:
+            !item?.isFriday &&
+            !item?.isSaturday &&
+            !item?.isSunday &&
+            !item?.isMonday &&
+            !item?.isThursday &&
+            !item?.isTuesday &&
+            !item?.isWednesday
+              ? "N/A"
+              : printDays(item),
+          offDay:
+            item?.isFriday ||
+            item?.isSaturday ||
+            item?.isSunday ||
+            item?.isMonday ||
+            item?.isThursday ||
+            item?.isTuesday ||
+            item?.isWednesday,
         }));
 
         setRowDto(modifiedData);
