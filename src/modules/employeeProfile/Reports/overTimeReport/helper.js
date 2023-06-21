@@ -35,139 +35,145 @@ export const filterData = (keywords, allData, setRowDto) => {
 
 export const getOvertimeReportLanding = async (
   partType,
-  orgId,
   buId,
   workplaceGroupId,
-  deptId,
-  desigId,
-  employeeId,
   formDate,
   toDate,
-  setAllData,
   setter,
   setLoading,
-  setTableRowDto
+  srcTxt,
+  isPaginated,
+  pageNo,
+  pageSize,
+  setPages,
+  pages
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/OvertimeReportLanding?PartType=${partType}&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&WorkplaceId=0&DepartmentId=${deptId}&DesignationId=${desigId}&EmployeeId=${employeeId}&FromDate=${formDate}&ToDate=${toDate}`
+      `/Employee/OvertimeReportLanding?PartType=${partType}&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&FromDate=${formDate}&ToDate=${toDate}&SearchText=${srcTxt}&IsPaginated=${isPaginated}&PageNo=${pageNo}&PageSize=${pageSize}`
     );
     if (res?.data) {
-      setAllData && setAllData(res.data);
       setter(res?.data);
-      setTableRowDto((prev) => ({
-        ...prev,
-        data: res?.data,
-        totalCount: res?.data?.length,
-      }));
+      setPages({
+        current: pages?.current,
+        pageSize: pages?.pageSize,
+        total: res?.data[0]?.totalCount,
+      });
       setLoading && setLoading(false);
     }
   } catch (error) {
     setLoading && setLoading(false);
   }
 };
-export const empOverTimeDtoCol = (page,paginationSize) => {
+export const empOverTimeDtoCol = (page, paginationSize) => {
   return [
     {
       title: "SL",
-      render: (text, record, index) => (page - 1) * paginationSize + index + 1,
-      sorter: false,
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
       filter: false,
-      width: 60,
       className: "text-center",
-      fixed: "left",
+      width: 50,
     },
     {
       title: "Employee Id",
       dataIndex: "employeeCode",
-      sorter: true,
-      filter: true,
+      sort: false,
+      filter: false,
       width: 100,
       fixed: "left",
     },
     {
-      title: "Employee Name",
+      title: "Employee",
       dataIndex: "employee",
-      render: (_, record) => {
-        return (
-          <div className="d-flex align-items-center">
+      sort: false,
+      filter: false,
+      render: (item) => (
+        <div className="d-flex align-items-center justify-content-start">
+          <div className="emp-avatar">
             <AvatarComponent
               classess=""
               letterCount={1}
-              label={record?.employee}
+              label={item?.employee}
             />
-            <span className="ml-2">{record?.employee}</span>
           </div>
-        );
-      },
-      sorter: true,
-      fixed: "left",
-      width: 250,
-      filter: true,
+          <div className="ml-2">
+            <span>{item?.employee}</span>
+          </div>
+        </div>
+      ),
+      fieldType: "string",
     },
     {
       title: "Designation",
       dataIndex: "designation",
-      sorter: true,
-      filter: true,
+      sort: false,
+      filter: false,
       width: 200,
     },
     {
       title: "Department",
       dataIndex: "department",
-      sorter: true,
-      filter: true,
+      sort: false,
+      filter: false,
       width: 200,
     },
     {
       title: "Employment Type",
       dataIndex: "employementType",
-      sorter: true,
-      filter: true,
+      sort: false,
+      filter: false,
       width: 200,
     },
     {
       title: "Overtime Date",
       dataIndex: "overTimeDate",
       isDate: true,
-      render: (_, record) => dateFormatter(record?.overTimeDate),
+      render: (record) => dateFormatter(record?.overTimeDate),
       width: 100,
+      sort: false,
+      filter: false,
     },
     {
       title: "Salary",
       dataIndex: "salary",
-      sorter: true,
+      sort: false,
+      filter: false,
       width: 80,
     },
     {
       title: "Basic",
       dataIndex: "basicSalary",
-      sorter: true,
+      sort: false,
+      filter: false,
       width: 80,
     },
     {
       title: "Hour",
       dataIndex: "hours",
-      sorter: true,
+      sort: false,
+      filter: false,
       width: 80,
     },
     {
       title: "Hour Amount Rate",
       dataIndex: "perHourRate",
-      sorter: true,
+      sort: false,
+      filter: false,
       width: 200,
-      render: (_, data) => {
+      render: (data) => {
         return <span className="text-right">{data?.perHourRate}</span>;
       },
     },
     {
       title: "Total Amount",
       dataIndex: "Hour Amount Rate",
-      sorter: true,
+      sort: false,
+      filter: false,
       width: 100,
       fixed: "right",
-      render: (_, data) => {
+      render: (data) => {
         return (
           <span className="text-right">
             {numberWithCommas(data?.payAmount)}{" "}

@@ -1,11 +1,9 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import AntScrollTable from "../../../../common/AntScrollTable";
 import FormikInput from "../../../../common/FormikInput";
 import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
@@ -15,15 +13,19 @@ import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
-import PopOverFilter from "./component/PopOverFilter";
 import { generateExcelAction } from "./excel/excelConvert";
 import {
   empOverTimeDtoCol,
-  filterData,
   getBuDetails,
   getOvertimeReportLanding,
 } from "./helper";
 import "./overTimeReport.css";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import useDebounce from "../../../../utility/customHooks/useDebounce";
+import { toast } from "react-toastify";
+import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 
 const initData = {
   search: "",
@@ -33,12 +35,6 @@ const initData = {
   employee: "",
   fromDate: monthFirstDate(),
   toDate: todayDate(),
-};
-
-const customStyleObj = {
-  root: {
-    minWidth: "750px",
-  },
 };
 
 export default function EmOverTimeReport() {
@@ -52,25 +48,18 @@ export default function EmOverTimeReport() {
   // row data
   const [rowDto, setRowDto] = useState([]);
   const [total, setTotal] = useState(0);
-  const [allData, setAllData] = useState([]);
-  const [page, setPage] = useState(1);
-  const [paginationSize, setPaginationSize] = useState(15);
-  // master filter
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
+  const debounce = useDebounce();
+  const [, getExcelData, apiLoading] = useAxiosGet();
 
-  const { buId, orgId, buName, wgId } = useSelector(
+  const { buId, buName, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-  const [tableRowDto, setTableRowDto] = useState([]);
 
   useEffect(() => {
     if (rowDto.length > 0) {
@@ -82,51 +71,68 @@ export default function EmOverTimeReport() {
     }
   }, [rowDto]);
   // date
-  let date = new Date();
-  const monthOfSatrtDate = `${date.getFullYear()}-${date.getMonth() + 1}-1`;
-  const monthOfEndDate = todayDate();
-  const getData = (fromDate, toDate) => {
+  const getData = (
+    pagination = { current: 1, pageSize: paginationSize },
+    srcTxt = "",
+    fromDate,
+    toDate,
+    isPaginated = true
+  ) => {
     getOvertimeReportLanding(
       "CalculatedHistoryReportForAllEmployee",
-      orgId,
       buId,
       wgId,
-      0,
-      0,
-      0,
       fromDate ? fromDate : monthFirstDate(),
       toDate ? toDate : todayDate(),
-      setAllData,
       setRowDto,
       setLoading,
-      setTableRowDto
+      srcTxt,
+      isPaginated,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages,
+      pages
     );
   };
   useEffect(() => {
     getData();
     getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId]);
+  }, [buId, wgId]);
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
 
-  // masterHandler
-  const masterFilterHandler = (values) => {
-    getOvertimeReportLanding(
-      "CalculatedHistoryReportForAllEmployee",
-      orgId,
-      buId,
-      wgId || 0,
-      values?.department?.value || 0,
-      values?.designation?.value || 0,
-      values?.employee?.value || 0,
-      values?.fromDate || monthOfSatrtDate,
-      values?.toDate || monthOfEndDate,
-      setAllData,
-      setRowDto,
-      setLoading
+  const handleChangePage = (_, newPage, searchText, fromDate, toDate) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      searchText,
+      fromDate,
+      toDate
     );
-    setAnchorEl(null);
+  };
+
+  const handleChangeRowsPerPage = (event, searchText, fromDate, toDate) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      searchText,
+      fromDate,
+      toDate
+    );
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -160,7 +166,7 @@ export default function EmOverTimeReport() {
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              {loading && <Loading />}
+              {(loading || apiLoading) && <Loading />}
               {permission?.isView ? (
                 <div className="overtime-report">
                   <div className="table-card">
@@ -169,18 +175,39 @@ export default function EmOverTimeReport() {
                         <Tooltip title="Export CSV" arrow>
                           <button
                             type="button"
-                            className="btn-save "
-                            onClick={() => {
-                              rowDto?.length &&
-                                generateExcelAction(
-                                  "Overtime  Report",
-                                  "",
-                                  "",
-                                  buName,
-                                  tableRowDto?.data,
-                                  buDetails?.strBusinessUnitAddress,
-                                  total
-                                );
+                            className="btn-save"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (rowDto?.length <= 0) {
+                                return toast.warning("Data is empty !!!!", {
+                                  toastId: 1,
+                                });
+                              }
+
+                              getExcelData(
+                                `/Employee/OvertimeReportLanding?PartType=CalculatedHistoryReportForAllEmployee&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${values?.fromDate}&ToDate=${values?.toDate}&SearchText=${values?.search}&IsPaginated=false&PageNo=0&PageSize=0`,
+                                (res) => {
+                                  generateExcelAction(
+                                    "Overtime Report",
+                                    "",
+                                    "",
+                                    buName,
+                                    res,
+                                    buDetails?.strBusinessUnitAddress,
+                                    total
+                                  );
+                                }
+                              );
+                              // rowDto?.length &&
+                              //   generateExcelAction(
+                              //     "Overtime Report",
+                              //     "",
+                              //     "",
+                              //     buName,
+                              //     tableRowDto?.data,
+                              //     buDetails?.strBusinessUnitAddress,
+                              //     total
+                              //   );
                             }}
                           >
                             <SaveAlt
@@ -191,50 +218,23 @@ export default function EmOverTimeReport() {
                       </div>
                       <div className="table-card-head-right">
                         <ul>
-                          {(values?.search ||
-                            values?.workplace ||
-                            values?.department ||
-                            values?.designation ||
-                            values?.employee ||
-                            // values?.fromDate ||
-                            // values?.toDate ||
-                            values?.search) && (
-                              <li>
-                                <ResetButton
-                                  classes="btn-filter-reset"
-                                  title="Reset"
-                                  icon={
-                                    <SettingsBackupRestoreOutlined
-                                      sx={{ marginRight: "10px" }}
-                                    />
-                                  }
-                                  onClick={() => {
-                                    getOvertimeReportLanding(
-                                      "CalculatedHistoryReportForAllEmployee",
-                                      orgId,
-                                      buId,
-                                      wgId,
-                                      0,
-                                      0,
-                                      0,
-                                      monthOfSatrtDate,
-                                      monthOfEndDate,
-                                      setAllData,
-                                      setRowDto,
-                                      setLoading
-                                    );
-                                    setRowDto(allData);
-                                    setFieldValue("workplace", "");
-                                    setFieldValue("department", "");
-                                    setFieldValue("designation", "");
-                                    setFieldValue("employee", "");
-                                    setFieldValue("fromDate", "");
-                                    setFieldValue("toDate", "");
-                                    setFieldValue("search", "");
-                                  }}
-                                />
-                              </li>
-                            )}
+                          {values?.search && (
+                            <li>
+                              <ResetButton
+                                classes="btn-filter-reset"
+                                title="Reset"
+                                icon={
+                                  <SettingsBackupRestoreOutlined
+                                    sx={{ marginRight: "10px" }}
+                                  />
+                                }
+                                onClick={() => {
+                                  resetForm(initData);
+                                  getData();
+                                }}
+                              />
+                            </li>
+                          )}
                           <li>
                             <MasterFilter
                               isHiddenFilter
@@ -242,13 +242,25 @@ export default function EmOverTimeReport() {
                               inputWidth="250px"
                               value={values?.search}
                               setValue={(value) => {
-                                filterData(value, allData, setRowDto);
                                 setFieldValue("search", value);
+                                debounce(() => {
+                                  getData(
+                                    { current: 1, pageSize: paginationSize },
+                                    value,
+                                    values?.fromDate,
+                                    values?.toDate
+                                  );
+                                }, 500);
                               }}
                               cancelHandler={() => {
                                 setFieldValue("search", "");
+                                getData(
+                                  { current: 1, pageSize: paginationSize },
+                                  "",
+                                  values?.fromDate,
+                                  values?.toDate
+                                );
                               }}
-                              handleClick={handleClick}
                             />
                           </li>
                         </ul>
@@ -296,7 +308,12 @@ export default function EmOverTimeReport() {
                               style={{ marginTop: "21px" }}
                               className="btn btn-green"
                               onClick={() => {
-                                getData(values?.fromDate, values?.toDate);
+                                getData(
+                                  { current: 1, pageSize: paginationSize },
+                                  values?.search,
+                                  values?.fromDate,
+                                  values?.toDate
+                                );
                               }}
                             >
                               View
@@ -306,22 +323,35 @@ export default function EmOverTimeReport() {
                       </div>
                       <div className="table-card-styled employee-table-card ant-scrolling-Table  table-responsive mt-3">
                         {rowDto?.length > 0 ? (
-                          <>
-                            <AntScrollTable
-                              data={rowDto}
-                              removePagination
-                              columnsData={empOverTimeDtoCol(page, paginationSize)}
-                              setColumnsData={(newRow) =>
-                                setTableRowDto((prev) => ({
-                                  ...prev,
-                                  data: newRow,
-                                  totalCount: newRow?.length,
-                                }))
-                              }
-                              setPage={setPage}
-                              setPaginationSize={setPaginationSize}
-                            />
-                          </>
+                          <PeopleDeskTable
+                            columnData={empOverTimeDtoCol(
+                              pages?.current,
+                              pages?.pageSize
+                            )}
+                            pages={pages}
+                            rowDto={rowDto}
+                            setRowDto={setRowDto}
+                            handleChangePage={(e, newPage) =>
+                              handleChangePage(
+                                e,
+                                newPage,
+                                values?.search,
+                                values?.fromDate,
+                                values?.toDate
+                              )
+                            }
+                            handleChangeRowsPerPage={(e) =>
+                              handleChangeRowsPerPage(
+                                e,
+                                values?.search,
+                                values?.fromDate,
+                                values?.toDate
+                              )
+                            }
+                            uniqueKey="expenseId"
+                            isCheckBox={false}
+                            isScrollAble={false}
+                          />
                         ) : (
                           <>
                             {!loading && (
@@ -338,7 +368,7 @@ export default function EmOverTimeReport() {
               )}
 
               {/* master filter */}
-              <PopOverFilter
+              {/* <PopOverFilter
                 propsObj={{
                   id,
                   open,
@@ -351,7 +381,7 @@ export default function EmOverTimeReport() {
                   customStyleObj,
                   masterFilterHandler,
                 }}
-              />
+              /> */}
             </Form>
           </>
         )}
