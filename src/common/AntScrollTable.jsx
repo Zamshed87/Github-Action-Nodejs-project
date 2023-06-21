@@ -56,8 +56,8 @@ const AntScrollTable = ({
       filteredValue: filteredInfo?.[item?.dataIndex] || null,
       onFilter: (value, record) =>
         item?.isDate
-          ? dateFormatter(record?.[item?.dataIndex]).startsWith(value)
-          : record?.[item?.dataIndex].startsWith(value),
+          ? dateFormatter(record?.[item?.dataIndex]) === value
+          : record?.[item?.dataIndex] === value,
       filterSearch: true,
     };
   });
