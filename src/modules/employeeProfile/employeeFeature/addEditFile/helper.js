@@ -379,12 +379,12 @@ export const submitHandler = ({
     if (!values?.soleDepo) {
       return toast.warn("Sole Depo is required");
     }
-    if (!values?.region) {
-      return toast.warn("Region is required");
-    }
-    if (!values?.area) {
-      return toast.warn("Area is required");
-    }
+    // if (!values?.region) {
+    //   return toast.warn("Region is required");
+    // }
+    // if (!values?.area) {
+    //   return toast.warn("Area is required");
+    // }
     // if (!values?.territory) {
     //   return toast.warn("Territory is required");
     // }

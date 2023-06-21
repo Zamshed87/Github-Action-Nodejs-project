@@ -30,13 +30,13 @@ const prodUrl = "https://akijbiri.peopledesk.io";
 // set axios base url
 export const APIUrl =
   process.env.NODE_ENV === "development"
-    ? "https://devakijbiri.peopledesk.io/api"
+    ? "https://dev-akijbiri.peopledesk.io/api"
     : `${origin}/api`;
 Axios.defaults.baseURL = APIUrl;
 
 export const domainUrl =
   process.env.NODE_ENV === "development"
-    ? "https://devakijbiri.peopledesk.io"
+    ? "https://dev-akijbiri.peopledesk.io"
     : origin;
 
 if (process.env.NODE_ENV === "production") {
