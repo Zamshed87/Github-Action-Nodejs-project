@@ -152,6 +152,7 @@ export default function EmMovementApplication() {
     };
 
     const callback = () => {
+      // console.log({ values });
       getData(values);
       cb();
     };
@@ -218,6 +219,7 @@ export default function EmMovementApplication() {
   };
 
   const getData = (values) => {
+    console.log({ values }, "from getData");
     const payload = {
       movementTypeId: "",
       applicationDate: "",
@@ -226,7 +228,7 @@ export default function EmMovementApplication() {
       fromDate: values?.movementFromDate || monthFirstDate(),
       toDate: values?.movementToDate || monthLastDate(),
       statusId: "",
-      empId: values?.employee.value || employee?.employeeId || employeeId,
+      empId: values?.employee?.value || employee?.employeeId || employeeId,
     };
     getMovementApplicationFilterEmpManagement(
       "MovementApplication",
@@ -438,17 +440,30 @@ export default function EmMovementApplication() {
         enableReinitialize={true}
         initialValues={{
           ...initData,
-          employee: {
-            value: employee?.EmployeeId ? employee?.EmployeeId : employeeId,
-            label: employee?.EmployeeOnlyName
-              ? employee?.EmployeeOnlyName
-              : userName,
-          },
+          // employee: {
+          //   value: employee?.EmployeeId ? employee?.EmployeeId : employeeId,
+          //   label: employee?.EmployeeOnlyName
+          //     ? employee?.EmployeeOnlyName
+          //     : userName,
+          // },
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { setSubmitting, resetForm, setValues }) => {
           saveHandler(values, () => {
             resetForm(initData);
+            // setValues((prev) => ({
+            //   ...prev,
+            //   search: "",
+            //   movementType: "",
+            //   fromDate: "",
+            //   startTime: "",
+            //   toDate: "",
+            //   endTime: "",
+            //   location: "",
+            //   reason: "",
+            //   movementFromDate: monthFirstDate(),
+            //   movementToDate: monthLastDate(),
+            // }));
             setIsEdit(false);
             setSingleData("");
             // getData(values);

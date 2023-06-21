@@ -159,7 +159,7 @@ export default function ActiveInactiveEmployeeReport() {
       toDate,
       {
         current: 1,
-        pageSize: pages?.pageSize,
+        pageSize: +event.target.value,
         total: pages?.total,
       },
       searchText
