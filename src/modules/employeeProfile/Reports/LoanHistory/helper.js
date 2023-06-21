@@ -23,9 +23,7 @@ export const filterData = (keywords, allData, setRowDto) => {
 };
 
 export const getLoanApplicationByAdvanceFilter = async (
-  pages,
   setPages,
-  setAllData,
   setter,
   setLoading,
   payload
@@ -36,82 +34,91 @@ export const getLoanApplicationByAdvanceFilter = async (
       `/Employee/GetLoanApplicationByAdvanceFilter`,
       payload
     );
-    setPages({
-      ...pages,
-      current: pages.current,
-      pageSize: pages.pageSize,
-      total: res?.data[0]?.totalCount,
-    });
-    setLoading && setLoading(false);
-    setAllData && setAllData(res?.data);
-    setter(res?.data);
+
+    console.log("res?.data", res?.data);
+
+    if (res?.data) {
+      const modifiedData = res?.data?.data?.map((item, index) => ({
+        ...item,
+        initialSerialNumber: index + 1,
+      }));
+
+      setter && setter?.(modifiedData);
+
+      setPages({
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
+      });
+
+      setLoading && setLoading(false);
+    }
   } catch (err) {
     setLoading && setLoading(false);
     setter([]);
   }
 };
 
-export const loanReportColumns = (pages) => {
+export const loanReportColumns = (page, paginationSize) => {
   return [
     {
       title: "SL",
-      render: (text, record, index) => {
-        return (
-          <span>
-            {pages?.current === 1
-              ? index + 1
-              : (pages.current - 1) * pages?.pageSize + (index + 1)}
-          </span>
-        );
-      },
-      sorter: false,
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
       filter: false,
       className: "text-center",
+      width: 60,
     },
     {
       title: "Employee Id",
       dataIndex: "employeeCode",
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Employee",
       dataIndex: "employeeName",
-      render: (strEmployeeName) => (
+      render: (item) => (
         <div className="d-flex align-items-center">
           <AvatarComponent
             classess=""
             letterCount={1}
-            label={strEmployeeName}
+            label={item?.strEmployeeName}
           />
-          <span className="ml-2">{strEmployeeName}</span>
+          <span className="ml-2">{item?.strEmployeeName}</span>
         </div>
       ),
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Designation",
       dataIndex: "designationName",
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Department",
       dataIndex: "departmentName",
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Application Date",
       dataIndex: "applicationDate",
-      isDate: true,
-      render: (_, record) => dateFormatter(record?.applicationDate),
+      render: (record) => dateFormatter(record?.applicationDate),
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
       title: "Loan Type",
       dataIndex: "loanType",
-      render: (data, record) => (
+      render: (record) => (
         <div>
           <LightTooltip
             title={
@@ -127,32 +134,33 @@ export const loanReportColumns = (pages) => {
           <span>{record?.loanType}</span>
         </div>
       ),
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "date",
     },
     {
       title: "Loan Amount",
       dataIndex: "loanAmount",
-      render: (data, record) => (
+      render: (record) => (
         <>
           <span>BDT {record?.loanAmount}</span>
         </>
       ),
-      sorter: true,
-      filter: true,
-      isNumber: true,
+      sort: true,
+      filter: false,
+      fieldType: "number",
     },
     {
       title: "Installment",
       dataIndex: "numberOfInstallment",
-      sorter: true,
-      filter: true,
-      isNumber: true,
+      sort: true,
+      filter: false,
+      fieldType: "number",
     },
     {
       title: "Approval",
       dataIndex: "applicationStatus",
-      render: (_, record) => (
+      render: (record) => (
         <>
           {record?.applicationStatus === "Approved" && (
             <Chips label="Approved" classess="success" />
@@ -165,13 +173,14 @@ export const loanReportColumns = (pages) => {
           )}
         </>
       ),
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
     {
       title: "Status",
       dataIndex: "installmentStatus",
-      render: (_, record) => (
+      render: (record) => (
         <>
           {record?.installmentStatus === "Completed" && (
             <Chips label="Completed" classess="success" />
@@ -187,8 +196,9 @@ export const loanReportColumns = (pages) => {
           )}
         </>
       ),
-      sorter: true,
-      filter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
     },
   ];
 };
