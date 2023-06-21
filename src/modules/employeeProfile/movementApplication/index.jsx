@@ -54,7 +54,6 @@ const initData = {
   endTime: "",
   location: "",
   reason: "",
-  employee: "",
   movementFromDate: monthFirstDate(),
   movementToDate: monthLastDate(),
 };
@@ -137,7 +136,7 @@ export default function EmMovementApplication() {
     const payload = {
       partId: singleData ? 2 : 1,
       movementId: singleData ? singleData?.MovementId : 0,
-      intEmployeeId: employee ? employee?.EmployeeId : employeeId,
+      intEmployeeId: employee ? employee?.employeeId : employeeId,
       movementTypeId: values?.movementType?.value,
       fromDate: values.fromDate,
       toDate: values.toDate,
@@ -151,8 +150,9 @@ export default function EmMovementApplication() {
       isActive: true,
       insertBy: employeeId,
     };
+
     const callback = () => {
-      getData();
+      getData(values);
       cb();
     };
     if (employee) {
@@ -226,7 +226,7 @@ export default function EmMovementApplication() {
       fromDate: values?.movementFromDate || monthFirstDate(),
       toDate: values?.movementToDate || monthLastDate(),
       statusId: "",
-      empId: values?.employee.value || employeeId,
+      empId: values?.employee?.value || employee?.employeeId || employeeId,
     };
     getMovementApplicationFilterEmpManagement(
       "MovementApplication",
@@ -439,14 +439,12 @@ export default function EmMovementApplication() {
         initialValues={{
           ...initData,
           employee: {
-            value: employee?.EmployeeId ? employee?.EmployeeId : employeeId,
-            label: employee?.EmployeeOnlyName
-              ? employee?.EmployeeOnlyName
-              : userName,
+            value: employee?.employeeId ? employee?.employeeId : employeeId,
+            label: employee?.employeeName ? employee?.employeeName : userName,
           },
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { setSubmitting, resetForm, setValues }) => {
           saveHandler(values, () => {
             resetForm(initData);
             setIsEdit(false);
@@ -506,13 +504,13 @@ export default function EmMovementApplication() {
                         )}
                         <div className="employeeTitle ml-2">
                           <p className="employeeName">
-                            {employee?.EmployeeOnlyName
-                              ? employee?.EmployeeOnlyName
+                            {employee?.employeeName
+                              ? employee?.employeeName
                               : userName}
                           </p>
                           <p className="employeePosition">
-                            {employee?.EmployeeId
-                              ? othersEmployee?.[0]?.DesignationName
+                            {employee?.designationName
+                              ? employee?.designationName
                               : empBasic?.[0]?.DesignationName}
                           </p>
                         </div>

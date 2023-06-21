@@ -91,12 +91,14 @@ const EmLeaveHistory = () => {
     }
   });
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage, searchText, year) => {
+    console.log(newPage, searchText);
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
 
     getData(
+      year,
       {
         current: newPage,
         pageSize: pages?.pageSize,
@@ -106,11 +108,12 @@ const EmLeaveHistory = () => {
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
+  const handleChangeRowsPerPage = (event, searchText, year) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
+      year,
       {
         current: 1,
         pageSize: +event.target.value,
@@ -276,10 +279,19 @@ const EmLeaveHistory = () => {
                           rowDto={rowDto?.data}
                           setRowDto={setRowDto}
                           handleChangePage={(e, newPage) =>
-                            handleChangePage(e, newPage, values?.search)
+                            handleChangePage(
+                              e,
+                              newPage,
+                              values?.search,
+                              values?.yearDDL?.value
+                            )
                           }
                           handleChangeRowsPerPage={(e) =>
-                            handleChangeRowsPerPage(e, values?.search)
+                            handleChangeRowsPerPage(
+                              e,
+                              values?.search,
+                              values?.yearDDL?.value
+                            )
                           }
                           onRowClick={(data) => {
                             hasLeave(data) &&
