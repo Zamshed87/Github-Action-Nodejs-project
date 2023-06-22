@@ -59,14 +59,14 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       sort: false,
       filter: false,
       className: "text-center",
-      width: 50,
+      width: 30,
     },
     {
       title: "Code",
       dataIndex: "employeeCode",
       sort: false,
       filter: false,
-      width: 100,
+      width: 80,
       render: (record) => record?.employeeCode || "N/A",
     },
     {
