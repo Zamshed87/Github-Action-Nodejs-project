@@ -138,8 +138,6 @@ const MgmtDailyAttendance = () => {
     );
   };
 
-  console.log(rowDto);
-
   const handleChangeRowsPerPage = (event, searchText) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
