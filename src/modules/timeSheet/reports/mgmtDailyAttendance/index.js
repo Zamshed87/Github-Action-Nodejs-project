@@ -99,7 +99,7 @@ const MgmtDailyAttendance = () => {
 
   useEffect(() => {
     getBuDetails(buId, setBuDetails);
-    getData();
+    getData({ current: 1, pageSize: paginationSize }, "", values?.date);
   }, [wgId]);
 
   // formik
