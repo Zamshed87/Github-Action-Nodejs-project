@@ -1,5 +1,4 @@
 import axios from "axios";
-import { gray600 } from "../../../../utility/customColor";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import AvatarComponent from "../../../../common/AvatarComponent";
 
@@ -38,10 +37,8 @@ export const getDailyAttendanceData = async (
       `/Employee/GetDateWiseAttendanceReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&attendanceDate=${date}&IsXls=${forExcel}&PageNo=${pageNo}&PageSize=${pageSize}&searchTxt=${srcTxt}`
     );
 
-    console.log(res);
-
     if (res?.data) {
-      setter(res?.data?.data);
+      setter(res?.data);
       setPages({
         current: res?.data?.currentPage,
         pageSize: res?.data?.pageSize,
@@ -122,49 +119,49 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       // render: (_, record) => record?.employmentType || "N/A",
     },
     {
-      title: () => <span style={{ color: gray600 }}>In Time</span>,
+      title: "In Time",
       dataIndex: "inTime",
       render: (record) => record?.inTime || "N/A",
       sort: false,
       filter: false,
     },
     {
-      title: () => <span style={{ color: gray600 }}>Out Time</span>,
+      title: "Out Time",
       dataIndex: "outTime",
       render: (record) => record?.outTime || "N/A",
       sort: false,
       filter: false,
     },
     {
-      title: () => <span style={{ color: gray600 }}>Duration</span>,
+      title: "Duration",
       dataIndex: "dutyHours",
       render: (record) => record?.dutyHours || "N/A",
       sort: false,
       filter: false,
     },
     {
-      title: () => <span style={{ color: gray600 }}>Status</span>,
+      title: "Status",
       dataIndex: "actualStatus",
       render: (record) => record?.actualStatus || "N/A",
       sort: false,
       filter: false,
     },
     {
-      title: () => <span style={{ color: gray600 }}>Manual Status</span>,
+      title: "Manual Status",
       dataIndex: "manualStatus",
       render: (record) => record?.manualStatus || "N/A",
       sort: false,
       filter: false,
     },
     {
-      title: () => <span style={{ color: gray600 }}>Address</span>,
+      title: "Address",
       dataIndex: "location",
       render: (record) => record?.location || "N/A",
       sort: false,
       filter: false,
     },
     {
-      title: () => <span style={{ color: gray600 }}>Remarks</span>,
+      title: "Remarks",
       dataIndex: "remarks",
       render: (record) => record?.remarks || "N/A",
       sort: false,
