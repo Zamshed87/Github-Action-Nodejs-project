@@ -252,6 +252,7 @@ const SalaryGenerateView = () => {
       return accumulator;
     }, 0);
   }, [rowDto]);
+  console.log(resDetailsReport, "resDetailsReport");
   return (
     <form onSubmit={handleSubmit}>
       {loading && <Loading />}
@@ -359,7 +360,7 @@ const SalaryGenerateView = () => {
               <div>
                 <ul className="d-flex flex-wrap align-items-center justify-content-center">
                   <li className="pr-2">
-                    <Tooltip title="Export CSV" arrow>
+                    <Tooltip title="Download the salary report as Excel" arrow>
                       <button
                         className="btn-save"
                         type="button"
@@ -428,7 +429,7 @@ const SalaryGenerateView = () => {
                     </Tooltip>
                   </li>
                   {values?.summary === "2" && (
-                    <Tooltip title="Print" arrow>
+                    <Tooltip title="Print as PDF" arrow>
                       <button
                         className="btn-save"
                         type="button"
