@@ -2,11 +2,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import {
-  getPeopleDeskAllDDL,
-  getPeopleDeskAllLanding,
-  PeopleDeskSaasDDL,
-} from "../api";
+import { getPeopleDeskAllLanding, PeopleDeskSaasDDL } from "../api";
 import IConfirmModal from "../IConfirmModal";
 import {
   createLeaveApplication,
