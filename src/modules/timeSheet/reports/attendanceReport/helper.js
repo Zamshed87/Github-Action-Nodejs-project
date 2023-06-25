@@ -12,7 +12,7 @@ export const attendanceReportColumn = (page, paginationSize) => {
       className: "text-center",
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "employeeCode",
       width: 150,
     },

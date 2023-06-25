@@ -42,7 +42,7 @@ const MonthlyPunchReportDetails = () => {
     shallowEqual
   );
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
   const [loading, setLoading] = useState(false);
 
   const [rowDto, setRowDto] = useState(null);
@@ -62,7 +62,7 @@ const MonthlyPunchReportDetails = () => {
       setLoading,
       setTableRowDto
     );
-    getBuDetails(buId, setBuDetails, setLoading);
+    getBuDetails(buId, setBuDetails);
   };
 
   useEffect(() => {
@@ -131,7 +131,7 @@ const MonthlyPunchReportDetails = () => {
       },
       {
         title: () => <span style={{ color: gray600 }}>Employee ID</span>,
-        dataIndex: "intEmployeeBasicInfoId",
+        dataIndex: "EmployeeCode",
         sorter: true,
         filter: true,
         fixed: "left",
@@ -202,8 +202,8 @@ const MonthlyPunchReportDetails = () => {
           setValues,
         }) => (
           <>
+            {loading && <Loading />}
             <Form onSubmit={handleSubmit}>
-              {loading && <Loading />}
               {permission?.isView ? (
                 <div className="loan-application">
                   <div className="table-card">
@@ -421,7 +421,6 @@ const MonthlyPunchReportDetails = () => {
                               values?.toDate,
                               page,
                               paginationSize
-
                             )}
                             setColumnsData={(newRow) => setTableRowDto(newRow)}
                             setPage={setPage}

@@ -13,9 +13,7 @@ import { gray600 } from "../../../../utility/customColor";
 import { dateFormatterForInput } from "../../../../utility/dateFormatter";
 import { getPDFAction } from "../../../../utility/downloadFile";
 
-import {
-  getBuDetails
-} from "../helper";
+import { getBuDetails } from "../helper";
 
 import { toast } from "react-toastify";
 import PeopleDeskTable, {
@@ -201,9 +199,12 @@ export default function AttendanceReport() {
                                 setLoading && setLoading(true);
                                 try {
                                   const res = await axios.get(
-                                    `/TimeSheetReport/GetEmpAttendanceReport?FromDate=${values?.fromDate
-                                    }&ToDate=${values?.toDate
-                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${values?.search || ""
+                                    `/TimeSheetReport/GetEmpAttendanceReport?FromDate=${
+                                      values?.fromDate
+                                    }&ToDate=${
+                                      values?.toDate
+                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${
+                                      values?.search || ""
                                     }&IsXls=true`
                                     // `/TimeSheetReport/GetAttendanceReport?FromDate=${
                                     //   values?.fromDate
@@ -349,7 +350,7 @@ export default function AttendanceReport() {
                                   type="submit"
                                   className="btn btn-default flex-center"
                                   label={"Apply"}
-                                  onClick={() => { }}
+                                  onClick={() => {}}
                                   onSubmit={() => handleSubmit()}
                                 />
                               </div>

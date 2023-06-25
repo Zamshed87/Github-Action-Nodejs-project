@@ -21,7 +21,11 @@ import { todayDate } from "../../../../utility/todayDate";
 import { getBuDetails } from "../helper";
 import { onFilterMonthlyAttendance as onFilterMonthlyRosterReport } from "../monthlyAttendanceReport/helper";
 import { generateExcelAction } from "./excel/excelConvert";
-import { getfromToDateList, monthlyRosterReportColumns, onGetRosterReportForAll } from "./helper";
+import {
+  getfromToDateList,
+  monthlyRosterReportColumns,
+  onGetRosterReportForAll,
+} from "./helper";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -38,7 +42,6 @@ const RosterReport = () => {
     permissionList,
     profileData: { orgId, buId, employeeId, buName, wgId },
   } = useSelector((state) => state?.auth, shallowEqual);
-
 
   let permission = null;
   permissionList.forEach((item) => {
@@ -79,9 +82,8 @@ const RosterReport = () => {
       pages,
       setPages
     );
-  }, []);
+  }, [wgId]);
   const handleTableChange = (pagination, newRowDto, srcText) => {
-
     if (newRowDto?.action === "filter") {
       return;
     }
@@ -111,7 +113,7 @@ const RosterReport = () => {
   };
   useEffect(() => {
     getBuDetails(buId, setBuDetails);
-  }, [])
+  }, []);
   const { values, setFieldValue, setValues, handleSubmit } = useFormik({
     initialValues,
     onSubmit: (formValues) => {
@@ -139,9 +141,16 @@ const RosterReport = () => {
                   onClick={(e) => {
                     const excelLanding = async () => {
                       try {
-                        const res = await axios.get(`/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate
-                          }&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${values?.workplaceGroup?.value || 0
-                          }&WorkplaceId=${values?.workplace?.value || 0}&PageNo=1&PageSize=1000000&IsPaginated=false`
+                        const res = await axios.get(
+                          `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
+                            values?.fromDate
+                          }&DteToDate=${
+                            values?.toDate
+                          }&EmployeeId=0&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || 0
+                          }&WorkplaceId=${
+                            values?.workplace?.value || 0
+                          }&PageNo=1&PageSize=1000000&IsPaginated=false`
                         );
                         if (res?.data) {
                           if (res?.data < 1) {
@@ -157,7 +166,6 @@ const RosterReport = () => {
                             buDetails?.strBusinessUnitAddress,
                             getfromToDateList(values?.fromDate, values?.toDate)
                           );
-
                         }
                       } catch (error) {
                         toast.error(error?.response?.data?.message);
@@ -257,7 +265,7 @@ const RosterReport = () => {
                       if (valueOption?.value) {
                         getBuDetails(valueOption?.value, setBuDetails);
                         getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}`,
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
                           "intWorkplaceGroupId",
                           "strWorkplaceGroup",
                           setWorkplaceGroupDDL

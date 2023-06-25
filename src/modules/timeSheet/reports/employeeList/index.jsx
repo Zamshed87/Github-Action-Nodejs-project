@@ -534,7 +534,7 @@ export default function EmployeeList() {
                       />
                     ) : (
                       <>
-                        {!loading && (
+                        {!landingLoading && (
                           <div className="col-12">
                             <NoResult title={"No Data Found"} para={""} />
                           </div>

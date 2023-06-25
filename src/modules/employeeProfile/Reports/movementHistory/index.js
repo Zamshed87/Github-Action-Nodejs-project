@@ -158,7 +158,7 @@ const EmMovementHistory = () => {
         width: 60,
       },
       {
-        title: "Code",
+        title: "Employee Id",
         dataIndex: "employeeCode",
         sort: true,
         filter: false,
@@ -210,9 +210,7 @@ const EmMovementHistory = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          resetForm(initData);
-        }}
+        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
         {({
           handleSubmit,
@@ -273,15 +271,7 @@ const EmMovementHistory = () => {
                         </Tooltip>
                       </div>
                       <ul className="d-flex flex-wrap">
-                        {(values?.search ||
-                          values?.workplace ||
-                          values?.department ||
-                          values?.designation ||
-                          values?.employee ||
-                          values?.movementType ||
-                          values?.dateRange ||
-                          values?.appStatus ||
-                          values?.search) && (
+                        {values?.search && (
                           <li className="mr-2">
                             <ResetButton
                               classes="btn-filter-reset"
@@ -296,19 +286,12 @@ const EmMovementHistory = () => {
                               }
                               onClick={() => {
                                 setAllValues(null);
-                                setFieldValue("workplace", "");
-                                setFieldValue("department", "");
-                                setFieldValue("designation", "");
-                                setFieldValue("employee", "");
-                                setFieldValue("movementType", "");
-                                setFieldValue("dateRange", "");
-                                setFieldValue("appStatus", "");
                                 setFieldValue("search", "");
                                 getMovementHistory(
                                   buId,
                                   wgId,
-                                  initStartData,
-                                  initEndDate,
+                                  values?.fromDate,
+                                  values?.toDate,
                                   "",
                                   setRowDto,
                                   setLoading,

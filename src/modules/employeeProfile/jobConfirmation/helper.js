@@ -69,11 +69,11 @@ export const jobConfirmColumns = (page, paginationSize) => {
       fixed: "left",
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "EmployeeCode",
       sorter: true,
       filter: true,
-      width: 100,
+      width: 120,
       fixed: "left",
     },
     {
