@@ -401,6 +401,9 @@ export default function Joining() {
                                       `/profile/transferandpromotion/joining/view/${item?.intTransferNpromotionId}`,
                                       {
                                         employeeId: item?.intEmployeeId,
+                                        businessUnitId: item?.intBusinessUnitId,
+                                        workplaceGroupId:
+                                          item?.intWorkplaceGroupId,
                                       }
                                     )
                                   }
