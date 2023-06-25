@@ -10,11 +10,13 @@ const TransferPromotionTable = ({
   setSingleData,
   permission,
   setAnchorEl,
+  page,
+  paginationSize,
 }) => {
   return (
     <>
       <td className="text-center align-middle">
-        <div>{index + 1}</div>
+        <div>{(page - 1) * paginationSize + index + 1}</div>
       </td>
       <td className="align-middle">
         <div className="employeeInfo d-flex ">
