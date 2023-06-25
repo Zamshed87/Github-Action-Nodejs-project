@@ -16,6 +16,9 @@ const JoiningTable = ({
   permission,
   getData,
   setLoading,
+  page,
+  paginationSize,
+  values,
 }) => {
   const { orgId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -25,7 +28,7 @@ const JoiningTable = ({
   return (
     <>
       <td className="text-center align-middle">
-        <div>{index + 1}</div>
+        <div>{(page - 1) * paginationSize + index + 1}</div>
       </td>
       <td className="align-middle">
         <div className="employeeInfo d-flex ">
@@ -145,10 +148,18 @@ const JoiningTable = ({
                 yesAlertFunc: () => {
                   joinTransfer(item, orgId, employeeId, setLoading, () => {
                     setSingleData({});
-                    getData();
+                    getData(
+                      {
+                        current: page,
+                        pageSize: paginationSize,
+                      },
+                      values?.filterFromDate,
+                      values?.filterToDate,
+                      values?.search
+                    );
                   });
                 },
-                noAlertFunc: () => { },
+                noAlertFunc: () => {},
               };
               IConfirmModal(confirmObject);
             }}

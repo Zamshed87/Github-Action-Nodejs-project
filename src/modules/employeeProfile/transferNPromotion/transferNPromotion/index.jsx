@@ -167,6 +167,8 @@ export default function TransferAndPromotion() {
     );
   };
 
+  console.log(rowDto, "rowDto");
+
   return (
     <>
       <Formik
@@ -469,6 +471,8 @@ export default function TransferAndPromotion() {
                                     setSingleData={setSingleData}
                                     permission={permission}
                                     setAnchorEl={setAnchorEl}
+                                    page={pages?.current}
+                                    paginationSize={pages?.pageSize}
                                   />
                                 </tr>
                               ))}

@@ -30,11 +30,12 @@ export const getAllTransferAndPromotionLanding = async (
     const res = await axios.get(apiUrl);
 
     if (res?.data) {
-      if (landingType === "all") {
+      if (landingType === "all" || landingType === "transfer") {
         const modifiedData = res?.data?.data?.map((item, index) => ({
           ...item,
           initialSerialNumber: index + 1,
         }));
+
         setter?.(modifiedData);
 
         setPages({
