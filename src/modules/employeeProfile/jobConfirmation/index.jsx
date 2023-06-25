@@ -59,7 +59,7 @@ export default function JobConfirmationReport() {
   });
 
   useEffect(() => {
-    getBuDetails(intBusinessUnitId, setBuDetails, setLoading);
+    getBuDetails(intBusinessUnitId, setBuDetails);
   }, [intBusinessUnitId]);
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export default function JobConfirmationReport() {
       pages,
       setPages
     );
-  }, []);
+  }, [wgId]);
 
   // search
   // const filterData = (keywords, allData, setRowDto) => {

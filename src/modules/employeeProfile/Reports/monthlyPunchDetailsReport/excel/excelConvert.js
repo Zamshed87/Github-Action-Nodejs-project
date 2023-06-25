@@ -21,6 +21,7 @@ const getTableDataForExcel = (row, dateList) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
       new Cell(item?.strEmployeeName || "N/A", "left", "text").getCell(),
+      new Cell(item?.EmployeeCode || "N/A", "left", "text").getCell(),
       new Cell(item?.strDepartment || "N/A", "center", "text").getCell(),
       new Cell(item?.strDesignation || "N/A", "center", "text").getCell(),
       ...(dateList?.length > 0 &&
@@ -91,6 +92,12 @@ const createExcelFile = (
             },
             {
               text: "Employee Name",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Employee Id",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",

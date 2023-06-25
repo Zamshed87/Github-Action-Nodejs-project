@@ -90,7 +90,7 @@ export const empReportListColumns = (
       width: 50,
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "employeeCode",
       sorter: false,
       filter: false,
@@ -427,7 +427,7 @@ export const empReportListColumns = (
 export const columnForMarketingForExcel = {
   sl: "SL",
   employeeName: "Employee Name",
-  employeeCode: "Code",
+  employeeCode: "Employee Id",
   strDesignation: "Designation",
   strDepartment: "Department",
   strPinNo: "Pin No.",
@@ -467,7 +467,7 @@ export const columnForMarketingForExcel = {
 export const columnForExcel = {
   sl: "SL",
   employeeName: "Employee Name",
-  employeeCode: "Code",
+  employeeCode: "Employee Id",
   strDesignation: "Designation",
   strDepartment: "Department",
   strPinNo: "Pin No.",

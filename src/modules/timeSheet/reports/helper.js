@@ -25,17 +25,17 @@ export const attendanceDetailsReport = async (
   }
 };
 export const empBasicInfo = async (buId, orgId, empId, setter, setLoading) => {
-  setLoading(true);
+  setLoading && setLoading(true);
   try {
     const res = await axios.get(
       `/Employee/PeopleDeskAllLanding?TableName=EmployeeBasicById&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${empId}`
     );
     setter(res?.data);
-    setLoading(false);
+    setLoading && setLoading(false);
   } catch (error) {
     setter([]);
     toast.error(error?.response?.data?.message);
-    setLoading(false);
+    setLoading && setLoading(false);
   }
 };
 export const getBuDetails = async (buId, setter, setLoading) => {
@@ -246,7 +246,7 @@ export const rosterReportDtoCol = (page, paginationSize, columnList) => {
     },
     {
       title: () => <span style={{ color: gray600 }}>Employee ID</span>,
-      dataIndex: "intEmployeeBasicInfoId",
+      dataIndex: "EmployeeCode",
       sorter: true,
       filter: true,
       fixed: "left",
