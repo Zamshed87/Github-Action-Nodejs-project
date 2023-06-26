@@ -71,7 +71,7 @@ const ViewJoining = () => {
                 height: "32px",
                 width: "199px",
                 boxSizing: "border-box",
-                border: " 1px solid #EAECF0",
+                border: "1px solid #EAECF0",
                 borderRadius: "4px",
               }}
               className="d-flex justify-content-between align-items-center"
