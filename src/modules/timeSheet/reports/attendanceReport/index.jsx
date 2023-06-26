@@ -148,11 +148,11 @@ export default function AttendanceReport() {
     );
   };
 
-  const activity_day_total = (fieldName) => {
-    let total = 0;
-    rowDto.map((row) => (total += row[fieldName]));
-    return total;
-  };
+  // const activity_day_total = (fieldName) => {
+  //   let total = 0;
+  //   rowDto?.data?.map((row) => (total += row[fieldName]));
+  //   return total;
+  // };
 
   //  permission
   let permission = null;
@@ -256,7 +256,7 @@ export default function AttendanceReport() {
                               className="ml-2"
                               fontSize={"12px"}
                             >
-                              {activity_day_total("present")}
+                              {rowDto?.presentCount}
                             </Typography>
                           </div>
                           <div className="d-flex align-items-center">
@@ -272,7 +272,7 @@ export default function AttendanceReport() {
                               className="ml-2"
                               fontSize={"12px"}
                             >
-                              {activity_day_total("absent")}
+                              {rowDto?.absentCount}
                             </Typography>
                           </div>
                           <div className="d-flex align-items-center ">
@@ -288,7 +288,7 @@ export default function AttendanceReport() {
                               className="ml-2"
                               fontSize={"12px"}
                             >
-                              {activity_day_total("late")}
+                              {rowDto?.lateCount}
                             </Typography>
                           </div>
                         </div>
@@ -365,7 +365,7 @@ export default function AttendanceReport() {
                         pages?.pageSize
                       )}
                       pages={pages}
-                      rowDto={rowDto}
+                      rowDto={rowDto?.data}
                       setRowDto={setRowDto}
                       handleChangePage={(e, newPage) =>
                         handleChangePage(e, newPage, values?.search)

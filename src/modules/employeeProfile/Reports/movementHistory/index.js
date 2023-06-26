@@ -61,7 +61,6 @@ const EmMovementHistory = () => {
   // state
   const [loading, setLoading] = useState(false);
   const [buDetails, setBuDetails] = useState([]);
-  const [allValues, setAllValues] = useState(null);
 
   // modal
   const [anchorEl, setAnchorEl] = useState(null);
@@ -256,9 +255,9 @@ const EmMovementHistory = () => {
                             onClick={(e) => {
                               getPDFAction(
                                 `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${
-                                  allValues?.fromDate || initStartData
+                                  values?.fromDate || initStartData
                                 }&ToDate=${
-                                  allValues?.toDate || initEndDate
+                                  values?.toDate || initEndDate
                                 }&SearchText=${values?.search}`,
                                 setLoading
                               );
@@ -285,7 +284,6 @@ const EmMovementHistory = () => {
                                 />
                               }
                               onClick={() => {
-                                setAllValues(null);
                                 setFieldValue("search", "");
                                 getMovementHistory(
                                   buId,
@@ -452,7 +450,6 @@ const EmMovementHistory = () => {
                 errors,
                 touched,
               }}
-              setAllValues={setAllValues}
               // masterFilterHandler={masterFilterHandler}
             />
           </>
