@@ -252,7 +252,7 @@ const SalaryGenerateView = () => {
       return accumulator;
     }, 0);
   }, [rowDto]);
-  console.log(resDetailsReport, "resDetailsReport");
+
   return (
     <form onSubmit={handleSubmit}>
       {loading && <Loading />}
