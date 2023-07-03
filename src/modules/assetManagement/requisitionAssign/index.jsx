@@ -82,6 +82,7 @@ export default function RequisitionAssign() {
         workPlaceGroupId: item?.WorkPlaceGroupId,
         businessUnitId: item?.businessUnitId,
         reqisitionQuantity: item?.reqisitionQuantity,
+        employeeId: item?.employeeId,
       };
     });
     sendAssetForApproval(payload, setLoading, callBack);
