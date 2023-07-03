@@ -53,7 +53,7 @@ export default function EmployeeJobCard() {
   const [paginationSize, setPaginationSize] = useState(15);
 
   useEffect(() => {
-    empBasicInfo(buId, orgId, employeeId, setEmpInfo, setLoading);
+    empBasicInfo(buId, orgId, employeeId, setEmpInfo);
     attendanceDetailsReport(
       employeeId,
       firstDate,
@@ -347,7 +347,7 @@ export default function EmployeeJobCard() {
                       <div className="row">
                         <div className="col-lg-3">
                           <div className="input-field-main">
-                            <label>From Date</label>
+                            <label>Employee</label>
                             <AsyncFormikSelect
                               selectedValue={values?.employee}
                               isSearchIcon={true}

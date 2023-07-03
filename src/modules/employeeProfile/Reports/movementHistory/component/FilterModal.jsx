@@ -4,13 +4,10 @@ import { Clear } from "@mui/icons-material";
 import { Popover } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import {
-  getFilterDDL,
-  PeopleDeskSaasDDL
-} from "../../../../../common/api";
+import { getFilterDDL, PeopleDeskSaasDDL } from "../../../../../common/api";
 import DatePickerBorderLess from "../../../../../common/DatePickerBorderless";
 
-const FilterModal = ({ propsObj, masterFilterHandler, setAllValues }) => {
+const FilterModal = ({ propsObj, masterFilterHandler }) => {
   const {
     id,
     open,
@@ -342,7 +339,6 @@ const FilterModal = ({ propsObj, masterFilterHandler, setAllValues }) => {
                 onClick={(e) => {
                   masterFilterHandler(values);
                   handleClose();
-                  setAllValues(values);
                 }}
               >
                 Apply

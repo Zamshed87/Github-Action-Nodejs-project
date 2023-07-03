@@ -22,9 +22,9 @@ export const getMonthlyPunchDetailsReport = async (
         values?.workplaceGroup?.value
       }&WorkplaceId=${values?.workplace?.value}`
     );
-    setLoading && setLoading(false);
     setter(res?.data);
     setTableRowDto?.(res?.data);
+    setLoading && setLoading(false);
   } catch (error) {
     setLoading && setLoading(false);
     toast.error(error?.response?.data?.message);

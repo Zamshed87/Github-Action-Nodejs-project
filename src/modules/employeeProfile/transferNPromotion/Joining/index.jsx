@@ -16,6 +16,7 @@ import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { getDateOfYear } from "../../../../utility/dateFormatter";
 import { getAllTransferAndPromotionLanding } from "../helper";
 import JoiningTable from "./components/joiningTable";
+import { MenuItem, Pagination, Select } from "@mui/material";
 // import { getAllTransferAndPromotionLanding } from "./helper";
 
 const initialValues = {
@@ -25,6 +26,7 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object({});
+const paginationSize = 25;
 
 export default function Joining() {
   const dispatch = useDispatch();
@@ -41,8 +43,13 @@ export default function Joining() {
   const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
 
-  const { orgId, buId, wgId } = useSelector(
+  const { buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -62,17 +69,24 @@ export default function Joining() {
     onSubmit: () => {},
   });
 
-  const getData = (fromDate, toDate) => {
+  const getData = (
+    pagination = { current: 1, pageSize: paginationSize },
+    fromDate,
+    toDate,
+    srcTxt = ""
+  ) => {
     getAllTransferAndPromotionLanding(
-      orgId,
       buId,
+      wgId,
       "transfer",
-      setAllData,
-      setRowDto,
-      setLoading,
       fromDate ? fromDate : getDateOfYear("first"),
       toDate ? toDate : getDateOfYear("last"),
-      wgId
+      setRowDto,
+      setLoading,
+      pagination?.current,
+      pagination?.pageSize,
+      setPages,
+      srcTxt
     );
   };
 
@@ -80,6 +94,39 @@ export default function Joining() {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      values?.filterFromDate,
+      values?.filterToDate,
+      searchText
+    );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      values?.filterFromDate,
+      values?.filterToDate,
+      searchText
+    );
+  };
 
   //Search Filter
   const filterData = (keywords) => {
@@ -142,7 +189,15 @@ export default function Joining() {
                                 onClick={() => {
                                   setIsFilter(false);
                                   setFieldValue("search", "");
-                                  getData();
+                                  getData(
+                                    {
+                                      current: pages.current,
+                                      pageSize: pages.pageSize,
+                                    },
+                                    values?.filterFromDate,
+                                    values?.filterToDate,
+                                    ""
+                                  );
                                 }}
                               />
                             </li>
@@ -156,12 +211,28 @@ export default function Joining() {
                               setValue={(value) => {
                                 setFieldValue("search", value);
                                 debounce(() => {
-                                  filterData(value);
+                                  getData(
+                                    {
+                                      current: pages.current,
+                                      pageSize: pages.pageSize,
+                                    },
+                                    values?.filterFromDate,
+                                    values?.filterToDate,
+                                    value
+                                  );
                                 }, 500);
                               }}
                               cancelHandler={() => {
                                 setFieldValue("search", "");
-                                getData();
+                                getData(
+                                  {
+                                    current: pages.current,
+                                    pageSize: pages.pageSize,
+                                  },
+                                  values?.filterFromDate,
+                                  values?.filterToDate,
+                                  ""
+                                );
                               }}
                             />
                           </li>
@@ -216,8 +287,13 @@ export default function Joining() {
                               className="btn btn-green"
                               onClick={() => {
                                 getData(
+                                  {
+                                    current: pages.current,
+                                    pageSize: pages.pageSize,
+                                  },
                                   values?.filterFromDate,
-                                  values?.filterToDate
+                                  values?.filterToDate,
+                                  values?.search
                                 );
                               }}
                             >
@@ -226,7 +302,7 @@ export default function Joining() {
                           </div>
                         </div>
                       </div>
-                      <div className="table-card-styled tableOne">
+                      <div className="table-card-styled tableOne formCardTwoWithTable">
                         {rowDto?.length > 0 ? (
                           <table className="table table-bordered table-colored">
                             <thead>
@@ -325,6 +401,9 @@ export default function Joining() {
                                       `/profile/transferandpromotion/joining/view/${item?.intTransferNpromotionId}`,
                                       {
                                         employeeId: item?.intEmployeeId,
+                                        businessUnitId: item?.intBusinessUnitId,
+                                        workplaceGroupId:
+                                          item?.intWorkplaceGroupId,
                                       }
                                     )
                                   }
@@ -337,15 +416,47 @@ export default function Joining() {
                                     permission={permission}
                                     getData={getData}
                                     setLoading={setLoading}
+                                    page={pages?.current}
+                                    paginationSize={pages?.pageSize}
+                                    values={values}
                                   />
                                 </tr>
                               ))}
                             </tbody>
                           </table>
                         ) : (
-                          <NoResult />
+                          !loading && <NoResult />
                         )}
                       </div>
+                      {rowDto?.length > 0 ? (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "right",
+                            alignItems: "center",
+                            marginTop: "10px",
+                          }}
+                        >
+                          <Select
+                            value={pages?.pageSize}
+                            onChange={handleChangeRowsPerPage}
+                            variant="outlined"
+                            size="small"
+                            sx={{ marginRight: "16px", fontSize: "14px" }}
+                          >
+                            <MenuItem value={25}>25 per page</MenuItem>
+                            <MenuItem value={50}>50 per page</MenuItem>
+                            <MenuItem value={100}>100 per page</MenuItem>
+                            <MenuItem value={500}>500 per page</MenuItem>
+                          </Select>
+                          <Pagination
+                            count={Math.ceil(pages?.total / pages?.pageSize)}
+                            page={pages.current}
+                            onChange={handleChangePage}
+                            size="small"
+                          />
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 </div>

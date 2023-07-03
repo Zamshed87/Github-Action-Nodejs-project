@@ -61,7 +61,6 @@ const EmMovementHistory = () => {
   // state
   const [loading, setLoading] = useState(false);
   const [buDetails, setBuDetails] = useState([]);
-  const [allValues, setAllValues] = useState(null);
 
   // modal
   const [anchorEl, setAnchorEl] = useState(null);
@@ -158,7 +157,7 @@ const EmMovementHistory = () => {
         width: 60,
       },
       {
-        title: "Code",
+        title: "Employee Id",
         dataIndex: "employeeCode",
         sort: true,
         filter: false,
@@ -210,9 +209,7 @@ const EmMovementHistory = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          resetForm(initData);
-        }}
+        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
         {({
           handleSubmit,
@@ -258,9 +255,9 @@ const EmMovementHistory = () => {
                             onClick={(e) => {
                               getPDFAction(
                                 `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${
-                                  allValues?.fromDate || initStartData
+                                  values?.fromDate || initStartData
                                 }&ToDate=${
-                                  allValues?.toDate || initEndDate
+                                  values?.toDate || initEndDate
                                 }&SearchText=${values?.search}`,
                                 setLoading
                               );
@@ -273,15 +270,7 @@ const EmMovementHistory = () => {
                         </Tooltip>
                       </div>
                       <ul className="d-flex flex-wrap">
-                        {(values?.search ||
-                          values?.workplace ||
-                          values?.department ||
-                          values?.designation ||
-                          values?.employee ||
-                          values?.movementType ||
-                          values?.dateRange ||
-                          values?.appStatus ||
-                          values?.search) && (
+                        {values?.search && (
                           <li className="mr-2">
                             <ResetButton
                               classes="btn-filter-reset"
@@ -295,20 +284,12 @@ const EmMovementHistory = () => {
                                 />
                               }
                               onClick={() => {
-                                setAllValues(null);
-                                setFieldValue("workplace", "");
-                                setFieldValue("department", "");
-                                setFieldValue("designation", "");
-                                setFieldValue("employee", "");
-                                setFieldValue("movementType", "");
-                                setFieldValue("dateRange", "");
-                                setFieldValue("appStatus", "");
                                 setFieldValue("search", "");
                                 getMovementHistory(
                                   buId,
                                   wgId,
-                                  initStartData,
-                                  initEndDate,
+                                  values?.fromDate,
+                                  values?.toDate,
                                   "",
                                   setRowDto,
                                   setLoading,
@@ -469,7 +450,6 @@ const EmMovementHistory = () => {
                 errors,
                 touched,
               }}
-              setAllValues={setAllValues}
               // masterFilterHandler={masterFilterHandler}
             />
           </>

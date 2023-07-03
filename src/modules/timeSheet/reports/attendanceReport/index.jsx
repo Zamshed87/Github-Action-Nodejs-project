@@ -13,9 +13,7 @@ import { gray600 } from "../../../../utility/customColor";
 import { dateFormatterForInput } from "../../../../utility/dateFormatter";
 import { getPDFAction } from "../../../../utility/downloadFile";
 
-import {
-  getBuDetails
-} from "../helper";
+import { getBuDetails } from "../helper";
 
 import { toast } from "react-toastify";
 import PeopleDeskTable, {
@@ -150,11 +148,11 @@ export default function AttendanceReport() {
     );
   };
 
-  const activity_day_total = (fieldName) => {
-    let total = 0;
-    rowDto.map((row) => (total += row[fieldName]));
-    return total;
-  };
+  // const activity_day_total = (fieldName) => {
+  //   let total = 0;
+  //   rowDto?.data?.map((row) => (total += row[fieldName]));
+  //   return total;
+  // };
 
   //  permission
   let permission = null;
@@ -201,9 +199,12 @@ export default function AttendanceReport() {
                                 setLoading && setLoading(true);
                                 try {
                                   const res = await axios.get(
-                                    `/TimeSheetReport/GetEmpAttendanceReport?FromDate=${values?.fromDate
-                                    }&ToDate=${values?.toDate
-                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${values?.search || ""
+                                    `/TimeSheetReport/GetEmpAttendanceReport?FromDate=${
+                                      values?.fromDate
+                                    }&ToDate=${
+                                      values?.toDate
+                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${
+                                      values?.search || ""
                                     }&IsXls=true`
                                     // `/TimeSheetReport/GetAttendanceReport?FromDate=${
                                     //   values?.fromDate
@@ -255,7 +256,7 @@ export default function AttendanceReport() {
                               className="ml-2"
                               fontSize={"12px"}
                             >
-                              {activity_day_total("present")}
+                              {rowDto?.presentCount}
                             </Typography>
                           </div>
                           <div className="d-flex align-items-center">
@@ -271,7 +272,7 @@ export default function AttendanceReport() {
                               className="ml-2"
                               fontSize={"12px"}
                             >
-                              {activity_day_total("absent")}
+                              {rowDto?.absentCount}
                             </Typography>
                           </div>
                           <div className="d-flex align-items-center ">
@@ -287,7 +288,7 @@ export default function AttendanceReport() {
                               className="ml-2"
                               fontSize={"12px"}
                             >
-                              {activity_day_total("late")}
+                              {rowDto?.lateCount}
                             </Typography>
                           </div>
                         </div>
@@ -349,7 +350,7 @@ export default function AttendanceReport() {
                                   type="submit"
                                   className="btn btn-default flex-center"
                                   label={"Apply"}
-                                  onClick={() => { }}
+                                  onClick={() => {}}
                                   onSubmit={() => handleSubmit()}
                                 />
                               </div>
@@ -364,7 +365,7 @@ export default function AttendanceReport() {
                         pages?.pageSize
                       )}
                       pages={pages}
-                      rowDto={rowDto}
+                      rowDto={rowDto?.data}
                       setRowDto={setRowDto}
                       handleChangePage={(e, newPage) =>
                         handleChangePage(e, newPage, values?.search)

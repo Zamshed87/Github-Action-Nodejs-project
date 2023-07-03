@@ -1,7 +1,7 @@
 import { SaveAlt } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import pdfIcon from "../../../../../assets/images/pdfIcon.svg";
 import BackButton from "../../../../../common/BackButton";
@@ -14,10 +14,10 @@ import Accordion from "../accordion";
 import ViewJoiningTable from "./viewJoiningTable";
 
 const ViewJoining = () => {
-  const { buId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  // const { buId, wgId } = useSelector(
+  //   (state) => state?.auth?.profileData,
+  //   shallowEqual
+  // );
 
   const { id } = useParams();
   const location = useLocation();
@@ -32,8 +32,8 @@ const ViewJoining = () => {
       location?.state?.employeeId,
       setEmpBasic,
       setLoading,
-      buId,
-      wgId
+      location?.state?.businessUnitId,
+      location?.state?.workplaceGroupId
     );
   };
 
@@ -71,7 +71,7 @@ const ViewJoining = () => {
                 height: "32px",
                 width: "199px",
                 boxSizing: "border-box",
-                border: " 1px solid #EAECF0",
+                border: "1px solid #EAECF0",
                 borderRadius: "4px",
               }}
               className="d-flex justify-content-between align-items-center"

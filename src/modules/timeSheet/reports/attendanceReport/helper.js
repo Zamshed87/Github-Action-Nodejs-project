@@ -12,7 +12,7 @@ export const attendanceReportColumn = (page, paginationSize) => {
       className: "text-center",
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "employeeCode",
       width: 150,
     },
@@ -112,7 +112,7 @@ export const getAttendanceReport = async (
       // `/TimeSheetReport/GetAttendanceReport?FromDate=${fromDate}&ToDate=${toDate}&BusinessUnitId=${buId}&AccountId=${AccountId}&IntWorkplaceGroupId=${WorkplaceGroupId}&PageNo=${pages.current}&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`
     );
     if (res?.data) {
-      setter(res?.data?.data);
+      setter(res?.data);
       setPages({
         current: res?.data?.currentPage,
         pageSize: res?.data?.pageSize,

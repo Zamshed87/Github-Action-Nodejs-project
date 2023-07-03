@@ -83,7 +83,7 @@ const MonthlyAttendanceReport = () => {
       pages,
       ""
     );
-  }, []);
+  }, [wgId]);
 
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -160,11 +160,15 @@ const MonthlyAttendanceReport = () => {
                     const excelLanding = async () => {
                       try {
                         const res = await axios.get(
-                          `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&DteFromDate=${values?.fromDate
-                          }&DteToDate=${values?.toDate
-                          }&EmployeeId=0&WorkplaceGroupId=${values?.workplaceGroup?.value || 0
-                          }&WorkplaceId=${values?.workplace?.value || 0
-                          }&PageNo=1&PageSize=1000000&IsPaginated=false`
+                          `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&DteFromDate=${
+                            values?.fromDate
+                          }&DteToDate=${
+                            values?.toDate
+                          }&EmployeeId=0&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || 0
+                          }&WorkplaceId=${
+                            values?.workplace?.value || 0
+                          }&AccountId=${orgId}&PageNo=1&PageSize=1000000&IsPaginated=false`
                         );
                         if (res?.data) {
                           setLoading(false);

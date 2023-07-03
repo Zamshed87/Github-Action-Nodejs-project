@@ -144,7 +144,7 @@ export const inactiveEmpColumns = (
       width: 50,
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "strEmployeeCode",
       sort: false,
       filter: false,
@@ -248,7 +248,7 @@ export const getTableDataInactiveEmployees = (row, keys, totalKey) => {
 // excel columns
 export const column = {
   sl: "SL",
-  strEmployeeCode: "Code",
+  strEmployeeCode: "Employee Id",
   strEmployeeName: "Employee Name",
   strDesignation: "Designation",
   strDepartment: "Department",

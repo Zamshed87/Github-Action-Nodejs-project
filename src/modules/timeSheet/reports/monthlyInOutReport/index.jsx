@@ -130,7 +130,7 @@ export default function MonthlyInOutReport() {
     setColumnList(
       fromToDateList(fromDate || initData?.fromDate, toDate || initData?.toDate)
     );
-    getBuDetails(buId, setBuDetails, setLoading);
+    getBuDetails(buId, setBuDetails);
     // getRosterReport(orgId, buId, 0, 0, todayDate(), 0, setRowDto, setLoading);
   };
 
