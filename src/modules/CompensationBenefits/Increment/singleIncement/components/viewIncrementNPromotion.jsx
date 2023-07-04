@@ -25,7 +25,7 @@ const ViewIncrementNPromotion = () => {
   const [empBasic, setEmpBasic] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { employeeId, orgId, buId, wgId } = useSelector(
+  const { employeeId, orgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,8 +77,6 @@ const ViewIncrementNPromotion = () => {
               intCreatedBy: employeeId,
             },
           ],
-          businessUnitId: buId,
-          workplaceGroupId: wgId,
           transferPromotionObj: null,
         };
         deleteIncrementAndPromotionHistoryById(payload, history);
