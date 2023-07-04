@@ -162,16 +162,16 @@ function CreateSingleIncrement() {
     role: state?.singleData?.transferPromotionObj
       ?.empTransferNpromotionUserRoleVMList
       ? state?.singleData?.transferPromotionObj?.empTransferNpromotionUserRoleVMList.map(
-        (item) => {
-          return {
-            intTransferNpromotionUserRoleId:
-              item?.intTransferNpromotionUserRoleId,
-            intTransferNpromotionId: item?.intTransferNpromotionId,
-            value: item?.intUserRoleId,
-            label: item?.strUserRoleName,
-          };
-        }
-      )
+          (item) => {
+            return {
+              intTransferNpromotionUserRoleId:
+                item?.intTransferNpromotionUserRoleId,
+              intTransferNpromotionId: item?.intTransferNpromotionId,
+              value: item?.intUserRoleId,
+              label: item?.strUserRoleName,
+            };
+          }
+        )
       : [],
     remarks: state?.singleData?.transferPromotionObj?.strRemarks,
     isRoleExtension: state?.singleData?.transferPromotionObj
@@ -356,7 +356,7 @@ function CreateSingleIncrement() {
           intTransferNpromotionId: !id
             ? 0
             : state?.singleData?.transferPromotionObj
-              ?.intTransferNpromotionId || 0,
+                ?.intTransferNpromotionId || 0,
           intUserRoleId: item?.value,
           strUserRoleName: item?.label,
         };
@@ -370,7 +370,7 @@ function CreateSingleIncrement() {
           intTransferNpromotionId: !id
             ? 0
             : state?.singleData?.transferPromotionObj
-              ?.intTransferNpromotionId || 0,
+                ?.intTransferNpromotionId || 0,
           intEmployeeId: values?.employee?.value,
           intOrganizationTypeId: item?.intOrganizationTypeId,
           strOrganizationTypeName: item?.strOrganizationTypeName,
@@ -414,6 +414,8 @@ function CreateSingleIncrement() {
     };
 
     const payload = {
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
       isPromotion: values?.promote,
       incrementList: [
         {
@@ -441,7 +443,7 @@ function CreateSingleIncrement() {
     let confirmObject = {
       closeOnClickOutside: false,
       message: `${values?.employee?.label} is eligable for promote, Do you want to promote?`,
-      yesAlertFunc: () => { },
+      yesAlertFunc: () => {},
       noAlertFunc: () => {
         addEditIncrementAndPromotion(payload, callBack, setLoading);
       },
@@ -457,7 +459,7 @@ function CreateSingleIncrement() {
       } else {
         addEditIncrementAndPromotion(payload, callBack, setLoading);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   return (
@@ -1134,7 +1136,7 @@ function CreateSingleIncrement() {
                                 getDownlloadFileView_Action(
                                   id && !fileId?.globalFileUrlId
                                     ? state?.singleData?.transferPromotionObj
-                                      ?.intAttachementId
+                                        ?.intAttachementId
                                     : fileId?.globalFileUrlId
                                 )
                               );
@@ -1149,7 +1151,7 @@ function CreateSingleIncrement() {
                       className={fileId ? " mt-0 " : "mt-3"}
                       onClick={onButtonClick}
                       style={{ cursor: "pointer" }}
-                    // style={{ cursor: "pointer", position: "relative" }}
+                      // style={{ cursor: "pointer", position: "relative" }}
                     >
                       <input
                         onChange={(e) => {
@@ -1316,9 +1318,9 @@ function CreateSingleIncrement() {
                             let roleExist = rowDto?.some(
                               (item) =>
                                 item?.intOrganizationTypeId ===
-                                values?.orgType?.value &&
+                                  values?.orgType?.value &&
                                 item?.intOrganizationReffId ===
-                                values?.orgName?.value
+                                  values?.orgName?.value
                             );
 
                             if (roleExist)

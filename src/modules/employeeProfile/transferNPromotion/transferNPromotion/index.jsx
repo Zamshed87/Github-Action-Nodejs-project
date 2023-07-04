@@ -167,8 +167,6 @@ export default function TransferAndPromotion() {
     );
   };
 
-  console.log(rowDto, "rowDto");
-
   return (
     <>
       <Formik
