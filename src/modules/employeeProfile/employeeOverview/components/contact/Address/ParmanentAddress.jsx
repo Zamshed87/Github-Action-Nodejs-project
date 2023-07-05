@@ -29,7 +29,6 @@ const initData = {
   postOffice: "",
   postCode: "",
   address: "",
-
 };
 
 const validationSchema = Yup.object().shape({
@@ -74,7 +73,6 @@ function ParmanentAddress({ getData, empId }) {
   const [postOfficeDDL, setPostOfficeDDL] = useState([]);
   const [policeStationDDL, setPoliceStationDDL] = useState([]);
 
-
   const { buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -93,7 +91,13 @@ function ParmanentAddress({ getData, empId }) {
   }, []);
 
   useEffect(() => {
-    getEmployeeProfileViewDataForAddress(empId, setRowDto, setLoading);
+    getEmployeeProfileViewDataForAddress(
+      empId,
+      buId,
+      wgId,
+      setRowDto,
+      setLoading
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -128,8 +132,10 @@ function ParmanentAddress({ getData, empId }) {
         divisionName: values?.division?.label || singleData?.division?.label,
         districtId: values?.district?.value || singleData?.district?.value,
         districtName: values?.district?.label || singleData?.district?.label,
-        thanaId: values?.policeStation?.value || singleData?.policeStation?.value,
-        thanaName: values?.policeStation?.label || singleData?.policeStation?.label,
+        thanaId:
+          values?.policeStation?.value || singleData?.policeStation?.value,
+        thanaName:
+          values?.policeStation?.label || singleData?.policeStation?.label,
         postOfficeId:
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
@@ -164,7 +170,13 @@ function ParmanentAddress({ getData, empId }) {
         remarks: "",
       };
       const callback = () => {
-        getEmployeeProfileViewDataForAddress(empId, setRowDto, setLoading);
+        getEmployeeProfileViewDataForAddress(
+          empId,
+          buId,
+          wgId,
+          setRowDto,
+          setLoading
+        );
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
@@ -200,8 +212,10 @@ function ParmanentAddress({ getData, empId }) {
         divisionName: values?.division?.label || singleData?.division?.label,
         districtId: values?.district?.value || singleData?.district?.value,
         districtName: values?.district?.label || singleData?.district?.label,
-        thanaId: values?.policeStation?.value || singleData?.policeStation?.value,
-        thanaName: values?.policeStation?.label || singleData?.policeStation?.label,
+        thanaId:
+          values?.policeStation?.value || singleData?.policeStation?.value,
+        thanaName:
+          values?.policeStation?.label || singleData?.policeStation?.label,
         postOfficeId:
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
@@ -236,7 +250,13 @@ function ParmanentAddress({ getData, empId }) {
         remarks: "",
       };
       const callback = () => {
-        getEmployeeProfileViewDataForAddress(empId, setRowDto, setLoading);
+        getEmployeeProfileViewDataForAddress(
+          empId,
+          buId,
+          wgId,
+          setRowDto,
+          setLoading
+        );
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
@@ -276,7 +296,8 @@ function ParmanentAddress({ getData, empId }) {
       districtId: values?.district?.value || singleData?.district?.value,
       districtName: values?.district?.label || singleData?.district?.label,
       thanaId: values?.policeStation?.value || singleData?.policeStation?.value,
-      thanaName: values?.policeStation?.label || singleData?.policeStation?.label,
+      thanaName:
+        values?.policeStation?.label || singleData?.policeStation?.label,
       postOfficeId: values?.postOffice?.value || singleData?.postOffice?.value,
       postOfficeName:
         values?.postOffice?.label || singleData?.postOffice?.label,
@@ -310,7 +331,13 @@ function ParmanentAddress({ getData, empId }) {
       remarks: "",
     };
     const callback = () => {
-      getEmployeeProfileViewDataForAddress(empId, setRowDto, setLoading);
+      getEmployeeProfileViewDataForAddress(
+        empId,
+        buId,
+        wgId,
+        setRowDto,
+        setLoading
+      );
       setStatus("empty");
       setSingleData("");
       getData();
@@ -382,36 +409,36 @@ function ParmanentAddress({ getData, empId }) {
           ...initData,
           country: singleData?.country?.value
             ? {
-              value: singleData?.country?.value,
-              label: singleData?.country?.label,
-            }
+                value: singleData?.country?.value,
+                label: singleData?.country?.label,
+              }
             : {
-              value: countryDDL[17]?.CountryId,
-              label: countryDDL[17]?.CountryName,
-            },
+                value: countryDDL[17]?.CountryId,
+                label: countryDDL[17]?.CountryName,
+              },
           division: singleData?.division?.value
             ? {
-              value: singleData?.division?.value,
-              label: singleData?.division?.label,
-            }
+                value: singleData?.division?.value,
+                label: singleData?.division?.label,
+              }
             : "",
           district: singleData?.district?.value
             ? {
-              value: singleData?.district?.value,
-              label: singleData?.district?.label,
-            }
+                value: singleData?.district?.value,
+                label: singleData?.district?.label,
+              }
             : "",
           policeStation: singleData?.policeStation?.value
             ? {
-              value: singleData?.policeStation?.value,
-              label: singleData?.policeStation?.label,
-            }
+                value: singleData?.policeStation?.value,
+                label: singleData?.policeStation?.label,
+              }
             : "",
           postOffice: singleData?.postOffice?.value
             ? {
-              value: singleData?.postOffice?.value,
-              label: singleData?.postOffice?.label,
-            }
+                value: singleData?.postOffice?.value,
+                label: singleData?.postOffice?.label,
+              }
             : "",
           postCode: singleData ? singleData?.postCode : "",
           address: singleData ? singleData?.address : "",
@@ -581,7 +608,7 @@ function ParmanentAddress({ getData, empId }) {
                         <FormikInput
                           name="postCode"
                           value={values?.postCode}
-                          onChange={(e) => { }}
+                          onChange={(e) => {}}
                           errors={errors}
                           touched={touched}
                           placeholder="Post Code"
@@ -649,7 +676,7 @@ function ParmanentAddress({ getData, empId }) {
                   {!singleData && (
                     <>
                       {rowDto?.permanentAddress &&
-                        !rowDto?.permanentAddress.length ? (
+                      !rowDto?.permanentAddress.length ? (
                         <>
                           <div
                             className="d-flex align-items-center"
@@ -659,7 +686,10 @@ function ParmanentAddress({ getData, empId }) {
                               setIsCreateForm(true);
                             }}
                           >
-                            <div className="item" style={{ position: "relative", top: "-3px" }}>
+                            <div
+                              className="item"
+                              style={{ position: "relative", top: "-3px" }}
+                            >
                               <ControlPoint
                                 sx={{ color: success500, fontSize: "16px" }}
                               />
@@ -697,7 +727,11 @@ function ParmanentAddress({ getData, empId }) {
                                 </h4>
                                 <small>Parmanent Address</small>
                               </div>
-                              <div className="col-lg-1">
+                              <div
+                                className={`col-lg-1 ${
+                                  !rowDto.permanentAddress ? "d-none" : ""
+                                }`}
+                              >
                                 <ActionMenu
                                   color={gray900}
                                   fontSize={"18px"}

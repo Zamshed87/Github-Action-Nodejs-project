@@ -342,41 +342,6 @@ export const AdditionNDeductionApproveReject = async (payload, cb) => {
     toast.warn(error?.response?.data?.message || "Something went wrong");
   }
 };
-
-export const getEmployeeProfileViewDataForAddress = async (
-  id,
-  setter,
-  setLoading
-) => {
-  setLoading && setLoading(true);
-  try {
-    const res = await axios.get(
-      `/Employee/EmployeeProfileView?employeeId=${id}`
-    );
-    if (res?.data) {
-      const presentAddress = res?.data?.empEmployeeAddress?.filter(
-        (item) => item?.intAddressTypeId === 1
-      );
-      const permanentAddress = res?.data?.empEmployeeAddress?.filter(
-        (item) => item?.intAddressTypeId === 2
-      );
-      const otherAddress = res?.data?.empEmployeeAddress?.filter(
-        (item) => item?.intAddressTypeId === 3
-      );
-      const newData = {
-        ...res?.data,
-        presentAddress,
-        permanentAddress,
-        otherAddress,
-      };
-      setter && setter(newData);
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
-};
-
 // search
 export const filterData = (keywords, allData, setRowDto) => {
   try {

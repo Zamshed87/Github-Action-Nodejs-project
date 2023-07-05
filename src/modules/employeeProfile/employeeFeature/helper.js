@@ -247,14 +247,14 @@ export const employeeFilter = async ({
 };
 
 export const getEmployeeProfileViewDataForAddress = async (
-  id,
+  id, buId, wgId ,
   setter,
   setLoading
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/EmployeeProfileView?employeeId=${id}`
+      `/Employee/EmployeeProfileView?businessUnitId=${buId}&workplaceGroupId=${wgId}&employeeId=${id}`
     );
     if (res?.data) {
       const presentAddress = res?.data?.empEmployeeAddress?.filter(
