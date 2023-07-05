@@ -114,7 +114,6 @@ const HolidayException = () => {
         ...payload,
         ...modifiedPayload,
       });
-      console.log({ res });
       if (res?.data?.data) {
         setLandingLoading(true);
 
@@ -240,12 +239,6 @@ const HolidayException = () => {
       permission = item;
     }
   });
-  console.log({ rowDto });
-  console.log({ landingLoading });
-  console.log({ checkedList });
-
-  console.log("Rendered!!");
-
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {
       return { ...prev, current: newPage };

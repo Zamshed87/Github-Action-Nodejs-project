@@ -750,7 +750,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                                 </h4>
                                 <small>Present Address</small>
                               </div>
-                              <div className="col-lg-1">
+                              <div className={`col-lg-1 ${!rowDto.presentAddress? "d-none" : ""}`}>
                                 <ActionMenu
                                   color={gray900}
                                   fontSize={"18px"}

@@ -603,7 +603,7 @@ const SalaryBreakdown = () => {
                               isClearable={false}
                               errors={errors}
                               touched={touched}
-                            // isDisabled={isEdit || state?.singleBreakdown?.intSalaryBreakdownHeaderId}
+                              // isDisabled={isEdit || state?.singleBreakdown?.intSalaryBreakdownHeaderId}
                             />
                           </div>
                           <div className="col-lg-3">
@@ -714,10 +714,11 @@ const SalaryBreakdown = () => {
                                       {itm?.strPayrollElementName}
                                       {itm?.strBasedOn === "Percentage" &&
                                         `( % )`}
-                                      {`[Depends on ${itm?.strDependOn === "Basic"
+                                      {`[Depends on ${
+                                        itm?.strDependOn === "Basic"
                                           ? "Basic"
                                           : "Gross"
-                                        }]`}
+                                      }]`}
                                     </label>
                                     <span
                                       style={{
@@ -761,7 +762,7 @@ const SalaryBreakdown = () => {
                                       required
                                       errors={errors}
                                       touched={touched}
-                                    // disabled={isEdit || state?.singleBreakdown?.intSalaryBreakdownHeaderId}
+                                      // disabled={isEdit || state?.singleBreakdown?.intSalaryBreakdownHeaderId}
                                     />
                                   </div>
                                 </div>
@@ -779,37 +780,37 @@ const SalaryBreakdown = () => {
                             className="btn btn-green btn-green-disable"
                           >
                             {isEdit ||
-                              state?.singleBreakdown?.intSalaryBreakdownHeaderId
+                            state?.singleBreakdown?.intSalaryBreakdownHeaderId
                               ? "Update"
                               : "Save"}
                           </button>
                           {(isEdit ||
                             state?.singleBreakdown
                               ?.intSalaryBreakdownHeaderId) && (
-                              <button
-                                onClick={(e) => {
-                                  setIsEdit(false);
-                                  resetForm(initData);
-                                  setSingleData("");
+                            <button
+                              onClick={(e) => {
+                                setIsEdit(false);
+                                resetForm(initData);
+                                setSingleData("");
 
-                                  if (
-                                    !values?.isPerdaySalary ||
-                                    values?.isPerdaySalary
-                                  ) {
-                                    setDynamicForm([]);
-                                  }
+                                if (
+                                  !values?.isPerdaySalary ||
+                                  values?.isPerdaySalary
+                                ) {
+                                  setDynamicForm([]);
+                                }
 
-                                  history.push({
-                                    pathname: `/administration/payrollConfiguration/salaryBreakdown`,
-                                    state: { singleBreakdown: " " },
-                                  });
-                                }}
-                                className="btn btn-green ml-2"
-                                type="button"
-                              >
-                                Reset
-                              </button>
-                            )}
+                                history.push({
+                                  pathname: `/administration/payrollConfiguration/salaryBreakdown`,
+                                  state: { singleBreakdown: " " },
+                                });
+                              }}
+                              className="btn btn-green ml-2"
+                              type="button"
+                            >
+                              Reset
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -844,6 +845,10 @@ const SalaryBreakdown = () => {
                                 state: item,
                               });
                             }}
+                            rowKey={(record) =>
+                              record?.intSalaryBreakdownHeaderId
+                            }
+                            rowClassName="pointer"
                           />
                         </div>
                       </div>

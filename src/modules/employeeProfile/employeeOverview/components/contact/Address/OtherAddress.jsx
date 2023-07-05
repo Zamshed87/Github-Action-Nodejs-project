@@ -737,7 +737,7 @@ function OtherAddress({ getData, rowDto, empId }) {
                                 </h4>
                                 <small>Other Address</small>
                               </div>
-                              <div className="col-lg-1">
+                              <div className={`col-lg-1 ${!rowDto.otherAddress? "d-none" : ""}`}>
                                 <ActionMenu
                                   color={gray900}
                                   fontSize={"18px"}
