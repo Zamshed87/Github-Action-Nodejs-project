@@ -89,7 +89,7 @@ export const empSelfContactBookCol = (page, paginationSize) => {
       width: 50,
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "employeeCode",
       sort: true,
       filter: false,
