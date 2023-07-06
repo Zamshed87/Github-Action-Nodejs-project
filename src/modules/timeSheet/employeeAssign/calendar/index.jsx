@@ -4,7 +4,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import moment from "moment";
-
 import MasterFilter from "../../../../common/MasterFilter";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
@@ -30,7 +29,6 @@ import {
 const initData = {
   searchString: "",
   allSelected: false,
-
   // master filter
   workplace: "",
   department: "",
@@ -45,7 +43,6 @@ const validationSchema = Yup.object({});
 
 function Calendar() {
   const [loading, setLoading] = useState(false);
-
   // row Data
   const [rowDto, setRowDto] = useState([]);
   const [singleData, setSingleData] = useState([]);
@@ -77,7 +74,6 @@ function Calendar() {
     "#6927DA",
     "#3538CD",
     "#667085",
-
     "#667085",
   ];
   // eslint-disable-next-line
@@ -112,7 +108,6 @@ function Calendar() {
     employmentTypeList: [],
   };
   const [landingLoading, setLandingLoading] = useState(false);
-
   const [filterOrderList, setFilterOrderList] = useState([]);
   const [initialHeaderListData, setInitialHeaderListData] = useState({});
   const [headerList, setHeaderList] = useState({});
@@ -149,7 +144,6 @@ function Calendar() {
       });
       if (res?.data?.data) {
         setLandingLoading(true);
-
         setHeaderListDataDynamically({
           currentFilterSelection,
           checkedHeaderList,
@@ -174,9 +168,7 @@ function Calendar() {
             ? true
             : false,
         }));
-
         setRowDto(modifiedData);
-
         setLandingLoading(false);
       }
     } catch (error) {
@@ -214,64 +206,15 @@ function Calendar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const getData = (pagination, srcText, status = "") => {
-  //   getCalendarAssignFilter(
-  //     setRowDto,
-  //     setLoading,
-  //     {
-  //       departmentId: 0,
-  //       designationId: 0,
-  //       supervisorId: 0,
-  //       employmentTypeId: 0,
-  //       employeeId: 0,
-  //       workplaceGroupId: wgId,
-  //       Status: "all",
-  //       accountId: orgId,
-  //       businessUnitId: buId,
-  //       pageNo: pagination.current,
-  //       pageSize: pagination.pageSize,
-  //       searchText: srcText || "",
-  //     },
-  //     (res) => {
-  //       setPages({
-  //         ...pages,
-  //         current: pagination.current,
-  //         pageSize: pagination.pageSize,
-  //         total: res?.[0]?.totalCount,
-  //       });
-  //       const newData = res.map((item) => ({
-  //         ...item,
-  //         isAssigned:
-  //           status !== "saved" &&
-  //           checked.length > 0 &&
-  //           isAlreadyPresent(item) >= 0,
-  //       }));
-
-  //       setRowDto(newData);
-  //     }
-  //   );
-  // };
-
   useEffect(() => {
     getData(pages);
-    // setChecked([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId]);
 
-  // // single grid check
-  // const rowDtoHandler = (record) => {
-  //   const modifiedRowDto = rowDto?.map((item) =>
-  //     item?.employeeId === record?.employeeId
-  //       ? { ...item, isSelec: !item?.isAssigned }
-  //       : item
-  //   );
-  //   setRowDto(modifiedRowDto);
-  // };
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
-
     getData(
       {
         current: newPage,
@@ -312,15 +255,6 @@ function Calendar() {
     }
   });
 
-  // const isAlreadyPresent = (obj) => {
-  //   for (let i = 0; i < checkedList.length; i++) {
-  //     if (checkedList[i].EmployeeCode === obj.EmployeeCode) {
-  //       return i;
-  //     }
-  //   }
-  //   return -1;
-  // };
-
   useEffect(() => {
     setUniqueShift([]);
     if (singleShiftData?.length > 0) {
@@ -341,38 +275,6 @@ function Calendar() {
     }
     // eslint-disable-next-line
   }, [singleShiftData]);
-
-  // useEffect(() => {
-  //   if (checkedList.length) {
-  //     const newData = rowDto.map((item) => {
-  //       const idx = isAlreadyPresent(item);
-  //       if (idx >= 0) {
-  //         return {
-  //           ...checkedList[idx],
-  //         };
-  //       } else return item;
-  //     });
-
-  //     setRowDto(newData);
-  //   }
-  //   // eslint-disable-next-line
-  // }, []);
-
-  // const handleTableChange = (pagination, newRowDto, srcText) => {
-  //   if (newRowDto?.action === "filter") {
-  //     return;
-  //   }
-  //   if (
-  //     pages?.current === pagination?.current &&
-  //     pages?.pageSize !== pagination?.pageSize
-  //   ) {
-  //     return getData(pagination, srcText);
-  //   }
-  //   if (pages?.current !== pagination?.current) {
-  //     return getData(pagination, srcText);
-  //   }
-  // };
-
   return (
     <>
       <Formik
@@ -391,11 +293,16 @@ function Calendar() {
                 <div className="table-card">
                   <div className="table-card-heading">
                     <div style={{ paddingLeft: "6px" }}>
-                      {checkedList.length > 0 && (
+                      {checkedList.length > 0 ? (
                         <h6 className="count">
                           Total {checkedList.length}{" "}
                           {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
-                          selected
+                          selected from {pages?.total}
+                        </h6>
+                      ) : (
+                        <h6 className="count">
+                          {" "}
+                          Total {pages.total} Employees
                         </h6>
                       )}
                     </div>
@@ -420,29 +327,58 @@ function Calendar() {
                                   checkedHeaderList
                                 );
                                 // setRowDto(allData);
+                                setCheckedList([]);
                                 setFieldValue("searchString", "");
                               }}
                             />
                           </li>
                         )}
                         <li>
-                          {rowDto &&
-                          rowDto?.filter((item) => item?.isSelected).length >
-                            0 ? (
-                            <button
-                              className="btn btn-green"
-                              style={{ marginRight: "40px", height: "30px" }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (!permission?.isCreate)
-                                  return toast.warn(
-                                    "You don't have permission"
-                                  );
-                                setCreateModal(true);
-                              }}
-                            >
-                              Assign
-                            </button>
+                          {rowDto.length > 0 ? (
+                            <div className="d-flex">
+                            {/*   <button
+                                className="btn btn-green"
+                                style={{
+                                  marginRight: "10px",
+                                  height: "30px",
+                                  minWidth: "120px",
+                                  fontSize: "12px",
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (!permission?.isCreate)
+                                    return toast.warn(
+                                      "You don't have permission"
+                                    );
+                                  setCreateModal(true);
+                                }}
+                              >
+                                Assign {pages.total}
+                              </button> */}
+                              {rowDto?.filter((item) => item?.isSelected)
+                                .length > 0 ? (
+                                <button
+                                  className="btn btn-green"
+                                  style={{
+                                    height: "30px",
+                                    minWidth: "120px",
+                                    fontSize: "12px",
+                                  }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!permission?.isCreate)
+                                      return toast.warn(
+                                        "You don't have permission"
+                                      );
+                                    setCreateModal(true);
+                                  }}
+                                >
+                                  Assign {checkedList.length}
+                                </button>
+                              ) : (
+                                ""
+                              )}
+                            </div>
                           ) : (
                             ""
                           )}
@@ -492,11 +428,6 @@ function Calendar() {
                       </ul>
                     </div>
                   </div>
-                  {/* <div
-                    className="table-card-body"
-                    style={{ marginTop: "-5px" }}
-                  > */}
-                  {/* <div className="table-card-styled tableOne"> */}
                   {rowDto?.length > 0 ? (
                     <PeopleDeskTable
                       columnData={columns(
@@ -554,38 +485,8 @@ function Calendar() {
                       isScrollAble={true}
                     />
                   ) : (
-                    // <AntTable
-                    //   data={rowDto}
-                    //   columnsData={columns(
-                    //     permission,
-                    //     pages,
-                    //     rowDto,
-                    //     setRowDto,
-                    //     checked,
-                    //     setChecked,
-                    //     isAlreadyPresent,
-                    //     setSingleData,
-                    //     setCreateModal,
-                    //     rowDtoHandler,
-                    //     setSingleShiftData,
-                    //     setLoading,
-                    //     setAnchorEl2
-                    //   )}
-                    //   onRowClick={(dataRow) => {}}
-                    //   pages={pages?.pageSize}
-                    //   pagination={pages}
-                    //   handleTableChange={({ pagination, newRowDto }) =>
-                    //     handleTableChange(
-                    //       pagination,
-                    //       newRowDto,
-                    //       values?.search || ""
-                    //     )
-                    //   }
-                    // />
                     !loading && <NoResult title="No Result Found" para="" />
                   )}
-                  {/* </div> */}
-                  {/* </div> */}
                 </div>
               ) : (
                 <NotPermittedPage />
@@ -704,7 +605,6 @@ function Calendar() {
                 </Popover>
               ) : (
                 ""
-                // !singleShiftData?.length  && toast.warn("No Data Found")
               )}
             </Form>
           </>

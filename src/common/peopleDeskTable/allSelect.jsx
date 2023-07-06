@@ -34,7 +34,6 @@ const AllSelect = ({
             tempCheckedList = tempCheckedList?.filter(
               (checkedItem) => checkedItem[uniqueKey] !== item[uniqueKey]
             );
-            console.log({ tempCheckedList });
             setCheckedList(tempCheckedList);
           } else if (isAlreadyPresent(item, checkedList, uniqueKey) === -1) {
             setCheckedList((prev) => [...prev, newItem]);
