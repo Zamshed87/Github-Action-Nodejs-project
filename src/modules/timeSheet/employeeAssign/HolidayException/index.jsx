@@ -276,6 +276,8 @@ const HolidayException = () => {
     );
   };
 
+  console.log(rowDto);
+
   return (
     <>
       <Formik
@@ -306,7 +308,8 @@ const HolidayException = () => {
                     <div className="ml-2">
                       <h6 className="count">
                         {checkedList.length > 0 &&
-                          `Total ${checkedList.length} employee${checkedList.length > 1 ? "s" : ""
+                          `Total ${checkedList.length} employee${
+                            checkedList.length > 1 ? "s" : ""
                           } selected`}
                       </h6>
                     </div>

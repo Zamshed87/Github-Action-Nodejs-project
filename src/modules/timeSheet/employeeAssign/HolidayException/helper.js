@@ -17,7 +17,7 @@ export const filterData = (
   try {
     const regex = new RegExp(keywords?.toLowerCase());
     let newDta = filterLanding?.filter((item) =>
-      regex.test(item?.EmployeeName?.toLowerCase())
+      regex.test(item?.employeeName?.toLowerCase())
     );
     // setRowDto(newDta);
     setFilterLanding(newDta);
@@ -118,7 +118,7 @@ export function makePayload(array, profileData, values) {
   {
     array?.length > 0 &&
       array?.forEach((item) => {
-        if (!item?.HolidayGroupName && !item?.ExceptionOffdayGroupName) {
+        if (!item?.holidayGroupName && !item?.exceptionOffdayGroupName) {
           if (
             holidayEffectiveDate &&
             holidayGroup &&
@@ -127,18 +127,18 @@ export function makePayload(array, profileData, values) {
           ) {
             holiday.push({
               ...holiDayObj,
-              employeeId: item?.EmployeeId,
-              employeeHolidayAssignId: item?.intEmployeeHolidayAssignId || 0,
+              employeeId: item?.employeeId,
+              employeeHolidayAssignId: item?.employeeHolidayAssignId || 0,
             });
-            offDay.push({ ...offDayObj, employeeId: item?.EmployeeId });
+            offDay.push({ ...offDayObj, employeeId: item?.employeeId });
           } else if (holidayEffectiveDate && holidayGroup) {
             holiday.push({
               ...holiDayObj,
-              employeeId: item?.EmployeeId,
-              employeeHolidayAssignId: item?.intEmployeeHolidayAssignId || 0,
+              employeeId: item?.employeeId,
+              employeeHolidayAssignId: item?.employeeHolidayAssignId || 0,
             });
           } else if (exceptionEffectiveDate && exceptionOffDayGroup) {
-            offDay.push({ ...offDayObj, employeeId: item?.EmployeeId });
+            offDay.push({ ...offDayObj, employeeId: item?.employeeId });
           }
         } else {
           if (
@@ -149,23 +149,23 @@ export function makePayload(array, profileData, values) {
           ) {
             holiday.push({
               ...holiDayObj,
-              employeeId: item?.EmployeeId,
-              employeeHolidayAssignId: item?.intEmployeeHolidayAssignId || 0,
+              employeeId: item?.employeeId,
+              employeeHolidayAssignId: item?.employeeHolidayAssignId || 0,
             });
-            offDay.push({ ...offDayObj, employeeId: item?.EmployeeId });
+            offDay.push({ ...offDayObj, employeeId: item?.employeeId });
           } else if (holidayEffectiveDate && holidayGroup) {
             holiday.push({
               ...holiDayObj,
-              employeeId: item?.EmployeeId,
-              employeeHolidayAssignId: item?.intEmployeeHolidayAssignId || 0,
+              employeeId: item?.employeeId,
+              employeeHolidayAssignId: item?.employeeHolidayAssignId || 0,
             });
-            offDay.push({ ...offDayObj, employeeId: item?.EmployeeId });
+            offDay.push({ ...offDayObj, employeeId: item?.employeeId });
           } else if (exceptionEffectiveDate && exceptionOffDayGroup) {
-            offDay.push({ ...offDayObj, employeeId: item?.EmployeeId });
+            offDay.push({ ...offDayObj, employeeId: item?.employeeId });
             holiday.push({
               ...holiDayObj,
-              employeeId: item?.EmployeeId,
-              employeeHolidayAssignId: item?.intEmployeeHolidayAssignId || 0,
+              employeeId: item?.employeeId,
+              employeeHolidayAssignId: item?.employeeHolidayAssignId || 0,
             });
           }
         }
@@ -198,7 +198,7 @@ export const columns = (
       className: "text-center",
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "employeeCode",
       sort: true,
       filter: false,
@@ -287,7 +287,7 @@ export const columns = (
     },
     {
       title: "Supervisor",
-      dataIndex: "strSupervisorName",
+      dataIndex: "supervisorName",
       sort: true,
       filter: true,
       filterDropDownList: headerList[`supervisorNameList`],

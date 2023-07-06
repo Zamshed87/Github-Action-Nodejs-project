@@ -52,7 +52,7 @@ export const userInfoCol = (pages, permission, setOpen, setSingelUser) => {
     },
 
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "strEmployeeCode",
       sort: true,
       // filter: true,
