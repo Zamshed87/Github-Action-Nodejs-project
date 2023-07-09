@@ -7,6 +7,7 @@ import { fromToDateList } from "../helper";
 export const onGetMonthlyAttendanceReport = (
   getMonthlyAttendanceInformation,
   orgId,
+  wgId,
   values,
   setRowDto,
   pages,
@@ -18,13 +19,10 @@ export const onGetMonthlyAttendanceReport = (
   getMonthlyAttendanceInformation(
     `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
       values?.fromDate
-    }&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${
-      values?.workplaceGroup?.value || 0
-    }&WorkplaceId=${values?.workplace?.value || 0}&PageNo=${
+    }&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=${
       pages.current
     }&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`,
     (data) => {
-      // console.log(data);
       setPages({
         ...pages,
         current: pages.current,
