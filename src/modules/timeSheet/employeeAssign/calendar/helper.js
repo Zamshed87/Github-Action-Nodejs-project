@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 import moment from "moment";
 import axios from "axios";
-import { gray600 } from "../../../../utility/customColor";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import RoasterInfo from "./component/RosterInfo";
 import { InfoOutlined } from "@mui/icons-material";
@@ -89,6 +88,7 @@ export const columns = (
       sort: true,
       filter: false,
       fieldType: "string",
+      width: 150
     },
     {
       title: "Employee Name",
@@ -220,15 +220,8 @@ export const columns = (
       sort: true,
       fieldType: "string",
     },
-    // {
-    //   title: () => <span style={{ color: gray600 }}>Roster Name</span>,
-    //   dataIndex: "RosterGroupName",
-    //   sorter: true,
-    //   filter: true,
-    // },
-
     {
-      title: () => <span style={{ color: gray600 }}>Calender Name</span>,
+      title: "Calender Name",
       dataIndex: "calendarName",
       render: (record) => (
         <>
@@ -244,7 +237,7 @@ export const columns = (
       ),
     },
     {
-      title: "",
+      title: "Action",
       className: "text-center",
       dataIndex: "",
       render: (record) => (

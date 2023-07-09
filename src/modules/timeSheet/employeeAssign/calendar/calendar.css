@@ -22,12 +22,12 @@
 .tooltip-table {
   padding: 40px !important;
 }
-.table thead tr th {
+/* .table thead tr th {
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   font-weight: 400 !important;
   font-size: 14px !important;
   color: rgba(0, 0, 0, 0.4) !important;
-}
+} */
 .calendar .btn-green,
 .calendar .btn-green:hover,
 .calendar .btn-green:focus,
