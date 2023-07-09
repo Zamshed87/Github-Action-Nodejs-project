@@ -138,8 +138,8 @@ function AddEditForm() {
   let getAdditionAndDeductionById = () => {
     getSalaryAdditionAndDeductionById(
       empId,
-      orgId,
-      buId,
+      workplaceGroupId,
+      businessUnitId,
       setRowDto,
       setLoading
     );
@@ -397,7 +397,9 @@ function AddEditForm() {
                     <div className="px-1 mt-2">
                       {isView && (
                         <div>
-                          <Accordion empBasic={empBasic} />
+                          <Accordion
+                            empBasic={{ employeeProfileLandingView: empBasic }}
+                          />
                           {!isFromOpen && (
                             <button
                               type="button"
