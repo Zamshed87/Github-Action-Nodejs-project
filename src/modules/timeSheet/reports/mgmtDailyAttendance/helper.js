@@ -62,7 +62,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       width: 30,
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "employeeCode",
       sort: false,
       filter: false,

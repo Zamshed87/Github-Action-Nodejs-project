@@ -15,10 +15,7 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import { gray600 } from "../../../../utility/customColor";
 import { getDateOfYear } from "../../../../utility/dateFormatter";
 import { getPDFAction } from "../../../../utility/downloadFile";
-import {
-  getBuDetails,
-  getEmployeeSeparationLanding
-} from "../helper";
+import { getBuDetails, getEmployeeSeparationLanding } from "../helper";
 import FilterModal from "./component/FilterModal";
 import { generateExcelAction } from "./excel/excelConvert";
 import { empSeparationCol } from "./helper";
@@ -85,7 +82,7 @@ const SeparationReport = () => {
       wgId,
       getDateOfYear("first"),
       getDateOfYear("last"),
-      "",
+      searchText,
       false,
       setRowDto,
       setLoading,
@@ -95,7 +92,7 @@ const SeparationReport = () => {
     );
   };
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage, searchText = "") => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
@@ -105,11 +102,12 @@ const SeparationReport = () => {
         current: newPage,
         pageSize: pages?.pageSize,
         total: pages?.total,
-      }
+      },
+      searchText
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
+  const handleChangeRowsPerPage = (event, searchText = "") => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
@@ -118,7 +116,8 @@ const SeparationReport = () => {
         current: 1,
         pageSize: +event.target.value,
         total: pages?.total,
-      }
+      },
+      searchText
     );
   };
 
@@ -154,9 +153,7 @@ const SeparationReport = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          resetForm(initData);
-        }}
+        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
         {({
           handleSubmit,
@@ -335,7 +332,7 @@ const SeparationReport = () => {
                                   wgId,
                                   values?.filterFromDate,
                                   values?.filterToDate,
-                                  "",
+                                  values?.search,
                                   false,
                                   setRowDto,
                                   setLoading,

@@ -84,13 +84,13 @@ export const getSalaryAdditionAndDeductionLanding = async (
   wgId
 ) => {
   setLoading && setLoading(true);
-  let searchTxt = search ? `&searchTxt=${search}` : "";
+  // let searchTxt = search ? `&searchTxt=${search}` : "";
   const intMonth = fromMonth ? +fromMonth.split("-")[1] : +modifyMonthResult;
   const intYear = fromMonth ? +fromMonth?.split("-")[0] : initYear;
 
   try {
     const res = await axios.get(
-      `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&searchTxt=${searchTxt}`
+      `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&searchTxt=${search}`
     );
     if (res?.data) {
       const modifiedData = res.data.data.map((item, index) => ({
@@ -131,7 +131,7 @@ export const createEditAllowanceAndDeduction = async (
 
 export const getSalaryAdditionAndDeductionById = async (
   empId,
-  orgId,
+  wgId,
   buId,
   setter,
   setLoading
@@ -140,8 +140,8 @@ export const getSalaryAdditionAndDeductionById = async (
   const payload = [
     {
       strEntryType: "GetEmpSalaryAdditionNDeductionByEmployeeId",
-      intAccountId: orgId,
       intBusinessUnitId: buId,
+      intWorkplaceGroupId: wgId,
       intEmployeeId: empId,
     },
   ];
