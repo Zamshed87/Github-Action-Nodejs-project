@@ -7,9 +7,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import { paginationSize } from "../../../../common/AntTable";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
 import DefaultInput from "../../../../common/DefaultInput";
-import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
@@ -19,7 +17,6 @@ import {
   dateFormatter,
   monthFirstDate,
 } from "../../../../utility/dateFormatter";
-import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import { getBuDetails } from "../helper";
 import axios from "axios";
@@ -28,7 +25,6 @@ import {
   column,
   getTableDataMonthlyAttendance,
   monthlyAttendanceReportColumns,
-  // onFilterMonthlyAttendance,
   onGetMonthlyAttendanceReport,
 } from "./helper";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
@@ -45,7 +41,7 @@ const MonthlyAttendanceReport = () => {
   // redux
   const {
     permissionList,
-    profileData: { orgId, buId, employeeId, buName, wgId },
+    profileData: { orgId, buId, buName, wgId },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -59,9 +55,7 @@ const MonthlyAttendanceReport = () => {
   const [buDetails, setBuDetails] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rowData, setRowDto] = useState([]);
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
-  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -78,34 +72,36 @@ const MonthlyAttendanceReport = () => {
     onGetMonthlyAttendanceReport(
       getMonthlyAttendanceInformation,
       orgId,
+      wgId,
       values,
       setRowDto,
       pages,
-      ""
+      setPages
     );
   }, [wgId]);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
     );
-  }, [orgId, buId, employeeId]);
+  }, [orgId, buId, employeeId]); */
 
   useEffect(() => {
     getBuDetails(buId, setBuDetails);
   }, [orgId, buId]);
 
   //  formik
-  const { values, setFieldValue, setValues, handleSubmit } = useFormik({
+  const { values, setFieldValue, handleSubmit } = useFormik({
     initialValues,
-    onSubmit: (formValues) => {
+    onSubmit: (values) => {
       onGetMonthlyAttendanceReport(
         getMonthlyAttendanceInformation,
         orgId,
-        formValues,
+        wgId,
+        values,
         setRowDto,
         pages,
         setPages,
@@ -125,6 +121,7 @@ const MonthlyAttendanceReport = () => {
       return onGetMonthlyAttendanceReport(
         getMonthlyAttendanceInformation,
         orgId,
+        wgId,
         values,
         setRowDto,
         pagination,
@@ -136,6 +133,7 @@ const MonthlyAttendanceReport = () => {
       return onGetMonthlyAttendanceReport(
         getMonthlyAttendanceInformation,
         orgId,
+        wgId,
         values,
         setRowDto,
         pagination,
@@ -164,11 +162,7 @@ const MonthlyAttendanceReport = () => {
                             values?.fromDate
                           }&DteToDate=${
                             values?.toDate
-                          }&EmployeeId=0&WorkplaceGroupId=${
-                            values?.workplaceGroup?.value || 0
-                          }&WorkplaceId=${
-                            values?.workplace?.value || 0
-                          }&AccountId=${orgId}&PageNo=1&PageSize=1000000&IsPaginated=false`
+                          }&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${0}&AccountId=${orgId}&PageNo=1&PageSize=1000&IsPaginated=false`
                         );
                         if (res?.data) {
                           setLoading(false);
@@ -227,59 +221,11 @@ const MonthlyAttendanceReport = () => {
                       }
                     };
                     excelLanding();
-                    // onGetMonthlyAttendanceReport(
-                    //   getMonthlyAttendanceInformation,
-                    //   orgId,
-                    //   values,
-                    //   setRowDto,
-                    //   pages,
-                    //   setPages,
-                    //   '',
-                    //   false
-                    // )
-                    // if (!rowData?.length > 0) {
-                    //   return toast.warn("No Attendance Report Found");
-                    // }
-                    // generateExcelActionBeta(
-                    //   `Monthly Attendance Report - ${dateFormatter(
-                    //     values?.fromDate
-                    //   )} to ${dateFormatter(values?.toDate)}`,
-                    //   "",
-                    //   "",
-                    //   attendeceReportExlCol(values?.fromDate, values?.toDate),
-                    //   rowData,
-                    //   buName,
-                    //   buDetails?.strBusinessUnitAddress,
-                    //   widthList
-                    //   // true
-                    // );
                   }}
                 >
                   <SaveAlt sx={{ color: "#637381", fontSize: "16px" }} />
                 </button>
               </Tooltip>
-              {/* <Tooltip title="Print" arrow>
-                              <button
-                                className="btn-save ml-3"
-                                style={{
-                                  border: "transparent",
-                                  width: "40px",
-                                  height: "40px",
-                                  background: "#f2f2f7",
-                                  borderRadius: "100px",
-                                }}
-                                onClick={() => {
-                                  getPDFAction(
-                                    `/emp/PdfAndExcelReport/RosterReport?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${pdfData?.workplace?.value || 0
-                                    }&WorkPalceGroupId=0&CalendarId=${pdfData?.calendarType?.value || 0}&UserDate=${pdfData?.date || todayDate()}&CalendarTypeId=${pdfData?.rosterGroupName?.value || 0
-                                    }`,
-                                    setLoading
-                                  );
-                                }}
-                              >
-                                <PrintIcon sx={{ color: "#637381" }} />
-                              </button>
-                            </Tooltip> */}
             </div>
             <div className="table-card-head-right">
               {values?.search && (
@@ -314,6 +260,7 @@ const MonthlyAttendanceReport = () => {
                     onGetMonthlyAttendanceReport(
                       getMonthlyAttendanceInformation,
                       orgId,
+                      wgId,
                       values,
                       setRowDto,
                       pages,
@@ -325,6 +272,7 @@ const MonthlyAttendanceReport = () => {
                     onGetMonthlyAttendanceReport(
                       getMonthlyAttendanceInformation,
                       orgId,
+                      wgId,
                       values,
                       setRowDto,
                       pages,
@@ -333,11 +281,6 @@ const MonthlyAttendanceReport = () => {
                       false
                     );
                   }
-                  // onFilterMonthlyAttendance(
-                  //   value,
-                  //   monthlyAttendanceInformation,
-                  //   setRowDto
-                  // );
                 }}
                 cancelHandler={() => {
                   setFieldValue("search", "");
@@ -348,7 +291,7 @@ const MonthlyAttendanceReport = () => {
           </div>
           <div className="table-card-body">
             <div className="card-style mb-2 row px-0 pb-0">
-              <div className="col-lg-3">
+              {/*     <div className="col-lg-3">
                 <div className="input-field-main">
                   <label>Business Unit</label>
                   <FormikSelect
@@ -370,8 +313,8 @@ const MonthlyAttendanceReport = () => {
                     styles={customStyles}
                   />
                 </div>
-              </div>
-              <div className="col-lg-3">
+              </div> */}
+              {/*    <div className="col-lg-3">
                 <div className="input-field-main">
                   <label>Workplace Group</label>
                   <FormikSelect
@@ -397,8 +340,8 @@ const MonthlyAttendanceReport = () => {
                     styles={customStyles}
                   />
                 </div>
-              </div>
-              <div className="col-lg-3">
+              </div> */}
+              {/*     <div className="col-lg-3">
                 <div className="input-field-main">
                   <label>Workplace</label>
                   <FormikSelect
@@ -412,7 +355,7 @@ const MonthlyAttendanceReport = () => {
                     styles={customStyles}
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="col-lg-3">
                 <div className="input-field-main">
                   <label>From Date</label>
