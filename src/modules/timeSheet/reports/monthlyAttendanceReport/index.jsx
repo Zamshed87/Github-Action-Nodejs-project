@@ -243,7 +243,17 @@ const MonthlyAttendanceReport = () => {
                     }
                     onClick={() => {
                       setFieldValue("search", "");
-                      setRowDto(monthlyAttendanceInformation);
+                      onGetMonthlyAttendanceReport(
+                        getMonthlyAttendanceInformation,
+                        orgId,
+                        wgId,
+                        values,
+                        setRowDto,
+                        pages,
+                        setPages,
+                        "",
+                        false
+                      );
                     }}
                   />
                 </div>
@@ -284,7 +294,17 @@ const MonthlyAttendanceReport = () => {
                 }}
                 cancelHandler={() => {
                   setFieldValue("search", "");
-                  setRowDto(monthlyAttendanceInformation);
+                  onGetMonthlyAttendanceReport(
+                    getMonthlyAttendanceInformation,
+                    orgId,
+                    wgId,
+                    values,
+                    setRowDto,
+                    pages,
+                    setPages,
+                    "",
+                    false
+                  );
                 }}
               />
             </div>

@@ -23,12 +23,13 @@ export const onGetRosterReportForAll = (
   setRowDto,
   pages,
   setPages,
-  isPaginated=true
+  isPaginated="true",
+  srcTxt
 ) => {
   getRosterReportInformation(
     `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
       formValues?.fromDate
-    }&DteToDate=${formValues?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&IsPaginated=${isPaginated}`,
+    }&DteToDate=${formValues?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&SearchTxt=${srcTxt || ""}&IsPaginated=${isPaginated}`,
     (data) => {
       setRowDto?.(data);
       setPages({ ...pages, total: data?.[0]?.totalCount });

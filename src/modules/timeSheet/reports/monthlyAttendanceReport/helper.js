@@ -34,21 +34,6 @@ export const onGetMonthlyAttendanceReport = (
   );
 };
 
-export const onFilterMonthlyAttendance = (
-  keywords,
-  mainDataList,
-  setRowDataList
-) => {
-  const modifiedDataList = mainDataList?.filter(
-    (item) =>
-      item?.EmployeeCode?.includes(keywords) ||
-      item?.strEmployeeName?.includes(keywords) ||
-      item?.strDesignation?.includes(keywords) ||
-      item?.strDepartment?.includes(keywords)
-  );
-  setRowDataList?.(modifiedDataList);
-};
-
 export const monthlyAttendanceReportColumns = (
   fromDate,
   toDate,
