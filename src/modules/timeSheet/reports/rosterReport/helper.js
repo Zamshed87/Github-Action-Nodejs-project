@@ -18,6 +18,7 @@ export const getBuDetails = async (buId, setter) => {
 export const onGetRosterReportForAll = (
   getRosterReportInformation,
   orgId,
+  wgId,
   formValues,
   setRowDto,
   pages,
@@ -27,9 +28,7 @@ export const onGetRosterReportForAll = (
   getRosterReportInformation(
     `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
       formValues?.fromDate
-    }&DteToDate=${formValues?.toDate}&EmployeeId=0&WorkplaceGroupId=${
-      formValues?.workplaceGroup?.value || 0
-    }&WorkplaceId=${formValues?.workplace?.value || 0}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&IsPaginated=${isPaginated}`,
+    }&DteToDate=${formValues?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&IsPaginated=${isPaginated}`,
     (data) => {
       setRowDto?.(data);
       setPages({ ...pages, total: data?.[0]?.totalCount });

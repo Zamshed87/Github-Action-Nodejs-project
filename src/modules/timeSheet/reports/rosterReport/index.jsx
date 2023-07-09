@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -7,16 +6,13 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import { paginationSize } from "../../../../common/AntTable";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
 import DefaultInput from "../../../../common/DefaultInput";
-import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { monthFirstDate } from "../../../../utility/dateFormatter";
-import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import { getBuDetails } from "../helper";
 import { onFilterMonthlyAttendance as onFilterMonthlyRosterReport } from "../monthlyAttendanceReport/helper";
@@ -40,8 +36,9 @@ const initialValues = {
 const RosterReport = () => {
   const {
     permissionList,
-    profileData: { orgId, buId, employeeId, buName, wgId },
+    profileData: { orgId, buId, buName, wgId },
   } = useSelector((state) => state?.auth, shallowEqual);
+  const [loading, setLoading] = useState(false);
 
   let permission = null;
   permissionList.forEach((item) => {
@@ -49,34 +46,40 @@ const RosterReport = () => {
       permission = item;
     }
   });
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
-  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
   });
+  const { values, setFieldValue, handleSubmit } = useFormik({
+    initialValues,
+    onSubmit: (formValues) => {
+      onGetRosterReportForAll(
+        getRosterReportInformation,
+        orgId,
+        wgId,
+        formValues,
+        setRowDto,
+        pages,
+        setPages
+      );
+    },
+  });
 
-  useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
-    );
-  }, [orgId, buId, employeeId]);
   const [rowData, setRowDto] = useState([]);
   const [
     rosterReportInformation,
     getRosterReportInformation,
     loadingOnGetRosterReportInformation,
   ] = useAxiosGet();
+
   useEffect(() => {
     onGetRosterReportForAll(
       getRosterReportInformation,
       orgId,
+      wgId,
       values,
       setRowDto,
       pages,
@@ -94,6 +97,7 @@ const RosterReport = () => {
       return onGetRosterReportForAll(
         getRosterReportInformation,
         orgId,
+        wgId,
         values,
         setRowDto,
         pagination,
@@ -104,6 +108,7 @@ const RosterReport = () => {
       return onGetRosterReportForAll(
         getRosterReportInformation,
         orgId,
+        wgId,
         values,
         setRowDto,
         pagination,
@@ -114,23 +119,10 @@ const RosterReport = () => {
   useEffect(() => {
     getBuDetails(buId, setBuDetails);
   }, []);
-  const { values, setFieldValue, setValues, handleSubmit } = useFormik({
-    initialValues,
-    onSubmit: (formValues) => {
-      onGetRosterReportForAll(
-        getRosterReportInformation,
-        orgId,
-        formValues,
-        setRowDto,
-        pages,
-        setPages
-      );
-    },
-  });
 
   return (
     <>
-      {loadingOnGetRosterReportInformation && <Loading />}
+      {(loadingOnGetRosterReportInformation || loading) && <Loading />}
       {permission?.isView && (
         <div className="table-card">
           <div className="table-card-heading pb-2">
@@ -140,20 +132,14 @@ const RosterReport = () => {
                   className="btn-save "
                   onClick={(e) => {
                     const excelLanding = async () => {
+                      setLoading(true);
                       try {
                         const res = await axios.get(
-                          `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
-                            values?.fromDate
-                          }&DteToDate=${
-                            values?.toDate
-                          }&EmployeeId=0&WorkplaceGroupId=${
-                            values?.workplaceGroup?.value || 0
-                          }&WorkplaceId=${
-                            values?.workplace?.value || 0
-                          }&PageNo=1&PageSize=1000000&IsPaginated=false`
+                          `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate}&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=1&PageSize=1000&IsPaginated=false`
                         );
                         if (res?.data) {
                           if (res?.data < 1) {
+                            setLoading(false);
                             return toast.error("No  Data Found");
                           }
 
@@ -166,48 +152,19 @@ const RosterReport = () => {
                             buDetails?.strBusinessUnitAddress,
                             getfromToDateList(values?.fromDate, values?.toDate)
                           );
+                          setLoading(false);
                         }
                       } catch (error) {
+                        setLoading(false);
                         toast.error(error?.response?.data?.message);
                       }
                     };
                     excelLanding();
-                    // generateExcelAction(
-                    //   "Roster Report",
-                    //   values?.fromDate,
-                    //   values?.toDate,
-                    //   values?.businessUnit?.label || buName,
-                    //   rowData,
-                    //   buDetails?.strBusinessUnitAddress,
-                    //   getfromToDateList(values?.fromDate, values?.toDate)
-                    // );
                   }}
                 >
                   <SaveAlt sx={{ color: "#637381", fontSize: "16px" }} />
                 </button>
               </Tooltip>
-              {/* <Tooltip title="Print" arrow>
-                              <button
-                                className="btn-save ml-3"
-                                style={{
-                                  border: "transparent",
-                                  width: "40px",
-                                  height: "40px",
-                                  background: "#f2f2f7",
-                                  borderRadius: "100px",
-                                }}
-                                onClick={() => {
-                                  getPDFAction(
-                                    `/emp/PdfAndExcelReport/RosterReport?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${pdfData?.workplace?.value || 0
-                                    }&WorkPalceGroupId=0&CalendarId=${pdfData?.calendarType?.value || 0}&UserDate=${pdfData?.date || todayDate()}&CalendarTypeId=${pdfData?.rosterGroupName?.value || 0
-                                    }`,
-                                    setLoading
-                                  );
-                                }}
-                              >
-                                <PrintIcon sx={{ color: "#637381" }} />
-                              </button>
-                            </Tooltip> */}
             </div>
             <div className="table-card-head-right">
               {values?.search && (
@@ -253,7 +210,7 @@ const RosterReport = () => {
           </div>
           <div className="table-card-body">
             <div className="card-style mb-2 row px-0 pb-0">
-              <div className="col-lg-3">
+              {/*   <div className="col-lg-3">
                 <div className="input-field-main">
                   <label>Business Unit</label>
                   <FormikSelect
@@ -318,7 +275,7 @@ const RosterReport = () => {
                     styles={customStyles}
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="col-lg-3">
                 <div className="input-field-main">
                   <label>From Date</label>

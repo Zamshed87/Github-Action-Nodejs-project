@@ -7,9 +7,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import { paginationSize } from "../../../../common/AntTable";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
 import DefaultInput from "../../../../common/DefaultInput";
-import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
@@ -19,7 +17,6 @@ import {
   dateFormatter,
   monthFirstDate,
 } from "../../../../utility/dateFormatter";
-import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import { getBuDetails } from "../helper";
 import axios from "axios";
@@ -28,7 +25,6 @@ import {
   column,
   getTableDataMonthlyAttendance,
   monthlyAttendanceReportColumns,
-  // onFilterMonthlyAttendance,
   onGetMonthlyAttendanceReport,
 } from "./helper";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
@@ -45,7 +41,7 @@ const MonthlyAttendanceReport = () => {
   // redux
   const {
     permissionList,
-    profileData: { orgId, buId, employeeId, buName, wgId },
+    profileData: { orgId, buId, buName, wgId },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -59,9 +55,7 @@ const MonthlyAttendanceReport = () => {
   const [buDetails, setBuDetails] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rowData, setRowDto] = useState([]);
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
-  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -86,14 +80,14 @@ const MonthlyAttendanceReport = () => {
     );
   }, [wgId]);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
     );
-  }, [orgId, buId, employeeId]);
+  }, [orgId, buId, employeeId]); */
 
   useEffect(() => {
     getBuDetails(buId, setBuDetails);
