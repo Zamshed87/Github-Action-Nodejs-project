@@ -15,7 +15,6 @@ import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
 import { getBuDetails } from "../helper";
-import { onFilterMonthlyAttendance as onFilterMonthlyRosterReport } from "../monthlyAttendanceReport/helper";
 import { generateExcelAction } from "./excel/excelConvert";
 import {
   getfromToDateList,
@@ -63,7 +62,8 @@ const RosterReport = () => {
         formValues,
         setRowDto,
         pages,
-        setPages
+        setPages,
+        "true"
       );
     },
   });
@@ -83,7 +83,8 @@ const RosterReport = () => {
       values,
       setRowDto,
       pages,
-      setPages
+      setPages,
+      "true",
     );
   }, [wgId]);
   const handleTableChange = (pagination, newRowDto, srcText) => {
@@ -101,7 +102,9 @@ const RosterReport = () => {
         values,
         setRowDto,
         pagination,
-        setPages
+        setPages,
+        "true",
+        srcText
       );
     }
     if (pages?.current !== pagination?.current) {
@@ -112,7 +115,9 @@ const RosterReport = () => {
         values,
         setRowDto,
         pagination,
-        setPages
+        setPages,
+        "true",
+        srcText
       );
     }
   };
@@ -135,7 +140,7 @@ const RosterReport = () => {
                       setLoading(true);
                       try {
                         const res = await axios.get(
-                          `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate}&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=1&PageSize=1000&IsPaginated=false`
+                          `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate}&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=1&SearchTxt=${values?.search || ""}&PageSize=1000&IsPaginated=false`
                         );
                         if (res?.data) {
                           if (res?.data < 1) {
@@ -182,7 +187,17 @@ const RosterReport = () => {
                     }
                     onClick={() => {
                       setFieldValue("search", "");
-                      setRowDto(rosterReportInformation);
+                      onGetRosterReportForAll(
+                        getRosterReportInformation,
+                        orgId,
+                        wgId,
+                        values,
+                        setRowDto,
+                        pages,
+                        setPages,
+                        "true",
+                        ""
+                      );
                     }}
                   />
                 </div>
@@ -195,15 +210,45 @@ const RosterReport = () => {
                 value={values?.search}
                 setValue={(value) => {
                   setFieldValue("search", value);
-                  onFilterMonthlyRosterReport(
-                    value,
-                    rosterReportInformation,
-                    setRowDto
-                  );
+                  if (value) {
+                    onGetRosterReportForAll(
+                      getRosterReportInformation,
+                      orgId,
+                      wgId,
+                      values,
+                      setRowDto,
+                      pages,
+                      setPages,
+                      "true",
+                      value
+                    );
+                  } else {
+                    onGetRosterReportForAll(
+                      getRosterReportInformation,
+                      orgId,
+                      wgId,
+                      values,
+                      setRowDto,
+                      pages,
+                      setPages,
+                      "true",
+                      ""
+                    );
+                  }
                 }}
                 cancelHandler={() => {
                   setFieldValue("search", "");
-                  setRowDto(rosterReportInformation);
+                  onGetRosterReportForAll(
+                    getRosterReportInformation,
+                    orgId,
+                    wgId,
+                    values,
+                    setRowDto,
+                    pages,
+                    setPages,
+                    "true",
+                    ""
+                  );
                 }}
               />
             </div>
