@@ -16,8 +16,10 @@ import { getPDFAction } from "../../../../utility/downloadFile";
 import FilterModal from "./components/FilterModal";
 import { getLoanApplicationByAdvanceFilter, loanReportColumns } from "./helper";
 import "./loanHistory.css";
-import PeopleDeskTable, { paginationSize } from "../../../../common/peopleDeskTable";
-import DefaultInput from './../../../../common/DefaultInput';
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import DefaultInput from "./../../../../common/DefaultInput";
 
 const initData = {
   status: "",
@@ -85,69 +87,54 @@ const EmLoanHistory = () => {
     searchTxt = "",
     pagination = { current: 1, pageSize: paginationSize }
   ) => {
-    getLoanApplicationByAdvanceFilter(
-      setPages,
-      setRowDto,
-      setLoading,
-      {
-        businessUnitId: buId,
-        loanTypeId: 0,
-        departmentId: 0,
-        designationId: 0,
-        employeeId: 0,
-        fromDate: values?.fromDate || "",
-        toDate: values?.toDate || "",
-        minimumAmount: 0,
-        maximumAmount: 0,
-        applicationStatus: "",
-        installmentStatus: "",
-        pageSize: pagination.pageSize,
-        pageNo: pagination.current,
-        ispaginated: true,
-        searchText: searchTxt || "",
-        workplaceGroupId: wgId,
-      }
-    );
+    getLoanApplicationByAdvanceFilter(setPages, setRowDto, setLoading, {
+      businessUnitId: buId,
+      loanTypeId: 0,
+      departmentId: 0,
+      designationId: 0,
+      employeeId: 0,
+      fromDate: values?.fromDate || "",
+      toDate: values?.toDate || "",
+      minimumAmount: 0,
+      maximumAmount: 0,
+      applicationStatus: "",
+      installmentStatus: "",
+      pageSize: pagination.pageSize,
+      pageNo: pagination.current,
+      ispaginated: true,
+      searchText: searchTxt || "",
+      workplaceGroupId: wgId,
+    });
   };
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage, searchText = "") => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
 
-    getData(
-      values,
-      "",
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      }
-    );
+    getData(values, searchText, {
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
+  const handleChangeRowsPerPage = (event, searchText = "") => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getData(
-      values,
-      "",
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      }
-    );
+    getData(values, searchText, {
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
   };
 
   const { setFieldValue, values, errors, touched, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
     validationSchema: validationSchema,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      resetForm(initData);
-    },
+    onSubmit: (values, { setSubmitting, resetForm }) => {},
   });
 
   // initial
@@ -157,32 +144,25 @@ const EmLoanHistory = () => {
   }, []);
 
   useEffect(() => {
-    getLoanApplicationByAdvanceFilter(
-      setPages,
-      setRowDto,
-      setLoading,
-      {
-        businessUnitId: buId,
-        loanTypeId: 0,
-        departmentId: 0,
-        designationId: 0,
-        employeeId: 0,
-        fromDate: getDateOfYear("first"),
-        toDate: getDateOfYear("last"),
-        minimumAmount: 0,
-        maximumAmount: 0,
-        applicationStatus: "",
-        installmentStatus: "",
-        pageSize: paginationSize,
-        pageNo: 1,
-        ispaginated: true,
-        searchText: "",
-        workplaceGroupId: wgId,
-      }
-    );
+    getLoanApplicationByAdvanceFilter(setPages, setRowDto, setLoading, {
+      businessUnitId: buId,
+      loanTypeId: 0,
+      departmentId: 0,
+      designationId: 0,
+      employeeId: 0,
+      fromDate: getDateOfYear("first"),
+      toDate: getDateOfYear("last"),
+      minimumAmount: 0,
+      maximumAmount: 0,
+      applicationStatus: "",
+      installmentStatus: "",
+      pageSize: paginationSize,
+      pageNo: 1,
+      ispaginated: true,
+      searchText: "",
+      workplaceGroupId: wgId,
+    });
   }, [buId, wgId]);
-
-  console.log("rowDto", rowDto);
 
   return (
     <>
@@ -207,15 +187,24 @@ const EmLoanHistory = () => {
                         }}
                         onClick={() => {
                           getPDFAction(
-                            `/PdfAndExcelReport/LoanReportAll?&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&DepartmentId=${values?.department?.value || 0
-                            }&DesignationId=${values?.designation?.value || 0
-                            }&EmployeeId=${values?.employee?.value || 0
-                            }&LoanTypeId=${values?.loanType?.value || 0
-                            }&FromDate=${values?.fromDate || ""}&ToDate=${values?.toDate || ""
-                            }&MinimumAmount=${values?.minimumAmount || 0
-                            }&MaximumAmount=${values?.maximumAmount || 0
-                            }&ApplicationStatus=${values?.applicationStatus?.label || ""
-                            }&InstallmentStatus=${values?.installmentStatus?.label || ""
+                            `/PdfAndExcelReport/LoanReportAll?&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&DepartmentId=${
+                              values?.department?.value || 0
+                            }&DesignationId=${
+                              values?.designation?.value || 0
+                            }&EmployeeId=${
+                              values?.employee?.value || 0
+                            }&LoanTypeId=${
+                              values?.loanType?.value || 0
+                            }&FromDate=${values?.fromDate || ""}&ToDate=${
+                              values?.toDate || ""
+                            }&MinimumAmount=${
+                              values?.minimumAmount || 0
+                            }&MaximumAmount=${
+                              values?.maximumAmount || 0
+                            }&ApplicationStatus=${
+                              values?.applicationStatus?.label || ""
+                            }&InstallmentStatus=${
+                              values?.installmentStatus?.label || ""
                             }`,
                             setLoading
                           );
@@ -240,53 +229,53 @@ const EmLoanHistory = () => {
                       values?.applicationStatus ||
                       values?.installmentStatus ||
                       values?.search) && (
-                        <li>
-                          <ResetButton
-                            title="reset"
-                            icon={
-                              <SettingsBackupRestoreOutlined
-                                sx={{ marginRight: "10px" }}
-                              />
-                            }
-                            onClick={() => {
-                              setFieldValue("loanType", "");
-                              setFieldValue("department", "");
-                              setFieldValue("designation", "");
-                              setFieldValue("employee", "");
-                              setFieldValue("fromDate", "");
-                              setFieldValue("toDate", "");
-                              setFieldValue("minimumAmount", "");
-                              setFieldValue("maximumAmount", "");
-                              setFieldValue("applicationStatus", "");
-                              setFieldValue("installmentStatus", "");
-                              setFieldValue("search", "");
-                              getLoanApplicationByAdvanceFilter(
-                                setPages,
-                                setRowDto,
-                                setLoading,
-                                {
-                                  businessUnitId: buId,
-                                  loanTypeId: 0,
-                                  departmentId: 0,
-                                  designationId: 0,
-                                  employeeId: 0,
-                                  fromDate: values?.fromDate || "",
-                                  toDate: values?.toDate || "",
-                                  minimumAmount: 0,
-                                  maximumAmount: 0,
-                                  applicationStatus: "",
-                                  installmentStatus: "",
-                                  pageSize: paginationSize,
-                                  pageNo: 1,
-                                  ispaginated: true,
-                                  searchText: "",
-                                  workplaceGroupId: wgId,
-                                }
-                              );
-                            }}
-                          />
-                        </li>
-                      )}
+                      <li>
+                        <ResetButton
+                          title="reset"
+                          icon={
+                            <SettingsBackupRestoreOutlined
+                              sx={{ marginRight: "10px" }}
+                            />
+                          }
+                          onClick={() => {
+                            setFieldValue("loanType", "");
+                            setFieldValue("department", "");
+                            setFieldValue("designation", "");
+                            setFieldValue("employee", "");
+                            setFieldValue("fromDate", "");
+                            setFieldValue("toDate", "");
+                            setFieldValue("minimumAmount", "");
+                            setFieldValue("maximumAmount", "");
+                            setFieldValue("applicationStatus", "");
+                            setFieldValue("installmentStatus", "");
+                            setFieldValue("search", "");
+                            getLoanApplicationByAdvanceFilter(
+                              setPages,
+                              setRowDto,
+                              setLoading,
+                              {
+                                businessUnitId: buId,
+                                loanTypeId: 0,
+                                departmentId: 0,
+                                designationId: 0,
+                                employeeId: 0,
+                                fromDate: values?.fromDate || "",
+                                toDate: values?.toDate || "",
+                                minimumAmount: 0,
+                                maximumAmount: 0,
+                                applicationStatus: "",
+                                installmentStatus: "",
+                                pageSize: paginationSize,
+                                pageNo: 1,
+                                ispaginated: true,
+                                searchText: "",
+                                workplaceGroupId: wgId,
+                              }
+                            );
+                          }}
+                        />
+                      </li>
+                    )}
                     <li>
                       <MasterFilter
                         isHiddenFilter
@@ -413,7 +402,7 @@ const EmLoanHistory = () => {
                               pageNo: 1,
                               ispaginated: true,
                               searchText: "",
-                              workplaceGroupId: wgId
+                              workplaceGroupId: wgId,
                             }
                           );
                         }}

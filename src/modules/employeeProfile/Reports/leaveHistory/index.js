@@ -78,7 +78,7 @@ const EmLeaveHistory = () => {
 
   useEffect(() => {
     getData();
-    getBuDetails(buId, setBuDetails, setLoading);
+    getBuDetails(buId, setBuDetails);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId]);
 
@@ -305,9 +305,7 @@ const EmLeaveHistory = () => {
                           isScrollAble={false}
                         />
                       ) : (
-                        <>
-                          <NoResult title="No Result Found" para="" />
-                        </>
+                        !loading && <NoResult title="No Result Found" para="" />
                       )}
                     </div>
                   </div>

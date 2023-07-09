@@ -72,7 +72,7 @@ export default function ManagementSeparation() {
       wgId,
       values?.filterFromDate || "",
       values?.filterToDate || "",
-      "",
+      searchText,
       setRowDto,
       setLoading,
       pagination?.current,
@@ -81,7 +81,7 @@ export default function ManagementSeparation() {
     );
   };
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage, searchText = "") => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
@@ -91,11 +91,12 @@ export default function ManagementSeparation() {
         current: newPage,
         pageSize: pages?.pageSize,
         total: pages?.total,
-      }
+      },
+      searchText
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
+  const handleChangeRowsPerPage = (event, searchText = "") => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
@@ -104,7 +105,8 @@ export default function ManagementSeparation() {
         current: 1,
         pageSize: +event.target.value,
         total: pages?.total,
-      }
+      },
+      searchText
     );
   };
 
@@ -112,9 +114,7 @@ export default function ManagementSeparation() {
   const { setFieldValue, values, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      resetForm(initData);
-    },
+    onSubmit: (values, { setSubmitting, resetForm }) => {},
   });
 
   // initial
@@ -136,7 +136,8 @@ export default function ManagementSeparation() {
       paginationSize,
       setPages
     );
-  }, [buId, wgId, values]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [buId, wgId]);
 
   return (
     <>
@@ -297,7 +298,7 @@ export default function ManagementSeparation() {
                     type="button"
                     disabled={!values?.filterFromDate || !values?.filterToDate}
                     onClick={() => {
-                      getData();
+                      getData(pages, values?.search);
                     }}
                   >
                     View
