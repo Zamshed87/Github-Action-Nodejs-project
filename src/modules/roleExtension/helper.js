@@ -9,7 +9,7 @@ export const userRoleExtensionCol = (pages) => {
       className: "text-center",
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "employeeCode",
       sort: true,
       // filter: true,

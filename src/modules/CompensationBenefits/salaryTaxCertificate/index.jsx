@@ -30,11 +30,12 @@ const SalaryTaxCertificate = () => {
   const [fascalYearDDL, setFascalYearDDL] = useState([]);
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=fiscalYearDDL&WorkplaceGroupId=${profileData?.wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=fiscalYearDDL&BusinessUnitId=${profileData?.buId}&WorkplaceGroupId=${profileData?.wgId}`,
       "value",
       "label",
       setFascalYearDDL
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileData?.employeeId, profileData?.wgId]);
 
   const [
@@ -104,38 +105,38 @@ const SalaryTaxCertificate = () => {
                 <h2>Salary Tax Certificate Report</h2>
                 {salaryTaxCertificateInformation?.payrollElementVMs?.length >
                   0 && (
-                    <Tooltip title="Print" arrow>
-                      <button
-                        className="btn-save ml-2"
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          getPDFAction(
-                            `/PdfAndExcelReport/SalaryTaxCertificateReportPDF?FiscalYearId=${values?.year?.value}&FiscalYear=${values?.year?.label}&EmployeeId=${values?.employee?.value}`,
-                            setLoading
-                          );
+                  <Tooltip title="Print" arrow>
+                    <button
+                      className="btn-save ml-2"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        getPDFAction(
+                          `/PdfAndExcelReport/SalaryTaxCertificateReportPDF?FiscalYearId=${values?.year?.value}&FiscalYear=${values?.year?.label}&EmployeeId=${values?.employee?.value}`,
+                          setLoading
+                        );
+                      }}
+                      disabled={
+                        salaryTaxCertificateInformation?.payrollElementVMs
+                          ?.length <= 0
+                      }
+                      style={{
+                        border: "transparent",
+                        width: "30px",
+                        height: "30px",
+                        background: "#f2f2f7",
+                        borderRadius: "100px",
+                      }}
+                    >
+                      <LocalPrintshopIcon
+                        sx={{
+                          color: "#637381",
+                          fontSize: "16px",
                         }}
-                        disabled={
-                          salaryTaxCertificateInformation?.payrollElementVMs
-                            ?.length <= 0
-                        }
-                        style={{
-                          border: "transparent",
-                          width: "30px",
-                          height: "30px",
-                          background: "#f2f2f7",
-                          borderRadius: "100px",
-                        }}
-                      >
-                        <LocalPrintshopIcon
-                          sx={{
-                            color: "#637381",
-                            fontSize: "16px",
-                          }}
-                        />
-                      </button>
-                    </Tooltip>
-                  )}
+                      />
+                    </button>
+                  </Tooltip>
+                )}
               </div>
             </div>
             <div className="table-card-body">
@@ -210,89 +211,89 @@ const SalaryTaxCertificate = () => {
                 </div>
                 {salaryTaxCertificateInformation?.payrollElementVMs?.length >
                   0 && (
-                    <div className="row">
-                      <div className="d-flex align-items-center mt-2 pb-2 ml-3">
-                        <div>
-                          {salaryTaxCertificateInformation?.imageUrl ? (
-                            <img
-                              //   src={`${APIUrl}/Document/DownloadFile?id=${employeeInfo?.employeeProfileLandingView?.intEmployeeImageUrlId}`}
-                              src=""
-                              alt="Profile Pic"
-                              style={{ maxHeight: "78px", minWidth: "78px" }}
-                            />
-                          ) : (
-                            <img
-                              src={ProfileImg}
-                              alt="Profile Pic"
-                              width="78px"
-                              height="78px"
-                              style={{ height: "inherit" }}
-                            />
-                          )}
-                        </div>
-                        <div>
-                          <div className="content-about-info-card ml-3">
-                            <div className="d-flex justify-content-between">
-                              <h4
-                                className="name-about-info"
-                                style={{ marginBottom: "5px" }}
+                  <div className="row">
+                    <div className="d-flex align-items-center mt-2 pb-2 ml-3">
+                      <div>
+                        {salaryTaxCertificateInformation?.imageUrl ? (
+                          <img
+                            //   src={`${APIUrl}/Document/DownloadFile?id=${employeeInfo?.employeeProfileLandingView?.intEmployeeImageUrlId}`}
+                            src=""
+                            alt="Profile Pic"
+                            style={{ maxHeight: "78px", minWidth: "78px" }}
+                          />
+                        ) : (
+                          <img
+                            src={ProfileImg}
+                            alt="Profile Pic"
+                            width="78px"
+                            height="78px"
+                            style={{ height: "inherit" }}
+                          />
+                        )}
+                      </div>
+                      <div>
+                        <div className="content-about-info-card ml-3">
+                          <div className="d-flex justify-content-between">
+                            <h4
+                              className="name-about-info"
+                              style={{ marginBottom: "5px" }}
+                            >
+                              {salaryTaxCertificateInformation?.employeeName}
+                              <span
+                                style={{ fontWeight: "400", color: gray700 }}
                               >
-                                {salaryTaxCertificateInformation?.employeeName}
-                                <span
-                                  style={{ fontWeight: "400", color: gray700 }}
-                                >
-                                  [{salaryTaxCertificateInformation?.employeeCode}
-                                  ]
-                                </span>
-                              </h4>
-                            </div>
-                            <div className="single-info">
-                              <p
-                                className="text-single-info"
-                                style={{ fontWeight: "500", color: gray700 }}
+                                [{salaryTaxCertificateInformation?.employeeCode}
+                                ]
+                              </span>
+                            </h4>
+                          </div>
+                          <div className="single-info">
+                            <p
+                              className="text-single-info"
+                              style={{ fontWeight: "500", color: gray700 }}
+                            >
+                              <small
+                                style={{ fontSize: "12px", lineHeight: "1.5" }}
                               >
-                                <small
-                                  style={{ fontSize: "12px", lineHeight: "1.5" }}
-                                >
-                                  Department -
-                                </small>
-                                {salaryTaxCertificateInformation?.department}
-                              </p>
-                            </div>
-                            <div className="single-info">
-                              <p
-                                className="text-single-info"
-                                style={{ fontWeight: "500", color: gray700 }}
+                                Department -
+                              </small>
+                              {salaryTaxCertificateInformation?.department}
+                            </p>
+                          </div>
+                          <div className="single-info">
+                            <p
+                              className="text-single-info"
+                              style={{ fontWeight: "500", color: gray700 }}
+                            >
+                              <small
+                                style={{ fontSize: "12px", lineHeight: "1.5" }}
                               >
-                                <small
-                                  style={{ fontSize: "12px", lineHeight: "1.5" }}
-                                >
-                                  Designation -
-                                </small>
-                                {salaryTaxCertificateInformation?.designation}
-                              </p>
-                            </div>
-                            <div className="single-info">
-                              <p
-                                className="text-single-info"
-                                style={{ fontWeight: "500", color: gray700 }}
+                                Designation -
+                              </small>
+                              {salaryTaxCertificateInformation?.designation}
+                            </p>
+                          </div>
+                          <div className="single-info">
+                            <p
+                              className="text-single-info"
+                              style={{ fontWeight: "500", color: gray700 }}
+                            >
+                              <small
+                                style={{ fontSize: "12px", lineHeight: "1.5" }}
                               >
-                                <small
-                                  style={{ fontSize: "12px", lineHeight: "1.5" }}
-                                >
-                                  Employment Type -
-                                </small>
-                                {salaryTaxCertificateInformation?.employmentType}
-                              </p>
-                            </div>
+                                Employment Type -
+                              </small>
+                              {salaryTaxCertificateInformation?.employmentType}
+                            </p>
                           </div>
                         </div>
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
               </div>
               {salaryTaxCertificateInformation?.payrollElementVMs?.length >
-                0 ? (
+              0 ? (
                 <div className="table-card-styled tableOne mt-3">
                   <table className="table table-bordered">
                     <tbody>

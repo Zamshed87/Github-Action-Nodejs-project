@@ -48,7 +48,7 @@ const HolidayExceptionModal = ({
           dateFormatterForInput(singleData[0]?.holidayEffectiveDate),
         holidayGroup: {
           value: singleData[0]?.holidayGroupId,
-          label: singleData[0]?.holidayGroupId,
+          label: singleData[0]?.holidayGroupName,
         },
         exceptionEffectiveDate: todayDate(),
         exceptionOffDayGroup: {

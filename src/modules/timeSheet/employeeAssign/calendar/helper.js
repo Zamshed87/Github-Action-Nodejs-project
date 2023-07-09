@@ -83,7 +83,7 @@ export const columns = (
       className: "text-center",
     },
     {
-      title: "Code",
+      title: "Employee Id",
       dataIndex: "employeeCode",
       sort: true,
       filter: false,
