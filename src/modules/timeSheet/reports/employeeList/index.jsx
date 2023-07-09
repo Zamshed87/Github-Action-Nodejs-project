@@ -316,6 +316,9 @@ export default function EmployeeList() {
                                       return {
                                         ...item,
                                         sl: index + 1,
+                                        dateOfJoining: dateFormatter(item?.dateOfJoining),
+                                        dateOfConfirmation: dateFormatter(item?.dateOfConfirmation),
+                                        dateOfBirth: dateFormatter(item?.dateOfBirth),
                                       };
                                     }
                                   );
