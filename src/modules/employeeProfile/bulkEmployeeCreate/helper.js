@@ -12,7 +12,6 @@ export const processBulkUploadEmployeeAction = async (
 ) => {
   setLoading && setLoading(true);
   try {
-    console.log(data);
     let modifiedData = data.map((item) => ({
       intEmpBulkUploadId: 0,
       intAccountId: orgId,
