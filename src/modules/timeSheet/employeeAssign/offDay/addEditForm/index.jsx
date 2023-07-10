@@ -8,7 +8,7 @@ import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import Loading from "../../../../../common/loading/Loading";
 import { gray900, greenColor } from "../../../../../utility/customColor";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
-import { offDayAssignCrud } from "../helper";
+import { crudOffDayAssign } from "../helper";
 import FormikInput from "./../../../../../common/FormikInput";
 
 const initData = {
@@ -41,7 +41,7 @@ export default function AddEditFormComponent({
   setFieldValueParent,
 }) {
   const [loading, setLoading] = useState(false);
-  const { employeeId, buId, orgId } = useSelector(
+  const { employeeId, buId, orgId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -56,6 +56,7 @@ export default function AddEditFormComponent({
             values,
             orgId,
             buId,
+            wgId,
             employeeId,
             offDayLanding: checked,
             isMulti,
@@ -69,7 +70,7 @@ export default function AddEditFormComponent({
               getData();
             },
           };
-          offDayAssignCrud(obj);
+          crudOffDayAssign(obj);
         }}
       >
         {({
