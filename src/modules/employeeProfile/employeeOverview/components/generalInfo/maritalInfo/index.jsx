@@ -211,7 +211,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
