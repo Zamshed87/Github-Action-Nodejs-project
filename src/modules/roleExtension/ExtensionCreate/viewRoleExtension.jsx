@@ -77,7 +77,7 @@ export default function ViewRoleExtension() {
     }
     setRowDto(modifyRowData);
   };
-
+  
   return (
     <>
       {loading && <Loading />}
