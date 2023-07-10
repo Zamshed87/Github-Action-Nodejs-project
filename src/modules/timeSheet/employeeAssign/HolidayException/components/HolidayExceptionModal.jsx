@@ -8,7 +8,11 @@ import FormikSelect from "../../../../../common/FormikSelect";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import { customStyles } from "../../../../../utility/newSelectCustomStyle";
 import { todayDate } from "../../../../../utility/todayDate";
-import { holidayAndExceptionOffdayAssign, makePayload } from "../helper";
+import {
+  holidayAndExceptionOffdayAssign,
+  holidayMakePayload,
+  makePayload,
+} from "../helper";
 import "../holidayException.css";
 
 const initData = {
@@ -76,12 +80,23 @@ const HolidayExceptionModal = ({
     );
   }, [orgId, buId, wgId]);
   const saveHandler = (values, cb) => {
-    let payload = makePayload(
+    // let payload = makePayload(
+    //   isMulti ? selectedDto : singleData,
+    //   {
+    //     orgId,
+    //     buId,
+    //     workPlaceGroupId,
+    //     employeeId,
+    //   },
+    //   values
+    // );
+
+    let payload = holidayMakePayload(
       isMulti ? selectedDto : singleData,
       {
         orgId,
         buId,
-        workPlaceGroupId,
+        wgId,
         employeeId,
       },
       values

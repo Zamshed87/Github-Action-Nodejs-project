@@ -276,8 +276,6 @@ const HolidayException = () => {
     );
   };
 
-  console.log(rowDto);
-
   return (
     <>
       <Formik

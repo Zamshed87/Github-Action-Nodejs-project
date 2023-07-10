@@ -41,8 +41,8 @@ const ViewModalCalender = ({ propsObj }) => {
                   <img
                     className="ml-4 mb-1"
                     src={
-                      selectedSingleEmployee[0]?.strProfileImageUrl
-                        ? `${APIUrl}/Document/DownloadFile?id=${selectedSingleEmployee[0]?.strProfileImageUrl}`
+                      selectedSingleEmployee[0]?.profileImageUrl
+                        ? `${APIUrl}/Document/DownloadFile?id=${selectedSingleEmployee[0]?.profileImageUrl}`
                         : profileImg
                     }
                     alt=""
@@ -50,9 +50,9 @@ const ViewModalCalender = ({ propsObj }) => {
                   />
                   <CommonEmpInfo
                     classes="ml-4"
-                    employeeName={selectedSingleEmployee[0]?.EmployeeName}
-                    designationName={selectedSingleEmployee[0]?.DesignationName}
-                    departmentName={selectedSingleEmployee[0]?.DepartmentName}
+                    employeeName={selectedSingleEmployee[0]?.employeeName}
+                    designationName={selectedSingleEmployee[0]?.designation}
+                    departmentName={selectedSingleEmployee[0]?.department}
                   />
                 </div>
               ) : (
@@ -82,9 +82,9 @@ const ViewModalCalender = ({ propsObj }) => {
 
                           <CommonEmpInfo
                             classes="ml-4"
-                            employeeName={data?.EmployeeName}
-                            designationName={data?.DesignationName}
-                            departmentName={data?.DepartmentName}
+                            employeeName={data?.employeeName}
+                            designationName={data?.designation}
+                            departmentName={data?.department}
                           />
                         </li>
                       </ol>

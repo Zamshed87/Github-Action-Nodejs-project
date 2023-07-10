@@ -6,7 +6,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
@@ -35,6 +35,7 @@ import {
   getSalaryAdditionAndDeductionById,
 } from "../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 
 const initData = {
   searchString: "",
@@ -114,6 +115,7 @@ var months = [
 function AddEditForm() {
   const location = useLocation();
   const scrollRef = useRef();
+  const dispatch = useDispatch();
   const { isCreate, isView, empId, businessUnitId, workplaceGroupId } =
     location?.state?.state;
   const [isEdit, setIsEdit] = useState(false);
@@ -134,6 +136,11 @@ function AddEditForm() {
   const [employeeDDL, setEmployeeDDL] = useState(false);
   const [allDDL, setAllDDL] = useState([]);
   const [isFromOpen, setIsFormOpen] = useState(false);
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   let getAdditionAndDeductionById = () => {
     getSalaryAdditionAndDeductionById(

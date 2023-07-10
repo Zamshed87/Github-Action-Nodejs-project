@@ -177,6 +177,28 @@ export function makePayload(array, profileData, values) {
   return myObj;
 }
 
+export const holidayMakePayload = (array, profileData, values) => {
+  const { orgId, buId, wgId, employeeId } = profileData;
+  const { holidayEffectiveDate, holidayGroup } = values;
+
+  const empIds = array.map((data) => {
+    return data?.employeeId;
+  });
+
+  const payloadObj = {
+    employeeList: empIds.join(","),
+    holidayGroupId: holidayGroup?.value || 0,
+    holidayGroupName: holidayGroup?.label || "",
+    effectiveDate: holidayEffectiveDate || null,
+    accountId: orgId,
+    businessUnitId: buId,
+    workplaceGroupId: wgId,
+    isActive: true,
+    actionBy: employeeId,
+  };
+  return payloadObj;
+};
+
 export const columns = (
   page,
   paginationSize,

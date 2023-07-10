@@ -5,7 +5,6 @@ import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../../common/AvatarComponent";
-import { todayDate } from "../../../../utility/todayDate";
 
 export const getSingleCalendar = async (
   monthId,
@@ -322,6 +321,7 @@ export const offDayAssignCrud = async (obj) => {
     values,
     orgId,
     buId,
+    wgId,
     employeeId,
     offDayLanding,
     isMulti,
@@ -336,12 +336,9 @@ export const offDayAssignCrud = async (obj) => {
     let commonObj = {
       accountId: orgId,
       businessUnitId: buId,
-      workplaceGroupId: 0, // question
+      workplaceGroupId: wgId, // question
       isActive: true,
-      IntCreatedBy: employeeId,
-      insertDateTime: todayDate(),
-      updateByUserId: "",
-      updateDateTime: todayDate(),
+      actionBy: employeeId,
     };
 
     let payload = [];
@@ -366,6 +363,59 @@ export const offDayAssignCrud = async (obj) => {
           employeeOffdayAssignId: singleData?.employeeOffdayAssignId || 0,
         },
       ];
+    }
+    setLoading(true);
+    await axios.post("/Employee/OffdayAssign", payload);
+    setLoading(false);
+    cb();
+    toast.success("Submitted Successfully");
+  } catch (error) {
+    setLoading(false);
+    toast.warn(error?.response?.data?.message || "Failed, try again");
+  }
+};
+
+export const crudOffDayAssign = async (obj) => {
+  const {
+    values,
+    orgId,
+    buId,
+    wgId,
+    employeeId,
+    offDayLanding,
+    isMulti,
+    singleData,
+    setLoading,
+    cb,
+  } = obj;
+
+  try {
+    if (!values?.effectiveDate) return toast.warn("Effective date is required");
+
+    let commonObj = {
+      ...values,
+      accountId: orgId,
+      businessUnitId: buId,
+      workplaceGroupId: wgId, // question
+      isActive: true,
+      actionBy: employeeId,
+    };
+
+    let payload = {};
+
+    if (isMulti) {
+      const empIds = offDayLanding.map((data) => {
+        return data?.employeeId;
+      });
+      payload = {
+        employeeList: empIds.join(","),
+        ...commonObj,
+      };
+    } else {
+      payload = {
+        employeeList: `${singleData?.employeeId}`,
+        ...commonObj,
+      };
     }
     setLoading(true);
     await axios.post("/Employee/OffdayAssign", payload);
