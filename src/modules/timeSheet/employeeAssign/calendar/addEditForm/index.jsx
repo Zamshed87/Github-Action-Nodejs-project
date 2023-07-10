@@ -70,6 +70,9 @@ export default function AddEditFormComponent({
   getData,
   setChecked,
   setFieldValueParent,
+  isAssignAll,
+  setIsAssignAll,
+  empIDString,
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -100,49 +103,46 @@ export default function AddEditFormComponent({
         return toast.warn("Starting calender is required");
     }
 
-    // const modifyRowDto = checked.map((itm) => {
-    //   return {
-    //     ...itm,
-    //     timeDuration: fromDateToDateDiffToSeconds(
-    //       itm?.JoiningDate,
-    //       `${values?.generateDate}T00:00:00`
-    //     ),
-    //   };
-    // });
-
-    // const checkJoiningDate =
-    //   modifyRowDto?.length > 0 &&
-    //   modifyRowDto?.some((itm) => itm?.timeDuration > 0);
-
-    // if (!checkJoiningDate) {
-    //   return toast.warn(
-    //     "Please check employee joining date because joining data is less than assign date"
-    //   );
-    // }
-
     const modifyFilterRowDto =
       singleData.length > 0
         ? singleData
         : checked.filter((itm) => itm.isSelected === true);
-    const payload = modifyFilterRowDto.map((item) => {
-      return {
-        employeeId: item?.employeeId,
-        generateStartDate: values?.generateDate,
-        IntCreatedBy: employeeId,
-        runningCalendarId:
-          values?.calenderType?.value === 2
-            ? values?.startingCalender?.value
-            : values?.calender?.value,
-        nextChangeDate: values?.nextChangeDate || null,
-        calendarType: values?.calenderType?.label,
-        rosterGroupId:
-          values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-        isAutoGenerate: false,
-      };
-    });
 
+    // const payload = modifyFilterRowDto.map((item) => {
+    //   return {
+    //     employeeId: item?.employeeId,
+    //     generateStartDate: values?.generateDate,
+    //     IntCreatedBy: employeeId,
+    //     runningCalendarId:
+    //       values?.calenderType?.value === 2
+    //         ? values?.startingCalender?.value
+    //         : values?.calender?.value,
+    //     nextChangeDate: values?.nextChangeDate || null,
+    //     calendarType: values?.calenderType?.label,
+    //     rosterGroupId:
+    //       values?.calenderType?.value === 2 ? values?.calender?.value : 0,
+    //     isAutoGenerate: false,
+    //   };
+    // });
+    const empIdList = modifyFilterRowDto.map((data) => {
+      return data?.employeeId;
+    });
+    const payload = {
+      employeeList: isAssignAll ? empIDString : empIdList.join(","),
+      generateStartDate: values?.generateDate,
+      intCreatedBy: employeeId,
+      runningCalendarId:
+        values?.calenderType?.value === 2
+          ? values?.startingCalender?.value
+          : values?.calender?.value,
+      nextChangeDate: values?.nextChangeDate || null,
+      calendarType: values?.calenderType?.label,
+      rosterGroupId:
+        values?.calenderType?.value === 2 ? values?.calender?.value : 0,
+      generateEndDate: null,
+      isAutoGenerate: false,
+    };
     rosterGenerateAction(payload, setLoading, cb);
-    // setChecked([]);
   };
 
   return (
@@ -158,16 +158,13 @@ export default function AddEditFormComponent({
           )
             return toast.warning("Starting calender is required");
           saveHandler(values, () => {
+            setIsAssignAll(false);
             setChecked([]);
             setSingleData([]);
             getData("saved");
             onHide();
             setFieldValueParent("search", "");
             resetForm(initData);
-            // getData();
-            // onHide();
-            // setFieldValueParent("search", "");
-            // resetForm(initData);
           });
         }}
       >

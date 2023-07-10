@@ -115,6 +115,8 @@ function Calendar() {
     ...initHeaderList,
   });
   const [checkedList, setCheckedList] = useState([]);
+  const [empIDString, setEmpIDString] = useState("");
+  const [isAssignAll, setIsAssignAll] = useState(false);
 
   // landing api call
   const getDataApiCall = async (
@@ -158,7 +160,7 @@ function Calendar() {
           // setEmpLanding,
           setPages,
         });
-
+        setEmpIDString(res?.data?.employeeIdList);
         const modifiedData = res?.data?.data?.map((item, index) => ({
           ...item,
           initialSerialNumber: index + 1,
@@ -275,6 +277,7 @@ function Calendar() {
     }
     // eslint-disable-next-line
   }, [singleShiftData]);
+
   return (
     <>
       <Formik
@@ -336,7 +339,7 @@ function Calendar() {
                         <li>
                           {rowDto.length > 0 ? (
                             <div className="d-flex">
-                            {/*   <button
+                              <button
                                 className="btn btn-green"
                                 style={{
                                   marginRight: "10px",
@@ -350,11 +353,12 @@ function Calendar() {
                                     return toast.warn(
                                       "You don't have permission"
                                     );
+                                  setIsAssignAll(true);
                                   setCreateModal(true);
                                 }}
                               >
                                 Assign {pages.total}
-                              </button> */}
+                              </button>
                               {rowDto?.filter((item) => item?.isSelected)
                                 .length > 0 ? (
                                 <button
@@ -370,6 +374,7 @@ function Calendar() {
                                       return toast.warn(
                                         "You don't have permission"
                                       );
+                                    setIsAssignAll(false);
                                     setCreateModal(true);
                                   }}
                                 >
@@ -437,10 +442,8 @@ function Calendar() {
                         setRowDto,
                         checkedList,
                         setCheckedList,
-                        // isAlreadyPresent,
                         setSingleData,
                         setCreateModal,
-                        // rowDtoHandler,
                         setSingleShiftData,
                         setLoading,
                         setAnchorEl2,
@@ -518,6 +521,9 @@ function Calendar() {
                 }
                 setChecked={setCheckedList}
                 setFieldValueParent={setFieldValue}
+                isAssignAll={isAssignAll}
+                setIsAssignAll={setIsAssignAll}
+                empIDString={empIDString}
               />
 
               {singleShiftData.length > 0 ? (
@@ -536,7 +542,6 @@ function Calendar() {
                     setAnchorEl2(null);
                   }}
                   anchorOrigin={{
-                    // vertical: "bottom",
                     horizontal: "middle",
                   }}
                 >
@@ -549,7 +554,6 @@ function Calendar() {
                       <IconButton
                         onClick={() => {
                           setAnchorEl2(null);
-                          // setRowDto(allData);
                           setSingleShiftData([]);
                         }}
                       >
