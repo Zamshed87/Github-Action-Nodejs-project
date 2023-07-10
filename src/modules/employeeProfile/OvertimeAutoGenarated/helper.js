@@ -53,7 +53,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       key: "sl",
     },
     {
-      title: "Code",
+      title: "Employee ID",
       dataIndex: "strEmployeeCode",
       sorter: true,
       filter: true,
