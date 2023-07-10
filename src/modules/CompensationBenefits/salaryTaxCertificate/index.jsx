@@ -73,7 +73,7 @@ const SalaryTaxCertificate = () => {
 
       setLoading(true);
       getSalaryTaxCertificateInformation(
-        `/Employee/SalaryTaxCertificate?FiscalYearId=${values?.year?.value}&FiscalYear=${values?.year?.label}&EmployeeId=${values?.employee?.value}`,
+        `/Employee/SalaryTaxCertificate?FiscalYearId=${values?.year?.value}&FiscalYear=${values?.year?.label}&EmployeeId=${values?.employee?.value}&workplaceGroupId=${profileData?.wgId}`,
         (response) => {
           setLoading(false);
           let totalBenefit = 0;
