@@ -62,11 +62,8 @@ const MonthlyAttendanceReport = () => {
     total: 0,
   });
 
-  const [
-    monthlyAttendanceInformation,
-    getMonthlyAttendanceInformation,
-    loadingOnGetMonthlyAttendance,
-  ] = useAxiosGet();
+  const [, getMonthlyAttendanceInformation, loadingOnGetMonthlyAttendance] =
+    useAxiosGet();
 
   useEffect(() => {
     onGetMonthlyAttendanceReport(

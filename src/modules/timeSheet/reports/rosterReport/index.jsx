@@ -69,11 +69,8 @@ const RosterReport = () => {
   });
 
   const [rowData, setRowDto] = useState([]);
-  const [
-    rosterReportInformation,
-    getRosterReportInformation,
-    loadingOnGetRosterReportInformation,
-  ] = useAxiosGet();
+  const [, getRosterReportInformation, loadingOnGetRosterReportInformation] =
+    useAxiosGet();
 
   useEffect(() => {
     onGetRosterReportForAll(
@@ -84,7 +81,7 @@ const RosterReport = () => {
       setRowDto,
       pages,
       setPages,
-      "true",
+      "true"
     );
   }, [wgId]);
   const handleTableChange = (pagination, newRowDto, srcText) => {
@@ -140,7 +137,13 @@ const RosterReport = () => {
                       setLoading(true);
                       try {
                         const res = await axios.get(
-                          `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate}&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=1&SearchTxt=${values?.search || ""}&PageSize=1000&IsPaginated=false`
+                          `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
+                            values?.fromDate
+                          }&DteToDate=${
+                            values?.toDate
+                          }&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=1&SearchTxt=${
+                            values?.search || ""
+                          }&PageSize=1000&IsPaginated=false`
                         );
                         if (res?.data) {
                           if (res?.data < 1) {
