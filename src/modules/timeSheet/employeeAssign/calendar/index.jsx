@@ -509,11 +509,11 @@ function Calendar() {
                 singleData={singleData}
                 setSingleData={setSingleData}
                 checked={checkedList}
-                getData={() =>
+                getData={(checked) =>
                   getData(
                     { current: 1, pageSize: paginationSize },
                     "",
-                    checkedList,
+                    checked,
                     -1,
                     filterOrderList,
                     checkedHeaderList
@@ -524,6 +524,8 @@ function Calendar() {
                 isAssignAll={isAssignAll}
                 setIsAssignAll={setIsAssignAll}
                 empIDString={empIDString}
+                setRowDto={setRowDto}
+                rowDto={rowDto}
               />
 
               {singleShiftData.length > 0 ? (
