@@ -330,7 +330,7 @@ function OffDay() {
       >
         {({ handleSubmit, values, setFieldValue }) => (
           <>
-            {landingLoading && <Loading />}
+            {(landingLoading || loading) && <Loading />}
             <Form onSubmit={handleSubmit}>
               {permission?.isView ? (
                 <div className="table-card">
