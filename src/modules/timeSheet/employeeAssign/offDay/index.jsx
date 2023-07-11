@@ -364,6 +364,7 @@ function OffDay() {
                                   filterOrderList,
                                   checkedHeaderList
                                 );
+                                setCheckedList([]);
                                 setFieldValue("search", "");
                               }}
                             />

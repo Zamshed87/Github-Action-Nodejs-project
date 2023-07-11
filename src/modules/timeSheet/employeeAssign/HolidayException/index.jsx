@@ -336,6 +336,7 @@ const HolidayException = () => {
                                   filterOrderList,
                                   checkedHeaderList
                                 );
+                                setCheckedList([]);
                                 setFieldValue("search", "");
                               }}
                             />
