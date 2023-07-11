@@ -73,6 +73,8 @@ export default function AddEditFormComponent({
   isAssignAll,
   setIsAssignAll,
   empIDString,
+  setRowDto,
+  rowDto,
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -107,7 +109,7 @@ export default function AddEditFormComponent({
       singleData.length > 0
         ? singleData
         : checked.filter((itm) => itm.isSelected === true);
-
+    setRowDto(rowDto?.map((item) => ({ ...item, isSelected: false })));
     // const payload = modifyFilterRowDto.map((item) => {
     //   return {
     //     employeeId: item?.employeeId,
@@ -161,7 +163,7 @@ export default function AddEditFormComponent({
             setIsAssignAll(false);
             setChecked([]);
             setSingleData([]);
-            getData("saved");
+            getData([]);
             onHide();
             setFieldValueParent("search", "");
             resetForm(initData);
@@ -200,7 +202,7 @@ export default function AddEditFormComponent({
                           <IconButton
                             onClick={() => {
                               onHide();
-                              getData();
+                              getData(checked);
                             }}
                           >
                             <Close />
@@ -356,7 +358,7 @@ export default function AddEditFormComponent({
                         onClick={() => {
                           onHide();
                           resetForm(initData);
-                          getData();
+                          getData(checked);
                           setFieldValueParent("search", "");
                         }}
                       >
