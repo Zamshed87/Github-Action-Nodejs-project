@@ -133,6 +133,7 @@ function OffDay() {
         ...payload,
         ...modifiedPayload,
       });
+      console.log(res?.data, "res");
       if (res?.data?.data) {
         setLandingLoading(true);
         let newData =
