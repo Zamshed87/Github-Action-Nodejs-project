@@ -33,6 +33,10 @@ const HolidayExceptionModal = ({
   setIsMulti,
   isEdit,
   setIsEdit,
+  isAssignAll,
+  setIsAssignAll,
+  empIDString,
+  setCheckedList,
 }) => {
   const { orgId, buId, workPlaceGroupId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -98,6 +102,8 @@ const HolidayExceptionModal = ({
         buId,
         wgId,
         employeeId,
+        isAssignAll,
+        empIDString,
       },
       values
     );
@@ -111,6 +117,7 @@ const HolidayExceptionModal = ({
         initialValues={isEdit ? modifySingleData : initData}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
+            setIsAssignAll(false);
             resetForm(initData);
             setSelectedDto([]);
             setSingleData([]);
@@ -118,6 +125,7 @@ const HolidayExceptionModal = ({
             setIsMulti(false);
             setIsEdit(false);
             setShow(false);
+            setCheckedList([]);
           });
         }}
       >

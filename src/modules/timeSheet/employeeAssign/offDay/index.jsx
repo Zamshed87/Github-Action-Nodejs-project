@@ -50,6 +50,8 @@ function OffDay() {
     pageSize: paginationSize,
     total: 0,
   });
+  const [empIDString, setEmpIDString] = useState("");
+  const [isAssignAll, setIsAssignAll] = useState(false);
 
   const open = !loading && Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -133,8 +135,8 @@ function OffDay() {
         ...payload,
         ...modifiedPayload,
       });
-      console.log(res?.data, "res");
       if (res?.data?.data) {
+        setEmpIDString(res?.data?.employeeList);
         setLandingLoading(true);
         let newData =
           res?.data?.data?.length > 0
@@ -214,6 +216,7 @@ function OffDay() {
       setLandingLoading(false);
     }
   };
+
   const getData = async (
     pagination,
     searchText = "",
@@ -337,11 +340,16 @@ function OffDay() {
                 <div className="table-card">
                   <div className="table-card-heading">
                     <div style={{ paddingLeft: "6px" }}>
-                      {checkedList.length > 0 && (
+                      {checkedList.length > 0 ? (
                         <h6 className="count">
                           Total {checkedList.length}{" "}
                           {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
-                          selected
+                          selected from {pages?.total}
+                        </h6>
+                      ) : (
+                        <h6 className="count">
+                          {" "}
+                          Total {pages.total} Employees
                         </h6>
                       )}
                     </div>
@@ -375,7 +383,11 @@ function OffDay() {
                           {checkedList?.length > 0 && (
                             <button
                               className="btn btn-green"
-                              style={{ marginRight: "40px", height: "30px" }}
+                              style={{
+                                marginRight: "10px",
+                                height: "30px",
+                                minWidth: "120px",
+                              }}
                               onClick={(e) => {
                                 if (!permission?.isCreate)
                                   return toast.warn(
@@ -384,11 +396,31 @@ function OffDay() {
                                 setIsMulti(true);
                                 setSingleData(null);
                                 setCreateModal(true);
+                                setIsAssignAll(false);
                               }}
                             >
-                              Assign
+                              Assign {checkedList.length}
                             </button>
                           )}
+                        </li>
+                        <li>
+                          <button
+                            className="btn btn-green"
+                            style={{
+                              marginRight: "10px",
+                              height: "30px",
+                              minWidth: "120px",
+                              fontSize: "12px",
+                            }}
+                            onClick={(e) => {
+                              if (!permission?.isCreate)
+                                return toast.warn("You don't have permission");
+                              setIsAssignAll(true);
+                              setCreateModal(true);
+                            }}
+                          >
+                            Assign {pages.total}
+                          </button>
                         </li>
                         <li>
                           <MasterFilter
@@ -435,7 +467,7 @@ function OffDay() {
                     </div>
                   </div>
                   <div className="table-card-body">
-                    <div className="table-card-styled tableOne">
+                    <div>
                       {rowDto.length > 0 ? (
                         <PeopleDeskTable
                           columnData={offDayAssignDtoCol(
@@ -565,6 +597,9 @@ function OffDay() {
                 singleData={singleData}
                 checked={checkedList}
                 setChecked={setCheckedList}
+                isAssignAll={isAssignAll}
+                setIsAssignAll={setIsAssignAll}
+                empIDString={empIDString}
                 getData={(status) =>
                   getData(
                     { current: 1, pageSize: paginationSize },
