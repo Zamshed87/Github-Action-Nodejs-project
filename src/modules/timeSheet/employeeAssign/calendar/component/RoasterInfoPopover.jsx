@@ -20,12 +20,12 @@ const RoasterInfoPopover = ({ propsObj, isOnlyDate }) => {
       shallowEqual
    );
    useEffect(() => {
-      if(item?.EmployeeId){
+      if(item?.employeeId){
          getPeopleDeskAllLanding(
             "EmployeeRosterInfo",
             orgId,
             buId,
-            item?.EmployeeId,
+            item?.employeeId,
             setSingleData,
             "",
             ""
@@ -34,7 +34,6 @@ const RoasterInfoPopover = ({ propsObj, isOnlyDate }) => {
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [orgId, item]);
-
 
    return (
       <Popover
