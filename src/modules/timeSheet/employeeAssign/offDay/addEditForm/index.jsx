@@ -39,6 +39,9 @@ export default function AddEditFormComponent({
   setChecked,
   getData,
   setFieldValueParent,
+  isAssignAll,
+  setIsAssignAll,
+  empIDString,
 }) {
   const [loading, setLoading] = useState(false);
   const { employeeId, buId, orgId, wgId } = useSelector(
@@ -62,7 +65,10 @@ export default function AddEditFormComponent({
             isMulti,
             singleData,
             setLoading,
+            isAssignAll,
+            empIDString,
             cb: () => {
+              setIsAssignAll(false);
               setChecked([]);
               resetForm(initData);
               setFieldValueParent("search", "");

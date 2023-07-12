@@ -387,6 +387,8 @@ export const crudOffDayAssign = async (obj) => {
     singleData,
     setLoading,
     cb,
+    isAssignAll,
+    empIDString,
   } = obj;
 
   try {
@@ -408,12 +410,12 @@ export const crudOffDayAssign = async (obj) => {
         return data?.employeeId;
       });
       payload = {
-        employeeList: empIds.join(","),
+        employeeList: isAssignAll ? empIDString : empIds.join(","),
         ...commonObj,
       };
     } else {
       payload = {
-        employeeList: `${singleData?.employeeId}`,
+        employeeList: isAssignAll ? empIDString : `${singleData?.employeeId}`,
         ...commonObj,
       };
     }

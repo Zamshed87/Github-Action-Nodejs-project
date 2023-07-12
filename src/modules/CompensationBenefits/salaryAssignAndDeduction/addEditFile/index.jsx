@@ -404,9 +404,7 @@ function AddEditForm() {
                     <div className="px-1 mt-2">
                       {isView && (
                         <div>
-                          <Accordion
-                            empBasic={{ employeeProfileLandingView: empBasic }}
-                          />
+                          <Accordion empBasic={empBasic} />
                           {!isFromOpen && (
                             <button
                               type="button"

@@ -178,7 +178,8 @@ export function makePayload(array, profileData, values) {
 }
 
 export const holidayMakePayload = (array, profileData, values) => {
-  const { orgId, buId, wgId, employeeId } = profileData;
+  const { orgId, buId, wgId, employeeId, isAssignAll, empIDString } =
+    profileData;
   const { holidayEffectiveDate, holidayGroup } = values;
 
   const empIds = array.map((data) => {
@@ -186,7 +187,7 @@ export const holidayMakePayload = (array, profileData, values) => {
   });
 
   const payloadObj = {
-    employeeList: empIds.join(","),
+    employeeList: isAssignAll ? empIDString : empIds.join(","),
     holidayGroupId: holidayGroup?.value || 0,
     holidayGroupName: holidayGroup?.label || "",
     effectiveDate: holidayEffectiveDate || null,

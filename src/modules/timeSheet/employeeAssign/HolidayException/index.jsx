@@ -65,6 +65,8 @@ const HolidayException = () => {
     ...initHeaderList,
   });
   const [checkedList, setCheckedList] = useState([]);
+  const [empIDString, setEmpIDString] = useState("");
+  const [isAssignAll, setIsAssignAll] = useState(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -116,7 +118,7 @@ const HolidayException = () => {
       });
       if (res?.data?.data) {
         setLandingLoading(true);
-
+        setEmpIDString(res?.data?.employeeList);
         setHeaderListDataDynamically({
           currentFilterSelection,
           checkedHeaderList,
@@ -303,13 +305,19 @@ const HolidayException = () => {
                     className="table-card-heading"
                     style={{ marginBottom: "0px" }}
                   >
-                    <div className="ml-2">
-                      <h6 className="count">
-                        {checkedList.length > 0 &&
-                          `Total ${checkedList.length} employee${
-                            checkedList.length > 1 ? "s" : ""
-                          } selected`}
-                      </h6>
+                    <div style={{ paddingLeft: "6px" }}>
+                      {checkedList.length > 0 ? (
+                        <h6 className="count">
+                          Total {checkedList.length}{" "}
+                          {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
+                          selected from {pages?.total}
+                        </h6>
+                      ) : (
+                        <h6 className="count">
+                          {" "}
+                          Total {pages.total} Employees
+                        </h6>
+                      )}
                     </div>
 
                     <div className="table-card-head-right">
@@ -343,10 +351,14 @@ const HolidayException = () => {
                           </li>
                         )}
                         <li>
-                          {checkedList.length > 0 && (
+                          {checkedList?.length > 0 && (
                             <button
                               className="btn btn-green"
-                              style={{ height: "30px" }}
+                              style={{
+                                marginRight: "10px",
+                                height: "30px",
+                                minWidth: "120px",
+                              }}
                               onClick={(e) => {
                                 if (!permission?.isCreate)
                                   return toast.warn(
@@ -355,11 +367,31 @@ const HolidayException = () => {
                                 setIsMulti(true);
                                 setSingleData(null);
                                 setShow(true);
+                                setIsAssignAll(false);
                               }}
                             >
-                              Assign
+                              Assign {checkedList.length}
                             </button>
                           )}
+                        </li>
+                        <li>
+                          <button
+                            className="btn btn-green"
+                            style={{
+                              marginRight: "10px",
+                              height: "30px",
+                              minWidth: "120px",
+                              fontSize: "12px",
+                            }}
+                            onClick={(e) => {
+                              if (!permission?.isCreate)
+                                return toast.warn("You don't have permission");
+                              setIsAssignAll(true);
+                              setShow(true);
+                            }}
+                          >
+                            Assign {pages.total}
+                          </button>
                         </li>
                         <li>
                           <MasterFilter
@@ -534,7 +566,7 @@ const HolidayException = () => {
                     getData(
                       { current: 1, pageSize: paginationSize },
                       "",
-                      checkedList,
+                      [],
                       -1,
                       filterOrderList,
                       checkedHeaderList
@@ -546,6 +578,10 @@ const HolidayException = () => {
                   setIsMulti={setIsMulti}
                   isEdit={isEdit}
                   setIsEdit={setIsEdit}
+                  isAssignAll={isAssignAll}
+                  setIsAssignAll={setIsAssignAll}
+                  empIDString={empIDString}
+                  setCheckedList={setCheckedList}
                 />
               </ViewModal>
             </Form>
