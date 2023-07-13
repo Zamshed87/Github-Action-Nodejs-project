@@ -338,106 +338,120 @@ function OffDay() {
             <Form onSubmit={handleSubmit}>
               {permission?.isView ? (
                 <div className="table-card">
-                  <div className="table-card-heading">
-                    <div style={{ paddingLeft: "6px" }}>
-                      {checkedList.length > 0 ? (
-                        <h6 className="count">
-                          Total {checkedList.length}{" "}
-                          {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
-                          selected from {pages?.total}
-                        </h6>
-                      ) : (
-                        <h6 className="count">
-                          {" "}
-                          Total {pages.total} Employees
-                        </h6>
-                      )}
-                    </div>
-                    <div className="table-card-head-right">
-                      <ul>
-                        {checkedList.length > 0 && (
-                          <li>
-                            <ResetButton
-                              title="reset"
-                              icon={
-                                <SettingsBackupRestoreOutlined
-                                  sx={{ marginRight: "10px" }}
-                                />
-                              }
-                              onClick={() => {
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  "",
-                                  [],
-                                  -1,
-                                  filterOrderList,
-                                  checkedHeaderList
-                                );
-                                setCheckedList([]);
-                                setFieldValue("search", "");
-                              }}
-                            />
-                          </li>
+                  {rowDto.length > 0 && (
+                    <div className="table-card-heading">
+                      <div style={{ paddingLeft: "6px" }}>
+                        {checkedList.length > 0 ? (
+                          <h6 className="count">
+                            Total {checkedList.length}{" "}
+                            {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
+                            selected from {pages?.total}
+                          </h6>
+                        ) : (
+                          <h6 className="count">
+                            {" "}
+                            Total {pages.total} Employees
+                          </h6>
                         )}
-                        <li>
-                          {checkedList?.length > 0 && (
+                      </div>
+                      <div className="table-card-head-right">
+                        <ul>
+                          {checkedList.length > 0 && (
+                            <li>
+                              <ResetButton
+                                title="reset"
+                                icon={
+                                  <SettingsBackupRestoreOutlined
+                                    sx={{ marginRight: "10px" }}
+                                  />
+                                }
+                                onClick={() => {
+                                  getData(
+                                    { current: 1, pageSize: paginationSize },
+                                    "",
+                                    [],
+                                    -1,
+                                    filterOrderList,
+                                    checkedHeaderList
+                                  );
+                                  setCheckedList([]);
+                                  setFieldValue("search", "");
+                                }}
+                              />
+                            </li>
+                          )}
+                          <li>
+                            {checkedList?.length > 0 && (
+                              <button
+                                className="btn btn-green"
+                                style={{
+                                  marginRight: "10px",
+                                  height: "30px",
+                                  minWidth: "120px",
+                                }}
+                                onClick={(e) => {
+                                  if (!permission?.isCreate)
+                                    return toast.warn(
+                                      "You don't have permission"
+                                    );
+                                  setIsMulti(true);
+                                  setSingleData(null);
+                                  setCreateModal(true);
+                                  setIsAssignAll(false);
+                                }}
+                              >
+                                Assign {checkedList.length}
+                              </button>
+                            )}
+                          </li>
+                          <li>
                             <button
                               className="btn btn-green"
                               style={{
                                 marginRight: "10px",
                                 height: "30px",
                                 minWidth: "120px",
+                                fontSize: "12px",
                               }}
                               onClick={(e) => {
                                 if (!permission?.isCreate)
                                   return toast.warn(
                                     "You don't have permission"
                                   );
-                                setIsMulti(true);
-                                setSingleData(null);
+                                setIsAssignAll(true);
                                 setCreateModal(true);
-                                setIsAssignAll(false);
                               }}
                             >
-                              Assign {checkedList.length}
+                              Assign {pages.total}
                             </button>
-                          )}
-                        </li>
-                        <li>
-                          <button
-                            className="btn btn-green"
-                            style={{
-                              marginRight: "10px",
-                              height: "30px",
-                              minWidth: "120px",
-                              fontSize: "12px",
-                            }}
-                            onClick={(e) => {
-                              if (!permission?.isCreate)
-                                return toast.warn("You don't have permission");
-                              setIsAssignAll(true);
-                              setCreateModal(true);
-                            }}
-                          >
-                            Assign {pages.total}
-                          </button>
-                        </li>
-                        <li>
-                          <MasterFilter
-                            isHiddenFilter
-                            value={values?.search}
-                            setValue={(value) => {
-                              setFieldValue("search", value);
-                              if (value) {
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  value,
-                                  checkedList,
-                                  -1,
-                                  filterOrderList,
-                                  checkedHeaderList
-                                );
-                              } else {
+                          </li>
+                          <li>
+                            <MasterFilter
+                              isHiddenFilter
+                              value={values?.search}
+                              setValue={(value) => {
+                                setFieldValue("search", value);
+                                if (value) {
+                                  getData(
+                                    { current: 1, pageSize: paginationSize },
+                                    value,
+                                    checkedList,
+                                    -1,
+                                    filterOrderList,
+                                    checkedHeaderList
+                                  );
+                                } else {
+                                  getData(
+                                    { current: 1, pageSize: paginationSize },
+                                    "",
+                                    [],
+                                    -1,
+                                    filterOrderList,
+                                    checkedHeaderList
+                                  );
+                                }
+                              }}
+                              cancelHandler={() => {
                                 getData(
                                   { current: 1, pageSize: paginationSize },
                                   "",
@@ -446,26 +460,16 @@ function OffDay() {
                                   filterOrderList,
                                   checkedHeaderList
                                 );
-                              }
-                            }}
-                            cancelHandler={() => {
-                              getData(
-                                { current: 1, pageSize: paginationSize },
-                                "",
-                                [],
-                                -1,
-                                filterOrderList,
-                                checkedHeaderList
-                              );
-                              setFieldValue("search", "");
-                            }}
-                            width="200px"
-                            inputWidth="200px"
-                          />
-                        </li>
-                      </ul>
+                                setFieldValue("search", "");
+                              }}
+                              width="200px"
+                              inputWidth="200px"
+                            />
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className="table-card-body">
                     <div>
                       {rowDto.length > 0 ? (

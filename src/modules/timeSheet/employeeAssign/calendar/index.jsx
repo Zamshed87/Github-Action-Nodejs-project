@@ -42,7 +42,6 @@ const initData = {
 const validationSchema = Yup.object({});
 
 function Calendar() {
-  const [loading, setLoading] = useState(false);
   // row Data
   const [rowDto, setRowDto] = useState([]);
   const [singleData, setSingleData] = useState([]);
@@ -294,201 +293,204 @@ function Calendar() {
             <Form onSubmit={handleSubmit}>
               {permission?.isView ? (
                 <div className="table-card">
-                  <div className="table-card-heading">
-                    <div style={{ paddingLeft: "6px" }}>
-                      {checkedList.length > 0 ? (
-                        <h6 className="count">
-                          Total {checkedList.length}{" "}
-                          {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
-                          selected from {pages?.total}
-                        </h6>
-                      ) : (
-                        <h6 className="count">
-                          {" "}
-                          Total {pages.total} Employees
-                        </h6>
-                      )}
-                    </div>
-                    <div className="table-card-head-right">
-                      <ul>
-                        {checkedList.length > 1 && (
-                          <li>
-                            <ResetButton
-                              title="reset"
-                              icon={
-                                <SettingsBackupRestoreOutlined
-                                  sx={{ marginRight: "10px" }}
-                                />
-                              }
-                              onClick={() => {
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  "",
-                                  [],
-                                  -1,
-                                  filterOrderList,
-                                  checkedHeaderList
-                                );
-                                // setRowDto(allData);
-                                setCheckedList([]);
-                                setFieldValue("searchString", "");
-                              }}
-                            />
-                          </li>
-                        )}
-                        <li>
-                          {rowDto.length > 0 ? (
-                            <div className="d-flex">
-                              <button
-                                className="btn btn-green"
-                                style={{
-                                  marginRight: "10px",
-                                  height: "30px",
-                                  minWidth: "120px",
-                                  fontSize: "12px",
-                                }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (!permission?.isCreate)
-                                    return toast.warn(
-                                      "You don't have permission"
+                  {rowDto?.length > 0 ? (
+                    <>
+                      <div className="table-card-heading">
+                        <div style={{ paddingLeft: "6px" }}>
+                          {checkedList.length > 0 ? (
+                            <h6 className="count">
+                              Total {checkedList.length}{" "}
+                              {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
+                              selected from {pages?.total}
+                            </h6>
+                          ) : (
+                            <h6 className="count">
+                              {" "}
+                              Total {pages.total} Employees
+                            </h6>
+                          )}
+                        </div>
+                        <div className="table-card-head-right">
+                          <ul>
+                            {checkedList.length > 1 && (
+                              <li>
+                                <ResetButton
+                                  title="reset"
+                                  icon={
+                                    <SettingsBackupRestoreOutlined
+                                      sx={{ marginRight: "10px" }}
+                                    />
+                                  }
+                                  onClick={() => {
+                                    getData(
+                                      { current: 1, pageSize: paginationSize },
+                                      "",
+                                      [],
+                                      -1,
+                                      filterOrderList,
+                                      checkedHeaderList
                                     );
-                                  setIsAssignAll(true);
-                                  setCreateModal(true);
-                                }}
-                              >
-                                Assign {pages.total}
-                              </button>
-                              {rowDto?.filter((item) => item?.isSelected)
-                                .length > 0 ? (
-                                <button
-                                  className="btn btn-green"
-                                  style={{
-                                    height: "30px",
-                                    minWidth: "120px",
-                                    fontSize: "12px",
+                                    // setRowDto(allData);
+                                    setCheckedList([]);
+                                    setFieldValue("searchString", "");
                                   }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (!permission?.isCreate)
-                                      return toast.warn(
-                                        "You don't have permission"
-                                      );
-                                    setIsAssignAll(false);
-                                    setCreateModal(true);
-                                  }}
-                                >
-                                  Assign {checkedList.length}
-                                </button>
+                                />
+                              </li>
+                            )}
+                            <li>
+                              {rowDto.length > 0 ? (
+                                <div className="d-flex">
+                                  <button
+                                    className="btn btn-green"
+                                    style={{
+                                      marginRight: "10px",
+                                      height: "30px",
+                                      minWidth: "120px",
+                                      fontSize: "12px",
+                                    }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (!permission?.isCreate)
+                                        return toast.warn(
+                                          "You don't have permission"
+                                        );
+                                      setIsAssignAll(true);
+                                      setCreateModal(true);
+                                    }}
+                                  >
+                                    Assign {pages.total}
+                                  </button>
+                                  {rowDto?.filter((item) => item?.isSelected)
+                                    .length > 0 ? (
+                                    <button
+                                      className="btn btn-green"
+                                      style={{
+                                        height: "30px",
+                                        minWidth: "120px",
+                                        fontSize: "12px",
+                                      }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (!permission?.isCreate)
+                                          return toast.warn(
+                                            "You don't have permission"
+                                          );
+                                        setIsAssignAll(false);
+                                        setCreateModal(true);
+                                      }}
+                                    >
+                                      Assign {checkedList.length}
+                                    </button>
+                                  ) : (
+                                    ""
+                                  )}
+                                </div>
                               ) : (
                                 ""
                               )}
-                            </div>
-                          ) : (
-                            ""
-                          )}
-                        </li>
-                        <li>
-                          <MasterFilter
-                            isHiddenFilter
-                            value={values?.searchString}
-                            setValue={(value) => {
-                              setFieldValue("searchString", value);
-                              if (value) {
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  value,
-                                  checkedList,
-                                  -1,
-                                  filterOrderList,
-                                  checkedHeaderList
-                                );
-                              } else {
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  "",
-                                  [],
-                                  -1,
-                                  filterOrderList,
-                                  checkedHeaderList
-                                );
-                              }
-                            }}
-                            cancelHandler={() => {
-                              setFieldValue("searchString", "");
-                              getData(
-                                { current: 1, pageSize: paginationSize },
-                                "",
-                                [],
-                                -1,
-                                filterOrderList,
-                                checkedHeaderList
-                              );
-                            }}
-                            handleClick={handleClick}
-                            width="200px"
-                            inputWidth="200px"
-                          />
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  {rowDto?.length > 0 ? (
-                    <PeopleDeskTable
-                      columnData={columns(
-                        pages,
-                        permission,
-                        rowDto,
-                        setRowDto,
-                        checkedList,
-                        setCheckedList,
-                        setSingleData,
-                        setCreateModal,
-                        setSingleShiftData,
-                        setLoading,
-                        setAnchorEl2,
-                        headerList,
-                        wgName
-                      )}
-                      pages={pages}
-                      rowDto={rowDto}
-                      setRowDto={setRowDto}
-                      checkedList={checkedList}
-                      setCheckedList={setCheckedList}
-                      checkedHeaderList={checkedHeaderList}
-                      setCheckedHeaderList={setCheckedHeaderList}
-                      handleChangePage={(e, newPage) =>
-                        handleChangePage(e, newPage, values?.search)
-                      }
-                      handleChangeRowsPerPage={(e) =>
-                        handleChangeRowsPerPage(e, values?.search)
-                      }
-                      filterOrderList={filterOrderList}
-                      setFilterOrderList={setFilterOrderList}
-                      uniqueKey="employeeCode"
-                      getFilteredData={(
-                        currentFilterSelection,
-                        updatedFilterData,
-                        updatedCheckedHeaderData
-                      ) => {
-                        getData(
-                          {
-                            current: 1,
-                            pageSize: paginationSize,
-                            total: 0,
-                          },
-                          "",
-                          [],
+                            </li>
+                            <li>
+                              <MasterFilter
+                                isHiddenFilter
+                                value={values?.searchString}
+                                setValue={(value) => {
+                                  setFieldValue("searchString", value);
+                                  if (value) {
+                                    getData(
+                                      { current: 1, pageSize: paginationSize },
+                                      value,
+                                      checkedList,
+                                      -1,
+                                      filterOrderList,
+                                      checkedHeaderList
+                                    );
+                                  } else {
+                                    getData(
+                                      { current: 1, pageSize: paginationSize },
+                                      "",
+                                      [],
+                                      -1,
+                                      filterOrderList,
+                                      checkedHeaderList
+                                    );
+                                  }
+                                }}
+                                cancelHandler={() => {
+                                  setFieldValue("searchString", "");
+                                  getData(
+                                    { current: 1, pageSize: paginationSize },
+                                    "",
+                                    [],
+                                    -1,
+                                    filterOrderList,
+                                    checkedHeaderList
+                                  );
+                                }}
+                                handleClick={handleClick}
+                                width="200px"
+                                inputWidth="200px"
+                              />
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <PeopleDeskTable
+                        columnData={columns(
+                          pages,
+                          permission,
+                          rowDto,
+                          setRowDto,
+                          checkedList,
+                          setCheckedList,
+                          setSingleData,
+                          setCreateModal,
+                          setSingleShiftData,
+                          setAnchorEl2,
+                          headerList,
+                          wgName
+                        )}
+                        pages={pages}
+                        rowDto={rowDto}
+                        setRowDto={setRowDto}
+                        checkedList={checkedList}
+                        setCheckedList={setCheckedList}
+                        checkedHeaderList={checkedHeaderList}
+                        setCheckedHeaderList={setCheckedHeaderList}
+                        handleChangePage={(e, newPage) =>
+                          handleChangePage(e, newPage, values?.search)
+                        }
+                        handleChangeRowsPerPage={(e) =>
+                          handleChangeRowsPerPage(e, values?.search)
+                        }
+                        filterOrderList={filterOrderList}
+                        setFilterOrderList={setFilterOrderList}
+                        uniqueKey="employeeCode"
+                        getFilteredData={(
                           currentFilterSelection,
                           updatedFilterData,
                           updatedCheckedHeaderData
-                        );
-                      }}
-                      isCheckBox={true}
-                      isScrollAble={true}
-                    />
+                        ) => {
+                          getData(
+                            {
+                              current: 1,
+                              pageSize: paginationSize,
+                              total: 0,
+                            },
+                            "",
+                            [],
+                            currentFilterSelection,
+                            updatedFilterData,
+                            updatedCheckedHeaderData
+                          );
+                        }}
+                        isCheckBox={true}
+                        isScrollAble={true}
+                      />
+                    </>
                   ) : (
-                    !loading && <NoResult title="No Result Found" para="" />
+                    !landingLoading && (
+                      <NoResult title="No Result Found" para="" />
+                    )
                   )}
                 </div>
               ) : (
