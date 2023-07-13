@@ -80,7 +80,8 @@ export const attendenceAdjustColumns = (
   rowDto,
   allGridCheck,
   setRowDto,
-  rowDtoHandler
+  rowDtoHandler,
+  isOfficeAdmin
 ) => [
   {
     title: "SL",
@@ -121,7 +122,7 @@ export const attendenceAdjustColumns = (
           }}
         />
 
-        <span style={{ marginLeft: "5px" }}>Code</span>
+        <span style={{ marginLeft: "5px" }}>Employee Id</span>
       </div>
     ),
     dataIndex: "EmployeeCode",
@@ -153,7 +154,7 @@ export const attendenceAdjustColumns = (
             // copyRowDto[index].presentStatus = !copyRowDto[index].presentStatus;
             setRowDto(copyRowDto);
           }}
-          disabled={record?.ApplicationStatus === "Approved"}
+          disabled={!isOfficeAdmin && record?.ApplicationStatus === "Approved"}
         />
 
         <span style={{ marginLeft: "5px" }}>{record?.EmployeeCode}</span>
