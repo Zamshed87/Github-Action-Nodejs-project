@@ -4,8 +4,7 @@ import axios from "axios";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import RoasterInfo from "./component/RosterInfo";
 import { InfoOutlined } from "@mui/icons-material";
-export const getShiftInfo = async (id, setter, setLoading) => {
-  setLoading && setLoading(true);
+export const getShiftInfo = async (id, setter) => {
   try {
     const res = await axios.get(
       `Employee/GetEmployeeShiftInfo?intEmployeeId=${id}&intYear=${moment().format(
@@ -14,12 +13,9 @@ export const getShiftInfo = async (id, setter, setLoading) => {
     );
     if (res?.data) {
       setter && setter(res?.data);
-      setLoading && setLoading(false);
     }
     res?.data?.length === 0 && toast.warn("no data found");
-  } catch (error) {
-    setLoading && setLoading(false);
-  }
+  } catch (error) {}
 };
 export const getCalendarAssignFilter = async (
   setter,
@@ -69,7 +65,6 @@ export const columns = (
   setCreateModal,
   // rowDtoHandler,
   setSingleShiftData,
-  setLoading,
   setAnchorEl2,
   headerList,
   wgName
@@ -88,7 +83,7 @@ export const columns = (
       sort: true,
       filter: false,
       fieldType: "string",
-      width: 150
+      width: 150,
     },
     {
       title: "Employee Name",
@@ -103,11 +98,7 @@ export const columns = (
               onClick={(e) => {
                 e.stopPropagation();
                 setSingleShiftData([]);
-                getShiftInfo(
-                  record?.employeeId,
-                  setSingleShiftData,
-                  setLoading
-                );
+                getShiftInfo(record?.employeeId, setSingleShiftData);
                 setAnchorEl2(e.currentTarget);
               }}
             />
