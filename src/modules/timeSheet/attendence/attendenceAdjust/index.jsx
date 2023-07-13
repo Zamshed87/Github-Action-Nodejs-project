@@ -52,10 +52,8 @@ const initData = {
 };
 
 export default function AttendenceAdjust() {
-  const { userName, buId, employeeId, orgId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { userName, buId, employeeId, orgId, wgId, isOfficeAdmin } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const [loading, setLoading] = useState(false);
 
@@ -434,7 +432,8 @@ export default function AttendenceAdjust() {
                               rowDto,
                               allGridCheck,
                               setRowDto,
-                              rowDtoHandler
+                              rowDtoHandler,
+                              isOfficeAdmin
                             )}
                             setPage={setPage}
                             setPaginationSize={setPaginationSize}
