@@ -162,17 +162,17 @@ export default function AddEditForm({
       enableReinitialize: true,
       initialValues: isEdit
         ? {
-          ...singleData,
-          isCreate: false,
-        }
+            ...singleData,
+            isCreate: false,
+          }
         : {
-          ...initData,
-          fullName: empName || "",
-          employeeType: empType || "",
-          employeeCode: generateEmployeeCode[0]?.value || "",
-          workplaceGroup: workplaceGroupName?.value ? workplaceGroupName : "",
-          isCreate: true,
-        },
+            ...initData,
+            fullName: empName || "",
+            employeeType: empType || "",
+            employeeCode: generateEmployeeCode[0]?.value || "",
+            workplaceGroup: workplaceGroupName?.value ? workplaceGroupName : "",
+            isCreate: true,
+          },
 
       validationSchema: validationSchema(supervisor),
       onSubmit: () =>
@@ -440,43 +440,43 @@ export default function AddEditForm({
           )}
         {values?.employeeType.label ===
           ("Contractual" || "contractual" || "contract" || "Contract") && (
-            <>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Contract From Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.contractualFromDate}
-                    onChange={(val) => {
-                      setFieldValue("contractualFromDate", val.target.value);
-                    }}
-                    name="contractualFromDate"
-                    type="date"
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
+          <>
+            <div className="col-6">
+              <div className="input-field-main">
+                <label>Contract From Date</label>
+                <DefaultInput
+                  classes="input-sm"
+                  value={values?.contractualFromDate}
+                  onChange={(val) => {
+                    setFieldValue("contractualFromDate", val.target.value);
+                  }}
+                  name="contractualFromDate"
+                  type="date"
+                  className="form-control"
+                  errors={errors}
+                  touched={touched}
+                />
               </div>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Contract To Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.contractualToDate}
-                    onChange={(val) => {
-                      setFieldValue("contractualToDate", val.target.value);
-                    }}
-                    name="contractualToDate"
-                    type="date"
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
+            </div>
+            <div className="col-6">
+              <div className="input-field-main">
+                <label>Contract To Date</label>
+                <DefaultInput
+                  classes="input-sm"
+                  value={values?.contractualToDate}
+                  onChange={(val) => {
+                    setFieldValue("contractualToDate", val.target.value);
+                  }}
+                  name="contractualToDate"
+                  type="date"
+                  className="form-control"
+                  errors={errors}
+                  touched={touched}
+                />
               </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
         {values?.employeeType.label === ("Permanent" || "permanent") && (
           <>
             <div className="col-6">
@@ -883,7 +883,7 @@ export default function AddEditForm({
         </div>
 
         {/* take-home pay */}
-        <div className="col-3">
+        <div className="col-3 d-none">
           <label> </label>
           <div className="d-flex align-items-center small-checkbox">
             <FormikCheckBox
@@ -1004,8 +1004,8 @@ export default function AddEditForm({
                       {isUserCheckMsg?.statusCode === 200
                         ? isUserCheckMsg?.message
                         : "User has not available" ||
-                        isUserCheckMsg?.message ||
-                        isUserCheckMsg?.Message}
+                          isUserCheckMsg?.message ||
+                          isUserCheckMsg?.Message}
                     </span>
                   </div>
                 )}
