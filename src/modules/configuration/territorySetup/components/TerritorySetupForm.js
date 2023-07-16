@@ -81,6 +81,7 @@ const TerritorySetupForm = ({
           show={show}
           onHide={() => {
             setOpenModal(false);
+            resetForm(initData);
           }}
           size={size}
           backdrop={backdrop}
@@ -222,6 +223,7 @@ const TerritorySetupForm = ({
                 onClick={() => {
                   setCurrentData({});
                   setOpenModal(false);
+                  resetForm(initData);
                 }}
                 type="button"
                 isClose={true}
