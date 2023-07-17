@@ -9,9 +9,9 @@ export function loginApiCall(email, password) {
     intAccountId: 1,
     // strUrl: "https://saas.peopledesk.io",
     strUrl:
-      domainUrl === "https://dev-akijbiri.peopledesk.io"
+      domainUrl === "https://devad-din.peopledesk.io"
         ? domainUrl
-        : "https://akijbiri.peopledesk.io",
+        : "https://ad-din.peopledesk.io/",
   });
 }
 

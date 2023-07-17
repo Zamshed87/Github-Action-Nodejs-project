@@ -58,7 +58,7 @@
 		"yup": "^0.32.9"
 	},
 	"scripts": {
-		"start": "set PORT=3006 && react-scripts --max_old_space_size=8048 start -o",
+		"start": "set PORT=3009 && react-scripts --max_old_space_size=8048 start -o",
 		"build": "GENERATE_SOURCEMAP=false react-scripts --max_old_space_size=16096 build",
 		"build-dev": "react-scripts build",
 		"test": "cross-env CI=true react-scripts test --env=jsdom",

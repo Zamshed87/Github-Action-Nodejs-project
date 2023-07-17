@@ -25,18 +25,18 @@ import { detectBrowserConsole } from "./utility/devtools";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
 
 const origin = window.location.origin;
-const prodUrl = "https://akijbiri.peopledesk.io";
+const prodUrl = "https://ad-din.peopledesk.io";
 
 // set axios base url
 export const APIUrl =
   process.env.NODE_ENV === "development"
-    ? "https://dev-akijbiri.peopledesk.io/api"
+    ? "https://devad-din.peopledesk.io/api"
     : `${origin}/api`;
 Axios.defaults.baseURL = APIUrl;
 
 export const domainUrl =
   process.env.NODE_ENV === "development"
-    ? "https://dev-akijbiri.peopledesk.io"
+    ? "https://devad-din.peopledesk.io"
     : origin;
 
 if (process.env.NODE_ENV === "production") {
