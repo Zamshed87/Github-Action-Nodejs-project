@@ -1,0 +1,109 @@
+.sign-up {
+  max-width: 544px;
+  margin: 0 auto;
+  border: 1px solid var(--border-color);
+  padding-top: 50px;
+  padding-bottom: 40px;
+  padding-left: 40px;
+  padding-right: 40px;
+  margin-top: 48px;
+  margin-bottom: 96px;
+}
+.sign-up .title {
+  font-size: var(--font24);
+  line-height: var(--lineHeight28);
+  letter-spacing: 0.15px;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--title-color);
+}
+.sign-up .title-sm {
+  font-style: normal;
+  font-weight: 700;
+  width: 436px;
+  font-size: var(--font14);
+  line-height: var(--lineHeight19);
+  letter-spacing: 0.15px;
+  color: var(--title-sm-color);
+  padding-top: 10px;
+  padding-bottom: 34px;
+}
+.sign-up .link {
+  font-size: var(--font16);
+  line-height: var(--lineHeight24);
+  letter-spacing: 0.15px;
+  color: var(--lightBlue);
+  font-weight: 400;
+  text-decoration: underline;
+}
+.sign-up .input-label {
+  font-style: normal;
+  font-weight: 500;
+  font-size: var(--font16);
+  line-height: var(--lineHeight24);
+  letter-spacing: 0.15px;
+  color: var(--label-color);
+  padding-top: 34px;
+  padding-bottom: 18px;
+}
+
+.sign-up .signup-tabs .nav-link,
+.sign-up .signup-tabs .nav-link.active,
+.sign-up .nav-tabs {
+  border: none;
+  height: 58px !important;
+}
+/* .sign-up .signup-tabs .nav-link .step-first-svg { */
+.sign-up .signup-tabs #controlled-tab-example-tab-1 {
+  background: url("../images/condition-3.svg") !important;
+  /* height: 60px !important; */
+  width: 50% !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  display: inline-block;
+}
+/* .sign-up .signup-tabs .nav-link.active .step-first-svg  { */
+  .sign-up .signup-tabs #controlled-tab-example-tab-1.active {
+  background: url("../images/condition-1.svg") !important;
+  /* height: 59px !important; */
+  width: 50% !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  display: inline-block;
+}
+
+
+/* .sign-up .signup-tabs .nav-link .step-second-svg { */
+  .sign-up .signup-tabs #controlled-tab-example-tab-2{
+  background: url("../images/condition-2.svg") !important;
+  /* height: 61px !important; */
+  width: 50% !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  display: inline-block;
+}
+
+/* .sign-up .signup-tabs .nav-link.active .step-second-svg { */
+  .sign-up .signup-tabs #controlled-tab-example-tab-2.active{
+  background: url("../images/condition-4.svg") !important;
+  /* height: 61px !important; */
+  width: 50% !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  display: inline-block;
+}
+
+.sign-up .nav-tabs .nav-link {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
+  width: 50%;
+}
+
+.sign-up .check {
+  margin: 38px 0;
+}

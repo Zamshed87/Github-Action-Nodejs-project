@@ -1,0 +1,41 @@
+.btn-assign {
+  opacity: 0;
+}
+table tr:hover .btn-assign {
+  opacity: 1;
+}
+.provide-salary-info-cancel {
+  width: 100%;
+  margin: 0;
+  margin-top: 30px;
+  padding: 12px 24px;
+  background: var(--white);
+  box-shadow: 0px -1px 4px rgb(0 0 0 / 16%);
+  display: flex;
+  justify-content: flex-end;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.provide-salary-info {
+  padding: 5px 20px;
+}
+.provide-salary-info h6 {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+  margin-bottom: 0px;
+  color: var(--gray700);
+  margin-bottom: 20px;
+}
+.provide-salary-info h5 {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--gray500);
+}
+.provide-salary-info h4 {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--gray500);
+  margin-bottom: 3px;
+}

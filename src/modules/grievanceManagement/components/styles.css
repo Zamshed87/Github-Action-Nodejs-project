@@ -1,0 +1,57 @@
+.grievanceDetails .card-body {
+  padding-left: 100px;
+  padding-right: 100px;
+}
+.grievanceDetails .color {
+  background: #e4f8dd;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  padding: 25px;
+}
+.grievanceDetails h4 {
+  color: #5c6369;
+  font-weight: 700;
+  font-size: 18px;
+  text-align: center;
+}
+.grievanceDetails .des {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 40px;
+}
+.grievanceDetails .anonymous {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 24px;
+}
+.grievanceDetails .des h5 {
+  padding-top: 30px;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 23px;
+  color: #5c6369;
+}
+.grievanceDetails h5 {
+  padding-top: 30px;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 23px;
+  color: #5c6369;
+}
+.grievanceDetails .des p {
+  padding-top: 8px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #6f7d8a;
+}
+.grievanceDetails h6 {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.grievanceDetails h3 {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.6);
+}

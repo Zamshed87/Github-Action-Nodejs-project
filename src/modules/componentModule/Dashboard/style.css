@@ -1,0 +1,486 @@
+/* manager dashboard css start */
+.managerDashboard .activities-Summery-grid-Container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 12px;
+  padding: 12px;
+}
+
+.managerDashboard .activities-Summery-grid-Container > div {
+  height: 175px;
+  background: #f8f9fc;
+  border: 1px solid #d0d5dd;
+}
+
+.managerDashboard .activities-Summery-grid-Container .viewBtn {
+  padding: 8px 12px;
+  border-top: 1px solid #d0d5dd;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #2970ff !important;
+}
+
+.managerDashboard .activities-Summery-grid-Container .inner {
+  padding: 12px;
+  height: 140px;
+}
+
+.newDashboardSelect {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.newDashboardSelect .input-field-main .form-container {
+  margin-bottom: 0;
+}
+
+.managerDashboard .activities-Summery-grid-Container .card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.managerDashboard .activities-Summery-grid-Container .card-head h4 {
+  font-weight: 700;
+  font-size: 12px;
+  color: #697586;
+}
+
+.managerDashboard .activities-Summery-grid-Container .card-context {
+  margin-top: 10px;
+}
+
+.managerDashboard .activities-Summery-grid-Container .card-context div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.managerDashboard .activities-Summery-grid-Container .card-context h4 {
+  font-weight: 600;
+  font-size: 18px;
+  color: #344054;
+}
+
+.managerDashboard .activities-Summery-grid-Container .card-context span {
+  font-weight: 400;
+  font-size: 12px;
+  color: #667085;
+  margin-left: 10px;
+}
+
+.managerDashboard .managerDashboardChart {
+  display: grid;
+  grid-gap: 12px;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 1em 0;
+}
+.managerDashboard .managerDashboardChart .leaveChart .radial-chart {
+  height: 100%;
+}
+
+@media screen and (max-width: 1300px) {
+  .managerDashboard .managerDashboardChart .leaveChart,
+  .managerDashboard .managerDashboardChart .employee-Status-Chart-Container,
+  .managerDashboard .managerDashboardChart .monthIou-container {
+    height: 370px;
+  }
+  .managerDashboard .managerDashboardChart .leaveChart .radial-chart {
+    height: 90%;
+  }
+}
+
+.managerDashboard .managerDashboardChart1 {
+  display: grid;
+  grid-gap: 12px;
+  grid-template-columns: 1fr 2fr;
+  margin: 1em 0;
+}
+
+.managerDashboard .managerDashboardChart1 .leaveChart .radial-chart {
+  height: 100%;
+}
+
+@media screen and (max-width: 1300px) {
+  .managerDashboard .managerDashboardChart1 .leaveChart,
+  .managerDashboard .managerDashboardChart1 .employee-Status-Chart-Container,
+  .managerDashboard .managerDashboardChart1 .monthIou-container {
+    height: 370px;
+  }
+  .managerDashboard .managerDashboardChart1 .leaveChart .radial-chart {
+    height: 50%;
+  }
+}
+
+.managerDashboard .employeeGrid
+{
+  display: grid;
+  grid-template-columns: 8fr 4fr;
+  grid-gap: 12px;
+  margin: 12px 0;
+}
+
+.managerDashboard .employeeGrid .emp-container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.managerDashboard .employeeGrid .myEmployeeContainer,
+.managerDashboard .employeeGrid .employee-Status-Chart-Container,
+.managerDashboard .monthIou-container,
+.managerDashboard .emp-birthday-container {
+  padding: 12px;
+}
+
+.managerDashboard
+  .employee-Status-Chart-Container
+  .totalEmployeeChartGraphParent {
+  position: relative;
+  overflow: hidden;
+}
+
+.managerDashboard .employee-Status-Chart-Container .totalEmployee-text {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.managerDashboard .totalEmployee-text .totalEmployee-text-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.managerDashboard .myEmployeeContainer .my-emp-table table tbody tr:hover {
+  box-shadow: none !important;
+}
+
+.managerDashboard .myEmployeeContainer .my-emp-table table th {
+  position: sticky;
+  top: 0px;
+  background: #fff;
+  color: #98a2b3 !important;
+  font-weight: 400;
+  /* z-index: 9; */
+}
+.managerDashboard .myEmployeeContainer .my-emp-table table .sortable span {
+  color: #98a2b3 !important;
+}
+
+.myEmployeeContainer .my-emp-table tr td:first-child,
+.myEmployeeContainer .my-emp-table tr th:first-child {
+  border-left: none !important;
+  padding-left: 12px !important;
+}
+.myEmployeeContainer .my-emp-table tr td:last-child,
+.myEmployeeContainer .my-emp-table tr th:last-child {
+  border-right: none !important;
+}
+
+/* manager dashboard css end */
+
+.newDashboard .customGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 12px;
+}
+
+.newDashboard .calenderGrid {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-gap: 12px;
+  margin-top: 12px;
+}
+
+.newDashboard .customCardGrid {
+  display: grid;
+  grid-template-columns: 1.95fr 1fr 1fr;
+  grid-gap: 12px;
+  margin-top: 12px;
+}
+
+.newDashboard .customShadow {
+  background: #ffffff;
+  box-shadow: 0px 4px 10px #eaeaea;
+}
+
+.greatingHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.new-dashboard-calender .calenderContainerGrid {
+  display: grid;
+  grid-template-columns: 3fr 1.5fr;
+}
+
+.new-dashboard-calender .calenderContainerGrid .calender-card-inner {
+  padding: 8px;
+  height: 435px;
+}
+
+.new-dashboard-calender .allDays-name {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border-top-left-radius: var(--boder-radius);
+  border-top-right-radius: var(--boder-radius);
+  column-gap: 0.25rem;
+}
+
+.new-dashboard-body .form-container {
+  margin: 0 !important;
+}
+
+.employeeDashboard .shadow-card-container, .managerDashboard .shadow-card-container {
+  background: #ffffff;
+  box-shadow: 0px 4px 10px #eaeaea;
+  /* box-shadow: 0px 4px 10px #D0D5DD; */
+  /* box-shadow: 0px 1.9881px 3.97619px 1.49107px rgba(0, 0, 0, 0.15), 0px 0.497024px 1.49107px rgba(0, 0, 0, 0.3); */
+}
+
+.custom-DatePicker_color input[type="month"].form-control {
+  color: var(--gray500) !important;
+  padding: 5px;
+}
+
+.custom-DatePicker_color input[type="month"].form-control:hover {
+  padding-top: 5px !important;
+}
+
+.dashboard-mini-card {
+  padding: 12px;
+  margin-top: 5px;
+  /* height: 100px; */
+}
+
+.dashboard-mini-card .small-card-area {
+  padding-right: 24px;
+}
+
+.dashboard-mini-card .custom-border-left {
+  border-left: 1px solid #d0d5dd;
+  padding-left: 24px;
+}
+
+.new-dashboard-calender .calenderCardBody {
+  border-right: 1px solid #eaecf0;
+}
+
+.new-dashboard-month-picker-label {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.finalAttendanceResult div {
+  padding-left: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 20px;
+}
+
+.finalAttendanceResult div span:nth-child(1) {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.custom-card {
+  margin: 0;
+  border: 1px solid #eaecf0;
+}
+
+.card-inner {
+  padding: 8px !important;
+}
+
+.custom-card-inner {
+  padding: 12px !important;
+}
+
+.custom-card .custom-heading {
+  border-bottom: 1px solid #eaecf0;
+  padding: 12px !important;
+}
+
+.new-dashboard-body .scrollAbleCard {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 340px;
+  scroll-behavior: smooth;
+  padding-right: 12px;
+}
+
+.scrollAbleList {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 388px;
+  scroll-behavior: smooth;
+  padding-right: 12px;
+}
+
+.noticeCardStyle {
+  margin-left: 10px;
+  border-bottom: 1px solid #eaecf0;
+  padding-bottom: 12px;
+  width: 100%;
+}
+
+.finalAttendanceResult div span:nth-child(2) {
+  font-size: 12px;
+}
+
+.finalAttendanceResult div {
+  height: 38px;
+  padding-left: 8px;
+}
+
+.finalAttendanceResult .totalWorking {
+  border-left: 4px solid #98a2b3;
+}
+
+.finalAttendanceResult .totalPresent {
+  border-left: 4px solid #65d380;
+}
+
+.finalAttendanceResult .totalLate {
+  border-left: 4px solid #fdb022;
+}
+
+.finalAttendanceResult .totalMovement {
+  border-left: 4px solid #d444f1;
+}
+
+.finalAttendanceResult .totalLeave {
+  border-left: 4px solid #9b8afb;
+}
+
+.finalAttendanceResult .totalAbsent {
+  border-left: 4px solid #d92d20;
+}
+
+.new-dashboard-calender .attendenceCard {
+  height: 90px;
+  font-size: 12px;
+  padding: 8px 10px;
+}
+
+.new-dashboard-calender .attendenceCard .checkInOutDetails {
+  margin-top: 20px;
+}
+
+.new-dashboard-calender .attendenceCard .checkInOutDetails {
+  margin: 15px 0;
+}
+
+.new-dashboard-calender .attendenceCard .checkInOutDetails .check-in-text {
+  color: #0ba5ec;
+}
+
+.new-dashboard-calender .attendenceCard .checkInOutDetails .check-out-text {
+  color: #f79009;
+}
+
+.new-dashboard-calender .attendenceCard .checkInOutDetails .checkOut {
+  margin-left: 20px;
+}
+
+.new-dashboard-calender .attendenceCard .totalCurrTime {
+  background: #eaecf0;
+  padding: 1px 6px;
+  border-radius: 12px;
+  margin-left: 20px;
+}
+
+.new-dashboard-calender .allDays-name .day {
+  padding: 2px 0;
+  font-size: 12px;
+  background: #eff1f5;
+  grid-column: span 1 / span 7;
+  display: flex;
+  justify-content: center;
+  color: #0e7090;
+  line-height: 21px;
+  letter-spacing: 0.2px;
+  width: 82px;
+}
+
+/* calender day grid */
+.new-dashboard-calender .allCalendarDays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin: 0;
+  column-gap: 0.25rem;
+  row-gap: 0.25rem;
+}
+
+.new-dashboard-calender .allCalendarDays .singleCalendarDay .day {
+  font-size: 14px;
+  /* margin-top: 50px; */
+}
+
+.new-dashboard-calender .allCalendarDays .singleCalendarDay .status {
+  font-size: 12px;
+}
+
+.new-dashboard-calender .allCalendarDays .singleCalendarDay {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 82px;
+  height: 58px;
+  margin-bottom: 4px;
+  background-color: #fcfcfd;
+}
+
+/* leave balance table */
+.leave-balance .leave-table {
+  max-width: 100%;
+  max-height: 75vh;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 0;
+  padding-left: 1px;
+  transition: all 0.3s ease-in-out;
+}
+
+.leave-balance .leave-table tbody tr:hover {
+  box-shadow: none !important;
+}
+
+.leave-balance .leave-table thead th {
+  position: sticky;
+  top: 0px;
+  background: #fff;
+  /* z-index: 9; */
+}
+
+.leave-balance .leave-table tr td:first-child,
+.leave-balance .leave-table tr th:first-child {
+  border-left: none !important;
+  padding-left: 12px !important;
+}
+
+.leave-balance .leave-table table tbody tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+/*  */
+/*  */
+.managerDashboard .gridContainer2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 12px;
+}

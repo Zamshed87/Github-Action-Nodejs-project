@@ -1,0 +1,10 @@
+.sorting-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.sorting-icons .disable {
+  color: rgb(214, 209, 209);
+}

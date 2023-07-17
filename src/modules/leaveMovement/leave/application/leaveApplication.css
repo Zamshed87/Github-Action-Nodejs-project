@@ -1,0 +1,131 @@
+/* .leave-application .heading {
+	padding        : 26px 0px;
+	border-bottom  : 1px solid rgba(0, 0, 0, 0.12);
+	display        : flex;
+	align-items    : center;
+	justify-content: space-between;
+}
+
+.leave-application .heading h3 {
+	font-weight   : 700;
+	font-size     : 21px;
+	letter-spacing: 0.5px;
+	color         : rgba(0, 0, 0, 0.7);
+} */
+
+.leave-application .employee-info {
+  display: flex;
+}
+
+/* .leleave-applicationave .employee-info h6 {
+	font-weight: 700;
+	font-size: 18px;
+	letter-spacing: 0.5px;
+	color: rgba(0, 0, 0, 0.6);
+} */
+.employee-info .employeeTitle .employeeName {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 21px;
+  letter-spacing: 0.004em;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.employee-info .employeeTitle .employeePosition {
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.leave-form {
+  padding: 25px;
+}
+.leave-form .simple-date-rang-picker {
+  padding-bottom: 0px;
+}
+.leave-form .textarea textarea {
+  height: 64px;
+}
+.leave-form p {
+  margin: 15px 0px;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+
+.leave-table .table-heading {
+  padding: 25px 20px;
+  padding-bottom: 0px;
+}
+
+.leave-table th {
+  padding: 25px;
+  padding-bottom: 16px;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.leave-table tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.leave-table tr td {
+  padding: 12px 25px;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.leave-list-table h4 {
+  font-weight: 700;
+  font-size: 21px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.7);
+  /* padding-bottom: 20px;
+	border-bottom    : 1px solid rgba(0, 0, 0, 0.12); */
+}
+
+.leave-list-table {
+  font-weight: 6px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.leave-list-table button {
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
+  border-radius: 100px;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s;
+  margin-right: 15px;
+}
+
+.leave-list-table table th {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.leave-list-table .table-card-styled table thead tr th {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.leave-list-table table tr:hover button {
+  visibility: visible;
+  opacity: 1;
+}
+
+p.leave-application-document span {
+  color: rgba(0, 156, 222, 1) !important;
+}

@@ -1,0 +1,142 @@
+import { Avatar } from "@mui/material";
+import React from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { APIUrl } from "../../../../../App";
+import CommonEmpInfo from "../../../../../common/CommonEmpInfo";
+import CalenderCommon from "../calenderCommon";
+import moment from "moment";
+
+const ViewModalCalender = ({ propsObj }) => {
+  const { orgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+
+  const {
+    singleAssign,
+    resLanding,
+    selectedSingleEmployee,
+    profileImg,
+    setShowModal,
+    calendarData,
+    setCalendarData,
+    setSingleAssign,
+    handleSave,
+  } = propsObj;
+
+  return (
+    <>
+      <div className="mr-3">
+        <div className="row">
+          <div className="col-4  px-2">
+            {singleAssign || (
+              <p className="ml-3 mb-2">
+                Total Selected{" "}
+                {resLanding?.filter((data) => data?.selectCheckbox)?.length}{" "}
+              </p>
+            )}
+            <div style={{ height: "300px", overflow: "scroll" }}>
+              {singleAssign ? (
+                <div>
+                  <img
+                    className="ml-4 mb-1"
+                    src={
+                      selectedSingleEmployee[0]?.profileImageUrl
+                        ? `${APIUrl}/Document/DownloadFile?id=${selectedSingleEmployee[0]?.profileImageUrl}`
+                        : profileImg
+                    }
+                    alt=""
+                    style={{ maxHeight: "48px", minWidth: "48px" }}
+                  />
+                  <CommonEmpInfo
+                    classes="ml-4"
+                    employeeName={selectedSingleEmployee[0]?.employeeName}
+                    designationName={selectedSingleEmployee[0]?.designation}
+                    departmentName={selectedSingleEmployee[0]?.department}
+                  />
+                </div>
+              ) : (
+                resLanding?.map(
+                  (data) =>
+                    data?.selectCheckbox && (
+                      <ol className="mb-2">
+                        <li>
+                          {/* <img
+                              className="ml-3 mb-1"
+                              src={profileImg}
+                              alt=""
+                              style={{ maxHeight: "48px", minWidth: "48px" }}
+                            /> */}
+                          <div>
+                            <Avatar
+                              className="ml-4 mb-1"
+                              sx={{
+                                mt: 0.2,
+                                "&.MuiAvatar-root": {
+                                  width: "22px!important",
+                                  height: "22px!important",
+                                },
+                              }}
+                            />
+                          </div>
+
+                          <CommonEmpInfo
+                            classes="ml-4"
+                            employeeName={data?.employeeName}
+                            designationName={data?.designation}
+                            departmentName={data?.department}
+                          />
+                        </li>
+                      </ol>
+                    )
+                )
+              )}
+            </div>
+          </div>
+
+          <div className="col-8">
+            <div className="mr-2">
+              <CalenderCommon
+                orgId={orgId}
+                setShowModal={setShowModal}
+                monthYear={moment().format("YYYY-MM")}
+                calendarData={calendarData}
+                setCalendarData={setCalendarData}
+                isClickable={true}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="d-flex justify-content-end py-3 pr-4">
+        <ul className="d-flex flex-wrap">
+          <li>
+            <button
+              onClick={() => {
+                setShowModal(false);
+                setSingleAssign(false);
+                setCalendarData([]);
+              }}
+              type="button"
+              className="btn btn-cancel mr-2"
+            >
+              Cancel
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={handleSave}
+              type="button"
+              className="btn btn-green flex-center"
+            >
+              Save
+            </button>
+          </li>
+        </ul>
+      </div>
+    </>
+  );
+};
+
+export default ViewModalCalender;

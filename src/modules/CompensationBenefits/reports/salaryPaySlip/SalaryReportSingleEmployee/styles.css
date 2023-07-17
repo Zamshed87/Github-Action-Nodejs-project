@@ -1,0 +1,103 @@
+.singleEmp-main .info-salary-sheet-table {
+  padding-left: 9px;
+}
+.singleEmp-main .info-salary-sheet-table table {
+  width: 100%;
+}
+.singleEmp-main .info-salary-sheet-table table tr td {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 14px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.singleEmp-main .info-salary-sheet-table table tr td:first-child {
+  color: rgba(0, 0, 0, 0.4);
+}
+.singleEmp-main .payslip-heading {
+  text-align: center;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 12px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.singleEmp-main hr {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+.singleEmp-main .payslip-heading .dot {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 1.8rem;
+}
+
+/* // box amount details start  */
+
+.singleEmp-main .box-amount-details {
+  padding: 8px 21px;
+}
+.singleEmp-main .box-amount-details table {
+  width: 100%;
+}
+.singleEmp-main .box-amount-details table thead th {
+  padding: 5px 0 5px 25px;
+  background-color: #e5f0fc;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 9px;
+  line-height: 11px;
+  letter-spacing: 0.2px;
+}
+.singleEmp-main .box-amount-details table thead th:last-child {
+  text-align: right;
+  padding-right: 50px;
+}
+.singleEmp-main .box-amount-details table tbody td {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 16px;
+  padding: 5px 50px 5px 25px;
+  color: rgba(0, 0, 0, 0.7);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.singleEmp-main .box-amount-details table tbody td:last-child {
+  text-align: right;
+}
+.singleEmp-main .box-amount-details table tbody tr:last-child td {
+  padding: 5px 50px 5px 25px;
+  background-color: #f2f2f7;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 9px;
+  line-height: 11px;
+  letter-spacing: 0.2px;
+}
+.singleEmp-main .box-amount-details .deduction-table {
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+.singleEmp-main .box-total-amount-info {
+  padding: 10px 26px;
+}
+.singleEmp-main .box-total-amount-info p {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.singleEmp-main .box-total-amount-info h6 {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: right;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.singleEmp-main .box-total-amount-info .text-small {
+  margin-bottom: 26px;
+  font-size: 12px;
+  line-height: 14px;
+}

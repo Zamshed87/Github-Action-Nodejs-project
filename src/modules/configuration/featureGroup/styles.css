@@ -1,0 +1,82 @@
+.featureGroupModal .form-container{
+  margin-bottom: 5px;
+}
+/* // table grade start  */
+
+.featureGroup-wrapper .table-card .table-card-body table thead th:first-child {
+  padding-left: 43px;
+}
+
+.featureGroup-wrapper .table-card .table-card-body table thead th {
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+.featureGroup-wrapper .table-card .table-card-body table thead th small {
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.featureGroup-wrapper .table-card .table-card-body table tbody td {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+
+.featureGroup-wrapper .table-card .table-card-body table tbody td:first-child {
+  padding-left: 43px;
+  text-align: left;
+}
+
+.featureGroup-wrapper .table-card .table-card-body table tbody td:last-child {
+  text-align: center;
+}
+.featureGroup-wrapper .table-card .table-card-body table tbody td .hover-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.featureGroup-wrapper .table-card .table-card-body table tbody tr:hover td .hover-icon .border-icon {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* // table grade end  */
+
+/* create featureGroupModal modal start */
+.featureGroupModal .table-card-body table thead th {
+  text-align: center;
+}
+.featureGroupModal .table-card-body table thead th .MuiFormGroup-root .MuiFormControlLabel-root {
+  margin: 0;
+}
+.featureGroupModal .table-card-body table thead th small {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.featureGroupModal .table-card-body table tbody td {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.featureGroupModal .table-card-body table tbody td .MuiFormGroup-root {
+  justify-content: center;
+}
+.featureGroupModal .table-card-body table tbody td .MuiFormGroup-root .MuiFormControlLabel-root {
+  margin: 0;
+}
+
+/* create userGroup modal end */

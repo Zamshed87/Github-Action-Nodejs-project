@@ -1,0 +1,93 @@
+/* module css */
+@import "./main.css";
+@import "./auth.css";
+@import "./component.css";
+@import "./signup.css";
+@import "./form.css";
+@import "./table.css";
+@import "./topNavigation.css";
+@import "./sidebar.css";
+@import "./profileSidebar.css";
+@import "./jobList.css";
+@import "./candidateEvaluiateProcess.css";
+@import "./candidate-job-list.css";
+@import "./job-posting-list.css";
+@import "./configure.css";
+@import "./dashboard.css";
+@import "./report.css";
+@import "./tableCardHeading.css";
+@import "./tableCard.css";
+@import "./sortingIcon.css";
+@import "./scrollableTable.css";
+@import "./modal.css";
+@import "./dropDownDatePicker.css";
+@import "./slider.css";
+@import "./printView.css";
+
+/* all module should be placed top of this */
+@import "./responsive.css";
+
+.fade.job-details-body-note-modal.modal.show {
+  z-index: 99999999;
+}
+.modal-backdrop {
+  z-index: 999;
+}
+.modal {
+  z-index: 99999999;
+}
+.asset-requision-modal.modal {
+  z-index: 1050;
+}
+
+.copyURLClassName {
+  background: red;
+}
+
+.copyURLClassName::before {
+  content: "Copied";
+  background: #5c81dc;
+  position: absolute;
+  top: -45px;
+  right: -25px;
+  left: -40% !important;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 15px;
+  left: 0px;
+  color: #fff;
+}
+
+.copyURLClassName::after {
+  content: "";
+  background: #5c81dc;
+  position: absolute;
+  top: -42%;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  left: 60%;
+  transform: rotate(45deg);
+}
+
+/* 
+.buttonDisabled {
+  background: red;
+  cursor: no-drop;
+} */
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  /* color : red !important; */
+  filter: invert(0.5);
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  /* color : red !important; */
+  filter: invert(0.5);
+}
+
+input[type="date"].form-control,
+input[type="month"].form-control,
+input[type="time"].form-control {
+  color: rgba(17, 24, 39, 1);
+}

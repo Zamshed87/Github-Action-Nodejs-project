@@ -1,0 +1,310 @@
+/* about-info-main */
+.about-info-main {
+  padding: 54px 0 0 0;
+}
+.card-about-info-main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 16px;
+}
+.about-info-card {
+  padding: 16px;
+  box-shadow: var(--shadowTwo);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.card-about-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+label.label-add-image > img {
+  border-radius: 4px;
+  min-height: 78px;
+}
+label.label-add-image.sm-size > img {
+  border-radius: 4px;
+  min-height: 36px;
+}
+
+.card-about-info .add-image-about-info-card {
+  height: 140px;
+  width: 183px;
+}
+.card-about-info .add-image-about-info-card .label-add-image {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.card-about-info .add-image-about-info-card .label-add-image .cart-img-btn {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  cursor: pointer;
+}
+.card-about-info .add-image-about-info-card .label-add-image .box-add-image {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  border: 1px dashed rgba(0, 0, 0, 0.4);
+  position: relative;
+  cursor: pointer;
+}
+.card-about-info
+  .add-image-about-info-card
+  .label-add-image
+  .box-add-image
+  .info-add-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.card-about-info
+  .add-image-about-info-card
+  .label-add-image
+  .box-add-image
+  .info-add-image
+  .add-icon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-about-info
+  .add-image-about-info-card
+  .label-add-image
+  .box-add-image
+  .info-add-image
+  .text-add-image {
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 19px;
+  text-align: center;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.card-about-info .content-about-info-card {
+  padding-left: 40px;
+  flex-grow: 1;
+}
+.card-about-info .content-about-info-card .edit-icon-btn {
+  background: var(--white);
+  border: 1px solid var(--white);
+  box-sizing: border-box;
+  box-shadow: var(--shadowTwo);
+}
+.about-edit-icon .MuiAvatar-root {
+  width: 22px !important;
+  height: 22px !important;
+}
+.card-about-info .content-about-info-card .name-about-info {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--gray600);
+  margin-right: 10px;
+}
+.card-about-info .content-about-info-card .single-info {
+  margin-top: 13px;
+  display: flex;
+  align-items: center;
+}
+
+.card-about-info .content-about-info-card .single-info .text-single-info {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray700);
+  font-weight: 500;
+}
+.card-about-info-main .btn-see-more {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  border: transparent;
+  color: var(--gray500);
+}
+.see-more-btn-main {
+  display: flex;
+  align-items: center;
+  position: relative;
+  top: 0px;
+  justify-content: flex-end;
+}
+.card-about-info-main .btn-see-more .text-btn-see-more {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--gray500);
+}
+.accordion-main {
+  display: none;
+}
+.active-accordion-main {
+  display: block;
+}
+.accordion-item {
+  padding: 15px 0px;
+  border-top: 1px solid var(--gray200);
+  margin-top: 15px;
+  padding-bottom: 0;
+}
+
+.accordion-item .accordion-heading {
+  display: flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 21px;
+  line-height: 25px;
+  letter-spacing: 0.2px;
+  font-weight: 500;
+  justify-content: space-between;
+}
+.accordion-item .accordion-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 10px 0px 10px;
+}
+.accordion-item .accordion-body .left p {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--gray500);
+  line-height: 18px;
+}
+.accordion-item .accordion-body .left p small {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gray700);
+}
+.accordion-item .accordion-body .right-item {
+  display: flex;
+  align-items: flex-start;
+}
+.accordion-item .accordion-body .right-item .MuiAvatar-root {
+  width: 22px;
+  height: 22px;
+}
+.accordion-item .accordion-body .right {
+  display: flex;
+  align-items: center;
+}
+.accordion-item .accordion-body .right .right-item p {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray700);
+}
+.accordion-item .accordion-body .right .right-item small {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--gray500);
+}
+.about-info-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gray200);
+  padding: 0 0 10px;
+}
+.bank-card-about-info-head {
+  display: flex;
+  align-items: center;
+}
+
+.accordion-item .address-details button {
+  color: #1eac44;
+  margin-top: 22px;
+  font-weight: 600;
+  display: block !important;
+  background: transparent;
+  border: none;
+}
+.accordion-item .address-details li {
+  list-style: circle;
+}
+.accordion-item .address-details .address {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  margin-top: 30px;
+}
+.form-header {
+  margin: 30px 0px;
+}
+.form-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card-about-info-main .accordion-body .left ol li:nth-last-child(1) {
+  margin-bottom: 0 !important;
+}
+
+.card-about-info-main .MuiButton-root {
+  font-size: 10px;
+  color: var(--gray500);
+  border-color: var(--gray500);
+  font-weight: 600;
+  line-height: 20px;
+}
+.card-about-info-main .MuiButton-outlinedPrimary:hover {
+  border-color: var(--gray500);
+}
+
+.about-me-bank-details-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 16px 0;
+  border-top: 1px solid var(--gray200);
+  margin: 22px 0 0;
+}
+
+.employee-info-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 575.98px) {
+  .accordion-item .accordion-body {
+    flex-direction: column;
+    padding: 0;
+  }
+  .accordion-item {
+    padding: 30px 5px;
+  }
+  .accordion-item .accordion-body .right {
+    margin-top: 15px;
+  }
+}
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .accordion-item .accordion-body {
+    flex-direction: column;
+    padding: 0;
+  }
+  .accordion-item .accordion-body .right {
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .card-about-info .content-about-info-card {
+    padding-left: 0;
+    padding-top: 10px;
+  }
+}

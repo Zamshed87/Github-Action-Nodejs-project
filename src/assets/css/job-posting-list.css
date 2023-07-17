@@ -1,0 +1,28 @@
+.job-posting-list .fade.modal.show {
+  z-index: 9 !important;
+}
+.job-posting-list .modal-backdrop.show {
+  opacity: 0.2 !important;
+}
+.job-posting-list .modal-backdrop {
+  z-index: 999;
+}
+
+.custom-ui {
+  /* width: 400px; */
+  text-align: center;
+  text-align: center;
+}
+
+.custom-ui button {
+  outline: none;
+  /* background: #333; */
+  border: none;
+  display: inline-block;
+  padding: 6px 18px;
+  color: #eee;
+  margin-right: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}

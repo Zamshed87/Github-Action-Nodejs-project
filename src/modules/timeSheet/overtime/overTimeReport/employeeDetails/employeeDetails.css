@@ -1,0 +1,56 @@
+.over-time-report-print {
+	background-color: #f2f2f7;
+	padding-bottom: 3rem;
+	min-height: 100vh;
+}
+.over-time-report-print .header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 64px;
+	box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
+	padding: 24px;
+	background-color: #fff;
+	margin-top: 20px;
+}
+
+.over-time-report-print .header h4 {
+	font-size: 21px;
+	font-weight: 500;
+	line-height: 21.09px;
+	color: rgba(0, 0, 0, 0.7);
+}
+
+.over-time-report-print .employee-info-card {
+	display: flex;
+	justify-content: space-between;
+	margin: 11px 0px;
+	text-align: left;
+	background-color: #fff;
+	margin: 20px 0 0 0;
+	padding: 25px;
+}
+
+.over-time-report-print .employee-info-card table tr h6 {
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 21.09px;
+	color: rgba(0, 0, 0, 0.6);
+	text-align: left;
+}
+.over-time-report-print .employee-info-card table tr td {
+	padding: 7px;
+}
+
+.employee-table {
+	background-color: #fff;
+	margin: 24px 0 0 0;
+	padding: 20px;
+}
+.employee-table table tr th {
+	border-top: none;
+}
+
+.employee-table table tr td {
+	color: rgba(0, 0, 0, 0.7);
+}

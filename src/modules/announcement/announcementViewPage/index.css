@@ -1,0 +1,27 @@
+.announcement_header h4 {
+  margin: 10px 0;
+}
+
+.announcement_header .add_info {
+  /* color: red; */
+  font-style    : normal;
+  font-weight   : 500;
+  font-size     : 12px;
+  line-height   : 19px;
+  /* identical to box height */
+  /* margin-top : 10px; */
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.announcement_body {
+  margin-top : 20px;
+  font-style : normal;
+  font-weight: normal;
+  font-size  : 14px;
+  line-height: 19px;
+  /* identical to box height */
+
+
+  color: rgba(0, 0, 0, 0.7);
+}

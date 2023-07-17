@@ -1,0 +1,66 @@
+.goForPrintBody .sub-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding-left: 21px;
+  padding-bottom: 14px;
+}
+.goForPrintBody .sub-header h6 {
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 12px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.goForPrintBody .sub-header h5 {
+  font-size: 10px;
+  line-height: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 400;
+  margin-top: 2px;
+}
+.goForPrintBody .sub-header p {
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.4);
+  margin-top: 2px;
+}
+.goForPrintBody .sub-header p:nth-of-type(1) {
+  margin-top: 0px;
+}
+.goForPrintBody .sub-header small {
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 2px;
+  display: block;
+}
+.goForPrintBody .sub-header small:nth-of-type(1) {
+  margin-top: 0px;
+}
+.goForPrintBody .table-title h4 {
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 12px;
+  color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  padding-top: 4px;
+  padding-bottom: 5px;
+}
+.goForPrintBody .table-body .table .thead-light th {
+  background: #e5f0fc;
+  border-color: #e5f0fc;
+  color: rgba(0, 0, 0, 0.6)!important;
+  font-weight: 500!important;
+  font-size: 9px!important;
+  line-height: 11px;
+  letter-spacing: 0.2px;
+  padding: 5px 25px!important;
+}
+.goForPrintBody .table-body .table td {
+  font-size: 10px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.7);
+  font-weight: 500;
+  padding: 5px 25px!important;
+  border-top: 0;
+}

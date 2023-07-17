@@ -1,0 +1,154 @@
+/* Leave & Movement Type  */
+.config-box {
+  padding-top: 28px;
+  padding-left: 42px;
+  padding-right: 16px;
+  padding-bottom: 15px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  border-radius: 4px;
+  transition: all linear 0.3s;
+}
+.config-box h6 {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+  color: rgba(0, 0, 0, 0.6);
+  padding-bottom: 12px;
+}
+.config-icon .edit-icon-btn {
+  background: #ffffff;
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transition: all linear 0.3s;
+}
+.config-box:hover {
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+}
+.config-box:hover .config-icon .edit-icon-btn {
+  opacity: 1;
+}
+
+/* .leave-type .login-input {
+  width: 372px;
+} */
+
+/* Approval Pipeline */
+
+.approval-pipeline .css-1j9sz76-control {
+  width: 300px;
+}
+.approval-pipeline .css-99yfnk-control {
+  width: 300px;
+}
+.approval-pipeline h5 {
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 25px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.approval-table .table-card-styled table thead tr th {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.approval-table .table thead th {
+  border-bottom: 1px solid #dee2e6;
+}
+.approval-table .table-card-styled table tbody tr {
+  transition: all linear 0.3s;
+}
+.approval-table .table-card-styled table tbody tr td {
+  height: auto;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.825);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+.approval-table .table-card-styled table {
+  border-spacing: 0px 0.5rem;
+}
+.approval-table .table-card-styled table tbody tr td .edit-icon-btn {
+  background: #ffffff;
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transition: all linear 0.3s;
+}
+.approval-table .table-card-styled table tbody tr:hover td .edit-icon-btn {
+  opacity: 1;
+}
+.create-approval-form .modal-body2 {
+  padding-top: 20px;
+  padding-left: 24px;
+  padding-right: 21px;
+  padding-bottom: 40px;
+  height: 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.create-approval-form .modal-body2.height-auto {
+  height: auto;
+  padding-top: 20px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 20px;
+}
+.create-approval-form .modal-body2 .btn {
+  color: #34a853 !important;
+  font-weight: 500;
+}
+.approval-view-table p {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-left: 13px;
+}
+.approval-view-table .table thead th{
+  border-bottom: 1px solid #dee2e6;
+}
+
+.approval-view-table .table-card-styled table thead tr th {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.approval-view-table .table-card-styled table {
+  border-spacing: 0px 0px;
+}
+.approval-view-table .table-card-styled table tbody tr td {
+  height: 56px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 400;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 0;
+}
+.approval-view-table .table-card-styled table tbody tr:hover{
+  box-shadow: none;
+  cursor: auto;
+}
+.create-approval-form .modalFooter{
+  padding-right: 25px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: right;
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.16);
+}

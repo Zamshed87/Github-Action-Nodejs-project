@@ -1,0 +1,35 @@
+.businessUnitModal .input-field-main .form-container {
+  margin-bottom: 5px;
+}
+.businessUnitModal .input-field-main label {
+  font-size: 12px;
+    line-height: 15px;
+    color: rgba(0, 0, 0, 0.87);
+    margin-bottom: 2px;
+		/* font-weight: normal; */
+}
+.overtime-entry .employeeName {
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 16px;
+	font-weight: 500;
+}
+.overtime-entry .department,
+.overtime-entry .position {
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 14px;
+	font-weight: 400;
+	margin: 8px 0px;
+}
+
+.modal-footer{
+
+		width: 100%;
+		margin: 0;
+		margin-top: 5px;
+		padding: 12px 24px;
+		background: #ffffff;
+		box-shadow: 0px -1px 4px rgb(0 0 0 / 16%);
+		align-items: center;
+		justify-content: flex-end;
+
+}

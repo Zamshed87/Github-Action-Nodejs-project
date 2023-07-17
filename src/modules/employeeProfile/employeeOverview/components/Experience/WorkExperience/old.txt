@@ -1,0 +1,305 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useRef, useState } from "react";
+import { Formik, Form } from "formik";
+import { shallowEqual, useSelector } from "react-redux";
+import * as Yup from "yup";
+import { ControlPoint, DeleteOutlined, EditOutlined, InvertColors, PhotoSizeSelectActual, TextSnippet, VisibilityOutlined, ClearOutlined, Work } from "@mui/icons-material";
+import FormikInput from "../../../../../../common/FormikInput";
+import { customStylesLarge } from "../../../../../../utility/selectCustomStyle";
+import PrimaryButton from "../../../../../../common/PrimaryButton";
+import ActionMenu from "../../../../../../common/ActionMenu";
+import { Avatar } from "@material-ui/core";
+import FormikSelect from "../../../../../../common/FormikSelect";
+import placeholderImg from "../../../../../../assets/images/placeholderImg.png";
+import { attachment_action } from "../../../../../configuration/busisnessUnit/helper";
+import FileUploadField from "../../../../../../common/FileUploadField";
+import DropDownDatePicker from "../../../../../../common/DropDownDatePicker";
+import { blackColor40 } from "../../../../../../utility/customColor";
+import Slider from "../../../../../../common/Slider";
+import Image1 from "../../familyAndRelationShip/images/image 22.png";
+import Image2 from "../../familyAndRelationShip/images/image 23.png";
+const initData = {
+  companyName: "",
+  jobTitle: "",
+  location: "",
+  jobDescription: "",
+  startYear: "",
+  startMonth: "",
+  startDay: "",
+  finishYear: "",
+  finishMonth: "",
+  finishDay: "",
+};
+
+const validationSchema = Yup.object().shape({
+  companyName: Yup.string().required("Company Name is required"),
+  jobTitle: Yup.string().required("Job Title is required"),
+  location: Yup.string().required("Location is required"),
+  jobDescription: Yup.string().required("Job Description is required"),
+  startYear: Yup.object()
+    .shape({
+      label: Yup.string().required("Start Year is required"),
+      value: Yup.string().required("Start Year is required"),
+    })
+    .typeError("Start Year is required"),
+});
+export default function WorkExperience() {
+  const { orgId } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+
+  const saveHandler = (values) => {};
+  // form
+  const [rowDto, setRowDto] = useState([]);
+
+  const eventHandler = (values, cb) => {
+    setRowDto([
+      ...rowDto,
+      {
+        id: rowDto?.length + 1,
+        companyName: values?.companyName,
+        jobTitle: values?.jobLocation,
+        location: values?.location,
+        jobDescription: values?.jobDescription,
+        startYear: values?.startYear,
+        startMonth: values?.startMonth,
+        startDay: values?.startDay,
+        finishYear: values?.finishYear,
+        finishMonth: values?.finishMonth,
+        finishDay: values?.finishDay,
+      },
+    ]);
+    setIsAddExperienceFields(false);
+  };
+
+
+  // show hide input field
+  const [isAddExperienceFields, setIsAddExperienceFields] = useState(false);
+
+  const images = [
+    {
+      imageItem: Image1,
+      icon: <TextSnippet sx={{ color: "#FBBC05" }} />,
+      text: "DOB document. pdf",
+    },
+    {
+      imageItem: Image2,
+      icon: <PhotoSizeSelectActual sx={{ color: "#4AC8F0" }} />,
+      text: "NID document. png",
+    },
+    {
+      imageItem: Image1,
+      icon: <TextSnippet sx={{ color: "#FBBC05" }} />,
+      text: "DOB document. pdf",
+    },
+  ];
+  return (
+    <>
+      <Formik
+        enableReinitialize={true}
+        initialValues={initData}
+        validationSchema={validationSchema}
+        onSubmit={(values, { setSubmitting, resetForm }) => {
+          // saveHandler(values, () => {
+          //   resetForm(initData);
+          // });
+        }}
+      >
+        {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid }) => (
+          <>
+            <Form className="form-add-experience">
+              <h5>Work Experience</h5>
+              {!isAddExperienceFields && (
+                <div className="d-flex align-items-center" style={{ marginBottom: "40px", cursor: "pointer" }} onClick={() => setIsAddExperienceFields(true)}>
+                  <div className="item">
+                    <ControlPoint sx={{ color: "#34A853" }} />
+                  </div>
+                  <div className="item">
+                    <p>Add your work experience</p>
+                  </div>
+                </div>
+              )}
+              {isAddExperienceFields && (
+                <div className="container-add-experience-fileds">
+                  <div className="input-field">
+                    <FormikInput
+                      label="Company Name"
+                      value={values?.companyName}
+                      onChange={(e) => setFieldValue("companyName", e.target.value)}
+                      name="companyName"
+                      type="text"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-fied">
+                    <FormikInput
+                      label="Job Title"
+                      value={values?.jobTitle}
+                      onChange={(e) => setFieldValue("jobTitle", e.target.value)}
+                      name="jobTitle"
+                      type="text"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-field">
+                    <FormikInput
+                      label="Location"
+                      value={values?.location}
+                      onChange={(e) => setFieldValue("location", e.target.value)}
+                      name="location"
+                      type="text"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-field">
+                    <FormikInput
+                      label="Job Description"
+                      value={values?.jobDescription}
+                      onChange={(e) => setFieldValue("jobDescription", e.target.value)}
+                      name="jobDescription"
+                      type="text"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-field">
+                    <h4 className="start-date">From Date</h4>
+                    <DropDownDatePicker
+                      yearType="startYear"
+                      monthType="startMonth"
+                      dayType="startDay"
+                      values={values}
+                      setFieldValue={setFieldValue}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-field ">
+                    <h4>To Date</h4>
+                    <DropDownDatePicker
+                      yearType="finishYear"
+                      monthType="finishMonth"
+                      dayType="finishDay"
+                      values={values}
+                      setFieldValue={setFieldValue}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+
+                  <div className="input-field">
+                    <h4>Upload Files</h4>
+                    <FileUploadField />
+                    <p className="file-formate">Uploading file support for JPG, JPEG, PNG</p>
+                    <div className="file d-flex align-items-center mb-4">
+                      <small style={{ color: "#34A853", fontSize: "16px", fontWeight: "500" }}>Certificate.pdf</small>
+                      <ClearOutlined sx={{ marginLeft: "20px", color: "rgba(0, 0, 0, 0.4)", cursor: "pointer" }} />
+                    </div>
+                  </div>
+                  <div className="buttons-add-experience-form row">
+                    <button type="button" className="btn mr-2 btn-cancle btn-green-less" onClick={() => setIsAddExperienceFields(false)}>
+                      cancel
+                    </button>
+                    <button
+                      className="btn btn-green btn-save"
+                      disabled={
+                        !values.companyName ||
+                        !values.jobTitle ||
+                        !values.jobDescription ||
+                        !values.location ||
+                        !values.startYear ||
+                        !values.startMonth ||
+                        !values.startDay ||
+                        !values.finishYear ||
+                        !values.finishMonth ||
+                        !values.finishDay
+                          ? true
+                          : false
+                      }
+                      type="submit"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        eventHandler(values);
+                        setIsAddExperienceFields(false);
+                      }}
+                    >
+                      save
+                    </button>
+                  </div>
+                </div>
+              )}
+              {rowDto?.map((item, i) => {
+                const { CompanyName, JobTitle, Location, JobDescription, startYear, startMonth, startDay, finishYear, finishMonth, finishDay, id } = item;
+                return (
+                  <div className="view">
+                    <div className="row row-exp-details">
+                      <div className="col-lg-1 ">
+                        <Avatar className="overviewAvatar">
+                          <Work sx={{ color: "rgba(0, 0, 0, 0.6)" }} />
+                        </Avatar>
+                      </div>
+                      <div className="col-lg-10 exp-info">
+                        <h4>
+                          {JobTitle} at {CompanyName}
+                        </h4>
+                        <div className="row m-0 row-exp-time">
+                          <div className="col-8 exp-date">
+                            {startMonth.label} {startDay.label}, {startYear.label} - {finishMonth.label} {finishDay.label}, {finishYear.label}
+                          </div>
+                          <div className="col-4 exp-duration">{finishYear.label - startYear.label} year</div>
+                        </div>
+                        <small>{Location}</small>
+                      </div>
+                      <div className="col-lg-1">
+                        <ActionMenu
+                          color={"rgba(0, 0, 0, 0.6)"}
+                          options={[
+                            {
+                              value: 1,
+                              label: "Edit",
+                              icon: <EditOutlined sx={{ marginRight: "10px" }} />,
+                              onClick: (e) => {
+                                const findItem = rowDto.find((item) => item.id === id);
+                                const { companyName, jobTitle, location, jobDescription, startYear, startMonth, startDay, finishYear, finishMonth, finishDay } = findItem;
+                                setFieldValue("companyName", companyName);
+                                setFieldValue("jobTitle", jobTitle);
+                                setFieldValue("jobDescription", jobDescription);
+                                setFieldValue("location", location);
+                                setIsAddExperienceFields(true);
+                              },
+                            },
+                            {
+                              value: 1,
+                              label: "Delete",
+                              icon: <DeleteOutlined sx={{ marginRight: "10px" }} />,
+                              onClick: (e) => {
+                                setRowDto(rowDto.filter((item) => item.id !== id));
+                              },
+                            },
+                          ]}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              {rowDto.length > 0 && (
+                <div className="common-slider">
+                  <h3>Documents</h3>
+                  <div className="slider-main">
+                    <Slider images={images} />
+                  </div>
+                </div>
+              )}
+            </Form>
+          </>
+        )}
+      </Formik>
+    </>
+  );
+}

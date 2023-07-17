@@ -1,0 +1,15 @@
+.salary-policy-form-wrapper .make-green {
+    border-width: 2px;
+  border-color: #34a853 !important;
+  
+  background-color: #E6F9E9;
+}
+.salary-policy-form-wrapper .make-green label,
+.salary-policy-form-wrapper .make-green svg {
+  font-weight: 600;
+  color: #34a853 !important;
+}
+
+.salary-policy-form-wrapper .main-label{
+  font-size: 14px;
+}

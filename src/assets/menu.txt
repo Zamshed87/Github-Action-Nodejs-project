@@ -1,0 +1,235 @@
+<ul className="list-unstyled components">
+          {menuList?.map((firstLevel, index) => (
+            <li key={index} className="firstLevel-li">
+              {firstLevel?.isFirstLabel ? (
+                <>
+                  {/* first label parent */}
+                  <div
+                    className="d-flex justify-content-between align-items-center"
+                    onClick={() => {
+                      setSelectedFirstLevelMenu(
+                        firstLevel?.label === selectedFirstLevelMenu
+                          ? ""
+                          : firstLevel?.label
+                      );
+                    }}
+                  >
+                    <div className="sidebar-dropdown">
+                      <PersonAddOutlined sx={{ marginRight: "17px" }} />{" "}
+                      {firstLevel?.label}
+                    </div>
+                    {firstLevel?.subs && (
+                      <i
+                        className={
+                          selectedFirstLevelMenu === firstLevel?.label
+                            ? "fa fa-angle-right icon-rotate"
+                            : "fa fa-angle-right"
+                        }
+                      ></i>
+                    )}
+                  </div>
+                  {/* sub-menu */}
+                  {firstLevel?.subs?.length > 0 && (
+                    <>
+                      <ul
+                        className={
+                          selectedFirstLevelMenu === firstLevel?.label ||
+                          makeActive(firstLevel?.to)
+                            ? "dropdown-content firstLabel-dropdown-show scrollbar-remove"
+                            : `dropdown-content firstLabel-dropdown-hide`
+                        }
+                      >
+                        <li
+                          className="back-main-menu"
+                          onClick={() => {
+                            history.push("/");
+                            setSelectedFirstLevelMenu(
+                              firstLevel?.label === selectedFirstLevelMenu
+                                ? ""
+                                : firstLevel?.label
+                            );
+                          }}
+                        >
+                          <div className="back-main-inner-menu">
+                            <ArrowBackOutlined />
+                            <span>Main Menu</span>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="sub-menu-title">
+                            <PersonAddOutlined sx={{ marginRight: "17px" }} />{" "}
+                            <span>{firstLevel?.label}</span>
+                          </div>
+                        </li>
+                        {firstLevel?.subs?.map((secondLevel, index) => (
+                          <>
+                            <li key={index}>
+                              {secondLevel?.isSecondLabel ? (
+                                <>
+                                  <div
+                                    className="d-flex align-items-center justify-content-around"
+                                    onClick={() => {
+                                      setSelectedSecondLevelMenu(
+                                        secondLevel?.label ===
+                                          selectedSecondLevelMenu
+                                          ? ""
+                                          : secondLevel?.label
+                                      );
+                                    }}
+                                  >
+                                    <div className="sidebar-dropdown sidebar-second-dropdown">
+                                      {secondLevel?.label}
+                                    </div>
+                                    {secondLevel?.nestedSubs.length > 0 && (
+                                      <i
+                                        className={
+                                          selectedSecondLevelMenu ===
+                                          secondLevel?.label
+                                            ? "fa fa-angle-right icon-rotate"
+                                            : "fa fa-angle-right"
+                                        }
+                                      ></i>
+                                    )}
+                                  </div>
+
+                                  {secondLevel?.nestedSubs?.length > 0 && (
+                                    <ul
+                                      className={
+                                        selectedSecondLevelMenu ===
+                                          secondLevel?.label ||
+                                        makeActive(secondLevel?.to)
+                                          ? "dropdown-content dropdown-second-content secondLevel-dropdown-show"
+                                          : "dropdown-content dropdown-second-content secondLevel-dropdown-hide"
+                                      }
+                                    >
+                                      <li
+                                        className="back-main-menu"
+                                        onClick={() => {
+                                          setSelectedSecondLevelMenu(
+                                            secondLevel?.label ===
+                                              selectedSecondLevelMenu
+                                              ? ""
+                                              : secondLevel?.label
+                                          );
+                                        }}
+                                      >
+                                        <div className="back-main-inner-menu">
+                                          <ArrowBackOutlined />
+                                          <span> 2nd Main Menu</span>
+                                        </div>
+                                      </li>
+                                      <li>
+                                        <div className="sub-menu-title">
+                                          <PersonAddOutlined
+                                            sx={{ marginRight: "17px" }}
+                                          />{" "}
+                                          <span>{secondLevel?.label}</span>
+                                        </div>
+                                      </li>
+                                      {secondLevel?.nestedSubs?.map(
+                                        (thirdLevel, index) => (
+                                          <li key={index}>
+                                            <div
+                                              style={{ width: "100%" }}
+                                              onClick={() => {
+                                                setIsOpenSidebar(
+                                                  !isOpenSidebar
+                                                );
+                                                setSelectedThirdLevel(
+                                                  thirdLevel?.label ===
+                                                    selectedThirdLevel
+                                                    ? ""
+                                                    : thirdLevel?.label
+                                                );
+                                              }}
+                                            >
+                                              <Link
+                                                className={
+                                                  thirdLevel?.label ===
+                                                    selectedThirdLevel ||
+                                                  makeActive(
+                                                    thirdLevel?.to,
+                                                    true
+                                                  )
+                                                    ? "active"
+                                                    : ""
+                                                }
+                                                to={thirdLevel?.to}
+                                              >
+                                                {thirdLevel?.label}
+                                              </Link>
+                                            </div>
+                                          </li>
+                                        )
+                                      )}
+                                    </ul>
+                                  )}
+                                </>
+                              ) : (
+                                <div
+                                  style={{ width: "100%" }}
+                                  onClick={() => {
+                                    setIsOpenSidebar(!isOpenSidebar);
+                                    setSelectedSecondLevelMenu(
+                                      secondLevel?.label ===
+                                        selectedSecondLevelMenu
+                                        ? ""
+                                        : secondLevel?.label
+                                    );
+                                  }}
+                                >
+                                  <Link
+                                    className={
+                                      secondLevel?.label ===
+                                        selectedSecondLevelMenu ||
+                                      makeActive(secondLevel?.to, true)
+                                        ? "active"
+                                        : ""
+                                    }
+                                    to={secondLevel?.to}
+                                  >
+                                    {secondLevel?.label}
+                                  </Link>
+                                </div>
+                              )}
+                            </li>
+                          </>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </>
+              ) : (
+                <div
+                  style={{ width: "100%" }}
+                  onClick={() => {
+                    setIsOpenSidebar(!isOpenSidebar);
+                    setSelectedFirstLevelMenu(
+                      firstLevel?.label === selectedFirstLevelMenu
+                        ? ""
+                        : firstLevel?.label
+                    );
+                    setSelectedThirdLevel(
+                      firstLevel?.label === selectedThirdLevel
+                        ? ""
+                        : firstLevel?.label
+                    );
+                  }}
+                >
+                  <Link
+                    className={
+                      firstLevel?.label === selectedThirdLevel ||
+                      makeActive(firstLevel?.to, true)
+                        ? `active`
+                        : ""
+                    }
+                    to={firstLevel?.to}
+                  >
+                    <PersonAddOutlined sx={{ marginRight: "17px" }} />{" "}
+                    {firstLevel?.label}
+                  </Link>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
