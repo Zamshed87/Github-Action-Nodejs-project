@@ -16,6 +16,7 @@ import ProfileMenu from "./ProfileMenu";
 import QuickAccess from "./QuickAccess";
 import ResourcesDropdown from "./ResourcesDropdown";
 import { useAudio } from "./useAudio";
+import AutoCompleteWithHint from "./AutoComplete";
 
 export default function TopNavigation({
   setIsOpenSidebar,
@@ -107,6 +108,8 @@ export default function TopNavigation({
         <div className="top-menu">
           {!isHideDropdown && (
             <>
+              <AutoCompleteWithHint />
+
               <ResourcesDropdown />
 
               <QuickAccess />
