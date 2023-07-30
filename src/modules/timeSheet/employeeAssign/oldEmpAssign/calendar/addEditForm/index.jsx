@@ -279,7 +279,7 @@ export default function AddEditFormComponent({
                                 setFieldValue("calender", valueOption);
                                 if (values?.calenderType?.value === 2) {
                                   getPeopleDeskAllDDL(
-                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CalenderByRosterGroup&intId=${valueOption?.value}&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
+                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CalenderByRosterGroup&intId=${valueOption?.value}&WorkplaceGroupId=${wgId}`,
                                     "CalenderId",
                                     "CalenderName",
                                     setStartingCalenderDDL
