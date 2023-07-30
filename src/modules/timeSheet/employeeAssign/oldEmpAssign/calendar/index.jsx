@@ -25,8 +25,6 @@ import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
-import FormikSelect from "../../../../common/FormikSelect";
-import { customStyles } from "../../../../utility/selectCustomStyle";
 
 const initData = {
   searchString: "",
@@ -39,14 +37,7 @@ const initData = {
   employmentType: "",
   employee: "",
   assignStatus: { value: "all", label: "All" },
-  salaryStatus: "",
 };
-
-const statusDDL = [
-  { value: 0, label: "All" },
-  { value: 1, label: "Assigned" },
-  { value: 2, label: "Not Assigned" },
-];
 
 const validationSchema = Yup.object({});
 
@@ -133,15 +124,13 @@ function Calendar() {
     searchText,
     checkedList,
     currentFilterSelection,
-    checkedHeaderList,
-    isAssigned = null
+    checkedHeaderList
   ) => {
-    setLandingLoading(true);
     try {
       const payload = {
         businessUnitId: buId,
         workplaceGroupId: wgId,
-        isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
+        isNotAssign: null,
         workplaceId: 0,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
@@ -170,7 +159,6 @@ function Calendar() {
           // setEmpLanding,
           setPages,
         });
-
         setEmpIDString(res?.data?.employeeIdList);
         const modifiedData = res?.data?.data?.map((item, index) => ({
           ...item,
@@ -181,27 +169,22 @@ function Calendar() {
             ? true
             : false,
         }));
-
         setRowDto(modifiedData);
         setLandingLoading(false);
-      } else {
-        setRowDto([]);
       }
-      setLandingLoading(false);
     } catch (error) {
       setLandingLoading(false);
     }
   };
-
   const getData = async (
     pagination,
     searchText = "",
     checkedList = [],
     currentFilterSelection = -1,
     filterOrderList = [],
-    checkedHeaderList = { ...initHeaderList },
-    isAssigned
+    checkedHeaderList = { ...initHeaderList }
   ) => {
+    setLandingLoading(true);
     const modifiedPayload = createPayloadStructure({
       initHeaderList,
       currentFilterSelection,
@@ -215,8 +198,7 @@ function Calendar() {
       searchText,
       checkedList,
       currentFilterSelection,
-      checkedHeaderList,
-      isAssigned
+      checkedHeaderList
     );
   };
   const dispatch = useDispatch();
@@ -311,78 +293,57 @@ function Calendar() {
             <Form onSubmit={handleSubmit}>
               {permission?.isView ? (
                 <div className="table-card">
-                  <>
-                    <div className="table-card-heading">
-                      <div style={{ paddingLeft: "6px" }}>
-                        {checkedList.length > 0 ? (
-                          <h6 className="count">
-                            Total {checkedList.length}{" "}
-                            {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
-                            selected from {pages?.total}
-                          </h6>
-                        ) : (
-                          <h6 className="count">
-                            {" "}
-                            Total {rowDto?.length > 0 ? pages.total : 0}{" "}
-                            Employees
-                          </h6>
-                        )}
-                      </div>
-                      <div className="table-card-head-right">
-                        <ul>
-                          {checkedList.length > 1 && (
-                            <li>
-                              <ResetButton
-                                title="reset"
-                                icon={
-                                  <SettingsBackupRestoreOutlined
-                                    sx={{ marginRight: "10px" }}
-                                  />
-                                }
-                                onClick={() => {
-                                  getData(
-                                    { current: 1, pageSize: paginationSize },
-                                    "",
-                                    [],
-                                    -1,
-                                    filterOrderList,
-                                    checkedHeaderList
-                                  );
-                                  // setRowDto(allData);
-                                  setCheckedList([]);
-                                  setFieldValue("searchString", "");
-                                }}
-                              />
-                            </li>
+                  {rowDto?.length > 0 ? (
+                    <>
+                      <div className="table-card-heading">
+                        <div style={{ paddingLeft: "6px" }}>
+                          {checkedList.length > 0 ? (
+                            <h6 className="count">
+                              Total {checkedList.length}{" "}
+                              {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
+                              selected from {pages?.total}
+                            </h6>
+                          ) : (
+                            <h6 className="count">
+                              {" "}
+                              Total {pages.total} Employees
+                            </h6>
                           )}
-                          <li>
-                            {rowDto?.length > 0 && (
-                              <div className="d-flex">
-                                <button
-                                  className="btn btn-green"
-                                  style={{
-                                    marginRight: "10px",
-                                    height: "30px",
-                                    minWidth: "120px",
-                                    fontSize: "12px",
+                        </div>
+                        <div className="table-card-head-right">
+                          <ul>
+                            {checkedList.length > 1 && (
+                              <li>
+                                <ResetButton
+                                  title="reset"
+                                  icon={
+                                    <SettingsBackupRestoreOutlined
+                                      sx={{ marginRight: "10px" }}
+                                    />
+                                  }
+                                  onClick={() => {
+                                    getData(
+                                      { current: 1, pageSize: paginationSize },
+                                      "",
+                                      [],
+                                      -1,
+                                      filterOrderList,
+                                      checkedHeaderList
+                                    );
+                                    // setRowDto(allData);
+                                    setCheckedList([]);
+                                    setFieldValue("searchString", "");
                                   }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (!permission?.isCreate)
-                                      return toast.warn(
-                                        "You don't have permission"
-                                      );
-                                    setIsAssignAll(true);
-                                    setCreateModal(true);
-                                  }}
-                                >
-                                  Assign {pages.total}
-                                </button>
-                                {rowDto?.filter((item) => item?.isSelected)
-                                  .length > 0 ? (
+                                />
+                              </li>
+                            )}
+                            <li>
+                              {rowDto.length > 0 ? (
+                                <div className="d-flex">
                                   <button
                                     className="btn btn-green"
                                     style={{
+                                      marginRight: "10px",
                                       height: "30px",
                                       minWidth: "120px",
                                       fontSize: "12px",
@@ -393,89 +354,86 @@ function Calendar() {
                                         return toast.warn(
                                           "You don't have permission"
                                         );
-                                      setIsAssignAll(false);
+                                      setIsAssignAll(true);
                                       setCreateModal(true);
                                     }}
                                   >
-                                    Assign {checkedList.length}
+                                    Assign {pages.total}
                                   </button>
-                                ) : (
-                                  ""
-                                )}
-                              </div>
-                            )}
-                          </li>
-                          <li className="mr-3" style={{ width: "150px" }}>
-                            <FormikSelect
-                              name="salaryStatus"
-                              options={statusDDL}
-                              value={values?.salaryStatus}
-                              onChange={(valueOption) => {
-                                setFieldValue("salaryStatus", valueOption);
-                                setFieldValue("searchString", "");
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  "",
-                                  checkedList,
-                                  -1,
-                                  filterOrderList,
-                                  checkedHeaderList,
-                                  valueOption?.value
-                                );
-                              }}
-                              styles={customStyles}
-                              isClearable={false}
-                            />
-                          </li>
-                          <li>
-                            <MasterFilter
-                              isHiddenFilter
-                              value={values?.searchString}
-                              setValue={(value) => {
-                                setFieldValue("searchString", value);
-                                if (value) {
-                                  getData(
-                                    { current: 1, pageSize: paginationSize },
-                                    value,
-                                    checkedList,
-                                    -1,
-                                    filterOrderList,
-                                    checkedHeaderList,
-                                    values?.salaryStatus?.value
-                                  );
-                                } else {
+                                  {rowDto?.filter((item) => item?.isSelected)
+                                    .length > 0 ? (
+                                    <button
+                                      className="btn btn-green"
+                                      style={{
+                                        height: "30px",
+                                        minWidth: "120px",
+                                        fontSize: "12px",
+                                      }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (!permission?.isCreate)
+                                          return toast.warn(
+                                            "You don't have permission"
+                                          );
+                                        setIsAssignAll(false);
+                                        setCreateModal(true);
+                                      }}
+                                    >
+                                      Assign {checkedList.length}
+                                    </button>
+                                  ) : (
+                                    ""
+                                  )}
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                            </li>
+                            <li>
+                              <MasterFilter
+                                isHiddenFilter
+                                value={values?.searchString}
+                                setValue={(value) => {
+                                  setFieldValue("searchString", value);
+                                  if (value) {
+                                    getData(
+                                      { current: 1, pageSize: paginationSize },
+                                      value,
+                                      checkedList,
+                                      -1,
+                                      filterOrderList,
+                                      checkedHeaderList
+                                    );
+                                  } else {
+                                    getData(
+                                      { current: 1, pageSize: paginationSize },
+                                      "",
+                                      [],
+                                      -1,
+                                      filterOrderList,
+                                      checkedHeaderList
+                                    );
+                                  }
+                                }}
+                                cancelHandler={() => {
+                                  setFieldValue("searchString", "");
                                   getData(
                                     { current: 1, pageSize: paginationSize },
                                     "",
                                     [],
                                     -1,
                                     filterOrderList,
-                                    checkedHeaderList,
-                                    values?.salaryStatus?.value
+                                    checkedHeaderList
                                   );
-                                }
-                              }}
-                              cancelHandler={() => {
-                                setFieldValue("searchString", "");
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  "",
-                                  [],
-                                  -1,
-                                  filterOrderList,
-                                  checkedHeaderList,
-                                  0
-                                );
-                              }}
-                              handleClick={handleClick}
-                              width="200px"
-                              inputWidth="200px"
-                            />
-                          </li>
-                        </ul>
+                                }}
+                                handleClick={handleClick}
+                                width="200px"
+                                inputWidth="200px"
+                              />
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                    {rowDto?.length > 0 ? (
                       <PeopleDeskTable
                         columnData={columns(
                           pages,
@@ -528,12 +486,12 @@ function Calendar() {
                         isCheckBox={true}
                         isScrollAble={true}
                       />
-                    ) : (
-                      !landingLoading && (
-                        <NoResult title="No Result Found" para="" />
-                      )
-                    )}
-                  </>
+                    </>
+                  ) : (
+                    !landingLoading && (
+                      <NoResult title="No Result Found" para="" />
+                    )
+                  )}
                 </div>
               ) : (
                 <NotPermittedPage />

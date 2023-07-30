@@ -53,6 +53,7 @@ export default function UnderCreateRosterSetup() {
 
     let payload = {
       partType: "Roster",
+      businessUnitId: buId,
       timeSheetRosterJsons: [...rowDto],
     };
 
@@ -109,11 +110,11 @@ export default function UnderCreateRosterSetup() {
   const commonSortByFilter = (filterType, property) => {
     filterType === "asc"
       ? setRowDto((prev) => [
-        ...prev?.sort((a, b) => (a[property] > b[property] ? -1 : 1)),
-      ])
+          ...prev?.sort((a, b) => (a[property] > b[property] ? -1 : 1)),
+        ])
       : setRowDto((prev) => [
-        ...prev?.sort((a, b) => (b[property] > a[property] ? -1 : 1)),
-      ]);
+          ...prev?.sort((a, b) => (b[property] > a[property] ? -1 : 1)),
+        ]);
   };
   // const {permissionList} = useSelector(
   //   (state) => state?.auth,
@@ -371,7 +372,7 @@ export default function UnderCreateRosterSetup() {
           id={params?.id}
           rosterName={params?.rosterName}
           setIsRosterSetup={setIsRosterSetup}
-        // getData={getData}
+          // getData={getData}
         />
       </ViewModal>
     </>

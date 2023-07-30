@@ -27,12 +27,11 @@ const PopOverFilter = ({ propsObj, masterFilterHandler }) => {
     shallowEqual
   );
 
-  const { orgId, buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
-  const saveHandler = (values) => {};
+  const saveHandler = (values) => {
+    console.log(values);
+  };
   const [allDDL, setAllDDL] = useState([]);
   useEffect(() => {
     getFilterDDLNewAction(buId, "", "", "", "", "", setAllDDL);
@@ -49,15 +48,7 @@ const PopOverFilter = ({ propsObj, masterFilterHandler }) => {
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid }) => (
           <>
             <Form onSubmit={handleSubmit}>
               <Popover
@@ -80,14 +71,11 @@ const PopOverFilter = ({ propsObj, masterFilterHandler }) => {
                 <div className="master-filter-modal-container">
                   <div className="master-filter-header py-1">
                     <h3>Advanced Filter</h3>
-                    <IconButton
-                      onClick={(e) => {
-                        handleClose();
-                        setIsFilter(false);
-                      }}
-                      className="btn btn-cross"
-                    >
-                      <Clear sx={{ fontSize: "18px" }} />
+                    <IconButton onClick={(e) => {
+                      handleClose();
+                      setIsFilter(false);
+                    }} className="btn btn-cross">
+                      <Clear sx={{ fontSize: '18px' }} />
                     </IconButton>
                   </div>
 
@@ -112,15 +100,7 @@ const PopOverFilter = ({ propsObj, masterFilterHandler }) => {
                                 setFieldValue("employmentType", "");
                                 setFieldValue("employee", "");
                                 setFieldValue("workplaceGroup", valueOption);
-                                getFilterDDLNewAction(
-                                  buId,
-                                  valueOption?.value || "",
-                                  "",
-                                  "",
-                                  "",
-                                  "",
-                                  setAllDDL
-                                );
+                                getFilterDDLNewAction(buId, valueOption?.value || "", "", "", "", "", setAllDDL);
                               }}
                               placeholder=" "
                               styles={borderlessSelectStyle}
@@ -148,15 +128,7 @@ const PopOverFilter = ({ propsObj, masterFilterHandler }) => {
                                 setFieldValue("employmentType", "");
                                 setFieldValue("employee", "");
                                 setFieldValue("department", valueOption);
-                                getFilterDDLNewAction(
-                                  buId,
-                                  values?.workplaceGroup?.value || "",
-                                  valueOption?.value || "",
-                                  "",
-                                  "",
-                                  "",
-                                  setAllDDL
-                                );
+                                getFilterDDLNewAction(buId, values?.workplaceGroup?.value || "", valueOption?.value || "", "", "", "", setAllDDL);
                               }}
                               placeholder=" "
                               styles={borderlessSelectStyle}
@@ -185,15 +157,7 @@ const PopOverFilter = ({ propsObj, masterFilterHandler }) => {
                                 setFieldValue("employmentType", "");
                                 setFieldValue("employee", "");
                                 setFieldValue("designation", valueOption);
-                                getFilterDDLNewAction(
-                                  buId,
-                                  values?.workplaceGroup?.value || "",
-                                  values?.department?.value || "",
-                                  valueOption?.value || "",
-                                  "",
-                                  "",
-                                  setAllDDL
-                                );
+                                getFilterDDLNewAction(buId, values?.workplaceGroup?.value || "", values?.department?.value || "", valueOption?.value || "", "", "", setAllDDL);
                               }}
                               placeholder=" "
                               styles={borderlessSelectStyle}
