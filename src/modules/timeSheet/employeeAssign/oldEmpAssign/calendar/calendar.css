@@ -1,0 +1,43 @@
+.calendar .employeeInfo .employeeName {
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 0.004em;
+  color: rgba(0, 0, 0, 0.6);
+}
+.calendar .employeeInfo .position,
+.calendar .employeeInfo .department {
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.004em;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 8px;
+}
+
+.calendar .table-card table tr button {
+  visibility: hidden;
+}
+.calendar .table-card table tr:hover button {
+  visibility: visible;
+}
+.tooltip-table {
+  padding: 40px !important;
+}
+/* .table thead tr th {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  color: rgba(0, 0, 0, 0.4) !important;
+} */
+.calendar .btn-green,
+.calendar .btn-green:hover,
+.calendar .btn-green:focus,
+.btn-green-less,
+.btn-green-less:hover,
+.btn-green-less:focus {
+  width: 75px;
+  height: 30px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1.25px;
+}

@@ -20,20 +20,11 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import HolidayExceptionModal from "./components/HolidayExceptionModal";
 import { columns } from "./helper";
 import "./holidayException.css";
-import FormikSelect from "../../../../common/FormikSelect";
-import { customStyles } from "../../../../utility/selectCustomStyle";
 
 const initData = {
   search: "",
   allSelected: "",
-  salaryStatus: "",
 };
-
-const statusDDL = [
-  { value: 0, label: "All" },
-  { value: 1, label: "Assigned" },
-  { value: 2, label: "Not Assigned" },
-];
 
 const HolidayException = () => {
   const { buId, wgId, wgName } = useSelector(
@@ -106,15 +97,13 @@ const HolidayException = () => {
     searchText,
     checkedList,
     currentFilterSelection,
-    checkedHeaderList,
-    isAssigned
+    checkedHeaderList
   ) => {
-    setLandingLoading(true);
     try {
       const payload = {
         businessUnitId: buId,
         workplaceGroupId: wgId,
-        isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
+        isNotAssign: false,
         workplaceId: 0,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
@@ -128,6 +117,7 @@ const HolidayException = () => {
         ...modifiedPayload,
       });
       if (res?.data?.data) {
+        setLandingLoading(true);
         setEmpIDString(res?.data?.employeeList);
         setHeaderListDataDynamically({
           currentFilterSelection,
@@ -155,10 +145,9 @@ const HolidayException = () => {
         }));
 
         setRowDto(modifiedData);
-      } else {
-        setRowDto([]);
+
+        setLandingLoading(false);
       }
-      setLandingLoading(false);
     } catch (error) {
       setLandingLoading(false);
     }
@@ -169,8 +158,7 @@ const HolidayException = () => {
     checkedList = [],
     currentFilterSelection = -1,
     filterOrderList = [],
-    checkedHeaderList = { ...initHeaderList },
-    isAssigned = null
+    checkedHeaderList = { ...initHeaderList }
   ) => {
     setLandingLoading(true);
     const modifiedPayload = createPayloadStructure({
@@ -186,8 +174,7 @@ const HolidayException = () => {
       searchText,
       checkedList,
       currentFilterSelection,
-      checkedHeaderList,
-      isAssigned
+      checkedHeaderList
     );
   };
   // const getData = (pagination, srcText, status = "") => {
@@ -314,83 +301,82 @@ const HolidayException = () => {
               {landingLoading && <Loading />}
               {permission?.isView ? (
                 <div className="table-card holiday-exception">
-                  <>
-                    <div
-                      className="table-card-heading"
-                      style={{ marginBottom: "0px" }}
-                    >
-                      <div style={{ paddingLeft: "6px" }}>
-                        {checkedList.length > 0 ? (
-                          <h6 className="count">
-                            Total {checkedList.length}{" "}
-                            {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
-                            selected from {pages?.total}
-                          </h6>
-                        ) : (
-                          <h6 className="count">
-                            {" "}
-                            Total {rowDto?.length > 0 ? pages.total : 0}{" "}
-                            Employees
-                          </h6>
-                        )}
-                      </div>
-
-                      <div className="table-card-head-right">
-                        <ul>
-                          {checkedList.length > 0 && (
-                            <li>
-                              <ResetButton
-                                title="reset"
-                                icon={
-                                  <SettingsBackupRestoreOutlined
-                                    sx={{
-                                      marginRight: "10px",
-                                      fontSize: "18px",
-                                    }}
-                                  />
-                                }
-                                onClick={() => {
-                                  // setChecked([]);
-                                  getData(
-                                    { current: 1, pageSize: paginationSize },
-                                    "",
-                                    [],
-                                    -1,
-                                    filterOrderList,
-                                    checkedHeaderList
-                                  );
-                                  setCheckedList([]);
-                                  setFieldValue("search", "");
-                                }}
-                              />
-                            </li>
+                  {rowDto?.length > 0 ? (
+                    <>
+                      <div
+                        className="table-card-heading"
+                        style={{ marginBottom: "0px" }}
+                      >
+                        <div style={{ paddingLeft: "6px" }}>
+                          {checkedList.length > 0 ? (
+                            <h6 className="count">
+                              Total {checkedList.length}{" "}
+                              {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
+                              selected from {pages?.total}
+                            </h6>
+                          ) : (
+                            <h6 className="count">
+                              {" "}
+                              Total {pages.total} Employees
+                            </h6>
                           )}
-                          <li>
-                            {checkedList?.length > 0 && (
-                              <button
-                                className="btn btn-green"
-                                style={{
-                                  marginRight: "10px",
-                                  height: "30px",
-                                  minWidth: "120px",
-                                }}
-                                onClick={(e) => {
-                                  if (!permission?.isCreate)
-                                    return toast.warn(
-                                      "You don't have permission"
+                        </div>
+
+                        <div className="table-card-head-right">
+                          <ul>
+                            {checkedList.length > 0 && (
+                              <li>
+                                <ResetButton
+                                  title="reset"
+                                  icon={
+                                    <SettingsBackupRestoreOutlined
+                                      sx={{
+                                        marginRight: "10px",
+                                        fontSize: "18px",
+                                      }}
+                                    />
+                                  }
+                                  onClick={() => {
+                                    // setChecked([]);
+                                    getData(
+                                      { current: 1, pageSize: paginationSize },
+                                      "",
+                                      [],
+                                      -1,
+                                      filterOrderList,
+                                      checkedHeaderList
                                     );
-                                  setIsMulti(true);
-                                  setSingleData(null);
-                                  setShow(true);
-                                  setIsAssignAll(false);
-                                }}
-                              >
-                                Assign {checkedList.length}
-                              </button>
+                                    setCheckedList([]);
+                                    setFieldValue("search", "");
+                                  }}
+                                />
+                              </li>
                             )}
-                          </li>
-                          <li>
-                            {rowDto?.length > 0 && (
+                            <li>
+                              {checkedList?.length > 0 && (
+                                <button
+                                  className="btn btn-green"
+                                  style={{
+                                    marginRight: "10px",
+                                    height: "30px",
+                                    minWidth: "120px",
+                                  }}
+                                  onClick={(e) => {
+                                    if (!permission?.isCreate)
+                                      return toast.warn(
+                                        "You don't have permission"
+                                      );
+                                    setIsMulti(true);
+                                    setSingleData(null);
+                                    setShow(true);
+                                    setIsAssignAll(false);
+                                  }}
+                                >
+                                  Assign {checkedList.length}
+                                </button>
+                              )}
+                            </li>
+                            <li>
                               <button
                                 className="btn btn-green"
                                 style={{
@@ -410,78 +396,44 @@ const HolidayException = () => {
                               >
                                 Assign {pages.total}
                               </button>
-                            )}
-                          </li>
-                          <li className="mr-3" style={{ width: "150px" }}>
-                            <FormikSelect
-                              name="salaryStatus"
-                              options={statusDDL}
-                              value={values?.salaryStatus}
-                              onChange={(valueOption) => {
-                                setFieldValue("salaryStatus", valueOption);
-                                setFieldValue("search", "");
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  "",
-                                  checkedList,
-                                  -1,
-                                  filterOrderList,
-                                  checkedHeaderList,
-                                  valueOption?.value
-                                );
-                              }}
-                              styles={customStyles}
-                              isClearable={false}
-                            />
-                          </li>
-                          <li>
-                            <MasterFilter
-                              isHiddenFilter
-                              width="200px"
-                              inputWidth="200px"
-                              value={values?.search}
-                              setValue={(value) => {
-                                setFieldValue("search", value);
-                                if (value) {
-                                  getData(
-                                    { current: 1, pageSize: paginationSize },
-                                    value,
-                                    checkedList,
-                                    -1,
-                                    filterOrderList,
-                                    checkedHeaderList,
-                                    values?.salaryStatus?.value
-                                  );
-                                } else {
+                            </li>
+                            <li>
+                              <MasterFilter
+                                isHiddenFilter
+                                width="200px"
+                                inputWidth="200px"
+                                value={values?.search}
+                                setValue={(value) => {
+                                  setFieldValue("search", value);
+                                  if (value) {
+                                    getData(
+                                      { current: 1, pageSize: paginationSize },
+                                      value,
+                                      checkedList,
+                                      -1,
+                                      filterOrderList,
+                                      checkedHeaderList
+                                    );
+                                  } else {
+                                    getData({ current: 1, pageSize: 25 }, "");
+                                  }
+                                }}
+                                cancelHandler={() => {
+                                  setFieldValue("search", "");
                                   getData(
                                     { current: 1, pageSize: paginationSize },
                                     "",
-                                    [],
+                                    checkedList,
                                     -1,
                                     filterOrderList,
-                                    checkedHeaderList,
-                                    values?.salaryStatus?.value
+                                    checkedHeaderList
                                   );
-                                }
-                              }}
-                              cancelHandler={() => {
-                                setFieldValue("search", "");
-                                getData(
-                                  { current: 1, pageSize: paginationSize },
-                                  "",
-                                  checkedList,
-                                  -1,
-                                  filterOrderList,
-                                  checkedHeaderList,
-                                  0
-                                );
-                              }}
-                            />
-                          </li>
-                        </ul>
+                                }}
+                              />
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                    {rowDto?.length > 0 ? (
                       <PeopleDeskTable
                         columnData={columns(
                           pages?.current,
@@ -532,10 +484,7 @@ const HolidayException = () => {
                         isCheckBox={true}
                         isScrollAble={false}
                       />
-                    ) : (
-                      !landingLoading && <NoResult />
-                    )}
-                    {/* <AntTable
+                      {/* <AntTable
                 data={resHolidayLanding}
                 columnsData={columns()}
                 onRowClick={(dataRow) => {}}
@@ -544,8 +493,10 @@ const HolidayException = () => {
                 handleTableChange={handleTableChange}
                 rowKey={(record) => record?.EmployeeCode}
               /> */}
-                  </>
-
+                    </>
+                  ) : (
+                    !landingLoading && <NoResult />
+                  )}
                   {/* <div className="table-card-body">
                     <div className="table-card-styled tableOne">
                       
