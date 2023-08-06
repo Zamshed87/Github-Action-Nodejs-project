@@ -123,6 +123,9 @@ export const updateBuAction = (buId, buName, intLogoUrlId) => (dispatch) => {
 export const updateWgAction = (wgId, wgName) => (dispatch) => {
   dispatch(slice.setWgIdName({ wgId, wgName }));
 };
+export const updateWAction = (wId, wName) => (dispatch) => {
+  dispatch(slice.setWIdName({ wId, wName }));
+};
 
 export const setMessageInfoAction = (messageInfo) => (dispatch) => {
   dispatch(slice.setMessageInfo(messageInfo));
@@ -150,6 +153,17 @@ export const getWGDDLAction = (buId, wgId, employeeId) => (dispatch) => {
     })
     .catch((error) => {
       dispatch(slice.setWGDDL([]));
+    });
+};
+
+export const getWDDLAction = (buId, wgId, employeeId) => (dispatch) => {
+  requestFromServer
+    .getWDDL(buId, wgId, employeeId)
+    .then((res) => {
+      dispatch(slice.setWDDL(res?.data));
+    })
+    .catch((error) => {
+      dispatch(slice.setWDDL([]));
     });
 };
 

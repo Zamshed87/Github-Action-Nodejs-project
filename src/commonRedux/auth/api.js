@@ -45,6 +45,13 @@ export function getWGDDL(buId, wgId, employeeId) {
     }`
   );
 }
+export function getWDDL(buId, wgId, employeeId) {
+  return axios.get(
+    `PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${
+      employeeId || 0
+    }`
+  );
+}
 
 export function getMenuList(employeeId) {
   return axios.get(`/Auth/GetMenuListPermissionWise?EmployeeId=${employeeId}`);
