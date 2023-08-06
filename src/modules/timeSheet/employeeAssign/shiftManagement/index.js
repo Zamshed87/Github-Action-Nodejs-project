@@ -1,75 +1,91 @@
-import {
-  InfoOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
-import { Formik, Form } from "formik";
-import moment from "moment";
-import React, { useState } from "react";
-import { useEffect } from "react";
+import { Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-// import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { Avatar, IconButton, Popover } from "@mui/material";
-import { Clear } from "@mui/icons-material";
-// import { Avatar } from "@mui/material";
-
-import AntTable, { AntPageSize } from "../../../../common/AntTable";
-import AvatarComponent from "../../../../common/AvatarComponent";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
-import Loading from "../../../../common/loading/Loading";
+import moment from "moment";
 import MasterFilter from "../../../../common/MasterFilter";
-import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { gray600, gray900, greenColor } from "../../../../utility/customColor";
-import { dateFormatter } from "../../../../utility/dateFormatter";
-// import { getCalendarAssignFilter } from "../calendar/helper";
-// import AddEditFormComponent from "./addEditForm";
-import { getShiftAssignFilter, getShiftInfo } from "./helper";
-import Calender from "./component/Calender";
+import Loading from "./../../../../common/loading/Loading";
+import NoResult from "./../../../../common/NoResult";
 import ViewModal from "../../../../common/ViewModal";
+
+import ResetButton from "./../../../../common/ResetButton";
+import "./calendar.css";
+import { columns } from "./helper";
+import { Clear, SettingsBackupRestoreOutlined } from "@mui/icons-material";
+import Calender from "./component/Calender";
+import { IconButton, Popover, Avatar } from "@mui/material";
+import { gray900 } from "../../../../utility/customColor";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import axios from "axios";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "../../../../common/peopleDeskTable/helper";
+import FormikSelect from "../../../../common/FormikSelect";
+import { customStyles } from "../../../../utility/selectCustomStyle";
 import CommonEmpInfo from "../../../../common/CommonEmpInfo";
 import SingleShiftAssign from "./singleShiftAssign";
-// import AvatarCustom from "./component/AvatarCustom";
+
 const initData = {
   searchString: "",
+  allSelected: false,
+  // master filter
+  workplace: "",
+  department: "",
+  designation: "",
+  supervisor: "",
+  employmentType: "",
+  employee: "",
+  assignStatus: { value: "all", label: "All" },
+  salaryStatus: "",
 };
+
+const statusDDL = [
+  { value: 0, label: "All" },
+  { value: 1, label: "Assigned" },
+  { value: 2, label: "Not Assigned" },
+];
+
 const validationSchema = Yup.object({});
 
 function ShiftManagement() {
-  // const history = useHistory();
-
-  const [loading, setLoading] = useState(false);
+  // row Data
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
+  const [singleData, setSingleData] = useState([]);
+  // const [checked, setChecked] = useState([]);
   const [singleShiftData, setSingleShiftData] = useState([]);
-  const [selectedSingleEmployee, setSelectedSingleEmployee] = useState([]);
-  const [calendarData, setCalendarData] = useState([]);
-  const [ismulti, setIsmulti] = useState(false);
-
-  const [uniqueShiftBg, setUniqueShiftBg] = useState({});
   const [uniqueShift, setUniqueShift] = useState([]);
   const [uniqueShiftColor, setUniqueShiftColor] = useState({});
-  // eslint-disable-next-line
-  // const [colors, setColors] = useState([
-  //   "#6927DA",
-  //   "#B42318",
-  //   "#299647",
-  //   "#B54708",
-  //   "#722F37",
-  //   "#3538CD",
-  //   "#667085",
-  // ]);
+  const [uniqueShiftBg, setUniqueShiftBg] = useState({});
+  // modal
+  const [createModal, setCreateModal] = useState(false);
+  const handleCreateClose = () => setCreateModal(false);
+  const [calendarData, setCalendarData] = useState([]);
+  const [ismulti, setIsmulti] = useState(false);
+  // master filter
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  const { orgId, buId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   const colors = [
     "#299647",
     "#B54708",
     "#B42318",
     "#6927DA",
-     "#3538CD",
+    "#3538CD",
     "#667085",
-    
     "#667085",
   ];
   // eslint-disable-next-line
@@ -82,71 +98,180 @@ function ShiftManagement() {
     "#F2F4F7",
     "#FEF0D7",
   ]);
-  const [isFilter, setIsFilter] = useState(false);
-  const [createModal, setCreateModal] = useState(false);
-  // const handleCreateClose = () => setCreateModal(false);
-  const [singleAssign, setSingleAssign] = useState(false);
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getData(pagination, srcText);
-    }
-    if (pages?.current !== pagination?.current) {
-      return getData(pagination, srcText);
-    }
-  };
-
-  const { orgId, buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-
+  const [anchorEl2, setAnchorEl2] = useState(null);
+  const open2 = Boolean(anchorEl2);
+  const id2 = open2 ? "simple-popover" : undefined;
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: AntPageSize,
+    pageSize: paginationSize,
     total: 0,
   });
-  const dispatch = useDispatch();
 
-  const getData = (pagination, srcText) => {
-    getShiftAssignFilter(
-      setAllData,
-      setRowDto,
-      setLoading,
-      rowDto,
-      {
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employmentTypeId: 0,
-        employeeId: 0,
-        workplaceGroupId: 0,
-        Status: "all",
-        accountId: orgId,
+  const initHeaderList = {
+    designationList: [],
+    departmentList: [],
+    supervisorNameList: [],
+  };
+  const [landingLoading, setLandingLoading] = useState(false);
+  const [filterOrderList, setFilterOrderList] = useState([]);
+  const [initialHeaderListData, setInitialHeaderListData] = useState({});
+  const [headerList, setHeaderList] = useState({});
+  const [checkedHeaderList, setCheckedHeaderList] = useState({
+    ...initHeaderList,
+  });
+  const [checkedList, setCheckedList] = useState([]);
+  const [empIDString, setEmpIDString] = useState("");
+  const [isAssignAll, setIsAssignAll] = useState(false);
+
+  // landing api call
+  const getDataApiCall = async (
+    modifiedPayload,
+    pagination,
+    searchText,
+    checkedList,
+    currentFilterSelection,
+    checkedHeaderList,
+    isAssigned = null
+  ) => {
+    setLandingLoading(true);
+    try {
+      const payload = {
         businessUnitId: buId,
+        workplaceGroupId: null,
+        isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
+        workplaceId: 0,
+        accountId: orgId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
-        searchText: srcText || "",
-      },
-      (res) => {
-        setPages({
-          ...pages,
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: res?.[0]?.totalCount,
+        isPaginated: true,
+        isHeaderNeed: true,
+        searchTxt: searchText || "",
+      };
+
+      const res = await axios.post(`/Employee/CalendarAssignFilter`, {
+        ...payload,
+        ...modifiedPayload,
+      });
+      if (res?.data?.data) {
+        setLandingLoading(true);
+        setHeaderListDataDynamically({
+          currentFilterSelection,
+          checkedHeaderList,
+          headerListKey: "calendarAssignHeader",
+          headerList,
+          setHeaderList,
+          response: res?.data,
+          filterOrderList,
+          setFilterOrderList,
+          initialHeaderListData,
+          setInitialHeaderListData,
+          // setEmpLanding,
+          setPages,
         });
+
+        setEmpIDString(res?.data?.employeeIdList);
+        const modifiedData = res?.data?.data?.map((item, index) => ({
+          ...item,
+          initialSerialNumber: index + 1,
+          isSelected: checkedList?.find(
+            ({ employeeCode }) => item?.employeeCode === employeeCode
+          )
+            ? true
+            : false,
+        }));
+
+        setRowDto(modifiedData);
+        setLandingLoading(false);
+      } else {
+        setRowDto([]);
       }
+      setLandingLoading(false);
+    } catch (error) {
+      setLandingLoading(false);
+    }
+  };
+
+  const getData = async (
+    pagination,
+    searchText = "",
+    checkedList = [],
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList },
+    isAssigned
+  ) => {
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+
+    getDataApiCall(
+      modifiedPayload,
+      pagination,
+      searchText,
+      checkedList,
+      currentFilterSelection,
+      checkedHeaderList,
+      isAssigned
     );
   };
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    getData(pages);
+    setCalendarData([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [buId]);
+
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      searchText,
+      checkedList,
+      -1,
+      filterOrderList,
+      checkedHeaderList
+    );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      searchText,
+      checkedList,
+      -1,
+      filterOrderList,
+      checkedHeaderList
+    );
+  };
+  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 30369) {
+      permission = item;
+    }
+  });
 
   useEffect(() => {
     setUniqueShift([]);
@@ -168,242 +293,15 @@ function ShiftManagement() {
     }
     // eslint-disable-next-line
   }, [singleShiftData]);
+  const numberString = empIDString
+    .replace("{empIDString: '", "")
+    .replace("'}", "");
 
-  useEffect(() => {
-    getData(pages);
-    setCalendarData([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId]);
+  // Split the string into an array of strings using comma as a delimiter
+  const numberArray = numberString.split(",");
 
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Administration"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  //   permission
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-  let permission = null;
-  permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30369) {
-      permission = item;
-    }
-  });
-  const saveHandler = () => {};
-  const columns = () => [
-    {
-      title: () => (
-        <span style={{ color: gray600, textAlign: "text-center" }}>SL</span>
-      ),
-      render: (text, record, index) => {
-        return (
-          <span>
-            {pages?.current === 1
-              ? index + 1
-              : (pages.current - 1) * pages?.pageSize + (index + 1)}
-          </span>
-        );
-      },
-
-      className: "text-center",
-    },
-    {
-      title: () => (
-        <div style={{ minWidth: "100px" }}>
-          <FormikCheckBox
-            styleObj={{
-              margin: "0 auto!important",
-              padding: "0 !important",
-              color: gray900,
-              checkedColor: greenColor,
-            }}
-            name="allSelected"
-            checked={
-              rowDto?.length > 0 && rowDto?.every((item) => item?.isAssigned)
-            }
-            onChange={(e) => {
-              let data = rowDto?.map((item) => ({
-                ...item,
-                isAssigned: e.target.checked,
-              }));
-              let data2 = allData.map((item) => ({
-                ...item,
-                isAssigned: e.target.checked,
-              }));
-              setRowDto(data);
-              setAllData(data2);
-            }}
-          />
-
-          <span style={{ marginLeft: "5px", color: gray600 }}>Employee ID</span>
-        </div>
-      ),
-      dataIndex: "EmployeeCode",
-      render: (_, record, index) => (
-        <div style={{ minWidth: "80px" }}>
-          <FormikCheckBox
-            styleObj={{
-              margin: "0 auto!important",
-              color: gray900,
-              checkedColor: greenColor,
-              padding: "0px",
-            }}
-            name="selectCheckbox"
-            color={greenColor}
-            checked={record?.isAssigned}
-            onChange={(e) => {
-              let data = rowDto?.map((item) =>
-                item?.EmployeeId === record?.EmployeeId
-                  ? { ...item, isAssigned: !item?.isAssigned }
-                  : item
-              );
-              let data2 = allData?.map((item) =>
-                item?.EmployeeId === record?.EmployeeId
-                  ? { ...item, isAssigned: !item?.isAssigned }
-                  : item
-              );
-              setRowDto(data);
-              setAllData(data2);
-            }}
-          />
-
-          <span style={{ marginLeft: "5px" }}>{record?.EmployeeCode}</span>
-        </div>
-      ),
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Employee",
-      dataIndex: "EmployeeName",
-      render: (EmployeeName, record) => (
-        <div className="d-flex align-items-center">
-          <AvatarComponent classess="" letterCount={1} label={EmployeeName} />
-          <span className="ml-2">{EmployeeName}</span>
-          {/* {singleShiftData.length === 0 && */}
-          <InfoOutlined
-            style={{ cursor: "pointer" }}
-            className="ml-2"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSingleShiftData([]);
-              getShiftInfo(record?.EmployeeId, setSingleShiftData, setLoading);
-              setAnchorEl(e.currentTarget);
-            }}
-          />
-    {/* } */}
-        </div>
-      ),
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Designation",
-      dataIndex: "DesignationName",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Department",
-      dataIndex: "DepartmentName",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Supervisor",
-      dataIndex: "SupervisorName",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: () => <span style={{ color: gray600 }}>Generate Date</span>,
-      dataIndex: "GenerateDate",
-      render: (GenerateDate) => dateFormatter(GenerateDate),
-      sorter: true,
-      filter: true,
-      isDate: true,
-    },
-    {
-      title: () => <span style={{ color: gray600 }}>Joining Date</span>,
-      dataIndex: "JoiningDate",
-      render: (JoiningDate) => dateFormatter(JoiningDate),
-      sorter: true,
-      filter: true,
-      isDate: true,
-    },
-    {
-      title: () => <span style={{ color: gray600 }}>Roster Name</span>,
-      dataIndex: "RosterGroupName",
-      sorter: true,
-      filter: true,
-    },
-    // {
-    //   title: () => <span style={{ color: gray600 }}>Calender Name</span>,
-    //   dataIndex: "CalendarName",
-    //   sorter: true,
-    //   filter: true,
-    //   render: (_, record) => (
-    //     <>
-    //       {record?.CalendarName ? (
-    //         <div className="d-flex align-items-center">
-    //           <RoasterInfo item={record} />
-    //           <div className="pl-2">{record.CalendarName} </div>
-    //         </div>
-    //       ) : (
-    //         ""
-    //       )}
-    //     </>
-    //   ),
-    // },
-    {
-      className: "text-center",
-      render: (_, record, index) => (
-        <div className="d-flex justify-content-around">
-          {/* <InfoOutlined
-            onClick={(e) => {
-              e.stopPropagation();
-              getShiftInfo(record?.EmployeeId, setSingleShiftData, setLoading);
-              setAnchorEl(e.currentTarget);
-            }}
-          /> */}
-          <div className="assign-btn">
-            {/* {singleShiftData.length ===0 &&  */}
-            <button
-              style={{
-                marginRight: "25px",
-                height: "24px",
-                fontSize: "12px",
-                padding: "0px 12px 0px 12px",
-              }}
-              type="button"
-              className="btn btn-default"
-              onClick={(e) => {
-                if (!permission?.isCreate)
-                  return toast.warn("You don't have permission");
-                if (!permission?.isCreate)
-                  return toast.warn("You don't have permission");
-                // history.push({
-                //   pathname: `/administration/timeManagement/shiftManagement/assign/${record?.EmployeeId}`,
-                // });
-                setSingleShiftData([]);
-                setIsmulti(false);
-                setCalendarData([]);
-                setCreateModal(true);
-                setSelectedSingleEmployee([record]);
-                setSingleAssign(true);
-                getShiftInfo(
-                  record?.EmployeeId,
-                  setSingleShiftData,
-                  setLoading
-                );
-              }}
-            >
-              Assign
-            </button>
-            {/* } */}
-          </div>
-        </div>
-      ),
-    },
-  ];
+  // Convert each element of the array to a number using parseInt
+  // const numbers = numberArray.map((numString) => parseInt(numString, 10));
   return (
     <>
       <Formik
@@ -411,414 +309,467 @@ function ShiftManagement() {
         initialValues={initData}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
-            {loading && <Loading />}
-            <Form onSubmit={handleSubmit} className="">
+            {landingLoading && <Loading />}
+            <Form onSubmit={handleSubmit}>
               {permission?.isView ? (
                 <div className="table-card">
-                  <div className="table-card-heading">
-                    <div></div>
-                    <div className="table-card-head-right">
-                      <ul>
-                        {isFilter && (
+                  <>
+                    <div className="table-card-heading">
+                      <div style={{ paddingLeft: "6px" }}>
+                        {rowDto.filter((item) => item?.isSelected).length >
+                        0 ? (
+                          <h6 className="count">
+                            Total {checkedList.length}{" "}
+                            {`employee${checkedList.length > 1 ? "s" : ""}`}{" "}
+                            selected from {pages?.total}
+                          </h6>
+                        ) : (
+                          <h6 className="count">
+                            {" "}
+                            Total {rowDto?.length > 0 ? pages.total : 0}{" "}
+                            Employees
+                          </h6>
+                        )}
+                      </div>
+                      <div className="table-card-head-right">
+                        <ul>
+                          {rowDto.filter((item) => item?.isSelected).length >
+                            0 && (
+                            <li>
+                              <ResetButton
+                                title="reset"
+                                icon={
+                                  <SettingsBackupRestoreOutlined
+                                    sx={{ marginRight: "10px" }}
+                                  />
+                                }
+                                onClick={() => {
+                                  getData(
+                                    { current: 1, pageSize: paginationSize },
+                                    "",
+                                    [],
+                                    -1,
+                                    filterOrderList,
+                                    checkedHeaderList
+                                  );
+                                  // setRowDto(allData);
+                                  setCheckedList([]);
+                                  setFieldValue("searchString", "");
+                                }}
+                              />
+                            </li>
+                          )}
                           <li>
-                            <ResetButton
-                              title="reset"
-                              icon={
-                                <SettingsBackupRestoreOutlined
-                                  sx={{ marginRight: "10px" }}
-                                />
-                              }
-                              onClick={() => {
-                                getData(
-                                  { current: 1, pageSize: AntPageSize },
+                            {rowDto?.length > 0 && (
+                              <div className="d-flex">
+                                <button
+                                  className="btn btn-green"
+                                  style={{
+                                    marginRight: "10px",
+                                    height: "30px",
+                                    minWidth: "120px",
+                                    fontSize: "12px",
+                                  }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!permission?.isCreate)
+                                      return toast.warn(
+                                        "You don't have permission"
+                                      );
+                                    setIsAssignAll(true);
+                                    setIsmulti(false);
+                                    setCalendarData([]);
+                                    setCreateModal(true);
+                                  }}
+                                >
+                                  Assign {pages.total}
+                                </button>
+                                {rowDto?.filter((item) => item?.isSelected)
+                                  .length > 0 ? (
+                                  <button
+                                    className="btn btn-green"
+                                    style={{
+                                      height: "30px",
+                                      minWidth: "120px",
+                                      fontSize: "12px",
+                                    }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (!permission?.isCreate)
+                                        return toast.warn(
+                                          "You don't have permission"
+                                        );
+                                      setIsAssignAll(false);
+                                      setIsmulti(true);
+                                      setCreateModal(true);
+                                      setCalendarData([]);
+                                    }}
+                                  >
+                                    Assign{" "}
+                                    {
+                                      rowDto?.filter((item) => item?.isSelected)
+                                        .length
+                                    }
+                                  </button>
+                                ) : (
                                   ""
-                                );
-                                setIsFilter(false);
-                                setRowDto(allData);
-                                resetForm(initData);
+                                )}
+                              </div>
+                            )}
+                          </li>
+                          <li className="mr-3" style={{ width: "150px" }}>
+                            <FormikSelect
+                              name="salaryStatus"
+                              options={statusDDL}
+                              value={values?.salaryStatus}
+                              onChange={(valueOption) => {
+                                setFieldValue("salaryStatus", valueOption);
                                 setFieldValue("searchString", "");
+                                getData(
+                                  { current: 1, pageSize: paginationSize },
+                                  "",
+                                  checkedList,
+                                  -1,
+                                  filterOrderList,
+                                  checkedHeaderList,
+                                  valueOption?.value
+                                );
                               }}
+                              styles={customStyles}
+                              isClearable={false}
                             />
                           </li>
-                        )}
-                        <li>
-                          {rowDto &&
-                          rowDto?.filter((item) => item?.isAssigned).length >
-                            0 ? (
-                            <button
-                              className="btn btn-green"
-                              style={{ marginRight: "40px", height: "30px" }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSingleShiftData([]);
-                                if (!permission?.isCreate)
-                                  return toast.warn(
-                                    "You don't have permission"
+                          <li>
+                            <MasterFilter
+                              isHiddenFilter
+                              value={values?.searchString}
+                              setValue={(value) => {
+                                setFieldValue("searchString", value);
+                                if (value) {
+                                  getData(
+                                    { current: 1, pageSize: paginationSize },
+                                    value,
+                                    checkedList,
+                                    -1,
+                                    filterOrderList,
+                                    checkedHeaderList,
+                                    values?.salaryStatus?.value
                                   );
-                                setSingleAssign(false);
-                                setIsmulti(true);
-                                setCreateModal(true);
-                                setCalendarData([]);
+                                } else {
+                                  getData(
+                                    { current: 1, pageSize: paginationSize },
+                                    "",
+                                    [],
+                                    -1,
+                                    filterOrderList,
+                                    checkedHeaderList,
+                                    values?.salaryStatus?.value
+                                  );
+                                }
                               }}
-                            >
-                              Assign
-                            </button>
-                          ) : (
-                            ""
-                          )}
-                        </li>
-                        <li>
-                          <MasterFilter
-                            isHiddenFilter
-                            value={values?.searchString}
-                            setValue={(value) => {
-                              setFieldValue("searchString", value);
-                              if (value) {
+                              cancelHandler={() => {
+                                setFieldValue("searchString", "");
                                 getData(
-                                  { current: 1, pageSize: AntPageSize },
-                                  value
+                                  { current: 1, pageSize: paginationSize },
+                                  "",
+                                  [],
+                                  -1,
+                                  filterOrderList,
+                                  checkedHeaderList,
+                                  0
                                 );
-                              } else {
-                                getData(
-                                  { current: 1, pageSize: AntPageSize },
-                                  ""
-                                );
-                              }
-                            }}
-                            cancelHandler={() => {
-                              setFieldValue("searchString", "");
-                              getData(
-                                { current: 1, pageSize: AntPageSize },
-                                ""
-                              );
-                            }}
-                            // handleClick={handleClick}
-                            width="200px"
-                            inputWidth="200px"
-                          />
-                        </li>
-                      </ul>
+                              }}
+                              handleClick={handleClick}
+                              width="200px"
+                              inputWidth="200px"
+                            />
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                  </div>
-                  <div className="table-card-body">
-                    <div className="table-card-styled tableOne">
-                      {allData?.length > 0 ? (
-                        <>
-                          <AntTable
-                            data={allData}
-                            columnsData={columns()}
-                            setColumnsData={(dataRow) => {
-                              if (dataRow?.length === allData?.length) {
-                                let temp = dataRow?.map((item) => {
-                                  return {
-                                    ...item,
-                                    isAssigned: false,
-                                  };
-                                });
-                                setRowDto(temp);
-                                setAllData(temp);
-                              } else {
-                                setRowDto(dataRow);
-                              }
-                            }}
-                            onRowClick={(dataRow) => {}}
-                            pages={pages?.pageSize}
-                            pagination={pages}
-                            handleTableChange={({ pagination, newRowDto }) =>
-                              handleTableChange(
-                                pagination,
-                                newRowDto,
-                                values?.search || ""
-                              )
-                            }
-                          />
-                        </>
-                      ) : (
-                        <>
-                          {!loading && (
-                            <NoResult title="No Result Found" para="" />
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
+                    {rowDto?.length > 0 ? (
+                      <PeopleDeskTable
+                        columnData={columns(
+                          pages,
+                          permission,
+                          rowDto,
+                          setRowDto,
+                          checkedList,
+                          setCheckedList,
+                          setSingleData,
+                          setCreateModal,
+                          setSingleShiftData,
+                          setAnchorEl2,
+                          headerList
+                        )}
+                        pages={pages}
+                        rowDto={rowDto}
+                        setRowDto={setRowDto}
+                        checkedList={checkedList}
+                        setCheckedList={setCheckedList}
+                        checkedHeaderList={checkedHeaderList}
+                        setCheckedHeaderList={setCheckedHeaderList}
+                        handleChangePage={(e, newPage) =>
+                          handleChangePage(e, newPage, values?.search)
+                        }
+                        handleChangeRowsPerPage={(e) =>
+                          handleChangeRowsPerPage(e, values?.search)
+                        }
+                        filterOrderList={filterOrderList}
+                        setFilterOrderList={setFilterOrderList}
+                        uniqueKey="employeeCode"
+                        getFilteredData={(
+                          currentFilterSelection,
+                          updatedFilterData,
+                          updatedCheckedHeaderData
+                        ) => {
+                          getData(
+                            {
+                              current: 1,
+                              pageSize: paginationSize,
+                              total: 0,
+                            },
+                            "",
+                            [],
+                            currentFilterSelection,
+                            updatedFilterData,
+                            updatedCheckedHeaderData
+                          );
+                        }}
+                        isCheckBox={true}
+                        isScrollAble={true}
+                      />
+                    ) : (
+                      !landingLoading && (
+                        <NoResult title="No Result Found" para="" />
+                      )
+                    )}
+                  </>
                 </div>
               ) : (
                 <NotPermittedPage />
+              )}
+
+              {isAssignAll || ismulti ? (
+                <ViewModal
+                  show={createModal}
+                  title={`Assign Shift (${moment().format("MMM, YYYY")})`}
+                  onHide={() => {
+                    setCreateModal(false);
+                    // setSingleAssign(false);
+                    setCalendarData([]);
+                    setIsAssignAll(false);
+                    setIsmulti(false);
+                  }}
+                  size="lg"
+                  backdrop="static"
+                  classes="default-modal creat-job-modal"
+                >
+                  <div className="row">
+                    <div
+                      className={ismulti ? "col-4 px-2" : "col-2"}
+                      style={
+                        ismulti ? { height: "550px", overflow: "scroll" } : {}
+                      }
+                    >
+                      {/* <div
+                      style={{ height: "550px", overflow: "scroll" }}
+                      className="col-4  px-2"
+                    > */}
+                      {/* {!singleAssign && (
+                        <p className=" ml-4 ">
+                          Total Selected{" "}
+                          {
+                            checked?.filter((item) => item?.selectCheckbox)
+                              .length
+                          }
+                        </p>
+                      )} */}
+
+                      {ismulti ? (
+                        <div className="">
+                          {rowDto?.map(
+                            (data) =>
+                              data?.isSelected && (
+                                <ol className="mb-2">
+                                  <li
+                                    style={{ display: "list-item !important" }}
+                                  >
+                                    <div className="">
+                                      <div>
+                                        <Avatar
+                                          className="ml-4 mb-1"
+                                          sx={{
+                                            mt: 0.2,
+                                            "&.MuiAvatar-root": {
+                                              width: "22px!important",
+                                              height: "22px!important",
+                                            },
+                                          }}
+                                        />
+                                      </div>
+                                      <CommonEmpInfo
+                                        classes={"ml-4"}
+                                        employeeName={data?.employeeName}
+                                        designationName={data?.designation}
+                                        departmentName={data?.department}
+                                      />
+                                    </div>
+                                  </li>
+                                </ol>
+                              )
+                          )}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="col-8">
+                      <div className="mr-2">
+                        {isAssignAll ? (
+                          <>
+                            {/* <SingleShiftAssign
+                              listId={[selectedSingleEmployee[0]?.EmployeeId]}
+                              setCreateModal={setCreateModal}
+                              setSingleAssign={setSingleAssign}
+                              getData={getData}
+                              pages={pages}
+                              calendarData={calendarData}
+                              setCalendarData={setCalendarData}
+                              singleShiftData={singleShiftData}
+                              uniqueShiftColor={uniqueShiftColor}
+                              uniqueShiftBg={uniqueShiftBg}
+                              uniqueShift={uniqueShift}
+                            /> */}
+                            <SingleShiftAssign
+                              listId={numberArray?.map((item) => item)}
+                              setCreateModal={setCreateModal}
+                              setSingleAssign={setIsAssignAll}
+                              getData={getData}
+                              pages={pages}
+                              calendarData={calendarData}
+                              setCalendarData={setCalendarData}
+                              isMargin={true}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            {
+                              <SingleShiftAssign
+                                listId={rowDto
+                                  ?.filter((item) => item?.isSelected)
+                                  .map((item) => item?.employeeId.toString())}
+                                setCreateModal={setCreateModal}
+                                setSingleAssign={setIsmulti}
+                                getData={getData}
+                                pages={pages}
+                                calendarData={calendarData}
+                                setCalendarData={setCalendarData}
+                              />
+                            }
+                            {null}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </ViewModal>
+              ) : (
+                ""
+              )}
+              {/* calendar pop up  */}
+              {singleShiftData.length > 0 ? (
+                <Popover
+                  sx={{
+                    "& .MuiPaper-root": {
+                      width: "675px",
+                      minHeight: "200px",
+                      borderRadius: "4px",
+                    },
+                  }}
+                  id={id2}
+                  open={open2}
+                  anchorEl={anchorEl2}
+                  onClose={() => {
+                    setAnchorEl2(null);
+                  }}
+                  anchorOrigin={{
+                    horizontal: "middle",
+                  }}
+                >
+                  <div
+                    className="master-filter-modal-container employeeProfile-src-filter-main"
+                    style={{ height: "auto" }}
+                  >
+                    <div className="master-filter-header employeeProfile-src-filter-header">
+                      <div></div>
+                      <IconButton
+                        onClick={() => {
+                          setAnchorEl2(null);
+                          setSingleShiftData([]);
+                        }}
+                      >
+                        <Clear sx={{ fontSize: "18px", color: gray900 }} />
+                      </IconButton>
+                    </div>
+                    <hr />
+
+                    {singleShiftData?.length > 0 ? (
+                      <>
+                        <h6 className="ml-3 fs-1 text-center">
+                          {" "}
+                          {moment().format("MMMM")}-{moment().format("YYYY")}
+                        </h6>
+
+                        <div
+                          className="body-employeeProfile-master-filter d-flex"
+                          style={{ height: "380px" }}
+                        >
+                          <div className="row ml-3  my-2">
+                            <Calender
+                              monthYear={moment().format("YYYY-MM")}
+                              singleShiftData={singleShiftData}
+                              uniqueShiftColor={uniqueShiftColor}
+                              uniqueShiftBg={uniqueShiftBg}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <NoResult title="No Result Found" para="" />
+                    )}
+
+                    <div className=" mt-2 mb-3 d-flex justify-content-around">
+                      {uniqueShift.length > 0 &&
+                        uniqueShift.map((item, index) => (
+                          <div key={index} className="text-center">
+                            {/* <p style={getChipStyleShift(item)}>{`${item} Shift `}</p> */}
+                            <p
+                              style={{
+                                borderRadius: "99px",
+                                fontSize: "14px",
+                                padding: "2px 5px",
+                                fontWeight: 500,
+                                color: `${uniqueShiftColor[item]}`,
+                                backgroundColor: `${uniqueShiftBg[item]}`,
+                              }}
+                            >{`${item}`}</p>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </Popover>
+              ) : (
+                ""
               )}
             </Form>
           </>
         )}
       </Formik>
-      {singleShiftData.length > 0 || ismulti ? (
-        <ViewModal
-          show={createModal}
-          title={`Assign Shift (${moment().format("MMM, YYYY")})`}
-          onHide={() => {
-            setCreateModal(false);
-            setSingleAssign(false);
-            setCalendarData([]);
-          }}
-          size="lg"
-          backdrop="static"
-          classes="default-modal creat-job-modal"
-        >
-          <div className="row">
-            <div
-              style={{ height: "550px", overflow: "scroll" }}
-              className="col-4  px-2"
-            >
-              {!singleAssign && (
-                <p className=" ml-4 ">
-                  Total Selected{" "}
-                  {rowDto?.filter((item) => item?.isAssigned).length}
-                </p>
-              )}
-
-              {singleAssign ? (
-                <div className="">
-                  <div>
-                    <Avatar
-                      className="ml-4 mb-1"
-                      sx={{
-                        mt: 0.2,
-                        "&.MuiAvatar-root": {
-                          width: "22px!important",
-                          height: "22px!important",
-                        },
-                      }}
-                    />
-                  </div>
-                  <CommonEmpInfo
-                    classes={"ml-4"}
-                    employeeName={selectedSingleEmployee[0]?.EmployeeName}
-                    designationName={selectedSingleEmployee[0]?.DesignationName}
-                    departmentName={selectedSingleEmployee[0]?.DepartmentName}
-                  />
-                </div>
-              ) : (
-                rowDto?.map(
-                  (data) =>
-                    data?.isAssigned && (
-                      <ol className="mb-2">
-                        <li style={{ display: "list-item !important" }}>
-                          <div className="">
-                            <div>
-                              <Avatar
-                                className="ml-4 mb-1"
-                                sx={{
-                                  mt: 0.2,
-                                  "&.MuiAvatar-root": {
-                                    width: "22px!important",
-                                    height: "22px!important",
-                                  },
-                                }}
-                              />
-                            </div>
-                            <CommonEmpInfo
-                              classes={"ml-4"}
-                              employeeName={data?.EmployeeName}
-                              designationName={data?.DesignationName}
-                              departmentName={data?.DepartmentName}
-                            />
-                          </div>
-                        </li>
-                      </ol>
-                    )
-                )
-              )}
-            </div>
-            <div
-              //  style={{ height: "560px", overflow: "scroll" }}
-              className="col-8"
-            >
-              <div className="mr-2">
-                {singleAssign ? (
-                  <>
-                    <SingleShiftAssign
-                      listId={[selectedSingleEmployee[0]?.EmployeeId]}
-                      setCreateModal={setCreateModal}
-                      setSingleAssign={setSingleAssign}
-                      getData={getData}
-                      pages={pages}
-                      calendarData={calendarData}
-                      setCalendarData={setCalendarData}
-                      singleShiftData={singleShiftData}
-                      uniqueShiftColor={uniqueShiftColor}
-                      uniqueShiftBg={uniqueShiftBg}
-                      uniqueShift={uniqueShift}
-                    />
-                    {/* <CalenderCommon
-                    orgId={orgId}
-                    setShowModal={setCreateModal}
-                    monthYear={moment().format("YYYY-MM")}
-                    calendarData={calendarData}
-                    setCalendarData={setCalendarData}
-                    isClickable={true}
-                  /> */}
-                  </>
-                ) : (
-                  <>
-                    <SingleShiftAssign
-                      listId={rowDto
-                        .filter((item) => item?.isAssigned)
-                        .map((item) => item?.EmployeeId)}
-                      setCreateModal={setCreateModal}
-                      setSingleAssign={setSingleAssign}
-                      getData={getData}
-                      pages={pages}
-                      calendarData={calendarData}
-                      setCalendarData={setCalendarData}
-                    />
-
-                    {/* <CalenderCommon
-                    orgId={orgId}
-                    setShowModal={setCreateModal}
-                    monthYear={moment().format("YYYY-MM")}
-                    calendarData={calendarData}
-                    setCalendarData={setCalendarData}
-                    isClickable={true}
-                    
-                  /> */}
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-          {/* <div className="d-flex justify-content-end p-2">
-            <ul className="d-flex flex-wrap">
-              <li>
-                <button
-                  onClick={() => {
-                    setCreateModal(false);
-                    setSingleAssign(false);
-                  }}
-                  type="button"
-                  className="btn btn-cancel mr-2"
-                >
-                  Cancel
-                </button>
-              </li>
-              <li>
-                <button
-                  // onClick={handleSave}
-                  type="button"
-                  className="btn btn-green flex-center"
-                >
-                  Save
-                </button>
-              </li>
-            </ul>
-          </div> */}
-        </ViewModal>
-      ) : (
-        ''
-        // !singleShiftData?.length  && toast.warn("No Data Found")
-
-        // load && toast.warn("No Data Found")
-      )}
-      {singleShiftData.length > 0 ? (
-        <Popover
-          sx={{
-            "& .MuiPaper-root": {
-              width: "675px",
-              minHeight: "200px",
-              borderRadius: "4px",
-            },
-          }}
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          onClose={() => {
-            setAnchorEl(null);
-          }}
-          anchorOrigin={{
-            // vertical: "bottom",
-            horizontal: "middle",
-          }}
-        >
-          <div
-            className="master-filter-modal-container employeeProfile-src-filter-main"
-            style={{ height: "auto" }}
-          >
-            <div className="master-filter-header employeeProfile-src-filter-header">
-              <div></div>
-              <IconButton
-                onClick={() => {
-                  setAnchorEl(null);
-                  // setRowDto(allData);
-                  setSingleShiftData([]);
-                }}
-              >
-                <Clear sx={{ fontSize: "18px", color: gray900 }} />
-              </IconButton>
-            </div>
-            <hr />
-
-            {singleShiftData?.length > 0 ? (
-              <>
-                <h6 className="ml-3 fs-1 text-center">
-                  {" "}
-                  {moment().format("MMMM")}-{moment().format("YYYY")}
-                </h6>
-
-                <div
-                  className="body-employeeProfile-master-filter d-flex"
-                  style={{ height: "350px" }}
-                >
-                  <div className="row ml-3  my-2">
-                    <Calender
-                      monthYear={moment().format("YYYY-MM")}
-                      singleShiftData={singleShiftData}
-                      uniqueShiftColor={uniqueShiftColor}
-                      uniqueShiftBg={uniqueShiftBg}
-                    />
-                  </div>
-                </div>
-              </>
-            ) : (
-              <NoResult title="No Result Found" para="" />
-            )}
-
-            <div className=" mt-2 mb-3 d-flex justify-content-around">
-              {uniqueShift.length > 0 &&
-                uniqueShift.map((item, index) => (
-                  <div key={index} className="text-center">
-                    {/* <p style={getChipStyleShift(item)}>{`${item} Shift `}</p> */}
-                    <p
-                      style={{
-                        borderRadius: "99px",
-                        fontSize: "14px",
-                        padding: "2px 5px",
-                        fontWeight: 500,
-                        color: `${uniqueShiftColor[item]}`,
-                        backgroundColor: `${uniqueShiftBg[item]}`,
-                      }}
-                    >{`${item} Shift `}</p>
-                  </div>
-                ))}
-            </div>
-          </div>
-        </Popover>
-      ) : (
-        ''
-        // !singleShiftData?.length  && toast.warn("No Data Found")
-      )}
     </>
   );
 }

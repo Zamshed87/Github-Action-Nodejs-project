@@ -3,8 +3,6 @@ import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../../common/AvatarComponent";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
-import { gray900, greenColor } from "../../../../utility/customColor";
 
 const printDays = (item) => {
   let data = [];
@@ -32,7 +30,9 @@ export const getOffDayLandingHandler = (
   srcText,
   status,
   isAlreadyPresent,
-  checked
+  checked,
+  setFilterLanding,
+  setDataForAntTable
 ) => {
   const payload = {
     departmentId: 0,
@@ -80,6 +80,8 @@ export const getOffDayLandingHandler = (
           })
         : [];
     setLanding(newData);
+    setFilterLanding?.(newData);
+    setDataForAntTable?.(newData);
     res?.length > 0 &&
       setPages({
         current: pagination.current,
@@ -127,140 +129,46 @@ export const createMonthlyOffdayAssign = async (payload, setLoading, cb) => {
 
 export const offDayAssignDtoCol = (
   pages,
-  paginationSize,
   permission,
-  // filterLanding,
-  // setFilterLanding,
-  setLanding,
-  resLanding,
   setShowModal,
+  setIsAssignAll,
+  checkedList,
+  setCheckedList,
   setSelectedSingleEmployee,
-  setSingleAssign,
   setAnchorEl,
-  checked,
-  setChecked,
   setCalendarData,
-  isAlreadyPresent,
   setLoading,
-  loading
+  loading,
+  headerList,
+  setSingleAssign
 ) => {
   return [
     {
       title: "SL",
-      render: (text, record, index) => {
-        return (
-          <span>
-            {pages?.current === 1
-              ? index + 1
-              : (pages.current - 1) * pages?.pageSize + (index + 1)}
-          </span>
-        );
-      },
-      sorter: false,
+      render: (_, index) => (pages?.current - 1) * pages?.pageSize + index + 1,
+      sort: false,
       filter: false,
       className: "text-center",
     },
     {
-      width: "10px",
-      title: () => (
-        <div>
-          <FormikCheckBox
-            styleObj={{
-              margin: "0 auto!important",
-              padding: "0 !important",
-              color: gray900,
-              checkedColor: greenColor,
-            }}
-            name="allSelected"
-            checked={
-              resLanding?.length > 0
-                ? resLanding?.every((item) => item?.selectCheckbox)
-                : false
-            }
-            onChange={(e) => {
-              let temp = [...checked];
-              let data = resLanding?.map((item) => {
-                const newItem = {
-                  ...item,
-                  selectCheckbox: e.target.checked,
-                };
-
-                if (!e.target.checked) {
-                  const updatedChecked = temp.filter(
-                    (ele) => ele.EmployeeId !== item.EmployeeId
-                  );
-                  temp = [...updatedChecked];
-                  setChecked(updatedChecked);
-                } else if (isAlreadyPresent(item) === -1) {
-                  setChecked((prev) => [...prev, newItem]);
-                }
-
-                return newItem;
-              });
-              setLanding(data);
-            }}
-          />
-        </div>
-      ),
-      dataIndex: "EmployeeCode",
-      render: (_, record, index) => (
-        <div>
-          <FormikCheckBox
-            styleObj={{
-              margin: "0 auto!important",
-              color: gray900,
-              checkedColor: greenColor,
-              padding: "0px",
-            }}
-            name="selectCheckbox"
-            color={greenColor}
-            checked={record?.selectCheckbox}
-            onChange={(e) => {
-              let data = resLanding?.map((item) => {
-                if (item?.EmployeeId === record?.EmployeeId) {
-                  const idx = isAlreadyPresent(item);
-                  if (idx >= 0) {
-                    let updatedChecked = [...checked];
-                    updatedChecked.splice(idx, 1);
-                    setChecked(updatedChecked);
-                  } else {
-                    setChecked((prev) => [
-                      ...prev,
-                      { ...item, selectCheckbox: true },
-                    ]);
-                  }
-                  return { ...item, selectCheckbox: !item?.selectCheckbox };
-                } else return item;
-              });
-              setLanding(data);
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      title: () => (
-        <div>
-          <span style={{ marginLeft: "5px" }}>Employee ID</span>
-        </div>
-      ),
-      dataIndex: "EmployeeCode",
-      render: (_, record, index) => (
-        <div>
-          <span style={{ marginLeft: "5px" }}>{record?.EmployeeCode}</span>
-        </div>
-      ),
-      sorter: true,
-      filter: true,
-      isNumber: true,
+      title: "Employee Id",
+      dataIndex: "employeeCode",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+      width: 150,
     },
     {
       title: "Employee",
-      dataIndex: "EmployeeName",
-      render: (EmployeeName, record) => (
+      dataIndex: "",
+      render: (record) => (
         <div className="d-flex align-items-center">
-          <AvatarComponent classess="" letterCount={1} label={EmployeeName} />
-          <span className="ml-2">{EmployeeName}</span>
+          <AvatarComponent
+            classess=""
+            letterCount={1}
+            label={record?.employeeName}
+          />
+          <span className="ml-2">{record?.employeeName}</span>
           <InfoOutlined
             className="ml-2"
             sx={{ cursor: "pointer" }}
@@ -269,7 +177,7 @@ export const offDayAssignDtoCol = (
               getSingleCalendar(
                 moment().format("MM"),
                 moment().format("YYYY"),
-                record?.EmployeeId,
+                record?.employeeId,
                 setCalendarData,
                 setLoading
               );
@@ -279,31 +187,43 @@ export const offDayAssignDtoCol = (
           />
         </div>
       ),
-      sorter: true,
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+      sort: true,
       filter: true,
+      filterDropDownList: headerList[`departmentList`],
+      fieldType: "string",
     },
     {
       title: "Designation",
-      dataIndex: "DesignationName",
-      sorter: true,
+      dataIndex: "designation",
+      sort: true,
       filter: true,
-      onReset: (e) => {},
+      filterDropDownList: headerList[`designationList`],
+      fieldType: "string",
     },
     {
-      title: "Workplace",
-      dataIndex: "WorkplaceName",
-      sorter: true,
-      filter: true,
+      title: "Workplace Group",
+      dataIndex: "workplaceGroupName",
+      sort: true,
+      fieldType: "string",
     },
     {
       title: "Supervisor",
-      dataIndex: "SupervisorName",
-      sorter: true,
+      dataIndex: "supervisorName",
+      sort: true,
       filter: true,
+      filterDropDownList: headerList[`supervisorNameList`],
+      fieldType: "string",
     },
     {
       className: "text-center",
-      render: (_, record, index) => (
+      render: (record) => (
         <div className="d-flex align-items-center">
           <div className="assign-btn">
             <button
@@ -315,7 +235,7 @@ export const offDayAssignDtoCol = (
               }}
               type="button"
               className="btn btn-default"
-              disabled={checked?.length > 0}
+              disabled={checkedList.length > 1}
               onClick={(e) => {
                 if (!permission?.isCreate)
                   return toast.warn("You don't have permission");
@@ -325,12 +245,13 @@ export const offDayAssignDtoCol = (
                 getSingleCalendar(
                   moment().format("MM"),
                   moment().format("YYYY"),
-                  record?.EmployeeId,
+                  record?.employeeId,
                   setCalendarData,
                   setLoading
                 );
                 setSelectedSingleEmployee([record]);
                 setSingleAssign(true);
+                setIsAssignAll(false);
               }}
             >
               Assign

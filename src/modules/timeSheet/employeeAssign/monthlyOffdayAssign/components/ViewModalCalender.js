@@ -14,7 +14,7 @@ const ViewModalCalender = ({ propsObj }) => {
 
   const {
     singleAssign,
-    resLanding,
+    checkedList,
     selectedSingleEmployee,
     profileImg,
     setShowModal,
@@ -22,76 +22,79 @@ const ViewModalCalender = ({ propsObj }) => {
     setCalendarData,
     setSingleAssign,
     handleSave,
+    isAssignAll,
   } = propsObj;
 
   return (
     <>
       <div className="mr-3">
         <div className="row">
-          <div className="col-4  px-2">
-            {singleAssign || (
+          <div className="col-4 px-2">
+            {checkedList?.length > 0 && !isAssignAll && (
               <p className="ml-3 mb-2">
-                Total Selected{" "}
-                {resLanding?.filter((data) => data?.selectCheckbox)?.length}{" "}
+                Total Selected {checkedList?.length}
+                {/* {resLanding?.filter((data) => data?.selectCheckbox)?.length}{" "} */}
               </p>
             )}
-            <div style={{ height: "300px", overflow: "scroll" }}>
-              {singleAssign ? (
-                <div>
-                  <img
-                    className="ml-4 mb-1"
-                    src={
-                      selectedSingleEmployee[0]?.profileImageUrl
-                        ? `${APIUrl}/Document/DownloadFile?id=${selectedSingleEmployee[0]?.profileImageUrl}`
-                        : profileImg
-                    }
-                    alt=""
-                    style={{ maxHeight: "48px", minWidth: "48px" }}
-                  />
-                  <CommonEmpInfo
-                    classes="ml-4"
-                    employeeName={selectedSingleEmployee[0]?.employeeName}
-                    designationName={selectedSingleEmployee[0]?.designation}
-                    departmentName={selectedSingleEmployee[0]?.department}
-                  />
-                </div>
-              ) : (
-                resLanding?.map(
-                  (data) =>
-                    data?.selectCheckbox && (
-                      <ol className="mb-2">
-                        <li>
-                          {/* <img
+            {isAssignAll && (
+              <p className="ml-3 mb-2">Assigning all employees</p>
+            )}
+            {isAssignAll || (
+              <div style={{ height: "300px", overflow: "scroll" }}>
+                {singleAssign ? (
+                  <div>
+                    <img
+                      className="ml-4 mb-1"
+                      src={
+                        selectedSingleEmployee[0]?.profileImageUrl
+                          ? `${APIUrl}/Document/DownloadFile?id=${selectedSingleEmployee[0]?.profileImageUrl}`
+                          : profileImg
+                      }
+                      alt=""
+                      style={{ maxHeight: "48px", minWidth: "48px" }}
+                    />
+                    <CommonEmpInfo
+                      classes="ml-4"
+                      employeeName={selectedSingleEmployee[0]?.employeeName}
+                      designationName={selectedSingleEmployee[0]?.designation}
+                      departmentName={selectedSingleEmployee[0]?.department}
+                    />
+                  </div>
+                ) : (
+                  checkedList?.map((data) => (
+                    <ol className="mb-2">
+                      <li>
+                        {/* <img
                               className="ml-3 mb-1"
                               src={profileImg}
                               alt=""
                               style={{ maxHeight: "48px", minWidth: "48px" }}
                             /> */}
-                          <div>
-                            <Avatar
-                              className="ml-4 mb-1"
-                              sx={{
-                                mt: 0.2,
-                                "&.MuiAvatar-root": {
-                                  width: "22px!important",
-                                  height: "22px!important",
-                                },
-                              }}
-                            />
-                          </div>
-
-                          <CommonEmpInfo
-                            classes="ml-4"
-                            employeeName={data?.employeeName}
-                            designationName={data?.designation}
-                            departmentName={data?.department}
+                        <div>
+                          <Avatar
+                            className="ml-4 mb-1"
+                            sx={{
+                              mt: 0.2,
+                              "&.MuiAvatar-root": {
+                                width: "22px!important",
+                                height: "22px!important",
+                              },
+                            }}
                           />
-                        </li>
-                      </ol>
-                    )
-                )
-              )}
-            </div>
+                        </div>
+
+                        <CommonEmpInfo
+                          classes="ml-4"
+                          employeeName={data?.employeeName}
+                          designationName={data?.designation}
+                          departmentName={data?.department}
+                        />
+                      </li>
+                    </ol>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
           <div className="col-8">

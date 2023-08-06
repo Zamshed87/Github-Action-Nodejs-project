@@ -26,7 +26,8 @@ const CalenderCommon = ({
       days--;
     }
     setDates(demoDate.reverse());
-  }, [date]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (calendarData.length === 0) {
     const demoData = [];
@@ -81,21 +82,20 @@ const CalenderCommon = ({
                   className="calendar-date-cell"
                   key={i}
                   style={{
-                    gridColumn: `${
-                      item?.dayName === "Monday"
+                    gridColumn: `${item?.dayName === "Monday"
                         ? "2/3"
                         : item?.dayName === "Tuesday"
-                        ? "3/4"
-                        : item?.dayName === "Wednesday"
-                        ? "4/5"
-                        : item?.dayName === "Thursday"
-                        ? "5/6"
-                        : item?.dayName === "Friday"
-                        ? "6/7"
-                        : item?.dayName === "Saturday"
-                        ? "7/8"
-                        : "1/2"
-                    }`,
+                          ? "3/4"
+                          : item?.dayName === "Wednesday"
+                            ? "4/5"
+                            : item?.dayName === "Thursday"
+                              ? "5/6"
+                              : item?.dayName === "Friday"
+                                ? "6/7"
+                                : item?.dayName === "Saturday"
+                                  ? "7/8"
+                                  : "1/2"
+                      }`,
                   }}
                 >
                   <div
