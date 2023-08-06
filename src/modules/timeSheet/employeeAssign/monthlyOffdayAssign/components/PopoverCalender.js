@@ -13,7 +13,6 @@ const PopoverCalender = ({ propsObj }) => {
   );
   const { selectedSingleEmployee, profileImg, calendarData, setCalendarData } =
     propsObj;
-
   return (
     <div>
       <div className="d-flex align-items-center my-3">

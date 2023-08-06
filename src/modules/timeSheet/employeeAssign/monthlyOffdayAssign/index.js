@@ -6,17 +6,11 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loading from "../../../../common/loading/Loading";
 // import MasterFilter from "../../../../common/MasterFilter";
-import AntTable, { paginationSize } from "../../../../common/AntTable";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
-import {
-  createMonthlyOffdayAssign,
-  getOffDayLandingHandler,
-  offDayAssignDtoCol,
-} from "./helper";
+import { createMonthlyOffdayAssign, offDayAssignDtoCol } from "./helper";
 import "./monthlyOffday.css";
 import MasterFilter from "../../../../common/MasterFilter";
 import ViewModal from "../../../../common/ViewModal";
@@ -25,15 +19,18 @@ import { Popover } from "@mui/material";
 import profileImg from "../../../../assets/images/profile.jpg";
 import PopoverCalender from "./components/PopoverCalender";
 import ViewModalCalender from "./components/ViewModalCalender";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import axios from "axios";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "../../../../common/peopleDeskTable/helper";
+import { printDays } from "../offDay/helper";
 
 const initData = {
   search: "",
-  workplace: "",
-  department: "",
-  designation: "",
-  supervisor: "",
-  employmentType: "",
-  employee: "",
   isAssigned: false,
 };
 
@@ -50,48 +47,179 @@ function MonthlyOffdayAssignLanding() {
     total: 0,
   });
 
+  const initHeaderList = {
+    designationList: [],
+    departmentList: [],
+    supervisorNameList: [],
+  };
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
   }, []);
-  const [resLanding, getLanding, loadingLanding, setLanding] = useAxiosPost();
+  // const [resLanding, getLanding, loadingLanding, setLanding] = useAxiosPost();
   const [showModal, setShowModal] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [calendarData, setCalendarData] = useState([]);
   const [selectedSingleEmployee, setSelectedSingleEmployee] = useState([]);
   const [singleAssign, setSingleAssign] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [checked, setChecked] = useState([]);
+  const [landingLoading, setLandingLoading] = useState(false);
+  const [rowDto, setRowDto] = useState([]);
+  const [filterOrderList, setFilterOrderList] = useState([]);
+  const [initialHeaderListData, setInitialHeaderListData] = useState({});
+  const [headerList, setHeaderList] = useState({});
+  const [checkedHeaderList, setCheckedHeaderList] = useState({
+    ...initHeaderList,
+  });
+  const [checkedList, setCheckedList] = useState([]);
+  const [empIDString, setEmpIDString] = useState("");
+  const [isAssignAll, setIsAssignAll] = useState(false);
 
   const open = !loading && Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const isAlreadyPresent = (obj) => {
-    for (let i = 0; i < checked.length; i++) {
-      if (checked[i].EmployeeCode === obj.EmployeeCode) {
-        return i;
+  // landing api call
+  const getDataApiCall = async (
+    modifiedPayload,
+    pagination,
+    searchText,
+    checkedList,
+    currentFilterSelection,
+    checkedHeaderList,
+    isAssigned
+  ) => {
+    setLandingLoading(true);
+    try {
+      const payload = {
+        businessUnitId: buId,
+        workplaceGroupId: null,
+        accountId: orgId,
+        isAssign: isAssigned === 1 ? true : isAssigned === 2 ? false : null,
+        workplaceId: 0,
+        pageNo: pagination.current,
+        pageSize: pagination.pageSize,
+        isPaginated: true,
+        isHeaderNeed: true,
+        searchTxt: searchText || "",
+      };
+
+      const res = await axios.post(`/Employee/OffdayLandingFilter`, {
+        ...payload,
+        ...modifiedPayload,
+      });
+
+      if (res?.data?.data) {
+        setEmpIDString(res?.data?.employeeList);
+        let newData =
+          res?.data?.data?.length > 0
+            ? res?.data?.data?.map((item) => {
+                return {
+                  ...item,
+                  offDayList:
+                    !item?.isFriday &&
+                    !item?.isSaturday &&
+                    !item?.isSunday &&
+                    !item?.isMonday &&
+                    !item?.isThursday &&
+                    !item?.isTuesday &&
+                    !item?.isWednesday
+                      ? "N/A"
+                      : printDays(item),
+                  offDay:
+                    item?.isFriday ||
+                    item?.isSaturday ||
+                    item?.isSunday ||
+                    item?.isMonday ||
+                    item?.isThursday ||
+                    item?.isTuesday ||
+                    item?.isWednesday,
+                };
+              })
+            : [];
+        // setLanding(newData);
+        setHeaderListDataDynamically({
+          currentFilterSelection,
+          checkedHeaderList,
+          headerListKey: "offdayAssignHeader",
+          headerList,
+          setHeaderList,
+          response: { ...res?.data, data: newData },
+          filterOrderList,
+          setFilterOrderList,
+          initialHeaderListData,
+          setInitialHeaderListData,
+          // setEmpLanding,
+          setPages,
+        });
+
+        const modifiedData = res?.data?.data?.map((item, index) => ({
+          ...item,
+          initialSerialNumber: index + 1,
+          isSelected: checkedList?.find(
+            ({ employeeCode }) => item?.employeeCode === employeeCode
+          )
+            ? true
+            : false,
+          offDayList:
+            !item?.isFriday &&
+            !item?.isSaturday &&
+            !item?.isSunday &&
+            !item?.isMonday &&
+            !item?.isThursday &&
+            !item?.isTuesday &&
+            !item?.isWednesday
+              ? "N/A"
+              : printDays(item),
+          offDay:
+            item?.isFriday ||
+            item?.isSaturday ||
+            item?.isSunday ||
+            item?.isMonday ||
+            item?.isThursday ||
+            item?.isTuesday ||
+            item?.isWednesday,
+        }));
+        setRowDto(modifiedData);
+      } else {
+        setRowDto([]);
       }
+      setLandingLoading(false);
+    } catch (error) {
+      setLandingLoading(false);
     }
-    return -1;
   };
 
-  const getData = (pagination, srcText, status = "") => {
-    getOffDayLandingHandler(
-      buId,
-      orgId,
-      getLanding,
-      setLanding,
+  const getData = async (
+    pagination,
+    searchText = "",
+    checkedList = [],
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList },
+    isAssigned = null
+  ) => {
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+
+    getDataApiCall(
+      modifiedPayload,
       pagination,
-      setPages,
-      srcText,
-      status,
-      isAlreadyPresent,
-      checked
+      searchText,
+      checkedList,
+      currentFilterSelection,
+      checkedHeaderList,
+      isAssigned
     );
   };
 
   useEffect(() => {
     getData(pages);
+    // setChecked([]);
   }, [buId, orgId]);
 
   const saveHandler = (values) => {};
@@ -104,20 +232,6 @@ function MonthlyOffdayAssignLanding() {
       permission = item;
     }
   });
-  const handleTableChange = (pagination, newRowDto, srcText) => {
-    if (newRowDto?.action === "filter") {
-      return;
-    }
-    if (
-      pages?.current === pagination?.current &&
-      pages?.pageSize !== pagination?.pageSize
-    ) {
-      return getData(pagination, srcText);
-    }
-    if (pages?.current !== pagination?.current) {
-      return getData(pagination, srcText);
-    }
-  };
 
   const { handleSubmit, values, setFieldValue } = useFormik({
     enableReinitialize: true,
@@ -141,12 +255,14 @@ function MonthlyOffdayAssignLanding() {
     });
     let empArr = [];
     const intEmployeeId = singleAssign
-      ? [selectedSingleEmployee[0]?.EmployeeId]
-      : resLanding?.map(
-          (data) => data?.selectCheckbox && empArr.push(data?.EmployeeId)
-        );
+      ? [selectedSingleEmployee[0]?.employeeId]
+      : checkedList?.map((data) => empArr.push(data?.employeeId));
     const payload = {
-      intEmployeeId: singleAssign ? intEmployeeId : empArr,
+      intEmployeeId: singleAssign
+        ? intEmployeeId
+        : isAssignAll
+        ? empIDString.split(",")
+        : empArr,
       offdays: singleAssign
         ? offdays
         : offdays?.filter((data) => data?.isOffDay === true),
@@ -154,10 +270,19 @@ function MonthlyOffdayAssignLanding() {
     };
     const callback = () => {
       setCalendarData([]);
-      setChecked([]);
+      setCheckedList([]);
       setSingleAssign(false);
       setShowModal(false);
-      getData(pages, "", "saved");
+      getData(
+        { current: 1, pageSize: paginationSize },
+        "",
+        [],
+        -1,
+        filterOrderList,
+        checkedHeaderList,
+        0
+      );
+      setCheckedList([]);
       setFieldValue("search", "");
     };
     payload?.offdays?.length > 0
@@ -165,25 +290,68 @@ function MonthlyOffdayAssignLanding() {
       : toast.error("Please select at least one day");
   };
 
+  const handleChangePage = (_, newPage, searchText) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
+      {
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
+      },
+      searchText,
+      checkedList,
+      -1,
+      filterOrderList,
+      checkedHeaderList
+    );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText) => {
+    setPages((prev) => {
+      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      searchText,
+      checkedList,
+      -1,
+      filterOrderList,
+      checkedHeaderList
+    );
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit}>
         <>
-          {(loadingLanding || loading) && <Loading />}
+          {(landingLoading || loading) && <Loading />}
           {permission?.isView ? (
             <div className="table-card">
               <div className="table-card-heading">
                 <div style={{ paddingLeft: "6px" }}>
-                  {checked.length > 0 && (
+                  {checkedList.length > 0 ? (
                     <h6 className="count">
-                      Total {checked.length}{" "}
-                      {`employee${checked.length > 1 ? "s" : ""}`} selected
+                      Total {checkedList.length}{" "}
+                      {`employee${checkedList.length > 1 ? "s" : ""}`} selected
+                      from {pages?.total}
+                    </h6>
+                  ) : (
+                    <h6 className="count">
+                      {" "}
+                      Total {rowDto?.length > 0 ? pages.total : 0} Employees
                     </h6>
                   )}
                 </div>
                 <div className="table-card-head-right">
                   <ul>
-                    {checked.length > 0 && (
+                    {checkedList.length > 0 && (
                       <li>
                         <ResetButton
                           title="reset"
@@ -196,37 +364,57 @@ function MonthlyOffdayAssignLanding() {
                             getData(
                               { current: 1, pageSize: paginationSize },
                               "",
-                              "saved"
+                              [],
+                              -1,
+                              filterOrderList,
+                              checkedHeaderList,
+                              0
                             );
-                            // setRowDto(allData);
-                            setFieldValue("allSelected", false);
-                            setFieldValue("workplace", "");
-                            setFieldValue("department", "");
-                            setFieldValue("designation", "");
-                            setFieldValue("supervisor", "");
-                            setFieldValue("employmentType", "");
-                            setFieldValue("employee", "");
-                            setFieldValue("isAssigned", false);
+                            setCheckedList([]);
                             setFieldValue("search", "");
-                            setChecked([]);
                           }}
                         />
                       </li>
                     )}
                     <li>
-                      {checked?.filter((item) => item?.selectCheckbox).length >
-                        0 && (
+                      {checkedList?.length > 0 && (
                         <button
                           className="btn btn-green"
-                          style={{ marginRight: "40px", height: "30px" }}
+                          style={{
+                            marginRight: "10px",
+                            height: "30px",
+                            minWidth: "120px",
+                          }}
                           onClick={(e) => {
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
-                            setSingleAssign(false);
                             setShowModal(true);
+                            setIsAssignAll(false);
                           }}
                         >
-                          Assign
+                          Assign {checkedList.length}
+                        </button>
+                      )}
+                    </li>
+                    <li>
+                      {rowDto?.length > 0 && (
+                        <button
+                          className="btn btn-green"
+                          style={{
+                            marginRight: "10px",
+                            height: "30px",
+                            minWidth: "120px",
+                            fontSize: "12px",
+                          }}
+                          onClick={(e) => {
+                            if (!permission?.isCreate)
+                              return toast.warn("You don't have permission");
+                            setIsAssignAll(true);
+                            setShowModal(true);
+                            setSingleAssign(false);
+                          }}
+                        >
+                          Assign {pages.total}
                         </button>
                       )}
                     </li>
@@ -239,17 +427,35 @@ function MonthlyOffdayAssignLanding() {
                           if (value) {
                             getData(
                               { current: 1, pageSize: paginationSize },
-                              value
+                              value,
+                              checkedList,
+                              -1,
+                              filterOrderList,
+                              checkedHeaderList,
+                              values?.salaryStatus?.value
                             );
                           } else {
                             getData(
                               { current: 1, pageSize: paginationSize },
-                              ""
+                              "",
+                              [],
+                              -1,
+                              filterOrderList,
+                              checkedHeaderList,
+                              values?.salaryStatus?.value
                             );
                           }
                         }}
                         cancelHandler={() => {
-                          getData({ current: 1, pageSize: paginationSize }, "");
+                          getData(
+                            { current: 1, pageSize: paginationSize },
+                            "",
+                            [],
+                            -1,
+                            filterOrderList,
+                            checkedHeaderList,
+                            0
+                          );
                           setFieldValue("search", "");
                         }}
                         width="200px"
@@ -260,57 +466,64 @@ function MonthlyOffdayAssignLanding() {
                 </div>
               </div>
               <div className="table-card-body">
-                <div className="table-card-styled tableOne">
-                  {resLanding.length > 0 ? (
-                    <AntTable
-                      data={resLanding}
-                      columnsData={offDayAssignDtoCol(
+                <div>
+                  {rowDto.length > 0 ? (
+                    <PeopleDeskTable
+                      columnData={offDayAssignDtoCol(
                         pages,
-                        paginationSize,
                         permission,
-                        // filterLanding,
-                        // setFilterLanding,
-                        setLanding,
-                        resLanding,
                         setShowModal,
+                        setIsAssignAll,
+                        checkedList,
+                        setCheckedList,
                         setSelectedSingleEmployee,
-                        setSingleAssign,
                         setAnchorEl,
-                        checked,
-                        setChecked,
                         setCalendarData,
-                        isAlreadyPresent,
                         setLoading,
-                        loading
+                        loading,
+                        headerList,
+                        setSingleAssign
                       )}
-                      // setColumnsData={(dataRow) => {
-                      //   if (dataRow?.length === resLanding?.length) {
-                      //     let temp = dataRow?.map((item) => {
-                      //       return {
-                      //         ...item,
-                      //         selectCheckbox: false,
-                      //       };
-                      //     });
-                      //     setFilterLanding(temp);
-                      //     setLanding(temp);
-                      //     return;
-                      //   }
-                      //   setFilterLanding(dataRow);
-                      // }}
-                      pages={pages?.pageSize}
-                      pagination={pages}
-                      handleTableChange={({ pagination, newRowDto }) =>
-                        handleTableChange(
-                          pagination,
-                          newRowDto,
-                          values?.search || ""
-                        )
+                      pages={pages}
+                      rowDto={rowDto}
+                      setRowDto={setRowDto}
+                      checkedList={checkedList}
+                      setCheckedList={setCheckedList}
+                      checkedHeaderList={checkedHeaderList}
+                      setCheckedHeaderList={setCheckedHeaderList}
+                      handleChangePage={(e, newPage) =>
+                        handleChangePage(e, newPage, values?.search)
                       }
-                      rowKey={(record) => record?.EmployeeId}
+                      handleChangeRowsPerPage={(e) =>
+                        handleChangeRowsPerPage(e, values?.search)
+                      }
+                      filterOrderList={filterOrderList}
+                      setFilterOrderList={setFilterOrderList}
+                      uniqueKey="employeeCode"
+                      getFilteredData={(
+                        currentFilterSelection,
+                        updatedFilterData,
+                        updatedCheckedHeaderData
+                      ) => {
+                        getData(
+                          {
+                            current: 1,
+                            pageSize: paginationSize,
+                            total: 0,
+                          },
+                          "",
+                          [],
+                          currentFilterSelection,
+                          updatedFilterData,
+                          updatedCheckedHeaderData
+                        );
+                      }}
+                      isCheckBox={true}
+                      isScrollAble={true}
                     />
                   ) : (
                     <>
-                      {!loadingLanding && (
+                      {!landingLoading && (
                         <NoResult title="No Result Found" para="" />
                       )}
                     </>
@@ -338,8 +551,7 @@ function MonthlyOffdayAssignLanding() {
           <ViewModalCalender
             propsObj={{
               singleAssign,
-              // filterLanding,
-              resLanding,
+              checkedList,
               selectedSingleEmployee,
               profileImg,
               setShowModal,
@@ -347,6 +559,7 @@ function MonthlyOffdayAssignLanding() {
               setCalendarData,
               setSingleAssign,
               handleSave,
+              isAssignAll,
             }}
           />
         </ViewModal>
@@ -363,6 +576,7 @@ function MonthlyOffdayAssignLanding() {
           anchorEl={anchorEl}
           onClose={() => {
             setAnchorEl(null);
+            setCalendarData([]);
           }}
           anchorOrigin={{
             // vertical: "bottom",
@@ -373,7 +587,6 @@ function MonthlyOffdayAssignLanding() {
             propsObj={{
               selectedSingleEmployee,
               profileImg,
-              setShowModal,
               calendarData,
               setCalendarData,
             }}

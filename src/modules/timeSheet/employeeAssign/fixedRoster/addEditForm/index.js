@@ -9,14 +9,17 @@ import * as Yup from "yup";
 import AntTable from "../../../../../common/AntTable";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
-
 import BackButton from "../../../../../common/BackButton";
 import FormikInput from "../../../../../common/FormikInput";
 import FormikSelect from "../../../../../common/FormikSelect";
 import Loading from "../../../../../common/loading/Loading";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import CalenderBlank from "../component/CalenderBlank";
-import { createNUpdateFixedRoaster, getCalenderDDL, getFixedRosterDetailsById } from "../helper";
+import {
+  createNUpdateFixedRoaster,
+  getCalenderDDL,
+  getFixedRosterDetailsById,
+} from "../helper";
 import CalenderEdit from "../component/CalenderEdit";
 
 const initData = {
@@ -92,8 +95,7 @@ export default function FixedRosterCreateEdit() {
       });
       setUniqueShiftColor(colorData);
       rosterDDL.forEach((status, index) => {
-        colorDataBg[status?.label] =
-          bgColors[index % bgColors.length];
+        colorDataBg[status?.label] = bgColors[index % bgColors.length];
       });
       setUniqueShiftBg(colorDataBg);
     }
@@ -138,9 +140,9 @@ export default function FixedRosterCreateEdit() {
         intId: 0,
         intDay: Number(item?.intDayId),
         intCalendarId: item?.shiftName?.intCalenderId || 0,
-        strCalendarName: item?.shiftName?.strCalenderName || '',
-        isOffDay: item?.shiftName?.label==='off Day'	? true : false,
-        isHoliday: item?.shiftName?.label==="Holiday"	? true : false,
+        strCalendarName: item?.shiftName?.strCalenderName || "",
+        isOffDay: item?.shiftName?.label === "off Day" ? true : false,
+        isHoliday: item?.shiftName?.label === "Holiday" ? true : false,
         isActive: true,
       };
     });
@@ -153,11 +155,11 @@ export default function FixedRosterCreateEdit() {
       intActionBy: employeeId,
       fixedRoasterDetails: modifiedData,
     };
-const cb=()=>{
-  setCalendarData([]);
-  history.push("/administration/timeManagement/fixedRosterSetup");
-}
-    createNUpdateFixedRoaster(payload, setLoading,cb);
+    const cb = () => {
+      setCalendarData([]);
+      history.push("/administration/timeManagement/fixedRosterSetup");
+    };
+    createNUpdateFixedRoaster(payload, setLoading, cb);
   };
   const handleRowDtoDelete = (id) => {
     const updatedData = rowDto.filter((item, index) => index !== id);
@@ -177,13 +179,8 @@ const cb=()=>{
     setCalendarData(modifiedData);
   };
 
-
   const getData = () => {
-    getFixedRosterDetailsById(
-      params?.id,
-      setLoading,
-      setCalendar
-    );
+    getFixedRosterDetailsById(params?.id, setLoading, setCalendar);
   };
 
   useEffect(() => {
@@ -243,10 +240,11 @@ const cb=()=>{
   ];
   return (
     <>
-
       <Formik
         enableReinitialize={true}
-        initialValues={params?.id ? {...initData,rosterName:state}:initData}
+        initialValues={
+          params?.id ? { ...initData, rosterName: state } : initData
+        }
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           const dateArray = calendarData?.filter((item) => item?.isActive);
@@ -266,16 +264,16 @@ const cb=()=>{
             toast.warn("Already assigned for this day");
             return;
           }
-          const temp=[...rowDto, ...similarProperties]
-          setRowDto(temp.slice(0).sort((a,b) => a.intDayId-b.intDayId));
+          const temp = [...rowDto, ...similarProperties];
+          setRowDto(temp.slice(0).sort((a, b) => a.intDayId - b.intDayId));
           setIsRosterSetup(false);
           let data = calendarData?.map((item) => {
             if (item?.isActive && !item?.shiftName) {
               return {
                 ...item,
                 shiftName: values?.shiftName.label,
-                color:uniqueShiftColor[values?.shiftName.label],
-                bg:uniqueShiftBg[values?.shiftName.label],
+                color: uniqueShiftColor[values?.shiftName.label],
+                bg: uniqueShiftBg[values?.shiftName.label],
               };
             } else {
               return item;
@@ -299,7 +297,7 @@ const cb=()=>{
           isValid,
         }) => (
           <>
-          {loading && <Loading />}
+            {loading && <Loading />}
             <Form onSubmit={handleSubmit}>
               {/* {loading && <Loading />} */}
 
@@ -316,13 +314,13 @@ const cb=()=>{
                           type="button"
                           className="btn btn-default flex-center"
                           onClick={() => handlefixRosterSubmit(values)}
-                          disabled={rowDto?.length<31}
+                          disabled={rowDto?.length < 31}
                         >
                           Save
                         </button>
                       </li>
                     </ul>
-                  ):(
+                  ) : (
                     <ul className="d-flex flex-wrap">
                       <li>
                         <button
@@ -383,48 +381,6 @@ const cb=()=>{
                           </div>
                         )}
 
-                        {/* {values?.isRequested && (
-                        <div className="col-lg-3">
-                          <label>Requested By</label>
-                          <div className="policy-category-ddl-wrapper">
-                            <FormikSelect
-                              placeholder=" "
-                              classes="input-sm"
-                              styles={customStyles}
-                              name="requestedBy"
-                              options={employeeDDL || []}
-                              value={values?.requestedBy}
-                              onChange={(valueOption) => {
-                                setFieldValue("requestedBy", valueOption);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                        </div>
-                      )} */}
-
-                        {/* <div className="col-3">
-                        <label> </label>
-                        <div className="d-flex align-items-center small-checkbox">
-                          <FormikCheckBox
-                            styleObj={{
-                              color: gray900,
-                              checkedColor: greenColor,
-                            }}
-                            labelFontSize="13px"
-                            label="Requested Schedule"
-                            checked={values?.isRequested}
-                            onChange={(e) => {
-                              setFieldValue("isRequested", e.target.checked);
-                              if (!e.target.checked) {
-                                setFieldValue("requestedBy", "");
-                              }
-                            }}
-                          />
-                        </div>
-                      </div> */}
-
                         <div className="col-lg-3 mt-4">
                           {params?.id ? (
                             <div className="">
@@ -460,7 +416,9 @@ const cb=()=>{
                     {rowDto?.length > 0 ? (
                       <>
                         <AntTable
-                          data={rowDto.slice(0).sort((a,b) => a.intDayId-b.intDayId)}
+                          data={rowDto
+                            .slice(0)
+                            .sort((a, b) => a.intDayId - b.intDayId)}
                           columnsData={columns()}
                           removePagination={true}
                           onRowClick={(dataRow) => {}}
@@ -473,29 +431,29 @@ const cb=()=>{
                 </div>
                 <div className="col-6 mt-3 " style={{ width: "100px" }}>
                   {params?.id ? (
-                  <CalenderEdit
-                  setIsRosterSetup={setIsRosterSetup}
-                  calendar={calendar}
-                    calendarData={calendarData}
-                    monthYear={"2023-03"}
-                    setCalendarData={setCalendarData}
-                    isClickable={true}
-                    uniqueShiftBg={uniqueShiftBg}
-                    rosterDDL={rosterDDL}
-                    uniqueShiftColor={uniqueShiftColor}
-                  />
-                ) : (
-                  <CalenderBlank
-                  setIsRosterSetup={setIsRosterSetup}
-                    monthYear={"2023-03"}
-                    calendarData={calendarData}
-                    setCalendarData={setCalendarData}
-                    isClickable={true}
-                    uniqueShiftBg={uniqueShiftBg}
-                    rosterDDL={rosterDDL}
-                    uniqueShiftColor={uniqueShiftColor}
-                  />
-                )}
+                    <CalenderEdit
+                      setIsRosterSetup={setIsRosterSetup}
+                      calendar={calendar}
+                      calendarData={calendarData}
+                      monthYear={"2023-03"}
+                      setCalendarData={setCalendarData}
+                      isClickable={true}
+                      uniqueShiftBg={uniqueShiftBg}
+                      rosterDDL={rosterDDL}
+                      uniqueShiftColor={uniqueShiftColor}
+                    />
+                  ) : (
+                    <CalenderBlank
+                      setIsRosterSetup={setIsRosterSetup}
+                      monthYear={"2023-03"}
+                      calendarData={calendarData}
+                      setCalendarData={setCalendarData}
+                      isClickable={true}
+                      uniqueShiftBg={uniqueShiftBg}
+                      rosterDDL={rosterDDL}
+                      uniqueShiftColor={uniqueShiftColor}
+                    />
+                  )}
                 </div>
               </div>
             </Form>
