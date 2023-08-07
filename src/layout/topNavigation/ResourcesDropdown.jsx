@@ -6,8 +6,10 @@ import Select from "@mui/material/Select";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   getBuDDLAction,
+  getWDDLAction,
   getWGDDLAction,
   updateBuAction,
+  updateWAction,
   updateWgAction,
 } from "../../commonRedux/auth/actions";
 
@@ -41,12 +43,12 @@ const style = {
 export default function ResourcesDropdown() {
   // const [module, setModule] = React.useState("");
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const { businessUnitDDL, workplaceGroupDDL } = useSelector(
+  const { businessUnitDDL, workplaceGroupDDL, workplaceDDL } = useSelector(
     (state) => state?.auth,
     shallowEqual
   );
@@ -86,12 +88,30 @@ export default function ResourcesDropdown() {
       )
     );
   };
+  const handleWResources = (event) => {
+    let filterData = workplaceDDL?.filter(
+      (item) => item?.WorkplaceId === event.target.value
+    );
+
+    dispatch(
+      updateWAction(
+        filterData?.[0]?.WorkplaceId,
+        filterData?.[0]?.WorkplaceName
+      )
+    );
+  };
 
   useEffect(() => {
     dispatch(getBuDDLAction(orgId, buId, employeeId));
     dispatch(getWGDDLAction(buId, wgId, employeeId));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    dispatch(getWDDLAction(buId, wgId, employeeId));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wgId, buId]);
 
   return (
     <div className="d-flex">
@@ -120,6 +140,20 @@ export default function ResourcesDropdown() {
           {workplaceGroupDDL?.map((item, index) => (
             <MenuItem value={item?.WorkplaceGroupId} key={index}>
               {item?.WorkplaceGroupName}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl sx={style}>
+        <Select
+          value={wId}
+          onChange={handleWResources}
+          displayEmpty
+          inputProps={{ "aria-label": "Without label" }}
+        >
+          {workplaceDDL?.map((item, index) => (
+            <MenuItem value={item?.WorkplaceId} key={index}>
+              {item?.WorkplaceName}
             </MenuItem>
           ))}
         </Select>
