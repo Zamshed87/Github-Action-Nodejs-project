@@ -41,7 +41,7 @@ const MgtExpenseApplication = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId } = useSelector(
+  const { buId, wgId, intWorkplaceId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -84,7 +84,8 @@ const MgtExpenseApplication = () => {
       setLoading,
       pagination?.current,
       pagination?.pageSize,
-      setPages
+      setPages,
+      intWorkplaceId
     );
   };
 
@@ -122,10 +123,11 @@ const MgtExpenseApplication = () => {
       setLoading,
       1,
       paginationSize,
-      setPages
+      setPages,
+      intWorkplaceId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
+  }, [buId, wgId, intWorkplaceId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -167,7 +169,8 @@ const MgtExpenseApplication = () => {
                           setLoading,
                           1,
                           paginationSize,
-                          setPages
+                          setPages,
+                          intWorkplaceId
                         );
                       }}
                     />
@@ -195,7 +198,8 @@ const MgtExpenseApplication = () => {
                           setLoading,
                           1,
                           paginationSize,
-                          setPages
+                          setPages,
+                          intWorkplaceId
                         );
                       }, 500);
                     }}
@@ -211,7 +215,8 @@ const MgtExpenseApplication = () => {
                         setLoading,
                         1,
                         paginationSize,
-                        setPages
+                        setPages,
+                        intWorkplaceId
                       );
                     }}
                     handleClick={(e) => setfilterAnchorEl(e.currentTarget)}
@@ -294,7 +299,8 @@ const MgtExpenseApplication = () => {
                         setLoading,
                         1,
                         paginationSize,
-                        setPages
+                        setPages,
+                        intWorkplaceId
                       );
                     }}
                   >

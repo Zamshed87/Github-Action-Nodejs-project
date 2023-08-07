@@ -34,7 +34,7 @@ const UpdateExpenseApplication = () => {
   const dispatch = useDispatch();
   const debounce = useDebounce();
 
-  const { buId, wgId, employeeId } = useSelector(
+  const { buId, wgId, employeeId, intWorkplaceId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -97,7 +97,8 @@ const UpdateExpenseApplication = () => {
       pagination?.current,
       pagination?.pageSize,
       setPages,
-      employeeId
+      employeeId,
+      intWorkplaceId
     );
   };
 
@@ -113,10 +114,11 @@ const UpdateExpenseApplication = () => {
       1,
       paginationSize,
       setPages,
-      employeeId
+      employeeId,
+      intWorkplaceId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
+  }, [buId, wgId, intWorkplaceId]);
 
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {
@@ -268,7 +270,8 @@ const UpdateExpenseApplication = () => {
                       1,
                       paginationSize,
                       setPages,
-                      employeeId
+                      employeeId,
+                      intWorkplaceId
                     );
                   }}
                 >
