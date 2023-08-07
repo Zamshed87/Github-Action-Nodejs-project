@@ -30,11 +30,11 @@ export const initData = {
   isCreateUser: false,
   isCreate: true,
 
-  wing: "",
-  soleDepo: "",
-  region: "",
-  area: "",
-  territory: "",
+  // wing: "",
+  // soleDepo: "",
+  // region: "",
+  // area: "",
+  // territory: "",
 
   // calender assigne
   generateDate: "",
@@ -263,11 +263,11 @@ export const getEditDDLs = ({
   buId,
   employeeId,
   setWorkplaceDDL,
-  setWingDDL,
-  setSoleDepoDDL,
-  setRegionDDL,
-  setAreaDDL,
-  setTerritoryDDL,
+  // setWingDDL,
+  // setSoleDepoDDL,
+  // setRegionDDL,
+  // setAreaDDL,
+  // setTerritoryDDL,
 }) => {
   getPeopleDeskWithoutAllDDL(
     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&intId=${employeeId}`,
@@ -275,36 +275,36 @@ export const getEditDDLs = ({
     "strWorkplace",
     setWorkplaceDDL
   );
-  getPeopleDeskWithoutAllDDL(
-    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=0`,
-    "WingId",
-    "WingName",
-    setWingDDL
-  );
-  getPeopleDeskWithoutAllDDL(
-    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SoleDepoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=${singleData?.wing?.value}`,
-    "SoleDepoId",
-    "SoleDepoName",
-    setSoleDepoDDL
-  );
-  getPeopleDeskWithoutAllDDL(
-    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RegionDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=${singleData?.soleDepo?.value}`,
-    "RegionId",
-    "RegionName",
-    setRegionDDL
-  );
-  getPeopleDeskWithoutAllDDL(
-    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AreaDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=${singleData?.region?.value}`,
-    "AreaId",
-    "AreaName",
-    setAreaDDL
-  );
-  getPeopleDeskWithoutAllDDL(
-    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=TerritoryDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=${singleData?.area?.value}`,
-    "TerritoryId",
-    "TerritoryName",
-    setTerritoryDDL
-  );
+  // getPeopleDeskWithoutAllDDL(
+  //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=0`,
+  //   "WingId",
+  //   "WingName",
+  //   setWingDDL
+  // );
+  // getPeopleDeskWithoutAllDDL(
+  //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SoleDepoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=${singleData?.wing?.value}`,
+  //   "SoleDepoId",
+  //   "SoleDepoName",
+  //   setSoleDepoDDL
+  // );
+  // getPeopleDeskWithoutAllDDL(
+  //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RegionDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=${singleData?.soleDepo?.value}`,
+  //   "RegionId",
+  //   "RegionName",
+  //   setRegionDDL
+  // );
+  // getPeopleDeskWithoutAllDDL(
+  //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AreaDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=${singleData?.region?.value}`,
+  //   "AreaId",
+  //   "AreaName",
+  //   setAreaDDL
+  // );
+  // getPeopleDeskWithoutAllDDL(
+  //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=TerritoryDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${singleData?.workplaceGroup?.value}&ParentTerritoryId=${singleData?.area?.value}`,
+  //   "TerritoryId",
+  //   "TerritoryName",
+  //   setTerritoryDDL
+  // );
 };
 
 export const submitHandler = ({
@@ -372,23 +372,23 @@ export const submitHandler = ({
       return toast.warn("Starting calender is required");
   }
 
-  if (values?.workplaceGroup?.label === "Marketing") {
-    if (!values?.wing) {
-      return toast.warn("Wing is required");
-    }
-    if (!values?.soleDepo) {
-      return toast.warn("Sole Depo is required");
-    }
-    // if (!values?.region) {
-    //   return toast.warn("Region is required");
-    // }
-    // if (!values?.area) {
-    //   return toast.warn("Area is required");
-    // }
-    // if (!values?.territory) {
-    //   return toast.warn("Territory is required");
-    // }
-  }
+  // if (values?.workplaceGroup?.label === "Marketing") {
+  //   if (!values?.wing) {
+  //     return toast.warn("Wing is required");
+  //   }
+  //   if (!values?.soleDepo) {
+  //     return toast.warn("Sole Depo is required");
+  //   }
+  //   // if (!values?.region) {
+  //   //   return toast.warn("Region is required");
+  //   // }
+  //   // if (!values?.area) {
+  //   //   return toast.warn("Area is required");
+  //   // }
+  //   // if (!values?.territory) {
+  //   //   return toast.warn("Territory is required");
+  //   // }
+  // }
 
   createEditEmpAction(values, buId, intUrlId, setLoading, cb, isEdit);
 };
