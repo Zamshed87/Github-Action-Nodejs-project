@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-// import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -41,23 +40,13 @@ const style = {
 };
 
 export default function ResourcesDropdown() {
-  // const [module, setModule] = React.useState("");
-
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-
-  const { businessUnitDDL, workplaceGroupDDL, workplaceDDL } = useSelector(
+  const { profileData: {orgId, buId, employeeId, wgId, wId}, businessUnitDDL, workplaceGroupDDL, workplaceDDL } = useSelector(
     (state) => state?.auth,
     shallowEqual
   );
 
   const dispatch = useDispatch();
 
-  // const handleModule = (event) => {
-  //   setModule(event.target.value);
-  // };
   const handleResources = (event) => {
     let filterData = businessUnitDDL?.filter(
       (item) => item?.BusinessUnitId === event.target.value
@@ -80,7 +69,6 @@ export default function ResourcesDropdown() {
     let filterData = workplaceGroupDDL?.filter(
       (item) => item?.WorkplaceGroupId === event.target.value
     );
-
     dispatch(
       updateWgAction(
         filterData?.[0]?.WorkplaceGroupId,
@@ -92,7 +80,6 @@ export default function ResourcesDropdown() {
     let filterData = workplaceDDL?.filter(
       (item) => item?.WorkplaceId === event.target.value
     );
-
     dispatch(
       updateWAction(
         filterData?.[0]?.WorkplaceId,
@@ -104,14 +91,22 @@ export default function ResourcesDropdown() {
   useEffect(() => {
     dispatch(getBuDDLAction(orgId, buId, employeeId));
     dispatch(getWGDDLAction(buId, wgId, employeeId));
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     dispatch(getWDDLAction(buId, wgId, employeeId));
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wgId, buId]);
+  
+  useEffect(() => {
+    dispatch(
+      updateWAction(
+        workplaceDDL?.[0]?.WorkplaceId,
+        workplaceDDL?.[0]?.WorkplaceName
+      )
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workplaceDDL]);
 
   return (
     <div className="d-flex">
