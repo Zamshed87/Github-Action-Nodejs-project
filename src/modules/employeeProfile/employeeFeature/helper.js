@@ -79,11 +79,11 @@ export const createEditEmpAction = async (
       isRemoteAttendance: false,
       intWorkplaceGroupId: values?.workplaceGroup?.value,
       intWorkplaceId: values?.workplace?.value,
-      wingId: values?.wing?.value || 0,
-      soleDepoId: values?.soleDepo?.value || 0,
-      regionId: values?.region?.value || 0,
-      areaId: values?.area?.value || 0,
-      territoryId: values?.territory?.value || 0,
+      // wingId: values?.wing?.value || 0,
+      // soleDepoId: values?.soleDepo?.value || 0,
+      // regionId: values?.region?.value || 0,
+      // areaId: values?.area?.value || 0,
+      // territoryId: values?.territory?.value || 0,
       intBusinessUnitId: buId,
       dteCreatedAt: todayDate(),
       intEmploymentTypeId: values?.employeeType?.value,
@@ -247,7 +247,9 @@ export const employeeFilter = async ({
 };
 
 export const getEmployeeProfileViewDataForAddress = async (
-  id, buId, wgId ,
+  id,
+  buId,
+  wgId,
   setter,
   setLoading
 ) => {
