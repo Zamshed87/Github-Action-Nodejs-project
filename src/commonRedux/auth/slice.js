@@ -11,6 +11,7 @@ const initState = {
   imageView: {},
   businessUnitDDL: [],
   workplaceGroupDDL: [],
+  workplaceDDL: [],
   menuList: [],
   permissionList: [],
   userType: "Self",
@@ -98,6 +99,27 @@ export const authSlice = createSlice({
               },
             ];
     },
+    setWDDL: (state, action) => {
+      const { payload } = action;
+      const modifyPayload = payload.map((itm) => {
+        return {
+          WorkplaceId: itm?.intWorkplaceId,
+          WorkplaceName: itm?.strWorkplace,
+          WorkplaceGroupCode: itm?.strWorkplaceCode,
+        };
+      });
+      // console.log(state?.profileData);
+      // if don't have any workplace list, then make list by user own workplace group
+      state.workplaceDDL =
+        payload?.length > 0
+          ? modifyPayload
+          : [
+              {
+                WorkplaceId: state?.profileData?.wId,
+                WorkplaceName: state?.profileData?.wName,
+              },
+            ];
+    },
     setBuIdName: (state, action) => {
       const { payload } = action;
       state.profileData.buName = payload?.buName;
@@ -109,6 +131,12 @@ export const authSlice = createSlice({
 
       state.profileData.wgName = payload?.wgName;
       state.profileData.wgId = payload?.wgId;
+    },
+    setWIdName: (state, action) => {
+      const { payload } = action;
+
+      state.profileData.wName = payload?.wName;
+      state.profileData.wId = payload?.wId;
     },
     setVesselIdName: (state, action) => {
       const { payload } = action;
