@@ -26,6 +26,7 @@ export const saveIOUApplication = async (payload, setLoading, cb) => {
 };
 
 export const getAllIOULanding = async (
+  intWorkplaceId,
   partType,
   buId,
   wgId,
@@ -43,7 +44,7 @@ export const getAllIOULanding = async (
 ) => {
   setLoading && setLoading(true);
 
-  let apiUrl = `/Employee/GetIOULanding?businessUnitId=${buId}&workplaceGroupId=${wgId}&fromDate=${fromDate}&toDate=${toDate}&pageNo=${pageNo}&pageSize=${pageSize}`;
+  let apiUrl = `/Employee/GetIOULanding?businessUnitId=${buId}&workplaceGroupId=${wgId}&fromDate=${fromDate}&toDate=${toDate}&pageNo=${pageNo}&pageSize=${pageSize}&workplaceId=${intWorkplaceId}`;
 
   iouId >= 0 && (apiUrl += `&intIOUId=${iouId}`);
 

@@ -23,7 +23,7 @@ import { gray700, gray900 } from "../../../utility/customColor";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 import { getAllIOULanding, saveIOUApplication } from "./helper";
-import { multiple_attachment_action } from './../../../common/api/index';
+import { multiple_attachment_action } from "./../../../common/api/index";
 const initData = {
   adjustedAmount: "",
   payableAmount: "",
@@ -56,7 +56,7 @@ export default function SelfIOUApplicationView() {
   let pendingAmount = 0;
   let payableAmount = 0;
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, intWorkplaceId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,6 +77,7 @@ export default function SelfIOUApplicationView() {
   useEffect(() => {
     if (params?.id) {
       getAllIOULanding(
+        intWorkplaceId,
         "ViewById",
         buId,
         wgId,
@@ -91,6 +92,7 @@ export default function SelfIOUApplicationView() {
         1
       );
       getAllIOULanding(
+        intWorkplaceId,
         "DocList",
         buId,
         wgId,
@@ -105,6 +107,7 @@ export default function SelfIOUApplicationView() {
         1
       );
       getAllIOULanding(
+        intWorkplaceId,
         "DocList",
         buId,
         wgId,
@@ -119,7 +122,7 @@ export default function SelfIOUApplicationView() {
         1
       );
     }
-  }, [wgId, buId, employeeId, params?.id]);
+  }, [wgId, buId, employeeId, params?.id, intWorkplaceId]);
 
   const saveHandler = (values, cb) => {
     const callback = () => {
@@ -127,6 +130,7 @@ export default function SelfIOUApplicationView() {
       setEdit(false);
       setImageFile("");
       getAllIOULanding(
+        intWorkplaceId,
         "ViewById",
         buId,
         wgId,
@@ -141,6 +145,7 @@ export default function SelfIOUApplicationView() {
         1
       );
       getAllIOULanding(
+        intWorkplaceId,
         "DocList",
         buId,
         wgId,
@@ -155,6 +160,7 @@ export default function SelfIOUApplicationView() {
         1
       );
       getAllIOULanding(
+        intWorkplaceId,
         "DocList",
         buId,
         wgId,
@@ -190,13 +196,14 @@ export default function SelfIOUApplicationView() {
           - values?.receivableAmount => Cash Received Amount (Pay to Accounts)
     */
 
-    const modifyImageArray = imageFile?.length > 0
-      ? imageFile.map((image) => {
-        return {
-          intDocURLId: image?.globalFileUrlId,
-        };
-      })
-      : [];
+    const modifyImageArray =
+      imageFile?.length > 0
+        ? imageFile.map((image) => {
+            return {
+              intDocURLId: image?.globalFileUrlId,
+            };
+          })
+        : [];
 
     const payload = {
       strEntryType: params?.id ? "EDIT" : "ENTRY",
@@ -232,11 +239,11 @@ export default function SelfIOUApplicationView() {
         initialValues={
           params?.id
             ? {
-              adjustedAmount: singleData?.numAdjustedAmount || 0,
-              receivableAmount: singleData?.numReceivableAmount || 0,
-              pendingAmount: pendingAmount > 0 ? pendingAmount : 0,
-              payableAmount: singleData?.numPayableAmount || 0,
-            }
+                adjustedAmount: singleData?.numAdjustedAmount || 0,
+                receivableAmount: singleData?.numReceivableAmount || 0,
+                pendingAmount: pendingAmount > 0 ? pendingAmount : 0,
+                payableAmount: singleData?.numPayableAmount || 0,
+              }
             : initData
         }
         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -298,8 +305,7 @@ export default function SelfIOUApplicationView() {
                       <CircleButton
                         icon={<DateRange style={{ fontSize: "24px" }} />}
                         title={
-                          dateFormatter(singleData?.applicationDate) ||
-                          "-"
+                          dateFormatter(singleData?.applicationDate) || "-"
                         }
                         subTitle="Application Date"
                       />
@@ -354,36 +360,36 @@ export default function SelfIOUApplicationView() {
                             <div className="d-flex flex-wrap">
                               {imgRow?.length
                                 ? imgRow.map((image, i) => (
-                                  <p
-                                    key={i}
-                                    style={{
-                                      margin: "6px 0 0",
-                                      fontWeight: "400",
-                                      fontSize: "12px",
-                                      lineHeight: "18px",
-                                      color: "#009cde",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <span
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        dispatch(
-                                          getDownlloadFileView_Action(
-                                            image?.intDocURLId
-                                          )
-                                        );
+                                    <p
+                                      key={i}
+                                      style={{
+                                        margin: "6px 0 0",
+                                        fontWeight: "400",
+                                        fontSize: "12px",
+                                        lineHeight: "18px",
+                                        color: "#009cde",
+                                        cursor: "pointer",
                                       }}
                                     >
-                                      {image?.intDocURLId !== 0 && (
-                                        <>
-                                          <FilePresentOutlined />{" "}
-                                          {`Attachment_${i + 1}`}
-                                        </>
-                                      )}
-                                    </span>
-                                  </p>
-                                ))
+                                      <span
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          dispatch(
+                                            getDownlloadFileView_Action(
+                                              image?.intDocURLId
+                                            )
+                                          );
+                                        }}
+                                      >
+                                        {image?.intDocURLId !== 0 && (
+                                          <>
+                                            <FilePresentOutlined />{" "}
+                                            {`Attachment_${i + 1}`}
+                                          </>
+                                        )}
+                                      </span>
+                                    </p>
+                                  ))
                                 : ""}
                             </div>
                           </div>
@@ -542,6 +548,7 @@ export default function SelfIOUApplicationView() {
                                     setEdit(false);
                                     // single data
                                     getAllIOULanding(
+                                      intWorkplaceId,
                                       "ViewById",
                                       buId,
                                       wgId,
@@ -557,6 +564,7 @@ export default function SelfIOUApplicationView() {
                                     );
                                     // advance attachment
                                     getAllIOULanding(
+                                      intWorkplaceId,
                                       "DocList",
                                       buId,
                                       wgId,
@@ -572,6 +580,7 @@ export default function SelfIOUApplicationView() {
                                     );
                                     // bill attachment
                                     getAllIOULanding(
+                                      intWorkplaceId,
                                       "DocList",
                                       buId,
                                       wgId,
@@ -642,40 +651,41 @@ export default function SelfIOUApplicationView() {
                                 </span>
                               </p>
 
-                              {imageFile?.length ?
-                                imageFile.map((image, i) => (
-                                  <div
-                                    className="d-flex align-items-center"
-                                    onClick={() => {
-                                      dispatch(
-                                        getDownlloadFileView_Action(
-                                          image?.globalFileUrlId || image?.intDocURLId
-                                        )
-                                      );
-                                    }}
-                                  >
-                                    <AttachmentOutlined
-                                      sx={{
-                                        marginRight: "5px",
-                                        color: "#0072E5",
-                                      }}
-                                    />
+                              {imageFile?.length
+                                ? imageFile.map((image, i) => (
                                     <div
-                                      style={{
-                                        fontSize: "12px",
-                                        fontWeight: "500",
-                                        color: "#0072E5",
-                                        cursor: "pointer",
+                                      className="d-flex align-items-center"
+                                      onClick={() => {
+                                        dispatch(
+                                          getDownlloadFileView_Action(
+                                            image?.globalFileUrlId ||
+                                              image?.intDocURLId
+                                          )
+                                        );
                                       }}
                                     >
-                                      {image?.fileName ||
-                                        `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
-                                        }`}{" "}
+                                      <AttachmentOutlined
+                                        sx={{
+                                          marginRight: "5px",
+                                          color: "#0072E5",
+                                        }}
+                                      />
+                                      <div
+                                        style={{
+                                          fontSize: "12px",
+                                          fontWeight: "500",
+                                          color: "#0072E5",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        {image?.fileName ||
+                                          `Attachment_${
+                                            i <= 8 ? `0${i + 1}` : `${i + 1}`
+                                          }`}{" "}
+                                      </div>
                                     </div>
-                                  </div>
-                                )) : (
-                                  ""
-                                )}
+                                  ))
+                                : ""}
                             </div>
                           </div>
                         </div>
@@ -713,9 +723,7 @@ export default function SelfIOUApplicationView() {
                               <CircleButton
                                 icon={<img src={moneyIcon} alt="iBOS" />}
                                 title={
-                                  numberWithCommas(
-                                    pendingAmount || 0
-                                  ) || "-"
+                                  numberWithCommas(pendingAmount || 0) || "-"
                                 }
                                 subTitle="Pay to Accounts"
                               />
@@ -780,20 +788,24 @@ export default function SelfIOUApplicationView() {
                                     e.stopPropagation();
                                     dispatch(
                                       getDownlloadFileView_Action(
-                                        image?.globalFileUrlId || image?.intDocURLId
+                                        image?.globalFileUrlId ||
+                                          image?.intDocURLId
                                       )
                                     );
                                   }}
                                 >
                                   <FilePresentOutlined />
                                   {image?.fileName ||
-                                    `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
+                                    `Attachment_${
+                                      i <= 8 ? `0${i + 1}` : `${i + 1}`
                                     }`}{" "}
                                 </span>
                               </p>
                             ))}
                           </div>
-                        ) : ""}
+                        ) : (
+                          ""
+                        )}
                       </>
                     )}
                   </div>

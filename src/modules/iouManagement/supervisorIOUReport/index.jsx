@@ -11,7 +11,9 @@ import PopOverMasterFilter from "../../../common/PopoverMasterFilter";
 import ResetButton from "../../../common/ResetButton";
 import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import PeopleDeskTable, { paginationSize } from "../../../common/peopleDeskTable";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { getDateOfYear } from "../../../utility/dateFormatter";
@@ -41,10 +43,8 @@ export default function SupervisorIOUReport() {
   const debounce = useDebounce();
 
   // redux
-  const { buId, employeeId, isSupNLMORManagement, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { buId, employeeId, isSupNLMORManagement, wgId, intWorkplaceId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   // state
   const [loading, setLoading] = useState(false);
@@ -57,7 +57,7 @@ export default function SupervisorIOUReport() {
         ...initData,
         fromDate: getDateOfYear("first"),
         toDate: getDateOfYear("last"),
-      }
+      },
     });
 
   // landing table
@@ -70,6 +70,7 @@ export default function SupervisorIOUReport() {
 
   const getData = (pagination) => {
     getAllIOULanding(
+      intWorkplaceId,
       "IOULandingBySupervisorId",
       buId,
       wgId,
@@ -92,26 +93,22 @@ export default function SupervisorIOUReport() {
       return { ...prev, current: newPage };
     });
 
-    getData(
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getData(
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
   };
 
   // filter
@@ -126,6 +123,7 @@ export default function SupervisorIOUReport() {
 
   useEffect(() => {
     getAllIOULanding(
+      intWorkplaceId,
       "IOULandingBySupervisorId",
       buId,
       wgId,
@@ -141,7 +139,7 @@ export default function SupervisorIOUReport() {
       setPages,
       employeeId
     );
-  }, [wgId, buId, values, employeeId]);
+  }, [wgId, buId, values, employeeId, intWorkplaceId]);
 
   // filter
   const [filterBages, setFilterBages] = useState({});
@@ -167,6 +165,7 @@ export default function SupervisorIOUReport() {
     setFilterValues("");
 
     getAllIOULanding(
+      intWorkplaceId,
       "IOULandingBySupervisorId",
       buId,
       wgId,
@@ -197,6 +196,7 @@ export default function SupervisorIOUReport() {
 
     const callback = () => {
       getAllIOULanding(
+        intWorkplaceId,
         "IOULandingBySupervisorId",
         buId,
         wgId,
@@ -220,7 +220,7 @@ export default function SupervisorIOUReport() {
       yesAlertFunc: () => {
         saveIOUApplication(payload, setLoading, callback);
       },
-      noAlertFunc: () => { },
+      noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
   };
@@ -269,6 +269,7 @@ export default function SupervisorIOUReport() {
                           setFieldValue("adjustmentStatus", "");
                           setStatus("");
                           getAllIOULanding(
+                            intWorkplaceId,
                             "IOULandingBySupervisorId",
                             buId,
                             wgId,
@@ -301,6 +302,7 @@ export default function SupervisorIOUReport() {
                         setFieldValue("search", value);
                         debounce(() => {
                           getAllIOULanding(
+                            intWorkplaceId,
                             "IOULandingBySupervisorId",
                             buId,
                             wgId,
@@ -312,13 +314,14 @@ export default function SupervisorIOUReport() {
                             setRowDto,
                             setLoading,
                             1,
-                            paginationSize,
+                            paginationSize
                           );
                         }, 500);
                       }}
                       cancelHandler={() => {
                         setFieldValue("search", "");
                         getAllIOULanding(
+                          intWorkplaceId,
                           "IOULandingBySupervisorId",
                           buId,
                           wgId,
@@ -335,9 +338,7 @@ export default function SupervisorIOUReport() {
                           employeeId
                         );
                       }}
-                      handleClick={(e) =>
-                        setfilterAnchorEl(e.currentTarget)
-                      }
+                      handleClick={(e) => setfilterAnchorEl(e.currentTarget)}
                     />
                   </li>
                 </ul>
@@ -396,6 +397,7 @@ export default function SupervisorIOUReport() {
                       className="btn btn-green"
                       onClick={() => {
                         getAllIOULanding(
+                          intWorkplaceId,
                           "IOULandingByEmployeeId",
                           buId,
                           wgId,
@@ -439,9 +441,7 @@ export default function SupervisorIOUReport() {
                     isCheckBox={false}
                     isScrollAble={false}
                     onRowClick={(res) => {
-                      history.push(
-                        `/SelfService/iOU/report/${res?.iouId}`
-                      );
+                      history.push(`/SelfService/iOU/report/${res?.iouId}`);
                     }}
                   />
                 ) : (
