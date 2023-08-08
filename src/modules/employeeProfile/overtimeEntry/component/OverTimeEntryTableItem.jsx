@@ -99,9 +99,7 @@ const OverTimeEntryTableItem = ({
             label={item?.EmployeeName}
           />
           <div className="employeeTitle">
-            <p className="employeeName tableBody-title">
-              {item?.EmployeeName}
-            </p>
+            <p className="employeeName tableBody-title">{item?.EmployeeName}</p>
           </div>
         </div>
       </td>

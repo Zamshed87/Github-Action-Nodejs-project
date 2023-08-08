@@ -30,7 +30,7 @@ const prodUrl = "https://ad-din.peopledesk.io";
 // set axios base url
 export const APIUrl =
   process.env.NODE_ENV === "development"
-    ? "https://devad-din.peopledesk.io/api"
+    ? "http://10.209.97.204:5001/api"
     : `${origin}/api`;
 Axios.defaults.baseURL = APIUrl;
 

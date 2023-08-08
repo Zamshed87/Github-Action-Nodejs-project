@@ -58,7 +58,7 @@ export default function EmOvertimeEntry() {
   // filter
   const [status, setStatus] = useState("");
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -73,6 +73,7 @@ export default function EmOvertimeEntry() {
         supervisorId: 0,
         employeeId: isClear ? 0 : values?.employee?.value || 0,
         workplaceGroupId: wgId,
+        workplaceId: wId,
         businessUnitId: buId,
         loggedEmployeeId: employeeId,
         formDate: values?.filterFromDate,
@@ -104,6 +105,7 @@ export default function EmOvertimeEntry() {
         employeeId: 0,
         workplaceGroupId: wgId,
         businessUnitId: buId,
+        workplaceId: wId,
         loggedEmployeeId: employeeId,
         formDate: monthFirstDate(),
         toDate: todayDate(),
@@ -112,7 +114,7 @@ export default function EmOvertimeEntry() {
       setLoading,
       () => {}
     );
-  }, [buId, employeeId, wgId]);
+  }, [buId, employeeId, wgId, wId]);
 
   const saveHandler = (values) => {
     const payload = {
@@ -124,6 +126,7 @@ export default function EmOvertimeEntry() {
       employeeId: values?.employee?.value || 0,
       workplaceGroupId: wgId,
       businessUnitId: buId,
+      workplaceId: wId,
       loggedEmployeeId: employeeId,
       formDate: values?.filterFromDate,
       toDate: values?.filterToDate,
@@ -182,6 +185,7 @@ export default function EmOvertimeEntry() {
               employeeId: 0,
               workplaceGroupId: wgId,
               businessUnitId: buId,
+              workplaceId: wId,
               loggedEmployeeId: employeeId,
               formDate: item?.fromDate,
               toDate: item?.toDate,

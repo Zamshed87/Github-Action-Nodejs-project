@@ -38,10 +38,11 @@ export default function MgtIOUApplication() {
   const history = useHistory();
 
   // redux
-  const { buId, wgId, intWorkplaceId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    buId,
+    wgId,
+    wId: intWorkplaceId,
+  } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
