@@ -58,7 +58,7 @@ export default function EmOvertimeEntry() {
   // filter
   const [status, setStatus] = useState("");
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -73,6 +73,7 @@ export default function EmOvertimeEntry() {
         supervisorId: 0,
         employeeId: isClear ? 0 : values?.employee?.value || 0,
         workplaceGroupId: wgId,
+        workplaceId: wId,
         businessUnitId: buId,
         loggedEmployeeId: employeeId,
         formDate: values?.filterFromDate,
