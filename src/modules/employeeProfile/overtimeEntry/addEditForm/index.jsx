@@ -60,7 +60,7 @@ export default function AddEditOverTime() {
   const [singleData, setSingleData] = useState("");
   const history = useHistory();
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -89,7 +89,8 @@ export default function AddEditOverTime() {
           designationId: 0,
           supervisorId: 0,
           employeeId: state?.EmployeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          workplaceId: wId,
           businessUnitId: buId,
           loggedEmployeeId: employeeId,
           FormDate: state?.fromDate,
@@ -100,9 +101,7 @@ export default function AddEditOverTime() {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params?.id, state?.EmployeeId, buId]);
-
-  console.log(state);
+  }, [params?.id, state?.EmployeeId, buId, wgId, wId]);
 
   const saveHandler = (values, cb) => {
     let payload = values?.otInfo?.map((data) => {
@@ -170,7 +169,8 @@ export default function AddEditOverTime() {
             designationId: 0,
             supervisorId: 0,
             employeeId: singleData?.employee?.value,
-            workplaceGroupId: 0,
+            workplaceGroupId: wgId,
+            workplaceId: wId,
             businessUnitId: buId,
             loggedEmployeeId: employeeId,
             FormDate: state?.fromDate,
