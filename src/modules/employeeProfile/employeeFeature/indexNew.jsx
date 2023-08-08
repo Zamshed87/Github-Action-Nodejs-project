@@ -226,7 +226,7 @@ function EmployeeFeatureNew() {
     setEmpLanding([]);
     getData(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
