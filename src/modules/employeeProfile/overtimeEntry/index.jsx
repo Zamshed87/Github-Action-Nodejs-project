@@ -105,6 +105,7 @@ export default function EmOvertimeEntry() {
         employeeId: 0,
         workplaceGroupId: wgId,
         businessUnitId: buId,
+        workplaceId: wId,
         loggedEmployeeId: employeeId,
         formDate: monthFirstDate(),
         toDate: todayDate(),
@@ -113,7 +114,7 @@ export default function EmOvertimeEntry() {
       setLoading,
       () => {}
     );
-  }, [buId, employeeId, wgId]);
+  }, [buId, employeeId, wgId, wId]);
 
   const saveHandler = (values) => {
     const payload = {
@@ -125,6 +126,7 @@ export default function EmOvertimeEntry() {
       employeeId: values?.employee?.value || 0,
       workplaceGroupId: wgId,
       businessUnitId: buId,
+      workplaceId: wId,
       loggedEmployeeId: employeeId,
       formDate: values?.filterFromDate,
       toDate: values?.filterToDate,
@@ -183,6 +185,7 @@ export default function EmOvertimeEntry() {
               employeeId: 0,
               workplaceGroupId: wgId,
               businessUnitId: buId,
+              workplaceId: wId,
               loggedEmployeeId: employeeId,
               formDate: item?.fromDate,
               toDate: item?.toDate,
