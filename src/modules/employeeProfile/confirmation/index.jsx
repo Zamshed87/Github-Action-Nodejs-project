@@ -56,7 +56,7 @@ function Confirmation() {
   const dispatch = useDispatch();
 
   // const history = useHistory();
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, intWorkplaceId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -95,7 +95,8 @@ function Confirmation() {
       setPages,
       wgId,
       pages,
-      searchText
+      searchText,
+      intWorkplaceId
     );
   };
 
@@ -151,7 +152,7 @@ function Confirmation() {
   useEffect(() => {
     getData(monthFirstDate(), todayDate(), "", pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId, wgId]);
+  }, [orgId, buId, wgId, intWorkplaceId]);
 
   const confirmation = (values) => {
     confirmationEmpAction(values, singleData, setLoading, () => {

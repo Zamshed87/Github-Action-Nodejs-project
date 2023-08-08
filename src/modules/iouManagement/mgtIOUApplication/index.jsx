@@ -16,11 +16,10 @@ import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStora
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
 import SelfIOUFilterModal from "./component/SelfIOUFilterModal";
-import {
-  getAllIOULanding,
-  iouLandingTableColumn
-} from "./helper";
-import PeopleDeskTable, { paginationSize } from "../../../common/peopleDeskTable";
+import { getAllIOULanding, iouLandingTableColumn } from "./helper";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../common/peopleDeskTable";
 
 const initData = {
   search: "",
@@ -34,12 +33,12 @@ const initData = {
 };
 
 export default function MgtIOUApplication() {
-  // hook 
+  // hook
   const dispatch = useDispatch();
   const history = useHistory();
 
   // redux
-  const { buId, wgId } = useSelector(
+  const { buId, wgId, intWorkplaceId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -59,6 +58,7 @@ export default function MgtIOUApplication() {
 
   const getData = (pagination) => {
     getAllIOULanding(
+      intWorkplaceId,
       "Landing",
       buId,
       wgId,
@@ -80,26 +80,22 @@ export default function MgtIOUApplication() {
       return { ...prev, current: newPage };
     });
 
-    getData(
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getData(
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
   };
 
   // filter
@@ -126,6 +122,7 @@ export default function MgtIOUApplication() {
     setFilterBages({});
     setFilterValues("");
     getAllIOULanding(
+      intWorkplaceId,
       "Landing",
       buId,
       wgId,
@@ -158,6 +155,7 @@ export default function MgtIOUApplication() {
 
   useEffect(() => {
     getAllIOULanding(
+      intWorkplaceId,
       "Landing",
       buId,
       wgId,
@@ -172,7 +170,7 @@ export default function MgtIOUApplication() {
       paginationSize,
       setPages
     );
-  }, [buId, values, wgId]);
+  }, [buId, values, wgId, intWorkplaceId]);
 
   // menu permission
   let permission = null;
@@ -188,16 +186,11 @@ export default function MgtIOUApplication() {
       {permission?.isView ? (
         <>
           <div className="table-card">
-            <div
-              className="table-card-heading"
-              style={{ marginBottom: "2px" }}
-            >
+            <div className="table-card-heading" style={{ marginBottom: "2px" }}>
               <div className="d-flex align-items-center">
                 {rowDto?.length > 0 ? (
                   <>
-                    <h6 className="count">
-                      Total {rowDto?.length} employees
-                    </h6>
+                    <h6 className="count">Total {rowDto?.length} employees</h6>
                   </>
                 ) : (
                   <>
@@ -218,6 +211,7 @@ export default function MgtIOUApplication() {
                       setFieldValue("search", value);
                       debounce(() => {
                         getAllIOULanding(
+                          intWorkplaceId,
                           "Landing",
                           buId,
                           wgId,
@@ -238,6 +232,7 @@ export default function MgtIOUApplication() {
                     cancelHandler={() => {
                       setFieldValue("search", "");
                       getAllIOULanding(
+                        intWorkplaceId,
                         "Landing",
                         buId,
                         wgId,
@@ -271,9 +266,7 @@ export default function MgtIOUApplication() {
                     }
                     onClick={() => {
                       if (!permission?.isCreate) {
-                        return toast.warning(
-                          "Your are not allowed to access"
-                        );
+                        return toast.warning("Your are not allowed to access");
                       }
                       history.push(`/profile/iOU/application/create`);
                     }}
@@ -292,10 +285,7 @@ export default function MgtIOUApplication() {
                 clearFilter,
               }}
             />
-            <div
-              className="card-style pb-0 mb-2"
-              style={{ marginTop: "12px" }}
-            >
+            <div className="card-style pb-0 mb-2" style={{ marginTop: "12px" }}>
               <div className="row">
                 <div className="col-lg-3">
                   <div className="input-field-main">
@@ -335,13 +325,11 @@ export default function MgtIOUApplication() {
                   <button
                     className="btn btn-green btn-green-disable mt-4"
                     type="button"
-                    disabled={
-                      !values?.filterFromDate || !values?.filterToDate
-                    }
+                    disabled={!values?.filterFromDate || !values?.filterToDate}
                     onClick={() => {
                       getData({
                         current: 1,
-                        pageSize: paginationSize
+                        pageSize: paginationSize,
                       });
                     }}
                   >
@@ -372,9 +360,7 @@ export default function MgtIOUApplication() {
                 isCheckBox={false}
                 isScrollAble={false}
                 onRowClick={(res) => {
-                  history.push(
-                    `/profile/iOU/application/${res?.iouId}`
-                  );
+                  history.push(`/profile/iOU/application/${res?.iouId}`);
                 }}
               />
             ) : (
@@ -386,7 +372,6 @@ export default function MgtIOUApplication() {
                 )}
               </>
             )}
-
           </div>
 
           <PopOverMasterFilter
