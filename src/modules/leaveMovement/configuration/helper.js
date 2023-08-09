@@ -122,7 +122,6 @@ export const getDeleteLveMovementTypeById = async (movementTypeId, cb) => {
 };
 
 export const yearlyLeavePolicyAction = async (
-  partId,
   autoId,
   empTypeId,
   days,
@@ -130,6 +129,9 @@ export const yearlyLeavePolicyAction = async (
   leaveTypeId,
   genderId,
   genderName,
+  businessUnitPayload,
+  workplaceGroupPayload,
+  workplacePayload,
   orgId,
   empId,
   cb,
@@ -138,7 +140,6 @@ export const yearlyLeavePolicyAction = async (
 ) => {
   try {
     const payload = {
-      partId: partId,
       autoId: autoId || 0,
       employmentTypeId: empTypeId,
       allocatedLeave: days,
@@ -150,7 +151,11 @@ export const yearlyLeavePolicyAction = async (
       intCreatedBy: empId,
       intGenderId: genderId,
       strGender: genderName,
+      businessUnitList: businessUnitPayload,
+      workPlaceGroupList: workplaceGroupPayload,
+      workPlaceList: workplacePayload,
     };
+    console.log("-----", payload);
     setLoading(true);
     const res = await axios.post(
       `/SaasMasterData/CRUDEmploymentTypeWiseLeaveBalance`,
