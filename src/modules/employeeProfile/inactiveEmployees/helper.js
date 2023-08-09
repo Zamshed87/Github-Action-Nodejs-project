@@ -75,11 +75,12 @@ export const getNewInactiveEmpInfo = async ({
   setPages,
   fromDate,
   toDate,
+  wId,
 }) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IsXls=${isExcel}&PageNo=${pageNo}&PageSize=${pageSize}&searchTxt=${srcTxt}&FromDate=${fromDate}&ToDate=${toDate}`
+      `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&IsXls=${isExcel}&PageNo=${pageNo}&PageSize=${pageSize}&searchTxt=${srcTxt}&FromDate=${fromDate}&ToDate=${toDate}`
     );
     if (res?.data) {
       setter(res?.data);
