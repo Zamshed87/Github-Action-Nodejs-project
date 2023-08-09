@@ -35,7 +35,7 @@ const initData = {
 export default function AttendanceReport() {
   // dispatch
   const dispatch = useDispatch();
-  const { buId, orgId, wgId } = useSelector(
+  const { buId, orgId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -63,6 +63,7 @@ export default function AttendanceReport() {
 
   useEffect(() => {
     getAttendanceReport(
+      wId,
       buId,
       todayDate,
       todayDate,
@@ -97,6 +98,7 @@ export default function AttendanceReport() {
       return { ...prev, current: newPage };
     });
     getAttendanceReport(
+      wId,
       buId,
       todayDate,
       todayDate,
@@ -118,6 +120,7 @@ export default function AttendanceReport() {
       return { ...prev, pageSize: +event.target.value };
     });
     getAttendanceReport(
+      wId,
       buId,
       todayDate,
       todayDate,
@@ -136,6 +139,7 @@ export default function AttendanceReport() {
 
   const saveHandler = (values) => {
     getAttendanceReport(
+      wId,
       buId,
       values?.fromDate,
       values?.toDate,
@@ -203,7 +207,7 @@ export default function AttendanceReport() {
                                       values?.fromDate
                                     }&ToDate=${
                                       values?.toDate
-                                    }&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${
+                                    }&IntBusinessUnitId=${buId}&IntWorkplaceId=${wId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${
                                       values?.search || ""
                                     }&IsXls=true`
                                     // `/TimeSheetReport/GetAttendanceReport?FromDate=${
