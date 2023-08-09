@@ -24,9 +24,9 @@ import { getBuDetails, getMonthlyPunchDetailsReport } from "./helper";
 
 const initData = {
   search: "",
-  workplace: "",
-  businessUnit: "",
-  workplaceGroup: "",
+  // workplace: "",
+  // businessUnit: "",
+  // workplaceGroup: "",
   fromDate: monthFirstDate(),
   toDate: todayDate(),
 };
@@ -37,7 +37,7 @@ const MonthlyPunchReportDetails = () => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -47,9 +47,9 @@ const MonthlyPunchReportDetails = () => {
 
   const [rowDto, setRowDto] = useState(null);
   const [buDetails, setBuDetails] = useState([]);
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
-  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  // const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
+  // const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  // const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [tableRowDto, setTableRowDto] = useState([]);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -60,19 +60,22 @@ const MonthlyPunchReportDetails = () => {
       values,
       setRowDto,
       setLoading,
-      setTableRowDto
+      setTableRowDto,
+      buId,
+      wgId,
+      wId
     );
     getBuDetails(buId, setBuDetails);
   };
 
-  useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
-    );
-  }, [orgId, buId, employeeId]);
+  // useEffect(() => {
+  //   getPeopleDeskAllDDL(
+  //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+  //     "intBusinessUnitId",
+  //     "strBusinessUnit",
+  //     setBusinessUnitDDL
+  //   );
+  // }, [orgId, buId, employeeId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   const { buName } = useSelector(
@@ -274,7 +277,7 @@ const MonthlyPunchReportDetails = () => {
                     <div className="table-card-body">
                       <div className="card-style my-2">
                         <div className="row">
-                          <div className="col-lg-3">
+                          {/* <div className="col-lg-3">
                             <div className="input-field-main">
                               <label>Business Unit</label>
                               <FormikSelect
@@ -363,7 +366,7 @@ const MonthlyPunchReportDetails = () => {
                                 touched={touched}
                               />
                             </div>
-                          </div>
+                          </div> */}
                           <div className="col-lg-3">
                             <div className="input-field-main">
                               <label>From Date</label>

@@ -9,7 +9,10 @@ export const getMonthlyPunchDetailsReport = async (
   values,
   setter,
   setLoading,
-  setTableRowDto
+  setTableRowDto,
+  buId,
+  wgId,
+  wId
 ) => {
   try {
     setLoading && setLoading(true);
@@ -18,9 +21,7 @@ export const getMonthlyPunchDetailsReport = async (
         values?.fromDate || monthFirstDate()
       }&DteToDate=${
         values?.toDate || todayDate()
-      }&EmployeeId=${empId}&WorkplaceGroupId=${
-        values?.workplaceGroup?.value
-      }&WorkplaceId=${values?.workplace?.value}`
+      }&EmployeeId=${empId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}`
     );
     setter(res?.data);
     setTableRowDto?.(res?.data);

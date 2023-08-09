@@ -448,6 +448,7 @@ export const getBuDetails = async (buId, setter, setLoading) => {
 };
 
 export const getEmployeeSeparationLanding = async (
+  wId,
   buId,
   wgId,
   formData,
@@ -463,7 +464,7 @@ export const getEmployeeSeparationLanding = async (
   setLoading && setLoading(true);
 
   try {
-    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${formData}&ToDate=${toData}&IsForXl=${isForXl}&PageNo=${pageNo}&PageSize=${pageSize}`;
+    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${formData}&ToDate=${toData}&IsForXl=${isForXl}&PageNo=${pageNo}&PageSize=${pageSize}`;
 
     search = search && (apiUrl += `&searchTxt=${search}`);
 
