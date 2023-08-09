@@ -91,6 +91,7 @@ export const attendanceReportColumn = (page, paginationSize) => {
 };
 
 export const getAttendanceReport = async (
+  wId,
   buId,
   fromDate,
   toDate,
@@ -108,7 +109,7 @@ export const getAttendanceReport = async (
     setLoading(true);
 
     const res = await axios.get(
-      `/TimeSheetReport/GetEmpAttendanceReport?FromDate=${fromDate}&ToDate=${toDate}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${WorkplaceGroupId}&PageNo=${pages.current}&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}&IsXls=false`
+      `/TimeSheetReport/GetEmpAttendanceReport?FromDate=${fromDate}&ToDate=${toDate}&IntBusinessUnitId=${buId}&IntWorkplaceId=${wId}&IntWorkplaceGroupId=${WorkplaceGroupId}&PageNo=${pages.current}&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}&IsXls=false`
       // `/TimeSheetReport/GetAttendanceReport?FromDate=${fromDate}&ToDate=${toDate}&BusinessUnitId=${buId}&AccountId=${AccountId}&IntWorkplaceGroupId=${WorkplaceGroupId}&PageNo=${pages.current}&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`
     );
     if (res?.data) {
