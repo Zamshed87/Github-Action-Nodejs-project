@@ -26,6 +26,7 @@ export const hasLeave = (data) => {
   else return false;
 };
 export const getLeaveHistoryAction = async (
+  wId,
   buId,
   wgId,
   yearId,
@@ -40,7 +41,7 @@ export const getLeaveHistoryAction = async (
   try {
     setLoading(true);
     const res = await axios.get(
-      `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${yearId}&WorkplaceGroupId=${wgId}&SearchText=${srcTxt}&IsPaginated=${isPaginated}&PageNo=${pageNo}&PageSize=${pageSize}`
+      `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${yearId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&SearchText=${srcTxt}&IsPaginated=${isPaginated}&PageNo=${pageNo}&PageSize=${pageSize}`
     );
     setLoading(false);
     setter(res?.data);
