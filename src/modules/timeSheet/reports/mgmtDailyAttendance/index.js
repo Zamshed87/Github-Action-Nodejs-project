@@ -49,7 +49,7 @@ const MgmtDailyAttendance = () => {
   // redux
   const dispatch = useDispatch();
 
-  const { buId, wgId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -93,7 +93,8 @@ const MgmtDailyAttendance = () => {
       pagination?.pageSize,
       isExcel,
       wgId,
-      setPages
+      setPages,
+      wId
     );
   };
 
@@ -219,7 +220,7 @@ const MgmtDailyAttendance = () => {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   getExcelData(
-                                    `/Employee/GetDateWiseAttendanceReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&attendanceDate=${values?.date}&IsXls=true&PageNo=1&PageSize=10000&searchTxt=${values?.search}`,
+                                    `/Employee/GetDateWiseAttendanceReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&attendanceDate=${values?.date}&IsXls=true&PageNo=1&PageSize=10000&searchTxt=${values?.search}`,
                                     (res) => {
                                       console.log(res);
                                       const newData = res?.data?.map(
