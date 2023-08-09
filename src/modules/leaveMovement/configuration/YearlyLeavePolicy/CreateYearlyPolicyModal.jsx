@@ -74,7 +74,6 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
   );
 
   const saveHandler = (values, cb) => {
-    console.log(values);
     let businessUnitPayload = [],
       workplaceGroupPayload = [],
       workplacePayload = [];
@@ -123,8 +122,6 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
         workplacePayload.push(item.value);
       });
     }
-
-    console.log("====");
     yearlyLeavePolicyAction(
       values?.autoId || 0,
       values?.employmentType?.value,
@@ -168,8 +165,6 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
     );
   }, [orgId, buId, employeeId]);
 
-  // console.log({ businessUnitDDL });
-
   return (
     <Formik
       enableReinitialize={true}
@@ -183,7 +178,6 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
             }
       }
       onSubmit={(values, { setSubmitting, resetForm }) => {
-        console.log("onSubmit");
         saveHandler(values, () => {
           resetForm(initData);
           setShow(false);
@@ -276,26 +270,6 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
                       errors={errors}
                       touched={touched}
                     />
-                    {/* <FormikSelect
-                      name="businessUnit"
-                      options={businessUnitDDL || []}
-                      value={values?.businessUnit}
-                      onChange={(valueOption) => {
-                        getYearlyPolicyPopUpDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${valueOption?.value}&intId=${employeeId}`,
-                          "intWorkplaceGroupId",
-                          "strWorkplaceGroup",
-                          setWorkplaceGroupDDL
-                        );
-                        setFieldValue("workplaceGroup", "");
-                        setFieldValue("workplace", "");
-                        setFieldValue("businessUnit", valueOption);
-                      }}
-                      placeholder=" "
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                    /> */}
                   </div>
                 </div>
                 <div className="col-lg-6">
@@ -376,27 +350,6 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
                       errors={errors}
                       touched={touched}
                     />
-                    {/* {console.log(values?.workplaceGroup)} */}
-                    {/* <FormikSelect
-                      name="workplaceGroup"
-                      options={workplaceGroupDDL || []}
-                      value={values?.workplaceGroup}
-                      onChange={(valueOption) => {
-                        getYearlyPolicyPopUpDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                          "intWorkplaceId",
-                          "strWorkplace",
-                          setWorkplaceDDL
-                        );
-                        setFieldValue("workplace", "");
-                        setFieldValue("workplaceGroup", valueOption);
-                      }}
-                      placeholder=" "
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                      isDisabled={!values?.businessUnit}
-                    /> */}
                   </div>
                 </div>
                 <div className="col-lg-6">
@@ -466,19 +419,6 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
                       errors={errors}
                       touched={touched}
                     />
-                    {/* <FormikSelect
-                      name="workplace"
-                      options={workplaceDDL || []}
-                      value={values?.workplace}
-                      onChange={(valueOption) => {
-                        setFieldValue("workplace", valueOption);
-                      }}
-                      placeholder=" "
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                      isDisabled={!values?.workplaceGroup}
-                    /> */}
                   </div>
                 </div>
                 <div className="col-lg-6">

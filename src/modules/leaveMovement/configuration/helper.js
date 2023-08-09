@@ -155,7 +155,6 @@ export const yearlyLeavePolicyAction = async (
       workPlaceGroupList: workplaceGroupPayload,
       workPlaceList: workplacePayload,
     };
-    console.log("-----", payload);
     setLoading(true);
     const res = await axios.post(
       `/SaasMasterData/CRUDEmploymentTypeWiseLeaveBalance`,
