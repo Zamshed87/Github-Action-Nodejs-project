@@ -38,7 +38,7 @@ const EmLeaveHistory = () => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { buId, buName, wgId } = useSelector(
+  const { buId, buName, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -63,6 +63,7 @@ const EmLeaveHistory = () => {
     isPaginated = true
   ) => {
     getLeaveHistoryAction(
+      wId,
       buId,
       wgId,
       year,
@@ -80,7 +81,7 @@ const EmLeaveHistory = () => {
     getData();
     getBuDetails(buId, setBuDetails);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -165,7 +166,7 @@ const EmLeaveHistory = () => {
                               }
 
                               getExcelData(
-                                `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${values.yearDDL?.value}&WorkplaceGroupId=${wgId}&SearchText=${values?.search}&IsPaginated=false&PageNo=0&PageSize=0`,
+                                `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${values.yearDDL?.value}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&SearchText=${values?.search}&IsPaginated=false&PageNo=0&PageSize=0`,
                                 (res) => {
                                   const excelLanding = () => {
                                     generateExcelAction(
