@@ -36,7 +36,7 @@ const initialValues = {
 const RosterReport = () => {
   const {
     permissionList,
-    profileData: { orgId, buId, buName, wgId },
+    profileData: { orgId, buId, buName, wgId, wId },
   } = useSelector((state) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
 
@@ -57,6 +57,7 @@ const RosterReport = () => {
     initialValues,
     onSubmit: (formValues) => {
       onGetRosterReportForAll(
+        wId,
         getRosterReportInformation,
         orgId,
         wgId,
@@ -75,6 +76,7 @@ const RosterReport = () => {
 
   useEffect(() => {
     onGetRosterReportForAll(
+      wId,
       getRosterReportInformation,
       orgId,
       wgId,
@@ -94,6 +96,7 @@ const RosterReport = () => {
       pages?.pageSize !== pagination?.pageSize
     ) {
       return onGetRosterReportForAll(
+        wId,
         getRosterReportInformation,
         orgId,
         wgId,
@@ -107,6 +110,7 @@ const RosterReport = () => {
     }
     if (pages?.current !== pagination?.current) {
       return onGetRosterReportForAll(
+        wId,
         getRosterReportInformation,
         orgId,
         wgId,
@@ -142,7 +146,7 @@ const RosterReport = () => {
                             values?.fromDate
                           }&DteToDate=${
                             values?.toDate
-                          }&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=1&SearchTxt=${
+                          }&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&SearchTxt=${
                             values?.search || ""
                           }&PageSize=1000&IsPaginated=false`
                         );
@@ -192,6 +196,7 @@ const RosterReport = () => {
                     onClick={() => {
                       setFieldValue("search", "");
                       onGetRosterReportForAll(
+                        wId,
                         getRosterReportInformation,
                         orgId,
                         wgId,
@@ -216,6 +221,7 @@ const RosterReport = () => {
                   setFieldValue("search", value);
                   if (value) {
                     onGetRosterReportForAll(
+                      wId,
                       getRosterReportInformation,
                       orgId,
                       wgId,
@@ -228,6 +234,7 @@ const RosterReport = () => {
                     );
                   } else {
                     onGetRosterReportForAll(
+                      wId,
                       getRosterReportInformation,
                       orgId,
                       wgId,
@@ -243,6 +250,7 @@ const RosterReport = () => {
                 cancelHandler={() => {
                   setFieldValue("search", "");
                   onGetRosterReportForAll(
+                    wId,
                     getRosterReportInformation,
                     orgId,
                     wgId,
