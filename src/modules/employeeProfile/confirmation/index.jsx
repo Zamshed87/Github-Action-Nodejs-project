@@ -56,10 +56,12 @@ function Confirmation() {
   const dispatch = useDispatch();
 
   // const history = useHistory();
-  const { orgId, buId, wgId, intWorkplaceId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    orgId,
+    buId,
+    wgId,
+    wId: intWorkplaceId,
+  } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   // const [landingLoading, setLandingLoading] = useState(false);
   const [loading, setLoading] = useState(false);
