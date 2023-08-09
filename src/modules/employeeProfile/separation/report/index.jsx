@@ -39,7 +39,7 @@ const SeparationReport = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, buName } = useSelector(
+  const { buId, wgId, buName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -78,6 +78,7 @@ const SeparationReport = () => {
 
   const getData = (pagination, searchText) => {
     getEmployeeSeparationLanding(
+      wId,
       buId,
       wgId,
       getDateOfYear("first"),
@@ -130,6 +131,7 @@ const SeparationReport = () => {
 
   useEffect(() => {
     getEmployeeSeparationLanding(
+      wId,
       buId,
       wgId,
       getDateOfYear("first"),
@@ -142,7 +144,7 @@ const SeparationReport = () => {
       paginationSize,
       setPages
     );
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   useEffect(() => {
     getBuDetails(buId, setBuDetails, setLoading);
@@ -210,6 +212,7 @@ const SeparationReport = () => {
                                 onClick={() => {
                                   setIsFilter(false);
                                   getEmployeeSeparationLanding(
+                                    wId,
                                     buId,
                                     wgId,
                                     getDateOfYear("first"),
@@ -236,6 +239,7 @@ const SeparationReport = () => {
                               setValue={(value) => {
                                 setFieldValue("search", value);
                                 getEmployeeSeparationLanding(
+                                  wId,
                                   buId,
                                   wgId,
                                   values?.filterFromDate,
@@ -252,6 +256,7 @@ const SeparationReport = () => {
                               cancelHandler={() => {
                                 setFieldValue("search", "");
                                 getEmployeeSeparationLanding(
+                                  wId,
                                   buId,
                                   wgId,
                                   values?.filterFromDate,
@@ -328,6 +333,7 @@ const SeparationReport = () => {
                               className="btn btn-green"
                               onClick={() => {
                                 getEmployeeSeparationLanding(
+                                  wId,
                                   buId,
                                   wgId,
                                   values?.filterFromDate,
