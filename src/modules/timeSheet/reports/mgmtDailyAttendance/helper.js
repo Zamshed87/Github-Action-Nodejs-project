@@ -28,13 +28,14 @@ export const getDailyAttendanceData = async (
   pageSize,
   forExcel = false,
   wgId,
-  setPages
+  setPages,
+  wId
 ) => {
   setLoading && setLoading(true);
 
   try {
     const res = await axios.get(
-      `/Employee/GetDateWiseAttendanceReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&attendanceDate=${date}&IsXls=${forExcel}&PageNo=${pageNo}&PageSize=${pageSize}&searchTxt=${srcTxt}`
+      `/Employee/GetDateWiseAttendanceReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&attendanceDate=${date}&IsXls=${forExcel}&PageNo=${pageNo}&PageSize=${pageSize}&searchTxt=${srcTxt}`
     );
 
     if (res?.data) {

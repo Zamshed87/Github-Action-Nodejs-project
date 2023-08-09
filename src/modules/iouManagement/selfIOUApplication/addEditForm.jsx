@@ -47,8 +47,15 @@ export default function SelfIOUApplicationCreate() {
   const [singleData, setSingleData] = useState([]);
   const [imgRow, setImgRow] = useState([]);
 
-  const { orgId, buId, employeeId, userName, isSupNLMORManagement, wgId } =
-    useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const {
+    orgId,
+    buId,
+    employeeId,
+    userName,
+    isSupNLMORManagement,
+    wgId,
+    intWorkplaceId,
+  } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const [employeeDDL, setEmployeeDDL] = useState([]);
 
@@ -77,6 +84,7 @@ export default function SelfIOUApplicationCreate() {
   let getData = () => {
     params?.id &&
       getAllIOULanding(
+        intWorkplaceId,
         "ViewById",
         buId,
         wgId,
@@ -92,6 +100,7 @@ export default function SelfIOUApplicationCreate() {
       );
     params?.id &&
       getAllIOULanding(
+        intWorkplaceId,
         "DocList",
         buId,
         wgId,
@@ -142,10 +151,10 @@ export default function SelfIOUApplicationCreate() {
 
     const modifyImageArray = imageFile
       ? imageFile.map((image) => {
-        return {
-          intDocURLId: image?.globalFileUrlId,
-        };
-      })
+          return {
+            intDocURLId: image?.globalFileUrlId,
+          };
+        })
       : [];
 
     const payload = {
@@ -179,22 +188,22 @@ export default function SelfIOUApplicationCreate() {
         initialValues={
           params?.id
             ? {
-              formDate: dateFormatterForInput(singleData?.dteFromDate),
-              toDate: dateFormatterForInput(singleData?.dteToDate),
-              amount: singleData?.numIOUAmount,
-              description: singleData?.discription,
-              employeeName: {
-                value: singleData?.employeeId,
-                label: singleData?.employeeName,
-              },
-            }
+                formDate: dateFormatterForInput(singleData?.dteFromDate),
+                toDate: dateFormatterForInput(singleData?.dteToDate),
+                amount: singleData?.numIOUAmount,
+                description: singleData?.discription,
+                employeeName: {
+                  value: singleData?.employeeId,
+                  label: singleData?.employeeName,
+                },
+              }
             : {
-              ...initData,
-              employeeName: {
-                value: employeeId,
-                label: userName,
-              },
-            }
+                ...initData,
+                employeeName: {
+                  value: employeeId,
+                  label: userName,
+                },
+              }
         }
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
@@ -392,83 +401,85 @@ export default function SelfIOUApplicationCreate() {
                   </p>
                   {imageFile?.length
                     ? imageFile.map((image, i) => (
-                      <div
-                        key={i}
-                        className="d-flex align-items-center"
-                        style={{ width: "160px" }}
-                        onClick={() => {
-                          dispatch(
-                            getDownlloadFileView_Action(
-                              image?.globalFileUrlId || image?.intDocURLId
-                            )
-                          );
-                        }}
-                      >
-                        <AttachmentOutlined
-                          sx={{ marginRight: "5px", color: "#0072E5" }}
-                        />
                         <div
-                          style={{
-                            fontSize: "12px",
-                            fontWeight: "500",
-                            color: "#0072E5",
-                            cursor: "pointer",
+                          key={i}
+                          className="d-flex align-items-center"
+                          style={{ width: "160px" }}
+                          onClick={() => {
+                            dispatch(
+                              getDownlloadFileView_Action(
+                                image?.globalFileUrlId || image?.intDocURLId
+                              )
+                            );
                           }}
                         >
-                          {image?.fileName ||
-                            `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
-                            }`}{" "}
+                          <AttachmentOutlined
+                            sx={{ marginRight: "5px", color: "#0072E5" }}
+                          />
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: "500",
+                              color: "#0072E5",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {image?.fileName ||
+                              `Attachment_${
+                                i <= 8 ? `0${i + 1}` : `${i + 1}`
+                              }`}{" "}
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      ))
                     : ""}
                   {editImageRow?.length
                     ? editImageRow.map((image, i) => (
-                      <div
-                        key={i}
-                        className="d-flex align-items-center"
-                        style={{ width: "160px" }}
-                        onClick={() => {
-                          dispatch(
-                            getDownlloadFileView_Action(
-                              image?.globalFileUrlId || image?.intDocURLId
-                            )
-                          );
-                        }}
-                      >
-                        <AttachmentOutlined
-                          sx={{ marginRight: "5px", color: "#0072E5" }}
-                        />
                         <div
-                          style={{
-                            fontSize: "12px",
-                            fontWeight: "500",
-                            color: "#0072E5",
-                            cursor: "pointer",
+                          key={i}
+                          className="d-flex align-items-center"
+                          style={{ width: "160px" }}
+                          onClick={() => {
+                            dispatch(
+                              getDownlloadFileView_Action(
+                                image?.globalFileUrlId || image?.intDocURLId
+                              )
+                            );
                           }}
                         >
-                          {image?.fileName ||
-                            `Attachment_${i <= 8 ? `0${i + 1}` : `${i + 1}`
-                            }`}{" "}
-                          {editImageRow?.length && (
-                            <IconButton
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteImageHandler(image?.globalFileUrlId);
-                              }}
-                              size="small"
-                              style={{
-                                fontSize: "18px",
-                                padding: "0px 5px",
-                                color: "#175CD3",
-                              }}
-                            >
-                              <CloseIcon fontSize="inherit"> </CloseIcon>
-                            </IconButton>
-                          )}
+                          <AttachmentOutlined
+                            sx={{ marginRight: "5px", color: "#0072E5" }}
+                          />
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: "500",
+                              color: "#0072E5",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {image?.fileName ||
+                              `Attachment_${
+                                i <= 8 ? `0${i + 1}` : `${i + 1}`
+                              }`}{" "}
+                            {editImageRow?.length && (
+                              <IconButton
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteImageHandler(image?.globalFileUrlId);
+                                }}
+                                size="small"
+                                style={{
+                                  fontSize: "18px",
+                                  padding: "0px 5px",
+                                  color: "#175CD3",
+                                }}
+                              >
+                                <CloseIcon fontSize="inherit"> </CloseIcon>
+                              </IconButton>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      ))
                     : ""}
                 </div>
               </div>

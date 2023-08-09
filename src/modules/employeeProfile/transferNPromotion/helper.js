@@ -12,11 +12,12 @@ export const getAllTransferAndPromotionLanding = async (
   pageNo,
   pageSize,
   setPages,
-  searchText = ""
+  searchText = "",
+  wId
 ) => {
   setLoading && setLoading(true);
 
-  let apiUrl = `/Employee/GetAllEmpTransferNpromotion?businessUnitId=${buId}&workplaceGroupId=${wgId}&PageNo=${pageNo}&PageSize=${pageSize}`;
+  let apiUrl = `/Employee/GetAllEmpTransferNpromotion?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&PageNo=${pageNo}&PageSize=${pageSize}`;
 
   landingType && (apiUrl += `&landingType=${landingType}`);
 

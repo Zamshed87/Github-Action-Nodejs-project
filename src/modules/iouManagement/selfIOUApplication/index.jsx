@@ -19,7 +19,9 @@ import SelfIOUFilterModal from "./component/SelfIOUFilterModal";
 import { getAllIOULanding, iouDtoCol } from "./helper";
 import IConfirmModal from "../../../common/IConfirmModal";
 import { saveIOUApplication } from "./helper";
-import PeopleDeskTable, { paginationSize } from "../../../common/peopleDeskTable";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../common/peopleDeskTable";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import DefaultInput from "../../../common/DefaultInput";
 
@@ -34,13 +36,13 @@ const initData = {
 };
 
 export default function SelfIOUApplication() {
-  // hook 
+  // hook
   const dispatch = useDispatch();
   const history = useHistory();
   const debounce = useDebounce();
 
   // redux
-  const { buId, employeeId, wgId } = useSelector(
+  const { buId, employeeId, wgId, intWorkplaceId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -56,7 +58,7 @@ export default function SelfIOUApplication() {
         ...initData,
         fromDate: getDateOfYear("first"),
         toDate: getDateOfYear("last"),
-      }
+      },
     });
 
   // landing table
@@ -69,6 +71,7 @@ export default function SelfIOUApplication() {
 
   const getData = (pagination) => {
     getAllIOULanding(
+      intWorkplaceId,
       "IOULandingByEmployeeId",
       buId,
       wgId,
@@ -91,26 +94,22 @@ export default function SelfIOUApplication() {
       return { ...prev, current: newPage };
     });
 
-    getData(
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getData(
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
   };
 
   // filter
@@ -125,6 +124,7 @@ export default function SelfIOUApplication() {
 
   useEffect(() => {
     getAllIOULanding(
+      intWorkplaceId,
       "IOULandingByEmployeeId",
       buId,
       wgId,
@@ -141,7 +141,7 @@ export default function SelfIOUApplication() {
       employeeId
     );
     // eslint-disable-next-line no-use-before-define
-  }, [buId, wgId, values, employeeId]);
+  }, [buId, wgId, values, employeeId, intWorkplaceId]);
 
   // filter
   const [filterBages, setFilterBages] = useState({});
@@ -166,6 +166,7 @@ export default function SelfIOUApplication() {
     setFilterBages({});
     setFilterValues("");
     getAllIOULanding(
+      intWorkplaceId,
       "IOULandingByEmployeeId",
       buId,
       wgId,
@@ -197,6 +198,7 @@ export default function SelfIOUApplication() {
 
     const callback = () => {
       getAllIOULanding(
+        intWorkplaceId,
         "IOULandingByEmployeeId",
         buId,
         wgId,
@@ -220,7 +222,7 @@ export default function SelfIOUApplication() {
       yesAlertFunc: () => {
         saveIOUApplication(payload, setLoading, callback);
       },
-      noAlertFunc: () => { },
+      noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
   };
@@ -254,6 +256,7 @@ export default function SelfIOUApplication() {
                       setStatus("");
                       setAdjustmentStatus("");
                       getAllIOULanding(
+                        intWorkplaceId,
                         "IOULandingByEmployeeId",
                         buId,
                         wgId,
@@ -285,6 +288,7 @@ export default function SelfIOUApplication() {
                     setFieldValue("search", value);
                     debounce(() => {
                       getAllIOULanding(
+                        intWorkplaceId,
                         "IOULandingByEmployeeId",
                         buId,
                         wgId,
@@ -305,6 +309,7 @@ export default function SelfIOUApplication() {
                   cancelHandler={() => {
                     setFieldValue("search", "");
                     getAllIOULanding(
+                      intWorkplaceId,
                       "IOULandingByEmployeeId",
                       buId,
                       wgId,
@@ -399,6 +404,7 @@ export default function SelfIOUApplication() {
                   className="btn btn-green"
                   onClick={() => {
                     getAllIOULanding(
+                      intWorkplaceId,
                       "IOULandingByEmployeeId",
                       buId,
                       wgId,
@@ -442,9 +448,7 @@ export default function SelfIOUApplication() {
                   isCheckBox={false}
                   isScrollAble={false}
                   onRowClick={(res) => {
-                    history.push(
-                      `/SelfService/iOU/application/${res?.iouId}`
-                    );
+                    history.push(`/SelfService/iOU/application/${res?.iouId}`);
                   }}
                 />
               ) : (

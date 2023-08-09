@@ -47,7 +47,8 @@ export const onGetExpenseApplicationLanding = async (
   setLoading,
   pageNo,
   pageSize,
-  setPages
+  setPages,
+  intWorkplaceId
 ) => {
   setLoading && setLoading(true);
 
@@ -55,7 +56,7 @@ export const onGetExpenseApplicationLanding = async (
 
   try {
     const res = await axios.get(
-      `/Employee/ExpenseApplicationLandingDataPaginetion?intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&dteFromDate=${fromDate}&dteToDate=${toDate}&pageNo=${pageNo}&pageSize=${pageSize}${searchTxt}`
+      `/Employee/ExpenseApplicationLandingDataPaginetion?intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&workplaceId=${intWorkplaceId}&dteFromDate=${fromDate}&dteToDate=${toDate}&pageNo=${pageNo}&pageSize=${pageSize}${searchTxt}`
     );
     if (res?.data) {
       setter(res?.data?.expenseApplicationLandings);

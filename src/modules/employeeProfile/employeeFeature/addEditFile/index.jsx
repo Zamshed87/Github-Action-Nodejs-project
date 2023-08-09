@@ -74,11 +74,11 @@ export default function AddEditForm({
   const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
   const [workplaceGroupName, setWorkplaceGroupName] = useState("");
 
-  const [wingDDL, setWingDDL] = useState([]);
-  const [soleDepoDDL, setSoleDepoDDL] = useState([]);
-  const [regionDDL, setRegionDDL] = useState([]);
-  const [areaDDL, setAreaDDL] = useState([]);
-  const [territoryDDL, setTerritoryDDL] = useState([]);
+  // const [wingDDL, setWingDDL] = useState([]);
+  // const [soleDepoDDL, setSoleDepoDDL] = useState([]);
+  // const [regionDDL, setRegionDDL] = useState([]);
+  // const [areaDDL, setAreaDDL] = useState([]);
+  // const [territoryDDL, setTerritoryDDL] = useState([]);
 
   // calender assigne
   const [calenderDDL, setCalenderDDL] = useState([]);
@@ -137,11 +137,11 @@ export default function AddEditForm({
         buId,
         employeeId,
         setWorkplaceDDL,
-        setWingDDL,
-        setSoleDepoDDL,
-        setRegionDDL,
-        setAreaDDL,
-        setTerritoryDDL,
+        // setWingDDL,
+        // setSoleDepoDDL,
+        // setRegionDDL,
+        // setAreaDDL,
+        // setTerritoryDDL,
       });
     }
   }, [orgId, buId, singleData, employeeId]);
@@ -259,19 +259,19 @@ export default function AddEditForm({
                   "strWorkplace",
                   setWorkplaceDDL
                 );
-                getPeopleDeskWithoutAllDDL(
-                  `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
-                  "WingId",
-                  "WingName",
-                  setWingDDL
-                );
-                if (!valueOption?.value) {
-                  setFieldValue("soleDepo", "");
-                  setFieldValue("region", "");
-                  setFieldValue("area", "");
-                  setFieldValue("territory", "");
-                  setFieldValue("wing", "");
-                }
+                // getPeopleDeskWithoutAllDDL(
+                //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
+                //   "WingId",
+                //   "WingName",
+                //   setWingDDL
+                // );
+                // if (!valueOption?.value) {
+                //   setFieldValue("soleDepo", "");
+                //   setFieldValue("region", "");
+                //   setFieldValue("area", "");
+                //   setFieldValue("territory", "");
+                //   setFieldValue("wing", "");
+                // }
               }}
               styles={customStyles}
               placeholder=" "
@@ -617,7 +617,7 @@ export default function AddEditForm({
         </div>
 
         {/* marketing setup */}
-        {values?.workplaceGroup?.label === "Marketing" && (
+        {/* {values?.workplaceGroup?.label === "Marketing" && (
           <>
             <div className="col-6">
               <div className="input-field-main">
@@ -744,7 +744,7 @@ export default function AddEditForm({
               </div>
             </div>
           </>
-        )}
+        )} */}
 
         {/* calender assigne */}
         {!isEdit && (

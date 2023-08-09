@@ -54,23 +54,16 @@ export const getPeopleDeskAllLandingForConfirmation = async (
   setPages,
   wgId,
   pagination,
-  searchText
+  searchText,
+  intWorkplaceId
 ) => {
   setLoading && setLoading(true);
   let url;
-  // if (text === "filter") {
-  //   url = `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&intId=${id}${status}&DeptId=${deptId}&DesigId=${desId}&EmpId=${empId}&FromDate=${joiningDate}&ToDate=${confirmDate}`;
-  // } else if (!joiningDate && !confirmDate) {
-  //   url = `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&intId=${id}${status}&DeptId=${deptId}&DesigId=${desId}&EmpId=${empId}`;
-  // } else {
-  //   url = `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&intId=${id}${status}&DeptId=${deptId}&DesigId=${desId}&EmpId=${empId}&FromDate=${joiningDate}&ToDate=${confirmDate}`;
-  // }
   url = `/EmployeeAllLanding/EmployeeBasicForConfirmation?BusinessUnitId=${busId}&WorkplaceGroupId=${wgId}&FromDate=${joiningDate}&ToDate=${confirmDate}&PageNo=${
     pagination?.current
-  }&PageSize=${pagination?.pageSize}&SearchTxt=${searchText || ""}`;
-  // url = `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&DeptId=${deptId}&DesigId=${desId}&EmpId=${empId}&FromDate=${joiningDate}&ToDate=${confirmDate}&WorkplaceGroupId=${wgId}&PageNo=${
-  //   pagination?.current
-  // }&PageSize=${pagination?.pageSize}&SearchTxt=${searchtText || ""}`;
+  }&PageSize=${pagination?.pageSize}&SearchTxt=${
+    searchText || ""
+  }&WorkplaceId=${intWorkplaceId}`;
   try {
     const res = await axios.get(url);
     if (res?.data?.data) {

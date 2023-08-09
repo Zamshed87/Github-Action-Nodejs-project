@@ -40,7 +40,7 @@ export default function ActiveInactiveEmployeeReport() {
   const dispatch = useDispatch();
 
   // eslint-disable-next-line no-unused-vars
-  const { buId, buName, wgId } = useSelector(
+  const { buId, buName, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,6 +77,7 @@ export default function ActiveInactiveEmployeeReport() {
       setPages,
       fromDate,
       toDate,
+      wId,
     });
   };
 
@@ -195,7 +196,7 @@ export default function ActiveInactiveEmployeeReport() {
                             onClick={(e) => {
                               e.stopPropagation();
                               getExcelData(
-                                `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IsXls=true&PageNo=1&PageSize=10000&searchTxt=${values?.search}&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}`,
+                                `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&IsXls=true&PageNo=1&PageSize=10000&searchTxt=${values?.search}&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}`,
                                 (res) => {
                                   const newData = res?.data?.map(
                                     (item, index) => {

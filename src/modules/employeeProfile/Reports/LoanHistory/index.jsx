@@ -46,7 +46,7 @@ const EmLoanHistory = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -104,6 +104,7 @@ const EmLoanHistory = () => {
       ispaginated: true,
       searchText: searchTxt || "",
       workplaceGroupId: wgId,
+      workplaceId: wId,
     });
   };
 
@@ -161,8 +162,9 @@ const EmLoanHistory = () => {
       ispaginated: true,
       searchText: "",
       workplaceGroupId: wgId,
+      workplaceId: wId,
     });
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   return (
     <>
@@ -270,6 +272,7 @@ const EmLoanHistory = () => {
                                 ispaginated: true,
                                 searchText: "",
                                 workplaceGroupId: wgId,
+                                workplaceId: wId,
                               }
                             );
                           }}
@@ -304,6 +307,7 @@ const EmLoanHistory = () => {
                               ispaginated: true,
                               searchText: values || "",
                               workplaceGroupId: wgId,
+                              workplaceId: wId,
                             }
                           );
                           setFieldValue("search", value);
@@ -330,6 +334,7 @@ const EmLoanHistory = () => {
                               ispaginated: true,
                               searchText: "",
                               workplaceGroupId: wgId,
+                              workplaceId: wId,
                             }
                           );
                           setFieldValue("search", "");
@@ -403,6 +408,7 @@ const EmLoanHistory = () => {
                               ispaginated: true,
                               searchText: "",
                               workplaceGroupId: wgId,
+                              workplaceId: wId,
                             }
                           );
                         }}
