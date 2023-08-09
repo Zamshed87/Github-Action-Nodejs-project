@@ -39,7 +39,7 @@ export default function ManagementSeparation() {
   const history = useHistory();
 
   // redux
-  const { buId, wgId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,7 +77,8 @@ export default function ManagementSeparation() {
       setLoading,
       pagination?.current,
       pagination?.pageSize,
-      setPages
+      setPages,
+      wId
     );
   };
 
@@ -134,7 +135,8 @@ export default function ManagementSeparation() {
       setLoading,
       1,
       paginationSize,
-      setPages
+      setPages,
+      wId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId]);
@@ -177,7 +179,8 @@ export default function ManagementSeparation() {
                           setLoading,
                           1,
                           paginationSize,
-                          setPages
+                          setPages,
+                          wId
                         );
                       }}
                     />
@@ -203,7 +206,8 @@ export default function ManagementSeparation() {
                           setLoading,
                           1,
                           paginationSize,
-                          setPages
+                          setPages,
+                          wId
                         );
                       } else {
                         getSeparationLanding(
@@ -217,7 +221,8 @@ export default function ManagementSeparation() {
                           setLoading,
                           1,
                           paginationSize,
-                          setPages
+                          setPages,
+                          wId
                         );
                       }
                     }}
@@ -234,7 +239,8 @@ export default function ManagementSeparation() {
                         setLoading,
                         1,
                         paginationSize,
-                        setPages
+                        setPages,
+                        wId
                       );
                     }}
                   />

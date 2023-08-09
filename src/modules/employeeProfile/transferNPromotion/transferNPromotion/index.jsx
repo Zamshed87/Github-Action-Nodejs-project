@@ -55,7 +55,7 @@ export default function TransferAndPromotion() {
   const debounce = useDebounce();
 
   // redux
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -99,7 +99,9 @@ export default function TransferAndPromotion() {
       setLoading,
       pagination?.current,
       pagination?.pageSize,
-      setPages
+      setPages,
+      "",
+      wId
     );
   };
 
@@ -142,7 +144,9 @@ export default function TransferAndPromotion() {
       setLoading,
       1,
       paginationSize,
-      setPages
+      setPages,
+      "",
+      wId
     );
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
@@ -150,7 +154,7 @@ export default function TransferAndPromotion() {
       "EmployeeName",
       setSubstituteEmployeeDDL
     );
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   const releaseHandler = (values) => {
     releaseEmpTransferNPromotion(
@@ -222,7 +226,9 @@ export default function TransferAndPromotion() {
                                     setLoading,
                                     1,
                                     paginationSize,
-                                    setPages
+                                    setPages,
+                                    "",
+                                    wId
                                   );
                                 }}
                               />
@@ -248,7 +254,8 @@ export default function TransferAndPromotion() {
                                     1,
                                     paginationSize,
                                     setPages,
-                                    value || ""
+                                    value || "",
+                                    wId
                                   );
                                 }, 500);
                               }}
@@ -265,7 +272,8 @@ export default function TransferAndPromotion() {
                                   1,
                                   paginationSize,
                                   setPages,
-                                  ""
+                                  "",
+                                  wId
                                 );
                               }}
                             />
