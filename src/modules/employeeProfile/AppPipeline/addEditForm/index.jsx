@@ -29,11 +29,11 @@ const initData = {
   userGroup: "",
   orgName: "",
   workplace: "",
-  wing: "",
-  soleDepo: "",
-  region: "",
-  area: "",
-  territory: "",
+  // wing: "",
+  // soleDepo: "",
+  // region: "",
+  // area: "",
+  // territory: "",
 };
 
 export default function AddEditFormComponent({
@@ -62,11 +62,11 @@ export default function AddEditFormComponent({
   const [organizationDDL, setOrganizationDDL] = useState([]);
   const [workPlaceDDL, setWorkPlaceDDL] = useState([]);
 
-  const [wingDDL, setWingDDL] = useState([]);
-  const [soleDepoDDL, setSoleDepoDDL] = useState([]);
-  const [regionDDL, setRegionDDL] = useState([]);
-  const [areaDDL, setAreaDDL] = useState([]);
-  const [territoryDDL, setTerritoryDDL] = useState([]);
+  // const [wingDDL, setWingDDL] = useState([]);
+  // const [soleDepoDDL, setSoleDepoDDL] = useState([]);
+  // const [regionDDL, setRegionDDL] = useState([]);
+  // const [areaDDL, setAreaDDL] = useState([]);
+  // const [territoryDDL, setTerritoryDDL] = useState([]);
   const [singlePermission, setSinglePermission] = useState({});
   const [isEdit, setIsEdit] = useState(false);
 
@@ -81,18 +81,18 @@ export default function AddEditFormComponent({
 
   // handler
   const addHandler = (values) => {
-    // if (!values?.workplace) return toast.warn("Please select workplace type");
+    if (!values?.workplace) return toast.warn("Please select workplace type");
     if (!values?.orgName) return toast.warn("Please select workplaceGroup ");
-    if (values?.orgName?.label === "Marketing" && !values?.wing)
-      return toast.warn("Please select wing");
-    if (values?.wing?.value > 0 && !values?.soleDepo)
-      return toast.warn("Please select soleDepo");
-    if (values?.soleDepo?.value > 0 && !values?.region)
-      return toast.warn("Please select region");
-    if (values?.region?.value > 0 && !values?.area)
-      return toast.warn("Please select area");
-    if (values?.area?.value > 0 && !values?.territory)
-      return toast.warn("Please select territory");
+    // if (values?.orgName?.label === "Marketing" && !values?.wing)
+    //   return toast.warn("Please select wing");
+    // if (values?.wing?.value > 0 && !values?.soleDepo)
+    //   return toast.warn("Please select soleDepo");
+    // if (values?.soleDepo?.value > 0 && !values?.region)
+    //   return toast.warn("Please select region");
+    // if (values?.region?.value > 0 && !values?.area)
+    //   return toast.warn("Please select area");
+    // if (values?.area?.value > 0 && !values?.territory)
+    //   return toast.warn("Please select territory");
     if (!values?.approver) return toast.warn("Please select approver");
     if (!values?.sequence) return toast.warn("Please select sequence");
     if (!values?.strTitle) return toast.warn("Please enter status title");
@@ -176,11 +176,11 @@ export default function AddEditFormComponent({
       intBusinessUnitId: buId,
       intWorkplaceGroupId: values?.orgName?.value || 0,
       intWorkplaceId: values?.workplace?.value,
-      intTerritoryId: values?.territory?.value,
-      intAreaId: values?.area?.value,
-      intRegionId: values?.region?.value,
-      intSoleDepoId: values?.soleDepo?.value,
-      intWingId: values?.wing?.value,
+      // intTerritoryId: values?.territory?.value,
+      // intAreaId: values?.area?.value,
+      // intRegionId: values?.region?.value,
+      // intSoleDepoId: values?.soleDepo?.value,
+      // intWingId: values?.wing?.value,
 
       isValidate: true,
       approvalPipelineRowViewModelList: [...rowDto, ...deletedRow],
@@ -222,26 +222,26 @@ export default function AddEditFormComponent({
               value: data?.globalPipelineHeader?.intWorkplaceId,
               label: data?.globalPipelineHeader?.strWorkPlaceName,
             },
-            wing: {
-              value: data?.globalPipelineHeader?.intWingId,
-              label: data?.globalPipelineHeader?.wing,
-            },
-            soleDepo: {
-              value: data?.globalPipelineHeader?.intSoleDepoId,
-              label: data?.globalPipelineHeader?.soleDepo,
-            },
-            region: {
-              value: data?.globalPipelineHeader?.intRegionId,
-              label: data?.globalPipelineHeader?.reagion,
-            },
-            area: {
-              value: data?.globalPipelineHeader?.intAreaId,
-              label: data?.globalPipelineHeader?.area,
-            },
-            territory: {
-              value: data?.globalPipelineHeader?.intTerritoryId,
-              label: data?.globalPipelineHeader?.territory,
-            },
+            // wing: {
+            //   value: data?.globalPipelineHeader?.intWingId,
+            //   label: data?.globalPipelineHeader?.wing,
+            // },
+            // soleDepo: {
+            //   value: data?.globalPipelineHeader?.intSoleDepoId,
+            //   label: data?.globalPipelineHeader?.soleDepo,
+            // },
+            // region: {
+            //   value: data?.globalPipelineHeader?.intRegionId,
+            //   label: data?.globalPipelineHeader?.reagion,
+            // },
+            // area: {
+            //   value: data?.globalPipelineHeader?.intAreaId,
+            //   label: data?.globalPipelineHeader?.area,
+            // },
+            // territory: {
+            //   value: data?.globalPipelineHeader?.intTerritoryId,
+            //   label: data?.globalPipelineHeader?.territory,
+            // },
           });
 
           const newdata = data?.globalPipelineRowList?.map((item) => ({
@@ -401,28 +401,28 @@ export default function AddEditFormComponent({
                                 setLoader(true);
                                 setFieldValue("orgName", valueOption);
 
-                                // getPeopleDeskAllDDL(
-                                //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption.value}&intId=${employeeId}`,
-                                //   "intWorkplaceId",
-                                //   "strWorkplace",
-                                //   setWorkPlaceDDL
-                                // );
+                                getPeopleDeskAllDDL(
+                                  `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption.value}&intId=${employeeId}`,
+                                  "intWorkplaceId",
+                                  "strWorkplace",
+                                  setWorkPlaceDDL
+                                );
                                 setLoader(false);
 
-                                if (valueOption?.label === "Marketing") {
-                                  setFieldValue("wing", "");
-                                  setFieldValue("soleDepo", "");
-                                  setFieldValue("region", "");
-                                  setFieldValue("area", "");
-                                  setFieldValue("territory", "");
+                                // if (valueOption?.label === "Marketing") {
+                                //   setFieldValue("wing", "");
+                                //   setFieldValue("soleDepo", "");
+                                //   setFieldValue("region", "");
+                                //   setFieldValue("area", "");
+                                //   setFieldValue("territory", "");
 
-                                  getPeopleDeskWithoutAllDDL(
-                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
-                                    "WingId",
-                                    "WingName",
-                                    setWingDDL
-                                  );
-                                }
+                                //   getPeopleDeskWithoutAllDDL(
+                                //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
+                                //     "WingId",
+                                //     "WingName",
+                                //     setWingDDL
+                                //   );
+                                // }
                               }}
                               errors={errors}
                               touched={touched}
@@ -431,7 +431,7 @@ export default function AddEditFormComponent({
                             />
                           </div>
                           {/* workPlace */}
-                          <div className="col-md-6 d-none">
+                          <div className="col-md-6 ">
                             <label className="mb-2">Workplace </label>
                             <FormikSelect
                               // isDisabled={!values?.orgType}
@@ -452,198 +452,6 @@ export default function AddEditFormComponent({
                               isClearable={false}
                             />
                           </div>
-
-                          {/* marketing setup for wing */}
-                          {values?.orgName?.label === "Marketing" ? (
-                            <div className="col-md-6">
-                              <div className="input-field-main">
-                                <label>Wing</label>
-                                <FormikSelect
-                                  menuPosition="fixed"
-                                  name="wing"
-                                  isDisabled={isEdit}
-                                  options={
-                                    [{ value: 0, label: "All" }, ...wingDDL] ||
-                                    []
-                                  }
-                                  value={
-                                    values?.wing || { value: -1, label: "" }
-                                  }
-                                  onChange={(valueOption) => {
-                                    getPeopleDeskWithoutAllDDL(
-                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SoleDepoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.orgName?.value}&ParentTerritoryId=${valueOption?.value}`,
-                                      "SoleDepoId",
-                                      "SoleDepoName",
-                                      setSoleDepoDDL
-                                    );
-
-                                    setFieldValue("soleDepo", "");
-                                    setFieldValue("region", "");
-                                    setFieldValue("area", "");
-                                    setFieldValue("territory", "");
-                                    setFieldValue("wing", valueOption);
-                                  }}
-                                  styles={customStyles}
-                                  placeholder=""
-                                  errors={errors}
-                                  touched={touched}
-                                  isClearable={false}
-                                />
-                              </div>
-                            </div>
-                          ) : null}
-
-                          {/* sole depo */}
-                          {values?.wing?.value > 0 ? (
-                            <div className="col-md-6">
-                              <div className="input-field-main">
-                                <label>Sole Depo</label>
-                                <FormikSelect
-                                  menuPosition="fixed"
-                                  name="soleDepo"
-                                  isDisabled={isEdit}
-                                  options={
-                                    [
-                                      { value: 0, label: "All" },
-                                      ...soleDepoDDL,
-                                    ] || []
-                                  }
-                                  value={
-                                    values?.soleDepo || {
-                                      value: -1,
-                                      label: "",
-                                    }
-                                  }
-                                  onChange={(valueOption) => {
-                                    getPeopleDeskWithoutAllDDL(
-                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RegionDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.orgName?.value}&ParentTerritoryId=${valueOption?.value}`,
-                                      "RegionId",
-                                      "RegionName",
-                                      setRegionDDL
-                                    );
-                                    setFieldValue("region", "");
-                                    setFieldValue("area", "");
-                                    setFieldValue("territory", "");
-
-                                    setFieldValue("soleDepo", valueOption);
-                                  }}
-                                  styles={customStyles}
-                                  placeholder=""
-                                  errors={errors}
-                                  touched={touched}
-                                  isClearable={false}
-                                />
-                              </div>
-                            </div>
-                          ) : null}
-                          {/* region */}
-                          {values?.soleDepo?.value > 0 ? (
-                            <div className="col-md-6">
-                              <div className="input-field-main">
-                                <label>Region</label>
-                                <FormikSelect
-                                  menuPosition="fixed"
-                                  name="region"
-                                  isDisabled={isEdit}
-                                  options={
-                                    [
-                                      { value: 0, label: "All" },
-                                      ...regionDDL,
-                                    ] || []
-                                  }
-                                  value={
-                                    values?.region || { value: -1, label: "" }
-                                  }
-                                  onChange={(valueOption) => {
-                                    getPeopleDeskWithoutAllDDL(
-                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AreaDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.orgName?.value}&ParentTerritoryId=${valueOption?.value}`,
-                                      "AreaId",
-                                      "AreaName",
-                                      setAreaDDL
-                                    );
-                                    setFieldValue("area", "");
-                                    setFieldValue("territory", "");
-
-                                    setFieldValue("region", valueOption);
-                                  }}
-                                  styles={customStyles}
-                                  placeholder=""
-                                  errors={errors}
-                                  touched={touched}
-                                  isClearable={false}
-                                />
-                              </div>
-                            </div>
-                          ) : null}
-                          {/* area */}
-                          {values?.region?.value > 0 ? (
-                            <div className="col-md-6">
-                              <div className="input-field-main">
-                                <label>Area</label>
-                                <FormikSelect
-                                  menuPosition="fixed"
-                                  name="area"
-                                  isDisabled={isEdit}
-                                  options={
-                                    [{ value: 0, label: "All" }, ...areaDDL] ||
-                                    []
-                                  }
-                                  value={
-                                    values?.area || { value: -1, label: "" }
-                                  }
-                                  onChange={(valueOption) => {
-                                    getPeopleDeskWithoutAllDDL(
-                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=TerritoryDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.orgName?.value}&ParentTerritoryId=${valueOption?.value}`,
-                                      "TerritoryId",
-                                      "TerritoryName",
-                                      setTerritoryDDL
-                                    );
-                                    setFieldValue("territory", "");
-
-                                    setFieldValue("area", valueOption);
-                                  }}
-                                  styles={customStyles}
-                                  placeholder=""
-                                  errors={errors}
-                                  touched={touched}
-                                  isClearable={false}
-                                />
-                              </div>
-                            </div>
-                          ) : null}
-                          {/* territory */}
-                          {values?.area?.value > 0 ? (
-                            <div className="col-md-6">
-                              <div className="input-field-main">
-                                <label>Territory</label>
-                                <FormikSelect
-                                  menuPosition="fixed"
-                                  name="territory"
-                                  isDisabled={isEdit}
-                                  options={
-                                    [
-                                      { value: 0, label: "All" },
-                                      ...territoryDDL,
-                                    ] || []
-                                  }
-                                  value={
-                                    values?.territory || {
-                                      value: -1,
-                                      label: "",
-                                    }
-                                  }
-                                  onChange={(valueOption) => {
-                                    setFieldValue("territory", valueOption);
-                                  }}
-                                  styles={customStyles}
-                                  placeholder=""
-                                  errors={errors}
-                                  touched={touched}
-                                  isClearable={false}
-                                />
-                              </div>
-                            </div>
-                          ) : null}
 
                           {/* pipeline Name */}
                           <div className="col-md-6">
