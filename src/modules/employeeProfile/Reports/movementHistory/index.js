@@ -45,7 +45,7 @@ const EmMovementHistory = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, buName } = useSelector(
+  const { buId, wgId, buName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -83,6 +83,7 @@ const EmMovementHistory = () => {
 
   const getData = (pagination, searchText) => {
     getMovementHistory(
+      wId,
       buId,
       wgId,
       initStartData,
@@ -132,6 +133,7 @@ const EmMovementHistory = () => {
 
   useEffect(() => {
     getMovementHistory(
+      wId,
       buId,
       wgId,
       initStartData,
@@ -144,7 +146,7 @@ const EmMovementHistory = () => {
       setPages,
       true
     );
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   const columns = (page, paginationSize) => {
     return [
@@ -254,7 +256,7 @@ const EmMovementHistory = () => {
                             type="button"
                             onClick={(e) => {
                               getPDFAction(
-                                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${
+                                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${
                                   values?.fromDate || initStartData
                                 }&ToDate=${
                                   values?.toDate || initEndDate
@@ -286,6 +288,7 @@ const EmMovementHistory = () => {
                               onClick={() => {
                                 setFieldValue("search", "");
                                 getMovementHistory(
+                                  wId,
                                   buId,
                                   wgId,
                                   values?.fromDate,
@@ -311,6 +314,7 @@ const EmMovementHistory = () => {
                             setValue={(value) => {
                               setFieldValue("search", value);
                               getMovementHistory(
+                                wId,
                                 buId,
                                 wgId,
                                 values?.fromDate || "",
@@ -327,6 +331,7 @@ const EmMovementHistory = () => {
                             cancelHandler={() => {
                               setFieldValue("search", "");
                               getMovementHistory(
+                                wId,
                                 buId,
                                 wgId,
                                 values?.fromDate || "",
@@ -388,6 +393,7 @@ const EmMovementHistory = () => {
                               className="btn btn-green"
                               onClick={() => {
                                 getMovementHistory(
+                                  wId,
                                   buId,
                                   wgId,
                                   values?.fromDate || "",
