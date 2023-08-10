@@ -89,13 +89,13 @@ export const pipleLineColumn = (
 
     {
       title: "Workplace Group",
-      dataIndex: "wing",
+      dataIndex: "workplaceGroup",
       sort: true,
       fieldType: "string",
     },
     {
       title: "Workplace",
-      dataIndex: "soleDepo",
+      dataIndex: "workplace",
       sort: true,
       fieldType: "string",
     },
