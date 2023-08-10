@@ -17,6 +17,7 @@ export const getBuDetails = async (buId, setter, setLoading) => {
 };
 
 export const getMovementHistory = async (
+  wId,
   buId,
   wgId,
   fromDate,
@@ -32,7 +33,7 @@ export const getMovementHistory = async (
   setLoading && setLoading(true);
 
   try {
-    let apiUrl = `/Employee/EmployeeMovementReportAll?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&PageNo=${pageNo}&PageSize=${pageSize}&IsPaginated=${isPaginated}`;
+    let apiUrl = `/Employee/EmployeeMovementReportAll?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&FromDate=${fromDate}&ToDate=${toDate}&PageNo=${pageNo}&PageSize=${pageSize}&IsPaginated=${isPaginated}`;
 
     search = search && (apiUrl += `&SearchText=${search}`);
 

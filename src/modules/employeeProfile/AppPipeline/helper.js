@@ -88,38 +88,15 @@ export const pipleLineColumn = (
     },
 
     {
-      title: "Wing",
-      dataIndex: "wing",
+      title: "Workplace Group",
+      dataIndex: "workplaceGroup",
       sort: true,
-      hidden: wgName === "Marketing" ? false : true,
       fieldType: "string",
     },
     {
-      title: "Sole Depo",
-      dataIndex: "soleDepo",
+      title: "Workplace",
+      dataIndex: "workplace",
       sort: true,
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Region",
-      dataIndex: "reagion",
-      sort: true,
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Area",
-      dataIndex: "area",
-      sort: true,
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Territory",
-      dataIndex: "territory",
-      sort: true,
-      hidden: wgName === "Marketing" ? false : true,
       fieldType: "string",
     },
 
@@ -129,6 +106,7 @@ export const pipleLineColumn = (
       className: "text-center",
       render: (record) => (
         <div className="d-flex justify-content-center">
+          {console.log(record)}
           <Tooltip title="Edit" arrow>
             <button className="iconButton" type="button">
               <EditOutlined

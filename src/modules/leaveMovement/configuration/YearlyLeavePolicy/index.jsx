@@ -33,7 +33,7 @@ const YearlyLeavePolicy = () => {
   const [allData, setAllData] = useState([]);
   const [singleData, setSingleData] = useState({});
   const [sortType, setSortType] = useState("desc");
-  
+
   const [, setYear] = useState(null);
 
   const saveHandler = (values, cb) => {};
@@ -86,7 +86,7 @@ const YearlyLeavePolicy = () => {
     });
     setLandingData(newData);
   };
-  
+
   useEffect(() => {
     getData();
   }, [orgId, buId]);
@@ -137,6 +137,24 @@ const YearlyLeavePolicy = () => {
             e.stopPropagation();
             setShow(true);
             setSingleData({
+              businessUnit: [
+                {
+                  value: item?.BusinessUnitId,
+                  label: item?.strBusinessUnit,
+                },
+              ],
+              workplaceGroup: [
+                {
+                  value: item?.intWorkplaceGroupId,
+                  label: item?.strWorkplaceGroup,
+                },
+              ],
+              workplace: [
+                {
+                  value: item?.intWorkplaceId,
+                  label: item?.strWorkplace,
+                },
+              ],
               year: {
                 value: item?.YearId,
                 label: item?.YearId,
@@ -212,7 +230,7 @@ const YearlyLeavePolicy = () => {
                           isClearable={false}
                           onChange={(valueOption) => {
                             if (valueOption?.value) {
-                              getData(valueOption?.value)
+                              getData(valueOption?.value);
                               // filterData(valueOption?.value);
                             } else {
                               setLandingData({ Result: allData });
@@ -254,7 +272,7 @@ const YearlyLeavePolicy = () => {
                   <div className="table-card-body">
                     <div className="approval-table">
                       <h5
-                        style={{ 
+                        style={{
                           fontSize: "15px",
                           color: "rgba(0, 0, 0, 0.6)",
                           fontWeight: "600",
