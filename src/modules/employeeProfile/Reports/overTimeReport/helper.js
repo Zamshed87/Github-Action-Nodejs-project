@@ -34,6 +34,7 @@ export const filterData = (keywords, allData, setRowDto) => {
 };
 
 export const getOvertimeReportLanding = async (
+  wId,
   partType,
   buId,
   workplaceGroupId,
@@ -51,7 +52,7 @@ export const getOvertimeReportLanding = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/OvertimeReportLanding?PartType=${partType}&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&FromDate=${formDate}&ToDate=${toDate}&SearchText=${srcTxt}&IsPaginated=${isPaginated}&PageNo=${pageNo}&PageSize=${pageSize}`
+      `/Employee/OvertimeReportLanding?PartType=${partType}&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&WorkplaceId=${wId}&FromDate=${formDate}&ToDate=${toDate}&SearchText=${srcTxt}&IsPaginated=${isPaginated}&PageNo=${pageNo}&PageSize=${pageSize}`
     );
     if (res?.data) {
       setter(res?.data);

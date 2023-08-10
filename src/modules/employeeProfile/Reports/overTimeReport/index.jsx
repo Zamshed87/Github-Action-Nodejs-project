@@ -56,7 +56,7 @@ export default function EmOverTimeReport() {
   const debounce = useDebounce();
   const [, getExcelData, apiLoading] = useAxiosGet();
 
-  const { buId, buName, wgId } = useSelector(
+  const { buId, buName, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -79,6 +79,7 @@ export default function EmOverTimeReport() {
     isPaginated = true
   ) => {
     getOvertimeReportLanding(
+      wId,
       "CalculatedHistoryReportForAllEmployee",
       buId,
       wgId,
@@ -98,7 +99,7 @@ export default function EmOverTimeReport() {
     getData();
     getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   const saveHandler = (values) => {};
 
