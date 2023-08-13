@@ -349,7 +349,25 @@ export const submitHandler = ({
   if (isUserCheckMsg?.statusCode !== 200 && values?.isUsersection === true) {
     return toast.warn("Please provide a valid user !!!");
   }
+  // if (
+  //   values?.employeeType?.ParentId === 1 &&
+  //   !values?.dteProbationaryCloseDate
+  // ) {
+  //   return toast.warn("Please provide probation  duration !!!");
+  // }
+
+  // if (
+  //   (values?.employeeType?.isManual === 1 ||
+  //     values?.employeeType?.isManual === true) &&
+  //   values?.employeeType?.ParentId === 3 &&
+  //   !values?.dteInternCloseDate
+  // ) {
+  //   return toast.warn("Please provide intern duration !!!");
+  // }
+
   if (
+    (values?.employeeType?.isManual === 0 ||
+      values?.employeeType?.isManual === true) &&
     values?.employeeType?.ParentId === 1 &&
     !values?.dteProbationaryCloseDate
   ) {
@@ -357,7 +375,7 @@ export const submitHandler = ({
   }
 
   if (
-    (values?.employeeType?.isManual === 1 ||
+    (values?.employeeType?.isManual === 0 ||
       values?.employeeType?.isManual === true) &&
     values?.employeeType?.ParentId === 3 &&
     !values?.dteInternCloseDate
