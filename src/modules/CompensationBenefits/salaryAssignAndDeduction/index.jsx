@@ -67,7 +67,7 @@ function SalaryAssignAndDeduction() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -121,6 +121,7 @@ function SalaryAssignAndDeduction() {
 
   const getData = () => {
     getSalaryAdditionAndDeductionLanding(
+      wId,
       "",
       buId,
       setRowDto,
@@ -134,6 +135,7 @@ function SalaryAssignAndDeduction() {
 
   useEffect(() => {
     getSalaryAdditionAndDeductionLanding(
+      wId,
       values?.fromMonth,
       buId,
       setRowDto,
@@ -166,6 +168,7 @@ function SalaryAssignAndDeduction() {
     });
 
     getSalaryAdditionAndDeductionLanding(
+      wId,
       values?.fromMonth,
       buId,
       setRowDto,
@@ -186,6 +189,7 @@ function SalaryAssignAndDeduction() {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getSalaryAdditionAndDeductionLanding(
+      wId,
       values?.fromMonth,
       buId,
       setRowDto,
@@ -224,6 +228,7 @@ function SalaryAssignAndDeduction() {
                         onChange={(e) => {
                           setFieldValue("fromMonth", e.target.value);
                           getSalaryAdditionAndDeductionLanding(
+                            wId,
                             e.target.value,
                             buId,
                             setRowDto,
@@ -251,6 +256,7 @@ function SalaryAssignAndDeduction() {
                         setFieldValue("searchString", value);
                         debounce(() => {
                           getSalaryAdditionAndDeductionLanding(
+                            wId,
                             values?.fromMonth,
                             buId,
                             setRowDto,
@@ -268,6 +274,7 @@ function SalaryAssignAndDeduction() {
                       cancelHandler={() => {
                         setFieldValue("searchString", "");
                         getSalaryAdditionAndDeductionLanding(
+                          wId,
                           values?.fromMonth,
                           buId,
                           setRowDto,

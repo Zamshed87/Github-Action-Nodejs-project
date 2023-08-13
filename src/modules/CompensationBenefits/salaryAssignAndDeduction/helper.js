@@ -74,6 +74,7 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
 };
 
 export const getSalaryAdditionAndDeductionLanding = async (
+  wId,
   fromMonth,
   buId,
   setter,
@@ -90,7 +91,7 @@ export const getSalaryAdditionAndDeductionLanding = async (
 
   try {
     const res = await axios.get(
-      `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&searchTxt=${search}`
+      `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=${pages?.current}&PageSize=${pages?.pageSize}&searchTxt=${search}`
     );
     if (res?.data) {
       const modifiedData = res.data.data.map((item, index) => ({
