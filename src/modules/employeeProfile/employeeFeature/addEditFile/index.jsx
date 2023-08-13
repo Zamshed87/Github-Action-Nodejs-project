@@ -390,7 +390,151 @@ export default function AddEditForm({
             />
           </div>
         </div>
-        {values?.employeeType?.ParentId === 1 && (
+        {/* ----------------------------- */}
+        {values?.employeeType.label === "Probationary" && (
+          <>
+            <div className="col-6">
+              <div className="input-field-main">
+                <label>Probation Start Date</label>
+                <DefaultInput
+                  classes="input-sm"
+                  value={values?.joiningDate}
+                  onChange={(val) => {
+                    setFieldValue("generateDate", val.target.value);
+                    setFieldValue("joiningDate", val.target.value);
+                  }}
+                  name="joiningDate"
+                  type="date"
+                  disabled={true}
+                  className="form-control"
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>
+            </div>
+          </>
+        )}
+        {values?.employeeType.label === "Probationary" && (
+          <>
+            <div className="col-6">
+              <div className="input-field-main">
+                <label>Probation Close Date</label>
+
+                <DefaultInput
+                  classes="input-sm"
+                  value={values?.dteProbationaryCloseDate}
+                  onChange={(val) => {
+                    setFieldValue("dteProbationaryCloseDate", val.target.value);
+                  }}
+                  name="dteProbationaryCloseDate"
+                  type="date"
+                  className="form-control"
+                  errors={errors}
+                  disabled={!values?.joiningDate}
+                  touched={touched}
+                  min={values?.joiningDate}
+                />
+
+                {/* <FormikInput
+                  classes="input-sm"
+                  value={values?.dteProbationaryCloseDate}
+                  onChange={(val) => {
+                    setFieldValue("dteProbationaryCloseDate", val.target.value);
+                  }}
+                  name="dteProbationaryCloseDate"
+                  type="date"
+                  className="form-control"
+                  errors={errors}
+                  touched={touched}
+                  disabled={!values?.joiningDate}
+                  min={values?.joiningDate}
+                /> */}
+              </div>
+            </div>
+          </>
+        )}
+        {values?.employeeType.label === "Intern" && (
+          <>
+            <div className="col-6">
+              <div className="input-field-main">
+                <label>Intern Start</label>
+
+                <DefaultInput
+                  classes="input-sm"
+                  value={values?.joiningDate}
+                  onChange={(val) => {
+                    setFieldValue("generateDate", val.target.value);
+                    setFieldValue("joiningDate", val.target.value);
+                  }}
+                  name="joiningDate"
+                  type="date"
+                  disabled={true}
+                  className="form-control"
+                  errors={errors}
+                  touched={touched}
+                />
+
+                {/* <FormikInput
+                  classes="input-sm"
+                  value={values?.joiningDate}
+                  // onChange={(val) => {
+                  //   setFieldValue("generateDate", val.target.value);
+                  //   setFieldValue("joiningDate", val.target.value);
+                  // }}
+                  name="joiningDate"
+                  type="date"
+                  className="form-control"
+                  disabled={true}
+                  errors={errors}
+                  touched={touched}
+                /> */}
+              </div>
+            </div>
+          </>
+        )}
+
+        {values?.employeeType.label === "Intern" && (
+          <>
+            <div className="col-6">
+              <div className="input-field-main">
+                <label>Intern Close</label>
+
+                <DefaultInput
+                  classes="input-sm"
+                  value={values?.dteProbationaryCloseDate}
+                  onChange={(val) => {
+                    setFieldValue("dteInternCloseDate", val.target.value);
+                  }}
+                  name="dteInternCloseDate"
+                  type="date"
+                  className="form-control"
+                  errors={errors}
+                  disabled={!values?.joiningDate}
+                  touched={touched}
+                  min={values?.joiningDate}
+                />
+
+                {/* <FormikInput
+                  classes="input-sm"
+                  value={values?.dteInternCloseDate}
+                  onChange={(val) => {
+                    setFieldValue("dteInternCloseDate", val.target.value);
+                  }}
+                  name="dteInternCloseDate"
+                  type="date"
+                  className="form-control"
+                  errors={errors}
+                  touched={touched}
+                  disabled={!values?.joiningDate}
+                  min={values?.joiningDate}
+                /> */}
+              </div>
+            </div>
+          </>
+        )}
+        {/* -------------------- */}
+
+        {/* {values?.employeeType?.ParentId === 1 && (
           <>
             <div className="col-6">
               <div className="input-field-main">
@@ -437,7 +581,7 @@ export default function AddEditForm({
                 </div>
               </div>
             </>
-          )}
+          )} */}
         {values?.employeeType.label ===
           ("Contractual" || "contractual" || "contract" || "Contract") && (
           <>

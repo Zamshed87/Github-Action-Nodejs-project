@@ -53,7 +53,7 @@ const SalaryAssign = () => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
   }, []);
 
-  const { orgId, buId, employeeId, wgId, wgName } = useSelector(
+  const { orgId, buId, employeeId, wgId, wgName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -129,6 +129,7 @@ const SalaryAssign = () => {
         businessUnitId: buId,
         workplaceGroupId: values?.workplace?.value || wgId || 0,
         departmentId: values?.department?.value || 0,
+        workplaceId: wId,
         designationId: values?.designation?.value || 0,
         supervisorId: values?.supervisor?.value || 0,
         employeeId: values?.employee?.value || 0,
@@ -179,6 +180,8 @@ const SalaryAssign = () => {
         businessUnitId: buId,
         workplaceGroupId: wgId || 0,
         departmentId: 0,
+        workplaceId: wId,
+
         designationId: 0,
         supervisorId: 0,
         employeeId: 0,
