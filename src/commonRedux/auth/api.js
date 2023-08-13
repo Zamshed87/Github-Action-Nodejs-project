@@ -11,7 +11,7 @@ export function loginApiCall(email, password) {
     strUrl:
       domainUrl === "https://devad-din.peopledesk.io"
         ? domainUrl
-        : "https://ad-din.peopledesk.io/",
+        : "https://ad-din.peopledesk.io",
   });
 }
 
