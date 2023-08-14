@@ -46,7 +46,7 @@ export const defaultCalculation = (
 ) => {
   const withBasicElement = dynamicForm.filter((itm) => itm?.isBasic === true);
 
-  if (withBasicElement?.length <= 0) {
+  if (withBasicElement?.length <= 0 && values?.isFlat === false) {
     return toast.warn("Basic Element must be provide!!!");
   }
 

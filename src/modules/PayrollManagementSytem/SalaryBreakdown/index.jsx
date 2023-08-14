@@ -55,6 +55,7 @@ const initData = {
   isSalaryBreakdown: false,
   isDefaultBreakdown: false,
   isPerdaySalary: false,
+  isFlat: false,
 };
 
 const validationSchema = Yup.object().shape({
@@ -190,6 +191,8 @@ const SalaryBreakdown = () => {
           label: state?.singleBreakdown?.workplaceGroup,
         },
         isPerdaySalary: state?.singleBreakdown?.isPerday,
+        isFlat: state?.singleBreakdown?.isFlat,
+
         isDefaultBreakdown: state?.singleBreakdown?.isDefault,
       });
     }
@@ -539,29 +542,53 @@ const SalaryBreakdown = () => {
                       </div>
 
                       {!values?.isPerdaySalary && (
-                        <div className="col-lg-3">
-                          <label>Depends on</label>
-                          <FormikSelect
-                            name="dependsOn"
-                            options={[
-                              { value: 1, label: "Gross" },
-                              { value: 2, label: "Basic" },
-                            ]}
-                            value={values?.dependsOn}
-                            onChange={(valueOption) => {
-                              // setDynamicForm([]);
-                              setFieldValue("basedOn", "");
-                              setFieldValue("payrollElement", "");
-                              setFieldValue("dependsOn", valueOption);
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            isSearchable={false}
-                            isClearable={false}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
+                        <>
+                          <div className="col-lg-3">
+                            <label>Depends on</label>
+                            <FormikSelect
+                              name="dependsOn"
+                              options={[
+                                { value: 1, label: "Gross" },
+                                { value: 2, label: "Basic" },
+                              ]}
+                              value={values?.dependsOn}
+                              onChange={(valueOption) => {
+                                // setDynamicForm([]);
+                                setFieldValue("basedOn", "");
+                                setFieldValue("payrollElement", "");
+                                setFieldValue("dependsOn", valueOption);
+                              }}
+                              placeholder=" "
+                              styles={customStyles}
+                              isSearchable={false}
+                              isClearable={false}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                          {values?.dependsOn?.value === 1 && (
+                            <div className="col-lg-2">
+                              <div style={{ margin: "10px 0 0" }}>
+                                <FormikCheckBox
+                                  height="15px"
+                                  styleObj={{
+                                    color: gray900,
+                                    checkedColor: greenColor,
+                                    padding: "0px 0px 0px 5px",
+                                  }}
+                                  label="Is Flat Salary?"
+                                  name="isFlat"
+                                  checked={values?.isFlat}
+                                  onChange={(e) => {
+                                    // setDynamicForm([]);
+
+                                    setFieldValue("isFlat", e.target.checked);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </>
                       )}
 
                       <div className="col-12"></div>
