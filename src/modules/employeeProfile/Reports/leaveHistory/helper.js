@@ -107,7 +107,7 @@ export const leaveHistoryCol = (page, paginationSize) => {
     {
       title: "CL",
       dataIndex: "clTaken",
-      render: (_, record) => {
+      render: (record) => {
         return (
           <span>
             {record?.clTaken || 0}/{record?.clBalance || 0}
@@ -120,7 +120,7 @@ export const leaveHistoryCol = (page, paginationSize) => {
     {
       title: "SL",
       dataIndex: "slTaken",
-      render: (_, data) => {
+      render: (data) => {
         return (
           <span>
             {data?.slTaken || 0}/{data?.slBalance || 0}
@@ -133,7 +133,7 @@ export const leaveHistoryCol = (page, paginationSize) => {
     {
       title: "EL",
       dataIndex: "elTaken",
-      render: (_, data) => {
+      render: (data) => {
         return (
           <span>
             {data?.elTaken || 0}/{data?.elBalance || 0}
@@ -146,7 +146,7 @@ export const leaveHistoryCol = (page, paginationSize) => {
     {
       title: "LWP",
       dataIndex: "lwpTaken",
-      render: (_, data) => {
+      render: (data) => {
         return (
           <span>
             {data?.lwpTaken || 0}/{data?.lwpBalance || 0}
@@ -159,7 +159,7 @@ export const leaveHistoryCol = (page, paginationSize) => {
     {
       title: "ML",
       dataIndex: "CL",
-      render: (_, data) => {
+      render: (data) => {
         return (
           <span>
             {data?.mlTaken || 0}/{data?.mlBalance || 0}
