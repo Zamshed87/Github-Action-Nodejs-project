@@ -51,7 +51,7 @@ export default function SalaryDrawer(props) {
     step,
     selectedEmployee,
     setSelectedEmployee,
-    cbLanding
+    cbLanding,
   } = props;
   const { buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -94,10 +94,11 @@ export default function SalaryDrawer(props) {
       initialValues: {
         effectiveDate:
           singleData[0]?.Status === "Assigned"
-            ? `${singleData[0]?.EffectiveYear}-${singleData[0]?.EffectiveMonth <= 9
-              ? `0${singleData[0]?.EffectiveMonth}`
-              : singleData[0]?.EffectiveMonth
-            }`
+            ? `${singleData[0]?.EffectiveYear}-${
+                singleData[0]?.EffectiveMonth <= 9
+                  ? `0${singleData[0]?.EffectiveMonth}`
+                  : singleData[0]?.EffectiveMonth
+              }`
             : `${initYear}-${modifyMonthResult}`,
 
         effectiveMonth:
@@ -116,18 +117,18 @@ export default function SalaryDrawer(props) {
 
         payrollElement: singleData[0]?.intSalaryBreakdownHeaderId
           ? {
-            intSalaryBreakdownHeaderId:
-              singleData[0]?.intSalaryBreakdownHeaderId,
-            isDefault: singleData[0]?.isDefault,
-            strDependOn: singleData[0]?.strDependOn,
-            strSalaryBreakdownTitle: singleData[0]?.strSalaryBreakdownTitle,
-            isPerday: singleData[0]?.isPerdaySalary,
-            value: singleData[0]?.intSalaryBreakdownHeaderId,
-            label: singleData[0]?.strSalaryBreakdownTitle,
-          }
+              intSalaryBreakdownHeaderId:
+                singleData[0]?.intSalaryBreakdownHeaderId,
+              isDefault: singleData[0]?.isDefault,
+              strDependOn: singleData[0]?.strDependOn,
+              strSalaryBreakdownTitle: singleData[0]?.strSalaryBreakdownTitle,
+              isPerday: singleData[0]?.isPerdaySalary,
+              value: singleData[0]?.intSalaryBreakdownHeaderId,
+              label: singleData[0]?.strSalaryBreakdownTitle,
+            }
           : defaultPayrollElement?.length > 0
-            ? finalPayrollElement[0]
-            : "",
+          ? finalPayrollElement[0]
+          : "",
 
         totalGrossSalary: singleData[0]?.numGrossSalary
           ? singleData[0]?.numGrossSalary
@@ -179,7 +180,9 @@ export default function SalaryDrawer(props) {
   const addHandler = (values) => {
     if (!values?.employee) return toast.warn("Please select employee");
 
-    let existEmployee = selectedEmployee.filter(item => item?.EmployeeCode === values?.employee?.EmployeeCode);
+    let existEmployee = selectedEmployee.filter(
+      (item) => item?.EmployeeCode === values?.employee?.EmployeeCode
+    );
 
     if (existEmployee?.length > 0) return toast.warn("Already employee exists");
 
@@ -188,7 +191,7 @@ export default function SalaryDrawer(props) {
     data.push(values?.employee);
 
     setSelectedEmployee(data);
-  }
+  };
 
   const deleteHandler = (index) => {
     const newData = selectedEmployee.filter((item, ind) => ind !== index);
@@ -261,11 +264,10 @@ export default function SalaryDrawer(props) {
           },
           "NotAssigned",
           setLoading,
-          '',
+          "",
           pages,
           setPages
-        )
-
+        );
       } else {
         getEmployeeSalaryInfo(
           setAllData,
@@ -286,18 +288,20 @@ export default function SalaryDrawer(props) {
       }
     };
 
-    const modifySelectedEmployee = selectedEmployee.map(itm => {
+    const modifySelectedEmployee = selectedEmployee.map((itm) => {
       return {
         intEmployeeId: itm?.EmployeeId,
-      }
-    })
+      };
+    });
 
     let payload = {
-      intEmployeeIdList: isBulk ? modifySelectedEmployee : [
-        {
-          intEmployeeId: singleData[0]?.EmployeeId,
-        }
-      ],
+      intEmployeeIdList: isBulk
+        ? modifySelectedEmployee
+        : [
+            {
+              intEmployeeId: singleData[0]?.EmployeeId,
+            },
+          ],
       effectiveMonth: 0,
       effectiveYear: 0,
       intCreateBy: employeeId,
@@ -359,7 +363,6 @@ export default function SalaryDrawer(props) {
         };
 
         createEmployeeSalaryAssign(payload, setLoading, callback);
-
       } else {
         payload = {
           ...payload,
@@ -404,10 +407,10 @@ export default function SalaryDrawer(props) {
               },
               status || "NotAssigned",
               setLoading,
-              '',
+              "",
               pages,
               setPages
-            )
+            );
             setIsOpen(false);
             setIsBulk(false);
             setStep("");
@@ -442,7 +445,7 @@ export default function SalaryDrawer(props) {
             >
               <IconButton
                 onClick={(e) => {
-                /*   getEmployeeSalaryInfo(
+                  /*   getEmployeeSalaryInfo(
                     setAllData,
                     setRowDto,
                     {
@@ -465,7 +468,7 @@ export default function SalaryDrawer(props) {
                     pages,
                     setPages
                   ) */
-                  cbLanding?.()
+                  cbLanding?.();
                   setIsOpen(false);
                   setIsBulk(false);
                   setStep("");
@@ -531,7 +534,7 @@ export default function SalaryDrawer(props) {
             />
           </form>
         </Drawer>
-      </div >
+      </div>
     </>
   );
 }

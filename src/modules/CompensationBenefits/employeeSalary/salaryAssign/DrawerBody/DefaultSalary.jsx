@@ -40,11 +40,13 @@ const DefaultSalary = ({ propsObj }) => {
     setFieldValue,
     values,
     errors,
-    touched
+    touched,
   } = propsObj;
 
   const payrollGroupDDL = (positionId) => {
-    return finalPayrollElement.filter(itm => itm?.intHrPositonId === positionId);
+    return finalPayrollElement.filter(
+      (itm) => itm?.intHrPositonId === positionId
+    );
   };
 
   const loadEmployeeList = (v, pages) => {
@@ -93,7 +95,7 @@ const DefaultSalary = ({ propsObj }) => {
                 fontWeight: "500",
                 fontSize: "14px",
                 lineHeight: "20px",
-                color: gray700
+                color: gray700,
               }}
             >
               Effective Month
@@ -107,8 +109,14 @@ const DefaultSalary = ({ propsObj }) => {
               type="month"
               className="form-control"
               onChange={(e) => {
-                setFieldValue("effectiveYear", +e.target.value.split("").slice(0, 4).join(""));
-                setFieldValue("effectiveMonth", +e.target.value.split("").slice(-2).join(""));
+                setFieldValue(
+                  "effectiveYear",
+                  +e.target.value.split("").slice(0, 4).join("")
+                );
+                setFieldValue(
+                  "effectiveMonth",
+                  +e.target.value.split("").slice(-2).join("")
+                );
                 setFieldValue("effectiveDate", e.target.value);
               }}
               errors={errors}
@@ -117,7 +125,7 @@ const DefaultSalary = ({ propsObj }) => {
           </div>
         </div>
 
-        {(isBulk && step === 1) && (
+        {isBulk && step === 1 && (
           <>
             <div className="row">
               <div className="col-6">
@@ -180,7 +188,9 @@ const DefaultSalary = ({ propsObj }) => {
                           selectedEmployee?.map((item, index) => (
                             <tr key={index}>
                               <td>
-                                <p className="tableBody-title pl-1">{index + 1}</p>
+                                <p className="tableBody-title pl-1">
+                                  {index + 1}
+                                </p>
                               </td>
                               <td>
                                 <div className="tableBody-title">
@@ -266,10 +276,13 @@ const DefaultSalary = ({ propsObj }) => {
           </>
         )}
 
-        {((!isBulk && step === 1) || (!step || step === 2)) && (
+        {((!isBulk && step === 1) || !step || step === 2) && (
           <>
             {/* payroll element */}
-            <div className="row mb-less" style={{ alignItems: 'center', marginBottom: "12px" }}>
+            <div
+              className="row mb-less"
+              style={{ alignItems: "center", marginBottom: "12px" }}
+            >
               <div className="col-lg-7">
                 <h2
                   style={{
@@ -288,7 +301,9 @@ const DefaultSalary = ({ propsObj }) => {
                 <div className="col-lg-5">
                   <FormikSelect
                     name="payrollElement"
-                    options={payrollGroupDDL(singleData[0]?.intHRPositionId) || []}
+                    options={
+                      payrollGroupDDL(singleData[0]?.intHRPositionId) || []
+                    }
                     value={values?.payrollElement}
                     onChange={(valueOption) => {
                       getBreakdownListDDL(
@@ -312,7 +327,9 @@ const DefaultSalary = ({ propsObj }) => {
                 <div className="col-lg-5">
                   <FormikSelect
                     name="payrollElement"
-                    options={payrollGroupDDL(singleData[0]?.intHRPositionId) || []}
+                    options={
+                      payrollGroupDDL(singleData[0]?.intHRPositionId) || []
+                    }
                     value={values?.payrollElement}
                     onChange={(valueOption) => {
                       getBreakdownListDDL(
@@ -338,7 +355,10 @@ const DefaultSalary = ({ propsObj }) => {
             {/* perday Salary */}
             {values?.payrollElement?.isPerday === true && (
               <>
-                <div className="row mb-less" style={{ alignItems: 'center', marginBottom: "12px" }}>
+                <div
+                  className="row mb-less"
+                  style={{ alignItems: "center", marginBottom: "12px" }}
+                >
                   <div className="col-lg-7">
                     <h2
                       style={{
@@ -375,12 +395,15 @@ const DefaultSalary = ({ propsObj }) => {
             {!values?.payrollElement?.isPerday && (
               <>
                 {/* gross salary */}
-                <div className="row mb-less" style={{ alignItems: 'center', marginBottom: "12px" }}>
+                <div
+                  className="row mb-less"
+                  style={{ alignItems: "center", marginBottom: "12px" }}
+                >
                   <div className="col-12">
                     <div
                       style={{
                         marginBottom: "10px",
-                        borderBottom: `1px solid ${gray200}`
+                        borderBottom: `1px solid ${gray200}`,
                       }}
                     ></div>
                   </div>
@@ -395,7 +418,9 @@ const DefaultSalary = ({ propsObj }) => {
                         top: "-1px",
                       }}
                     >
-                      {values?.payrollElement?.strDependOn === "Basic" ? "Total Gross Salary" : "Total Gross Salary"}
+                      {values?.payrollElement?.strDependOn === "Basic"
+                        ? "Total Gross Salary"
+                        : "Total Gross Salary"}
                     </h2>
                   </div>
                   <div className="col-lg-5">
@@ -406,7 +431,10 @@ const DefaultSalary = ({ propsObj }) => {
                       type="number"
                       className="form-control"
                       onChange={(e) => {
-                        if (singleData[0]?.intSalaryBreakdownHeaderId === values?.payrollElement?.value) {
+                        if (
+                          singleData[0]?.intSalaryBreakdownHeaderId ===
+                          values?.payrollElement?.value
+                        ) {
                           getByIdBreakdownListDDL(
                             "ASSIGNED_BREAKDOWN_ELEMENT_BY_EMPLOYEE_ID",
                             orgId,
@@ -429,7 +457,7 @@ const DefaultSalary = ({ propsObj }) => {
                       }}
                       errors={errors}
                       touched={touched}
-                    // disabled={true}
+                      // disabled={true}
                     />
                   </div>
                 </div>
@@ -442,7 +470,7 @@ const DefaultSalary = ({ propsObj }) => {
                         <div
                           style={{
                             marginBottom: "10px",
-                            borderBottom: `1px solid ${gray200}`
+                            borderBottom: `1px solid ${gray200}`,
                           }}
                         ></div>
                       </div>
@@ -452,7 +480,7 @@ const DefaultSalary = ({ propsObj }) => {
                             fontWeight: "400",
                             fontSize: "12px",
                             lineHeight: "18px",
-                            color: gray400
+                            color: gray400,
                           }}
                         >
                           Payroll Elements
@@ -465,7 +493,7 @@ const DefaultSalary = ({ propsObj }) => {
                             fontSize: "12px",
                             lineHeight: "18px",
                             color: gray400,
-                            textAlign: "right"
+                            textAlign: "right",
                           }}
                         >
                           Amount
@@ -476,63 +504,74 @@ const DefaultSalary = ({ propsObj }) => {
                           style={{
                             marginTop: "10px",
                             marginBottom: "12px",
-                            borderBottom: `1px solid ${gray200}`
+                            borderBottom: `1px solid ${gray200}`,
                           }}
                         ></div>
                       </div>
                     </div>
 
-                    {breakDownList?.length > 0 && breakDownList?.map((itm, index) => {
-                      return (
-                        <div className="row" key={index} style={{ alignItems: 'baseline', marginBottom: "12px" }}>
-                          <div className="col-lg-7">
-                            <h2
-                              style={{
-                                fontWeight: "400",
-                                fontSize: "12px",
-                                lineHeight: "18px",
-                                color: gray700,
-                              }}
-                            >
-                              {itm?.strPayrollElementName}
-                              {itm?.strBasedOn === "Amount" ? "" : `( ${itm?.showPercentage || 0} %) `}
-                              [Depends on {itm?.strDependOn}]
-
-                            </h2>
-                          </div>
-                          <div className="col-lg-5">
-                            <div className="input-field-main breakdownlist">
-                              <div className="form-container">
-                                <div className="form-group login-input input-xl input-sm">
-                                  <input
-                                    className='form-control'
-                                    value={itm[itm?.levelVariable]}
-                                    name={itm?.levelVariable}
-                                    placeholder=" "
-                                    type='number'
-                                    onChange={(e) => {
-                                      e.stopPropagation();
-                                      if (itm?.strBasedOn === "Amount") {
-                                        rowDtoHandler(
-                                          `${itm?.levelVariable}`,
-                                          index,
-                                          e.target.value,
-                                          setBreakDownList
-                                        );
+                    {breakDownList?.length > 0 &&
+                      breakDownList?.map((itm, index) => {
+                        return (
+                          <div
+                            className="row"
+                            key={index}
+                            style={{
+                              alignItems: "baseline",
+                              marginBottom: "12px",
+                            }}
+                          >
+                            <div className="col-lg-7">
+                              <h2
+                                style={{
+                                  fontWeight: "400",
+                                  fontSize: "12px",
+                                  lineHeight: "18px",
+                                  color: gray700,
+                                }}
+                              >
+                                {itm?.strPayrollElementName}
+                                {itm?.strBasedOn === "Amount"
+                                  ? ""
+                                  : `( ${itm?.showPercentage || 0} %) `}
+                                [Depends on {itm?.strDependOn}]
+                              </h2>
+                            </div>
+                            <div className="col-lg-5">
+                              <div className="input-field-main breakdownlist">
+                                <div className="form-container">
+                                  <div className="form-group login-input input-xl input-sm">
+                                    <input
+                                      className="form-control"
+                                      value={itm[itm?.levelVariable]}
+                                      name={itm?.levelVariable}
+                                      placeholder=" "
+                                      type="number"
+                                      onChange={(e) => {
+                                        e.stopPropagation();
+                                        if (itm?.strBasedOn === "Amount") {
+                                          rowDtoHandler(
+                                            `${itm?.levelVariable}`,
+                                            index,
+                                            e.target.value,
+                                            setBreakDownList
+                                          );
+                                        }
+                                      }}
+                                      required
+                                      errors={errors}
+                                      touched={touched}
+                                      disabled={
+                                        itm?.strBasedOn === "Percentage"
                                       }
-                                    }}
-                                    required
-                                    errors={errors}
-                                    touched={touched}
-                                    disabled={itm?.strBasedOn === "Percentage"}
-                                  />
+                                    />
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      )
-                    })}
+                        );
+                      })}
                   </>
                 )}
 
@@ -544,12 +583,15 @@ const DefaultSalary = ({ propsObj }) => {
                         <div
                           style={{
                             marginBottom: "10px",
-                            borderBottom: `1px solid ${gray200}`
+                            borderBottom: `1px solid ${gray200}`,
                           }}
                         ></div>
                       </div>
                     </div>
-                    <div className="row" style={{ alignItems: 'center', marginBottom: "8px" }}>
+                    <div
+                      className="row"
+                      style={{ alignItems: "center", marginBottom: "8px" }}
+                    >
                       <div className="col-lg-7">
                         <h2
                           style={{
@@ -569,21 +611,24 @@ const DefaultSalary = ({ propsObj }) => {
                             fontSize: "14px",
                             lineHeight: "20px",
                             color: gray700,
-                            textAlign: "right"
+                            textAlign: "right",
                           }}
                         >
                           {netGross()}
                         </h2>
                       </div>
                     </div>
-                    <div className="row" style={{ alignItems: 'center', marginBottom: "8px" }}>
+                    <div
+                      className="row"
+                      style={{ alignItems: "center", marginBottom: "8px" }}
+                    >
                       <div className="col-lg-7">
                         <h2
                           style={{
                             fontWeight: "500",
                             fontSize: "14px",
                             lineHeight: "20px",
-                            color: gray700
+                            color: gray700,
                           }}
                         >
                           Fixed Amount
@@ -596,21 +641,21 @@ const DefaultSalary = ({ propsObj }) => {
                             fontSize: "14px",
                             lineHeight: "20px",
                             color: gray700,
-                            textAlign: "right"
+                            textAlign: "right",
                           }}
                         >
                           {totalAmount}
                         </h2>
                       </div>
                     </div>
-                    <div className="row" style={{ alignItems: 'center' }}>
+                    <div className="row" style={{ alignItems: "center" }}>
                       <div className="col-lg-7">
                         <h2
                           style={{
                             fontWeight: "500",
                             fontSize: "14px",
                             lineHeight: "20px",
-                            color: gray700
+                            color: gray700,
                           }}
                         >
                           Net Salary Amount
@@ -623,7 +668,7 @@ const DefaultSalary = ({ propsObj }) => {
                             fontSize: "14px",
                             lineHeight: "20px",
                             color: gray700,
-                            textAlign: "right"
+                            textAlign: "right",
                           }}
                         >
                           {finalTotalAmount}
@@ -634,7 +679,6 @@ const DefaultSalary = ({ propsObj }) => {
                 )}
               </>
             )}
-
           </>
         )}
 
@@ -643,13 +687,13 @@ const DefaultSalary = ({ propsObj }) => {
           style={{
             marginTop: "12px",
             marginBottom: "12px",
-            borderBottom: `1px solid ${gray200}`
+            borderBottom: `1px solid ${gray200}`,
           }}
         ></div>
 
         {isBulk ? (
           <>
-            {(step === 1) ? (
+            {step === 1 ? (
               <>
                 <div className="row">
                   <div className="col-12">
@@ -701,30 +745,31 @@ const DefaultSalary = ({ propsObj }) => {
               <div className="row">
                 <div className="col-12">
                   <div className="d-flex align-items-center justify-content-end">
-                    {(singleData[0]?.Status === "Assigned" && (values?.totalGrossSalary || values?.perDaySalary)) && (
-                      <button
-                        type="button"
-                        className="btn btn-cancel mr-2"
-                        onClick={() => {
-                          resetForm(defaultSalaryInitData);
-                          if (singleData[0]?.intSalaryBreakdownHeaderId) {
-                            getByIdBreakdownListDDL(
-                              "ASSIGNED_BREAKDOWN_ELEMENT_BY_EMPLOYEE_ID",
-                              orgId,
-                              singleData[0]?.EmployeeId || 0,
-                              singleData[0]?.intSalaryBreakdownHeaderId,
-                              setBreakDownList,
-                              singleData[0]?.numNetGrossSalary
-                            );
-                          }
-                          // else {
-                          //   setBreakDownList([]);
-                          // }
-                        }}
-                      >
-                        Clear
-                      </button>
-                    )}
+                    {singleData[0]?.Status === "Assigned" &&
+                      (values?.totalGrossSalary || values?.perDaySalary) && (
+                        <button
+                          type="button"
+                          className="btn btn-cancel mr-2"
+                          onClick={() => {
+                            resetForm(defaultSalaryInitData);
+                            if (singleData[0]?.intSalaryBreakdownHeaderId) {
+                              getByIdBreakdownListDDL(
+                                "ASSIGNED_BREAKDOWN_ELEMENT_BY_EMPLOYEE_ID",
+                                orgId,
+                                singleData[0]?.EmployeeId || 0,
+                                singleData[0]?.intSalaryBreakdownHeaderId,
+                                setBreakDownList,
+                                singleData[0]?.numNetGrossSalary
+                              );
+                            }
+                            // else {
+                            //   setBreakDownList([]);
+                            // }
+                          }}
+                        >
+                          Clear
+                        </button>
+                      )}
 
                     <button
                       type="submit"
@@ -744,7 +789,6 @@ const DefaultSalary = ({ propsObj }) => {
 };
 
 export default DefaultSalary;
-
 
 /*
   grossSalary  =   Basic + Medical +  House + Conveyance Salary + 	Special Salary
