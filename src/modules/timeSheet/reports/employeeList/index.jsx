@@ -83,7 +83,7 @@ const initHeaderList = {
 export default function EmployeeList() {
   // redux
   const dispatch = useDispatch();
-  const { buId, buName, wgId } = useSelector(
+  const { buId, buName, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -148,7 +148,7 @@ export default function EmployeeList() {
       const payload = {
         businessUnitId: buId,
         workplaceGroupId: wgId,
-        workplaceId: 0,
+        workplaceId: wId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -316,9 +316,15 @@ export default function EmployeeList() {
                                       return {
                                         ...item,
                                         sl: index + 1,
-                                        dateOfJoining: dateFormatter(item?.dateOfJoining),
-                                        dateOfConfirmation: dateFormatter(item?.dateOfConfirmation),
-                                        dateOfBirth: dateFormatter(item?.dateOfBirth),
+                                        dateOfJoining: dateFormatter(
+                                          item?.dateOfJoining
+                                        ),
+                                        dateOfConfirmation: dateFormatter(
+                                          item?.dateOfConfirmation
+                                        ),
+                                        dateOfBirth: dateFormatter(
+                                          item?.dateOfBirth
+                                        ),
                                       };
                                     }
                                   );
