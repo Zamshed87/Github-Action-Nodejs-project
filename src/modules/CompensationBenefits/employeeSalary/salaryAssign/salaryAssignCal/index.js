@@ -49,7 +49,10 @@ export const getSalaryAssignDDL = (
         }
 
         // Flat salary
-        if (itm?.strPayrollElementName === "Flat Salary") {
+        if (
+          itm?.strPayrollElementName === "Flat Salary" ||
+          itm?.strPayrollElementName === "Flat Gross Salary"
+        ) {
           // without basic salary
           if (itm?.strBasedOn === "Percentage") {
             modifyObj = {
@@ -167,7 +170,10 @@ export const getByIdSalaryAssignDDL = (
         }
 
         // Flat salary
-        if (itm?.strPayrollElementName === "Flat Salary") {
+        if (
+          itm?.strPayrollElementName === "Flat Salary" ||
+          itm?.strPayrollElementName === "Flat Gross Salary"
+        ) {
           // without basic salary
           if (itm?.strBasedOn === "Percentage") {
             modifyObj = {
