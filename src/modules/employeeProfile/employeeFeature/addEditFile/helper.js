@@ -364,20 +364,15 @@ export const submitHandler = ({
   // ) {
   //   return toast.warn("Please provide intern duration !!!");
   // }
-
   if (
-    (values?.employeeType?.isManual === 0 ||
-      values?.employeeType?.isManual === true) &&
-    values?.employeeType?.ParentId === 1 &&
+    values?.employeeType?.EmploymentType === "Probationary" &&
     !values?.dteProbationaryCloseDate
   ) {
     return toast.warn("Please provide probation  duration !!!");
   }
 
   if (
-    (values?.employeeType?.isManual === 0 ||
-      values?.employeeType?.isManual === true) &&
-    values?.employeeType?.ParentId === 3 &&
+    values?.employeeType?.EmploymentType === "Intern" &&
     !values?.dteInternCloseDate
   ) {
     return toast.warn("Please provide intern duration !!!");
