@@ -75,7 +75,7 @@ function ShiftManagement() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -111,6 +111,12 @@ function ShiftManagement() {
     designationList: [],
     departmentList: [],
     supervisorNameList: [],
+    wingNameList: [],
+    soleDepoNameList: [],
+    regionNameList: [],
+    areaNameList: [],
+    territoryNameList: [],
+    employmentTypeList: [],
   };
   const [landingLoading, setLandingLoading] = useState(false);
   const [filterOrderList, setFilterOrderList] = useState([]);
@@ -137,9 +143,9 @@ function ShiftManagement() {
     try {
       const payload = {
         businessUnitId: buId,
-        workplaceGroupId: null,
+        workplaceGroupId: wgId , // null 
         isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
-        workplaceId: 0,
+        workplaceId: wId,
         accountId: orgId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
@@ -227,7 +233,7 @@ function ShiftManagement() {
     getData(pages);
     setCalendarData([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId]);
+  }, [buId, wgId, wId]);
 
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {
