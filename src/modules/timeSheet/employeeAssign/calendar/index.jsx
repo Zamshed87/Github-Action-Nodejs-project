@@ -71,7 +71,7 @@ function Calendar() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const { orgId, buId, wgId, wgName } = useSelector(
+  const { orgId, buId, wgId, wgName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -142,7 +142,7 @@ function Calendar() {
         businessUnitId: buId,
         workplaceGroupId: wgId,
         isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
-        workplaceId: 0,
+        workplaceId: wId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -228,7 +228,7 @@ function Calendar() {
   useEffect(() => {
     getData(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {

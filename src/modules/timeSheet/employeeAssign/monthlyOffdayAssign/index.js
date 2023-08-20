@@ -35,7 +35,7 @@ const initData = {
 };
 
 function MonthlyOffdayAssignLanding() {
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -51,6 +51,12 @@ function MonthlyOffdayAssignLanding() {
     designationList: [],
     departmentList: [],
     supervisorNameList: [],
+    wingNameList: [],
+    soleDepoNameList: [],
+    regionNameList: [],
+    areaNameList: [],
+    territoryNameList: [],
+    employmentTypeList: [],
   };
 
   const dispatch = useDispatch();
@@ -93,10 +99,10 @@ function MonthlyOffdayAssignLanding() {
     try {
       const payload = {
         businessUnitId: buId,
-        workplaceGroupId: null,
+        workplaceGroupId: wgId,
         accountId: orgId,
         isAssign: isAssigned === 1 ? true : isAssigned === 2 ? false : null,
-        workplaceId: 0,
+        workplaceId: wId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -220,7 +226,7 @@ function MonthlyOffdayAssignLanding() {
   useEffect(() => {
     getData(pages);
     // setChecked([]);
-  }, [buId, orgId]);
+  }, [buId, orgId, wId, wgId]);
 
   const saveHandler = (values) => {};
 
