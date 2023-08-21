@@ -389,11 +389,13 @@ export const getSalaryAssignLanding = async ({
   setter,
   srcText,
   type,
+  wId,
 }) => {
   const payload = {
     partType: "SalaryAssignLanding",
     businessUnitId: buId,
     workplaceGroupId: wgId,
+    workplaceId: wId,
     departmentId: 0,
     designationId: 0,
     supervisorId: 0,

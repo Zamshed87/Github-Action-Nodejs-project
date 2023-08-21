@@ -149,7 +149,7 @@ const SalaryAssign = () => {
 
   useEffect(() => {
     getAllData();
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   // filter
   const [filterBages, setFilterBages] = useState({});
@@ -179,6 +179,7 @@ const SalaryAssign = () => {
         partType: "SalaryAssignLanding",
         businessUnitId: buId,
         workplaceGroupId: wgId || 0,
+
         departmentId: 0,
         workplaceId: wId,
 
@@ -264,6 +265,7 @@ const SalaryAssign = () => {
       setter: setEmpLanding,
       srcText,
       type: type,
+      wId,
     });
   };
 
@@ -280,7 +282,7 @@ const SalaryAssign = () => {
       total: 0,
     });
     setStatus(values?.salaryStatus?.value);
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
   return (
     <>
       <form onSubmit={handleSubmit}>
