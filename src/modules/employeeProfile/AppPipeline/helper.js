@@ -106,7 +106,6 @@ export const pipleLineColumn = (
       className: "text-center",
       render: (record) => (
         <div className="d-flex justify-content-center">
-          {console.log(record)}
           <Tooltip title="Edit" arrow>
             <button className="iconButton" type="button">
               <EditOutlined
