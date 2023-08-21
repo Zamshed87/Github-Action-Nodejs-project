@@ -23,12 +23,12 @@ import { generateExcelAction } from "./excel/excelConvert";
 
 import {
   salaryDetailsExcelColumn,
-  salaryDetailsExcelData
+  salaryDetailsExcelData,
 } from "./excel/excelStyle";
 import {
   getBuDetails,
   getColumnNameForReport,
-  getCustomReportData
+  getCustomReportData,
 } from "./helper";
 
 const initialValues = {
@@ -77,7 +77,13 @@ const EmployeeReportBuilder = () => {
   });
 
   useEffect(() => {
-    getColumnNameForReport(setRowDto, setAllData, setShowingData, setLoading);
+    getColumnNameForReport(
+      setRowDto,
+      setAllData,
+      setShowingData,
+      setLoading,
+      buId
+    );
   }, []);
 
   useEffect(() => {
