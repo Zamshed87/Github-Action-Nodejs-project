@@ -1,5 +1,5 @@
 import axios from "axios";
-export const getBuDetails=async(buId,setter,setLoading)=>{
+export const getBuDetails = async (buId, setter, setLoading) => {
   try {
     const res = await axios.get(
       `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
@@ -12,12 +12,18 @@ export const getBuDetails=async(buId,setter,setLoading)=>{
     setLoading && setLoading(false);
     setter([]);
   }
-}
-export const getColumnNameForReport = async (setter, setAllData, setShowingData, setLoading) => {
+};
+export const getColumnNameForReport = async (
+  setter,
+  setAllData,
+  setShowingData,
+  setLoading,
+  buId
+) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=CustomReportColumnName`
+      `/Employee/PeopleDeskAllLanding?TableName=CustomReportColumnName&BusinessUnitId=${buId}`
     );
     if (res?.data) {
       const modifiedData = res?.data?.map((item) => {
