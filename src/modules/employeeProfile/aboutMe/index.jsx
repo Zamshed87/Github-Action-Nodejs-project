@@ -15,7 +15,7 @@ function AboutMe() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { employeeId, buId, wgId } = useSelector(
+  const { employeeId, buId, wgId, logWgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -30,7 +30,8 @@ function AboutMe() {
 
   const getEmpData = () => {
     // getPeopleDeskAllLanding("EmployeeBasicById", orgId, buId, employeeId, setEmpBasic, null, setLoading);
-    getEmployeeProfileViewData(employeeId, setEmpBasic, setLoading, buId, wgId);
+    // getEmployeeProfileViewData(employeeId, setEmpBasic, setLoading, buId, wgId);
+    getEmployeeProfileViewData(employeeId, setEmpBasic, setLoading, buId, logWgId);
   };
 
   useEffect(() => {

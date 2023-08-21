@@ -52,6 +52,7 @@ export const setLoginAction =
           wgId: intWorkplaceGroupId,
           wId: intWorkplaceId,
           wgName: strWorkplaceGroup,
+          logWgId: intWorkplaceGroupId,
           wName: strWorkplace,
           insertUserId: strLoginId,
           buLogo: logoUrl,
