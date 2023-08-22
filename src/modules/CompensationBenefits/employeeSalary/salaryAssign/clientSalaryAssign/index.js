@@ -32,7 +32,7 @@ export default function ClientSalaryAssignModule({
   step,
   selectedEmployee,
   setSelectedEmployee,
-  cbLanding
+  cbLanding,
 }) {
   const moduleRender = (accId) => {
     switch (accId) {
