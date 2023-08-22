@@ -53,7 +53,7 @@ export default function SalaryDrawer(props) {
     setSelectedEmployee,
     cbLanding,
   } = props;
-  const { buId, wgId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -514,6 +514,7 @@ export default function SalaryDrawer(props) {
               setOpenIncrement={setOpenIncrement}
               setLoading={setLoading}
               loading={loading}
+              wId={wId}
               // formik
               rowDtoHandler={rowDtoHandler}
               resetForm={resetForm}

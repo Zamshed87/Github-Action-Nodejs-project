@@ -5,7 +5,12 @@ import profileImg from "../../../../../assets/images/profile.jpg";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import IConfirmModal from "../../../../../common/IConfirmModal";
 import Loading from "../../../../../common/loading/Loading";
-import { gray200, gray700, gray900, greenColor } from "../../../../../utility/customColor";
+import {
+  gray200,
+  gray700,
+  gray900,
+  greenColor,
+} from "../../../../../utility/customColor";
 import { getEmployeeSalaryInfo, salaryHoldAction } from "../helper";
 import DefaultSalary from "./DefaultSalary";
 
@@ -41,14 +46,14 @@ const DrawerBody = ({
   setSelectedEmployee,
   addHandler,
   deleteHandler,
-
+  wId,
   // formik
   rowDtoHandler,
   resetForm,
   setFieldValue,
   values,
   errors,
-  touched
+  touched,
 }) => {
   const [isHoldSalary, setIsHoldSalary] = useState(false);
 
@@ -59,6 +64,7 @@ const DrawerBody = ({
       partType: "EmployeeSalaryInfoByEmployeeId",
       businessUnitId: buId,
       workplaceGroupId: wgId || 0,
+      workplaceId: wId,
       departmentId: 0,
       designationId: 0,
       supervisorId: 0,
@@ -82,16 +88,23 @@ const DrawerBody = ({
       message: `Are your sure?`,
       yesAlertFunc: () => {
         const callback = () => {
-          getEmployeeSalaryInfo(setAllData, setSingleData, {
-            partType: "EmployeeSalaryInfoByEmployeeId",
-            businessUnitId: buId,
-            workplaceGroupId: wgId || 0,
-            departmentId: 0,
-            designationId: 0,
-            supervisorId: 0,
-            employeeId: singleData[0]?.EmployeeId || 0,
-            strStatus: status || "NotAssigned",
-          }, status || "NotAssigned", setLoading);
+          getEmployeeSalaryInfo(
+            setAllData,
+            setSingleData,
+            {
+              partType: "EmployeeSalaryInfoByEmployeeId",
+              businessUnitId: buId,
+              workplaceGroupId: wgId || 0,
+              workplaceId: wId,
+              departmentId: 0,
+              designationId: 0,
+              supervisorId: 0,
+              employeeId: singleData[0]?.EmployeeId || 0,
+              strStatus: status || "NotAssigned",
+            },
+            status || "NotAssigned",
+            setLoading
+          );
         };
         salaryHoldAction(
           e.target.checked,
@@ -118,7 +131,7 @@ const DrawerBody = ({
               style={{
                 paddingBottom: "10px",
                 marginBottom: "10px",
-                borderBottom: `1px solid ${gray200}`
+                borderBottom: `1px solid ${gray200}`,
               }}
             >
               <div className="d-flex">
@@ -157,7 +170,10 @@ const DrawerBody = ({
                 </div>
                 <div className="content-about-info-card ml-3">
                   <div className="d-flex justify-content-between">
-                    <h4 className="name-about-info" style={{ marginBottom: "5px" }}>
+                    <h4
+                      className="name-about-info"
+                      style={{ marginBottom: "5px" }}
+                    >
                       {`${singleData[0]?.EmployeeName}  `}
                       <span style={{ fontWeight: "400", color: gray700 }}>
                         [{singleData[0]?.EmployeeCode}]
@@ -215,7 +231,6 @@ const DrawerBody = ({
                     setIsHoldSalary(e.target.checked);
                     holdSalaryHandler(e);
                   }}
-
                 />
                 <div>
                   <p
@@ -225,15 +240,17 @@ const DrawerBody = ({
                       setIsOpen(false);
                     }}
                     style={{ color: gray900 }}
-                    className="d-inline-block mt-2 pointer uplaod-para">
+                    className="d-inline-block mt-2 pointer uplaod-para"
+                  >
                     <span style={{ fontSize: "12px" }}>
                       <MovingOutlined
                         sx={{
                           marginRight: "5px",
                           fontSize: "18px",
-                          color: gray900
+                          color: gray900,
                         }}
-                      /> Increment History
+                      />{" "}
+                      Increment History
                     </span>
                   </p>
                 </div>
@@ -272,7 +289,7 @@ const DrawerBody = ({
                 setFieldValue,
                 values,
                 errors,
-                touched
+                touched,
               }}
             />
           </div>
@@ -286,14 +303,17 @@ const DrawerBody = ({
               style={{
                 paddingBottom: "10px",
                 marginBottom: "10px",
-                borderBottom: `1px solid ${gray200}`
+                borderBottom: `1px solid ${gray200}`,
               }}
             >
               <div className="d-flex">
                 <div className="content-about-info-card">
                   <div className="d-flex justify-content-between">
-                    <h4 className="name-about-info" style={{ marginBottom: "5px" }}>
-                      Bulk Salary Assign
+                    <h4
+                      className="name-about-info"
+                      style={{ marginBottom: "5px" }}
+                    >
+                      Salary Assign
                     </h4>
                   </div>
                 </div>
@@ -337,7 +357,7 @@ const DrawerBody = ({
                 setFieldValue,
                 values,
                 errors,
-                touched
+                touched,
               }}
             />
           </div>
