@@ -752,6 +752,7 @@ const SalaryAssign = () => {
                   if (!permission?.isEdit) {
                     return toast.warn("You don't have permission");
                   }
+
                   setSingleData(data);
                   setSideDrawer(true);
                   setIsBulk(false);

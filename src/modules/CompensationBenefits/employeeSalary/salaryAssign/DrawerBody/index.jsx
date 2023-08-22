@@ -282,7 +282,7 @@ const DrawerBody = ({
                 setSelectedEmployee,
                 selectedEmployee,
                 wgId,
-
+                wId,
                 // formik
                 rowDtoHandler,
                 resetForm,
