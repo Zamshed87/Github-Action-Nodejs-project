@@ -185,7 +185,8 @@ export const getPeopleDeskAllLanding = async (
   setAllData,
   setLoading,
   statusId,
-  year
+  year,
+  wgId
 ) => {
   setLoading && setLoading(true);
 
@@ -193,7 +194,7 @@ export const getPeopleDeskAllLanding = async (
   let yearFilter = year ? `&YearId=${year}` : "";
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}&intId=${id}${yearFilter}${status}`
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}&WorkplaceGroupId=${wgId}`
     );
     if (res?.data) {
       setter && setter(res?.data);

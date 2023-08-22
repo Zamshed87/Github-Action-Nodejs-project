@@ -39,7 +39,7 @@ const YearlyLeavePolicy = () => {
   const saveHandler = (values, cb) => {};
   const [loading, setLoading] = useState(false);
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -59,7 +59,8 @@ const YearlyLeavePolicy = () => {
       setAllData,
       setLoading,
       "",
-      year ? year : formikRef?.current?.values?.year?.value
+      year ? year : formikRef?.current?.values?.year?.value,
+      wgId
     );
   };
 
@@ -89,7 +90,7 @@ const YearlyLeavePolicy = () => {
 
   useEffect(() => {
     getData();
-  }, [orgId, buId]);
+  }, [orgId, buId, wgId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -117,6 +118,12 @@ const YearlyLeavePolicy = () => {
     {
       title: "Leave Type",
       dataIndex: "LeaveTypeName",
+      sorter: true,
+      filter: false,
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroup",
       sorter: true,
       filter: false,
     },
