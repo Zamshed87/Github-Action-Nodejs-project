@@ -57,7 +57,6 @@ export default function SalaryDrawer(props) {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
   const [totalAmount, setTotalAmount] = useState(0);
   const [finalTotalAmount, setFinalTotalAmount] = useState(0);
 
@@ -253,6 +252,7 @@ export default function SalaryDrawer(props) {
             businessUnitId: buId,
             workplaceGroupId: wgId || 0,
             departmentId: 0,
+            workplaceId: wId,
             designationId: 0,
             supervisorId: 0,
             employeeId: 0,
@@ -276,6 +276,7 @@ export default function SalaryDrawer(props) {
             partType: "EmployeeSalaryInfoByEmployeeId",
             businessUnitId: buId,
             workplaceGroupId: wgId || 0,
+            workplaceId: wId,
             departmentId: 0,
             designationId: 0,
             supervisorId: 0,
@@ -388,6 +389,9 @@ export default function SalaryDrawer(props) {
           anchor="right"
           open={isOpen}
           onClose={() => {
+            resetForm(defaultSalaryInitData);
+
+            setBreakDownList([]);
             getEmployeeSalaryInfo(
               setAllData,
               setRowDto,
@@ -396,6 +400,7 @@ export default function SalaryDrawer(props) {
                 businessUnitId: buId,
                 workplaceGroupId: values?.workplace?.value || wgId || 0,
                 departmentId: 0,
+                workplaceId: wId,
                 designationId: 0,
                 supervisorId: 0,
                 employeeId: 0,
@@ -414,6 +419,7 @@ export default function SalaryDrawer(props) {
             setIsOpen(false);
             setIsBulk(false);
             setStep("");
+            setSingleData("");
             setSelectedEmployee([]);
           }}
           sx={{
@@ -445,30 +451,31 @@ export default function SalaryDrawer(props) {
             >
               <IconButton
                 onClick={(e) => {
-                  /*   getEmployeeSalaryInfo(
+                  getEmployeeSalaryInfo(
                     setAllData,
                     setRowDto,
                     {
                       partType: "SalaryAssignLanding",
                       businessUnitId: buId,
-                      workplaceGroupId: values?.workplace?.value || wgId || 0,
+                      workplaceGroupId: wgId || 0,
                       departmentId: 0,
+                      workplaceId: wId,
                       designationId: 0,
                       supervisorId: 0,
                       employeeId: 0,
-                      strStatus: status || "NotAssigned",
+                      strStatus: "NotAssigned",
                       strSearchTxt: "",
                       pageNo: pages?.current,
                       pageSize: pages?.pageSize,
                       isPaginated: true,
                     },
-                    status || "NotAssigned",
+                    "NotAssigned",
                     setLoading,
-                    '',
+                    "",
                     pages,
                     setPages
-                  ) */
-                  cbLanding?.();
+                  );
+                  // cbLanding?.();
                   setIsOpen(false);
                   setIsBulk(false);
                   setStep("");
