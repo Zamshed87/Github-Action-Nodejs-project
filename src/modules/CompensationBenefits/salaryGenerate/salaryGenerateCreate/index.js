@@ -330,7 +330,7 @@ const SalaryGenerateCreate = () => {
       filter: true,
     },
     {
-      title: "Code",
+      title: "Employee ID",
       dataIndex: "strEmployeeCode",
       sorter: true,
       filter: true,
