@@ -54,7 +54,10 @@ const withLeaveApplication = (WrappedComponent) => {
         empId ? empId : employeeId,
         setEmployeeInfo,
         null,
-        setLoadingForInfo
+        setLoadingForInfo,
+        null,
+        null,
+        wgId
       );
     };
 
