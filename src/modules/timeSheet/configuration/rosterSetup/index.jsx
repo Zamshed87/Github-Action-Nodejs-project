@@ -36,7 +36,7 @@ export default function RosterSetup() {
   const [rowDto, setRowDto] = useState([]);
   const [allData, setAllData] = useState([]);
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -55,7 +55,10 @@ export default function RosterSetup() {
       "",
       setRowDto,
       setAllData,
-      setLoading
+      setLoading,
+      null,
+      null,
+      wgId
     );
   };
 

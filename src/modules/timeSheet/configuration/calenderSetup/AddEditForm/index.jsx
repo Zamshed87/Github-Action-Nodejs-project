@@ -54,7 +54,7 @@ const CalendarSetupModal = ({
   id,
   setAllData,
 }) => {
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -65,7 +65,18 @@ const CalendarSetupModal = ({
 
   useEffect(() => {
     if (id) {
-      getPeopleDeskAllLanding("CalenderById", orgId, buId, id, setSingleData);
+      getPeopleDeskAllLanding(
+        "CalenderById",
+        orgId,
+        buId,
+        id,
+        setSingleData,
+        null,
+        setLoading,
+        null,
+        null,
+        wgId
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -103,7 +114,8 @@ const CalendarSetupModal = ({
       setRowDto,
       setAllData,
       createTimeSheetAction,
-      setLoading
+      setLoading,
+      wgId
     );
   };
   return (
