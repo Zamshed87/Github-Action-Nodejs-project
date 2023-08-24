@@ -230,6 +230,7 @@ const SalaryGenerateLanding = () => {
       intAccountId: data?.intAccountId,
       intBusinessUnitId: data?.intBusinessUnitId,
       strBusinessUnit: data?.strBusinessUnit,
+      intWorkplaceGroupId: wgId,
       intMonthId: data?.intMonth,
       intYearId: data?.intYear,
       strDescription: data?.strDescription,
