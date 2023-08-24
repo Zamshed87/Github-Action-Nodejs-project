@@ -73,7 +73,7 @@ export default function CalendarSetup() {
   // single Data
   const [id, setId] = useState("");
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -86,9 +86,12 @@ export default function CalendarSetup() {
       "",
       setRowDto,
       setAllData,
-      setLoading
+      setLoading,
+      null,
+      null,
+      wgId
     );
-  }, [orgId, buId]);
+  }, [orgId, buId, wgId]);
 
   // search
   const filterData = (keywords, allData, setRowDto) => {

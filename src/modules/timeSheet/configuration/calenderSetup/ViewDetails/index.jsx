@@ -22,15 +22,26 @@ const ViewCalendarSetup = ({
     boxSizing: "border-box",
   };
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
   useEffect(() => {
-    getPeopleDeskAllLanding("CalenderById", orgId, buId, id, setSingleData);
+    getPeopleDeskAllLanding(
+      "CalenderById",
+      orgId,
+      buId,
+      id,
+      setSingleData,
+      null,
+      null,
+      null,
+      null,
+      wgId
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, wgId, buId]);
   const avatarSx = {
     background: "#F2F2F7",
     "&": {

@@ -89,13 +89,17 @@ export default function UnderCreateRosterSetup() {
       buId,
       params?.id,
       null,
-      setRowDto
+      setRowDto,
+      null,
+      null,
+      null,
+      wgId
     );
   };
 
   useEffect(() => {
     getData();
-  }, [orgId, buId, params]);
+  }, [orgId, buId, params, wgId]);
 
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -104,7 +108,7 @@ export default function UnderCreateRosterSetup() {
       "CalenderName",
       setCalendarDDL
     );
-  }, [orgId, buId]);
+  }, [orgId, buId, wgId]);
   // for sorting the row
   const [calendarOrder, setCalendarOrder] = useState("desc");
   const commonSortByFilter = (filterType, property) => {

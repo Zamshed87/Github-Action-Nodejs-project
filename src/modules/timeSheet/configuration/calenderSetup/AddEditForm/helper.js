@@ -34,7 +34,8 @@ export const onCreateCalendarSetupWithValidation = (
   setRowDto,
   setAllData,
   createTimeSheetAction,
-  setLoading
+  setLoading,
+  wgId
 ) => {
   let demoStartTime = moment(values?.startTime, "HH:mm").subtract(12, "hours");
   let demoEndTime = moment(values?.endTime, "HH:mm").add(12, "hours");
@@ -173,7 +174,18 @@ export const onCreateCalendarSetupWithValidation = (
   const callback = () => {
     cb();
     onHide();
-    getPeopleDeskAllLanding("Calender", orgId, buId, "", setRowDto, setAllData);
+    getPeopleDeskAllLanding(
+      "Calender",
+      orgId,
+      buId,
+      "",
+      setRowDto,
+      setAllData,
+      null,
+      null,
+      null,
+      wgId
+    );
   };
   createTimeSheetAction(payload, setLoading, callback);
 };
