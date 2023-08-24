@@ -16,7 +16,7 @@ const HeaderInfoBar = ({ data, setLoading }) => {
   const year = data?.intYear;
   const monthYear = `${month}, ${year}`;
 
-  const { employeeId } = useSelector(
+  const { employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -33,6 +33,7 @@ const HeaderInfoBar = ({ data, setLoading }) => {
       intMonthId: values?.intMonth,
       intYearId: values?.intYear,
       strDescription: values?.strDescription,
+      intWorkplaceGroupId: wgId,
       intCreatedBy: employeeId,
     };
     const callback = () => {
