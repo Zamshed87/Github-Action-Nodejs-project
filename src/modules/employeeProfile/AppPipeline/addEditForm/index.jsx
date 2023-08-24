@@ -400,6 +400,7 @@ export default function AddEditFormComponent({
                               onChange={(valueOption) => {
                                 setLoader(true);
                                 setFieldValue("orgName", valueOption);
+                                setFieldValue("workplace", "");
 
                                 getPeopleDeskAllDDL(
                                   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption.value}&intId=${employeeId}`,
@@ -439,7 +440,15 @@ export default function AddEditFormComponent({
                               classes="input-sm"
                               styles={customStyles}
                               name="workplace"
-                              options={workPlaceDDL || []}
+                              options={
+                                [
+                                  {
+                                    value: 0,
+                                    label: "All",
+                                  },
+                                  ...workPlaceDDL,
+                                ] || []
+                              }
                               value={
                                 values?.workplace || { value: -1, label: "" }
                               }
