@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const total = (arr, property) => {
   return arr.reduce((sum, item) => sum + item[property], 0);
@@ -164,5 +165,50 @@ export const getSalaryReport = async (
     }
   } catch (error) {
     setLoading && setLoading(false);
+  }
+};
+export const getSalaryDetailsReportRDLC = async ({
+  partName,
+  intMonthId,
+  intYearId,
+  strSalaryCode,
+  intAccountId,
+  setLoading,
+  buId,
+  setterData,
+  cb,
+  url,
+  wgId,
+}) => {
+  if (
+    !url &&
+    (!partName ||
+      !intMonthId ||
+      !intYearId ||
+      !strSalaryCode ||
+      !intAccountId ||
+      !wgId)
+  ) {
+    toast.warn("Missing required parameters");
+    return;
+  }
+  setLoading?.(true);
+  try {
+    const res = await axios.get(
+      url
+        ? url
+        : `/PdfAndExcelReport/${partName}?intAccountId=${intAccountId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${intMonthId}&intYearId=${intYearId}&strSalaryCode=${strSalaryCode}`
+    );
+    if (res?.data) {
+      setterData?.(res?.data);
+      cb?.(res?.data);
+      setLoading?.(false);
+    } else {
+      toast.warn("No data received !");
+      setLoading?.(false);
+    }
+  } catch (error) {
+    setLoading?.(false);
+    toast.warn(error?.response?.data?.message || "Something went wrong");
   }
 };
