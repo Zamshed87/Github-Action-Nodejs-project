@@ -877,8 +877,7 @@ function AddEditForm() {
 
                                   <td width="40px">
                                     <div className="d-flex">
-                                      {isView &&
-                                        item?.strStatus === "Pending" && (
+                                      {isView &&(
                                           <Tooltip title="Edit" arrow>
                                             <button
                                               className="iconButton"
