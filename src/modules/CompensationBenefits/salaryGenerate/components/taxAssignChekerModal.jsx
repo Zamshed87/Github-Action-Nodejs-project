@@ -4,8 +4,11 @@ import { Modal } from "react-bootstrap";
 import { shallowEqual, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
 import NoResult from "../../../../common/NoResult";
-import { createSalaryGenerateRequest, getSalaryGenerateRequestLandingById } from "../helper";
-import { lastDayOfMonth } from './../../../../utility/dateFormatter';
+import {
+  createSalaryGenerateRequest,
+  getSalaryGenerateRequestLandingById,
+} from "../helper";
+import { lastDayOfMonth } from "./../../../../utility/dateFormatter";
 
 export default function TaxAssignCheckerModal({
   show,
@@ -29,9 +32,9 @@ export default function TaxAssignCheckerModal({
   rowDto,
   params,
   state,
-  setAllData
+  setAllData,
 }) {
-  const { orgId, employeeId } = useSelector(
+  const { orgId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -45,7 +48,7 @@ export default function TaxAssignCheckerModal({
           intEmployeeId: itm?.intEmployeeId,
           strEmployeeName: itm?.strEmployeeName,
           intPayrollGroupId: itm?.intPayrollGroupId,
-          strPayrollGroup: itm?.strPayrollGroup
+          strPayrollGroup: itm?.strPayrollGroup,
         };
       });
 
@@ -56,6 +59,7 @@ export default function TaxAssignCheckerModal({
         : 0,
       strSalaryCode: " ",
       intAccountId: orgId,
+      intWorkplaceGroupId: wgId,
       intBusinessUnitId: values?.businessUnit?.value,
       strBusinessUnit: values?.businessUnit?.label,
       intMonthId: values?.monthId,
@@ -65,7 +69,8 @@ export default function TaxAssignCheckerModal({
       strSalryType: values?.salaryTpe?.value,
       dteFromDate:
         values?.fromDate ||
-        `${values?.yearId}-${values?.monthId <= 9 ? `0${values?.monthId}` : values?.monthId
+        `${values?.yearId}-${
+          values?.monthId <= 9 ? `0${values?.monthId}` : values?.monthId
         }-01`,
       dteToDate:
         values?.toDate || lastDayOfMonth(values?.monthId, values?.yearId),
@@ -152,17 +157,17 @@ export default function TaxAssignCheckerModal({
                               <div>SL</div>
                             </th>
                             <th>
-                              <div className="sortable" onClick={() => { }}>
+                              <div className="sortable" onClick={() => {}}>
                                 <span>Employee Name</span>
                               </div>
                             </th>
                             <th>
-                              <div className="sortable" onClick={() => { }}>
+                              <div className="sortable" onClick={() => {}}>
                                 <span>Designation</span>
                               </div>
                             </th>
                             <th>
-                              <div className="sortable" onClick={() => { }}>
+                              <div className="sortable" onClick={() => {}}>
                                 <span>Payroll Group</span>
                               </div>
                             </th>
