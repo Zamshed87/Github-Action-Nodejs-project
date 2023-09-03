@@ -39,7 +39,7 @@ function SingleShiftAssign({
   uniqueShift = [],
   isMargin = false,
 }) {
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -50,12 +50,12 @@ function SingleShiftAssign({
 
   useEffect(() => {
     getCalenderDDL(
-      `/Employee/GetCalenderDdl?intAccountId=${orgId}&intBusinessUnitId=${buId}`,
+      `/Employee/GetCalenderDdl?intBusinessUnitId=${buId}&IntWorkplaceId=${wId}`,
       "intCalenderId",
       "strCalenderName",
       setRosterDDL
     );
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
 
   const { setFieldValue, values, errors, touched, handleSubmit } = useFormik({
     enableReinitialize: true,

@@ -44,7 +44,7 @@ export default function FixedRosterCreateEdit() {
   const [rosterDDL, setRosterDDL] = useState([]);
   const history = useHistory();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,12 +77,12 @@ export default function FixedRosterCreateEdit() {
 
   useEffect(() => {
     getCalenderDDL(
-      `/Employee/GetCalenderDdl?intAccountId=${orgId}&intBusinessUnitId=${buId}`,
+      `/Employee/GetCalenderDdl?intBusinessUnitId=${buId}&IntWorkplaceId=${wId}`,
       "intCalenderId",
       "strCalenderName",
       setRosterDDL
     );
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
   useEffect(() => {
     setUniqueShiftColor([]);
     // console.log(rosterDDL, "rosterDDL")
