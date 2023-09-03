@@ -1,0 +1,794 @@
+/*  
+  =================================
+        General
+  =================================
+*/
+.form-container {
+  margin-bottom: 12px;
+}
+.form-container.employee-form-container {
+  margin-bottom: 0;
+}
+.w-80 {
+  width: 80px !important;
+}
+
+.form-group {
+  margin-bottom: 0;
+  background: #ffffff !important;
+}
+
+/*  
+  =================================
+        Login Input
+  =================================
+*/
+
+/* parent */
+.login-input {
+  position: relative;
+  z-index: 0;
+}
+
+.login-input input,
+.login-input textarea {
+  height: 64px;
+  width: 100%;
+  border-radius: 4px;
+  margin-bottom: 0px !important;
+}
+
+/* normal */
+.login-input input.form-control,
+.login-input input.form-control:focus,
+.login-input input.form-control:hover,
+.login-input textarea.form-control,
+.login-input textarea.form-control:focus,
+.login-input textarea.form-control:hover {
+  position: relative;
+  background: transparent;
+  color: var(--gray700);
+  padding-left: 52px;
+  padding-top: 20px;
+  background: transparent !important;
+  border: 1px solid var(--gray300) !important;
+  transition: all 0.3s ease-in-out;
+}
+
+.login-input input.form-control:focus,
+.login-input input.form-control:hover,
+.login-input textarea.form-control:focus,
+.login-input textarea.form-control:hover {
+  border: 2px solid var(--success500) !important;
+}
+
+.login-input label {
+  position: absolute;
+  top: 4px;
+  padding: 15px 0 0 13px;
+  transition: all 200ms;
+  left: 23px;
+  white-space: nowrap;
+  max-width: 300px;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  color: var(--gray700);
+  overflow: hidden;
+}
+
+/* hover */
+.login-input input.form-control:hover,
+.login-input textarea.form-control:hover {
+  border: 1px solid var(--gray600) !important;
+}
+
+/* clicked */
+.login-input input.form-control:focus,
+.login-input textarea.form-control:focus {
+  border: 1px solid var(--success500) !important;
+  box-shadow: 0px 0px 0px 3.2px var(--success25) !important;
+}
+
+.onFocusLabel,
+.error-label.isValue {
+  font-size: 75%;
+  transform: translate3d(0, 2px, 0);
+  font-size: 12px !important;
+  line-height: 16px !important;
+  color: var(--success500) !important;
+  top: 10px !important;
+  background: transparent;
+  padding: 0px 0px 0px 30px !important;
+  z-index: 2;
+}
+
+/* enable */
+.login-input input.form-control.isValue,
+.login-input textarea.form-control.isValue {
+  background-color: transparent !important;
+}
+
+.login-input .form-icon {
+  color: var(--gray700);
+  position: absolute;
+  top: 20px;
+  left: 15px;
+  z-index: 1;
+}
+
+.error-label.isValue,
+.login-input .form-icon.isValue {
+  color: var(--gray700) !important;
+}
+
+/* error */
+.login-input input.form-control.error-form-control,
+.login-input textarea.form-control.error-form-control {
+  border: 1px solid var(--error) !important;
+  box-shadow: none !important;
+  padding-top: 10px !important;
+}
+
+.login-input input.form-control.error-form-control:focus,
+.login-input textarea.form-control.error-form-control:focus {
+  box-shadow: none !important;
+}
+
+/*  disabled */
+.onFocusLabel.is-disabled {
+  color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.login-input .form-control:disabled,
+.login-input .form-control:disabled:hover {
+  color: rgba(0, 0, 0, 0.7) !important;
+  background-color: rgba(33, 33, 33, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+.login-input .form-trail-icon {
+  color: var(--gray700);
+  left: auto;
+  right: 15px;
+}
+
+.login-input .form-icon.active,
+.login-input .form-icon.form-trail-icon.active {
+  color: var(--success500);
+}
+
+.form-control:disabled,
+.form-control:disabled:hover {
+  color: rgba(0, 0, 0, 0.7) !important;
+  background-color: rgba(33, 33, 33, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+.onBlurLabel,
+.error-label {
+  font-size: 100%;
+  transform: translate3d(0px, 0px, 0px);
+  background-color: transparent;
+  padding: 19px 0px 0px 30px !important;
+}
+
+.error-label,
+.error,
+.error-form-icon,
+.form-trail-icon-error {
+  color: var(--error) !important;
+  opacity: 1 !important;
+}
+
+.formik-select input,
+.formik-select textarea {
+  border: 0 !important;
+}
+
+.input-xl.input-file input.form-control,
+.input-xl.input-file input.form-control:focus,
+.input-xl.input-file input.form-control:hover {
+  line-height: 15px;
+}
+
+/*  
+  =================================
+        Input Xl
+  =================================
+*/
+.input-xl input {
+  height: 56px;
+}
+
+.verify-pin-form input {
+  height: 64px;
+}
+
+.input-xl input.form-control,
+.input-xl input.form-control:focus,
+.input-xl input.form-control:hover,
+.input-xl textarea.form-control,
+.input-xl textarea.form-control:focus,
+.input-xl textarea.form-control:hover {
+  padding-left: 10px !important;
+  font-size: 14px;
+  line-height: 24px;
+  padding-top: 25px;
+}
+
+.verify-pin-form input.form-control,
+.verify-pin-form input.form-control:hover,
+.verify-pin-form input.form-control:focus {
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 60px;
+  color: var(--success800);
+  padding: 15px !important;
+  border-radius: 8px !important;
+}
+
+.verify-pin-form input.form-control:focus {
+  box-shadow: 0 0 0 4px #d6fbdb !important;
+}
+
+.input-xl label {
+  left: 12px;
+}
+
+.input-xl .onBlurLabel,
+.input-xl .error-label {
+  padding: 13px 0px 0px 0px !important;
+}
+
+.input-xl .onFocusLabel,
+.input-xl .error-label.isValue {
+  top: 6px !important;
+  padding: 0px 0px 0px 0px !important;
+}
+
+/*  
+  =================================
+        Input Small
+  =================================
+*/
+.input-sm input,
+.search-input input {
+  height: 30px;
+}
+
+.auth-input-sm input {
+  height: 44px;
+}
+
+.input-sm input[type="number"]::placeholder {
+  font-size: 12px;
+}
+
+.input-sm input.form-control,
+.input-sm input.form-control:focus,
+.input-sm input.form-control:hover {
+  padding-top: 3px;
+}
+
+.auth-input-sm input.form-control,
+.auth-input-sm input.form-control:focus,
+.auth-input-sm input.form-control:hover {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 8px;
+}
+
+.auth-input-sm .form-icon {
+  margin-top: -12px;
+}
+
+.login-input-field {
+  margin-bottom: 20px;
+}
+
+.month-picker input[type="month"] {
+  background: var(--color-less) !important;
+  border: 1px solid var(--color-less) !important;
+  border-radius: 4px;
+  color: var(--gray500);
+  width: 160px !important;
+}
+
+.month-picker input[type="month"]::-webkit-calendar-picker-indicator {
+  -webkit-appearance: none;
+  background: url(../images/monthPickerIcon.png) no-repeat center;
+  width: 8px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.month-picker input.form-control:hover,
+.month-picker input.form-control:focus {
+  background: var(--gray200) !important;
+  border: 1px solid var(--gray200) !important;
+  outline: none;
+}
+
+/* .month-picker input[type="month"] {
+  width: 165px !important;
+} */
+
+/*  
+  =================================
+        Search Input
+  =================================
+*/
+.search-input.fixed-width {
+  width: 250px;
+}
+
+.login-input.search-input label {
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.search-input input.form-control,
+.search-input input.form-control:focus,
+.search-input input.form-control:hover {
+  padding-top: 8px;
+}
+
+.search-input .form-icon {
+  top: 3px;
+}
+
+.search-inner-input {
+  padding-right: 40px;
+}
+
+/*  
+  =================================
+      Input Number
+  =================================
+*/
+.input-number {
+  position: relative;
+  overflow: hidden;
+}
+
+.number-button-group {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 60%;
+  width: 30px;
+  z-index: 1;
+  background: #ffffff !important;
+}
+
+/*  
+  =================================
+        Textarea
+  =================================
+*/
+.form-group.login-input.input-xl.textarea {
+  overflow-x: hidden;
+}
+
+.textarea textarea {
+  height: 96px;
+}
+
+.input-xl.textarea label {
+  background: #fff;
+  width: 90%;
+  max-width: initial;
+}
+
+.input-xl.textarea .onFocusLabel,
+.input-xl.textarea .error-label.isValue {
+  top: -1px !important;
+  height: 25px;
+  display: flex;
+  align-items: center;
+}
+
+.input-xl.textarea-with-label textarea.form-control,
+.input-xl.textarea-with-label textarea.form-control:focus,
+.input-xl.textarea-with-label textarea.form-control:hover {
+  padding-top: 6px !important;
+}
+
+.input-xl.textarea .onFocusLabel.is-disabled {
+  background: transparent !important;
+}
+
+/*  
+  =================================
+      Input Borderless
+  =================================
+*/
+.form-group.login-input.input-xl.input-borderless {
+  background: var(--color-less) !important;
+}
+
+.input-borderless input {
+  border-radius: 0;
+}
+
+.input-borderless input.form-control,
+.input-borderless input.form-control:hover,
+.input-borderless input.form-control:focus {
+  border: 0 !important;
+  border-bottom: 1px solid var(--gray300) !important;
+}
+
+.input-borderless input.form-control:hover,
+.input-borderless textarea.form-control:focus {
+  border-bottom: 1px solid var(--gray600) !important;
+}
+
+.input-borderless input.form-control:focus,
+.input-borderless textarea.form-control:focus {
+  border-bottom: 2px solid var(--success500) !important;
+  box-shadow: none !important;
+}
+
+.input-borderless .number-button-group {
+  height: 90%;
+}
+
+.input-borderless .btn-add {
+  opacity: 0;
+  visibility: hidden;
+  background: var(--body-bg) !important;
+  border: 1px solid var(--body-bg) !important;
+}
+
+.input-borderless:hover .btn-add {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* letter-title-input */
+
+.letter-title-input input.form-control,
+.letter-title-input input.form-control:hover,
+.letter-title-input input.form-control:focus {
+  padding: 0;
+  border-bottom: 0 !important;
+}
+
+/*  
+  =================================
+      Select
+  =================================
+*/
+.formik-select-wrapper {
+  position: relative;
+  /* z-index: 9; */
+}
+
+.formik-select-wrapper:focus {
+  border: 1px solid var(--success50) !important;
+  border-radius: 5px;
+}
+
+.select-cross-icon {
+  position: absolute;
+  z-index: 99;
+  right: 10%;
+  top: 18%;
+  font-size: 12px;
+}
+
+.async-select-cross-icon {
+  position: absolute;
+  z-index: 99;
+  right: 5%;
+  top: 22%;
+  font-size: 14px;
+}
+
+.add-select-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.add-select-wrapper .form-container {
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.ddl-add {
+  margin-left: 10px;
+}
+
+/* job-create-number-form */
+.job-create-number-form .number-button-group {
+  position: absolute;
+  top: 1px;
+}
+
+/* lebel-bold */
+.lebel-bold {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 120%;
+  letter-spacing: -0.01em;
+  color: var(--gray600);
+}
+
+/* ------------leaveMovement Form Card------------------ */
+.leave-movement-FormCard .card,
+.form-card .card {
+  margin-top: 36px;
+  margin-bottom: 36px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0px 11px 16px rgba(0, 0, 0, 0.03);
+  border-radius: 0;
+}
+
+.card-shadow {
+  border: 0px;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08),
+    0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.leave-movement-FormCard .button {
+  background: #e4f8dd;
+  border: 2px solid #34a853;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  padding: 8px;
+  color: #34a853;
+}
+
+.filterChip {
+  background: rgba(33, 33, 33, 0.08);
+  border-radius: 16px;
+  padding: 6px;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 14px;
+  line-height: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filterChip .icon {
+  height: 18px;
+  width: 18px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.formikSelect-icon {
+  color: rgba(0, 0, 0, 0.5);
+  width: 20px;
+  height: 20px;
+}
+
+.formikSelect-icon-label {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+  color: var(--gray600);
+}
+
+.pipeline-stepper .stepper {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0;
+  list-style: none;
+  position: relative;
+}
+
+.pipeline-stepper .stepper .stepper__item {
+  position: relative;
+  min-width: 166px;
+  min-height: 36px;
+  padding: 1px;
+  padding: 20px 20px 20px 40px;
+  background: #d2d6dc;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 2px rgba(55, 65, 81, 0.08);
+  margin: 0 10px 0 -19px;
+  clip-path: polygon(
+    20px 50%,
+    0% 0%,
+    calc(100% - 20px) 0%,
+    100% 50%,
+    calc(100% - 20px) 100%,
+    0% 100%
+  );
+  -webkit-clip-path: polygon(
+    20px 50%,
+    0% 0%,
+    calc(100% - 20px) 0%,
+    100% 50%,
+    calc(100% - 20px) 100%,
+    0% 100%
+  );
+}
+
+.modal-inside .pipeline-stepper .stepper .stepper__item {
+  min-width: 148px;
+  min-height: 40px;
+}
+
+.pipeline-stepper .stepper .stepper__item div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  right: 1px;
+  bottom: 1px;
+  background: #f2f2f7;
+  clip-path: polygon(
+    20px 50%,
+    0% 0%,
+    calc(100% - 20px) 0%,
+    100% 50%,
+    calc(100% - 20px) 100%,
+    0% 100%
+  );
+  -webkit-clip-path: polygon(
+    20px 50%,
+    0% 0%,
+    calc(100% - 20px) 0%,
+    100% 50%,
+    calc(100% - 20px) 100%,
+    0% 100%
+  );
+}
+
+.pipeline-stepper .stepper .stepper__item:last-child {
+  position: relative;
+  clip-path: polygon(20px 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  -webkit-clip-path: polygon(20px 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.pipeline-stepper .stepper .stepper__item:last-child div {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  right: 1px;
+  bottom: 1px;
+  background: #f2f2f7;
+  clip-path: polygon(20px 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  -webkit-clip-path: polygon(20px 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.pipeline-stepper .stepper .stepper__item:first-child {
+  position: relative;
+  clip-path: polygon(
+    0% 0%,
+    calc(100% - 20px) 0%,
+    100% 50%,
+    calc(100% - 20px) 100%,
+    0% 100%
+  );
+  -webkit-clip-path: polygon(
+    0% 0%,
+    calc(100% - 20px) 0%,
+    100% 50%,
+    calc(100% - 20px) 100%,
+    0% 100%
+  );
+}
+
+.pipeline-stepper .stepper .stepper__item:first-child div {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  bottom: 1px;
+  background: #f2f2f7;
+  clip-path: polygon(
+    0% 0%,
+    calc(100% - 20px) 0%,
+    100% 50%,
+    calc(100% - 20px) 100%,
+    0% 100%
+  );
+  -webkit-clip-path: polygon(
+    0% 0%,
+    calc(100% - 20px) 0%,
+    100% 50%,
+    calc(100% - 20px) 100%,
+    0% 100%
+  );
+}
+
+/* Borderless Form */
+.login-input input.form-control.form-borderless,
+.login-input textarea.form-control.form-borderless,
+.login-input textarea.form-control.form-borderless:focus,
+.login-input textarea.form-control.form-borderless:hover {
+  border: 0 solid transparent !important;
+  border-bottom: 1px solid var(--gray300) !important;
+  border-radius: 0;
+  padding-left: 0px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding-top: 0px !important;
+  position: relative !important;
+}
+
+.login-input input.form-control.form-borderless:hover {
+  border-bottom: 2px solid var(--gray600) !important;
+}
+
+.login-input input.form-control.form-borderless::placeholder {
+  color: #c4c4c4;
+}
+
+.login-input input.form-control.form-borderless:focus {
+  border-bottom: 2px solid var(--success500) !important;
+}
+
+/* Button */
+.leave-movement-FormCard .submit-button {
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: #34a853;
+  border-radius: 4px;
+  padding: 7px 30px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.leave-movement-FormCard .submit-button:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.common-textarea textarea {
+  height: 60px;
+}
+
+.input-field-password-main .input-password {
+  position: relative;
+}
+
+.input-field-password-main .btn-showPassword .MuiSvgIcon-root {
+  font-size: 1.2rem;
+  color: var(--gray900);
+}
+
+.input-field-password-main .btn-showPassword {
+  position: absolute;
+  right: 10px;
+  top: 3px;
+  border: none;
+  background-color: transparent;
+}
+
+.click-upload-attachment {
+  display: inline-block;
+}
+
+.upload-common-attachment .image-upload-box.with-img {
+  max-width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  height: auto !important;
+}
+
+.upload-common-attachment p {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}

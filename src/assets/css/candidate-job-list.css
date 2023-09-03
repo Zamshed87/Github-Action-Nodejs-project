@@ -1,0 +1,121 @@
+.candidate-job-list {
+  padding: 90px 25px 0;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* single job list */
+.single-job-list .container-fluid {
+  max-width: 1135px;
+}
+.single-job-description {
+  padding: 90px 0 45px;
+}
+.single-job-head {
+  margin-bottom: 35px;
+}
+.job-responsibilities,
+.educational-requirments {
+  margin-bottom: 35px;
+}
+.educational-requirments-title {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+  color: var(--black80);
+  margin-bottom: 20px;
+}
+.educational-requirements-description {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--black70);
+  max-width: 610px;
+}
+.job-apply-btn {
+  margin-top: 58px;
+}
+.job-summary-apply-btn {
+  margin-bottom: 22px;
+}
+.job-summary-card-txt {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: var(--black70);
+}
+.job-summary-card-txt > span.title {
+  color: var(--black80);
+}
+.job-summary {
+  margin-bottom: 32px;
+}
+
+/* job Apply */
+.single-job-apply {
+  padding: 0 0 110px;
+}
+.job-application-header {
+  text-align: center;
+}
+.job-application-header h3 {
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 37px;
+  color: var(--black60);
+  padding: 90px 0px 16px 0px;
+}
+.job-application-header h2 {
+  font-style: 400;
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 47px;
+  color: var(--black70);
+  padding: 0px 0px 82px 0px;
+}
+.form-header h3 {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 20px;
+  color: var(--black60);
+  padding: 0px 0px 30px 0px;
+}
+.additional-information h2 {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 20px;
+  color: var(--black60);
+  padding: 70px 0px 30px 0px;
+}
+.questionaire h2 {
+  font-style: 400;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 20px;
+  color: var(--black60);
+  padding: 70px 0px 30px 0px;
+}
+
+.job-application-header label {
+  font-style: 400;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--black80);
+  padding-bottom: 40px;
+}
+.single-job-apply .form-group {
+  margin-bottom: 25px;
+}
+.questionaire-section p {
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--black70);
+  margin-bottom: 20px;
+}
+.job-apply-btn-section {
+  margin: 44px 0 0;
+}
+.job-apply-btn-section button {
+  margin: 0 auto;
+}
+

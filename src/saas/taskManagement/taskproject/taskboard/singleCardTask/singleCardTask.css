@@ -1,0 +1,15 @@
+
+
+.body-content .body-left .ql-editor {
+    min-height: 150px !important;
+}
+.body-content .body-left .editorIcon{
+    position: relative;
+}
+
+.body-content .body-left .editorIcon .customColorEditorIcon {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #5C6369;
+    cursor: pointer;
+}

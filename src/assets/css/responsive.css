@@ -1,0 +1,293 @@
+@media (min-width: 1399px) {
+  .modal-dialog {
+    margin: 100px auto !important;
+  }
+}
+@media (max-width: 1699px) {
+  .layout-body {
+    padding-left: 260px;
+  }
+  .side-menu-wrapper {
+    width: 250px;
+  }
+  .tableOne > table > tbody > tr > td .tableBody-title,
+  .tableOne table tbody tr td .application-tooltip span.tableBody-title,
+  .MuiTooltip-tooltip .application-tooltip span.tableBody-title {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 1599px) {
+  .menu ul li {
+    width: 200px;
+  }
+  /* daily attendance */
+  .dynamic-calender-css .singleCalendarDay .day {
+    font-size: 1rem;
+  }
+  .dynamic-calender-css .singleCalendarDay .status {
+    font-size: 15px;
+    margin-top: 6px;
+  }
+  .dynamic-calender-css.self-dynamic-calender-css .singleCalendarDay .status {
+    margin-top: -10px;
+  }
+  .dynamic-calender-css .singleCalendarDay {
+    justify-content: center;
+    border-radius: 5px;
+  }
+  .dynamic-calender-css .day {
+    padding: 5px 0;
+    font-size: 15px;
+  }
+  .dynamic-calender-css .allDays {
+    margin-bottom: 4px;
+  }
+  .dynamic-calender-css .allCalendarDays {
+    grid-gap: 4px;
+  }
+  .month,
+  .year {
+    font-size: 17px;
+    line-height: 24px;
+  }
+  #calendar-footer {
+    padding: 0.5rem 0;
+  }
+  #calendar-footer .color-all {
+    margin: 0 8px 0 0;
+    font-size: 12px;
+    width: 80px;
+    height: 50px;
+  }
+
+  /* menu */
+  .layout-body {
+    padding-left: 210px;
+  }
+  .side-menu-wrapper {
+    height: 75vh;
+    width: 200px;
+  }
+
+  /* scroll table */
+  .sme-scrollable-table .scroll-table.report-scroll-table-height {
+    max-height: 40vh;
+  }
+}
+
+@media (min-width: 1200px) {
+  /* modal */
+  .default-modal .modal-xl {
+    max-width: 1140px;
+  }
+  .modal-xl {
+    max-width: 688px;
+  }
+}
+
+@media (max-width: 1399px) {
+  .modal-dialog {
+    margin: 40px auto !important;
+  }
+  /* auth */
+  .auth-wrapper-page {
+    position: relative;
+    height: auto;
+  }
+  .auth-login-wrapper {
+    margin: 25px auto;
+  }
+  .auth-login-inner-wrapper {
+    padding: 25px 35px;
+  }
+
+  /* dashboard */
+  .recruitment-chart-box {
+    margin-right: 20px;
+  }
+  .interview-dash-box .elements .pipeline .cadidate h5 {
+    font-size: 12px;
+  }
+
+  .interview-dash-box .element-ratio {
+    margin-right: 25px;
+  }
+  .interview-dash-box .element-ratio .ratio::after {
+    right: 15px;
+  }
+  .interview-dash-box .element-ratio .ratio {
+    padding-right: 35px;
+  }
+
+  /* job-details */
+  .jobDetailsWrapperMediaQuery {
+    margin: 30px;
+  }
+
+  /* configure */
+  .job-template .jobTemplateWrapper {
+    margin-bottom: 20px;
+  }
+  .jobTemplateWrapper {
+    padding-bottom: 25px;
+  }
+
+  /* daily-attendance-landing */
+  .daily-attendance-landing.table-card {
+    padding: 0;
+  }
+  .daily-attendance-landing .table-card-body {
+    margin: 0;
+  }
+  .dynamic-calender-css .currentMonthYear {
+    padding: 0px 0 5px 0px;
+  }
+
+  /* scrollable table */
+  .sme-scrollable-table .scroll-table.scroll-table-height {
+    max-height: 70vh;
+  }
+  .sme-scrollable-table
+    .scroll-table.scroll-table-height.confirmationScrollTable {
+    max-height: 55vh;
+  }
+  .tableOne.iouManagementTable {
+    max-height: 57vh;
+  }
+
+  /* ant table */
+  .ant-table-content {
+    overflow-y: scroll;
+    max-height: 400px;
+  }
+}
+
+@media (max-width: 1299px) {
+  .layout-body {
+    padding-left: 195px;
+  }
+  .side-menu-wrapper {
+    width: 185px;
+    height: 590px;
+  }
+}
+
+@media screen and (max-width: 1199px) {
+  .layout-body {
+    padding-left: 160px;
+  }
+  .side-menu-wrapper {
+    width: 150px;
+    height: 525px;
+  }
+
+  /* dashboard */
+  .recruitment-ratio-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .company-logo {
+    left: 0;
+  }
+  .single-dash-card {
+    flex-direction: column;
+  }
+  .single-dash-card .right-content {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+  .single-dash-card .right-content::before {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+}
+
+@media screen and (max-width: 991px) {
+  /* auth css */
+  .auth-wrapper-page {
+    height: auto;
+  }
+  .forget-modal-body {
+    max-width: 375px !important;
+  }
+
+  /* job-summary */
+  .job-summary-apply-btn {
+    margin-bottom: 22px;
+    margin-top: 30px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  /* overlay */
+  .main-overlay {
+    display: none;
+  }
+  /* table */
+  .table-card-heading p,
+  .form-card-heading p {
+    font-size: 12px;
+  }
+  /* auth css */
+  .auth-footer-list li > a,
+  .auth-footer-list li > a:hover,
+  .auth-footer-list li > a:focus {
+    margin-left: 20px;
+  }
+  .forget-modal-pin-form {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  /* modal */
+  .modal-dialog {
+    max-width: 375px !important;
+  }
+
+  /* auth css */
+  .auth-login-inner-wrapper {
+    max-width: 400px !important;
+  }
+  .forget-modal-body {
+    max-width: 300px !important;
+  }
+  .forget-modal-pin-form input {
+    margin-bottom: 15px;
+  }
+}
+
+@media screen and (max-width: 445px) {
+  /* modal */
+  .modal-dialog {
+    max-width: 450px;
+  }
+
+  /* auth css */
+  .auth-login-inner-wrapper {
+    max-width: 300px !important;
+  }
+  .forget-modal-body {
+    max-width: 300px !important;
+  }
+}
+
+@media screen and (max-width: 399px) {
+  /* modal */
+  .modal-dialog {
+    max-width: 300px !important;
+  }
+  .forget-modal-body {
+    max-width: 250px !important;
+  }
+  .forget-modal-pin-form {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media screen and (max-width: 320px) {
+}

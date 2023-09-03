@@ -1,0 +1,64 @@
+.payroll-elements-rules .table-card-body {
+  margin: 0;
+}
+.payroll-elements-rules .table-card-head-right .search-input {
+  width: 300px;
+}
+
+.payroll-elements-table .table-card-styled .table thead tr th {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
+}
+.payroll-elements-table .table-card-styled .table tbody tr td {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.payroll-element-modal .modal-body2 {
+  padding-top: 10px;
+  padding-bottom: 57px;
+  padding-left: 24px;
+  padding-right: 24px;
+  height: 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.payroll-element-modal .modal-body2 label {
+  /* font-size: 14px; */
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 400;
+}
+.payroll-element-modal .modal-body2 h6 {
+  font-weight: 500;
+  /* font-size: 14px; */
+  letter-spacing: -0.01em;
+  margin-top: 8px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.payroll-element-modal .modal-body2 p {
+  /* font-size: 13px; */
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  /* padding-bottom: 5px; */
+  margin-top: 5px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.payroll-element-modal .modalFooter {
+  padding-right: 25px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: right;
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.16);
+}
+.payroll-element-modal .input-field-main label {
+  font-size: 13px;
+}
+.payroll-element-modal .input-field-main .form-container {
+  margin-bottom: 5px;
+}

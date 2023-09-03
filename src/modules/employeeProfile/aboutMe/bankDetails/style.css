@@ -1,0 +1,170 @@
+.bankDetailsCard {
+  width: 100% !important;
+}
+
+.bankDetailsCard .empty-bankInfo {
+  width: 100% !important;
+  min-height: 250px;
+}
+
+.bankCard-title {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--gray700);
+}
+
+.radioClicked .bankRadio,
+.cashRadioClicked .bankRadio {
+  color: var(--success500);
+  height: 18px !important;
+  width: 18px !important;
+  margin-right: 6px;
+}
+
+.radioClicked .bankRadioLabel,
+.cashRadioClicked .bankRadioLabel {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--success700);
+}
+
+.radioNotClicked .bankRadio,
+.cashRadioNotClicked .bankRadio {
+  color: var(--gray900);
+  height: 18px !important;
+  width: 18px !important;
+  margin-right: 6px;
+}
+
+.radioNotClicked .bankRadioLabel,
+.cashRadioNotClicked .bankRadioLabel {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--gray500);
+}
+
+.sub-label {
+  margin-top: 15px;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 21px;
+  color: var(--gray900);
+}
+
+.instruction-bank {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: #f78c12;
+  margin: 15px 0 0;
+}
+
+.bankForm {
+  margin-top: 51px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  color: rgba(53, 53, 53, 0.6);
+}
+.bank-about-me-form .form-container {
+  width: 295px !important;
+}
+
+.bankDetailsInfo.bigBankNameIcon .MuiAvatar-root {
+  height: 93px;
+  width: 93px;
+  background: #f2f2f7;
+  margin-right: 24px;
+}
+
+.bankDetailsInfo.bigBankNameIcon .MuiAvatar-root .MuiSvgIcon-root {
+  height: 60px;
+  width: 60px;
+  color: var(--gray900);
+}
+
+.accNameIcon .MuiAvatar-root {
+  height: 30px;
+  width: 30px;
+  background: var(--gray100);
+  margin-right: 0px;
+}
+
+.accNameIcon .MuiAvatar-root .MuiSvgIcon-root {
+  color: var(--gray900);
+}
+
+.bankName {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray900);
+}
+.branchName,
+.routingNo,
+.swiftCode {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray500);
+}
+.swiftCode span,
+.routingNo span {
+  font-weight: 600;
+  color: var(--gray500) !important;
+}
+.digitalBankName {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--gray900);
+}
+.bankNo {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray900);
+}
+
+.bankNo-title {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray500);
+}
+
+.confirmation-instruction {
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: justify;
+  color: var(--gray900);
+}
+.bankDetailsCard .empty-bankInfo p {
+  font-size: 12px;
+  margin-top: 5px;
+}
+.bank-btn .btn-disable:disabled,
+.bank-btn .btn-disable[disabled] {
+  background-color: #f2f2f7;
+  color: rgba(0, 0, 0, 0.2);
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+.bank-btn .btn-green,
+.bank-btn .btn-green:hover {
+  text-transform: uppercase;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 16px;
+  border-radius: 8px;
+}
+.bankDetailsCard .creat-job-modal .modal-content {
+  background: #fff !important;
+}

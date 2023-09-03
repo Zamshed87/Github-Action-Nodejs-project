@@ -1,0 +1,26 @@
+.modalBody .input-field-main .form-container {
+  margin-bottom: 5px;
+}
+.modalBody .input-field-main label {
+  font-size: 13px;
+}
+.payroll-group-table table tbody tr td {
+  font-style : normal;
+  font-weight: 500;
+  font-size  : 16px;
+  line-height: 19px;
+  /* identical to box height */
+
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.payroll-group-table table thead tr th {
+  font-style    : normal;
+  font-weight   : normal;
+  font-size     : 14px;
+  line-height   : 16px;
+  letter-spacing: 0.2px;
+
+  color: rgba(0, 0, 0, 0.6);
+}

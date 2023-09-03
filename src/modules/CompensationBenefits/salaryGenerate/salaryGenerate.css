@@ -1,0 +1,150 @@
+.salary-generate-page{
+  margin-top: 44px;
+}
+.generate-salary-form .input-field-main .form-container {
+  margin-bottom: 5px;
+}
+.loan-Approval-wrapper h3 {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.loan-Approval-wrapper h6 {
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-left: 15px;
+}
+.generate-salary-form {
+  padding: 10px 1.5rem;
+
+  /* box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08),
+    0px 1px 5px rgba(0, 0, 0, 0.05); */
+}
+.generate-salary-form-container {
+  border: 1px solid;
+  border-color: #d6d6d6;
+}
+
+.salary-generate-btn button {
+  background: #e4f8dd;
+  border: 2px solid #34a853;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  padding: 5px;
+  color: #34a853;
+  display: block;
+  width: 100%;
+}
+.generate-salary-form .form-container {
+  margin-bottom: 24px;
+}
+.loan-Approval-wrapper .chips {
+  padding: 5px 5px;
+}
+
+.select-business-unit-ddl {
+  margin-left: 1em;
+  color: rgba(0, 0, 0, 0.5);
+  padding: 0.3em 1em;
+  background-color: white;
+  border-color: #b9b9b9;
+  border-radius: 0.2em;
+}
+
+.salary-generate-table {
+  font-size: 12px;
+}
+.salary-generate-table > thead > tr > th > p {
+  font-size: 12px;
+  color: #505050;
+  padding: 0.1em 0;
+}
+
+.salary-generate-table > tbody > tr > td {
+  color: #566165;
+}
+
+.salary-generate-table > tbody > tr:hover {
+  box-shadow: 0.1em 0.1em 0.1em 0.1em rgb(219, 219, 219);
+}
+/*  */
+/*  */
+.salary-generate-page .search-business-unit-container {
+  padding: 0.8em 0 1.3em 0;
+  width: 100%;
+}
+
+/* 
+ /* */
+/*  */
+
+.salary-generate-page .salary-generate-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 1em 0;
+  margin: 0.8em 0 0.6em 0;
+}
+
+.salary-generate-page .salary-generate-container > div {
+  display: flex;
+  align-items: center;
+  margin-right: 14px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.salary-generate-page .business-unit-select {
+  width: 190px;
+  height: 32px;
+}
+
+.salary-generate-page .salary-generate-description-input {
+  width: 300px;
+}
+
+.salary-generate-page .salary-generate-date-input {
+  width: 190px;
+}
+
+/* card table style */
+.salary-generate-table .success-status-button {
+  padding: 0.1em 0.5em;
+  background-color: #e4f8dd;
+  color: #229a16;
+  border-radius: 0.2em;
+  width: fit-content;
+  border: none;
+  font-size: 12px;
+}
+.salary-generate-table .pending-status-button {
+  padding: 0.1em 0.5em;
+  background-color: #fff5d7;
+  color: #c18f10;
+  border-radius: 0.2em;
+  width: fit-content;
+  border: none;
+  font-size: 12px;
+}
+
+.salary-generate-table .rejected-status-button {
+  padding: 0.1em 0.5em;
+  background-color: #ffdcd7;
+  color: #c14810;
+  border-radius: 0.2em;
+  width: fit-content;
+  border: none;
+  font-size: 12px;
+}

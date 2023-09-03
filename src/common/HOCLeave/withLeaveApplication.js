@@ -1,0 +1,262 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState } from "react";
+import { useEffect } from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { getPeopleDeskAllLanding, PeopleDeskSaasDDL } from "../api";
+import IConfirmModal from "../IConfirmModal";
+import {
+  createLeaveApplication,
+  getEmployeeLeaveBalanceAndHistory,
+} from "./helperAPI";
+import {
+  empMgmtLeaveApplicationDtoColumn,
+  initDataForLeaveApplication,
+  validationSchemaForLeaveApplication,
+} from "./utils";
+
+const withLeaveApplication = (WrappedComponent) => {
+  const HocLeaveApplication = () => {
+    const { userName, intProfileImageUrl, orgId, buId, employeeId, wgId } =
+      useSelector((state) => state?.auth?.profileData, shallowEqual);
+    // states
+    const [allData, setAllData] = useState([]);
+    const [singleData, setSingleData] = useState("");
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [imageFile, setImageFile] = useState("");
+    const [leaveHistoryData, setLeaveHistoryData] = useState([]);
+    const [viewModal, setViewModal] = useState(false);
+    const [employeeInfo, setEmployeeInfo] = useState([]);
+    const [isEdit, setIsEdit] = useState(false);
+    const [isFilter, setIsFilter] = useState(false);
+    const [employeeDDL, setEmployeeDDL] = useState([]);
+    const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
+    const [leaveBalanceData, setLeaveBalanceData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [loadingForInfo, setLoadingForInfo] = useState(false);
+
+    const open = Boolean(anchorEl);
+    const id = open ? "simple-popover" : undefined;
+    const handleOpen = () => {
+      setViewModal(false);
+    };
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    // for view Modal
+    const handleViewClose = () => setViewModal(false);
+
+    const getEmpInfoDetails = (empId) => {
+      getPeopleDeskAllLanding(
+        "EmployeeBasicById",
+        orgId,
+        buId,
+        empId ? empId : employeeId,
+        setEmployeeInfo,
+        null,
+        setLoadingForInfo,
+        null,
+        null,
+        wgId
+      );
+    };
+
+    const demoPopupForDelete = (item, values) => {
+      const payload = {
+        partId: 3,
+        leaveApplicationId: item?.intApplicationId,
+        leaveTypeId: item?.LeaveTypeId,
+        employeeId: employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        applicationDate: item?.ApplicationDate,
+        appliedFromDate: item?.AppliedFromDate,
+        appliedToDate: item?.AppliedToDate,
+        documentFile: item?.DocumentFileUrl ? item?.DocumentFileUrl : 0,
+        leaveReason: item?.Reason,
+        addressDuetoLeave: item?.AddressDuetoLeave,
+        insertBy: employeeId,
+        workplaceGroupId: wgId,
+      };
+
+      const callback = () => {
+        getData(values?.employee?.value, values?.year?.value);
+      };
+
+      let confirmObject = {
+        closeOnClickOutside: false,
+        message: "Are you want to sure you delete your leave?",
+        yesAlertFunc: () => {
+          createLeaveApplication(payload, setLoading, callback);
+        },
+        noAlertFunc: () => {
+          //   history.push("/components/dialogs")
+        },
+      };
+      IConfirmModal(confirmObject);
+    };
+
+    const demoPopup = (action, values, cb) => {
+      const callback = () => {
+        getData(values?.employee?.value, values?.year?.value);
+        setSingleData("");
+        setIsEdit(false);
+        cb();
+        setImageFile("");
+      };
+      const payload = {
+        partId: singleData?.intApplicationId ? 2 : 1,
+        leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
+        leaveTypeId: values?.leaveType?.value,
+        employeeId: values?.employee ? values?.employee?.value : employeeId,
+        accountId: orgId,
+        businessUnitId: buId,
+        applicationDate: new Date(),
+        appliedFromDate: values?.fromDate,
+        appliedToDate: values?.toDate,
+        documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
+        leaveReason: values?.reason,
+        addressDuetoLeave: values?.location,
+        insertBy: employeeId,
+        workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
+      };
+
+      let confirmObject = {
+        closeOnClickOutside: false,
+        message: `Do you want to ${action} ?`,
+        yesAlertFunc: () => {
+          if (values?.employee) {
+            createLeaveApplication(payload, setLoading, callback);
+          } else {
+            createLeaveApplication(payload, setLoading, callback);
+          }
+        },
+        noAlertFunc: () => {},
+      };
+      IConfirmModal(confirmObject);
+    };
+
+    const saveHandler = (values, cb) => {
+      demoPopup("Apply", values, cb);
+    };
+
+    const searchData = (keywords, allData, setLeaveHistoryData) => {
+      try {
+        const regex = new RegExp(keywords?.toLowerCase());
+        let newDta = allData?.filter(
+          (item) =>
+            regex.test(item?.LeaveType?.toLowerCase()) ||
+            regex.test(item?.AddressDuetoLeave?.toLowerCase())
+        );
+        setLeaveHistoryData(newDta);
+      } catch {
+        setLeaveHistoryData([]);
+      }
+    };
+
+    const getData = (empId, year) => {
+      PeopleDeskSaasDDL(
+        "EmployeeLeaveType",
+        wgId,
+        buId,
+        setLeaveTypeDDL,
+        "LeaveTypeId",
+        "LeaveType",
+        empId ? empId : employeeId
+      );
+      getEmployeeLeaveBalanceAndHistory(
+        empId ? empId : employeeId,
+        "LeaveHistory",
+        setLeaveHistoryData,
+        setLoading,
+        setAllData,
+        year,
+        buId,
+        wgId
+      );
+      getEmployeeLeaveBalanceAndHistory(
+        empId ? empId : employeeId,
+        "LeaveBalance",
+        setLeaveBalanceData,
+        setLoading,
+        "",
+        year,
+        buId,
+        wgId
+      );
+    };
+
+    useEffect(() => {
+      getData();
+      // getPeopleDeskAllDDL(
+      //   `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      //   "intEmployeeBasicInfoId",
+      //   "strEmployeeName",
+      //   setEmployeeDDL
+      // );
+    }, [wgId]);
+
+    useEffect(() => {
+      getEmpInfoDetails();
+    }, []);
+
+    return (
+      <WrappedComponent
+        propjObj={{
+          allData,
+          singleData,
+          anchorEl,
+          imageFile,
+          leaveHistoryData,
+          viewModal,
+          employeeInfo,
+          isEdit,
+          isFilter,
+          employeeDDL,
+          leaveTypeDDL,
+          leaveBalanceData,
+          loading,
+          progress,
+          loadingForInfo,
+          open,
+          id,
+          handleOpen,
+          handleClick,
+          handleViewClose,
+          getEmpInfoDetails,
+          demoPopupForDelete,
+          demoPopup,
+          saveHandler,
+          searchData,
+          getData,
+          setAnchorEl,
+          setSingleData,
+          setImageFile,
+          setViewModal,
+          setIsEdit,
+          setIsFilter,
+          setEmployeeDDL,
+          setLeaveTypeDDL,
+          setLeaveBalanceData,
+          setLoading,
+          setProgress,
+          setLoadingForInfo,
+          setLeaveHistoryData,
+          userName,
+          intProfileImageUrl,
+          empMgmtLeaveApplicationDtoColumn,
+          initDataForLeaveApplication,
+          validationSchemaForLeaveApplication,
+          employeeId,
+          setEmployeeInfo,
+          orgId,
+          buId,
+          setAllData,
+          wgId,
+        }}
+      />
+    );
+  };
+  return HocLeaveApplication;
+};
+export default withLeaveApplication;

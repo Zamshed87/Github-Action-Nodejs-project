@@ -1,0 +1,38 @@
+.calendar .employeeInfo .employeeName {
+	font-weight: 500;
+	font-size: 18px;
+	letter-spacing: 0.004em;
+	color: rgba(0, 0, 0, 0.6);
+}
+.calendar .employeeInfo .position,
+.calendar .employeeInfo .department {
+	font-weight: 400;
+	font-size: 14px;
+	letter-spacing: 0.004em;
+	color: rgba(0, 0, 0, 0.6);
+	margin-top: 8px;
+}
+
+
+.tooltip-table {
+	padding: 40px !important;
+}
+.table thead tr th {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	font-weight: 600 !important;
+	font-size: 12px !important;
+	color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.edit-button {
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
+  border-radius: 100px;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s;
+  margin-right: 15px;
+}

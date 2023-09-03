@@ -1,0 +1,125 @@
+.container-about-info .card-about-info-main .card-about-info {
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+}
+
+.card-about-info .add-image-about-info-card {
+  height: 140px;
+  max-width: 140px;
+}
+.add-image-about-info-card.height-auto {
+  height: auto;
+}
+
+.card-about-info .add-image-about-info-card .label-add-image {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.label-add-image {
+  border-radius: 4px;
+}
+.card-about-info .add-image-about-info-card .label-add-image .box-add-image {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  border: 1px dashed rgba(0, 0, 0, 0.4);
+  position: relative;
+  cursor: pointer;
+}
+.card-about-info
+  .add-image-about-info-card
+  .label-add-image
+  .box-add-image
+  .info-add-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.card-about-info
+  .add-image-about-info-card
+  .label-add-image
+  .box-add-image
+  .info-add-image
+  .add-icon {
+  width: 25px;
+  height: 25px;
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-about-info
+  .add-image-about-info-card
+  .label-add-image
+  .box-add-image
+  .info-add-image
+  .text-add-image {
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 19px;
+  text-align: center;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.card-about-info .content-about-info-card {
+  padding-left: 24px;
+  flex-grow: 1;
+}
+
+.card-about-info .content-about-info-card .single-info {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+.accordion-main {
+  display: none;
+}
+.active-accordion-main {
+  display: block;
+}
+
+.form-header {
+  margin: 30px 0px;
+}
+.form-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card-about-info-main .accordion-body .left ol li:nth-last-child(1) {
+  margin-bottom: 0 !important;
+}
+
+/* Bank Details Part Css */
+.bankDetailsCard {
+  width: 100% !important;
+}
+
+.bankDetailsCard .empty-bankInfo {
+  width: 100% !important;
+  min-height: 326px;
+}
+.addBankInfo .edit-icon-btn {
+  background: #ffffff;
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  box-sizing: border-box;
+  box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.12);
+  width: 30px;
+  height: 30px;
+}
+.bankDetailsInfo.bigBankNameIcon .MuiAvatar-root {
+  height: 80px;
+  width: 80px;
+  background: #f2f2f7;
+  margin-right: 24px;
+}

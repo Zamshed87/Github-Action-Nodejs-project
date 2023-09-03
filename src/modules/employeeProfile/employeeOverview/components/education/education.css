@@ -1,0 +1,42 @@
+.education .item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 33px;
+}
+.education .item .item-info {
+  margin-top: -23px;
+}
+.education .item .item-info h6 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: -23px;
+  margin-bottom: -23px;
+}
+.education .item .item-info p {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.2px;
+}
+.btn-disable:disabled,
+.btn-disable[disabled] {
+  background-color: #f2f2f7;
+  color: rgba(0, 0, 0, 0.2);
+  border-color: #f2f2f7;
+}
+.education .MuiAvatar-root {
+  height: 40px;
+  width: 40px;
+  background: rgba(242, 242, 247, 1);
+  margin-right: 16px;
+  margin-left: -4px;
+}
+.education .MuiAvatar-root .MuiSvgIcon-root {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.attachment-upload .image-upload-box.with-img{
+  max-width: 100% !important;
+  display: flex;
+  justify-content: flex-start;
+}

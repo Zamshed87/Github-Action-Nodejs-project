@@ -1,0 +1,18 @@
+.encashment-wrapper .actionIcon .muiIconHover {
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  height         : 25px;
+  width          : 25px;
+  border-radius  : 100px;
+  background     : transparent;
+  cursor         : pointer;
+}
+
+.encashment-wrapper .actionIcon .muiIconHover.success:hover {
+  background: #E7FEDE;
+}
+
+.encashment-wrapper .actionIcon .muiIconHover.danger:hover {
+  background: #FFE3E3;
+}

@@ -1,0 +1,40 @@
+.attApproval-wrapper .actionIcon .muiIconHover {
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  height         : 25px;
+  width          : 25px;
+  border-radius  : 100px;
+  background     : transparent;
+  cursor         : pointer;
+}
+
+
+.attApproval-wrapper .actionIcon .muiIconHover.success:hover {
+  background: #E7FEDE;
+}
+
+.attApproval-wrapper .actionIcon .muiIconHover.danger:hover {
+  background: #FFE3E3;
+}
+
+.tooltip-title {
+  font-weight   : 600;
+  font-size     : 12px;
+  line-height   : 16px;
+  display       : flex;
+  align-items   : center;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.tooltip-subTitle {
+  margin-top    : 8px;
+  font-weight   : 500;
+  font-size     : 12px;
+  line-height   : 16px;
+  display       : flex;
+  align-items   : center;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}

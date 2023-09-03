@@ -1,0 +1,132 @@
+.businessUnit-wrapper .table-card-body .table-thead {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 30px 0 5px 0;
+}
+
+.businessUnit-wrapper .table-card-body .table-thead .table-th {
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+}
+
+.businessUnit-wrapper .table-card-body {
+  width: 100%;
+}
+
+.businessUnit-wrapper .table-card-body .table-tbody .row-table-single-item {
+  margin: 10px 0 0 0;
+  padding: 20px 0 20px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  transition: 0.3s;
+  justify-content: space-between;
+}
+
+.businessUnit-wrapper
+  .table-card-body
+  .table-tbody
+  .row-table-single-item:first-child {
+  margin: 8px 0 0 0;
+}
+
+.businessUnit-wrapper
+  .table-card-body
+  .table-tbody
+  .row-table-single-item:hover {
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+}
+
+.businessUnit-wrapper .up {
+  position: relative;
+  top: -5px;
+  left: 0;
+}
+
+.businessUnit-wrapper .down {
+  position: relative;
+  top: 2px;
+  left: -28px;
+}
+/* modal-body-type-two */
+.modal-body-type-two {
+  padding-top: 0px;
+  padding-left: 10px;
+}
+.modal-body-type-two .modal-body-top {
+  padding-bottom: 10px;
+}
+
+
+.modal-body-type-two .modal-body-main {
+  padding: 5px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+/* modal-footer-type-two */
+.modal-footer-type-two {
+  width: 100%;
+  padding: 0px 25px;
+}
+
+.modal-footer-type-two .footer-btn {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: 0.15px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 575px) {
+  .businessUnit-wrapper .mr3 {
+    padding-left: 0px !important;
+  }
+
+  .businessUnit-wrapper .table-card-body .table-thead .table-th {
+    display: flex;
+  }
+
+  .businessUnit-wrapper .down {
+    left: -24px;
+  }
+
+  .businessUnit-wrapper .table-card-heading .form-container {
+    margin-bottom: 15px;
+    margin-top: 5px;
+  }
+
+  .businessUnit-wrapper .table-card-head-right {
+    flex-wrap: wrap;
+  }
+
+  .businessUnit-wrapper .table-card-heading,
+  .form-card-heading {
+    flex-wrap: wrap;
+  }
+
+  .modal-body-type-two .modal-body-top img {
+    max-width: 55px;
+    max-height: 55px;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .businessUnit-wrapper .mr3 {
+    padding-left: 0px !important;
+  }
+
+  .businessUnit-wrapper .table-card-body .table-thead .table-th {
+    display: flex;
+  }
+
+  .businessUnit-wrapper .down {
+    left: -24px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+}

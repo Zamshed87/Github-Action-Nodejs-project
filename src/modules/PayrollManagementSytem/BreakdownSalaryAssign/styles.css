@@ -1,0 +1,13 @@
+.breakdown-salary-assign-page-wrapper .table-card-heading {
+  padding: 0.5em 0 1em 0;
+  border-bottom: 1px solid #eaecf0;
+}
+
+.breakdown-salary-assign-page-wrapper
+  .primary-element-assign-form-input-wrapper {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

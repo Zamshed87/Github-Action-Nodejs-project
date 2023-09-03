@@ -1,0 +1,144 @@
+.outline_btn,
+.outline_btn:hover,
+.outline_btn:focus {
+  border: 2px solid #229A16 !important;
+  color: #229A16 !important;
+  background: transparent !important;
+}
+
+.bg_transparent_Button {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: #229A16 !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+.hiringPipeling_comment_title_author {
+  font-family: var(--robotoFont);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.87);
+}
+.hiringPipeling_comment_title_publish_time {
+  /* font-family: "Inter"; */
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.35) !important;
+  margin-left: 16px;
+}
+.hiringPipeling_comment_content {
+  font-family: var(--robotoFont);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  margin-top: 17px;
+}
+
+/* job details css */
+.jobDetailsWrapperMediaQuery {
+  margin: 50px 150px;
+}
+
+.sub_heading {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.current_status {
+  background-color: #229A16;
+  border: 1px solid #34a853;
+  width: 32px;
+  height: 14px;
+  color: white !important;
+  border-radius: 5px;
+  padding: 3px 7px;
+}
+
+.sub_heading_content {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14px;
+  letter-spacing: -0.36px;
+}
+.w_250px {
+  width: 200px;
+}
+.pipeline {
+  margin-top: 30px;
+  /* margin-top: 45px; */
+}
+.right_point {
+  clip-path: polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%);
+  height: 35px;
+}
+
+.right_arrow {
+  clip-path: polygon(95% 0%, 100% 50%, 95% 100%, 0% 100%, 5% 50%, 0% 0%);
+  height: 35px;
+}
+
+.right_point_rev {
+  clip-path: polygon(100% 0, 100% 100%, 0% 100%, 5% 50%, 0% 0%);
+  height: 35px;
+}
+
+.pipeline_status_name {
+  position: absolute;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  /* color: black !important; */
+  top: 50%;
+  left: 50%;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+}
+
+.pipeline_active {
+  background-color: #229A16;
+}
+.pipeline_active span {
+  color: white !important;
+}
+
+.pipeline_visited {
+  background-color: #697386 !important;
+}
+.pipeline_visited span {
+  color: white !important;
+}
+
+.pipeline_not_visited {
+  background-color: #697386 !important;
+}
+.pipeline_not_visited::after {
+  content: " ";
+  background-color: white;
+  width: 99%;
+  height: 33px;
+}
+.pipeline_not_visited span {
+  color: black !important;
+}
+
+.outline_btn {
+  border: 2px solid #229A16 !important;
+  color: #229A16 !important;
+  background: transparent !important;
+}

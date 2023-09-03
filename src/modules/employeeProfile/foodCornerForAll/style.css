@@ -1,0 +1,23 @@
+.food-corner .leave-movement-FormCard .card{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.food-corner .leave-movement-FormCard .card p{
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 400;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.food-corner .css-1hbvpl3-MuiSvgIcon-root{
+  width: 18px;
+  height: 18px;
+}
+.food-corner .css-11zohuh-MuiSvgIcon-root{
+  width: 18px;
+  height: 18px;
+}
+.food-corner .css-j204z7-MuiFormControlLabel-root .MuiFormControlLabel-label{
+  font-size: 12px;
+  font-weight: 500;
+}

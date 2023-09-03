@@ -1,0 +1,357 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState } from "react";
+import { Formik, Form } from "formik";
+import { shallowEqual, useSelector } from "react-redux";
+import FormikInput from "../../../../../common/FormikInput";
+import Loading from "../../../../../common/loading/Loading";
+import { ControlPoint } from "@mui/icons-material";
+import ActionMenu from "../../../../../common/ActionMenu";
+import { EditOutlined, DeleteOutlined } from "@mui/icons-material";
+import SchoolIcon from "@mui/icons-material/School";
+import { Avatar } from "@material-ui/core";
+import LanguageIcon from "@mui/icons-material/Language";
+import FormikCheckBox from "./../../../../../common/FormikCheckbox";
+import { greenColor } from "./../../../../../utility/customColor";
+import FormikSelect from "./../../../../../common/FormikSelect";
+import { customStylesLarge } from "./../../../../../utility/selectCustomStyle";
+import DropDownDatePicker from "./../../../../../common/DropDownDatePicker";
+import FileUploadField from "./../../../../../common/FileUploadField";
+
+import "./education.css";
+
+const initData = {
+  instituteName: "",
+  foreign: "",
+  degree: "",
+  fieldOfStudy: "",
+  result: "",
+  scale: "",
+  startYear: "",
+  startMonth: "",
+  startDay: "",
+  finishYear: "",
+  finishMonth: "",
+  finishDay: "",
+};
+
+function Education({ index, tabIndex }) {
+  const [rowDto, setRowDto] = useState([
+    // {
+    // 	id: 1,
+    // 	instituteName: "University of Michigan",
+    // 	foreign: true,
+    // 	degree: "M.Sc",
+    // 	fieldOfStudy: "Humna Computer Interaction",
+    // 	result: 3.34,
+    // 	scale: 4.0,
+    // 	startYear: 2018,
+    // 	startMonth: 5,
+    // 	startDay: 23,
+    // 	finishYear: 2021,
+    // 	finishMonth: 3,
+    // 	finishDay: 23,
+    // },
+  ]);
+  const [isForm, setIsForm] = useState(false);
+  const [id, setId] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const saveHandler = (values, cb) => {};
+
+  const eventHandler = (values, cb) => {
+    setIsForm(false);
+    setRowDto([
+      ...rowDto,
+      {
+        id: rowDto?.length + 1,
+        instituteName: values?.instituteName,
+        degree: values?.degree,
+        fieldOfStudy: values?.fieldOfStudy,
+        result: values?.result,
+        scale: values?.scale,
+        startYear: values?.startYear,
+        startMonth: values?.startMonth,
+        startDay: values?.startDay,
+        finishYear: values?.finishYear,
+        finishMonth: values?.finishMonth,
+        finishDay: values?.finishDay,
+      },
+    ]);
+  };
+
+
+  return (
+    index === tabIndex && (
+      <>
+        <Formik
+          enableReinitialize={true}
+          initialValues={initData}
+          onSubmit={(values, { setSubmitting, resetForm }) => {
+            saveHandler(values, () => {
+              resetForm(initData);
+            });
+          }}
+        >
+          {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid }) => (
+            <>
+              <Form>
+                {loading && <Loading />}
+
+                <div className="common-overview-part">
+                  <div className="common-overview-content">
+                    <div className="education">
+                      <div className={isForm ? "d-none" : "d-block"}>
+                        <h5>Education </h5>
+                        <div className="d-flex align-items-center" style={{ marginBottom: "35px", cursor: "pointer" }} onClick={() => setIsForm(true)}>
+                          <div className="d-flex align-items-center" style={{ marginTop: "-10px" }}>
+                            <ControlPoint sx={{ color: "#34A853" }} />
+                            <p>Add your education</p>
+                          </div>
+                        </div>
+                      </div>
+                      {rowDto?.map((item) => (
+                        <div className="item">
+                          <div className="d-flex align-items-center">
+                            <Avatar>
+                              <SchoolIcon sx={{ fontSize: "1.1rem" }} />
+                            </Avatar>
+                            <div className="item-info">
+                              <h6>{item?.instituteName}</h6>
+                              <div className="d-flex align-items-center">
+                                <p className="mr-3">
+                                  {item?.degree.label}, {item?.fieldOfStudy}
+                                </p>
+                                <p>
+                                  {item?.result}/{item?.scale}
+                                </p>
+                              </div>
+                              <p style={{ marginTop: "10px" }}>{` ${item?.startYear.label} - ${item?.finishYear.label} ${item?.foreign ? "(foregin)" : ""}`}</p>
+                            </div>
+                          </div>
+                          <ActionMenu
+                            color={"rgba(0, 0, 0, 0.6)"}
+                            options={[
+                              {
+                                value: 1,
+                                label: "Edit",
+                                icon: <EditOutlined sx={{ marginRight: "10px" }} />,
+                                onClick: () => {
+                                  setIsForm(true);
+                                },
+                              },
+                              {
+                                value: 2,
+                                label: "Delete",
+                                icon: <DeleteOutlined sx={{ marginRight: "10px" }} />,
+                                onClick: () => {
+                                  // setRowDto([]);
+                                  setRowDto(rowDto?.filter((data) => data.id !== item.id));
+                                },
+                              },
+                            ]}
+                          />
+                        </div>
+                      ))}
+                      {isForm && (
+                        <>
+                          <h5>Education</h5>
+                          <div className="d-flex align-items-center" style={{ marginTop: "-20px" }}>
+                            <FormikCheckBox
+                              styleObj={{
+                                color: greenColor,
+                              }}
+                              checked={values?.foreign}
+                              onChange={(e) => {
+                                setFieldValue("foreign", e.target.checked);
+                              }}
+                            />
+                            <h5
+                              style={{
+                                marginLeft: "-10px",
+                                marginTop: "23px",
+                              }}
+                            >
+                              Foreign
+                            </h5>
+                          </div>
+                          <div style={{ marginBottom: "40px", cursor: "pointer" }}>
+                            <FormikInput
+                              label="Institute Name"
+                              value={values?.instituteName}
+                              name="instituteName"
+                              type="text"
+                              className="form-control"
+                              errors={errors}
+                              touched={touched}
+                              onChange={(e) => {
+                                setFieldValue("instituteName", e.target.value);
+                              }}
+                            />
+                            <FormikSelect
+                              name="Degree"
+                              options={[
+                                { value: 1, label: "B.Sc" },
+                                { value: 2, label: "M.Sc" },
+                              ]}
+                              value={values?.degree}
+                              //   label="Country"
+                              onChange={(valueOption) => {
+                                setFieldValue("degree", valueOption);
+                              }}
+                              placeholder="Degree"
+                              styles={customStylesLarge}
+                              errors={errors}
+                              touched={touched}
+                              isDisabled={false}
+                            />
+                            <FormikInput
+                              label="Field of study"
+                              value={values?.fieldOfStudy}
+                              name="fieldOfStudy"
+                              type="text"
+                              className="form-control"
+                              errors={errors}
+                              touched={touched}
+                              onChange={(e) => {
+                                setFieldValue("fieldOfStudy", e.target.value);
+                              }}
+                            />
+                            <FormikInput
+                              label="Result/CGPA"
+                              value={values?.result}
+                              name="result"
+                              type="number"
+                              className="form-control"
+                              errors={errors}
+                              touched={touched}
+                              onChange={(e) => {
+                                setFieldValue("result", e.target.value);
+                              }}
+                            />
+                            <FormikInput
+                              label="Scale(Out of)"
+                              value={values?.scale}
+                              name="scale"
+                              type="number"
+                              className="form-control"
+                              errors={errors}
+                              touched={touched}
+                              onChange={(e) => {
+                                setFieldValue("scale", e.target.value);
+                              }}
+                            />
+                            <div className="input-field">
+                              <h4 style={{ padding: "10px" }}>From Date</h4>
+                              <DropDownDatePicker
+                                yearType="startYear"
+                                monthType="startMonth"
+                                dayType="startDay"
+                                values={values}
+                                setFieldValue={setFieldValue}
+                                errors={errors}
+                                touched={touched}
+                              />
+                            </div>
+                            <div className="input-field">
+                              <h4 style={{ padding: "10px" }}>To Date</h4>
+                              <DropDownDatePicker
+                                yearType="finishYear"
+                                monthType="finishMonth"
+                                dayType="finishDay"
+                                values={values}
+                                setFieldValue={setFieldValue}
+                                errors={errors}
+                                touched={touched}
+                              />
+                            </div>
+                            <div className="input-field my-2">
+                              <h4 className="mb-2">Upload Certificate</h4>
+                              <FileUploadField />
+                            </div>
+                            <div
+                              className="d-flex justify-content-end"
+                              style={{
+                                borderTop: "1px solid rgba(0, 0, 0, 0.12)",
+                                marginTop: "24px",
+                                paddingTop: "16px",
+                              }}
+                            >
+                              <button
+                                className="btn btn-green "
+                                type="button"
+                                style={{
+                                  marginRight: "11px",
+                                  color: "rgba(0, 0, 0, 0.9)",
+                                  backgroundColor: "#F2F2F7",
+                                  borderColor: "rgba(242, 242, 247, 1)",
+                                }}
+                                onClick={() => setIsForm(false)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="btn btn-green btn-disable"
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  eventHandler(values);
+                                }}
+                                disabled={
+                                  !values.instituteName ||
+                                  !values.degree ||
+                                  !values.fieldOfStudy ||
+                                  !values.result ||
+                                  !values.scale ||
+                                  !values.startYear ||
+                                  !values.startMonth ||
+                                  !values.startDay ||
+                                  !values.finishYear ||
+                                  !values.finishMonth ||
+                                  !values.finishDay
+                                    ? true
+                                    : false
+                                }
+                              >
+                                Save
+                              </button>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Form>
+            </>
+          )}
+        </Formik>
+      </>
+    )
+  );
+}
+
+export default Education;
+
+/*
+
+  isForeign: true,
+  instituteName: "",
+  degree: "",
+  fieldOfStudy: "",
+  cgpa: "",
+  outOf: "",
+
+
+  "EducationAutoId": 1,
+  "IsForeign": false,
+  "InstituteName": "AIUB",
+  "Degree": "BSc.",
+  "FieldOfStudy": "CSE",
+  "CGPA": "3.75",
+  "rOutOf": "4.00",
+  "StartDate": "2017-01-01T00:00:00",
+  "EndDate": "2021-11-01T00:00:00",
+  "FileUrl": null,
+  "Status": true
+
+*/

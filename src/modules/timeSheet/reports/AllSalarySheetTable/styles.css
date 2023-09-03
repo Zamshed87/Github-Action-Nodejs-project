@@ -1,0 +1,33 @@
+.attendence-report .test-table-main .scrollable-table-sm {
+  overflow-y: hidden;
+}
+
+.attendence-report .test-table-main .table-bordered th {
+  text-align: center;
+  border: 1px solid #dee2e6;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  /* line-height: 9px; */
+  color: rgba(0, 0, 0, 0.7);
+}
+.attendence-report .test-table-main .table-bordered td {
+  border: 1px solid #dee2e6;
+}
+.attendence-report .test-table-main .table-bordered th.rotate {
+  transform: rotate(-90deg);
+  padding: 0.75rem 0.75rem 0.75rem 0;
+  height: 150px;
+}
+
+.attendence-report .test-table-main .table-bordered tr:nth-child(2) th {
+  vertical-align: top;
+}
+.attendence-report .test-table-main .table-bordered tr:nth-child(2) th.rotate {
+  vertical-align: middle;
+}
+.attendence-report .test-table-main .table-bordered tr:first-child th:last-child.rotate {
+  transform: none;
+  padding: 1.5rem;
+}
+  

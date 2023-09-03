@@ -1,0 +1,268 @@
+import React, { useEffect, useState } from "react";
+import { APIUrl } from "../../../../../../../App";
+import FormikCheckBox from "../../../../../../../common/FormikCheckbox";
+import IConfirmModal from "../../../../../../../common/IConfirmModal";
+import Loading from "../../../../../../../common/loading/Loading";
+import { gray200, gray700, gray900, greenColor } from "../../../../../../../utility/customColor";
+import { getEmployeeSalaryInfo, salaryHoldAction } from "../../../helper";
+import DefaultSalary from "./DefaultSalary";
+import profileImg from "../../../../../../../assets/images/profile.jpg";
+import { MovingOutlined } from "@mui/icons-material";
+
+const IFarmerDrawerBody = ({
+  orgId,
+  buId,
+  employeeId,
+  salaryInfoId,
+  setAllData,
+  setSingleData,
+  singleData,
+  payrollElementDDL,
+  defaultPayrollElement,
+  finalPayrollElement,
+  breakDownList,
+  setBreakDownList,
+  policyData,
+  status,
+  defaultSalaryInitData,
+  netGross,
+  totalAmount,
+  finalTotalAmount,
+  setOpenIncrement,
+  setIsOpen,
+
+  // formik
+  rowDtoHandler,
+  resetForm,
+  setFieldValue,
+  values,
+  errors,
+  touched
+}) => {
+  const [loading, setLoading] = useState(false);
+  const [isHoldSalary, setIsHoldSalary] = useState(false);
+
+  let modifyIsHold = singleData[0]?.IsHold === 1 ? true : false;
+
+  useEffect(() => {
+    let obj = {
+      partType: "EmployeeSalaryInfoByEmployeeId",
+      businessUnitId: buId,
+      workplaceGroupId: 0,
+      departmentId: 0,
+      designationId: 0,
+      supervisorId: 0,
+      strStatus: status || "NotAssigned",
+      employeeId: salaryInfoId || 0,
+    };
+    getEmployeeSalaryInfo(
+      setAllData,
+      setSingleData,
+      obj,
+      status || "NotAssigned",
+      setLoading,
+      setIsHoldSalary
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [salaryInfoId, buId]);
+
+  const holdSalaryHandler = (e) => {
+    let confirmObject = {
+      closeOnClickOutside: false,
+      message: `Are your sure?`,
+      yesAlertFunc: () => {
+        const callback = () => {
+          getEmployeeSalaryInfo(setAllData, setSingleData, {
+            partType: "EmployeeSalaryInfoByEmployeeId",
+            businessUnitId: buId,
+            workplaceGroupId: 0,
+            departmentId: 0,
+            designationId: 0,
+            supervisorId: 0,
+            employeeId: singleData[0]?.EmployeeId || 0,
+            strStatus: status || "NotAssigned",
+          }, status || "NotAssigned", setLoading);
+        };
+        salaryHoldAction(
+          e.target.checked,
+          singleData[0]?.EmployeeId,
+          setLoading,
+          callback
+        );
+      },
+      noAlertFunc: () => {
+        setIsHoldSalary(modifyIsHold);
+      },
+    };
+    IConfirmModal(confirmObject);
+  };
+
+  return (
+    <>
+      {loading && <Loading />}
+      {singleData?.length > 0 && (
+        <div className="salary-assaign-drawer">
+          <div className="card-style">
+            <div
+              className="d-flex justify-content-between align-items-center mt-2"
+              style={{
+                paddingBottom: "10px",
+                marginBottom: "10px",
+                borderBottom: `1px solid ${gray200}`
+              }}
+            >
+              <div className="d-flex">
+                <div
+                  style={{
+                    width: singleData > 0 ? singleData && "auto" : "78px",
+                  }}
+                  className={
+                    singleData > 0
+                      ? singleData && "add-image-about-info-card height-auto"
+                      : "add-image-about-info-card"
+                  }
+                >
+                  <label
+                    htmlFor="contained-button-file"
+                    className="label-add-image"
+                  >
+                    {singleData[0]?.ProfileImageUrl ? (
+                      <img
+                        src={`${APIUrl}/Document/DownloadFile?id=${singleData[0]?.ProfileImageUrl}`}
+                        alt=""
+                        height="78px"
+                        width="78px"
+                        style={{ maxHeight: "78px", minWidth: "78px" }}
+                      />
+                    ) : (
+                      <img
+                        src={profileImg}
+                        alt="iBOS"
+                        height="78px"
+                        width="78px"
+                        style={{ maxHeight: "78px", minWidth: "78px" }}
+                      />
+                    )}
+                  </label>
+                </div>
+                <div className="content-about-info-card ml-3">
+                  <div className="d-flex justify-content-between">
+                    <h4 className="name-about-info" style={{ marginBottom: "5px" }}>
+                      {`${singleData[0]?.EmployeeName}  `}
+                      <span style={{ fontWeight: "400", color: gray700 }}>
+                        [{singleData[0]?.EmployeeCode}]
+                      </span>{" "}
+                    </h4>
+                  </div>
+                  <div className="single-info">
+                    <p
+                      className="text-single-info"
+                      style={{ fontWeight: "500", color: gray700 }}
+                    >
+                      <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                        Department -
+                      </small>{" "}
+                      {`${singleData[0]?.DepartmentName}`}
+                    </p>
+                  </div>
+                  <div className="single-info">
+                    <p
+                      className="text-single-info"
+                      style={{ fontWeight: "500", color: gray700 }}
+                    >
+                      <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                        Designation -
+                      </small>{" "}
+                      {singleData[0]?.DesignationName}
+                    </p>
+                  </div>
+                  <div className="single-info">
+                    <p
+                      className="text-single-info"
+                      style={{ fontWeight: "500", color: gray700 }}
+                    >
+                      <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                        Employment Type -
+                      </small>{" "}
+                      {singleData[0]?.strEmploymentType}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <FormikCheckBox
+                  height="15px"
+                  styleObj={{
+                    color: gray900,
+                    checkedColor: greenColor,
+                    padding: "0px 0px 0px 5px",
+                  }}
+                  label={"Hold Salary"}
+                  name="isHoldSalary"
+                  value={isHoldSalary}
+                  checked={isHoldSalary}
+                  onChange={(e) => {
+                    setIsHoldSalary(e.target.checked);
+                    holdSalaryHandler(e);
+                  }}
+                />
+                <div>
+                  <p
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenIncrement(true);
+                      setIsOpen(false);
+                    }}
+                    style={{ color: gray900 }}
+                    className="d-inline-block mt-2 pointer uplaod-para">
+                    <span style={{ fontSize: "12px" }}>
+                      <MovingOutlined
+                        sx={{
+                          marginRight: "5px",
+                          fontSize: "18px",
+                          color: gray900
+                        }}
+                      /> Increment History
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <DefaultSalary
+              propsObj={{
+                singleData,
+                buId,
+                orgId,
+                defaultPayrollElement,
+                finalPayrollElement,
+                breakDownList,
+                setBreakDownList,
+                defaultSalaryInitData,
+                setLoading,
+                setAllData,
+                setSingleData,
+                payrollElementDDL,
+                employeeId,
+                policyData,
+                status,
+                netGross,
+                totalAmount,
+                finalTotalAmount,
+
+                // formik
+                rowDtoHandler,
+                resetForm,
+                setFieldValue,
+                values,
+                errors,
+                touched
+              }}
+            ></DefaultSalary>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default IFarmerDrawerBody;

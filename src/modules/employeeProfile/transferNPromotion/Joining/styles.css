@@ -1,0 +1,20 @@
+.table-colored .heading-row {
+  background-color: "rgba(247, 247, 247, 1)";
+  font-size: "11px";
+  font-weight: "600";
+  color: "var(--gray600)!important";
+  cursor: "pointer";
+}
+
+.table-colored th {
+  background-color: "rgba(247, 247, 247, 1) !important";
+  font-size: "11px";
+  font-weight: "400";
+  color: "var(--gray600)!important";
+  cursor: "pointer";
+}
+
+.table-colored .table-heading {
+  vertical-align: "top";
+  border: "1px solid rgba(0, 0, 0, 0.12)";
+}

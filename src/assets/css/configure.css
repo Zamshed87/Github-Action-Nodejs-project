@@ -1,0 +1,33 @@
+/* job-template */
+.job-template .no-result {
+  margin: 124px auto 0px;
+}
+.job-template .no-result-txt {
+  position: relative;
+  top: -100px;
+}
+.job-template .pointer {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.job-template .jobTemplateWrapper {
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+.job-template .load-more-wrapper {
+  margin: 35px 0 0;
+}
+
+/* singnatory */
+.OfferLetterLoadMoreBtnWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.offer-template .OfferLetterLoadMoreBtnWrapper,
+.signatory-template .OfferLetterLoadMoreBtnWrapper {
+  margin: 48px 0 0;
+}

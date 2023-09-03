@@ -1,0 +1,35 @@
+.leave-approved .heading {
+  padding-top: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.leave-approved .heading h3 {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--gray700);
+}
+
+.leave-approved .actionIcon .muiIconHover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 25px;
+  width: 25px;
+  border-radius: 100px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.leave-approved .actionIcon .muiIconHover.success:hover {
+  background: #e7fede;
+}
+
+.leave-approved .actionIcon .muiIconHover.danger:hover {
+  background: #ffe3e3;
+}
+.mr .form-container {
+  margin-bottom: 0;
+  margin-top: 5px;
+}

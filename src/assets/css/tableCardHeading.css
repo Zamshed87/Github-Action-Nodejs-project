@@ -1,0 +1,8 @@
+.configuration-heading {
+    margin-top: 0;
+}
+
+.configuration-heading .search-input.fixed-width {
+    width: 300px;
+    color: red;
+}
