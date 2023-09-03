@@ -1,6 +1,7 @@
 import moment from "moment";
 import { toast } from "react-toastify";
 import { todayDate } from "../../../../../utility/todayDate";
+import axios from "axios";
 
 export function format_ms(time_ms) {
   let hours = 0;
@@ -30,12 +31,15 @@ export const onCreateCalendarSetupWithValidation = (
   id,
   cb,
   onHide,
-  getPeopleDeskAllLanding,
+  getLanding,
   setRowDto,
   setAllData,
-  createTimeSheetAction,
+  createTimeSheetActionForCalender,
   setLoading,
-  wgId
+  wgId,
+  tableData,
+  deleteRowData,
+  setDeleteRowData
 ) => {
   let demoStartTime = moment(values?.startTime, "HH:mm").subtract(12, "hours");
   let demoEndTime = moment(values?.endTime, "HH:mm").add(12, "hours");
@@ -126,68 +130,88 @@ export const onCreateCalendarSetupWithValidation = (
   //   values?.officeCloseTime
   // )
 
+  let userList = tableData?.map((item) => {
+    return {
+      calendarId: id || 0,
+      calenderName: values?.calendarName || "",
+      intWorkplaceId: item?.intWorkplaceId || 0,
+      strWorkplaceName: item?.strWorkplace || "",
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intCreatedBy: employeeId,
+      intCalenderRowId: item?.intCalenderRowId || 0,
+      isCreate: true,
+      isDelete: false,
+    };
+  });
+
+  let deleteList = deleteRowData?.map((item) => {
+    return {
+      calendarId: id || 0,
+      calenderName: values?.calendarName || "",
+      intWorkplaceId: item?.intWorkplaceId || 0,
+      strWorkplaceName: item?.strWorkplace || "",
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intCreatedBy: employeeId,
+      intCalenderRowId: item?.intCalenderRowId || 0,
+      isCreate: false,
+      isDelete: true,
+    };
+  });
+
+  let editList = [];
+
+  userList.map((itm) => {
+    if (itm?.intCalenderRowId <= 0) {
+      editList.push(itm);
+    }
+  });
+
   const payload = {
-    partType: "Calender",
-    employeeId: employeeId,
-    autoId: id ? id : 0,
-    value: "",
-    IntCreatedBy: employeeId,
+    calenderId: id || 0,
+    strCalenderCode: "",
+    strCalenderName: values?.calendarName || "",
+    dteStartTime: id
+      ? values?.startTime
+      : `${values?.startTime}:00` || "00:00:00",
+    dteExtendedStartTime: id
+      ? values?.allowedStartTime
+      : `${values?.allowedStartTime}:00` || "00:00:00",
+    dteLastStartTime: id
+      ? values?.lastStartTime
+      : `${values?.lastStartTime}:00` || "00:00:00",
+    dteEndTime: id ? values?.endTime : `${values?.endTime}:00` || "00:00:00",
+    numMinWorkHour: +values?.minWork || 0,
+    intAccountId: orgId,
+    intBusinessUnitId: buId,
+    intCreatedBy: employeeId,
+    dteCreatedAt: "2023-08-30T09:23:42.542Z",
+    intUpdatedBy: employeeId,
+    dteUpdatedAt: "2023-08-30T09:23:42.542Z",
     isActive: true,
-    businessUnitId: buId,
-    accountId: orgId,
-    holidayGroupName: "",
-    year: 0,
-    holidayGroupId: 0,
-    holidayName: "",
-    fromDate: todayDate(),
-    toDate: todayDate(),
-    totalDays: 0,
-    calenderCode: "",
-    calendarName: values?.calendarName,
-    startTime: values?.startTime || "00:00:00",
-    extendedStartTime: values?.allowedStartTime || "00:00:00",
-    lastStartTime: values?.lastStartTime || "00:00:00",
-    endTime: values?.endTime || "00:00:00",
-    breakStartTime: values?.breakStartTime || "00:00:00",
-    breakEndTime: values?.breakEndTime || "00:00:00",
-    OfficeStartTime: values?.officeStartTime || "00:00:00",
-    OfficeCloseTime: values?.officeCloseTime || "00:00:00",
+    dteBreakStartTime: id
+      ? values?.breakStartTime
+      : `${values?.breakStartTime}:00` || "00:00:00",
+    dteBreakEndTime: id
+      ? values?.breakEndTime
+      : `${values?.breakEndTime}:00` || "00:00:00",
+    dteOfficeStartTime: id
+      ? values?.officeStartTime
+      : `${values?.officeStartTime}:00` || "00:00:00",
+    dteOfficeCloseTime: id
+      ? values?.officeCloseTime
+      : `${values?.officeCloseTime}:00` || "00:00:00",
     isNightShift: values?.nightShift || false,
-    minWorkHour: +values?.minWork,
-    isConfirm: true,
-    exceptionOffdayName: "",
-    isAlternativeDay: true,
-    exceptionOffdayGroupId: 0,
-    weekOfMonth: "",
-    weekOfMonthId: 0,
-    daysOfWeek: "",
-    daysOfWeekId: 0,
-    remarks: "",
-    rosterGroupName: "",
-    workplaceId: 0,
-    workplaceGroupId: 0,
-    overtimeDate: "2022-05-08T09:13:19.700Z",
-    overtimeHour: 0,
-    reason: "",
+    timeSheetCalenderRows: id ? [...deleteList, ...editList] : userList,
   };
 
   const callback = () => {
     cb();
     onHide();
-    getPeopleDeskAllLanding(
-      "Calender",
-      orgId,
-      buId,
-      "",
-      setRowDto,
-      setAllData,
-      null,
-      null,
-      null,
-      wgId
-    );
+    getLanding();
   };
-  createTimeSheetAction(payload, setLoading, callback);
+  createTimeSheetActionForCalender(payload, setLoading, callback);
 };
 
 // const validateTime = (timeName, theTime, startTime, endTime) => {
@@ -210,3 +234,25 @@ export const onCreateCalendarSetupWithValidation = (
 //   if (duration > 12) return duration - 12;
 //   return duration + 12;
 // };
+
+export const getTimeSheetCalenderById = async (
+  buId,
+  id,
+  setter,
+  setAllData,
+  setLoading
+) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `TimeSheet/GetTimeSheetCalenderById?IntCalenderId=${id}&IntBusinessUnitId=${buId}`
+    );
+    if (res?.data) {
+      setter && setter(res?.data);
+      setAllData && setAllData(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};

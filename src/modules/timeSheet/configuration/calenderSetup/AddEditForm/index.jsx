@@ -5,12 +5,23 @@ import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
-import { getPeopleDeskAllLanding } from "../../../../../common/api";
+import {
+  getPeopleDeskAllDDL,
+  getPeopleDeskAllLanding,
+} from "../../../../../common/api";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import FormikInput from "../../../../../common/FormikInput";
 import { greenColor } from "../../../../../utility/customColor";
-import { createTimeSheetAction } from "../../../helper";
-import { onCreateCalendarSetupWithValidation } from "./helper";
+import { createTimeSheetActionForCalender } from "../../../helper";
+import {
+  getTimeSheetCalenderById,
+  onCreateCalendarSetupWithValidation,
+} from "./helper";
+import FormikSelect from "../../../../../common/FormikSelect";
+import { customStyles } from "../../../../../utility/selectCustomStyle";
+import { isUniq } from "../../../../../utility/uniqChecker";
+import { IconButton, Tooltip } from "@mui/material";
+import { DeleteOutline } from "@mui/icons-material";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -53,6 +64,7 @@ const CalendarSetupModal = ({
   setRowDto,
   id,
   setAllData,
+  getLanding,
 }) => {
   const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -62,44 +74,75 @@ const CalendarSetupModal = ({
   const [loading, setLoading] = useState(false);
 
   const [modifySingleData, setModifySingleData] = useState("");
+  const [workPlaceDDL, setWorkPlaceDDL] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [deleteRowData, setDeleteRowData] = useState([]);
 
   useEffect(() => {
     if (id) {
-      getPeopleDeskAllLanding(
-        "CalenderById",
-        orgId,
-        buId,
-        id,
-        setSingleData,
-        null,
-        setLoading,
-        null,
-        null,
-        wgId
-      );
+      getTimeSheetCalenderById(buId, id, setSingleData, setAllData, setLoading);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
   useEffect(() => {
     if (singleData) {
       const newRowData = {
-        calendarName: singleData[0]?.CalenderName,
-        startTime: singleData[0]?.StartTime,
-        endTime: singleData[0]?.EndTime,
-        minWork: singleData[0]?.MinWorkHour,
-        lastStartTime: singleData[0]?.LastStartTime,
-        allowedStartTime: singleData[0]?.ExtendedStartTime,
-        breakStartTime: singleData[0]?.BreakStartTime || "",
-        breakEndTime: singleData[0]?.BreakEndTime || "",
-        officeStartTime: singleData[0]?.OfficeStartTime || "",
-        officeCloseTime: singleData[0]?.OfficeCloseTime || "",
-        nightShift: singleData[0]?.isNightShift || "",
+        calendarName: singleData?.strCalenderName,
+        startTime: singleData?.dteStartTime,
+        endTime: singleData?.dteEndTime,
+        minWork: singleData?.numMinWorkHour,
+        lastStartTime: singleData?.dteLastStartTime,
+        allowedStartTime: singleData?.dteExtendedStartTime,
+        breakStartTime: singleData?.dteBreakStartTime || "",
+        breakEndTime: singleData?.dteBreakEndTime || "",
+        officeStartTime: singleData?.dteOfficeStartTime || "",
+        officeCloseTime: singleData?.dteOfficeCloseTime || "",
+        nightShift: singleData?.isNightShift || "",
       };
+      const tableData = singleData?.timeSheetCalenderRows?.map((item) => ({
+        intCalenderRowId: item?.intCalenderRowId,
+        intWorkplaceId: item?.intWorkplaceId,
+        strWorkplace: item?.strWorkplaceName,
+      }));
+      id && setTableData(tableData);
       setModifySingleData(newRowData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleData]);
+  }, [singleData, id]);
+  // DDL
+  useEffect(() => {
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=0&WorkplaceGroupId=0&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkPlaceDDL
+    );
+  }, []);
+
+  // setter function
+  const setter = (payload) => {
+    if (isUniq("intWorkplaceId", payload?.intWorkplaceId, tableData)) {
+      setTableData([...tableData, payload]);
+    }
+  };
+
+  // row remover
+  const remover = (payload) => {
+    const filterArr = tableData.filter((itm) => itm.intWorkplaceId !== payload);
+    setTableData(filterArr);
+  };
+
+  const deleteRow = (payload) => {
+    let deleteRow = [];
+    if (payload > 0) {
+      const filterArr = tableData.filter(
+        (itm) => itm.intWorkplaceId === payload
+      );
+      deleteRow.push(filterArr[0]);
+    }
+
+    setDeleteRowData([...deleteRow, ...deleteRowData]);
+  };
 
   const saveHandler = (values, cb) => {
     onCreateCalendarSetupWithValidation(
@@ -110,12 +153,15 @@ const CalendarSetupModal = ({
       id,
       cb,
       onHide,
-      getPeopleDeskAllLanding,
+      getLanding,
       setRowDto,
       setAllData,
-      createTimeSheetAction,
+      createTimeSheetActionForCalender,
       setLoading,
-      wgId
+      wgId,
+      tableData,
+      deleteRowData,
+      setDeleteRowData
     );
   };
   return (
@@ -328,8 +374,49 @@ const CalendarSetupModal = ({
                         touched={touched}
                       />
                     </div>
-                    <div className="col-6"></div>
+                    <div className="col-12">
+                      <hr
+                        style={{
+                          borderTop: "1px solid #ccc",
+                          margin: "10px 0",
+                        }}
+                      />
+                    </div>
                     <div className="col-6">
+                      <label>Workplace </label>
+                      <FormikSelect
+                        name="year"
+                        options={workPlaceDDL || []}
+                        value={values?.workplace}
+                        onChange={(valueOption) => {
+                          setFieldValue("workplace", valueOption);
+                        }}
+                        placeholder=""
+                        styles={customStyles}
+                        errors={errors}
+                        touched={touched}
+                        isDisabled={false}
+                        menuPosition="fixed"
+                      />
+                    </div>
+                    <div className="col-3 d-flex mt-4 ml-1 row">
+                      <button
+                        type="button"
+                        className="btn btn-green btn-green-disable"
+                        onClick={() => {
+                          const obj = {
+                            intWorkplaceId: values?.workplace?.value,
+                            strWorkplace: values?.workplace?.label,
+                          };
+                          setter(obj);
+                          setFieldValue("workplace", "");
+                        }}
+                        disabled={!values?.workplace}
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <div className="col-3 mt-3">
                       <FormikCheckBox
                         name="nightShift"
                         styleObj={{
@@ -341,6 +428,68 @@ const CalendarSetupModal = ({
                           setFieldValue("nightShift", e.target.checked);
                         }}
                       />
+                    </div>
+                    <div className="table-card-body pt-3">
+                      <div
+                        className=" table-card-styled tableOne"
+                        style={{ padding: "0px 12px" }}
+                      >
+                        <table className="table align-middle">
+                          <thead style={{ color: "#212529" }}>
+                            <tr>
+                              <th>
+                                <div className="d-flex align-items-center">
+                                  Workplace name
+                                </div>
+                              </th>
+                              <th>
+                                <div className="d-flex align-items-center justify-content-end">
+                                  Action
+                                </div>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {tableData?.length > 0 && (
+                              <>
+                                {tableData.map((item, index) => {
+                                  const { strWorkplace } = item;
+                                  return (
+                                    <tr key={index}>
+                                      <td>{strWorkplace}</td>
+                                      <td>
+                                        <div className="d-flex align-items-end justify-content-end">
+                                          <IconButton
+                                            type="button"
+                                            style={{
+                                              height: "25px",
+                                              width: "25px",
+                                            }}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              remover(item?.intWorkplaceId);
+                                              deleteRow(item?.intWorkplaceId);
+                                            }}
+                                          >
+                                            <Tooltip title="Delete">
+                                              <DeleteOutline
+                                                sx={{
+                                                  height: "25px",
+                                                  width: "25px",
+                                                }}
+                                              />
+                                            </Tooltip>
+                                          </IconButton>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -5,6 +5,7 @@ import { Avatar } from "@mui/material";
 import { shallowEqual, useSelector } from "react-redux";
 import { getPeopleDeskAllLanding } from "../../../../../common/api";
 import { timeFormatter } from "../../../../../utility/timeFormatter";
+import { getTimeSheetCalenderById } from "../AddEditForm/helper";
 
 const ViewCalendarSetup = ({
   id,
@@ -13,6 +14,8 @@ const ViewCalendarSetup = ({
   setId,
   singleData,
   setSingleData,
+  setLoading,
+  setAllData,
 }) => {
   const style = {
     width: "100%",
@@ -28,20 +31,9 @@ const ViewCalendarSetup = ({
   );
 
   useEffect(() => {
-    getPeopleDeskAllLanding(
-      "CalenderById",
-      orgId,
-      buId,
-      id,
-      setSingleData,
-      null,
-      null,
-      null,
-      null,
-      wgId
-    );
+    getTimeSheetCalenderById(buId, id, setSingleData, setAllData, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, wgId, buId]);
+  }, [id]);
   const avatarSx = {
     background: "#F2F2F7",
     "&": {
@@ -70,7 +62,7 @@ const ViewCalendarSetup = ({
               </div>
               <div className="modal-body-txt">
                 <h6 className="title-item-name">
-                  {singleData[0]?.CalenderName}
+                  {singleData?.strCalenderName}
                 </h6>
                 <p className="subtitle-p">Calendar Name</p>
               </div>
@@ -86,7 +78,7 @@ const ViewCalendarSetup = ({
               </div>
               <div className="modal-body-txt">
                 <h6 className="title-item-name">
-                  {timeFormatter(singleData[0]?.StartTime)}
+                  {timeFormatter(singleData?.dteStartTime)}
                 </h6>
                 <p className="subtitle-p">Start Time</p>
               </div>
@@ -102,7 +94,7 @@ const ViewCalendarSetup = ({
               </div>
               <div className="modal-body-txt">
                 <h6 className="title-item-name">
-                  {timeFormatter(singleData[0]?.EndTime)}
+                  {timeFormatter(singleData?.dteEndTime)}
                 </h6>
                 <p className="subtitle-p">End Time</p>
               </div>
@@ -118,7 +110,7 @@ const ViewCalendarSetup = ({
               </div>
               <div className="modal-body-txt">
                 <h6 className="title-item-name">
-                  {singleData[0]?.MinWorkHour}
+                  {singleData?.numMinWorkHour}
                 </h6>
                 <p className="subtitle-p">Minimum Working Hour</p>
               </div>
@@ -134,7 +126,7 @@ const ViewCalendarSetup = ({
               </div>
               <div className="modal-body-txt">
                 <h6 className="title-item-name">
-                  {timeFormatter(singleData[0]?.ExtendedStartTime)}
+                  {timeFormatter(singleData?.dteExtendedStartTime)}
                 </h6>
                 <p className="subtitle-p">Allowed Start Time</p>
               </div>
@@ -150,7 +142,7 @@ const ViewCalendarSetup = ({
               </div>
               <div className="modal-body-txt">
                 <h6 className="title-item-name">
-                  {timeFormatter(singleData[0]?.OfficeStartTime)}
+                  {timeFormatter(singleData?.dteOfficeStartTime)}
                 </h6>
                 <p className="subtitle-p">Office Open Time</p>
               </div>
@@ -166,7 +158,7 @@ const ViewCalendarSetup = ({
               </div>
               <div className="modal-body-txt">
                 <h6 className="title-item-name">
-                  {timeFormatter(singleData[0]?.OfficeCloseTime)}
+                  {timeFormatter(singleData?.dteOfficeCloseTime)}
                 </h6>
                 <p className="subtitle-p">Office End Time</p>
               </div>
@@ -182,11 +174,44 @@ const ViewCalendarSetup = ({
               </div>
               <div className="modal-body-txt">
                 <h6 className="title-item-name">
-                  {timeFormatter(singleData[0]?.LastStartTime)}
+                  {timeFormatter(singleData?.dteLastStartTime)}
                 </h6>
                 <p className="subtitle-p">Last Start Time</p>
               </div>
             </div>
+            {singleData?.timeSheetCalenderRows?.length > 0 && (
+              <div className="table-card-body  pt-1">
+                <div
+                  className=" table-card-styled tableOne"
+                  style={{ padding: "0px 12px" }}
+                >
+                  <table className="table align-middle">
+                    <thead style={{ color: "#212529" }}>
+                      <tr>
+                        <th>
+                          <div className="d-flex align-items-center">
+                            Workplace name
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <>
+                        {singleData.timeSheetCalenderRows?.map(
+                          (item, index) => {
+                            return (
+                              <tr key={index}>
+                                <td>{item?.strWorkplaceName}</td>
+                              </tr>
+                            );
+                          }
+                        )}
+                      </>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
@@ -196,7 +221,7 @@ const ViewCalendarSetup = ({
           onClick={(e) => {
             e.stopPropagation();
             handleOpen();
-            // setViewCalenderSetup(false);s
+            // setViewCalenderSetup(false);
             setId(id);
           }}
           // type="submit"

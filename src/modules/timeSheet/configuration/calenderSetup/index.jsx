@@ -21,8 +21,9 @@ import "./calendarSetup.css";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import AntTable from "../../../../common/AntTable";
+import AntTable, { paginationSize } from "../../../../common/AntTable";
 import { gray600 } from "../../../../utility/customColor";
+import { getPeopleDeskAllLandingForCalender } from "../../helper";
 
 const initData = {
   search: "",
@@ -48,11 +49,19 @@ export default function CalendarSetup() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [pages, setPages] = useState({
+    current: 1,
+    // pageSize: paginationSize,
+    pageSize: 50,
+    total: 0,
+  });
+
   // for create Modal
   const handleOpen = () => {
     setViewModal(false);
     setOpen(true);
   };
+
   const handleClose = () => {
     setViewModal(false);
     setOpen(false);
@@ -63,6 +72,7 @@ export default function CalendarSetup() {
     setViewModal(true);
     setOpen(false);
   };
+
   const handleViewClose = () => {
     setViewModal(false);
     setOpen(false);
@@ -78,27 +88,40 @@ export default function CalendarSetup() {
     shallowEqual
   );
 
-  useEffect(() => {
-    getPeopleDeskAllLanding(
-      "Calender",
-      orgId,
+  const getLanding = () => {
+    getPeopleDeskAllLandingForCalender(
       buId,
-      "",
       setRowDto,
       setAllData,
       setLoading,
-      null,
-      null,
-      wgId
+      pages?.current,
+      pages?.pageSize,
+      ""
     );
-  }, [orgId, buId, wgId]);
+  };
+
+  useEffect(() => {
+    // getPeopleDeskAllLanding(
+    //   "Calender",
+    //   orgId,
+    //   buId,
+    //   "",
+    //   setRowDto,
+    //   setAllData,
+    //   setLoading,
+    //   null,
+    //   null,
+    //   wgId
+    // );
+    getLanding();
+  }, []);
 
   // search
   const filterData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
       let newDta = allData?.filter((item) =>
-        regex.test(item?.CalenderName?.toLowerCase())
+        regex.test(item?.strCalenderName?.toLowerCase())
       );
       setRowDto(newDta);
     } catch (e) {
@@ -126,14 +149,14 @@ export default function CalendarSetup() {
       },
       {
         title: "Calender Name",
-        dataIndex: "CalenderName",
+        dataIndex: "strCalenderName",
         sorter: true,
         filter: true,
       },
       {
         title: "Min. Work Hour",
-        dataIndex: "MinWorkHour",
-        render: (_, data) => <>{data?.MinWorkHour || "-"}</>,
+        dataIndex: "numMinWorkHour",
+        render: (_, data) => <>{data?.numMinWorkHour || "-"}</>,
         sorter: true,
         filter: true,
         isNumber: true,
@@ -143,11 +166,11 @@ export default function CalendarSetup() {
         title: () => (
           <span style={{ color: gray600 }}>Office Opening Time</span>
         ),
-        dataIndex: "OfficeStartTime",
+        dataIndex: "dteOfficeStartTime",
         render: (_, record) => (
           <span>
-            {record?.OfficeStartTime
-              ? timeFormatter(record?.OfficeStartTime)
+            {record?.dteOfficeStartTime
+              ? timeFormatter(record?.dteOfficeStartTime)
               : "-"}
           </span>
         ),
@@ -157,7 +180,7 @@ export default function CalendarSetup() {
 
         render: (_, record) => (
           <span>
-            {record?.StartTime ? timeFormatter(record?.StartTime) : "-"}
+            {record?.dteStartTime ? timeFormatter(record?.dteStartTime) : "-"}
           </span>
         ),
       },
@@ -165,21 +188,23 @@ export default function CalendarSetup() {
         title: () => (
           <span style={{ color: gray600 }}>Extended Start Time</span>
         ),
-        dataIndex: "ExtendedStartTime",
+        dataIndex: "dteExtendedStartTime",
         render: (_, record) => (
           <span>
-            {record?.ExtendedStartTime
-              ? timeFormatter(record?.ExtendedStartTime)
+            {record?.dteExtendedStartTime
+              ? timeFormatter(record?.dteExtendedStartTime)
               : "-"}
           </span>
         ),
       },
       {
         title: () => <span style={{ color: gray600 }}>Last Start Time</span>,
-        dataIndex: "LastStartTime",
+        dataIndex: "dteLastStartTime",
         render: (_, record) => (
           <span>
-            {record?.LastStartTime ? timeFormatter(record?.LastStartTime) : "-"}
+            {record?.dteLastStartTime
+              ? timeFormatter(record?.dteLastStartTime)
+              : "-"}
           </span>
         ),
       },
@@ -209,18 +234,20 @@ export default function CalendarSetup() {
       {
         title: () => <span style={{ color: gray600 }}>End Time</span>,
         render: (_, record) => (
-          <span>{record?.EndTime ? timeFormatter(record?.EndTime) : "-"}</span>
+          <span>
+            {record?.dteEndTime ? timeFormatter(record?.dteEndTime) : "-"}
+          </span>
         ),
       },
       {
         title: () => (
           <span style={{ color: gray600 }}>Office Closing Time</span>
         ),
-        dataIndex: "OfficeCloseTime",
+        dataIndex: "dteOfficeCloseTime",
         render: (_, record) => (
           <span>
-            {record?.OfficeCloseTime
-              ? timeFormatter(record?.OfficeCloseTime)
+            {record?.dteOfficeCloseTime
+              ? timeFormatter(record?.dteOfficeCloseTime)
               : "-"}
           </span>
         ),
@@ -280,10 +307,11 @@ export default function CalendarSetup() {
                             title="reset"
                             icon={
                               <SettingsBackupRestoreOutlined
-                                sx={{ marginRight: "10px" }}
+                                sx={{ marginRight: "8px" }}
                               />
                             }
                             onClick={() => {
+                              getLanding();
                               setRowDto(allData);
                               setFieldValue("search", "");
                             }}
@@ -307,6 +335,19 @@ export default function CalendarSetup() {
                             />
                           }
                           onChange={(e) => {
+                            if (e.target.value) {
+                              getPeopleDeskAllLandingForCalender(
+                                buId,
+                                setRowDto,
+                                setAllData,
+                                setLoading,
+                                pages?.current,
+                                pages?.pageSize,
+                                e.target.value || ""
+                              );
+                            } else {
+                              getLanding();
+                            }
                             filterData(e.target.value, allData, setRowDto);
                             setFieldValue("search", e.target.value);
                           }}
@@ -346,10 +387,11 @@ export default function CalendarSetup() {
                           data={rowDto?.length > 0 && rowDto}
                           columnsData={columns()}
                           onRowClick={(dataRow) => {
+                            console.log("dataRow", dataRow);
                             if (!permission?.isEdit)
                               return toast.warn("You don't have permission");
 
-                            setId(dataRow?.CalenderId);
+                            setId(dataRow?.calenderId);
                             setViewModal(true);
                           }}
                         />
@@ -390,6 +432,7 @@ export default function CalendarSetup() {
           setSingleData={setSingleData}
           setRowDto={setRowDto}
           setAllData={setAllData}
+          getLanding={getLanding}
         />
       </ViewModal>
 
@@ -411,7 +454,7 @@ export default function CalendarSetup() {
           onHide={handleViewClose}
           singleData={singleData}
           setSingleData={setSingleData}
-          setRowDto={setRowDto}
+          setLoading={setLoading}
           setAllData={setAllData}
           setId={setId}
         />
