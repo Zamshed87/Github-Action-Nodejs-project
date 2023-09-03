@@ -7,11 +7,11 @@ export function loginApiCall(email, password) {
     strPassword: password,
     intUrlId: 0,
     intAccountId: 1,
-    // strUrl: "https://saas.peopledesk.io",
+    // strUrl: "https://pentex.peopledesk.io",
     strUrl:
-      domainUrl === "https://devad-din.peopledesk.io"
+      domainUrl === "https://devpentex.peopledesk.io"
         ? domainUrl
-        : "https://ad-din.peopledesk.io",
+        : "https://pentex.peopledesk.io",
   });
 }
 
