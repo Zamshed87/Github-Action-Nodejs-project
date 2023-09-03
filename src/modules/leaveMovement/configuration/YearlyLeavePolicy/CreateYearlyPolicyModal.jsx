@@ -414,7 +414,9 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
                         (values?.workplaceGroup &&
                           values?.workplaceGroup?.some(
                             (item) => item?.label === "All"
-                          ))
+                          )) ||
+                        (values?.workplaceGroup &&
+                          values?.workplaceGroup?.length > 1)
                       }
                       errors={errors}
                       touched={touched}

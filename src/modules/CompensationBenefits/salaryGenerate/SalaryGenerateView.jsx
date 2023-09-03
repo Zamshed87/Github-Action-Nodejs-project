@@ -17,7 +17,7 @@ import { greenColor } from "../../../utility/customColor";
 import { getRowTotal } from "../../../utility/getRowTotal";
 import { getMonthName } from "../../../utility/monthUtility";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
-import { getSalaryReport } from "../reports/salaryDetailsReport/helper";
+import { getSalaryDetailsReportRDLC, getSalaryReport } from "../reports/salaryDetailsReport/helper";
 import {
   allSalaryExcelColumn,
   allSalaryExcelData,
@@ -32,7 +32,7 @@ import {
 } from "./helper";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { getPDFAction } from "../../../utility/downloadFile";
+import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
 // import SalaryTableReport from "../reports/salaryDetailsReport/SalaryTableReport";
 import SalaryDetailsReportTable from "../reports/salaryDetailsReport/SalaryDetailsReportTable";
 
@@ -221,9 +221,9 @@ const SalaryGenerateView = () => {
     }
   };
 
-  const getDetailsReport = () => {
-    if (!resDetailsReport?.length > 0) {
-      getSalaryReport(
+  const getDetailsReport = (partName) => {
+  
+    /*   getSalaryReport(
         "DynamicSalaryColumnList",
         orgId,
         buId,
@@ -240,8 +240,24 @@ const SalaryGenerateView = () => {
         setLoading,
         setTableAllowanceHead,
         setTableDeductionHead
-      );
-    }
+      ); */
+      if (!detailsData?.length > 0) {
+        const parameter = {
+          partName: partName,
+          intMonthId: !state?.data ? state?.intMonth : state?.data?.intMonth,
+          intYearId: !state?.data ? state?.intYear : state?.data?.intYear,
+          strSalaryCode: !state?.data
+            ? state?.strSalaryCode
+            : state?.data?.strSalaryCode,
+          intAccountId: orgId,
+          setLoading: setDetailsReportLoading,
+          buId,
+          setterData: setDetailsData,
+          wgId,
+        };
+        getSalaryDetailsReportRDLC(parameter);
+      }
+ 
   };
 
   const totalEmpLOnSalarySheet = useMemo(() => {
@@ -253,9 +269,12 @@ const SalaryGenerateView = () => {
     }, 0);
   }, [rowDto]);
 
+  const [detailsData, setDetailsData] = useState("");
+  const [detailsReportLoading, setDetailsReportLoading] = useState(false);
+
   return (
     <form onSubmit={handleSubmit}>
-      {loading && <Loading />}
+      {(loading || detailsReportLoading) && <Loading />}
       <div className="table-card">
         <div className="table-card-heading" style={{ marginBottom: "12px" }}>
           <BackButton title={"Salary Generate View"} />
@@ -346,7 +365,7 @@ const SalaryGenerateView = () => {
                           value={"2"}
                           onChange={(e) => {
                             setFieldValue("summary", e.target.value);
-                            getDetailsReport();
+                            getDetailsReport("GetSalaryLandingData");
                           }}
                           checked={values?.summary === "2"}
                         />
@@ -395,7 +414,7 @@ const SalaryGenerateView = () => {
                             if (!resDetailsReport?.length > 0) {
                               return toast.warn("No Data Found");
                             }
-                            createSalaryDetailsReportExcelHandeler({
+                         /*    createSalaryDetailsReportExcelHandeler({
                               monthYear: moment(values?.monthYear).format(
                                 "MMMM-YYYY"
                               ),
@@ -407,7 +426,26 @@ const SalaryGenerateView = () => {
                               tableColumn,
                               tableAllowanceHead,
                               tableDeductionHead,
-                            });
+                            }); */
+              
+                            downloadFile(
+                              `/PdfAndExcelReport/GetRDLCSalaryReportExcell?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                                !state?.data
+                                  ? state?.intMonth
+                                  : state?.data?.intMonth
+                              }&intYearId=${
+                                !state?.data
+                                  ? state?.intYear
+                                  : state?.data?.intYear
+                              }&strSalaryCode=${
+                                !state?.data
+                                  ? state?.strSalaryCode
+                                  : state?.data?.strSalaryCode
+                              }`,
+                              "Salary Details Report",
+                              "xlsx",
+                              setLoading
+                            );
                           }
                         }}
                         // disabled={resDetailsReport?.length <= 0}
@@ -434,7 +472,7 @@ const SalaryGenerateView = () => {
                         className="btn-save"
                         type="button"
                         onClick={() => {
-                          getPDFAction(
+                     /*      getPDFAction(
                             `/PdfAndExcelReport/SalaryDetailsReport?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
                               !state?.data
                                 ? state?.intMonth
@@ -449,9 +487,29 @@ const SalaryGenerateView = () => {
                                 : state?.data?.strSalaryCode
                             }&isDownload=false`,
                             setLoading
+                          ); */
+                          if (detailsData?.length <= 0) {
+                            return toast.warn("No Data Found");
+                          } else {
+                          getPDFAction(
+                            `/PdfAndExcelReport/GetRDLCSalaryReport?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                              !state?.data
+                                ? state?.intMonth
+                                : state?.data?.intMonth
+                            }&intYearId=${
+                              !state?.data
+                                ? state?.intYear
+                                : state?.data?.intYear
+                            }&strSalaryCode=${
+                              !state?.data
+                                ? state?.strSalaryCode
+                                : state?.data?.strSalaryCode
+                            }`,
+                            setLoading
                           );
+                          }
                         }}
-                        disabled={resDetailsReport?.length <= 0}
+                        // disabled={resDetailsReport?.length <= 0}
                         style={{
                           border: "transparent",
                           width: "30px",
@@ -635,18 +693,18 @@ const SalaryGenerateView = () => {
             )}
             {values?.summary === "2" && (
               <>
-                <SalaryDetailsReportTable
-                  rowDto={resDetailsReport}
-                  tableColumn={tableColumn}
-                  tableAllowanceHead={tableAllowanceHead}
-                  tableDeductionHead={tableDeductionHead}
-                />
-                {/* <SalaryTableReport
+                {/* <SalaryDetailsReportTable
                   rowDto={resDetailsReport}
                   tableColumn={tableColumn}
                   tableAllowanceHead={tableAllowanceHead}
                   tableDeductionHead={tableDeductionHead}
                 /> */}
+                <div className="sme-scrollable-table">
+                  <div
+                    className="scroll-table scroll-table-height"
+                    dangerouslySetInnerHTML={{ __html: detailsData }}
+                  ></div>
+                </div>
               </>
             )}
           </div>
