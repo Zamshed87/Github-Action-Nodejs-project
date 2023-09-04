@@ -78,7 +78,7 @@ export default function AddEditFormComponent({
 }) {
   const [loading, setLoading] = useState(false);
 
-  const { buId, employeeId, wgId } = useSelector(
+  const { buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -90,7 +90,7 @@ export default function AddEditFormComponent({
   const getDDL = (value) => {
     let ddlType = value === 1 ? "Calender" : "RosterGroup";
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
       value === 1 ? "CalenderId" : "RosterGroupId",
       value === 1 ? "CalenderName" : "RosterGroupName",
       value === 1 ? setCalenderDDL : setCalenderRoasterDDL

@@ -50,7 +50,7 @@ export default function AddEditFormComponent({
 }) {
   const [loading, setLoading] = useState(false);
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wId} = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -59,12 +59,12 @@ export default function AddEditFormComponent({
 
   useEffect(() => {
     getCalenderDDL(
-      `/Employee/GetCalenderDdl?intAccountId=${orgId}&intBusinessUnitId=${buId}`,
+      `/Employee/GetCalenderDdl?intBusinessUnitId=${buId}&IntWorkplaceId=${wId}`,
       "intCalenderId",
       "strCalenderName",
       setRosterDDL
     );
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
 
   const saveHandler = (values, cb) => {
     const modifyFilterRowDto = shiftData.filter(
