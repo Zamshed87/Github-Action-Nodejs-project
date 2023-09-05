@@ -42,7 +42,7 @@ export const processBulkUploadEmployeeAction = async (
       strLoginId: item["Login ID"] + "" || "",
       strPassword: item["Password"] + "" || "",
       strEmailAddress: item["Email"]?.text || "",
-      strPhoneNumber: `${item["Phone Number"]}` || "",
+      strPhoneNumber: item["Phone Number"] ? item["Phone Number"] : "-",
       strDisplayName: item["Display Name"] || "",
       strUserType: item["User Type"] || "",
       strWingName: item["Wing"] || "",
