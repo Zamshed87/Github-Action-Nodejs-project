@@ -173,7 +173,7 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 process.env.NODE_ENV === "development"
-                                  ? "/document/downloadfile?id=1"
+                                  ? "/document/downloadfile?id=2"
                                   : "/document/downloadfile?id=1"
                               }`,
                               "Employee Bulk Upload",
@@ -257,7 +257,7 @@ export default function BulkEmployeeCreate() {
                               <th className="text-center">
                                 <div>Contact To Date</div>
                               </th>
-                              <th className="">
+                              <th className="text-center">
                                 <div>Phone</div>
                               </th>
                               <th className="">
@@ -396,7 +396,7 @@ export default function BulkEmployeeCreate() {
                                       : "-"}
                                   </div>
                                 </td>
-                                <td>
+                                <td className="text-center">
                                   <div className="tableBody-title">
                                     {data?.strPhoneNumber
                                       ? data?.strPhoneNumber
