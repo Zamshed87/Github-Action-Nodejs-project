@@ -30,7 +30,7 @@ const prodUrl = "https://pentex.peopledesk.io";
 // set axios base url
 export const APIUrl =
   process.env.NODE_ENV === "development"
-    ? "https://devpentex.peopledesk.io/api"
+    ? "https://bgdhrm.pentex-ltd.co.uk"
     : `${origin}/api`;
 Axios.defaults.baseURL = APIUrl;
 
