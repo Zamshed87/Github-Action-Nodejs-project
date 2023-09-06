@@ -39,7 +39,7 @@ const YearlyLeavePolicy = () => {
   const saveHandler = (values, cb) => {};
   const [loading, setLoading] = useState(false);
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -60,7 +60,7 @@ const YearlyLeavePolicy = () => {
       setLoading,
       "",
       year ? year : formikRef?.current?.values?.year?.value,
-      wgId
+      `${wgId}&strWorkplace=${wId}`
     );
   };
 
