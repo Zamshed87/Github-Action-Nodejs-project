@@ -11,7 +11,7 @@ export function loginApiCall(email, password) {
     strUrl:
       domainUrl === "https://devpentex.peopledesk.io"
         ? domainUrl
-        : "https://pentex.peopledesk.io",
+        : "https://bgdhrm.pentex-ltd.co.uk",
   });
 }
 
