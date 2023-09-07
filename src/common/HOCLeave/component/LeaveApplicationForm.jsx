@@ -53,7 +53,15 @@ const LeaveApplicationForm = ({ propsObj }) => {
             <label> Leave Type</label>
             <FormikSelect
               name="leaveType"
-              options={leaveTypeDDL || []}
+              options={
+                [
+                  ...leaveTypeDDL,
+                  {
+                    label: "Special Leave",
+                    value: 8,
+                  },
+                ] || []
+              }
               value={values?.leaveType}
               onChange={(valueOption) => {
                 setFieldValue("leaveType", valueOption);
