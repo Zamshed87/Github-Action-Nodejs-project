@@ -101,7 +101,6 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
 
   const onRoleAdd = (values, setFieldValue) => {
     let modifyArr = [];
-
     // role Exist
     const isRoleExist = (values) => {
       let roleExist = false;
@@ -198,52 +197,46 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
       if (filedType === "wing") {
         return isSameWorkField(values?.orgName?.value, 2)
           ? modifyArr.filter(
-            (itm) => itm?.intOrganizationReffId !== values?.orgName?.value
-          )
+              (itm) => itm?.intOrganizationReffId !== values?.orgName?.value
+            )
           : modifyArr;
       }
-
       if (filedType === "soleDepo") {
         return isSameWorkField(values?.wing?.value, 4)
           ? modifyArr.filter(
-            (itm) =>
-              itm?.intOrganizationReffId !== values?.orgName?.value &&
-              itm?.intOrganizationReffId !== values?.wing?.value
-          )
+              (itm) =>
+                itm?.intOrganizationReffId !== values?.orgName?.value &&
+                itm?.intOrganizationReffId !== values?.wing?.value
+            )
           : modifyArr;
       }
-
       if (filedType === "region") {
         return isSameWorkField(values?.soleDepo?.value, 5)
           ? modifyArr.filter(
-            (itm) =>
-              itm?.intOrganizationReffId !== values?.orgName?.value &&
-              itm?.intOrganizationReffId !== values?.wing?.value &&
-              itm?.intOrganizationReffId !== values?.soleDepo?.value
-          )
+              (itm) =>
+                itm?.intOrganizationReffId !== values?.orgName?.value &&
+                itm?.intOrganizationReffId !== values?.wing?.value &&
+                itm?.intOrganizationReffId !== values?.soleDepo?.value
+            )
           : modifyArr;
       }
-
       if (filedType === "area") {
         return isSameWorkField(values?.region?.value, 6)
           ? modifyArr.filter(
-            (itm) =>
-              itm?.intOrganizationReffId !== values?.orgName?.value &&
-              itm?.intOrganizationReffId !== values?.wing?.value &&
-              itm?.intOrganizationReffId !== values?.soleDepo?.value &&
-              itm?.intOrganizationReffId !== values?.region?.value
-          )
+              (itm) =>
+                itm?.intOrganizationReffId !== values?.orgName?.value &&
+                itm?.intOrganizationReffId !== values?.wing?.value &&
+                itm?.intOrganizationReffId !== values?.soleDepo?.value &&
+                itm?.intOrganizationReffId !== values?.region?.value
+            )
           : modifyArr;
       }
     };
-
     // workplace Group
     if (isAllDataCheck(2)) {
       return toast.warn("Workplace Group has all data exsist...");
     }
-
     modifyArr = [
-      ...modifyArr,
       {
         intOrganizationTypeId: +values?.orgType?.value,
         strOrganizationTypeName: values?.orgType?.label,
@@ -251,17 +244,24 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
         strOrganizationReffName: values?.orgName?.label,
       },
     ];
-
+    if (!values?.wing && values?.orgType?.value) {
+      setRowDto([...rowDto, ...modifyArr]);
+    }
     // wing
     if (isAllDataCheck(4)) {
       return toast.warn("Wing has all data exsist...");
     }
-
     if (values?.wing?.value === 0 || values?.wing?.value) {
       if (values?.wing?.label === "All") {
         let modifyWing = rowDto.filter((itm) => itm?.intOrganizationTypeId < 4);
         modifyArr = [
           ...modifyWing,
+          {
+            intOrganizationTypeId: +values?.orgType?.value,
+            strOrganizationTypeName: values?.orgType?.label,
+            intOrganizationReffId: values?.orgName?.value,
+            strOrganizationReffName: values?.orgName?.label,
+          },
           {
             intOrganizationTypeId: 4,
             strOrganizationTypeName: "Wing",
@@ -269,7 +269,6 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
             strOrganizationReffName: values?.wing?.label,
           },
         ];
-
         setRowDto([...modifyArr]);
       } else {
         modifyArr = [
@@ -281,16 +280,13 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
             strOrganizationReffName: values?.wing?.label,
           },
         ];
-
         setRowDto([...rowDto, ...modifyArr]);
       }
     }
-
     // soleDepo
     if (isAllDataCheck(5)) {
       return toast.warn("Wing has all data exsist...");
     }
-
     if (values?.soleDepo?.value === 0 || values?.soleDepo?.value) {
       if (values?.soleDepo?.label === "All") {
         let modifySoleDepo = rowDto.filter(
@@ -298,6 +294,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
         );
         modifyArr = [
           ...modifySoleDepo,
+          ...modifyFinalArr("soleDepo", values),
           {
             intOrganizationTypeId: 5,
             strOrganizationTypeName: "Sole Depo",
@@ -320,12 +317,10 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
         setRowDto([...rowDto, ...modifyArr]);
       }
     }
-
     // region
     if (isAllDataCheck(6)) {
       return toast.warn("Wing has all data exsist...");
     }
-
     if (values?.region?.value === 0 || values?.region?.value) {
       if (values?.region?.label === "All") {
         let modifyRegion = rowDto.filter(
@@ -333,6 +328,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
         );
         modifyArr = [
           ...modifyRegion,
+          ...modifyFinalArr("region", values),
           {
             intOrganizationTypeId: 6,
             strOrganizationTypeName: "Region",
@@ -355,12 +351,10 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
         setRowDto([...rowDto, ...modifyArr]);
       }
     }
-
     // region
     if (isAllDataCheck(7)) {
       return toast.warn("Wing has all data exsist...");
     }
-
     if (values?.area?.value === 0 || values?.area?.value) {
       if (values?.area?.label === "All") {
         let modifyRegion = rowDto.filter(
@@ -368,6 +362,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
         );
         modifyArr = [
           ...modifyRegion,
+          ...modifyFinalArr("area", values),
           {
             intOrganizationTypeId: 7,
             strOrganizationTypeName: "Area",
@@ -390,10 +385,8 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
         setRowDto([...rowDto, ...modifyArr]);
       }
     }
-
     setFieldValue("orgType", "");
     setFieldValue("orgName", "");
-
     setFieldValue("wing", "");
     setFieldValue("soleDepo", "");
     setFieldValue("region", "");
@@ -475,61 +468,65 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                   </div>
                   <div className="row">
                     <div className="col-md-3">
-                      <label className="mb-2">Organization Type</label>
-                      <FormikSelect
-                        classes="input-sm"
-                        styles={customStyles}
-                        name="businessUnit"
-                        options={organizationTypeList || []}
-                        value={values?.orgType}
-                        isDisabled={!values?.employeeName?.value}
-                        onChange={(valueOption) => {
-                          setFieldValue("orgName", "");
-                          setFieldValue("orgType", valueOption);
-                          setOrganizationDDLFunc(
-                            wgId,
-                            buId,
-                            employeeId,
-                            valueOption,
-                            setOrganizationDDL
-                          );
-                        }}
-                        errors={errors}
-                        touched={touched}
-                        placeholder=" "
-                      />
+                      <div className="input-field-main">
+                        <label>Organization Type</label>
+                        <FormikSelect
+                          classes="input-sm"
+                          styles={customStyles}
+                          name="businessUnit"
+                          options={organizationTypeList || []}
+                          value={values?.orgType}
+                          isDisabled={!values?.employeeName?.value}
+                          onChange={(valueOption) => {
+                            setFieldValue("orgName", "");
+                            setFieldValue("orgType", valueOption);
+                            setOrganizationDDLFunc(
+                              wgId,
+                              buId,
+                              employeeId,
+                              valueOption,
+                              setOrganizationDDL
+                            );
+                          }}
+                          errors={errors}
+                          touched={touched}
+                          placeholder=" "
+                        />
+                      </div>
                     </div>
                     <div className="col-md-3">
-                      <label className="mb-2">Organization Name</label>
-                      <FormikSelect
-                        isDisabled={!values?.orgType}
-                        classes="input-sm"
-                        styles={customStyles}
-                        name="orgName"
-                        options={organizationDDL || []}
-                        value={values?.orgName}
-                        onChange={(valueOption) => {
-                          setFieldValue("orgName", valueOption);
+                      <div className="input-field-main">
+                        <label>Organization Name</label>
+                        <FormikSelect
+                          isDisabled={!values?.orgType}
+                          classes="input-sm"
+                          styles={customStyles}
+                          name="orgName"
+                          options={organizationDDL || []}
+                          value={values?.orgName}
+                          onChange={(valueOption) => {
+                            setFieldValue("orgName", valueOption);
 
-                          if (valueOption?.label === "Marketing") {
-                            setFieldValue("wing", "");
-                            setFieldValue("soleDepo", "");
-                            setFieldValue("region", "");
-                            setFieldValue("area", "");
+                            if (valueOption?.label === "Marketing") {
+                              setFieldValue("wing", "");
+                              setFieldValue("soleDepo", "");
+                              setFieldValue("region", "");
+                              setFieldValue("area", "");
 
-                            getPeopleDeskWithoutAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
-                              "WingId",
-                              "WingName",
-                              setWingDDL
-                            );
-                          }
-                        }}
-                        errors={errors}
-                        touched={touched}
-                        placeholder=" "
-                        isClearable={false}
-                      />
+                              getPeopleDeskWithoutAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
+                                "WingId",
+                                "WingName",
+                                setWingDDL
+                              );
+                            }
+                          }}
+                          errors={errors}
+                          touched={touched}
+                          placeholder=" "
+                          isClearable={false}
+                        />
+                      </div>
                     </div>
 
                     {/* marketing setup */}
@@ -568,7 +565,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                     )}
 
                     {/* wing */}
-                    {values?.wing && (
+                    {values?.wing && values?.wing?.value !== 0 && (
                       <div className="col-md-3">
                         <div className="input-field-main">
                           <label>Sole Depo</label>
@@ -601,7 +598,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                     )}
 
                     {/* soleDepo */}
-                    {values?.soleDepo && (
+                    {values?.soleDepo && values?.soleDepo?.value !== 0 && (
                       <div className="col-md-3">
                         <div className="input-field-main">
                           <label>Region</label>
@@ -633,7 +630,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                     )}
 
                     {/* region */}
-                    {values?.region && (
+                    {values?.region && values?.region?.value !== 0 && (
                       <div className="col-md-3">
                         <div className="input-field-main">
                           <label>Area</label>
@@ -665,7 +662,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                           !values?.orgType
                         }
                         className="btn btn-green"
-                        style={{ marginTop: "27px" }}
+                        style={{ marginTop: "23px" }}
                         type="button"
                         onClick={() => {
                           onRoleAdd(values, setFieldValue);
