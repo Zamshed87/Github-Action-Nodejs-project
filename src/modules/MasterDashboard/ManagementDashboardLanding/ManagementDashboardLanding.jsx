@@ -66,7 +66,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
     );
     getIouGraph(`/Dashboard/MonthWiseIOUGraph?IntYear=${currentYear}`);
     getMonthWiseLeaveTaken(
-      `/Dashboard/MonthWiseLeaveTakenGraph?IntYear=${currentYear}`
+      `/Dashboard/MonthWiseLeaveTakenGraph?IntYear=${currentYear}&IntAccountId=${orgId}&IntBusinessUnitId=${buId}`
     );
     getTopLevelDashboardDetails(`/Dashboard/TopLevelDashboard`);
     getTurnoverByDepartmentChartDetails(
