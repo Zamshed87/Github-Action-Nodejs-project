@@ -128,6 +128,12 @@ const YearlyLeavePolicy = () => {
       filter: false,
     },
     {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      filter: false,
+    },
+    {
       title: "Days",
       dataIndex: "AllocatedLeave",
       sorter: true,
