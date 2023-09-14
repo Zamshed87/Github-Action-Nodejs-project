@@ -1,8 +1,8 @@
 import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useMemo, useRef } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { APIUrl } from "../../../App";
 import DemoImg from "../../../assets/images/demo.png";
 import AntTable from "../../../common/AntTable";
@@ -65,7 +65,7 @@ function EmLeaveApplication(props) {
     buId,
     setAllData,
     wgId,
-    permission
+    permission,
   } = props?.propjObj;
 
   const dispatch = useDispatch();
@@ -290,7 +290,7 @@ function EmLeaveApplication(props) {
                           leaveTypeDDL,
                           setLoading,
                           loading,
-                          editPermission: permission?.isEdit 
+                          editPermission: permission?.isEdit,
                         }}
                       />
                     </div>
