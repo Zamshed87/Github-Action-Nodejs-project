@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { getPeopleDeskAllLanding, PeopleDeskSaasDDL } from "../api";
@@ -16,8 +16,17 @@ import {
 
 const withLeaveApplication = (WrappedComponent) => {
   const HocLeaveApplication = () => {
-    const { userName, intProfileImageUrl, orgId, buId, employeeId, wgId } =
-      useSelector((state) => state?.auth?.profileData, shallowEqual);
+    const {
+      profileData: {
+        userName,
+        intProfileImageUrl,
+        orgId,
+        buId,
+        employeeId,
+        wgId,
+      },
+      permissionList
+    } = useSelector((state) => state?.auth, shallowEqual);
     // states
     const [allData, setAllData] = useState([]);
     const [singleData, setSingleData] = useState("");
@@ -200,6 +209,11 @@ const withLeaveApplication = (WrappedComponent) => {
       getEmpInfoDetails();
     }, []);
 
+    const permission = useMemo(
+      () => permissionList?.find((menu) => menu?.menuReferenceId === 87),
+      [permissionList]
+    );
+
     return (
       <WrappedComponent
         propjObj={{
@@ -253,6 +267,7 @@ const withLeaveApplication = (WrappedComponent) => {
           buId,
           setAllData,
           wgId,
+          permission
         }}
       />
     );

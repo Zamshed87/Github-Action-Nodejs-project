@@ -1,7 +1,7 @@
 import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { APIUrl } from "../../../App";
 import DemoImg from "../../../assets/images/demo.png";
@@ -65,6 +65,7 @@ function EmLeaveApplication(props) {
     buId,
     setAllData,
     wgId,
+    permission
   } = props?.propjObj;
 
   const dispatch = useDispatch();
@@ -73,15 +74,6 @@ function EmLeaveApplication(props) {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-
-  let permission = null;
-  permissionList?.forEach((item) => {
-    if (item?.menuReferenceId === 87) {
-      permission = item;
-    }
-  });
   return (
     <>
       <Formik
@@ -298,6 +290,7 @@ function EmLeaveApplication(props) {
                           leaveTypeDDL,
                           setLoading,
                           loading,
+                          editPermission: permission?.isEdit 
                         }}
                       />
                     </div>

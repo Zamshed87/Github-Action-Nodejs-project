@@ -7,7 +7,7 @@ import Loading from "../../loading/Loading";
 import { useRef } from "react";
 import FormikSelect from "../../FormikSelect";
 import FormikInput from "../../FormikInput";
-import { getDateOfYear } from "../../../utility/dateFormatter";
+import { calculateNextDate, getDateOfYear } from "../../../utility/dateFormatter";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import { attachment_action } from "../../api";
 
@@ -20,6 +20,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
     shallowEqual
   );
   const [startYear, setStartYear] = useState(null);
+  const [next3daysForEmp, setNext3daysForEmp] = useState(null);
   let dispatch = useDispatch();
 
   const {
@@ -37,6 +38,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
     leaveTypeDDL,
     setLoading,
     loading,
+    editPermission = false,
   } = propsObj;
 
   // image
@@ -88,6 +90,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
                 onChange={(e) => {
                   setFieldValue("toDate", "");
                   setFieldValue("fromDate", e.target.value);
+                  setNext3daysForEmp(calculateNextDate(e?.target?.value, 2))
                   const x = e.target.value.split("-")[0];
                   setStartYear(getDateOfYear("last", x));
                 }}
@@ -106,7 +109,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
                 name="toDate"
                 type="date"
                 min={values?.fromDate ? values?.fromDate : firstDate}
-                max={startYear ? startYear : lastDate}
+                max={startYear ? !editPermission ? next3daysForEmp : startYear : lastDate}
                 className="form-control"
                 onChange={(e) => {
                   setFieldValue("toDate", e.target.value);
