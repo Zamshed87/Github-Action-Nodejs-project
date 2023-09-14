@@ -42,7 +42,7 @@ const AntTable = ({
                 new Date(dateFormatter(b?.[item?.dataIndex]))
               );
             }
-          : (a, b) => a?.[item?.dataIndex].length - b?.[item?.dataIndex].length
+          : (a, b) => a?.[item?.dataIndex]?.length - b?.[item?.dataIndex]?.length
         : "",
       filters: item?.filter
         ? item?.isDate
