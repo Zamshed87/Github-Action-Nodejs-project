@@ -58,10 +58,10 @@ const LeaveApplicationForm = ({ propsObj }) => {
               options={
                 [
                   ...leaveTypeDDL,
-                  {
-                    label: "Special Leave",
-                    value: 8,
-                  },
+                  // {
+                  //   label: "Special Leave",
+                  //   value: 8,
+                  // },
                 ] || []
               }
               value={values?.leaveType}
@@ -109,7 +109,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
                 name="toDate"
                 type="date"
                 min={values?.fromDate ? values?.fromDate : firstDate}
-                max={startYear ? !editPermission ? next3daysForEmp : startYear : lastDate}
+                max={startYear ? (!editPermission && values?.leaveType?.LeaveType === "Casual Leave") ? next3daysForEmp : startYear : lastDate}
                 className="form-control"
                 onChange={(e) => {
                   setFieldValue("toDate", e.target.value);
