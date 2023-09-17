@@ -225,14 +225,14 @@ export const salaryAssignLandingColumn = (page, paginationSize, wgName) => {
       filter: false,
       className: "text-center",
     },
-    {
-      title: "PIN",
-      dataIndex: "PIN",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-      width: 100,
-    },
+    // {
+    //   title: "PIN",
+    //   dataIndex: "PIN",
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "string",
+    //   width: 100,
+    // },
     {
       title: "Employee ID",
       dataIndex: "EmployeeCode",
