@@ -121,6 +121,12 @@ export default function BonusSetupLanding() {
       filter: false,
     },
     {
+      title: "Employee Type",
+      dataIndex: "strEmploymentType",
+      sorter: true,
+      filter: false,
+    },
+    {
       title: "min.Service Length",
       dataIndex: "intMinimumServiceLengthMonth",
       sorter: true,
