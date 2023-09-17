@@ -81,7 +81,6 @@ const DefaultSalary = ({ propsObj }) => {
       })
       .catch((err) => []);
   };
-
   return (
     <>
       {loading && <Loading />}
