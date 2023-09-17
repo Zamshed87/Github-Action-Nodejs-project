@@ -282,7 +282,7 @@ export default function BonusSetupForm() {
                         touched={touched}
                       />
                     </div>
-                    <div className="col-lg-3 d-none">
+                    <div className="col-lg-3">
                       <label>Employment Type</label>
                       <FormikSelect
                         placeholder=" "
