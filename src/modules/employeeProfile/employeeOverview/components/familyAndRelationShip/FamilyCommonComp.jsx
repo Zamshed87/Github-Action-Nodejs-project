@@ -195,7 +195,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                           { value: 4, label: "Mother" },
                           // { value: 5, label: "Uncle" },
                           // { value: 6, label: "Aunty" },
-                          // { value: 7, label: "Spouse" },
+                          { value: 7, label: "Spouse" },
                           // { value: 8, label: "Child" },
                         ]}
                         value={values?.relationship}
