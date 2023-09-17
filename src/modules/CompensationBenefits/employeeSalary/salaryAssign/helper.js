@@ -51,11 +51,7 @@ export const getBreakdownListDDL = async (
     );
     if (res?.data) {
       try {
-        const resBasicAllowance = await axios.get(
-          `/Payroll/GetGrossWiseBasicAmountNPercentage?BreakDownHeaderId=${id}&GrossAmount=${
-            grossSalaryAmount || 0
-          }`
-        );
+        const resBasicAllowance = await axios.get(`/Payroll/GetGrossWiseBasicAmountNPercentage?BreakDownHeaderId=${id}&GrossAmount=${grossSalaryAmount || 0}`);
         if (resBasicAllowance?.data) {
           getSalaryAssignDDL(
             accId,

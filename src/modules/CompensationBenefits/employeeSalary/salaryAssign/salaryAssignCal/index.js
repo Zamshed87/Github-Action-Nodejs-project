@@ -16,7 +16,6 @@ export const getSalaryAssignDDL = (
 
     default:
       let basicElement = res?.data?.filter((itm) => itm?.isBasicSalary);
-
       modifyData = res?.data?.map((itm) => {
         let modifyObj;
 
@@ -25,24 +24,17 @@ export const getSalaryAssignDDL = (
           // basic salary
           if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
             modifyObj = {
-              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-                basicSalaryObj.basicSalary || 0,
+              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: basicSalaryObj.basicSalary || 0,
               numAmount: basicSalaryObj.basicSalary || 0,
               showPercentage: basicSalaryObj.numPercentageOfGross || 50,
             };
           }
 
           // basic dependency
-          if (
-            itm?.strBasedOn === "Percentage" &&
-            itm?.strDependOn === "Basic" &&
-            !itm?.isBasicSalary
-          ) {
+          if (itm?.strBasedOn === "Percentage" && itm?.strDependOn === "Basic" && !itm?.isBasicSalary) {
             modifyObj = {
-              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-                itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
-              numAmount:
-                itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
+              numAmount: itm?.numNumberOfPercent * basicSalaryObj.basicSalary * 0.01,
               showPercentage: itm?.numNumberOfPercent,
             };
           }
@@ -56,8 +48,7 @@ export const getSalaryAssignDDL = (
           // without basic salary
           if (itm?.strBasedOn === "Percentage") {
             modifyObj = {
-              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-                (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
               numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
               showPercentage: itm?.numNumberOfPercent,
             };
@@ -69,8 +60,7 @@ export const getSalaryAssignDDL = (
           // basic salary
           if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
             modifyObj = {
-              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-                (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
               numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
               showPercentage: itm?.numNumberOfPercent,
             };
@@ -83,16 +73,23 @@ export const getSalaryAssignDDL = (
             !itm?.isBasicSalary
           ) {
             modifyObj = {
-              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-                itm?.numNumberOfPercent *
-                ((basicElement[0]?.numNumberOfPercent / 100) *
-                  grossSalaryAmount) *
-                0.01,
-              numAmount:
-                itm?.numNumberOfPercent *
-                ((basicElement[0]?.numNumberOfPercent / 100) *
-                  grossSalaryAmount) *
-                0.01,
+              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: itm?.numNumberOfPercent *((basicElement[0]?.numNumberOfPercent / 100) * grossSalaryAmount) *0.01,
+              numAmount:itm?.numNumberOfPercent * ((basicElement[0]?.numNumberOfPercent / 100) * grossSalaryAmount) * 0.01,
+              showPercentage: itm?.numNumberOfPercent,
+            };
+          }
+            // gross dependency
+          if (
+            itm?.strBasedOn === "Percentage" &&
+            itm?.strDependOn === "Gross" &&
+            !itm?.isBasicSalary
+          ) {
+            modifyObj = {
+              // [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: itm?.numNumberOfPercent *((basicElement[0]?.numNumberOfPercent / 100) * grossSalaryAmount) *0.01,
+              // numAmount: itm?.numNumberOfPercent * ((basicElement[0]?.numNumberOfPercent / 100) * grossSalaryAmount) * 0.01,
+              // showPercentage: itm?.numNumberOfPercent,
+              [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+              numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
               showPercentage: itm?.numNumberOfPercent,
             };
           }
@@ -101,8 +98,7 @@ export const getSalaryAssignDDL = (
         // amount
         if (itm?.strBasedOn === "Amount" && !itm?.isBasicSalary) {
           modifyObj = {
-            [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-              itm?.numAmount,
+            [itm?.strPayrollElementName?.toLowerCase()?.split(" ").join("")]: itm?.numAmount,
             numAmount: itm?.numAmount,
           };
         }
@@ -214,6 +210,18 @@ export const getByIdSalaryAssignDDL = (
                 ((basicElement[0]?.numNumberOfPercent / 100) *
                   grossSalaryAmount) *
                 0.01,
+              showPercentage: itm?.numNumberOfPercent,
+            };
+          }
+          // gross dependency
+          if (
+            itm?.strBasedOn === "Percentage" &&
+            itm?.strDependOn === "Gross" &&
+            !itm?.isBasicSalary
+          ) {
+            modifyObj = {
+              [itm?.strSalaryElement.toLowerCase().split(" ").join("")]: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+              numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
               showPercentage: itm?.numNumberOfPercent,
             };
           }
