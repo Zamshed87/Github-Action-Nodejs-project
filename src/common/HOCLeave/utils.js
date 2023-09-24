@@ -20,6 +20,8 @@ export const initDataForLeaveApplication = {
   reason: "",
   fromDate: "",
   toDate: "",
+  halfTime: "",
+  isHalfDay: "",
   year: { value: moment().year(), label: moment().year() },
 };
 
