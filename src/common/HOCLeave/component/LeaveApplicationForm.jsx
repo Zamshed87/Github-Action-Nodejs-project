@@ -7,7 +7,10 @@ import Loading from "../../loading/Loading";
 import { useRef } from "react";
 import FormikSelect from "../../FormikSelect";
 import FormikInput from "../../FormikInput";
-import { calculateNextDate, getDateOfYear } from "../../../utility/dateFormatter";
+import {
+  calculateNextDate,
+  getDateOfYear,
+} from "../../../utility/dateFormatter";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import { attachment_action } from "../../api";
 
@@ -46,6 +49,13 @@ const LeaveApplicationForm = ({ propsObj }) => {
   const onButtonClick = () => {
     inputFile.current.click();
   };
+
+  React.useEffect(() => {
+    if (values?.fromDate !== values?.toDate) {
+      setFieldValue("isHalfDay", "");
+    }
+    // eslint-disable-next-line
+  }, [values?.fromDate, values?.toDate]);
   return (
     <>
       {loading && <Loading />}
@@ -90,7 +100,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
                 onChange={(e) => {
                   setFieldValue("toDate", "");
                   setFieldValue("fromDate", e.target.value);
-                  setNext3daysForEmp(calculateNextDate(e?.target?.value, 2))
+                  setNext3daysForEmp(calculateNextDate(e?.target?.value, 2));
                   const x = e.target.value.split("-")[0];
                   setStartYear(getDateOfYear("last", x));
                 }}
@@ -109,7 +119,14 @@ const LeaveApplicationForm = ({ propsObj }) => {
                 name="toDate"
                 type="date"
                 min={values?.fromDate ? values?.fromDate : firstDate}
-                max={startYear ? (!editPermission && values?.leaveType?.LeaveType === "Casual Leave") ? next3daysForEmp : startYear : lastDate}
+                max={
+                  startYear
+                    ? !editPermission &&
+                      values?.leaveType?.LeaveType === "Casual Leave"
+                      ? next3daysForEmp
+                      : startYear
+                    : lastDate
+                }
                 className="form-control"
                 onChange={(e) => {
                   setFieldValue("toDate", e.target.value);
@@ -120,6 +137,57 @@ const LeaveApplicationForm = ({ propsObj }) => {
             </div>
           </div>
         </div>
+        {values?.fromDate === values?.toDate &&
+        values?.leaveType?.label === "Casual Leave" ? (
+          <div className="row">
+            <div className="col-lg-6">
+              <label> Leave Length</label>
+              <FormikSelect
+                name="isHalfDay"
+                options={[
+                  { value: 0, label: "Full Day" },
+                  { value: 1, label: "Half Day" },
+                ]}
+                value={values?.isHalfDay}
+                onChange={(valueOption) => {
+                  setFieldValue("isHalfDay", valueOption);
+                }}
+                placeholder=""
+                styles={customStyles}
+                errors={errors}
+                touched={touched}
+                isDisabled={false}
+                isClearable={false}
+              />
+            </div>
+            {values?.isHalfDay.value === 1 ? (
+              <div className="col-lg-6">
+                <label> Half Day Time</label>
+                <FormikSelect
+                  name="halfTime"
+                  options={[
+                    { value: 0, label: "8:30 AM – 12:30 PM" },
+                    { value: 1, label: "1:30 PM- 5:30 PM" },
+                  ]}
+                  value={values?.halfTime}
+                  onChange={(valueOption) => {
+                    setFieldValue("halfTime", valueOption);
+                  }}
+                  placeholder=""
+                  styles={customStyles}
+                  errors={errors}
+                  touched={touched}
+                  isDisabled={false}
+                  isClearable={false}
+                />
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+        ) : (
+          ""
+        )}
         <div className="row">
           <div className="col-lg-4">
             <div className="input-field-main mt-3">
