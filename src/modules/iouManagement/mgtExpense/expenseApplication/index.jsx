@@ -41,7 +41,7 @@ const MgtExpenseApplication = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, intWorkplaceId } = useSelector(
+  const { buId, wgId, intWorkplaceId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -85,7 +85,7 @@ const MgtExpenseApplication = () => {
       pagination?.current,
       pagination?.pageSize,
       setPages,
-      intWorkplaceId
+      wId
     );
   };
 
@@ -124,10 +124,10 @@ const MgtExpenseApplication = () => {
       1,
       paginationSize,
       setPages,
-      intWorkplaceId
+      wId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId, intWorkplaceId]);
+  }, [buId, wgId, intWorkplaceId, wId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -170,7 +170,7 @@ const MgtExpenseApplication = () => {
                           1,
                           paginationSize,
                           setPages,
-                          intWorkplaceId
+                          wId
                         );
                       }}
                     />
@@ -199,7 +199,7 @@ const MgtExpenseApplication = () => {
                           1,
                           paginationSize,
                           setPages,
-                          intWorkplaceId
+                          wId
                         );
                       }, 500);
                     }}
@@ -216,7 +216,7 @@ const MgtExpenseApplication = () => {
                         1,
                         paginationSize,
                         setPages,
-                        intWorkplaceId
+                        wId
                       );
                     }}
                     handleClick={(e) => setfilterAnchorEl(e.currentTarget)}
@@ -300,7 +300,7 @@ const MgtExpenseApplication = () => {
                         1,
                         paginationSize,
                         setPages,
-                        intWorkplaceId
+                        wId
                       );
                     }}
                   >
