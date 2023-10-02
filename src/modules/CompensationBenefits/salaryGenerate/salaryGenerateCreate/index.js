@@ -42,7 +42,7 @@ const SalaryGenerateCreate = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { orgId, buId, employeeId, wgId, buName, wgName } = useSelector(
+  const { orgId, buId, employeeId, wgId, buName, wgName, wId, wName  } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -195,6 +195,8 @@ const SalaryGenerateCreate = () => {
       strBusinessUnit: buName,
       intWorkplaceGroupId: wgId,
       strWorkplaceGroup: wgName,
+      intWorkplaceId: wId,
+      strWorkplace: wName,
       intWingId: values?.wing?.value || 0,
       intSoleDepoId: values?.soleDepo?.value || 0,
       intRegionId: values?.region?.value || 0,
