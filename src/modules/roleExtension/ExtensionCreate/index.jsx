@@ -184,57 +184,9 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
       );
     };
 
-    // same work filed check
-    const isSameWorkField = (fieldValue, typeValue) => {
-      return rowDto.some(
-        (itm) =>
-          itm?.intOrganizationReffId === fieldValue &&
-          itm?.intOrganizationTypeId === typeValue
-      );
-    };
-
     // modify filter Arr
     const modifyFinalArr = (filedType, values) => {
-      if (filedType === "wing") {
-        return isSameWorkField(values?.orgName?.value, 2)
-          ? modifyArr.filter(
-            (itm) => itm?.intOrganizationReffId !== values?.orgName?.value
-          )
-          : modifyArr;
-      }
-
-      if (filedType === "soleDepo") {
-        return isSameWorkField(values?.wing?.value, 4)
-          ? modifyArr.filter(
-            (itm) =>
-              itm?.intOrganizationReffId !== values?.orgName?.value &&
-              itm?.intOrganizationReffId !== values?.wing?.value
-          )
-          : modifyArr;
-      }
-
-      if (filedType === "region") {
-        return isSameWorkField(values?.soleDepo?.value, 5)
-          ? modifyArr.filter(
-            (itm) =>
-              itm?.intOrganizationReffId !== values?.orgName?.value &&
-              itm?.intOrganizationReffId !== values?.wing?.value &&
-              itm?.intOrganizationReffId !== values?.soleDepo?.value
-          )
-          : modifyArr;
-      }
-
-      if (filedType === "area") {
-        return isSameWorkField(values?.region?.value, 6)
-          ? modifyArr.filter(
-            (itm) =>
-              itm?.intOrganizationReffId !== values?.orgName?.value &&
-              itm?.intOrganizationReffId !== values?.wing?.value &&
-              itm?.intOrganizationReffId !== values?.soleDepo?.value &&
-              itm?.intOrganizationReffId !== values?.region?.value
-          )
-          : modifyArr;
-      }
+      return;
     };
 
     // workplace Group
@@ -252,143 +204,11 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
       },
     ];
 
-    // wing
-    if (isAllDataCheck(4)) {
-      return toast.warn("Wing has all data exsist...");
-    }
-
-    if (values?.wing?.value === 0 || values?.wing?.value) {
-      if (values?.wing?.label === "All") {
-        let modifyWing = rowDto.filter((itm) => itm?.intOrganizationTypeId < 4);
-        modifyArr = [
-          ...modifyWing,
-          {
-            intOrganizationTypeId: 4,
-            strOrganizationTypeName: "Wing",
-            intOrganizationReffId: values?.wing?.value,
-            strOrganizationReffName: values?.wing?.label,
-          },
-        ];
-
-        setRowDto([...modifyArr]);
-      } else {
-        modifyArr = [
-          ...modifyFinalArr("wing", values),
-          {
-            intOrganizationTypeId: 4,
-            strOrganizationTypeName: "Wing",
-            intOrganizationReffId: values?.wing?.value,
-            strOrganizationReffName: values?.wing?.label,
-          },
-        ];
-
-        setRowDto([...rowDto, ...modifyArr]);
-      }
-    }
-
-    // soleDepo
-    if (isAllDataCheck(5)) {
-      return toast.warn("Wing has all data exsist...");
-    }
-
-    if (values?.soleDepo?.value === 0 || values?.soleDepo?.value) {
-      if (values?.soleDepo?.label === "All") {
-        let modifySoleDepo = rowDto.filter(
-          (itm) => itm?.intOrganizationTypeId < 5
-        );
-        modifyArr = [
-          ...modifySoleDepo,
-          {
-            intOrganizationTypeId: 5,
-            strOrganizationTypeName: "Sole Depo",
-            intOrganizationReffId: values?.soleDepo?.value,
-            strOrganizationReffName: values?.soleDepo?.label,
-          },
-        ];
-
-        setRowDto([...modifyArr]);
-      } else {
-        modifyArr = [
-          ...modifyFinalArr("soleDepo", values),
-          {
-            intOrganizationTypeId: 5,
-            strOrganizationTypeName: "Sole Depo",
-            intOrganizationReffId: values?.soleDepo?.value,
-            strOrganizationReffName: values?.soleDepo?.label,
-          },
-        ];
-        setRowDto([...rowDto, ...modifyArr]);
-      }
-    }
-
-    // region
-    if (isAllDataCheck(6)) {
-      return toast.warn("Wing has all data exsist...");
-    }
-
-    if (values?.region?.value === 0 || values?.region?.value) {
-      if (values?.region?.label === "All") {
-        let modifyRegion = rowDto.filter(
-          (itm) => itm?.intOrganizationTypeId < 6
-        );
-        modifyArr = [
-          ...modifyRegion,
-          {
-            intOrganizationTypeId: 6,
-            strOrganizationTypeName: "Region",
-            intOrganizationReffId: values?.region?.value,
-            strOrganizationReffName: values?.region?.label,
-          },
-        ];
-
-        setRowDto([...modifyArr]);
-      } else {
-        modifyArr = [
-          ...modifyFinalArr("region", values),
-          {
-            intOrganizationTypeId: 6,
-            strOrganizationTypeName: "Region",
-            intOrganizationReffId: values?.region?.value,
-            strOrganizationReffName: values?.region?.label,
-          },
-        ];
-        setRowDto([...rowDto, ...modifyArr]);
-      }
-    }
+    setRowDto([...rowDto, ...modifyArr]);
 
     // region
     if (isAllDataCheck(7)) {
       return toast.warn("Wing has all data exsist...");
-    }
-
-    if (values?.area?.value === 0 || values?.area?.value) {
-      if (values?.area?.label === "All") {
-        let modifyRegion = rowDto.filter(
-          (itm) => itm?.intOrganizationTypeId < 7
-        );
-        modifyArr = [
-          ...modifyRegion,
-          {
-            intOrganizationTypeId: 7,
-            strOrganizationTypeName: "Area",
-            intOrganizationReffId: values?.area?.value,
-            strOrganizationReffName: values?.area?.label,
-          },
-        ];
-
-        setRowDto([...modifyArr]);
-      } else {
-        modifyArr = [
-          ...modifyFinalArr("area", values),
-          {
-            intOrganizationTypeId: 7,
-            strOrganizationTypeName: "Area",
-            intOrganizationReffId: values?.area?.value,
-            strOrganizationReffName: values?.area?.label,
-          },
-        ];
-        setRowDto([...rowDto, ...modifyArr]);
-      }
     }
 
     setFieldValue("orgType", "");
