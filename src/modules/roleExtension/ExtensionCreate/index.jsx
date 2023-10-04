@@ -101,7 +101,6 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
 
   const onRoleAdd = (values, setFieldValue) => {
     let modifyArr = [];
-
     // role Exist
     const isRoleExist = (values) => {
       let roleExist = false;
@@ -188,14 +187,11 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
     const modifyFinalArr = (filedType, values) => {
       return;
     };
-
     // workplace Group
     if (isAllDataCheck(2)) {
       return toast.warn("Workplace Group has all data exsist...");
     }
-
     modifyArr = [
-      ...modifyArr,
       {
         intOrganizationTypeId: +values?.orgType?.value,
         strOrganizationTypeName: values?.orgType?.label,
@@ -210,10 +206,8 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
     if (isAllDataCheck(7)) {
       return toast.warn("Wing has all data exsist...");
     }
-
     setFieldValue("orgType", "");
     setFieldValue("orgName", "");
-
     setFieldValue("wing", "");
     setFieldValue("soleDepo", "");
     setFieldValue("region", "");
@@ -295,61 +289,65 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                   </div>
                   <div className="row">
                     <div className="col-md-3">
-                      <label className="mb-2">Organization Type</label>
-                      <FormikSelect
-                        classes="input-sm"
-                        styles={customStyles}
-                        name="businessUnit"
-                        options={organizationTypeList || []}
-                        value={values?.orgType}
-                        isDisabled={!values?.employeeName?.value}
-                        onChange={(valueOption) => {
-                          setFieldValue("orgName", "");
-                          setFieldValue("orgType", valueOption);
-                          setOrganizationDDLFunc(
-                            wgId,
-                            buId,
-                            employeeId,
-                            valueOption,
-                            setOrganizationDDL
-                          );
-                        }}
-                        errors={errors}
-                        touched={touched}
-                        placeholder=" "
-                      />
+                      <div className="input-field-main">
+                        <label>Organization Type</label>
+                        <FormikSelect
+                          classes="input-sm"
+                          styles={customStyles}
+                          name="businessUnit"
+                          options={organizationTypeList || []}
+                          value={values?.orgType}
+                          isDisabled={!values?.employeeName?.value}
+                          onChange={(valueOption) => {
+                            setFieldValue("orgName", "");
+                            setFieldValue("orgType", valueOption);
+                            setOrganizationDDLFunc(
+                              wgId,
+                              buId,
+                              employeeId,
+                              valueOption,
+                              setOrganizationDDL
+                            );
+                          }}
+                          errors={errors}
+                          touched={touched}
+                          placeholder=" "
+                        />
+                      </div>
                     </div>
                     <div className="col-md-3">
-                      <label className="mb-2">Organization Name</label>
-                      <FormikSelect
-                        isDisabled={!values?.orgType}
-                        classes="input-sm"
-                        styles={customStyles}
-                        name="orgName"
-                        options={organizationDDL || []}
-                        value={values?.orgName}
-                        onChange={(valueOption) => {
-                          setFieldValue("orgName", valueOption);
+                      <div className="input-field-main">
+                        <label>Organization Name</label>
+                        <FormikSelect
+                          isDisabled={!values?.orgType}
+                          classes="input-sm"
+                          styles={customStyles}
+                          name="orgName"
+                          options={organizationDDL || []}
+                          value={values?.orgName}
+                          onChange={(valueOption) => {
+                            setFieldValue("orgName", valueOption);
 
-                          if (valueOption?.label === "Marketing") {
-                            setFieldValue("wing", "");
-                            setFieldValue("soleDepo", "");
-                            setFieldValue("region", "");
-                            setFieldValue("area", "");
+                            if (valueOption?.label === "Marketing") {
+                              setFieldValue("wing", "");
+                              setFieldValue("soleDepo", "");
+                              setFieldValue("region", "");
+                              setFieldValue("area", "");
 
-                            getPeopleDeskWithoutAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
-                              "WingId",
-                              "WingName",
-                              setWingDDL
-                            );
-                          }
-                        }}
-                        errors={errors}
-                        touched={touched}
-                        placeholder=" "
-                        isClearable={false}
-                      />
+                              getPeopleDeskWithoutAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
+                                "WingId",
+                                "WingName",
+                                setWingDDL
+                              );
+                            }
+                          }}
+                          errors={errors}
+                          touched={touched}
+                          placeholder=" "
+                          isClearable={false}
+                        />
+                      </div>
                     </div>
 
                     {/* marketing setup */}
@@ -388,7 +386,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                     )}
 
                     {/* wing */}
-                    {values?.wing && (
+                    {values?.wing && values?.wing?.value !== 0 && (
                       <div className="col-md-3">
                         <div className="input-field-main">
                           <label>Sole Depo</label>
@@ -421,7 +419,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                     )}
 
                     {/* soleDepo */}
-                    {values?.soleDepo && (
+                    {values?.soleDepo && values?.soleDepo?.value !== 0 && (
                       <div className="col-md-3">
                         <div className="input-field-main">
                           <label>Region</label>
@@ -453,7 +451,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                     )}
 
                     {/* region */}
-                    {values?.region && (
+                    {values?.region && values?.region?.value !== 0 && (
                       <div className="col-md-3">
                         <div className="input-field-main">
                           <label>Area</label>
@@ -485,7 +483,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                           !values?.orgType
                         }
                         className="btn btn-green"
-                        style={{ marginTop: "27px" }}
+                        style={{ marginTop: "23px" }}
                         type="button"
                         onClick={() => {
                           onRoleAdd(values, setFieldValue);
