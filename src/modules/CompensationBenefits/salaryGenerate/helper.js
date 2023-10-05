@@ -33,6 +33,7 @@ export const getSalaryGenerateRequestLanding = async (
   orgId,
   buId,
   wgId,
+  wId,
   monthId,
   yearId,
   fromDate,
@@ -64,7 +65,7 @@ export const getSalaryGenerateRequestLanding = async (
         monthId || +currentMonth()
       }&intYearId=${
         yearId || currentYear
-      }&intWorkplaceGroupId=${wgId}&intBankOrWalletType=0${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+      }&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId || 0}&intBankOrWalletType=0${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
     );
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
