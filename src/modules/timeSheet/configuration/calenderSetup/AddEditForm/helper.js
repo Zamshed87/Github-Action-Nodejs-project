@@ -64,72 +64,6 @@ export const onCreateCalendarSetupWithValidation = (
       return;
     }
   }
-
-  // if (
-  //   !validateTime(
-  //     "Extended start time",
-  //     values?.allowedStartTime,
-  //     values?.startTime,
-  //     values?.endTime
-  //   )
-  // )
-  //   return;
-
-  // if (
-  //   !validateTime(
-  //     "Last start time",
-  //     values?.lastStartTime,
-  //     values?.allowedStartTime,
-  //     values?.endTime
-  //   )
-  // )
-  //   return;
-
-  // if (
-  //   !validateTime(
-  //     "Break start time",
-  //     values?.breakStartTime,
-  //     values?.startTime,
-  //     values?.endTime
-  //   )
-  // )
-  //   return;
-
-  // if (
-  //   !validateTime(
-  //     "Break End time",
-  //     values?.breakEndTime,
-  //     values?.breakStartTime,
-  //     values?.endTime
-  //   )
-  // )
-  //   return;
-
-  // // if (
-  // //   !validateTime(
-  // //     "Office Start time",
-  // //     values?.startTime,
-  // //     values?.officeStartTime,
-  // //     values?.officeCloseTime
-  // //   )
-  // // )
-  // //   return;
-  // if (!(values?.officeStartTime <= values.startTime)) {
-  //   toast.warn(`Office Open time is not in range`);
-  //   return;
-  // }
-  // if (!(values?.officeCloseTime >= values.endTime)) {
-  //   toast.warn(`Office End time is not in range`);
-  //   return;
-  // }
-
-  // !validateTime(
-  //   "Office End time",
-  //   values?.endTime,
-  //   values?.officeStartTime,
-  //   values?.officeCloseTime
-  // )
-
   let userList = tableData?.map((item) => {
     return {
       calendarId: id || 0,
@@ -167,21 +101,22 @@ export const onCreateCalendarSetupWithValidation = (
       editList.push(itm);
     }
   });
-
   const payload = {
     calenderId: id || 0,
     strCalenderCode: "",
     strCalenderName: values?.calendarName || "",
     dteStartTime: id
-      ? values?.startTime
+      ? moment(values?.startTime, "HH:mm").format("HH:mm:ss")
       : `${values?.startTime}:00` || "00:00:00",
     dteExtendedStartTime: id
-      ? values?.allowedStartTime
+      ? moment(values?.allowedStartTime, "HH:mm").format("HH:mm:ss")
       : `${values?.allowedStartTime}:00` || "00:00:00",
     dteLastStartTime: id
-      ? values?.lastStartTime
+      ? moment(values?.lastStartTime, "HH:mm").format("HH:mm:ss")
       : `${values?.lastStartTime}:00` || "00:00:00",
-    dteEndTime: id ? values?.endTime : `${values?.endTime}:00` || "00:00:00",
+    dteEndTime: id
+      ? moment(values?.endTime, "HH:mm").format("HH:mm:ss")
+      : `${values?.endTime}:00` || "00:00:00",
     numMinWorkHour: +values?.minWork || 0,
     intAccountId: orgId,
     intBusinessUnitId: buId,
@@ -191,16 +126,16 @@ export const onCreateCalendarSetupWithValidation = (
     dteUpdatedAt: "2023-08-30T09:23:42.542Z",
     isActive: true,
     dteBreakStartTime: id
-      ? values?.breakStartTime
+      ? moment(values?.breakStartTime, "HH:mm").format("HH:mm:ss")
       : `${values?.breakStartTime}:00` || "00:00:00",
     dteBreakEndTime: id
-      ? values?.breakEndTime
+      ? moment(values?.breakEndTime, "HH:mm").format("HH:mm:ss")
       : `${values?.breakEndTime}:00` || "00:00:00",
     dteOfficeStartTime: id
-      ? values?.officeStartTime
+      ? moment(values?.officeStartTime, "HH:mm").format("HH:mm:ss")
       : `${values?.officeStartTime}:00` || "00:00:00",
     dteOfficeCloseTime: id
-      ? values?.officeCloseTime
+      ? moment(values?.officeCloseTime, "HH:mm").format("HH:mm:ss")
       : `${values?.officeCloseTime}:00` || "00:00:00",
     isNightShift: values?.nightShift || false,
     timeSheetCalenderRows: id ? [...deleteList, ...editList] : userList,
