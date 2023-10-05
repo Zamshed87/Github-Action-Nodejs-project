@@ -40,7 +40,7 @@ const statusDDL = [
 ];
 
 function OffDay() {
-  const { orgId, buId, wgId, wgName } = useSelector(
+  const { orgId, buId, wgId, wgName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -134,7 +134,7 @@ function OffDay() {
         businessUnitId: buId,
         workplaceGroupId: wgId,
         isAssign: isAssigned === 1 ? true : isAssigned === 2 ? false : null,
-        workplaceId: 0,
+        workplaceId: wId || 0,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -258,7 +258,7 @@ function OffDay() {
   useEffect(() => {
     getData(pages);
     // setChecked([]);
-  }, [buId, orgId, wgId]);
+  }, [buId, orgId, wgId, wId]);
 
   const updateSingleData = (item) => {
     const newRowData = {

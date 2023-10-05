@@ -636,6 +636,7 @@ const SalaryGenerateLanding = () => {
                         orgId,
                         buId,
                         wgId,
+                        wId,
                         "",
                         "",
                         values?.filterFromDate,
