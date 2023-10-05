@@ -57,7 +57,7 @@ function UserInfo() {
   // const handleViewOpen = () => setViewModal(true);
   const handleViewClose = () => setViewModal(false);
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -101,7 +101,7 @@ function UserInfo() {
       pagination?.current
     }&PageSize=${
       pagination?.pageSize
-    }&workplaceGroupId=${wgId}&isUser=0&IsForXl=false&searchTxt=${
+    }&workplaceGroupId=${wgId}&workplaceId=${wId}&isUser=0&IsForXl=false&searchTxt=${
       searchtText || ""
     }`;
     getLanding(api, (res) => {
@@ -151,7 +151,7 @@ function UserInfo() {
   useEffect(() => {
     getData(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
