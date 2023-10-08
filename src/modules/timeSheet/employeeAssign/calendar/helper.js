@@ -4,6 +4,12 @@ import axios from "axios";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import RoasterInfo from "./component/RosterInfo";
 import { InfoOutlined } from "@mui/icons-material";
+import * as Yup from "yup";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "../../../../common/peopleDeskTable/helper";
+
 export const getShiftInfo = async (id, setter) => {
   try {
     const res = await axios.get(
@@ -263,3 +269,283 @@ export const columns = (
       ),
     },
   ].filter((item) => item.hidden !== true);
+
+export const initData = {
+  searchString: "",
+  allSelected: false,
+  // master filter
+  workplace: "",
+  department: "",
+  designation: "",
+  supervisor: "",
+  employmentType: "",
+  employee: "",
+  assignStatus: { value: "all", label: "All" },
+  salaryStatus: "",
+};
+export const validationSchema = Yup.object({});
+
+export const colors = [
+  "#299647",
+  "#B54708",
+  "#B42318",
+  "#6927DA",
+  "#3538CD",
+  "#667085",
+  "#667085",
+];
+export const bgColors = [
+  "#E6F9E9",
+  "#FEF0C7",
+  "#FEE4E2",
+  "#ECE9FE",
+  "#E0EAFF",
+  "#F2F4F7",
+  "#FEF0D7",
+];
+export const initHeaderList = {
+  designationList: [],
+  departmentList: [],
+  supervisorNameList: [],
+  wingNameList: [],
+  soleDepoNameList: [],
+  regionNameList: [],
+  areaNameList: [],
+  territoryNameList: [],
+  employmentTypeList: [],
+};
+export const statusDDL = [
+  { value: 0, label: "All" },
+  { value: 1, label: "Assigned" },
+  { value: 2, label: "Not Assigned" },
+];
+// landing api call
+const getDataApiCall = async (
+  modifiedPayload,
+  pagination,
+  searchText,
+  checkedList,
+  currentFilterSelection,
+  checkedHeaderList,
+  isAssigned = null,
+  setLandingLoading,
+  buId,
+  wgId,
+  wId,
+  headerList,
+  setHeaderList,
+  filterOrderList,
+  setFilterOrderList,
+  initialHeaderListData,
+  setInitialHeaderListData,
+  setPages,
+  setEmpIDString,
+  setRowDto
+) => {
+  setLandingLoading(true);
+  try {
+    const payload = {
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
+      workplaceId: wId,
+      pageNo: pagination.current,
+      pageSize: pagination.pageSize,
+      isPaginated: true,
+      isHeaderNeed: true,
+      searchTxt: searchText || "",
+    };
+
+    const res = await axios.post(`/Employee/CalendarAssignFilter`, {
+      ...payload,
+      ...modifiedPayload,
+    });
+    if (res?.data?.data) {
+      setLandingLoading(true);
+      setHeaderListDataDynamically({
+        currentFilterSelection,
+        checkedHeaderList,
+        headerListKey: "calendarAssignHeader",
+        headerList,
+        setHeaderList,
+        response: res?.data,
+        filterOrderList,
+        setFilterOrderList,
+        initialHeaderListData,
+        setInitialHeaderListData,
+        // setEmpLanding,
+        setPages,
+      });
+
+      setEmpIDString(res?.data?.employeeIdList);
+      const modifiedData = res?.data?.data?.map((item, index) => ({
+        ...item,
+        initialSerialNumber: index + 1,
+        isSelected: checkedList?.find(
+          ({ employeeCode }) => item?.employeeCode === employeeCode
+        )
+          ? true
+          : false,
+      }));
+
+      setRowDto(modifiedData);
+      setLandingLoading(false);
+    } else {
+      setRowDto([]);
+    }
+    setLandingLoading(false);
+  } catch (error) {
+    setLandingLoading(false);
+  }
+};
+export const getData = async (
+  pagination,
+  setLandingLoading,
+  buId,
+  wgId,
+  wId,
+  headerList,
+  setHeaderList,
+  setFilterOrderList,
+  initialHeaderListData,
+  setInitialHeaderListData,
+  setPages,
+  setEmpIDString,
+  setRowDto,
+  searchText = "",
+  checkedList = [],
+  currentFilterSelection = -1,
+  filterOrderList = [],
+  checkedHeaderList = { ...initHeaderList },
+  isAssigned
+) => {
+  const modifiedPayload = createPayloadStructure({
+    initHeaderList,
+    currentFilterSelection,
+    checkedHeaderList,
+    filterOrderList,
+  });
+
+  getDataApiCall(
+    modifiedPayload,
+    pagination,
+    searchText,
+    checkedList,
+    currentFilterSelection,
+    checkedHeaderList,
+    isAssigned,
+    setLandingLoading,
+    buId,
+    wgId,
+    wId,
+    headerList,
+    setHeaderList,
+    filterOrderList,
+    setFilterOrderList,
+    initialHeaderListData,
+    setInitialHeaderListData,
+    setPages,
+    setEmpIDString,
+    setRowDto
+  );
+};
+
+// pagination
+export const handleChangePage = (
+  _,
+  newPage,
+  searchText,
+  setLandingLoading,
+  buId,
+  wgId,
+  wId,
+  headerList,
+  setHeaderList,
+  setFilterOrderList,
+  initialHeaderListData,
+  setInitialHeaderListData,
+  setPages,
+  setEmpIDString,
+  setRowDto,
+  checkedList,
+  pages,
+  filterOrderList,
+  checkedHeaderList
+) => {
+  setPages((prev) => {
+    return { ...prev, current: newPage };
+  });
+  getData(
+    {
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    },
+    setLandingLoading,
+    buId,
+    wgId,
+    wId,
+    headerList,
+    setHeaderList,
+    setFilterOrderList,
+    initialHeaderListData,
+    setInitialHeaderListData,
+    setPages,
+    setEmpIDString,
+    setRowDto,
+    searchText,
+    checkedList,
+    -1,
+    filterOrderList,
+    checkedHeaderList
+  );
+};
+
+export const handleChangeRowsPerPage = (
+  event,
+  searchText,
+  setLandingLoading,
+  buId,
+  wgId,
+  wId,
+  headerList,
+  setHeaderList,
+  setFilterOrderList,
+  initialHeaderListData,
+  setInitialHeaderListData,
+  setPages,
+  setEmpIDString,
+  setRowDto,
+  checkedList,
+  pages,
+  filterOrderList,
+  checkedHeaderList
+) => {
+  setPages((prev) => {
+    return { current: 1, total: pages?.total, pageSize: +event.target.value };
+  });
+  getData(
+    {
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    },
+    setLandingLoading,
+    buId,
+    wgId,
+    wId,
+    headerList,
+    setHeaderList,
+    setFilterOrderList,
+    initialHeaderListData,
+    setInitialHeaderListData,
+    setPages,
+    setEmpIDString,
+    setRowDto,
+    searchText,
+    checkedList,
+    -1,
+    filterOrderList,
+    checkedHeaderList
+  );
+};
