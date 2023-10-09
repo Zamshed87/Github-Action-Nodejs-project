@@ -56,6 +56,21 @@
   padding-left: 26px;
   z-index: 10;
 }
+.sme-scrollable-table .scroll-table .table tbody tr td:nth-child(2),
+.sme-scrollable-table.salary-process-table
+  .scroll-table
+  .table
+  tbody
+  tr
+  td:nth-child(3) {
+  position: -webkit-sticky;
+  position: sticky;
+  left: -2px;
+  border-right: 0 !important;
+  background: #fff !important;
+  padding-left: 26px;
+  z-index: 10;
+}
 .sme-scrollable-table.salary-process-table
   .scroll-table
   .table
@@ -63,6 +78,22 @@
   tr
   td:nth-child(2) {
   left: 47px;
+}
+.sme-scrollable-table.salary-process-table
+  .scroll-table
+  .table
+  tbody
+  tr
+  td:nth-child(2) {
+  left: 47px;
+}
+.sme-scrollable-table.salary-process-table
+  .scroll-table
+  .table
+  tbody
+  tr
+  td:nth-child(3) {
+  left: 170px;
 }
 .sme-scrollable-table.salary-process-table
   .scroll-table
@@ -137,6 +168,23 @@
   min-width: 230px;
   top: -1px;
 }
+.sme-scrollable-table thead tr:first-child th:nth-child(2),
+.sme-scrollable-table.salary-process-table
+  thead
+  tr:first-child
+  th:nth-child(3) {
+  position: -webkit-sticky;
+  position: sticky;
+  left: -2px;
+  border-right: 0 !important;
+  background: #fff !important;
+  z-index: 999999;
+  border-bottom: 1px solid #ecf0f3;
+  box-shadow: 10px 0 5px -2px #888 !important;
+  padding-left: 26px;
+  min-width: 230px;
+  top: -1px;
+}
 
 .sme-scrollable-table.salary-process-table
   thead
@@ -162,8 +210,15 @@
   thead
   tr:first-child
   th:nth-child(2) {
-  min-width: 250px;
+  min-width: 180px;
   left: 47px;
+}
+.sme-scrollable-table.salary-process-table
+  thead
+  tr:first-child
+  th:nth-child(3) {
+  min-width: 250px;
+  left: 177px;
 }
 .sme-scrollable-table.salary-process-table.salary-generate-table
   thead
