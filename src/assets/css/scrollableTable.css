@@ -93,7 +93,7 @@
   tbody
   tr
   td:nth-child(3) {
-  left: 170px;
+  left: 150px;
 }
 .sme-scrollable-table.salary-process-table
   .scroll-table
@@ -217,8 +217,8 @@
   thead
   tr:first-child
   th:nth-child(3) {
-  min-width: 250px;
-  left: 177px;
+  min-width: 200px;
+  left: 140px;
 }
 .sme-scrollable-table.salary-process-table.salary-generate-table
   thead
