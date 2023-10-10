@@ -51,7 +51,7 @@ export default function AddEditForm({
     shallowEqual
   );
 
-  const { orgId, buId, employeeId, intUrlId, wgId } = useSelector(
+  const { orgId, buId, employeeId, intUrlId, wgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -727,7 +727,7 @@ export default function AddEditForm({
                 setFieldValue("supervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+              loadOptions={(v) => getSearchEmployeeList(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
@@ -741,7 +741,7 @@ export default function AddEditForm({
                 setFieldValue("dottedSupervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+              loadOptions={(v) => getSearchEmployeeList(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
@@ -755,7 +755,7 @@ export default function AddEditForm({
                 setFieldValue("lineManager", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+              loadOptions={(v) => getSearchEmployeeList(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
