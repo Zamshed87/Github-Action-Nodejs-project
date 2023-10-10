@@ -533,18 +533,19 @@ export const getPeopleDeskWithoutAllDDL = async (
   } catch (error) {}
 };
 
-export const getSearchEmployeeList = (buId, wgId, v) => {
+export const getSearchEmployeeList = (buId, wgId,intAccountId,employeeId, v) => {
   if (v?.length < 2) return [];
   return axios
     .get(
-      `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
+      // `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfo&AccountId=${intAccountId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}`
     )
     .then((res) => {
       const modifiedData = res?.data?.map((item) => {
         return {
           ...item,
-          value: item?.employeeId,
-          label: item?.employeeNameWithCode,
+          value: item?.EmployeeId,
+          label: item?.EmployeeOnlyName,
         };
       });
       return modifiedData;
