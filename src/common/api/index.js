@@ -544,8 +544,8 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
       const modifiedData = res?.data?.map((item) => {
         return {
           ...item,
-          value: item?.EmployeeId,
-          label: item?.EmployeeOnlyName,
+          value: item?.employeeId,
+          label: item?.employeeName,
         };
       });
       return modifiedData;
