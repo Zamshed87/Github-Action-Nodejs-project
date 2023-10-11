@@ -742,7 +742,7 @@ export default function AddEditForm({
                 setFieldValue("dottedSupervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
@@ -756,7 +756,7 @@ export default function AddEditForm({
                 setFieldValue("lineManager", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
