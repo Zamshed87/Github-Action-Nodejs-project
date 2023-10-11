@@ -5,6 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   getPeopleDeskAllDDL,
   getSearchEmployeeList,
+  getSearchEmployeeListForEmp,
 } from "../../../../common/api";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import DefaultInput from "../../../../common/DefaultInput";
@@ -727,7 +728,7 @@ export default function AddEditForm({
                 setFieldValue("supervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
@@ -741,7 +742,7 @@ export default function AddEditForm({
                 setFieldValue("dottedSupervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
@@ -755,7 +756,7 @@ export default function AddEditForm({
                 setFieldValue("lineManager", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
