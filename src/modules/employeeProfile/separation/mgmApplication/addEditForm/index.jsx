@@ -126,11 +126,11 @@ export default function ManagementApplicationSeparationForm() {
           applicationBody: `${res?.strReason}`,
         }));
         setImgRow(res?.strDocumentId?.split(","));
-        const documentList = res?.strDocumentId?.split(",")?.map((image) => {
+        const documentList = res?.strDocumentId?.length > 0 ? res?.strDocumentId?.split(",")?.map((image) => {
           return {
-            globalFileUrlId: image,
+            globalFileUrlId: +image,
           };
-        });
+        }) : [];
         setEditImageRow(documentList);
         setSingleData(res);
       }
@@ -180,7 +180,7 @@ export default function ManagementApplicationSeparationForm() {
   const saveHandler = (values, cb) => {
     const callback = () => {
       cb();
-      setImageFile("");
+      setImageFile([]);
     };
 
     const modifyImageArray = imageFile
@@ -433,7 +433,7 @@ export default function ManagementApplicationSeparationForm() {
                                   setImageFile(data);
                                 })
                                 .catch((error) => {
-                                  setImageFile("");
+                                  setImageFile([]);
                                 });
                             }
                           }}
@@ -456,6 +456,7 @@ export default function ManagementApplicationSeparationForm() {
                       </p>
                       {imageFile?.length
                         ? imageFile.map((image, i) => (
+                          
                             <div
                               className="d-flex align-items-center"
                               style={{ width: "160px" }}
