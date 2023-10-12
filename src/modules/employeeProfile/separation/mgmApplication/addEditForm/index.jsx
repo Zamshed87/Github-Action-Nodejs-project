@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useFormik } from "formik";
 import React, { useEffect, useState, useRef } from "react";
 import ReactQuill from "react-quill";
@@ -29,6 +30,7 @@ import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
+import useAxiosGet from "../../../../../utility/customHooks/useAxiosGet";
 
 const initData = {
   employeeName: "",
@@ -77,6 +79,7 @@ export default function ManagementApplicationSeparationForm() {
   const [loading, setLoading] = useState(false);
   const [separationTypeDDL, setSeparationTypeDDL] = useState([]);
   const [singleData, setSingleData] = useState([]);
+  const [, getSeperationDataApi, loadingSeperationData, ,] = useAxiosGet();
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -99,43 +102,80 @@ export default function ManagementApplicationSeparationForm() {
     );
   }, [wgId, buId]);
 
-  useEffect(() => {
-    if (+params?.id) {
-      const payload = {
-        intSeparationId: +params?.id,
-        status: "",
-        workplaceGroupId: wgId,
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employeeId: employeeId,
-        separationTypeId: 0,
-        applicationFromDate: null,
-        applicationToDate: null,
-        businessUnitId: buId,
-        accountId: orgId,
-        tableName: "EmployeeSeparationReportBySeparationId",
-      };
-      getSeparationLandingById(payload, setSingleData, setLoading);
-    }
-  }, [orgId, buId, employeeId, params?.id, wgId]);
+  const getEmpSeperationDataHandlerById = () => {
+    getSeperationDataApi(
+      `/Employee/EmployeeSeparationById?SeparationId=${+params?.id}`,
+      (res) => {
+        setValues((prev) => ({
+          ...prev,
+          employeeName: {
+            value: res?.intEmployeeId,
+            label: res?.strEmployeeName,
+            employeeId: res?.intEmployeeId,
+            employeeName: res?.strEmployeeName,
+            employeeCode: res?.strEmployeeCode,
+            employmentType: res?.strEmploymentType,
+            designationName: res?.strDesignation,
+          },
+          separationType: {
+            value: res?.intSeparationTypeId,
+            label: res?.strSeparationTypeName,
+          },
+          applicationDate: dateFormatterForInput(res?.dteSeparationDate),
+          lastWorkingDay: dateFormatterForInput(res?.dteLastWorkingDate),
+          applicationBody: `${res?.strReason}`,
+        }));
+        setImgRow(res?.strDocumentId?.split(","));
+        const documentList = res?.strDocumentId?.split(",")?.map((image) => {
+          return {
+            globalFileUrlId: image,
+          };
+        });
+        setEditImageRow(documentList);
+        setSingleData(res);
+      }
+    );
+  };
 
   useEffect(() => {
     if (+params?.id) {
-      setImgRow(singleData?.docArr);
+      // const payload = {
+      //   intSeparationId: +params?.id,
+      //   status: "",
+      //   workplaceGroupId: wgId,
+      //   departmentId: 0,
+      //   designationId: 0,
+      //   supervisorId: 0,
+      //   employeeId: employeeId,
+      //   separationTypeId: 0,
+      //   applicationFromDate: null,
+      //   applicationToDate: null,
+      //   businessUnitId: buId,
+      //   accountId: orgId,
+      //   tableName: "EmployeeSeparationReportBySeparationId",
+      // };
+      // getSeparationLandingById(payload, setSingleData, setLoading);
+      getEmpSeperationDataHandlerById();
     }
-  }, [params?.id, singleData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId, buId, employeeId, params?.id]);
 
-  useEffect(() => {
-    if (params?.id && imgRow?.length) {
-      const modifyImageArray = imgRow.map((image) => {
-        return {
-          globalFileUrlId: image,
-        };
-      });
-      setEditImageRow(modifyImageArray);
-    }
-  }, [imgRow, params?.id]);
+  // useEffect(() => {
+  //   if (+params?.id) {
+  //     setImgRow(singleData?.docArr);
+  //   }
+  // }, [params?.id, singleData]);
+
+  // useEffect(() => {
+  //   if (params?.id && imgRow?.length) {
+  //     const modifyImageArray = imgRow.map((image) => {
+  //       return {
+  //         globalFileUrlId: image,
+  //       };
+  //     });
+  //     setEditImageRow(modifyImageArray);
+  //   }
+  // }, [imgRow, params?.id]);
 
   const saveHandler = (values, cb) => {
     const callback = () => {
@@ -144,10 +184,10 @@ export default function ManagementApplicationSeparationForm() {
     };
 
     const modifyImageArray = imageFile
-      ? imageFile.map((image) => image?.globalFileUrlId)
+      ? imageFile?.map((image) => image?.globalFileUrlId)
       : [];
 
-    const modifyAttachmentList = imgRow.map((image) => +image);
+    const modifyAttachmentList = imgRow?.map((image) => +image);
 
     if (!values?.employeeName) {
       return toast.warning("Employee Name is required!!!");
@@ -187,78 +227,87 @@ export default function ManagementApplicationSeparationForm() {
     separationCrud(payload, setLoading, callback);
   };
 
-  const { setFieldValue, values, errors, touched, handleSubmit, resetForm } =
-    useFormik({
-      enableReinitialize: true,
-      validationSchema: validationSchema,
-      initialValues: +params?.id
-        ? {
-            employeeName: {
-              value: singleData?.EmployeeId,
-              label: singleData?.EmployeeName,
-            },
-            separationType: {
-              value: singleData?.SeparationTypeId,
-              label: singleData?.SeparationTypeName,
-            },
-            applicationDate: dateFormatterForInput(singleData?.SeparationDate),
-            lastWorkingDay: dateFormatterForInput(singleData?.LastWorkingDay),
-            applicationBody: `${singleData?.Reason}`,
-          }
-        : {
-            ...initData,
+  const {
+    setFieldValue,
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    resetForm,
+    setValues,
+  } = useFormik({
+    enableReinitialize: true,
+    validationSchema: validationSchema,
+    initialValues: +params?.id
+      ? {
+          employeeName: {
+            value: singleData?.EmployeeId,
+            label: singleData?.EmployeeName,
           },
-      onSubmit: (values, { setSubmitting, resetForm }) => {
-        saveHandler(values, () => {
-          if (params?.id) {
-            const payload = {
-              intSeparationId: +params?.id,
-              status: "",
-              workplaceGroupId: wgId,
-              departmentId: 0,
-              designationId: 0,
-              supervisorId: 0,
-              employeeId: employeeId,
-              separationTypeId: 0,
-              applicationFromDate: null,
-              applicationToDate: null,
-              businessUnitId: buId,
-              accountId: orgId,
-              tableName: "EmployeeSeparationReportBySeparationId",
-            };
-            getSeparationLandingById(payload, setSingleData, setLoading);
-          } else {
-            resetForm(initData);
-          }
-        });
-      },
-    });
+          separationType: {
+            value: singleData?.SeparationTypeId,
+            label: singleData?.SeparationTypeName,
+          },
+          applicationDate: dateFormatterForInput(singleData?.SeparationDate),
+          lastWorkingDay: dateFormatterForInput(singleData?.LastWorkingDay),
+          applicationBody: `${singleData?.Reason}`,
+        }
+      : {
+          ...initData,
+        },
+    onSubmit: (values, { setSubmitting, resetForm }) => {
+      saveHandler(values, () => {
+        if (params?.id) {
+          // const payload = {
+          //   intSeparationId: +params?.id,
+          //   status: "",
+          //   workplaceGroupId: wgId,
+          //   departmentId: 0,
+          //   designationId: 0,
+          //   supervisorId: 0,
+          //   employeeId: employeeId,
+          //   separationTypeId: 0,
+          //   applicationFromDate: null,
+          //   applicationToDate: null,
+          //   businessUnitId: buId,
+          //   accountId: orgId,
+          //   tableName: "EmployeeSeparationReportBySeparationId",
+          // };
+          // getSeparationLandingById(payload, setSingleData, setLoading);
+          getEmpSeperationDataHandlerById();
+        } else {
+          resetForm(initData);
+        }
+      });
+    },
+  });
 
   const deleteImageHandler = (documentId) => {
     deleteSeparationAttachment(+params?.id, documentId, () => {
-      const payload = {
-        intSeparationId: +params?.id,
-        status: "",
-        workplaceGroupId: wgId,
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employeeId: employeeId,
-        separationTypeId: 0,
-        applicationFromDate: null,
-        applicationToDate: null,
-        businessUnitId: buId,
-        accountId: orgId,
-        tableName: "EmployeeSeparationReportBySeparationId",
-      };
-      getSeparationLandingById(payload, setSingleData, setLoading);
+      // const payload = {
+      //   intSeparationId: +params?.id,
+      //   status: "",
+      //   workplaceGroupId: wgId,
+      //   departmentId: 0,
+      //   designationId: 0,
+      //   supervisorId: 0,
+      //   employeeId: employeeId,
+      //   separationTypeId: 0,
+      //   applicationFromDate: null,
+      //   applicationToDate: null,
+      //   businessUnitId: buId,
+      //   accountId: orgId,
+      //   tableName: "EmployeeSeparationReportBySeparationId",
+      // };
+      // getSeparationLandingById(payload, setSingleData, setLoading);
+      getEmpSeperationDataHandlerById();
       setImgRow(singleData?.docArr);
     });
   };
 
   return (
     <>
-      {loading && <Loading />}
+      {(loading || loadingSeperationData) && <Loading />}
       {permission?.isCreate ? (
         <form onSubmit={handleSubmit}>
           <div className="table-card">
