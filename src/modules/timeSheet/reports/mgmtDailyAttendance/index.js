@@ -130,7 +130,8 @@ const MgmtDailyAttendance = () => {
         pageSize: pages?.pageSize,
         total: pages?.total,
       },
-      searchText
+      searchText,
+      values?.date,
     );
   };
 
@@ -144,7 +145,8 @@ const MgmtDailyAttendance = () => {
         pageSize: +event.target.value,
         total: pages?.total,
       },
-      searchText
+      searchText,
+      values?.date,
     );
   };
 
