@@ -62,7 +62,7 @@ const initData = {
 };
 
 export default function LeaveApproval() {
-  const { orgId, employeeId, isOfficeAdmin } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -154,7 +154,7 @@ export default function LeaveApproval() {
     getAllLeaveApplicatonListDataForApproval(
       {
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -175,7 +175,7 @@ export default function LeaveApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [employeeId]);
+  }, [employeeId, orgId, wgId]);
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);
@@ -191,7 +191,7 @@ export default function LeaveApproval() {
     getAllLeaveApplicatonListDataForApproval(
       {
         approverId: employeeId,
-        workplaceGroupId: values?.workplace?.id || 0,
+        workplaceGroupId: wgId || 0,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
         applicantId: values?.employee?.id || 0,
@@ -249,7 +249,7 @@ export default function LeaveApproval() {
       getAllLeaveApplicatonListDataForApproval(
         {
           approverId: employeeId,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: wgId || 0,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -304,7 +304,7 @@ export default function LeaveApproval() {
       getAllLeaveApplicatonListDataForApproval(
         {
           approverId: employeeId,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: wgId || 0,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
