@@ -200,7 +200,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
         </div>
         <div
           className="row mx-0 w-100"
-          style={{ height: "450px", marginTop: "12px" }}
+          style={{ height: "600px", marginTop: "12px" }}
         >
           <div className="col-md-9 h-100 pl-0">
             <div className="row mx-0 w-100 h-100">
@@ -230,7 +230,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                       My Applications
                     </h2>
                   </div>
-                  <div className="tableOne" style={{ height: "50%" }}>
+                  <div className="tableOne" style={{ height: "45%" }}>
                     {!employeeDashboard?.applicationPendingViewModels
                       ?.length ? (
                       <NoResult />
@@ -292,7 +292,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                       </table>
                     )}
                   </div>
-                  <div className="row mt-3">
+                  <div className="row mt-2">
                     <div className="col-lg-6">
                       <div
                         style={{
@@ -313,104 +313,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                           Birthday
                         </h2>
                       </div>
-                      <div style={{ height: "85%" }}>
-                        <div className="tableOne h-100">
-                          <table
-                            className="table mh-100 mb-0"
-                            style={{ borderBottom: "1px solid #F2F4F7" }}
-                          >
-                            <thead>
-                              <tr>
-                                <th style={{ borderTop: "none" }}>
-                                  <p
-                                    style={{
-                                      color: gray400,
-                                      paddingLeft: "8px",
-                                    }}
-                                  >
-                                    SL
-                                  </p>
-                                </th>
-                                <th style={{ borderTop: "none" }}>
-                                  <p
-                                    style={{
-                                      color: gray400,
-                                      textAlign: "center",
-                                    }}
-                                  >
-                                    Desc
-                                  </p>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {rowDto?.length > 0 ? 
-                              <>
-                              {rowDto?.map(
-                                (item, i) => (
-                                  <>
-                                    <tr key={i}>
-                                      <td
-                                        style={{
-                                          borderTop: "1px solid #F2F4F7",
-                                        }}
-                                      >
-                                        <p
-                                          style={{
-                                            color: gray700,
-                                            paddingLeft: "8px",
-                                          }}
-                                        >
-                                          {i + 1}
-                                        </p>
-                                      </td>
-                                      <td
-                                        style={{
-                                          borderTop: "1px solid #F2F4F7",
-                                        }}
-                                      >
-                                        <p
-                                          style={{
-                                            textAlign: "center",
-                                            color: gray700,
-                                          }}
-                                        >
-                                          {item?.birthDay}
-                                        </p>
-                                      </td>
-  
-                                    </tr>
-                                  </>
-                                )
-                              )}
-                              </> : "Today There Is No BirthDay"}
-                              
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div
-                        style={{
-                          height: "30%",
-                          display: "grid",
-                          placeItems: "center",
-                        }}
-                      >
-                        <h2
-                          style={{
-                            width: "100%",
-                            fontSize: "1rem",
-                            color: gray500,
-                            fontWeight: 600,
-                            paddingLeft: "10px",
-                          }}
-                        >
-                          Work Annivarsay
-                        </h2>
-                      </div>
-                      <div style={{ height: "85%" }}>
+                      <div style={{ height: "45%" }}>
                         <div className="tableOne h-100">
                           <table
                             className="table mh-100 mb-0"
@@ -472,7 +375,8 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                             color: gray700,
                                           }}
                                         >
-                                          {item?.workAnniversary}
+                                         {`${item?.birthDay} on ${item?.date}`}
+                                          {/* {item?.birthDay} */}
                                         </p>
                                       </td>
   
@@ -480,7 +384,104 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                   </>
                                 )
                               )}
-                              </> : "Today There Is No Work Annivarsay"}
+                              </> : <p>Today There Is No BirthDay</p>}
+                              
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-lg-6">
+                      <div
+                        style={{
+                          height: "30%",
+                          display: "grid",
+                          placeItems: "center",
+                        }}
+                      >
+                        <h2
+                          style={{
+                            width: "100%",
+                            fontSize: "1rem",
+                            color: gray500,
+                            fontWeight: 600,
+                            paddingLeft: "10px",
+                          }}
+                        >
+                          Work Annivarsay
+                        </h2>
+                      </div>
+                      <div style={{ height: "47%" }}>
+                        <div className="tableOne h-100">
+                          <table
+                            className="table mh-100 mb-0"
+                            style={{ borderBottom: "1px solid #F2F4F7" }}
+                          >
+                            <thead>
+                              <tr>
+                                <th style={{ borderTop: "none" }}>
+                                  <p
+                                    style={{
+                                      color: gray400,
+                                      paddingLeft: "8px",
+                                    }}
+                                  >
+                                    SL
+                                  </p>
+                                </th>
+                                <th style={{ borderTop: "none" }}>
+                                  <p
+                                    style={{
+                                      color: gray400,
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Desc
+                                  </p>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {rowDto?.length > 0 ? 
+                              <>
+                              {rowDto?.map(
+                                (item, i) => (
+                                  <>
+                                    <tr key={i}>
+                                      <td
+                                        style={{
+                                          borderTop: "1px solid #F2F4F7",
+                                        }}
+                                      >
+                                        <p
+                                          style={{
+                                            color: gray700,
+                                            paddingLeft: "8px",
+                                          }}
+                                        >
+                                          {i + 1}
+                                        </p>
+                                      </td>
+                                      <td
+                                        style={{
+                                          borderTop: "1px solid #F2F4F7",
+                                        }}
+                                      >
+                                        <p
+                                          style={{
+                                            textAlign: "left",
+                                            color: gray700,
+                                          }}
+                                        >
+                                          {`${item?.workAnniversary} on ${item?.dateForAnniversary}`}
+                                        </p>
+                                      </td>
+  
+                                    </tr>
+                                  </>
+                                )
+                              )}
+                              </> :<p>Today There Is No Work Annivarsay</p>}
                               
                             </tbody>
                           </table>

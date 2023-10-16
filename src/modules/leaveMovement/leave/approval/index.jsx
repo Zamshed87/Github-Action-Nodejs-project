@@ -154,7 +154,8 @@ export default function LeaveApproval() {
     getAllLeaveApplicatonListDataForApproval(
       {
         approverId: employeeId,
-        workplaceGroupId: wgId,
+        // workplaceGroupId: wgId,
+        workplaceGroupId: 0,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,

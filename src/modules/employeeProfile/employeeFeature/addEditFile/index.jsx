@@ -315,7 +315,7 @@ export default function AddEditForm({
               className="form-control"
               errors={errors}
               touched={touched}
-              disabled={generateEmployeeCode[0]?.value !== ""}
+              // disabled={generateEmployeeCode[0]?.value !== ""}
             />
           </div>
         </div>
