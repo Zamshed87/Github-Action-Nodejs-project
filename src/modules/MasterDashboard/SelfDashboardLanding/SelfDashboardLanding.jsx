@@ -230,7 +230,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                       My Applications
                     </h2>
                   </div>
-                  <div className="tableOne" style={{ height: "45%" }}>
+                  <div className="tableOne" style={{ height: "40%" }}>
                     {!employeeDashboard?.applicationPendingViewModels
                       ?.length ? (
                       <NoResult />
@@ -292,11 +292,11 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                       </table>
                     )}
                   </div>
-                  <div className="row mt-2">
+                  <div className="row mt-1">
                     <div className="col-lg-6">
                       <div
                         style={{
-                          height: "30%",
+                          height: "25%",
                           display: "grid",
                           placeItems: "center",
                         }}
@@ -313,7 +313,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                           Birthday
                         </h2>
                       </div>
-                      <div style={{ height: "45%" }}>
+                      <div style={{ height: "50%" }}>
                         <div className="tableOne h-100">
                           <table
                             className="table mh-100 mb-0"
@@ -338,7 +338,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    Desc
+                                    Description
                                   </p>
                                 </th>
                               </tr>
@@ -394,7 +394,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                     <div className="col-lg-6">
                       <div
                         style={{
-                          height: "30%",
+                          height: "25%",
                           display: "grid",
                           placeItems: "center",
                         }}
@@ -411,7 +411,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                           Work Annivarsay
                         </h2>
                       </div>
-                      <div style={{ height: "47%" }}>
+                      <div style={{ height: "50%" }}>
                         <div className="tableOne h-100">
                           <table
                             className="table mh-100 mb-0"
@@ -436,7 +436,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       textAlign: "center",
                                     }}
                                   >
-                                    Desc
+                                    Description
                                   </p>
                                 </th>
                               </tr>
