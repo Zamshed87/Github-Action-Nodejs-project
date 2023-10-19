@@ -24,7 +24,6 @@ import EmployeeSelfDashboardHeader from "../../employeeProfile/dashboard/compone
 import EmployeeSelfManagerList from "../../employeeProfile/dashboard/components/EmployeeSelfManagerList";
 import { getPolicyOnEmployeeInbox } from "../../policyUpload/helper";
 import NoticeBoard from "./Noticeboard";
-import BirthAnnivarsay from "./BirthAnniversary";
 
 const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   const { orgId, employeeId, buId } = useSelector(
@@ -200,7 +199,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
         </div>
         <div
           className="row mx-0 w-100"
-          style={{ height: "600px", marginTop: "12px" }}
+          style={{ height: "500px", marginTop: "12px" }}
         >
           <div className="col-md-9 h-100 pl-0">
             <div className="row mx-0 w-100 h-100">
@@ -313,10 +312,10 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                           Birthday
                         </h2>
                       </div>
-                      <div style={{ height: "50%" }}>
+                      <div style={{ height: "70%" }}>
                         <div className="tableOne h-100">
                           <table
-                            className="table mh-100 mb-0"
+                            className=""
                             style={{ borderBottom: "1px solid #F2F4F7" }}
                           >
                             <thead>
@@ -344,9 +343,9 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                               </tr>
                             </thead>
                             <tbody>
-                              {rowDto?.length > 0 ? 
+                              {rowDto?.birthDayModel?.length > 0 ? 
                               <>
-                              {rowDto?.map(
+                              {rowDto?.birthDayModel?.map(
                                 (item, i) => (
                                   <>
                                     <tr key={i}>
@@ -375,8 +374,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                             color: gray700,
                                           }}
                                         >
-                                         {`${item?.birthDay} on ${item?.date}`}
-                                          {/* {item?.birthDay} */}
+                                         {`${item?.birthDayMessage} on ${item?.birthDay}`}
                                         </p>
                                       </td>
   
@@ -411,10 +409,10 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                           Work Annivarsay
                         </h2>
                       </div>
-                      <div style={{ height: "50%" }}>
+                      <div style={{ height: "70%" }}>
                         <div className="tableOne h-100">
                           <table
-                            className="table mh-100 mb-0"
+                            className=""
                             style={{ borderBottom: "1px solid #F2F4F7" }}
                           >
                             <thead>
@@ -442,9 +440,9 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                               </tr>
                             </thead>
                             <tbody>
-                              {rowDto?.length > 0 ? 
+                              {rowDto?.anniversaryModel?.length > 0 ? 
                               <>
-                              {rowDto?.map(
+                              {rowDto?.anniversaryModel?.map(
                                 (item, i) => (
                                   <>
                                     <tr key={i}>
@@ -473,7 +471,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                             color: gray700,
                                           }}
                                         >
-                                          {`${item?.workAnniversary} on ${item?.dateForAnniversary}`}
+                                          {`${item?.anniversarMessage} on ${item?.anniversaryDay}`}
                                         </p>
                                       </td>
   
