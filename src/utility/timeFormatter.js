@@ -12,3 +12,22 @@ export const timeFormatter = (time) => {
     return time.join(""); // return adjusted time or original string
   };
   
+  export const convertTo12HourFormat =(time24) => {
+    // Split the input time into hours and minutes
+    const [hours, minutes, seconds] = time24?.split(':');
+  
+    // Convert the hours to a number
+    const hour = parseInt(hours, 10);
+  
+    // Determine whether it's AM or PM
+    const period = hour >= 12 ? 'PM' : 'AM';
+  
+    // Convert 24-hour format to 12-hour format
+    const hour12 = hour % 12 || 12; // Ensure 12:00 AM is shown as 12:00
+  
+    // Create the formatted time string
+    const time12 = `${hour12}:${minutes}:${seconds} ${period}`;
+  
+    return time12;
+  }
+  
