@@ -138,7 +138,9 @@ const LeaveApplicationForm = ({ propsObj }) => {
           </div>
         </div>
         {values?.fromDate === values?.toDate &&
-        values?.leaveType?.label === "Casual Leave" ? (
+        (values?.leaveType?.label === "Casual Leave" ||
+          values?.leaveType?.label === "Earn Leave" ||
+          values?.leaveType?.label === "Sick Leave") ? (
           <div className="row">
             <div className="col-lg-6">
               <label> Leave Length</label>

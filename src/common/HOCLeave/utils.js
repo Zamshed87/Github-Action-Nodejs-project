@@ -131,6 +131,10 @@ export const empMgmtLeaveApplicationDtoColumn = (
       filter: false,
     },
     {
+      title: "Half Day",
+      dataIndex: "HalfDayRange",
+    },
+    {
       title: "Status",
       dataIndex: "ApprovalStatus",
       render: (data, record) => (
