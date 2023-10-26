@@ -4,6 +4,7 @@ import {
   Attachment,
   Cancel,
   CheckCircle,
+  EditOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip, tooltipClasses } from "@mui/material";
@@ -27,6 +28,7 @@ import ResetButton from "../../../../common/ResetButton";
 import SortingIcon from "../../../../common/SortingIcon";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
+  blackColor90,
   failColor,
   gray900,
   greenColor,
@@ -47,6 +49,8 @@ import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/action
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import Chips from "../../../../common/Chips";
 import { LightTooltip } from "../../../../common/LightTooltip";
+import ViewModal from "../../../../common/ViewModal";
+import LeaveApprovalEditForm from "./component/editForm";
 
 const initData = {
   searchString: "",
@@ -184,6 +188,8 @@ export default function LeaveApproval() {
   const [filterValues, setFilterValues] = useState({});
   const openFilter = Boolean(filterAnchorEl);
   const id = openFilter ? "simple-popover" : undefined;
+  const [show, setShow] = useState(false);
+  const [singleApplication, setSingleApplication] = useState({});
 
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -592,12 +598,62 @@ export default function LeaveApproval() {
             {status === "Approved" && (
               <Chips label="Approved" classess="success" />
             )}
-            {status === "Pending" && (
+            {/* {status === "Pending" && (
               <>
                 <div className="actionChip">
                   <Chips label="Pending" classess=" warning" />
                 </div>
                 <div className="d-flex actionIcon justify-content-center">
+                  <Tooltip title="Approve">
+                    <div
+                      className="mx-2 muiIconHover success "
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        singlePopup("approve", "Approve", record);
+                      }}
+                    >
+                      <MuiIcon
+                        icon={<CheckCircle sx={{ color: successColor }} />}
+                      />
+                    </div>
+                  </Tooltip>
+                  <Tooltip title="Reject">
+                    <div
+                      className="muiIconHover  danger"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        singlePopup("reject", "Reject", record);
+                      }}
+                    >
+                      <MuiIcon icon={<Cancel sx={{ color: failColor }} />} />
+                    </div>
+                  </Tooltip>
+                </div>
+              </>
+            )} */}
+             {status === "Pending" && (
+              <>
+                <div className="actionChip">
+                  <Chips label="Pending" classess=" warning" />
+                </div>
+                <div className="d-flex actionIcon justify-content-center">
+                  {isOfficeAdmin ? (
+                    <Tooltip title="Edit" arrow>
+                      <div
+                        className="muiIconHover success "
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShow(true);
+                          setSingleApplication([]);
+                          setSingleApplication(record);
+                        }}
+                      >
+                        <MuiIcon
+                          icon={<EditOutlined sx={{ color: blackColor90 }} />}
+                        />
+                      </div>
+                    </Tooltip>
+                  ) : null}
                   <Tooltip title="Approve">
                     <div
                       className="mx-2 muiIconHover success "
@@ -927,6 +983,26 @@ export default function LeaveApproval() {
           isSupOrLineManager,
         }}
       />
+       <ViewModal
+        size="lg"
+        title="Edit Leave Application"
+        backdrop="static"
+        classes="default-modal preview-modal asset-requision-modal"
+        show={show}
+        onHide={() => {
+          setShow(false);
+          setSingleApplication([]);
+        }}
+      >
+        <LeaveApprovalEditForm
+          objProps={{
+            singleApplication,
+            setSingleApplication,
+            setShow,
+            getLandingData,
+          }}
+        />
+      </ViewModal>
     </>
   );
 }
