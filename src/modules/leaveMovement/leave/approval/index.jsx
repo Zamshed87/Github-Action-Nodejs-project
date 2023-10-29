@@ -36,6 +36,7 @@ import {
 } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import {
+  getAllAnnouncement,
   getAllLeaveApplicatonListDataForApproval,
   leaveApproveReject,
 } from "../helper";
@@ -51,6 +52,8 @@ import Chips from "../../../../common/Chips";
 import { LightTooltip } from "../../../../common/LightTooltip";
 import ViewModal from "../../../../common/ViewModal";
 import LeaveApprovalEditForm from "./component/editForm";
+import SingleNotice from "./component/SingleNotice";
+import NoticeBoard from "./component/NoticeBoard";
 
 const initData = {
   searchString: "",
@@ -90,6 +93,10 @@ export default function LeaveApproval() {
   const [isFilter, setIsFilter] = useState(false);
   const [allData, setAllData] = useState();
   const [filterData, setFilterData] = useState([]);
+  const [viewModalRow, setViewModalRow] = useState(false);
+  const [singleNoticeData, setSingleNoticeData] = useState("");
+  const [ApplicationId, setApplicationId] = useState(0)
+  const [allNoticeData , setAllNoticeData] = useState([])
   // filter
   const [empOrder, setEmpOrder] = useState("desc");
   const [designationOrder, setDesignationOrder] = useState("desc");
@@ -125,6 +132,7 @@ export default function LeaveApproval() {
     setAllLeaveApplicatonData({ listData: modifyRowData });
   };
 
+
   useEffect(() => {
     const array = [];
     filterData?.listData?.forEach((data) => {
@@ -153,8 +161,8 @@ export default function LeaveApproval() {
       setRowDto([]);
     }
   };
-
   const getLandingData = (/* isSupOrLineManager = 1 */) => {
+    getAllAnnouncement(ApplicationId, setAllNoticeData);
     getAllLeaveApplicatonListDataForApproval(
       {
         approverId: employeeId,
@@ -180,7 +188,7 @@ export default function LeaveApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [employeeId, orgId, wgId]);
+  }, [employeeId, orgId, wgId,ApplicationId]);
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);
@@ -342,7 +350,6 @@ export default function LeaveApproval() {
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
-
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -423,6 +430,7 @@ export default function LeaveApproval() {
                   e.stopPropagation();
                   let leaveAppData = leaveApplicationData?.listData?.map(
                     (item) => {
+                      
                       if (
                         item?.leaveApplication?.intApplicationId ===
                         record?.leaveApplication?.intApplicationId
@@ -631,7 +639,7 @@ export default function LeaveApproval() {
                 </div>
               </>
             )} */}
-             {status === "Pending" && (
+            {status === "Pending" && (
               <>
                 <div className="actionChip">
                   <Chips label="Pending" classess=" warning" />
@@ -691,7 +699,6 @@ export default function LeaveApproval() {
       },
     ];
   };
-
 
   return (
     <>
@@ -898,6 +905,10 @@ export default function LeaveApproval() {
                                     rowKey={(record) =>
                                       record?.leaveApplication?.intApplicationId
                                     }
+                                    onRowClick={(record) => {
+                                      setApplicationId(record?.leaveApplication?.intApplicationId)
+                                      setViewModalRow(true);
+                                    }}
                                   />
                                 </>
                               ) : (
@@ -909,6 +920,13 @@ export default function LeaveApproval() {
                           )}
                         </div>
                       </div>
+                    </div>
+                    <div
+                      className="col-md-3 pr-0 h-100"
+                      style={{
+                        boxShadow: "0px 1px 4px 1px rgba(99, 115, 129, 0.3)",
+                      }}
+                    >
                     </div>
                   </div>
                 </div>
@@ -983,7 +1001,24 @@ export default function LeaveApproval() {
           isSupOrLineManager,
         }}
       />
-       <ViewModal
+      <ViewModal
+        size="lg"
+        title="Details Modification"
+        backdrop="static"
+        classes="default-modal preview-modal"
+        show={viewModalRow}
+        onHide={() => {
+          setViewModalRow(false);
+          setSingleNoticeData("");
+        }}
+      >
+        <SingleNotice
+          setViewModalRow={setViewModalRow}
+          allNoticeData={allNoticeData}
+        />
+      </ViewModal>
+
+      <ViewModal
         size="lg"
         title="Edit Leave Application"
         backdrop="static"

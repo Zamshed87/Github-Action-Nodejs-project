@@ -23,6 +23,18 @@ export const getEmployeeLeaveBalanceAndHistory = async (
   }
 };
 
+export const getAllAnnouncement = async (
+  applicationId,
+  setter
+) => {
+  try {
+    const res = await axios.get(`/ApprovalPipeline/GetApplicationApprovalLogByReference?ReferenceName=Leave%20Application&ReferenceId=${applicationId}`);
+    setter(res?.data);
+  } catch (error) {
+    setter([]);
+  }
+};
+
 export const attachment_action = async (
   accountId,
   tableReferrence,
