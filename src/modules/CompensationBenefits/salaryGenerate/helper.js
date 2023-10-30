@@ -28,6 +28,7 @@ export const createSalaryGenerateRequest = async (payload, setLoading, cb) => {
 
 // salary generate landing
 const currentYear = new Date().getFullYear();
+
 export const getSalaryGenerateRequestLanding = async (
   partName,
   orgId,
