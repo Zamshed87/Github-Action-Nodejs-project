@@ -947,6 +947,7 @@ const SalaryGenerateCreate = () => {
                               orgId,
                               buId,
                               wgId,
+                              wId,
                               values?.monthId,
                               values?.yearId,
                               values?.fromDate,
