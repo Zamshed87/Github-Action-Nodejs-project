@@ -88,6 +88,7 @@ const SalaryGenerateCreate = () => {
       orgId,
       buId,
       wgId,
+      wId,
       setRowDto,
       setAllData,
       setLoading
@@ -881,6 +882,7 @@ const SalaryGenerateCreate = () => {
                               orgId,
                               buId,
                               wgId,
+                              wId,
                               values?.monthId,
                               values?.yearId,
                               values?.fromDate,
