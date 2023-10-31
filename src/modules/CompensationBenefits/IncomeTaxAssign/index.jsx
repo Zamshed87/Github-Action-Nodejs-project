@@ -45,7 +45,7 @@ export default function IncomeTaxAssign() {
   const history = useHistory();
 
   // redux data
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -89,6 +89,8 @@ export default function IncomeTaxAssign() {
         intCreatedBy: employeeId,
         intAccountId: item?.intAccountId,
         intBusinessUnitId: item?.intBusinessUnitId,
+        intWorkplaceId: wId || 0,
+        intWorkplaceGroupId: wgId || 0,
       };
     });
     createTaxAssign(payload, setLoading, callBack);
