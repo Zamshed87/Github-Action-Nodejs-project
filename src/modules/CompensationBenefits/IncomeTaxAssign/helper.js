@@ -131,7 +131,12 @@ export const incomeTaxColumnData = (
             placeholder=" "
             type="number"
             onChange={(e) => {
-              rowDtoHandler("numTaxAmount", index, e.target.value);
+              const value = e.target.value;
+              if (!value.includes(".") && value >= 0) {
+                rowDtoHandler("numTaxAmount", index, value);
+              } else {
+                rowDtoHandler("numTaxAmount", index, "");
+              }
             }}
             required
             errors={errors}
