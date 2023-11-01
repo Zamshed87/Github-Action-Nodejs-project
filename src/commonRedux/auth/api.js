@@ -9,9 +9,9 @@ export function loginApiCall(email, password) {
     intAccountId: 1,
     // strUrl: "https://pentex.peopledesk.io",
     strUrl:
-      domainUrl === "https://devpentex.peopledesk.io"
+      domainUrl === "https://devmatador.peopledesk.io"
         ? domainUrl
-        : "https://bgdhrm.pentex-ltd.co.uk",
+        : "https://matador.peopledesk.io",
   });
 }
 
