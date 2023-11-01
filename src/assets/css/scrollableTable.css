@@ -1,0 +1,504 @@
+.sme-scrollable-table {
+  width: 100% !important;
+}
+
+.sme-scrollable-table .bg-even {
+  background: #fff;
+}
+
+.sme-scrollable-table ._table::-webkit-scrollbar-track {
+  background-color: rgb(221, 221, 221);
+}
+
+.sme-scrollable-table ._table::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+  display: none;
+}
+
+.sme-scrollable-table ._table::-moz-scrollbar-button,
+.sme-scrollable-table ._table::-webkit-scrollbar-button {
+  width: 0px;
+}
+
+.sme-scrollable-table ._table::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.sme-scrollable-table ._table::-webkit-scrollbar-thumb {
+  background-color: #bcbfc4;
+  border-radius: 50px;
+  cursor: pointer !important;
+}
+
+.sme-scrollable-table.kpi-new-table tbody .kpi-new-table-firstTd {
+  background: rgb(155, 102, 255) !important;
+  color: #fff;
+}
+
+.sme-scrollable-table.kpi-new-table table thead tr th {
+  background: #7e40fa !important;
+  color: #fff;
+}
+
+.sme-scrollable-table .scroll-table .table tbody tr td:first-child,
+.sme-scrollable-table.salary-process-table
+  .scroll-table
+  .table
+  tbody
+  tr
+  td:nth-child(2) {
+  position: -webkit-sticky;
+  position: sticky;
+  left: -2px;
+  border-right: 0 !important;
+  background: #fff !important;
+  padding-left: 26px;
+  z-index: 10;
+}
+.sme-scrollable-table.salary-process-table
+  .scroll-table
+  .table
+  tbody
+  tr
+  td:nth-child(2) {
+  left: 47px;
+}
+.sme-scrollable-table.salary-process-table
+  .scroll-table
+  .table
+  tbody
+  tr
+  td.fixed-column {
+  position: -webkit-sticky;
+  position: sticky;
+  background: #fff !important;
+  padding-left: 26px;
+}
+.sme-scrollable-table.salary-process-table
+  .scroll-table
+  .table
+  tbody
+  tr
+  td.fixed-column.right {
+  right: 0;
+  border-right: 0 !important;
+}
+
+/* .sme-scrollable-table .scroll-table .table tbody tr td:first-child {
+	padding-left: 26px;
+} */
+.table-hover tbody tr:hover {
+  position: relative;
+  z-index: 9;
+  box-shadow: 0px 4px 16px rgb(0 0 0 / 16%);
+  border-left: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.table-hover tbody.hasEvent tr:hover {
+  cursor: auto;
+}
+
+.table-hover tbody.hasEvent tr.pointer:hover {
+  cursor: pointer;
+}
+
+.sme-scrollable-table .table-bordered td,
+.table-bordered th {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 1px solid #ecf0f3;
+}
+
+.sme-scrollable-table .scrollable-table-sm table tbody tr td {
+  height: auto !important;
+}
+
+/* .sme-scrollable-table .scrollable-table-sm table tbody tr:hover{
+	box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
+} */
+
+.sme-scrollable-table thead tr:first-child th:first-child,
+.sme-scrollable-table.salary-process-table
+  thead
+  tr:first-child
+  th:nth-child(2) {
+  position: -webkit-sticky;
+  position: sticky;
+  left: -2px;
+  border-right: 0 !important;
+  background: #fff !important;
+  z-index: 999999;
+  border-bottom: 1px solid #ecf0f3;
+  box-shadow: 10px 0 5px -2px #888 !important;
+  padding-left: 26px;
+  min-width: 230px;
+  top: -1px;
+}
+
+.sme-scrollable-table.salary-process-table
+  thead
+  tr:first-child
+  th.fixed-column {
+  position: -webkit-sticky;
+  position: sticky;
+  right: 0;
+  border-right: 0 !important;
+  background: #fff !important;
+  z-index: 999999;
+  border-bottom: 1px solid #ecf0f3;
+  box-shadow: 10px 0 5px -2px #888 !important;
+  padding-left: 26px;
+  min-width: 230px;
+  top: -1px;
+}
+
+.sme-scrollable-table.salary-process-table thead tr:first-child th:first-child {
+  min-width: 50px;
+}
+.sme-scrollable-table.salary-process-table
+  thead
+  tr:first-child
+  th:nth-child(2) {
+  min-width: 250px;
+  left: 47px;
+}
+.sme-scrollable-table.salary-process-table.salary-generate-table
+  thead
+  tr:first-child
+  th:nth-child(2) {
+  min-width: 120px;
+}
+
+/* .sme-scrollable-table thead th:first-child{
+	padding-left: 26px;
+} */
+
+.sme-scrollable-table table {
+  position: relative;
+  border-collapse: collapse;
+}
+
+.sme-scrollable-table .table td,
+.sme-scrollable-table .table th {
+  vertical-align: middle;
+}
+
+/* .sme-scrollable-table .table td {
+  padding-top   : 0;
+  padding-bottom: 0;
+} */
+
+.sme-scrollable-table .scroll-table {
+  max-width: 100%;
+  max-height: 75vh;
+  overflow-x: auto;
+  position: relative;
+  z-index: 0;
+}
+
+.sme-scrollable-table .scroll-table.scroll-table-height {
+  max-height: 75vh;
+}
+.sme-scrollable-table .scroll-table.report-scroll-table-height {
+  max-height: 47vh;
+}
+
+.sme-scrollable-table tbody tr td {
+  word-break: break-word !important;
+  background: #ffffff;
+  font-size: 12px !important;
+  line-height: 15px;
+  font-weight: 500 !important;
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.sme-scrollable-table thead th {
+  position: -webkit-sticky;
+  position: sticky;
+  top: -1px;
+  min-width: 180px;
+  background: #fff !important;
+  z-index: 99;
+  cursor: pointer;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.7);
+  padding-top: 20px;
+  padding-bottom: 18px;
+}
+
+.sme-scrollable-table thead th.noWidth {
+  min-width: 0;
+}
+
+.width-85 .sme-scrollable-table {
+  margin-right: 220px !important;
+}
+
+/* tableScrollableOne */
+.tableScrollableOne .MuiAvatar-root {
+  height: 25px !important;
+  width: 25px !important;
+  font-size: 12px !important;
+}
+
+/* .salary-generate-table */
+.sme-scrollable-table.salary-process-table.salary-generate-table
+  thead
+  tr:first-child
+  th:last-child {
+  min-width: 115px;
+}
+.sme-scrollable-table.salary-process-table.salary-generate-table
+  thead
+  tr:first-child
+  th:nth-last-child(2) {
+  min-width: 145px;
+}
+.sme-scrollable-table.salary-process-table.salary-generate-table
+  thead
+  tr:first-child
+  th:nth-last-child(3) {
+  min-width: 135px;
+}
+.sme-scrollable-table.salary-process-table.salary-generate-table
+  thead
+  tr:first-child
+  th:nth-last-child(4) {
+  min-width: 134px;
+}
+
+/* custom salary details report --------------------------------- */
+.salary-process-table
+  > .salary-details-custom
+  table
+  thead
+  tr:first-child
+  th:first-child {
+  left: -3px !important;
+  /* background-color: red !important; */
+  min-width: 165px !important;
+  z-index: 999999 !important;
+}
+.salary-process-table
+  > .salary-details-custom
+  table
+  thead
+  tr:first-child
+  th:nth-child(2) {
+  left: 135px !important;
+  z-index: 999999 !important;
+  /* background-color: green !important; */
+}
+.salary-process-table
+  > .salary-details-custom
+  table
+  thead
+  tr:first-child
+  th:nth-child(3) {
+  left: 230px !important;
+  z-index: 999999 !important;
+  /* background-color: green !important; */
+}
+.salary-process-table
+  > .salary-details-custom
+  table
+  thead
+  tr:first-child
+  th:nth-child(4) {
+  left: 400px !important;
+  z-index: 999999 !important;
+  /* background-color: green !important; */
+}
+.salary-process-table > .salary-details-custom table tbody tr td:first-child {
+  left: -3px !important;
+  /* background-color: red !important; */
+  min-width: 120px !important;
+}
+
+.salary-process-table > .salary-details-custom table tbody tr td:nth-child(2) {
+  left: 135px !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+}
+.salary-process-table > .salary-details-custom table tbody tr td:nth-child(3) {
+  left: 230px !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+}
+.salary-process-table > .salary-details-custom table tbody tr td:nth-child(4) {
+  left: 400px !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+}
+/* custom salary details css end ------------------ */
+
+.salary-process-table > .salary-summary-custom table thead {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: -2px !important;
+  z-index: 999999 !important;
+  background: white !important;
+}
+.salary-process-table
+  > .salary-summary-custom
+  table
+  thead
+  tr:first-child
+  th:first-child {
+  left: -3px !important;
+  min-width: 150px !important;
+  /* background: white !important; */
+  background: white !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  z-index: 999900 !important;
+}
+
+.salary-process-table
+  > .salary-summary-custom
+  table
+  thead
+  tr:first-child
+  th:nth-child(2) {
+  left: 110px !important;
+  min-width: 200px !important;
+  background: white !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  z-index: 999900 !important;
+}
+.salary-process-table
+  > .salary-summary-custom
+  table
+  thead
+  tr:nth-child(2)
+  th:nth-child(1) {
+  left: 145px !important;
+  min-width: 200px !important;
+  background: white !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  z-index: 999999 !important;
+}
+.salary-process-table
+  > .salary-summary-custom
+  table
+  thead
+  tr:nth-child(2)
+  th:nth-child(2) {
+  left: 308px !important;
+  min-width: 200px !important;
+  background: white !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  z-index: 999999 !important;
+}
+.salary-process-table
+  > .salary-summary-custom
+  table
+  thead
+  tr:nth-child(2)
+  th:nth-child(3) {
+  left: 507px !important;
+  min-width: 200px !important;
+  background: white !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  z-index: 999999 !important;
+}
+
+.salary-process-table > .salary-summary-custom table tbody tr td:first-child {
+  /* background-color: rgb(255, 70, 70) !important; */
+  position: sticky !important;
+  left: -2px !important;
+  border-right: 0 !important;
+  background: white !important;
+  width: 200px !important;
+  z-index: 1000 !important;
+}
+.salary-process-table > .salary-summary-custom table tbody tr td:nth-child(2) {
+  /* background-color: rgb(255, 70, 70) !important; */
+  position: sticky !important;
+  left: 145px !important;
+  border-right: 0 !important;
+  background: white !important;
+  width: 200px !important;
+  z-index: 1000 !important;
+}
+.salary-process-table > .salary-summary-custom table tbody tr td:nth-child(3) {
+  /* background-color: rgb(255, 70, 70) !important; */
+  position: sticky !important;
+  left: 308px !important;
+  border-right: 0 !important;
+  background: white !important;
+  width: 200px !important;
+  z-index: 1000 !important;
+}
+.salary-process-table > .salary-summary-custom table tbody tr td:nth-child(4) {
+  /* background-color: rgb(255, 70, 70) !important; */
+  position: sticky !important;
+  left: 507px !important;
+  border-right: 0 !important;
+  background: white !important;
+  width: 200px !important;
+  z-index: 1000 !important;
+}
+
+/* custom salary summary report css end -------------- */
+
+
+/* bonus custom table css here ----------------------------------- ] */
+.salary-process-table
+  > .bonus-generate-custom
+  table
+  thead
+  tr:first-child
+  th:first-child {
+  left: -3px !important;
+  /* background-color: red !important; */
+  min-width: 165px !important;
+  z-index: 999999 !important;
+}
+.salary-process-table
+  > .bonus-generate-custom
+  table
+  thead
+  tr:first-child
+  th:nth-child(2) {
+  left: 160px !important;
+  z-index: 999999 !important;
+  /* background-color: green !important; */
+}
+.salary-process-table
+  > .bonus-generate-custom
+  table
+  thead
+  tr:first-child
+  th:nth-child(3) {
+  left: 285px !important;
+  z-index: 999999 !important;
+  /* background-color: green !important; */
+}
+.salary-process-table > .bonus-generate-custom table tbody tr td:first-child {
+  left: -3px !important;
+  /* background-color: red !important; */
+  min-width: 120px !important;
+}
+
+.salary-process-table > .bonus-generate-custom table tbody tr td:nth-child(2) {
+  left: 160px !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+}
+.salary-process-table > .bonus-generate-custom table tbody tr td:nth-child(3) {
+  left: 285px !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+}
+/* bonus custom table css end ----------------------------------- ] */

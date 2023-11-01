@@ -1,0 +1,22 @@
+.others .item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.others .item .item-info h6 {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--gray700);
+}
+.others .item .item-info p {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--gray500);
+  margin-left: 0;
+}
+
+.others .item-info {
+  margin-left: 16px;
+}

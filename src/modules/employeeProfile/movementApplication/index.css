@@ -1,0 +1,70 @@
+.movement-tooltip .tooltip-title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.2px;
+
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.movement-tooltip .tooltip-subTitle {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.2px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.movement-table .type {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  /* identical to box height */
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.movement-table .date {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  /* identical to box height */
+
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.movement-table .time {
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  margin-top: 10px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.movement-table .iconButton {
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid rgba(166, 159, 161, 0.5);
+  box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  /* visibility      : hidden; */
+  opacity: 0;
+  transition: 0.3s;
+  margin-right: 15px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.movement-table table tbody tr:hover .iconButton {
+  /* visibility: visible; */
+  opacity: 1;
+}

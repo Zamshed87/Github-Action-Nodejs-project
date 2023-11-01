@@ -1,0 +1,11 @@
+.singleTaskDetails .single-btn-outline,.singleTaskDetails .single-btn-outline:hover, .singleTaskDetails .single-btn-outline:focus{
+  background: #ffffff;
+  color: #229a16 !important;
+  border: 1px solid #229a16;
+}
+.tmProject .markComplete {
+  color: gray !important
+}
+.tmProject .markComplete:hover{
+  color: gray !important
+};

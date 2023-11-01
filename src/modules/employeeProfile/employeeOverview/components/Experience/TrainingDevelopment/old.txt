@@ -1,0 +1,235 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useRef, useState } from "react";
+import { Formik, Form } from "formik";
+import { shallowEqual, useSelector } from "react-redux";
+import * as Yup from "yup";
+
+import { ControlPoint, InvertColors, EditOutlined, DeleteOutlined, ClearOutlined } from "@mui/icons-material";
+import FormikInput from "../../../../../../common/FormikInput";
+import { customStylesLarge } from "../../../../../../utility/selectCustomStyle";
+import PrimaryButton from "../../../../../../common/PrimaryButton";
+import ActionMenu from "../../../../../../common/ActionMenu";
+import WorkIcon from "@mui/icons-material/Work";
+import { Avatar } from "@material-ui/core";
+import FormikSelect from "../../../../../../common/FormikSelect";
+import FileUploadField from "../../../../../../common/FileUploadField";
+import DropDownDatePicker from "../../../../../../common/DropDownDatePicker";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import Slider from "../../../../../../common/Slider";
+import { SwiperSlide } from "swiper/react";
+
+const initData = {
+  trainingTitle: "",
+  issuingOrganization: "",
+  startYear: "",
+  startMonth: "",
+  startDay: "",
+  finishYear: "",
+  finishMonth: "",
+  finishDay: "",
+  expirationYear: "",
+  expirationMonth: "",
+  expirationDay: "",
+};
+
+const validationSchema = Yup.object({
+  trainingTitle: Yup.string().required("training Title is required"),
+});
+export default function TrainingDevelopment() {
+  const { orgId } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+
+  const saveHandler = (values) => {};
+  // form
+  const [trainingData, setTrainingData] = useState([]);
+  // const [isForm, setIsForm] = useState(false);
+  const eventHandler = (values, cb) => {
+    // setIsForm(false);
+    setTrainingData([
+      ...trainingData,
+      {
+        id: trainingData?.length + 1,
+        trainingTitle: values?.trainingTitle,
+        issuingOrganization: values?.issuingOrganization,
+        startYear: values?.startYear,
+        startMonth: values?.startMonth,
+        startDay: values?.startDay,
+        finishYear: values?.finishYear,
+        finishMonth: values?.finishMonth,
+        finishDay: values?.finishDay,
+        expirationYear: values?.expirationYear,
+        expirationMonth: values?.expirationMonth,
+        expirationDay: values?.expirationDay,
+      },
+    ]);
+  };
+
+
+  // show hide input field
+  const [isTrainingDevelopment, setIsTrainingDevelopment] = useState(false);
+
+  return (
+    <>
+      <Formik
+        enableReinitialize={true}
+        initialValues={initData}
+        validationSchema={validationSchema}
+        onSubmit={(values, { setSubmitting, resetForm }) => {
+          // saveHandler(values, () => {
+          //   resetForm(initData);
+          // });
+        }}
+      >
+        {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid }) => (
+          <>
+            <Form className="form-add-experience">
+              <h5>Training & Development</h5>
+              {!isTrainingDevelopment && (
+                <div className="d-flex align-items-center" style={{ marginBottom: "40px", cursor: "pointer" }} onClick={() => setIsTrainingDevelopment(true)}>
+                  <div className="item">
+                    <ControlPoint sx={{ color: "#34A853" }} />
+                  </div>
+                  <div className="item">
+                    <p>Add your training & development</p>
+                  </div>
+                </div>
+              )}
+              {isTrainingDevelopment && (
+                <div className="container-add-experience-fileds">
+                  <div className="input-fied">
+                    <FormikInput
+                      label="Training title"
+                      value={values?.trainingTitle}
+                      onChange={(e) => setFieldValue("trainingTitle", e.target.value)}
+                      name="trainingTitle"
+                      type="text"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-field">
+                    <FormikInput
+                      label="Issuing Organization"
+                      value={values?.issuingOrganization}
+                      onChange={(e) => setFieldValue("issuingOrganization", e.target.value)}
+                      name="issuingOrganization"
+                      type="text"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-field">
+                    <h4 className="start-date">Start Date</h4>
+                    <DropDownDatePicker
+                      yearType="startYear"
+                      monthType="startMonth"
+                      dayType="startDay"
+                      values={values}
+                      setFieldValue={setFieldValue}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-field">
+                    <h4>End Date</h4>
+                    <DropDownDatePicker
+                      yearType="finishYear"
+                      monthType="finishMonth"
+                      dayType="finishDay"
+                      values={values}
+                      setFieldValue={setFieldValue}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-field">
+                    <h4>Expiration Date</h4>
+                    <DropDownDatePicker
+                      yearType="expirationYear"
+                      monthType="expirationMonth"
+                      dayType="expirationDay"
+                      values={values}
+                      setFieldValue={setFieldValue}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="input-field">
+                    <h4>Upload Files</h4>
+                    <FileUploadField />
+                    <p className="file-formate">Uploading file support for JPG, JPEG, PNG</p>
+                    <div className="file d-flex align-items-center mb-4">
+                      <small style={{ color: "#34A853", fontSize: "16px", fontWeight: "500" }}>Certificate.pdf</small>
+                      <ClearOutlined sx={{ marginLeft: "20px", color: "rgba(0, 0, 0, 0.4)", cursor: "pointer" }} />
+                    </div>
+                  </div>
+                  <div className="buttons-add-experience-form row">
+                    <button type="button" className="btn mr-2 btn-cancle btn-green-less" onClick={() => setIsTrainingDevelopment(false)}>
+                      cancel
+                    </button>
+                    <button
+                      className="btn btn-green btn-save"
+                      disabled={!values.trainingTitle || !values.issuingOrganization || !values.startYear || !values.startMonth || !values.startDay ? true : false}
+                      type="submit"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        eventHandler(values);
+                        setIsTrainingDevelopment(false);
+                      }}
+                    >
+                      save
+                    </button>
+                  </div>
+                </div>
+              )}
+              {trainingData?.map((item) => {
+                const { startYear, startMonth, startDay, finishYear, finishMonth, finishDay } = item;
+                return (
+                  <div className="view">
+                    <div className="row row-exp-details">
+                      <div className="col-lg-1 ">
+                        <Avatar className="overviewAvatar">
+                          <EmojiEventsIcon sx={{ color: "rgba(0, 0, 0, 0.6)" }} />
+                        </Avatar>
+                      </div>
+                      <div className="col-lg-10 exp-info">
+                        <h4>at</h4>
+                        <div className="row m-0 row-exp-time">
+                          <div className="col-8 exp-date">
+                            {startMonth.label} {startDay.label}, {startYear.label} - {finishMonth.label} {finishDay.label}, {finishYear.label}
+                          </div>
+                          <div className="col-4 exp-duration">{finishYear.label - startYear.label} year</div>
+                        </div>
+                        <small>{Location}</small>
+                      </div>
+                      <div className="col-lg-1">
+                        <ActionMenu
+                          color={"rgba(0, 0, 0, 0.6)"}
+                          options={[
+                            {
+                              value: 1,
+                              label: "Edit",
+                              icon: <EditOutlined sx={{ marginRight: "10px" }} />,
+                              onClick: (e) => {},
+                            },
+                            {
+                              value: 1,
+                              label: "Delete",
+                              icon: <DeleteOutlined sx={{ marginRight: "10px" }} />,
+                              onClick: (e) => {},
+                            },
+                          ]}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </Form>
+          </>
+        )}
+      </Formik>
+    </>
+  );
+}

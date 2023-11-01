@@ -1,0 +1,91 @@
+.holiday-exception .table-card-body {
+  margin: 0;
+}
+.holiday-table .table thead th {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.holiday-table .table tbody tr {
+  transition: all linear 0.3s;
+}
+.holiday-table .table tbody tr td .assign-btn {
+  opacity: 0;
+  transition: all linear 0.3s;
+}
+.holiday-table .table tbody tr:hover td .assign-btn {
+  opacity: 1;
+}
+.holiday-table .employeeName {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.holiday-table .employeePosition {
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 8px;
+}
+.holiday-table .type {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.6);
+}
+/* .holiday-exception-tooltip {
+  padding: 20px;
+} */
+.holiday-exception-tooltip h6 {
+ margin-bottom: 8px;
+}
+.holiday-exception-tooltip h5 {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.holiday-exception-tooltip .border-bottom {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 9px;
+}
+.holiday-exception-modal .modal-body2 {
+  padding: 10px 20px;
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.holiday-exception-modal .modal-body2 h6 {
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.15px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.7);
+  padding-bottom: 20px;
+}
+.holiday-exception-modal .modal-body2 label {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
+}
+.holiday-exception-modal .modalFooter {
+  padding-right: 25px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: right;
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.16);
+}
+.master-filter-body .css-i4bv87-MuiSvgIcon-root {
+  width: 22px;
+  height: 16px;
+}
+.master-filter-body .css-j204z7-MuiFormControlLabel-root .MuiFormControlLabel-label{
+  font-size: 12px;
+  font-weight: 500;
+}
+.holiday-exception-tooltip .tableOne .table td,
+.tableOne .table th{
+  padding: 3px!important;
+}

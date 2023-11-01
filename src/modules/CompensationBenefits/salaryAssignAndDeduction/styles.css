@@ -1,0 +1,201 @@
+/* ==> employee profile header part<== */
+.box-employee-profile .header-employee-profile {
+  align-items: center;
+  margin: 0;
+  margin-top: 32px;
+  margin-right: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.box-employee-profile .header-employee-profile .header-left {
+  margin: 0%;
+}
+.box-employee-profile .header-employee-profile .header-right {
+  margin: 0%;
+}
+
+/* ==> employee profile header part end <== */
+
+/* ==> employee profile table part start <== */
+.icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.box-employee-profile .employee-table-card {
+  margin-top: 50px;
+}
+.box-employee-profile .employee-table-card table {
+  width: 100%;
+}
+.box-employee-profile .employee-table-card table thead tr th {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: normal;
+  letter-spacing: 0.2px;
+  padding: 15px 20px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.box-employee-profile
+  .employee-table-card
+  table
+  thead
+  tr
+  th
+  .th-emp-table-card {
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.box-employee-profile .employee-table-card table tbody tr td {
+  padding: 23px 20px;
+}
+.box-employee-profile .employee-table-card table tbody tr .td-box-emp-info {
+  width: 45%;
+}
+.box-employee-profile .employee-table-card table tbody tr td .box-emp-info {
+  margin: 0%;
+}
+.box-employee-profile
+  .employee-table-card
+  table
+  tbody
+  tr
+  td
+  .box-emp-info
+  .emp-info
+  .emp-name {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.box-employee-profile
+  .employee-table-card
+  table
+  tbody
+  tr
+  td
+  .box-emp-info
+  .emp-info
+  .emp-id {
+  color: rgba(0, 0, 0, 0.4);
+}
+.box-employee-profile
+  .employee-table-card
+  table
+  tbody
+  tr
+  td
+  .box-emp-info
+  .emp-info
+  .emp-designation {
+  color: rgba(0, 0, 0, 0.4);
+}
+.box-employee-profile
+  .employee-table-card
+  table
+  tbody
+  tr
+  td
+  .box-emp-info
+  .emp-avatar {
+  margin-right: 10px;
+}
+/* ==> employee profile table part end <== */
+/* ==> add new employee profile part start <== */
+.add-new-employee-form .content-input-field {
+  margin: 0%;
+  height: 440px;
+  overflow-y: auto;
+}
+.add-new-employee-form .content-input-field .input-field-main {
+  width: 100%;
+}
+.add-new-employee-form .content-input-field .input-field-main .form-container {
+  margin-bottom: 0;
+}
+.add-new-employee-form .buttons-form-main {
+  width: 100%;
+  margin: 0;
+  margin-top: 30px;
+  padding: 12px 24px;
+  background: #ffffff;
+  box-shadow: 0px -1px 4px rgb(0 0 0 / 16%);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.add-new-employee-form .buttons-form-main .btn-cancle {
+  margin-right: 16px;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+/* ==> add new employee profile part start <== */
+
+/* ==> search filter popover style start <== */
+
+.employeeProfile-src-filter-header h3 {
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 25px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.employeeProfile-src-filter-main .body-employeeProfile-master-filter {
+  height: 377px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0 24px;
+}
+.employeeProfile-src-filter-main
+  .body-employeeProfile-master-filter
+  .row-input-fileds {
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.employeeProfile-src-filter-main
+  .body-employeeProfile-master-filter
+  .row-input-fileds:last-child {
+  margin-bottom: 40px;
+}
+.employeeProfile-src-filter-main
+  .body-employeeProfile-master-filter
+  .row-input-fileds
+  .input-field
+  .form-container {
+  margin: 0;
+}
+.employeeProfile-src-filter-main .footer-employeeProfile-src-filter {
+  justify-content: flex-end;
+}
+.employeeProfile-src-filter-main
+  .footer-employeeProfile-src-filter
+  .master-filter-btn-group
+  .btn-cancle {
+  color: #34a853;
+}
+/* ==> search filter popover style end <== */
+
+.emp-create .emp-btn-cancel {
+  padding: 8px 16px !important;
+  margin-right: 10px !important;
+  font-weight: 700 !important;
+}
+
+.small-checkbox .MuiSvgIcon-root,
+.small-checkbox.MuiCheckbox-root .MuiSvgIcon-root {
+  height: 1rem !important;
+  width: 1rem !important;
+}
+.small-checkbox span.MuiTypography-root {
+  font-size: 14px;
+}

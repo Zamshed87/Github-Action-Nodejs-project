@@ -1,0 +1,24 @@
+/* job-posting-landing */
+.creat-job-modal .number-button-group {
+  top: 1px !important;
+}
+
+/* stepOne */
+.stepOne {
+  max-width: 460px;
+  margin: 0 auto;
+}
+.step-title {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 20px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.stepOne .step-title {
+  margin-bottom: 25px;
+}
+
+.job-posting-list .btn-deafult-create-job{
+  height: 56px !important;
+}

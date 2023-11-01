@@ -1,0 +1,32 @@
+.main-table-body table tr td:first-child {
+  font-style : normal;
+  font-weight: normal;
+  font-size  : 12px;
+  line-height: 14px;
+  /* identical to box height */
+
+
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.main-table-body table tr td:last-child,
+.input-label {
+  font-style : normal;
+  font-weight: normal;
+  font-size  : 12px;
+  line-height: 14px;
+  /* identical to box height */
+
+
+  color: rgba(0, 0, 0, 0.7);
+}
+
+
+
+.main-table-body .row .col {
+  height          : 30px;
+  display         : flex;
+  align-items     : flex-end;
+  margin-bottom   : 8px;
+  /* padding      : 0; */
+}

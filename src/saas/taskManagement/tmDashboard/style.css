@@ -1,0 +1,63 @@
+.timeline-wrapper .cardTitle{
+  font-weight: 500;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.75);
+}
+.timeline-wrapper .wrapperStyle{
+  border-color: white;
+  border-width: 0;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: 5px;
+}
+.timeline-wrapper .flexDirection{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(235, 235, 235, 1);
+}
+.timeline-wrapper .allDay{
+  width: 50px;
+  height: 26px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  padding-top: 3px;
+  color: rgba(99, 115, 129, 1);
+  font-weight: bold;
+  background-color: #F2F2F7;
+  border-left: 1px solid rgba(235, 235, 235, 1);
+}
+.timeline-wrapper .blankDay{
+  width: 50px;
+  height: 54px;
+  text-align: center;
+  border-left: 1px solid rgba(235, 235, 235, 1);
+}
+.timeline-wrapper .bottomDay{
+  width: 50px;
+  height: 1px;
+  border-bottom-width: 1px;
+  text-align: center;
+}
+.timeline-wrapper .taskStyle{
+  padding: 0;
+}
+.timeline-wrapper .cmnTxt{
+  color: rgba(177, 177, 177, 1);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+}
+.timeline-wrapper .cmnTxtTitle{
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+  padding-bottom: 4px;
+}
+.timeline-wrapper .horizontalScrollIndicator{
+  overflow-x: scroll;
+}

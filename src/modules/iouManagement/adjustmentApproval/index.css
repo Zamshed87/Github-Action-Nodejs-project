@@ -1,0 +1,29 @@
+.movement-wrapper .actionIcon .muiIconHover {
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  height         : 25px;
+  width          : 25px;
+  border-radius  : 100px;
+  background     : transparent;
+  cursor         : pointer;
+}
+
+
+.movement-wrapper .actionIcon .muiIconHover.success:hover {
+  background: #E7FEDE;
+}
+
+.movement-wrapper .actionIcon .muiIconHover.danger:hover {
+  background: #FFE3E3;
+}
+
+.movement-wrapper .filter-title {
+  background   : rgba(33, 33, 33, 0.08);
+  border-radius: 16px;
+  padding      : 4px;
+  color        : rgba(0, 0, 0, 0.7);
+  font-weight  : normal;
+  font-size    : 14px;
+  line-height  : 20px;
+}

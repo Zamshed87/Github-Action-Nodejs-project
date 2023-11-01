@@ -1,0 +1,15 @@
+.bulk-upload-history
+  .tableOne
+  > table
+  > tbody
+  > tr
+  > td
+  .tableBody-title.blue-link {
+  color: #007bff !important;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.bulk-upload-history-modal .modal-xl {
+  max-width: 900px;
+}

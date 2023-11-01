@@ -1,0 +1,52 @@
+.dashboard .employee-details {
+  padding: 60px 0 0;
+}
+.dashboard .employee-details .welcome-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--gray900);
+  margin-bottom: 16px;
+}
+.dashboard .employee-details .welcome-description {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--gray500);
+  width: 400px;
+  margin: 0 auto;
+}
+.dashboard .item-wrapper {
+  width: 980px;
+  margin: 0 auto;
+}
+.dashboard .item-wrapper .item-card {
+  margin-left: 25px;
+  margin-top: 25px;
+}
+.dashboard .item-wrapper .item-name {
+  width: 172px;
+  margin-top: 16px;
+  line-height: 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray900);
+}
+
+@media (max-width: 780px) {
+  .dashboard .item-wrapper {
+    width: 84%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard .item-wrapper {
+    width: 95%;
+    margin: 0 auto;
+  }
+}
+@media (max-width: 660px) {
+  .dashboard .item-wrapper {
+    width: 98%;
+    margin: 0 auto;
+  }
+}

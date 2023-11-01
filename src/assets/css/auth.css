@@ -1,0 +1,235 @@
+/*-------------------------------------
+	Auth Layout
+--------------------------------------*/
+.auth-header .container-fluid {
+  max-width: 100%;
+}
+.auth-wrapper-page {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.scroll-less {
+  height: auto;
+}
+.bg-transparent {
+  background: transparent !important;
+}
+
+/* auth-header */
+.auth-header-content-inner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.auth-login-header {
+  max-width: 320px;
+  margin: 0 auto;
+}
+.auth-login-header-logo {
+  margin-bottom: 25px;
+  text-align: center;
+}
+.auth-login-header p {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: var(--black60);
+  margin-bottom: 48px;
+}
+.auth-header {
+  background: #ffffff;
+  height: 64px;
+  width: 100%;
+  overflow: hidden;
+  padding: 0px 25px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+}
+.job-list-auth {
+  /* box-shadow: 0px 1px 4px rgba(0, 0, 0, 1); */
+  position: fixed;
+  z-index: 9;
+}
+.auth-top-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+/* auth-footer */
+.auth-footer {
+  padding: 25px 0;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+}
+.auth-footer-list li > a,
+.auth-footer-list li > a:hover,
+.auth-footer-list li > a:focus {
+  font-family: var(--robotoFont);
+  font-size: 12px;
+  line-height: 14px;
+  color: var(--grey);
+  margin-left: 40px;
+  transition: 0.3s ease-in-out;
+}
+
+.auth-footer-list li > a:hover,
+.auth-footer-list li > a:focus {
+  color: #229a16;
+}
+
+.auth-footer-list li:first-child > a,
+.auth-footer-list li:first-child > a:hover,
+.auth-footer-list li:first-child > a:focus {
+  margin-left: 0px;
+}
+
+/* auth-login */
+.auth-login-wrapper {
+  width: 100%;
+  margin: 0 auto;
+}
+.auth-login-inner-wrapper {
+  max-width: 542px;
+  margin: 35px auto 0;
+  border: 1px solid var(--gray300);
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 45px 40px;
+}
+.auth-login-header h2 {
+  font-weight: 700;
+  font-size: var(--font24);
+  line-height: var(--line-height28);
+  letter-spacing: 0.15px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 16px;
+}
+.auth-login-header p,
+.auth-login-header p > a,
+.auth-login-header p > a:hover,
+.auth-login-header p > a:focus {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--gray500);
+}
+
+.auth-login-header p > a,
+.auth-login-header p > a:hover,
+.auth-login-header p > a:focus {
+  color: var(--lightBlue);
+  text-decoration: underline;
+  font-weight: 400;
+  margin-left: 5px;
+}
+.auth-form-group {
+  position: relative;
+}
+.auth-forget {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  color: #229a16;
+}
+.auth-log-submit {
+  margin: 12px 0 0;
+}
+.auth-radio {
+  height: 64px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  margin-bottom: 16px;
+}
+.auth-login-body .form-group {
+  margin-bottom: 15px;
+}
+
+.auth-log-footer-para > a,
+.auth-log-footer-para > a:hover,
+.auth-log-footer-para > a:focus {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 15px 0 0;
+  color: var(--neon);
+  text-decoration: underline;
+}
+
+.auth-back-login {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--gray500);
+}
+.auth-resend {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--gray500);
+  text-align: center;
+  margin-top: 30px;
+}
+.auth-resend > span {
+  font-weight: 500;
+  color: var(--success700);
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+/* auth modal */
+.auth-modal .modal-xl {
+  max-width: 688px !important;
+}
+.btn-auth-modal-cross {
+  padding: 0;
+}
+.forget-modal-body {
+  max-width: 464px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+}
+.forget-modal-img {
+  width: 80px;
+  height: 80px;
+  background: #fee0b3;
+  border-radius: 100px;
+  margin: 0px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.forget-modal-body p.forget-modal-body-para {
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--gray500);
+  margin: 33px auto 30px;
+  text-align: center;
+}
+.forget-modal-body p.forget-modal-body-para > span {
+  color: var(--gray900);
+  font-weight: 500;
+}
+.forget-modal-pin-form {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-gap: 1rem;
+  justify-items: center;
+}
+input.auth-pin-form {
+  height: 65px;
+  background: #ffffff;
+  border-radius: 4px;
+}
+.forget-modal-pin-form {
+  padding: 12px 0 0px;
+}

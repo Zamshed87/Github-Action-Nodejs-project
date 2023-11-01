@@ -1,0 +1,146 @@
+.form-add-experience .view .row-exp-details .exp-info .row-exp-time {
+  align-items: center;
+}
+
+.form-add-experience .view .row-exp-details .exp-info .row-exp-time .exp-date {
+  padding: 0;
+  font-size: 12px;
+  line-height: 18px;
+  margin-top: 5px;
+  color: var(--gray500);
+}
+.form-add-experience
+  .view
+  .row-exp-details
+  .exp-info
+  .row-exp-time
+  .exp-duration {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--gray500);
+}
+.container-add-experience-fileds .input-field h4 {
+  padding: 10px;
+  margin: 4px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.container-add-experience-fileds .input-field .start-date {
+  margin-top: 12px;
+}
+.container-add-experience-fileds
+  .input-field
+  .dropDownDatePicker
+  .form-container {
+  margin-bottom: 0px;
+}
+.container-add-experience-fileds .input-field .file-formate {
+  font-size: 14px;
+  line-height: 120%;
+  letter-spacing: -0.01em;
+  color: var(--gray500);
+  margin: 27px 0;
+  padding-left: 0;
+}
+
+/* // add experience from footer start */
+
+.form-add-experience
+  .container-add-experience-fileds
+  .buttons-add-experience-form {
+  justify-content: flex-end;
+  margin: 0;
+  margin-bottom: 35px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+.form-add-experience
+  .container-add-experience-fileds
+  .buttons-add-experience-form
+  .btn-cancle {
+  background: #f2f2f7;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.7);
+  height: 40px;
+  border: 2px solid #f2f2f7;
+}
+.form-add-experience
+  .container-add-experience-fileds
+  .buttons-add-experience-form
+  .btn-save {
+  border-radius: 8px;
+  border: none;
+}
+.form-add-experience
+  .container-add-experience-fileds
+  .buttons-add-experience-form
+  .btn-save:disabled {
+  background: #f2f2f7;
+  color: rgba(0, 0, 0, 0.2);
+}
+
+/* // add experience from footer end */
+
+/* // */
+
+/* // slider */
+.form-add-experience .slider-main {
+  display: inline-block;
+  position: relative;
+  height: 300px;
+}
+.form-add-experience .slider-main .swiper-container {
+  padding: 80px 20px 40px 20px;
+  /* top right bottom left */
+  /* background: gray; */
+}
+.form-add-experience .slider-main .swiper-container .swiper-button-prev {
+  right: 60px;
+  top: 25px;
+  z-index: 1;
+  left: auto;
+  height: auto;
+  width: auto;
+}
+.form-add-experience .slider-main .swiper-container .swiper-button-next {
+  right: 10px;
+  z-index: 1;
+  top: 25px;
+  left: auto;
+  height: auto;
+  width: auto;
+}
+.form-add-experience .slider-main .swiper-container .swiper-button-prev::after {
+  font-size: 1rem;
+  background: #f2f2f7;
+  border-radius: 40px;
+  color: rgba(0, 0, 0, 0.6);
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-add-experience .slider-main .swiper-container .swiper-button-next::after {
+  font-size: 1rem;
+  background: #f2f2f7;
+  border-radius: 40px;
+  color: rgba(0, 0, 0, 0.6);
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.attachment-upload .image-upload-box.with-img {
+  max-width: 100% !important;
+  display: flex;
+  justify-content: flex-start;
+}

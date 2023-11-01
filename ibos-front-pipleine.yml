@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: #{Deployment}#
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: #{Deployment}#
+  template:
+    metadata:
+      labels:
+        app: #{Deployment}#
+        type: #{Deployment}#
+    spec:
+      containers:
+        - name: #{Deployment}#
+          image: iboslimitedbd/#{Deployment}#:#{Build.BuildId}#
+          # Environment variable section
+          env:
+            - name: "REACT_APP_BASE_API_URL"
+              value: #{API_URL}#
+
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: dockercred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #{Deployment}#
+spec:
+  selector:
+    app: #{Deployment}#
+  ports:
+    - port: 80
+      targetPort: 80
+  # type: LoadBalancer
+  # loadBalancerIP: 10.17.217.209

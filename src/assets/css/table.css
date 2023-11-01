@@ -1,0 +1,386 @@
+/*
+
+  01. table-card
+  02. default-table
+
+*/
+/* .table-card,
+.form-card {
+  
+} */
+.default-table {
+  background: #ffffff;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-radius: 8px;
+  padding: 10px 15px;
+  --tw-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.table-card-heading,
+.form-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.table-card-heading.mb12 {
+  margin-bottom: 12px;
+}
+.table-card-heading h2,
+.form-card-heading h2 {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--gray700);
+}
+.table-card-heading > h3 {
+  font-weight: 400;
+  color: var(--gray700);
+  font-size: 14px;
+  line-height: 20px;
+}
+.table-card-heading > div > span {
+  font-weight: 600;
+  color: var(--gray700);
+  font-size: 12px;
+  line-height: 15px;
+}
+.table-card-heading-border {
+  padding: 22px 0 0;
+  border-bottom: 1px solid var(--gray200);
+  margin-bottom: 16px;
+}
+.card-save-border {
+  margin-top: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--gray200);
+}
+.table-card-head-right {
+  display: flex;
+  align-items: center;
+}
+.table-card-heading .form-container {
+  margin-bottom: 0;
+}
+.table-card-head-right .search-input {
+  margin-right: 24px;
+}
+.table-card-head-right ul {
+  display: flex;
+  align-items: center;
+}
+.table-card-head-right ul > li {
+  display: inline-block;
+  margin-right: 16px;
+}
+.table-card-head-right ul > li:last-child {
+  margin-right: 0px;
+}
+
+/* default-table css */
+.default-table .MuiSelect-select:focus {
+  background: none !important;
+}
+.default-table .MuiSelect-select.MuiSelect-select,
+.default-table .MuiSelect-select.MuiSelect-select:hover {
+  padding: 0 !important;
+}
+.default-table .MuiSelect-icon {
+  color: #ffffff !important;
+}
+.default-table .MuiInput-underline:before {
+  border-bottom: none !important;
+}
+.default-table .MuiInput-underline:after {
+  border-bottom: none !important;
+}
+.ant-table-thead th.ant-table-column-has-sorters:hover {
+  background: rgb(245 245 245) !important;
+}
+
+/* .default-table
+   .MuiSelect-root
+   .MuiSelect-select
+   .MuiSelect-selectMenu
+   .MuiInputBase-input
+   .MuiInput-input {
+   display: none !important;
+ } */
+
+/* table-card-body */
+.table-card-body {
+  margin: 0;
+  width: 100%;
+}
+h2.table-card-title {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--gray700);
+  font-weight: 600;
+}
+h3.table-card-sub-title {
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--gray700);
+  font-weight: 500;
+}
+.td-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.td-box-txt {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.td-head > h4 {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+  letter-spacing: -0.36px;
+  color: rgba(0, 0, 0, 0.87);
+}
+.td-para > p {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: -0.36px;
+  color: var(--gray700);
+  margin: 12px 0 0;
+}
+.td-chip {
+  margin: 12px 0 0;
+}
+
+/* .candidate-table-head */
+.candidate-table-head {
+  flex-direction: column;
+  max-width: 810px;
+  margin: 0 auto;
+  text-align: center;
+}
+.candidate-table-head h2 {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 37px;
+  letter-spacing: 0.5px;
+  color: var(--black70);
+  margin-bottom: 34px;
+}
+.candidate-table-head p {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  letter-spacing: 0.2px;
+  color: var(--black40);
+}
+.candidate-table-body {
+  max-width: 752px;
+  margin: 45px auto 0;
+}
+
+.print-design {
+  writing-mode: vertical-rl;
+  transform: rotate(-180deg) translateX(-1px);
+  min-width: 40px;
+  width: 80px;
+  max-height: 110px !important;
+}
+.print-design p {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px !important;
+  line-height: 21px;
+  color: var(--gray700) !important;
+}
+
+.data-grid-table .css-i4bv87-MuiSvgIcon-root {
+  font-size: 16px;
+}
+
+/* Data grid table */
+.data-grid-table .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked {
+  color: green !important;
+  font-size: 12px !important;
+}
+.data-grid-table .css-r11z79-MuiDataGrid-root {
+  font-size: 12px !important;
+}
+
+.data-grid-table .css-1knaqv7-MuiButtonBase-root-MuiButton-root {
+  min-width: 0px !important;
+}
+.data-grid-table .MuiDataGrid-toolbarContainer .MuiButton-root {
+  color: var(--gray900) !important;
+  font-size: 12px !important;
+}
+
+.MuiDataGrid-columnsPanel
+  .css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked {
+  color: var(--success700);
+}
+
+.MuiDataGrid-columnsPanel
+  .css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked
+  + .MuiSwitch-track {
+  background-color: var(--success700);
+}
+
+.MuiDataGrid-columnsPanel
+  .css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked.Mui-disabled {
+  color: var(--success700);
+}
+
+.MuiDataGrid-panelFooter .MuiButton-root,
+.MuiDataGrid-panelHeader {
+  color: var(--gray900) !important;
+}
+
+.MuiDataGrid-panelHeader .css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root,
+.MuiDataGrid-panelWrapper {
+  font-size: 12px !important;
+  color: var(--gray900) !important;
+}
+
+.MuiDataGrid-panelWrapper .css-1a1fmpi-MuiInputBase-root-MuiInput-root:after {
+  color: var(--gray900) !important;
+  border-bottom: 2px solid var(--gray900) !important;
+}
+.MuiDataGrid-panelWrapper .css-1qjzotq-MuiDataGrid-panelHeader,
+.css-154sxbz-MuiPaper-root-MuiDataGrid-paper {
+  color: var(--gray900) !important;
+  font-size: 12px !important;
+}
+
+.MuiDataGrid-panelWrapper .MuiFormLabel-colorPrimary {
+  color: var(--gray900) !important;
+}
+.MuiDataGrid-panelWrapper .MuiTypography-root,
+.MuiDataGrid-panelWrapper .MuiButton-root {
+  font-size: 12px !important;
+}
+
+.ant-table table {
+  font-size: 12px !important;
+}
+.ant-table-tbody .ant-table-cell {
+  font-size: 11px !important;
+  padding: 3px 5px !important;
+  font-weight: 400 !important;
+}
+.ant-table-column-title {
+  color: var(--gray600) !important;
+  font-size: 12px !important;
+  font-weight: 600;
+}
+.ant-pagination {
+  font-size: 10px !important;
+}
+.ant-pagination-item {
+  font-size: 10px !important;
+  padding: 1px 5px !important;
+  color: var(--gray500);
+}
+.ant-pagination-prev {
+  font-size: 10px !important;
+}
+
+.ant-pagination.ant-pagination-mini
+  .ant-pagination-prev
+  .ant-pagination-item-link,
+.ant-pagination.ant-pagination-mini
+  .ant-pagination-next
+  .ant-pagination-item-link {
+  margin-top: -3px !important;
+}
+
+.ant-pagination-item-active,
+.ant-pagination-item-active:hover {
+  border-color: var(--primary-color);
+}
+
+.ant-table-thead {
+  font-size: 12px !important;
+  font-weight: 600;
+}
+
+.ant-table-filter-trigger.active {
+  color: #34a853 !important;
+}
+.ant-table-filter-dropdown-btns .ant-btn-link {
+  color: #34a853 !important;
+}
+.ant-table-filter-dropdown-btns .ant-btn-primary {
+  background-color: #34a853 !important;
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #34a853 !important;
+  border-color: #34a853 !important;
+}
+.ant-dropdown-menu-title-content {
+  color: var(--gray500) !important;
+}
+
+.ant-table-column-sorter-inner .active svg path {
+  fill: #34a853;
+}
+
+.ant-table-cell {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 1px;
+  height: 1.6em;
+  background-color: rgb(255, 255, 255);
+  transform: translateY(-50%);
+  transition: background-color 0.3s;
+  content: "";
+}
+
+.tableOne
+  .css-duqz4i-MuiFormControlLabel-root.MuiFormControlLabel-root
+  .MuiTypography-root {
+  font-weight: 600;
+}
+
+.tableOne .kebab-menu-action .MuiButton-root {
+  min-width: 20px !important;
+  height: 20px !important;
+  border-radius: 100%;
+  padding: 0;
+}
+/* scrolling table for ant table */
+
+.ant-scrolling-Table .ant-table-thead th {
+  position: sticky;
+  left: 0px;
+  background: white !important;
+  border-bottom: none !important;
+  padding: bottom;
+  padding-bottom: 0px !important;
+  margin-bottom: 0px !important;
+}
+.ant-scrolling-Table .ant-table-tbody tr td {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+.btn-assign {
+  opacity: 0 !important;
+}
+table tr:hover .btn-assign {
+  opacity: 1 !important;
+}

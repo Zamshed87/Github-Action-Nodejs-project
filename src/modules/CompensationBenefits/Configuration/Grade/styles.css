@@ -1,0 +1,64 @@
+.grade-wrapper .table-card-heading {
+  margin-top: 15px;
+  justify-content: flex-end;
+}
+
+/* // table grade start  */
+.grade-wrapper .table-card .table-card-body table thead th:first-child {
+  padding-left: 43px;
+}
+
+.grade-wrapper .table-card .table-card-body table thead th {
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  padding: 0.4rem ;
+  height:auto;
+}
+.grade-wrapper .table-card .table-card-body table thead th small {
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.grade-wrapper .table-card .table-card-body table tbody td {
+  text-align: center;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.grade-wrapper .table-card .table-card-body table tbody td:first-child {
+  padding-left: 43px;
+  text-align: left;
+}
+.grade-wrapper .table-card .table-card-body table tbody td:nth-child(2) {
+  text-align: center !important;
+}
+.grade-wrapper .table-card .table-card-body table tbody td:nth-child(4) {
+  text-align: center;
+}
+/* .grade-wrapper .table-card .table-card-body table tbody td:last-child {
+} */
+.grade-wrapper .table-card .table-card-body table tbody td .status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.grade-wrapper .table-card .table-card-body table tbody td .hover-icon{
+  display: flex;
+  justify-content: center;
+}
+.grade-wrapper .table-card .table-card-body table tbody td .status .hover-icon .border-icon {
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.6);
+}
+.grade-wrapper .table-card .table-card-body table tbody tr:hover .hover-icon .border-icon {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* // table grade end  */

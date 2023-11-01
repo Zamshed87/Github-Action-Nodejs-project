@@ -1,0 +1,45 @@
+/* // table grade start  */
+
+/* // table grade end  */
+
+/* create userGroup modal start */
+
+.userGroupModal .form-container {
+  margin-bottom: 5px;
+}
+
+.userGroup-wrapper .table-card-body table tbody td:first-child {
+  padding-left: 43px;
+  text-align: left;
+}
+
+.userGroupModal .table-card-body table tbody td:last-child {
+  width: 0;
+}
+
+.userGroupModal .table-card-body table tbody td .hover-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.userGroupModal .table-card-body table tbody td .hover-icon .border-icon {
+  text-align: center;
+  background-color: #fff;
+  color: #212529;
+  margin-right: 40px;
+}
+.userGroupModal .table-card-body table tbody tr:hover .border-icon,
+.userGroupModal .table-card-body table tbody tr .border-icon {
+  visibility: visible;
+  opacity: 1;
+}
+
+.userGroupModal .add-btn {
+  margin-top: 15px !important;
+  padding-left: 0;
+  display: block;
+}
+.userGroupModal .table-card-body {
+  margin-top: 0;
+}
+/* create userGroup modal end */

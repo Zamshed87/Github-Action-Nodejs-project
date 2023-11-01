@@ -1,0 +1,287 @@
+import { EditOutlined, InfoOutlined } from "@mui/icons-material";
+import { styled, Tooltip, tooltipClasses } from "@mui/material";
+import AvatarComponent from "../../../../common/AvatarComponent";
+import Chips from "../../../../common/Chips";
+import { gray900 } from "../../../../utility/customColor";
+import { dateFormatter } from "../../../../utility/dateFormatter";
+import { numberWithCommas } from "../../../../utility/numberWithCommas";
+import axios from "axios";
+
+export const getExpenseApplicationById = async (
+  id,
+  buId,
+  setter,
+  setLoading
+) => {
+  setLoading && setLoading(true);
+
+  try {
+    const res = await axios.get(
+      `/Employee/GetExpenseById?intExpenseId=${id}&businessUnitId=${buId}`
+    );
+
+    if (res?.data) {
+      const resData = [res?.data];
+      const modifyArr = resData?.map((data, index) => {
+        return {
+          ...data,
+          initialSerialNumber: index + 1,
+        };
+      });
+      setter(modifyArr);
+
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
+
+export const onGetExpenseApplicationLanding = async (
+  buId,
+  wgId,
+  fromDate,
+  toDate,
+  search,
+  setter,
+  setLoading,
+  pageNo,
+  pageSize,
+  setPages,
+  intWorkplaceId
+) => {
+  setLoading && setLoading(true);
+
+  let searchTxt = search ? `&strSearchTxt=${search}` : "";
+
+  try {
+    const res = await axios.get(
+      `/Employee/ExpenseApplicationLandingDataPaginetion?intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&workplaceId=${intWorkplaceId}&dteFromDate=${fromDate}&dteToDate=${toDate}&pageNo=${pageNo}&pageSize=${pageSize}${searchTxt}`
+    );
+    if (res?.data) {
+      setter(res?.data?.expenseApplicationLandings);
+
+      setPages({
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
+      });
+
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
+
+export const filterExpenseApplicationLanding = (
+  keywords,
+  allData,
+  setRowDto
+) => {
+  try {
+    const regex = new RegExp(keywords?.toLowerCase());
+    let newData = allData?.filter(
+      (item) =>
+        regex.test(item?.employeeCode?.toLowerCase()) ||
+        regex.test(item?.EmployeeName?.toLowerCase()) ||
+        regex.test(item?.strExpenseType?.toLowerCase())
+    );
+    setRowDto(newData);
+  } catch {
+    setRowDto([]);
+  }
+};
+
+export const expenseLandingTableColumn = (page, paginationSize, history) => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+      width: 50,
+    },
+    {
+      title: "Code",
+      dataIndex: "employeeCode",
+      sort: true,
+      filter: false,
+      width: 100,
+      fieldType: "string",
+    },
+    {
+      title: "Employee",
+      dataIndex: "employeeName",
+      sort: true,
+      filter: false,
+      render: (item) => (
+        <div className="d-flex align-items-center justify-content-start">
+          <div className="emp-avatar">
+            <AvatarComponent
+              classess=""
+              letterCount={1}
+              label={item?.employeeName}
+            />
+          </div>
+          <div className="ml-2">
+            <span>{item?.employeeName}</span>
+          </div>
+        </div>
+      ),
+      fieldType: "string",
+    },
+    {
+      title: "Expense Type",
+      dataIndex: "strExpenseType",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "From Date",
+      dataIndex: "dteExpenseFromDate",
+      render: (item) => (
+        <div>
+          {item?.dteExpenseFromDate
+            ? dateFormatter(item?.dteExpenseFromDate)
+            : "N/A"}
+        </div>
+      ),
+      width: 100,
+      sort: true,
+      filter: false,
+      fieldType: "date",
+    },
+    {
+      title: "To Date",
+      dataIndex: "dteExpenseToDate",
+      render: (item) => (
+        <div>
+          {item?.dteExpenseToDate
+            ? dateFormatter(item?.dteExpenseToDate)
+            : "N/A"}
+        </div>
+      ),
+      width: 100,
+      sort: true,
+      filter: false,
+      fieldType: "date",
+    },
+    {
+      title: "Expense Amount",
+      dataIndex: "numExpenseAmount",
+      render: (item) => (
+        <>
+          {item?.numExpenseAmount
+            ? numberWithCommas(item?.numExpenseAmount)
+            : "N/A"}
+        </>
+      ),
+      className: "text-right",
+      sort: true,
+      filter: false,
+      fieldType: "number",
+    },
+    {
+      title: "Reason",
+      dataIndex: "strDiscription",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      filter: false,
+      width: 80,
+      render: (item) => (
+        <>
+          {item?.status === "Approved" && (
+            <Chips label="Approved" classess="success p-2" />
+          )}
+          {item?.status === "Pending" && (
+            <Chips label="Pending" classess="warning p-2" />
+          )}
+          {item?.status === "Process" && (
+            <Chips label="Process" classess="primary p-2" />
+          )}
+          {item?.status === "Rejected" && (
+            <>
+              <Chips label="Rejected" classess="danger p-2 mr-2" />
+              {item?.rejectedBy && (
+                <LightTooltip
+                  title={
+                    <div className="p-1">
+                      <div className="mb-1">
+                        <p
+                          className="tooltip-title"
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "600",
+                          }}
+                        >
+                          Rejected by {item?.rejectedBy}
+                        </p>
+                      </div>
+                    </div>
+                  }
+                  arrow
+                >
+                  <InfoOutlined
+                    sx={{
+                      color: gray900,
+                    }}
+                  />
+                </LightTooltip>
+              )}
+            </>
+          )}
+        </>
+      ),
+      sort: true,
+      fieldType: "string",
+    },
+    {
+      title: "Action",
+      render: (item) => (
+        <div className="d-flex align-items-center justify-content-center">
+          {item?.status === "Pending" && (
+            <Tooltip title="Edit" arrow>
+              <button className="iconButton" type="button">
+                <EditOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    history.push(
+                      `/profile/expense/expenseApplication/edit/${item?.expenseId}`
+                    );
+                  }}
+                />
+              </button>
+            </Tooltip>
+          )}
+        </div>
+      ),
+      sort: true,
+      filter: false,
+      fieldType: "string",
+      width: 80,
+    },
+  ];
+};
+
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.arrow}`]: {
+    color: "#fff !important",
+  },
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "#fff",
+    color: "rgba(0, 0, 0, 0.87)",
+    boxShadow:
+      "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
+    fontSize: 11,
+  },
+}));
