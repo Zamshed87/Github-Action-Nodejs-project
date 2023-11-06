@@ -104,7 +104,7 @@
   padding-bottom: 20px;
 }
 .create-approval-form .modal-body2 .btn {
-  color: #34a853 !important;
+  /* color: #34a853 !important; */
   font-weight: 500;
 }
 .approval-view-table p {
