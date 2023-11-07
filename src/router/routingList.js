@@ -1,4 +1,9 @@
 import { lazy } from "react";
+const CreateEditLeavePolicy = lazy(() =>
+  import(
+    "../modules/leaveMovement/configuration/YearlyLeavePolicy/CreateEditLeavePolicy.jsx"
+  )
+);
 const TerritoryType = lazy(() =>
   import("../modules/configuration/territoryType/index.js")
 );
@@ -1011,7 +1016,9 @@ const AttendanceProcessLanding = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceProcess/index.jsx")
 );
 const AttendanceGenerateProcessForm = lazy(() =>
-  import("../modules/timeSheet/attendence/attendanceProcess/AttendanceGenerateProcessForm.jsx")
+  import(
+    "../modules/timeSheet/attendence/attendanceProcess/AttendanceGenerateProcessForm.jsx"
+  )
 );
 const CalendarSetup = lazy(() =>
   import("../modules/timeSheet/configuration/calenderSetup/index.jsx")
@@ -1617,6 +1624,10 @@ export const routingList = [
   {
     path: "/administration/leaveandmovement/yearlyLeavePolicy",
     component: YearlyLeavePolicy,
+  },
+  {
+    path: "/administration/leaveandmovement/yearlyLeavePolicy/create",
+    component: CreateEditLeavePolicy,
   },
   {
     path: "/administration/timeManagement/holidaySetup",

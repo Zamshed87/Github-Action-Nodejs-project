@@ -338,6 +338,7 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
                 touched={touched}
               />
             </div>
+            {/* gender */}
             <div className="col-lg-6">
               <label>Gender</label>
               <FormikSelect
@@ -455,6 +456,46 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
                   />
                 </div>
               )}
+
+            <div className="col-6">
+              <label>Active From Joining day In Day</label>
+              <DefaultInput
+                // label="Days"
+                step="any"
+                placeholder=" "
+                classes="input-sm"
+                value={values?.intActiveFromJoiningdayInDay}
+                onChange={(e) => {
+                  setFieldValue("intActiveFromJoiningdayInDay", e.target.value);
+                }}
+                name="intActiveFromJoiningdayInDay"
+                type="number"
+                // className="form-control"
+                errors={errors}
+                touched={touched}
+              />
+            </div>
+            <div className="col-6">
+              <label>Active From Confirmation In Day</label>
+              <DefaultInput
+                // label="Days"
+                step="any"
+                placeholder=" "
+                classes="input-sm"
+                value={values?.intActiveFromConfirmationInDay}
+                onChange={(e) => {
+                  setFieldValue(
+                    "intActiveFromConfirmationInDay",
+                    e.target.value
+                  );
+                }}
+                name="intActiveFromConfirmationInDay"
+                type="number"
+                // className="form-control"
+                errors={errors}
+                touched={touched}
+              />
+            </div>
             {/* compensatory */}
             {values?.intLeaveType?.label === "Compensatory Leave" ? (
               <div className="col-3">
@@ -800,7 +841,14 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
             ) : null}
 
             {/* encashable */}
-            <div className="col-3">
+            <div
+              className={`col-lg-${
+                values?.intLeaveType?.label !== "Earn Leave" ||
+                values?.intLeaveType?.label !== "Compensatory Leave"
+                  ? 6
+                  : 3
+              }`}
+            >
               <label> </label>
               <div className="d-flex align-items-center small-checkbox">
                 <FormikCheckBox
@@ -1026,45 +1074,6 @@ const CreateYearlyPolicyModal = ({ setShow, singleData, getData }) => {
                   labelFontSize="12px"
                 />
               </div>
-            </div>
-            <div className="col-6">
-              <label>Active From Joining day In Day</label>
-              <DefaultInput
-                // label="Days"
-                step="any"
-                placeholder=" "
-                classes="input-sm"
-                value={values?.intActiveFromJoiningdayInDay}
-                onChange={(e) => {
-                  setFieldValue("intActiveFromJoiningdayInDay", e.target.value);
-                }}
-                name="intActiveFromJoiningdayInDay"
-                type="number"
-                // className="form-control"
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-            <div className="col-6">
-              <label>Active From Confirmation In Day</label>
-              <DefaultInput
-                // label="Days"
-                step="any"
-                placeholder=" "
-                classes="input-sm"
-                value={values?.intActiveFromConfirmationInDay}
-                onChange={(e) => {
-                  setFieldValue(
-                    "intActiveFromConfirmationInDay",
-                    e.target.value
-                  );
-                }}
-                name="intActiveFromConfirmationInDay"
-                type="number"
-                // className="form-control"
-                errors={errors}
-                touched={touched}
-              />
             </div>
 
             {/* monthwise expire */}

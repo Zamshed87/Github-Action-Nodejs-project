@@ -19,6 +19,7 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import { yearDDLAction } from "../../../../utility/yearDDL";
 import "../style.css";
 import CreateYearlyPolicyModal from "./CreateYearlyPolicyModal";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 let date = new Date();
 let currentYear = date.getFullYear();
@@ -33,6 +34,7 @@ const YearlyLeavePolicy = () => {
   const [allData, setAllData] = useState([]);
   const [singleData, setSingleData] = useState({});
   const [sortType, setSortType] = useState("desc");
+  const history = useHistory();
 
   const [, setYear] = useState(null);
 
@@ -275,7 +277,10 @@ const YearlyLeavePolicy = () => {
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
                             setSingleData({});
-                            setShow(true);
+                            // setShow(true);
+                            history.push(
+                              "/administration/leaveandmovement/yearlyLeavePolicy/create"
+                            );
                           }}
                           style={{ marginLeft: "16px" }}
                         />
