@@ -65,28 +65,29 @@ const MultiCheckedSelect = ({
   };
 
   const handleSelectAllClick = (e) => {
-    e.stopPropagation();
-
-    setAllChecked(!allChecked);
+    // e.stopPropagation();
     if (allChecked) {
       setFieldValue(name, []);
     } else {
       setFieldValue(name, options);
     }
+    setAllChecked(!allChecked);
     setSearchString("");
   };
 
   useEffect(() => {
     if (value?.length === options?.length) setAllChecked(true);
-  }, [value.length, options?.length]);
+  }, [value?.length, options?.length]);
 
-  const filteredData = options.filter((item) =>
-    item.label.toLowerCase().includes(searchString.toLowerCase())
+  const filteredData = options?.filter((item) =>
+    item?.label?.toLowerCase()?.includes(searchString?.toLowerCase())
   );
 
-  const onKeyDown = (e) => {
+  const stopPropagation = (e) => {
     e.stopPropagation();
   };
+
+  console.log(value, options);
 
   return (
     <>
@@ -175,6 +176,7 @@ const MultiCheckedSelect = ({
           MenuProps={MenuProps}
         >
           <MenuItem
+            onKeyDown={(e) => stopPropagation(e)}
             sx={{
               "&.Mui-focusVisible": {
                 backgroundColor: "white",
@@ -200,7 +202,8 @@ const MultiCheckedSelect = ({
                 width: "100%",
               }}
               value={searchString}
-              onKeyDown={onKeyDown}
+              onClick={(e) => stopPropagation(e)}
+              onKeyDown={(e) => stopPropagation(e)}
               onChange={(e) => {
                 setSearchString(e.target.value);
               }}
@@ -219,24 +222,28 @@ const MultiCheckedSelect = ({
             />
           </MenuItem>
           {options?.length > 0 && (
-            <MenuItem sx={{ paddingTop: 0, paddingBottom: 0 }}>
+            <li
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "0px 16px",
+                cursor: "pointer",
+              }}
+            >
               <Checkbox
+                onClick={(e) => handleSelectAllClick(e)}
                 color="success"
                 sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }}
-                checked={allChecked || options.length === value.length}
-                onClick={(e) => handleSelectAllClick(e)}
+                checked={allChecked}
               />
-              <ListItemText
-                primaryTypographyProps={{ fontSize: "12px" }}
-                primary={`Select All`}
-              />
-            </MenuItem>
+              <p style={{ color: "black" }}>Select All</p>
+            </li>
           )}
           {filteredData?.length ? (
             filteredData.map((option, index) => (
               <MenuItem
                 sx={{ paddingTop: 0, paddingBottom: 0 }}
-                key={index}
+                key={option?.value}
                 value={option}
               >
                 <Checkbox

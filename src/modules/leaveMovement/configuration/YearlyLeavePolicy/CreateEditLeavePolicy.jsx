@@ -117,7 +117,7 @@ const CreateEditLeavePolicy = ({ singleData }) => {
   };
   const [employmentTypeDDL, setEmploymentTypeDDL] = useState([]);
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
-  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState(null);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [buDDL, setBuDDL] = useState([]);
 
@@ -593,7 +593,7 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                   name="intWorkPlace"
                   label="Workplace"
                   value={values?.intWorkPlace}
-                  options={workplaceDDL || []}
+                  options={workplaceDDL}
                   onChange={(value) => {
                     setFieldValue("intWorkPlace", value);
                   }}
