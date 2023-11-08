@@ -14,7 +14,7 @@ export const getYearlyPolicyPopUpDDL = async (
       value: itm[value],
       label: itm[label],
     }));
-    setter([{ value: 0, label: "All" }, ...newDDL]);
-    cb && cb();
+    setter([...newDDL]);
+    cb && cb(newDDL);
   } catch (error) {}
 };
