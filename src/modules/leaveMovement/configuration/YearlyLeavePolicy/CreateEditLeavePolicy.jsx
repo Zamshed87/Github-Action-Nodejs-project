@@ -214,426 +214,426 @@ const CreateEditLeavePolicy = ({ singleData }) => {
             />
           </div>
         </div>
-        <div className="col-md-9">
-          <div className="card-style">
-            <>
-              {/* leave type */}
-              <div className="row">
-                <div className="col-md-3">
-                  <label>Leave Type</label>
-                  <FormikSelect
-                    name="intLeaveType"
-                    options={leaveTypeDDL}
-                    menuPosition="fixed"
-                    value={values?.intLeaveType}
-                    label=""
-                    onChange={(valueOption) => {
-                      setFieldValue("intLeaveType", valueOption);
-                      setFieldValue("isCompensatoryLve", false);
-                      setFieldValue("isEarnLeave", false);
-                    }}
-                    placeholder=" "
-                    styles={customStyles}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-                <div className="col-md-3">
-                  <label>Leave Display Name</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.strDisplayName}
-                    placeholder=""
-                    name="strDisplayName"
-                    type="text"
-                    className="form-control"
-                    onChange={(e) => {
-                      setFieldValue("strDisplayName", e.target.value);
-                    }}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-                <div className="col-md-3">
-                  <label>Previous Leave Type End</label>
-                  <FormikSelect
-                    name="inPreviousLveTypeEnd"
-                    options={[{ value: 0, label: "None" }, ...leaveTypeDDL]}
-                    menuPosition="fixed"
-                    value={values?.inPreviousLveTypeEnd}
-                    label=""
-                    onChange={(valueOption) => {
-                      setFieldValue("inPreviousLveTypeEnd", valueOption);
-                    }}
-                    placeholder=" "
-                    styles={customStyles}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
+        {/* <div className="col-md-9"> */}
+        <div className="card-style">
+          <>
+            {/* leave type */}
+            <div className="row">
+              <div className="col-md-3">
+                <label>Leave Type</label>
+                <FormikSelect
+                  name="intLeaveType"
+                  options={leaveTypeDDL}
+                  menuPosition="fixed"
+                  value={values?.intLeaveType}
+                  label=""
+                  onChange={(valueOption) => {
+                    setFieldValue("intLeaveType", valueOption);
+                    setFieldValue("isCompensatoryLve", false);
+                    setFieldValue("isEarnLeave", false);
+                  }}
+                  placeholder=" "
+                  styles={customStyles}
+                  errors={errors}
+                  touched={touched}
+                />
               </div>
-
-              <div className="row">
-                <div className="col-md-3">
-                  <label>Max Leave Available from Self </label>
-                  <DefaultInput
-                    min={0}
-                    placeholder=" "
-                    classes="input-sm"
-                    value={values?.intMaxLveDaySelf}
-                    onChange={(e) => {
-                      setFieldValue("intMaxLveDaySelf", e.target.value);
-                    }}
-                    name="intMaxLveDaySelf"
-                    type="number"
-                    // className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-                <div className="col-md-3">
-                  <label>Max Leave Application In Month </label>
-                  <DefaultInput
-                    min={0}
-                    placeholder=" "
-                    classes="input-sm"
-                    value={values?.intMaxLveApplicationSelfInMonth}
-                    onChange={(e) => {
-                      setFieldValue(
-                        "intMaxLveApplicationSelfInMonth",
-                        e.target.value
-                      );
-                    }}
-                    name="intMaxLveApplicationSelfInMonth"
-                    type="number"
-                    // className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>{" "}
-                <div className="col-md-3">
-                  <label>Max Leave Application In Year </label>
-                  <DefaultInput
-                    min={0}
-                    placeholder=" "
-                    classes="input-sm"
-                    value={values?.intMaxLveApplicationSelfInYear}
-                    onChange={(e) => {
-                      setFieldValue(
-                        "intMaxLveApplicationSelfInYear",
-                        e.target.value
-                      );
-                    }}
-                    name="intMaxLveApplicationSelfInYear"
-                    type="number"
-                    // className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
+              <div className="col-md-3">
+                <label>Leave Display Name</label>
+                <DefaultInput
+                  classes="input-sm"
+                  value={values?.strDisplayName}
+                  placeholder=""
+                  name="strDisplayName"
+                  type="text"
+                  className="form-control"
+                  onChange={(e) => {
+                    setFieldValue("strDisplayName", e.target.value);
+                  }}
+                  errors={errors}
+                  touched={touched}
+                />
               </div>
+              <div className="col-md-3">
+                <label>Previous Leave Type End</label>
+                <FormikSelect
+                  name="inPreviousLveTypeEnd"
+                  options={[{ value: 0, label: "None" }, ...leaveTypeDDL]}
+                  menuPosition="fixed"
+                  value={values?.inPreviousLveTypeEnd}
+                  label=""
+                  onChange={(valueOption) => {
+                    setFieldValue("inPreviousLveTypeEnd", valueOption);
+                  }}
+                  placeholder=" "
+                  styles={customStyles}
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>
+            </div>
 
-              {/* employment type & year & gender*/}
-              <div className="row">
-                <div className="col-md-3">
-                  <label>Employment Type </label>
-                  <FormikSelect
-                    placeholder=" "
-                    classes="input-sm"
-                    styles={{
-                      ...customStyles,
-                      control: (provided, state) => ({
-                        ...provided,
-                        minHeight: "auto",
-                        height:
-                          values?.intEmploymentTypeList?.length > 1
-                            ? "auto"
-                            : "30px",
-                        borderRadius: "4px",
-                        boxShadow: `${success500}!important`,
-                        ":hover": {
-                          borderColor: `${gray600}!important`,
-                        },
-                        ":focus": {
-                          borderColor: `${gray600}!important`,
-                        },
-                      }),
-                      valueContainer: (provided, state) => ({
-                        ...provided,
-                        height:
-                          values?.intEmploymentTypeList?.length > 1
-                            ? "auto"
-                            : "30px",
-                        padding: "0 6px",
-                      }),
-                      multiValue: (styles) => {
-                        return {
-                          ...styles,
-                          position: "relative",
-                          top: "-1px",
-                        };
+            <div className="row">
+              <div className="col-md-3">
+                <label>Max Leave Available from Self </label>
+                <DefaultInput
+                  min={0}
+                  placeholder=" "
+                  classes="input-sm"
+                  value={values?.intMaxLveDaySelf}
+                  onChange={(e) => {
+                    setFieldValue("intMaxLveDaySelf", e.target.value);
+                  }}
+                  name="intMaxLveDaySelf"
+                  type="number"
+                  // className="form-control"
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>
+              <div className="col-md-3">
+                <label>Max Leave Application In Month </label>
+                <DefaultInput
+                  min={0}
+                  placeholder=" "
+                  classes="input-sm"
+                  value={values?.intMaxLveApplicationSelfInMonth}
+                  onChange={(e) => {
+                    setFieldValue(
+                      "intMaxLveApplicationSelfInMonth",
+                      e.target.value
+                    );
+                  }}
+                  name="intMaxLveApplicationSelfInMonth"
+                  type="number"
+                  // className="form-control"
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>{" "}
+              <div className="col-md-3">
+                <label>Max Leave Application In Year </label>
+                <DefaultInput
+                  min={0}
+                  placeholder=" "
+                  classes="input-sm"
+                  value={values?.intMaxLveApplicationSelfInYear}
+                  onChange={(e) => {
+                    setFieldValue(
+                      "intMaxLveApplicationSelfInYear",
+                      e.target.value
+                    );
+                  }}
+                  name="intMaxLveApplicationSelfInYear"
+                  type="number"
+                  // className="form-control"
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>
+            </div>
+
+            {/* employment type & year & gender*/}
+            <div className="row">
+              <div className="col-md-3">
+                <label>Employment Type </label>
+                <FormikSelect
+                  placeholder=" "
+                  classes="input-sm"
+                  styles={{
+                    ...customStyles,
+                    control: (provided, state) => ({
+                      ...provided,
+                      minHeight: "auto",
+                      height:
+                        values?.intEmploymentTypeList?.length > 1
+                          ? "auto"
+                          : "30px",
+                      borderRadius: "4px",
+                      boxShadow: `${success500}!important`,
+                      ":hover": {
+                        borderColor: `${gray600}!important`,
                       },
-                      multiValueLabel: (styles) => ({
+                      ":focus": {
+                        borderColor: `${gray600}!important`,
+                      },
+                    }),
+                    valueContainer: (provided, state) => ({
+                      ...provided,
+                      height:
+                        values?.intEmploymentTypeList?.length > 1
+                          ? "auto"
+                          : "30px",
+                      padding: "0 6px",
+                    }),
+                    multiValue: (styles) => {
+                      return {
                         ...styles,
-                        padding: "0",
-                      }),
-                    }}
-                    name="intEmploymentTypeList"
-                    options={
-                      values?.intEmploymentTypeList &&
-                      values?.intEmploymentTypeList?.filter(
-                        (itm) => itm.label === "All"
-                      ).length > 0
-                        ? [{ value: 0, label: "All" }]
-                        : values?.intEmploymentTypeList?.length > 0
-                        ? [...employmentTypeDDL]
-                        : [...employmentTypeDDL] || []
-                    }
-                    value={values?.intEmploymentTypeList}
-                    onChange={(valueOption) => {
-                      setFieldValue("intEmploymentTypeList", valueOption);
-                    }}
-                    isMulti
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-                <div className="col-md-3">
-                  <label>Year</label>
-                  <FormikSelect
-                    name="intYear"
-                    options={yearDDLAction()}
-                    value={values?.intYear}
-                    label=""
-                    onChange={(valueOption) => {
-                      setFieldValue("intYear", valueOption);
-                    }}
-                    menuPosition="fixed"
-                    placeholder=" "
-                    styles={customStyles}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-                <div className="col-md-3">
-                  <label>Gender</label>
-                  <FormikSelect
-                    name="intGender"
-                    options={[
-                      { value: 0, label: "Male & Female" },
-                      { value: 1, label: "Male" },
-                      { value: 2, label: "Female" },
-                    ]}
-                    menuPosition="fixed"
-                    value={values?.intGender}
-                    label=""
-                    onChange={(valueOption) => {
-                      setFieldValue("intGender", valueOption);
-                    }}
-                    placeholder=" "
-                    styles={customStyles}
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
+                        position: "relative",
+                        top: "-1px",
+                      };
+                    },
+                    multiValueLabel: (styles) => ({
+                      ...styles,
+                      padding: "0",
+                    }),
+                  }}
+                  name="intEmploymentTypeList"
+                  options={
+                    values?.intEmploymentTypeList &&
+                    values?.intEmploymentTypeList?.filter(
+                      (itm) => itm.label === "All"
+                    ).length > 0
+                      ? [{ value: 0, label: "All" }]
+                      : values?.intEmploymentTypeList?.length > 0
+                      ? [...employmentTypeDDL]
+                      : [...employmentTypeDDL] || []
+                  }
+                  value={values?.intEmploymentTypeList}
+                  onChange={(valueOption) => {
+                    setFieldValue("intEmploymentTypeList", valueOption);
+                  }}
+                  isMulti
+                  errors={errors}
+                  touched={touched}
+                />
               </div>
-              {!values?.isDependOnServiceLength &&
-                values?.intLeaveType?.label !== "Earn Leave" &&
-                values?.intLeaveType?.label !== "Compensatory Leave" && (
-                  <div className="row">
-                    <div className="col-md-3">
-                      <label>Allocated Leave in Day</label>
-                      <DefaultInput
-                        min={0}
-                        placeholder=" "
-                        classes="input-sm"
-                        value={values?.intAllocatedLveInDay}
-                        onChange={(e) => {
-                          setFieldValue("intAllocatedLveInDay", e.target.value);
-                        }}
-                        name="intAllocatedLveInDay"
-                        type="number"
-                        // className="form-control"
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
+              <div className="col-md-3">
+                <label>Year</label>
+                <FormikSelect
+                  name="intYear"
+                  options={yearDDLAction()}
+                  value={values?.intYear}
+                  label=""
+                  onChange={(valueOption) => {
+                    setFieldValue("intYear", valueOption);
+                  }}
+                  menuPosition="fixed"
+                  placeholder=" "
+                  styles={customStyles}
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>
+              <div className="col-md-3">
+                <label>Gender</label>
+                <FormikSelect
+                  name="intGender"
+                  options={[
+                    { value: 0, label: "Male & Female" },
+                    { value: 1, label: "Male" },
+                    { value: 2, label: "Female" },
+                  ]}
+                  menuPosition="fixed"
+                  value={values?.intGender}
+                  label=""
+                  onChange={(valueOption) => {
+                    setFieldValue("intGender", valueOption);
+                  }}
+                  placeholder=" "
+                  styles={customStyles}
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>
+            </div>
+            {!values?.isDependOnServiceLength &&
+              values?.intLeaveType?.label !== "Earn Leave" &&
+              values?.intLeaveType?.label !== "Compensatory Leave" && (
+                <div className="row">
+                  <div className="col-md-3">
+                    <label>Allocated Leave in Day</label>
+                    <DefaultInput
+                      min={0}
+                      placeholder=" "
+                      classes="input-sm"
+                      value={values?.intAllocatedLveInDay}
+                      onChange={(e) => {
+                        setFieldValue("intAllocatedLveInDay", e.target.value);
+                      }}
+                      name="intAllocatedLveInDay"
+                      type="number"
+                      // className="form-control"
+                      errors={errors}
+                      touched={touched}
+                    />
                   </div>
-                )}
+                </div>
+              )}
 
-              {/* joining daay */}
-              <div className="row">
-                <div className="col-md-3">
-                  <label>Active From Joining day In Day</label>
-                  <DefaultInput
-                    // label="Days"
-                    step="any"
-                    placeholder=" "
-                    classes="input-sm"
-                    value={values?.intActiveFromJoiningdayInDay}
-                    onChange={(e) => {
-                      setFieldValue(
-                        "intActiveFromJoiningdayInDay",
-                        e.target.value
-                      );
-                    }}
-                    name="intActiveFromJoiningdayInDay"
-                    type="number"
-                    // className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-                <div className="col-md-3">
-                  <label>Active From Confirmation In Day</label>
-                  <DefaultInput
-                    // label="Days"
-                    step="any"
-                    placeholder=" "
-                    classes="input-sm"
-                    value={values?.intActiveFromConfirmationInDay}
-                    onChange={(e) => {
-                      setFieldValue(
-                        "intActiveFromConfirmationInDay",
-                        e.target.value
-                      );
-                    }}
-                    name="intActiveFromConfirmationInDay"
-                    type="number"
-                    // className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
+            {/* joining daay */}
+            <div className="row">
+              <div className="col-md-3">
+                <label>Active From Joining day In Day</label>
+                <DefaultInput
+                  // label="Days"
+                  step="any"
+                  placeholder=" "
+                  classes="input-sm"
+                  value={values?.intActiveFromJoiningdayInDay}
+                  onChange={(e) => {
+                    setFieldValue(
+                      "intActiveFromJoiningdayInDay",
+                      e.target.value
+                    );
+                  }}
+                  name="intActiveFromJoiningdayInDay"
+                  type="number"
+                  // className="form-control"
+                  errors={errors}
+                  touched={touched}
+                />
               </div>
-              {/* workplace */}
-              <div className="row">
-                {values?.intWorkPlace?.length === workplaceDDL?.length ? (
-                  <>
-                    <div className="col-md-3">
-                      <label>Business Unit </label>
-                      <FormikSelect
-                        placeholder=" "
-                        classes="input-sm"
-                        styles={{
-                          ...customStyles,
-                          control: (provided, state) => ({
-                            ...provided,
-                            minHeight: "auto",
-                            height: values?.bu?.length > 1 ? "auto" : "30px",
-                            borderRadius: "4px",
-                            boxShadow: `${success500}!important`,
-                            ":hover": {
-                              borderColor: `${gray600}!important`,
-                            },
-                            ":focus": {
-                              borderColor: `${gray600}!important`,
-                            },
-                          }),
-                          valueContainer: (provided, state) => ({
-                            ...provided,
-                            height: values?.bu?.length > 1 ? "auto" : "30px",
-                            padding: "0 6px",
-                          }),
-                          multiValue: (styles) => {
-                            return {
-                              ...styles,
-                              position: "relative",
-                              top: "-1px",
-                            };
+              <div className="col-md-3">
+                <label>Active From Confirmation In Day</label>
+                <DefaultInput
+                  // label="Days"
+                  step="any"
+                  placeholder=" "
+                  classes="input-sm"
+                  value={values?.intActiveFromConfirmationInDay}
+                  onChange={(e) => {
+                    setFieldValue(
+                      "intActiveFromConfirmationInDay",
+                      e.target.value
+                    );
+                  }}
+                  name="intActiveFromConfirmationInDay"
+                  type="number"
+                  // className="form-control"
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>
+            </div>
+            {/* workplace */}
+            <div className="row">
+              {values?.intWorkPlace?.length === workplaceDDL?.length ? (
+                <>
+                  <div className="col-md-3">
+                    <label>Business Unit </label>
+                    <FormikSelect
+                      placeholder=" "
+                      classes="input-sm"
+                      styles={{
+                        ...customStyles,
+                        control: (provided, state) => ({
+                          ...provided,
+                          minHeight: "auto",
+                          height: values?.bu?.length > 1 ? "auto" : "30px",
+                          borderRadius: "4px",
+                          boxShadow: `${success500}!important`,
+                          ":hover": {
+                            borderColor: `${gray600}!important`,
                           },
-                          multiValueLabel: (styles) => ({
-                            ...styles,
-                            padding: "0",
-                          }),
-                        }}
-                        name="bu"
-                        options={buDDL || []}
-                        value={values?.bu}
-                        onChange={(valueOption) => {
-                          setFieldValue("bu", valueOption);
-                          getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${
-                              valueOption[valueOption?.length - 1]?.value
-                            }&intId=${employeeId}`,
-                            "intWorkplaceGroupId",
-                            "strWorkplaceGroup",
-                            setWorkplaceGroupDDL
-                          );
-                        }}
-                        isMulti
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-
-                    <div className="col-md-3">
-                      <label>Workplace Group </label>
-                      <FormikSelect
-                        placeholder=" "
-                        classes="input-sm"
-                        styles={{
-                          ...customStyles,
-                          control: (provided, state) => ({
-                            ...provided,
-                            minHeight: "auto",
-                            height: values?.wg?.length > 1 ? "auto" : "30px",
-                            borderRadius: "4px",
-                            boxShadow: `${success500}!important`,
-                            ":hover": {
-                              borderColor: `${gray600}!important`,
-                            },
-                            ":focus": {
-                              borderColor: `${gray600}!important`,
-                            },
-                          }),
-                          valueContainer: (provided, state) => ({
-                            ...provided,
-                            height: values?.wg?.length > 1 ? "auto" : "30px",
-                            padding: "0 6px",
-                          }),
-                          multiValue: (styles) => {
-                            return {
-                              ...styles,
-                              position: "relative",
-                              top: "-1px",
-                            };
+                          ":focus": {
+                            borderColor: `${gray600}!important`,
                           },
-                          multiValueLabel: (styles) => ({
+                        }),
+                        valueContainer: (provided, state) => ({
+                          ...provided,
+                          height: values?.bu?.length > 1 ? "auto" : "30px",
+                          padding: "0 6px",
+                        }),
+                        multiValue: (styles) => {
+                          return {
                             ...styles,
-                            padding: "0",
-                          }),
-                        }}
-                        name="wg"
-                        options={workplaceGroupDDL || []}
-                        value={values?.wg}
-                        onChange={(valueOption) => {
-                          // console.log(values?.bu, "bu");
-                          setFieldValue("wg", valueOption);
-                          getYearlyPolicyPopUpDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${values?.bu[0]?.value}&WorkplaceGroupId=${valueOption[0]?.value}&intId=${employeeId}`,
-                            "intWorkplaceId",
-                            "strWorkplace",
-                            setWorkplaceDDL,
-                            (res) => {
-                              const newState1 = res.filter((obj1) =>
-                                values?.intWorkPlace?.some(
-                                  (obj2) => obj2.value === obj1.value
-                                )
-                              );
-                              setFieldValue("intWorkPlace", newState1);
-                            }
-                          );
-                        }}
-                        isMulti
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                  </>
-                ) : null}
+                            position: "relative",
+                            top: "-1px",
+                          };
+                        },
+                        multiValueLabel: (styles) => ({
+                          ...styles,
+                          padding: "0",
+                        }),
+                      }}
+                      name="bu"
+                      options={buDDL || []}
+                      value={values?.bu}
+                      onChange={(valueOption) => {
+                        setFieldValue("bu", valueOption);
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${
+                            valueOption[valueOption?.length - 1]?.value
+                          }&intId=${employeeId}`,
+                          "intWorkplaceGroupId",
+                          "strWorkplaceGroup",
+                          setWorkplaceGroupDDL
+                        );
+                      }}
+                      isMulti
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
 
-                {/* <div className="col-3">
+                  <div className="col-md-3">
+                    <label>Workplace Group </label>
+                    <FormikSelect
+                      placeholder=" "
+                      classes="input-sm"
+                      styles={{
+                        ...customStyles,
+                        control: (provided, state) => ({
+                          ...provided,
+                          minHeight: "auto",
+                          height: values?.wg?.length > 1 ? "auto" : "30px",
+                          borderRadius: "4px",
+                          boxShadow: `${success500}!important`,
+                          ":hover": {
+                            borderColor: `${gray600}!important`,
+                          },
+                          ":focus": {
+                            borderColor: `${gray600}!important`,
+                          },
+                        }),
+                        valueContainer: (provided, state) => ({
+                          ...provided,
+                          height: values?.wg?.length > 1 ? "auto" : "30px",
+                          padding: "0 6px",
+                        }),
+                        multiValue: (styles) => {
+                          return {
+                            ...styles,
+                            position: "relative",
+                            top: "-1px",
+                          };
+                        },
+                        multiValueLabel: (styles) => ({
+                          ...styles,
+                          padding: "0",
+                        }),
+                      }}
+                      name="wg"
+                      options={workplaceGroupDDL || []}
+                      value={values?.wg}
+                      onChange={(valueOption) => {
+                        // console.log(values?.bu, "bu");
+                        setFieldValue("wg", valueOption);
+                        getYearlyPolicyPopUpDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${values?.bu[0]?.value}&WorkplaceGroupId=${valueOption[0]?.value}&intId=${employeeId}`,
+                          "intWorkplaceId",
+                          "strWorkplace",
+                          setWorkplaceDDL,
+                          (res) => {
+                            const newState1 = res.filter((obj1) =>
+                              values?.intWorkPlace?.some(
+                                (obj2) => obj2.value === obj1.value
+                              )
+                            );
+                            setFieldValue("intWorkPlace", newState1);
+                          }
+                        );
+                      }}
+                      isMulti
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </>
+              ) : null}
+
+              {/* <div className="col-3">
                 <div className="input-field-main">
                   <label>Workplace</label>
                   <FormikSelect
@@ -654,647 +654,285 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                   />
                 </div>
               </div> */}
+              <div className="col-md-3">
+                <MultiCheckedSelect
+                  name="intWorkPlace"
+                  label="Workplace"
+                  value={values?.intWorkPlace}
+                  options={workplaceDDL || []}
+                  onChange={(value) => {
+                    // console.log(value, "sssssss");
+                    setFieldValue("intWorkPlace", value);
+                  }}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  touched={touched}
+                  setFieldValue={setFieldValue}
+                  searchFieldPlaceholder=""
+                />
+              </div>
+            </div>
+            {/* compensatory */}
+            {values?.intLeaveType?.label === "Compensatory Leave" ? (
+              <div className="row">
+                <div className="col-12">
+                  <label> </label>
+                  <div className="d-flex align-items-center small-checkbox">
+                    <FormikCheckBox
+                      styleObj={{
+                        color: gray900,
+                        checkedColor: greenColor,
+                      }}
+                      label="Compensatory Leave"
+                      checked={values?.isCompensatoryLve}
+                      onChange={(e) => {
+                        setFieldValue("isCompensatoryLve", e.target.checked);
+                      }}
+                      labelFontSize="12px"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : null}
+            {values?.isCompensatoryLve ? (
+              <div className="row">
                 <div className="col-md-3">
-                  <MultiCheckedSelect
-                    name="intWorkPlace"
-                    label="Workplace"
-                    value={values?.intWorkPlace}
-                    options={workplaceDDL || []}
-                    onChange={(value) => {
-                      // console.log(value, "sssssss");
-                      setFieldValue("intWorkPlace", value);
+                  <label> </label>
+                  <div className="d-flex align-items-center small-checkbox">
+                    <FormikCheckBox
+                      styleObj={{
+                        color: gray900,
+                        checkedColor: greenColor,
+                      }}
+                      label="Conpensatory Leave Expire"
+                      checked={values?.isConpensatoryLveExpire}
+                      onChange={(e) => {
+                        setFieldValue(
+                          "isConpensatoryLveExpire",
+                          e.target.checked
+                        );
+                      }}
+                      labelFontSize="12px"
+                    />
+                  </div>
+                </div>
+                <div className="col-md-3 mt-1">
+                  <label>Conpensatory Leave Expire In Days</label>
+                  <DefaultInput
+                    min={0}
+                    placeholder=" "
+                    classes="input-sm"
+                    value={values?.intConpensatoryLveExpireInDays}
+                    onChange={(e) => {
+                      setFieldValue(
+                        "intConpensatoryLveExpireInDays",
+                        e.target.value
+                      );
                     }}
-                    onBlur={handleBlur}
+                    name="intConpensatoryLveExpireInDays"
+                    type="number"
+                    // className="form-control"
                     errors={errors}
                     touched={touched}
-                    setFieldValue={setFieldValue}
-                    searchFieldPlaceholder=""
                   />
                 </div>
               </div>
-              {/* compensatory */}
-              {values?.intLeaveType?.label === "Compensatory Leave" ? (
-                <div className="row">
-                  <div className="col-12">
-                    <label> </label>
-                    <div className="d-flex align-items-center small-checkbox">
-                      <FormikCheckBox
-                        styleObj={{
-                          color: gray900,
-                          checkedColor: greenColor,
-                        }}
-                        label="Compensatory Leave"
-                        checked={values?.isCompensatoryLve}
-                        onChange={(e) => {
-                          setFieldValue("isCompensatoryLve", e.target.checked);
-                        }}
-                        labelFontSize="12px"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-              {values?.isCompensatoryLve ? (
-                <div className="row">
-                  <div className="col-md-3">
-                    <label> </label>
-                    <div className="d-flex align-items-center small-checkbox">
-                      <FormikCheckBox
-                        styleObj={{
-                          color: gray900,
-                          checkedColor: greenColor,
-                        }}
-                        label="Conpensatory Leave Expire"
-                        checked={values?.isConpensatoryLveExpire}
-                        onChange={(e) => {
-                          setFieldValue(
-                            "isConpensatoryLveExpire",
-                            e.target.checked
-                          );
-                        }}
-                        labelFontSize="12px"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-3 mt-1">
-                    <label>Conpensatory Leave Expire In Days</label>
-                    <DefaultInput
-                      min={0}
-                      placeholder=" "
-                      classes="input-sm"
-                      value={values?.intConpensatoryLveExpireInDays}
-                      onChange={(e) => {
-                        setFieldValue(
-                          "intConpensatoryLveExpireInDays",
-                          e.target.value
-                        );
-                      }}
-                      name="intConpensatoryLveExpireInDays"
-                      type="number"
-                      // className="form-control"
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-                </div>
-              ) : null}
-              {/* earn */}
-              {values?.intLeaveType?.label === "Earn Leave" ? (
-                <div className="row">
-                  <div className="col-3">
-                    <label> </label>
-                    <div className="d-flex align-items-center small-checkbox">
-                      <FormikCheckBox
-                        styleObj={{
-                          color: gray900,
-                          checkedColor: greenColor,
-                        }}
-                        label="Earn Leave"
-                        checked={values?.isEarnLeave}
-                        onChange={(e) => {
-                          setFieldValue("isEarnLeave", e.target.checked);
-                        }}
-                        labelFontSize="12px"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-              {values?.isEarnLeave ? (
-                <div className="row">
-                  <div className="col-3">
-                    <label> </label>
-                    <div className="d-flex align-items-center small-checkbox">
-                      <FormikCheckBox
-                        styleObj={{
-                          color: gray900,
-                          checkedColor: greenColor,
-                        }}
-                        label="Earn Leave Include Offday"
-                        checked={values?.isEarnLveIncludeOffday}
-                        onChange={(e) => {
-                          setFieldValue(
-                            "isEarnLveIncludeOffday",
-                            e.target.checked
-                          );
-                        }}
-                        labelFontSize="12px"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <label> </label>
-                    <div className="d-flex align-items-center small-checkbox">
-                      <FormikCheckBox
-                        styleObj={{
-                          color: gray900,
-                          checkedColor: greenColor,
-                        }}
-                        label="Earn Leave Include Holiday"
-                        checked={values?.isEarnLveIncludeHoliday}
-                        onChange={(e) => {
-                          setFieldValue(
-                            "isEarnLveIncludeHoliday",
-                            e.target.checked
-                          );
-                        }}
-                        labelFontSize="12px"
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-3">
-                    <label>Day For One Earn Leave</label>
-                    <DefaultInput
-                      // label="Days"
-                      step="any"
-                      placeholder=" "
-                      classes="input-sm"
-                      value={values?.intDayForOneEarnLve}
-                      onChange={(e) => {
-                        setFieldValue("intDayForOneEarnLve", e.target.value);
-                      }}
-                      name="intDayForOneEarnLve"
-                      type="number"
-                      // className="form-control"
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-                  <div className="col-lg-3">
-                    <label>Earn Leave In Day</label>
-                    <DefaultInput
-                      // label="Days"
-                      step="any"
-                      placeholder=" "
-                      classes="input-sm"
-                      value={values?.intEarnLveInDay}
-                      onChange={(e) => {
-                        setFieldValue("intEarnLveInDay", e.target.value);
-                      }}
-                      name="intEarnLveInDay"
-                      type="number"
-                      // className="form-control"
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-                </div>
-              ) : null}
-              {/* half leave & carry */}
+            ) : null}
+            {/* earn */}
+            {values?.intLeaveType?.label === "Earn Leave" ? (
               <div className="row">
-                <div className="col-md-6">
-                  <div className="row">
-                    <div className={`col-md-12`}>
-                      <label> </label>
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Half Day Leave"
-                          checked={values?.isHalfDayLeave}
-                          onChange={(e) => {
-                            setFieldValue("isHalfDayLeave", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                    </div>
-                    {values?.isHalfDayLeave ? (
-                      <>
-                        <div className="col-md-6">
-                          <label>Half day Max In Month</label>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            classes="input-sm"
-                            value={values?.intHalfdayMaxInMonth}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intHalfdayMaxInMonth",
-                                e.target.value
-                              );
-                            }}
-                            name="intHalfdayMaxInMonth"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <div className="col-md-6">
-                          <label>Half day Max In Year</label>
-                          <DefaultInput
-                            // label="Days"
-                            placeholder=" "
-                            classes="input-sm"
-                            value={values?.intHalfdayMaxInYear}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intHalfdayMaxInYear",
-                                e.target.value
-                              );
-                            }}
-                            name="intHalfdayMaxInYear"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <div className="col-md-6">
-                          <label>Half day Previous Leave End</label>
-                          <FormikSelect
-                            name="intHalfdayPreviousLveTypeEnd"
-                            options={[
-                              { value: 0, label: "None" },
-                              ...leaveTypeDDL,
-                            ]}
-                            menuPosition="fixed"
-                            value={values?.intHalfdayPreviousLveTypeEnd}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intHalfdayPreviousLveTypeEnd",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </>
-                    ) : null}
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="row">
-                    <div className={`col-md-12`}>
-                      <label> </label>
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Carry Forward"
-                          checked={values?.isCarryForward}
-                          onChange={(e) => {
-                            setFieldValue("isCarryForward", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                    </div>
-                    {values?.isCarryForward ? (
-                      <>
-                        <div className="col-md-6">
-                          <label>Carry Forward Max In Day</label>
-                          <DefaultInput
-                            // label="Days"
-                            step="any"
-                            placeholder=" "
-                            classes="input-sm"
-                            value={values?.intCarryForwardMaxInDay}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intCarryForwardMaxInDay",
-                                e.target.value
-                              );
-                            }}
-                            name="intCarryForwardMaxInDay"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <div className="col-md-6">
-                          <label>Carry Forward Month</label>
-                          <FormikSelect
-                            name="intCarryForwardMonth"
-                            options={monthDDL}
-                            menuPosition="fixed"
-                            value={values?.intCarryForwardMonth}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intCarryForwardMonth",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <div className="col-md-6">
-                          <label>Carry Forwar Expiry Month</label>
-                          <FormikSelect
-                            name="intCarryForwarExpiryMonth"
-                            options={monthDDL}
-                            menuPosition="fixed"
-                            value={values?.intCarryForwarExpiryMonth}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intCarryForwarExpiryMonth",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <div className="col-md-6">
-                          <label> Carry Forward Expiry Day</label>
-                          <DefaultInput
-                            // label="Days"
-                            min={1}
-                            max={31}
-                            placeholder=" "
-                            classes="input-sm"
-                            value={values?.intCarryForwarExpiryDay}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intCarryForwarExpiryDay",
-                                e.target.value
-                              );
-                            }}
-                            name="intCarryForwarExpiryDay"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </>
-                    ) : null}
+                <div className="col-3">
+                  <label> </label>
+                  <div className="d-flex align-items-center small-checkbox">
+                    <FormikCheckBox
+                      styleObj={{
+                        color: gray900,
+                        checkedColor: greenColor,
+                      }}
+                      label="Earn Leave"
+                      checked={values?.isEarnLeave}
+                      onChange={(e) => {
+                        setFieldValue("isEarnLeave", e.target.checked);
+                      }}
+                      labelFontSize="12px"
+                    />
                   </div>
                 </div>
               </div>
-              {/* encash and month expire */}
+            ) : null}
+            {values?.isEarnLeave ? (
               <div className="row">
-                <div className="col-md-6">
-                  <div className="row">
-                    <div className={`col-md-12`}>
-                      <label> </label>
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Encashable"
-                          checked={values?.isEncashable}
-                          onChange={(e) => {
-                            setFieldValue("isEncashable", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                    </div>
-                    {values?.isEncashable ? (
-                      <>
-                        <div className="col-md-6">
-                          <label>Max Encashable </label>
-                          <DefaultInput
-                            // label="Days"
-                            placeholder=" "
-                            classes="input-sm"
-                            value={values?.IntMaxEncashableLveInDay}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "IntMaxEncashableLveInDay",
-                                e.target.value
-                              );
-                            }}
-                            name="IntMaxEncashableLveInDay"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <div className="col-md-6">
-                          <label>Encashable Month </label>
-                          <DefaultInput
-                            // label="Days"
-                            placeholder=" "
-                            classes="input-sm"
-                            value={values?.intEncashableMonth}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intEncashableMonth",
-                                e.target.value
-                              );
-                            }}
-                            name="intEncashableMonth"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </>
-                    ) : null}
+                <div className="col-3">
+                  <label> </label>
+                  <div className="d-flex align-items-center small-checkbox">
+                    <FormikCheckBox
+                      styleObj={{
+                        color: gray900,
+                        checkedColor: greenColor,
+                      }}
+                      label="Earn Leave Include Offday"
+                      checked={values?.isEarnLveIncludeOffday}
+                      onChange={(e) => {
+                        setFieldValue(
+                          "isEarnLveIncludeOffday",
+                          e.target.checked
+                        );
+                      }}
+                      labelFontSize="12px"
+                    />
                   </div>
                 </div>
-                <div className="col-md-6">
-                  <div className="row">
-                    <div className="col-md-12">
-                      <label> </label>
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Month Wise Expired"
-                          checked={values?.isMonthWiseExpired}
+                <div className="col-7">
+                  <label> </label>
+                  <div className="d-flex align-items-center small-checkbox">
+                    <FormikCheckBox
+                      styleObj={{
+                        color: gray900,
+                        checkedColor: greenColor,
+                      }}
+                      label="Earn Leave Include Holiday"
+                      checked={values?.isEarnLveIncludeHoliday}
+                      onChange={(e) => {
+                        setFieldValue(
+                          "isEarnLveIncludeHoliday",
+                          e.target.checked
+                        );
+                      }}
+                      labelFontSize="12px"
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <label>Day For One Earn Leave</label>
+                  <DefaultInput
+                    // label="Days"
+                    step="any"
+                    placeholder=" "
+                    classes="input-sm"
+                    value={values?.intDayForOneEarnLve}
+                    onChange={(e) => {
+                      setFieldValue("intDayForOneEarnLve", e.target.value);
+                    }}
+                    name="intDayForOneEarnLve"
+                    type="number"
+                    // className="form-control"
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
+                <div className="col-lg-3">
+                  <label>Earn Leave In Day</label>
+                  <DefaultInput
+                    // label="Days"
+                    step="any"
+                    placeholder=" "
+                    classes="input-sm"
+                    value={values?.intEarnLveInDay}
+                    onChange={(e) => {
+                      setFieldValue("intEarnLveInDay", e.target.value);
+                    }}
+                    name="intEarnLveInDay"
+                    type="number"
+                    // className="form-control"
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
+              </div>
+            ) : null}
+            {/* half leave & carry */}
+            <div className="row">
+              <div className="col-md-6">
+                <div className="row">
+                  <div className={`col-md-12`}>
+                    <label> </label>
+                    <div className="d-flex align-items-center small-checkbox">
+                      <FormikCheckBox
+                        styleObj={{
+                          color: gray900,
+                          checkedColor: greenColor,
+                        }}
+                        label="Half Day Leave"
+                        checked={values?.isHalfDayLeave}
+                        onChange={(e) => {
+                          setFieldValue("isHalfDayLeave", e.target.checked);
+                        }}
+                        labelFontSize="12px"
+                      />
+                    </div>
+                  </div>
+                  {values?.isHalfDayLeave ? (
+                    <>
+                      <div className="col-md-6">
+                        <label>Half day Max In Month</label>
+                        <DefaultInput
+                          min={0}
+                          placeholder=" "
+                          classes="input-sm"
+                          value={values?.intHalfdayMaxInMonth}
                           onChange={(e) => {
                             setFieldValue(
-                              "isMonthWiseExpired",
-                              e.target.checked
+                              "intHalfdayMaxInMonth",
+                              e.target.value
                             );
                           }}
-                          labelFontSize="12px"
+                          name="intHalfdayMaxInMonth"
+                          type="number"
+                          // className="form-control"
+                          errors={errors}
+                          touched={touched}
                         />
                       </div>
-                    </div>
-
-                    {values?.isMonthWiseExpired ? (
-                      <>
-                        <div className="col-lg-6">
-                          <label>How Much Month</label>
-                          <FormikSelect
-                            name="howMuchMonth"
-                            options={monthDDL}
-                            menuPosition="fixed"
-                            value={values?.howMuchMonth}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue("howMuchMonth", valueOption);
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </>
-                    ) : null}
-
-                    {/* ------------------- */}
-                  </div>
+                      <div className="col-md-6">
+                        <label>Half day Max In Year</label>
+                        <DefaultInput
+                          // label="Days"
+                          placeholder=" "
+                          classes="input-sm"
+                          value={values?.intHalfdayMaxInYear}
+                          onChange={(e) => {
+                            setFieldValue(
+                              "intHalfdayMaxInYear",
+                              e.target.value
+                            );
+                          }}
+                          name="intHalfdayMaxInYear"
+                          type="number"
+                          // className="form-control"
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label>Half day Previous Leave End</label>
+                        <FormikSelect
+                          name="intHalfdayPreviousLveTypeEnd"
+                          options={[
+                            { value: 0, label: "None" },
+                            ...leaveTypeDDL,
+                          ]}
+                          menuPosition="fixed"
+                          value={values?.intHalfdayPreviousLveTypeEnd}
+                          label=""
+                          onChange={(valueOption) => {
+                            setFieldValue(
+                              "intHalfdayPreviousLveTypeEnd",
+                              valueOption
+                            );
+                          }}
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </>
+                  ) : null}
                 </div>
               </div>
-
-              <div className="row">
-                <div className="col-md-6">
-                  <label> </label>
-                  <div className="d-flex align-items-center small-checkbox">
-                    <FormikCheckBox
-                      styleObj={{
-                        color: gray900,
-                        checkedColor: greenColor,
-                      }}
-                      label="Include Offday"
-                      checked={values?.isIncludeOffday}
-                      onChange={(e) => {
-                        setFieldValue("isIncludeOffday", e.target.checked);
-                      }}
-                      labelFontSize="12px"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-2">
-                  <label> </label>
-                  <div className="d-flex align-items-center small-checkbox">
-                    <FormikCheckBox
-                      styleObj={{
-                        color: gray900,
-                        checkedColor: greenColor,
-                      }}
-                      label="Include Holiday"
-                      checked={values?.isIncludeHoliday}
-                      onChange={(e) => {
-                        setFieldValue("isIncludeHoliday", e.target.checked);
-                      }}
-                      labelFontSize="12px"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <label> </label>
-                  <div className="d-flex align-items-center small-checkbox">
-                    <FormikCheckBox
-                      styleObj={{
-                        color: gray900,
-                        checkedColor: greenColor,
-                      }}
-                      label="Balance Show For SelfService"
-                      checked={values?.isLveBalanceShowForSelfService}
-                      onChange={(e) => {
-                        setFieldValue(
-                          "isLveBalanceShowForSelfService",
-                          e.target.checked
-                        );
-                      }}
-                      labelFontSize="12px"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-6">
-                  <label> </label>
-                  <div className="d-flex align-items-center small-checkbox">
-                    <FormikCheckBox
-                      styleObj={{
-                        color: gray900,
-                        checkedColor: greenColor,
-                      }}
-                      label="Leave Apply For SelfService"
-                      checked={values?.isLveBalanceApplyForSelfService}
-                      onChange={(e) => {
-                        setFieldValue(
-                          "isLveBalanceApplyForSelfService",
-                          e.target.checked
-                        );
-                      }}
-                      labelFontSize="12px"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-2">
-                  <label> </label>
-                  <div className="d-flex align-items-center small-checkbox">
-                    <FormikCheckBox
-                      styleObj={{
-                        color: gray900,
-                        checkedColor: greenColor,
-                      }}
-                      label="Auto Renewable"
-                      checked={values?.isAutoRenewable}
-                      onChange={(e) => {
-                        setFieldValue("isAutoRenewable", e.target.checked);
-                      }}
-                      labelFontSize="12px"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-3">
-                  <label> </label>
-                  <div className="d-flex align-items-center small-checkbox">
-                    <FormikCheckBox
-                      styleObj={{
-                        color: gray900,
-                        checkedColor: greenColor,
-                      }}
-                      label="Applicable Before And After Holiday"
-                      checked={values?.isApplicableBeforeAndAfterHoliday}
-                      onChange={(e) => {
-                        setFieldValue(
-                          "isApplicableBeforeAndAfterHoliday",
-                          e.target.checked
-                        );
-                      }}
-                      labelFontSize="12px"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* others */}
-              <div className="row">
-                <div className={`col-md-6`}>
-                  <label> </label>
-                  <div className="d-flex align-items-center small-checkbox">
-                    <FormikCheckBox
-                      styleObj={{
-                        color: gray900,
-                        checkedColor: greenColor,
-                      }}
-                      label="Minute Based"
-                      checked={values?.isMinuteBased}
-                      onChange={(e) => {
-                        setFieldValue("isMinuteBased", e.target.checked);
-                      }}
-                      labelFontSize="12px"
-                    />
-                  </div>
-                </div>
-                {values?.intLeaveType?.label !== "Earn Leave" &&
-                values?.intLeaveType?.label !== "Compensatory Leave" ? (
-                  <div className="col-md-4">
+              <div className="col-md-6">
+                <div className="row">
+                  <div className={`col-md-12`}>
                     <label> </label>
                     <div className="d-flex align-items-center small-checkbox">
                       <FormikCheckBox
@@ -1302,263 +940,615 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                           color: gray900,
                           checkedColor: greenColor,
                         }}
-                        label="Prodata Basis"
-                        checked={values?.isProdataBasis}
+                        label="Carry Forward"
+                        checked={values?.isCarryForward}
                         onChange={(e) => {
-                          setFieldValue("isProdataBasis", e.target.checked);
+                          setFieldValue("isCarryForward", e.target.checked);
                         }}
                         labelFontSize="12px"
                       />
                     </div>
                   </div>
-                ) : null}
+                  {values?.isCarryForward ? (
+                    <>
+                      <div className="col-md-6">
+                        <label>Carry Forward Max In Day</label>
+                        <DefaultInput
+                          // label="Days"
+                          step="any"
+                          placeholder=" "
+                          classes="input-sm"
+                          value={values?.intCarryForwardMaxInDay}
+                          onChange={(e) => {
+                            setFieldValue(
+                              "intCarryForwardMaxInDay",
+                              e.target.value
+                            );
+                          }}
+                          name="intCarryForwardMaxInDay"
+                          type="number"
+                          // className="form-control"
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label>Carry Forward Month</label>
+                        <FormikSelect
+                          name="intCarryForwardMonth"
+                          options={monthDDL}
+                          menuPosition="fixed"
+                          value={values?.intCarryForwardMonth}
+                          label=""
+                          onChange={(valueOption) => {
+                            setFieldValue("intCarryForwardMonth", valueOption);
+                          }}
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label>Carry Forwar Expiry Month</label>
+                        <FormikSelect
+                          name="intCarryForwarExpiryMonth"
+                          options={monthDDL}
+                          menuPosition="fixed"
+                          value={values?.intCarryForwarExpiryMonth}
+                          label=""
+                          onChange={(valueOption) => {
+                            setFieldValue(
+                              "intCarryForwarExpiryMonth",
+                              valueOption
+                            );
+                          }}
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label> Carry Forward Expiry Day</label>
+                        <DefaultInput
+                          // label="Days"
+                          min={1}
+                          max={31}
+                          placeholder=" "
+                          classes="input-sm"
+                          value={values?.intCarryForwarExpiryDay}
+                          onChange={(e) => {
+                            setFieldValue(
+                              "intCarryForwarExpiryDay",
+                              e.target.value
+                            );
+                          }}
+                          name="intCarryForwarExpiryDay"
+                          type="number"
+                          // className="form-control"
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+            {/* encash and month expire */}
+            <div className="row">
+              <div className="col-md-6">
+                <div className="row">
+                  <div className={`col-md-12`}>
+                    <label> </label>
+                    <div className="d-flex align-items-center small-checkbox">
+                      <FormikCheckBox
+                        styleObj={{
+                          color: gray900,
+                          checkedColor: greenColor,
+                        }}
+                        label="Encashable"
+                        checked={values?.isEncashable}
+                        onChange={(e) => {
+                          setFieldValue("isEncashable", e.target.checked);
+                        }}
+                        labelFontSize="12px"
+                      />
+                    </div>
+                  </div>
+                  {values?.isEncashable ? (
+                    <>
+                      <div className="col-md-6">
+                        <label>Max Encashable </label>
+                        <DefaultInput
+                          // label="Days"
+                          placeholder=" "
+                          classes="input-sm"
+                          value={values?.IntMaxEncashableLveInDay}
+                          onChange={(e) => {
+                            setFieldValue(
+                              "IntMaxEncashableLveInDay",
+                              e.target.value
+                            );
+                          }}
+                          name="IntMaxEncashableLveInDay"
+                          type="number"
+                          // className="form-control"
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <label>Encashable Month </label>
+                        <DefaultInput
+                          // label="Days"
+                          placeholder=" "
+                          classes="input-sm"
+                          value={values?.intEncashableMonth}
+                          onChange={(e) => {
+                            setFieldValue("intEncashableMonth", e.target.value);
+                          }}
+                          name="intEncashableMonth"
+                          type="number"
+                          // className="form-control"
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="row">
+                  <div className="col-md-12">
+                    <label> </label>
+                    <div className="d-flex align-items-center small-checkbox">
+                      <FormikCheckBox
+                        styleObj={{
+                          color: gray900,
+                          checkedColor: greenColor,
+                        }}
+                        label="Month Wise Expired"
+                        checked={values?.isMonthWiseExpired}
+                        onChange={(e) => {
+                          setFieldValue("isMonthWiseExpired", e.target.checked);
+                        }}
+                        labelFontSize="12px"
+                      />
+                    </div>
+                  </div>
+
+                  {values?.isMonthWiseExpired ? (
+                    <>
+                      <div className="col-lg-6">
+                        <label>How Much Month</label>
+                        <FormikSelect
+                          name="howMuchMonth"
+                          options={monthDDL}
+                          menuPosition="fixed"
+                          value={values?.howMuchMonth}
+                          label=""
+                          onChange={(valueOption) => {
+                            setFieldValue("howMuchMonth", valueOption);
+                          }}
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </>
+                  ) : null}
+
+                  {/* ------------------- */}
+                </div>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6">
+                <label> </label>
+                <div className="d-flex align-items-center small-checkbox">
+                  <FormikCheckBox
+                    styleObj={{
+                      color: gray900,
+                      checkedColor: greenColor,
+                    }}
+                    label="Include Offday"
+                    checked={values?.isIncludeOffday}
+                    onChange={(e) => {
+                      setFieldValue("isIncludeOffday", e.target.checked);
+                    }}
+                    labelFontSize="12px"
+                  />
+                </div>
+              </div>
+              <div className="col-md-2">
+                <label> </label>
+                <div className="d-flex align-items-center small-checkbox">
+                  <FormikCheckBox
+                    styleObj={{
+                      color: gray900,
+                      checkedColor: greenColor,
+                    }}
+                    label="Include Holiday"
+                    checked={values?.isIncludeHoliday}
+                    onChange={(e) => {
+                      setFieldValue("isIncludeHoliday", e.target.checked);
+                    }}
+                    labelFontSize="12px"
+                  />
+                </div>
+              </div>
+              <div className="col-md-3">
+                <label> </label>
+                <div className="d-flex align-items-center small-checkbox">
+                  <FormikCheckBox
+                    styleObj={{
+                      color: gray900,
+                      checkedColor: greenColor,
+                    }}
+                    label="Balance Show For SelfService"
+                    checked={values?.isLveBalanceShowForSelfService}
+                    onChange={(e) => {
+                      setFieldValue(
+                        "isLveBalanceShowForSelfService",
+                        e.target.checked
+                      );
+                    }}
+                    labelFontSize="12px"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6">
+                <label> </label>
+                <div className="d-flex align-items-center small-checkbox">
+                  <FormikCheckBox
+                    styleObj={{
+                      color: gray900,
+                      checkedColor: greenColor,
+                    }}
+                    label="Leave Apply For SelfService"
+                    checked={values?.isLveBalanceApplyForSelfService}
+                    onChange={(e) => {
+                      setFieldValue(
+                        "isLveBalanceApplyForSelfService",
+                        e.target.checked
+                      );
+                    }}
+                    labelFontSize="12px"
+                  />
+                </div>
+              </div>
+              <div className="col-md-2">
+                <label> </label>
+                <div className="d-flex align-items-center small-checkbox">
+                  <FormikCheckBox
+                    styleObj={{
+                      color: gray900,
+                      checkedColor: greenColor,
+                    }}
+                    label="Auto Renewable"
+                    checked={values?.isAutoRenewable}
+                    onChange={(e) => {
+                      setFieldValue("isAutoRenewable", e.target.checked);
+                    }}
+                    labelFontSize="12px"
+                  />
+                </div>
+              </div>
+              <div className="col-md-3">
+                <label> </label>
+                <div className="d-flex align-items-center small-checkbox">
+                  <FormikCheckBox
+                    styleObj={{
+                      color: gray900,
+                      checkedColor: greenColor,
+                    }}
+                    label="Applicable Before And After Holiday"
+                    checked={values?.isApplicableBeforeAndAfterHoliday}
+                    onChange={(e) => {
+                      setFieldValue(
+                        "isApplicableBeforeAndAfterHoliday",
+                        e.target.checked
+                      );
+                    }}
+                    labelFontSize="12px"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* others */}
+            <div className="row">
+              <div className={`col-md-6`}>
+                <label> </label>
+                <div className="d-flex align-items-center small-checkbox">
+                  <FormikCheckBox
+                    styleObj={{
+                      color: gray900,
+                      checkedColor: greenColor,
+                    }}
+                    label="Minute Based"
+                    checked={values?.isMinuteBased}
+                    onChange={(e) => {
+                      setFieldValue("isMinuteBased", e.target.checked);
+                    }}
+                    labelFontSize="12px"
+                  />
+                </div>
               </div>
               {values?.intLeaveType?.label !== "Earn Leave" &&
-                values?.intLeaveType?.label !== "Compensatory Leave" && (
-                  <div className="row">
-                    <div className="col-md-12">
-                      <label> </label>
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Depends on Service Length"
-                          checked={values?.isDependOnServiceLength}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setFieldValue("intAllocatedLveInDay", null);
-                            }
+              values?.intLeaveType?.label !== "Compensatory Leave" ? (
+                <div className="col-md-4">
+                  <label> </label>
+                  <div className="d-flex align-items-center small-checkbox">
+                    <FormikCheckBox
+                      styleObj={{
+                        color: gray900,
+                        checkedColor: greenColor,
+                      }}
+                      label="Prodata Basis"
+                      checked={values?.isProdataBasis}
+                      onChange={(e) => {
+                        setFieldValue("isProdataBasis", e.target.checked);
+                      }}
+                      labelFontSize="12px"
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            {values?.intLeaveType?.label !== "Earn Leave" &&
+              values?.intLeaveType?.label !== "Compensatory Leave" && (
+                <div className="row">
+                  <div className="col-md-12">
+                    <label> </label>
+                    <div className="d-flex align-items-center small-checkbox">
+                      <FormikCheckBox
+                        styleObj={{
+                          color: gray900,
+                          checkedColor: greenColor,
+                        }}
+                        label="Depends on Service Length"
+                        checked={values?.isDependOnServiceLength}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFieldValue("intAllocatedLveInDay", null);
+                          }
+                          setFieldValue(
+                            "isDependOnServiceLength",
+                            e.target.checked
+                          );
+                        }}
+                        labelFontSize="12px"
+                      />
+                    </div>
+                  </div>
+                  {values?.isDependOnServiceLength ? (
+                    <>
+                      <div className="col-lg-6">
+                        <label>Starting Service Length In Year</label>
+                        <FormikSelect
+                          name="intStartServiceLengthInYear"
+                          options={[
+                            { value: 0, label: "0" },
+                            { value: 1, label: "1" },
+                            { value: 2, label: "2" },
+                            { value: 3, label: "3" },
+                            { value: 4, label: "4" },
+                            { value: 5, label: "5" },
+                            { value: 6, label: "6" },
+                            { value: 7, label: "7" },
+                            { value: 8, label: "8" },
+                            { value: 9, label: "9" },
+                            { value: 10, label: "10" },
+                            { value: 11, label: "11" },
+                            { value: 12, label: "12" },
+                            { value: 13, label: "13" },
+                            { value: 14, label: "14" },
+                            { value: 15, label: "15" },
+                            { value: 16, label: "16" },
+                            { value: 17, label: "17" },
+                            { value: 18, label: "18" },
+                            { value: 19, label: "19" },
+                            { value: 20, label: "20" },
+                          ]}
+                          menuPosition="fixed"
+                          value={values?.intStartServiceLengthInYear}
+                          label=""
+                          onChange={(valueOption) => {
                             setFieldValue(
-                              "isDependOnServiceLength",
-                              e.target.checked
+                              "intStartServiceLengthInYear",
+                              valueOption
                             );
                           }}
-                          labelFontSize="12px"
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
                         />
                       </div>
-                    </div>
-                    {values?.isDependOnServiceLength ? (
-                      <>
-                        <div className="col-lg-6">
-                          <label>Starting Service Length In Year</label>
-                          <FormikSelect
-                            name="intStartServiceLengthInYear"
-                            options={[
-                              { value: 0, label: "0" },
-                              { value: 1, label: "1" },
-                              { value: 2, label: "2" },
-                              { value: 3, label: "3" },
-                              { value: 4, label: "4" },
-                              { value: 5, label: "5" },
-                              { value: 6, label: "6" },
-                              { value: 7, label: "7" },
-                              { value: 8, label: "8" },
-                              { value: 9, label: "9" },
-                              { value: 10, label: "10" },
-                              { value: 11, label: "11" },
-                              { value: 12, label: "12" },
-                              { value: 13, label: "13" },
-                              { value: 14, label: "14" },
-                              { value: 15, label: "15" },
-                              { value: 16, label: "16" },
-                              { value: 17, label: "17" },
-                              { value: 18, label: "18" },
-                              { value: 19, label: "19" },
-                              { value: 20, label: "20" },
-                            ]}
-                            menuPosition="fixed"
-                            value={values?.intStartServiceLengthInYear}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intStartServiceLengthInYear",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <div className="col-lg-6">
-                          <label>End Service Length in Years</label>
-                          <FormikSelect
-                            name="intEndServiceLengthInYear"
-                            options={[
-                              { value: 100, label: "Above(100)" },
-                              { value: 1, label: "1" },
-                              { value: 2, label: "2" },
-                              { value: 3, label: "3" },
-                              { value: 4, label: "4" },
-                              { value: 5, label: "5" },
-                              { value: 6, label: "6" },
-                              { value: 7, label: "7" },
-                              { value: 8, label: "8" },
-                              { value: 9, label: "9" },
-                              { value: 10, label: "10" },
-                              { value: 11, label: "11" },
-                              { value: 12, label: "12" },
-                              { value: 13, label: "13" },
-                              { value: 14, label: "14" },
-                              { value: 15, label: "15" },
-                              { value: 16, label: "16" },
-                              { value: 17, label: "17" },
-                              { value: 18, label: "18" },
-                              { value: 19, label: "19" },
-                              { value: 20, label: "20" },
-                            ]}
-                            menuPosition="fixed"
-                            value={values?.intEndServiceLengthInYear}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intEndServiceLengthInYear",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <div className="col-lg-6">
-                          <label>Leave in Days</label>
-                          <DefaultInput
-                            // label="Days"
-                            placeholder=" "
-                            classes="input-sm"
-                            value={values?.intLveInDay}
-                            onChange={(e) => {
-                              setFieldValue("intLveInDay", e.target.value);
-                            }}
-                            name="intLveInDay"
-                            type="number"
-                            step="any"
-                            min={0}
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <div className="col-3 d-flex mt-4 ml-1 ">
-                          <button
-                            type="button"
-                            className="btn btn-green"
-                            onClick={() => {
-                              setTableData((prev) => [
-                                ...prev,
-                                {
-                                  intStartServiceLengthInYear:
-                                    values?.intStartServiceLengthInYear,
-                                  intEndServiceLengthInYear:
-                                    values?.intEndServiceLengthInYear,
-                                  intLveInDay: values?.intLveInDay,
-                                },
-                              ]);
-                              setFieldValue("intStartServiceLengthInYear", "");
-                              setFieldValue("intEndServiceLengthInYear", "");
-                              setFieldValue("intLveInDay", "");
-                            }}
+                      <div className="col-lg-6">
+                        <label>End Service Length in Years</label>
+                        <FormikSelect
+                          name="intEndServiceLengthInYear"
+                          options={[
+                            { value: 100, label: "Above(100)" },
+                            { value: 1, label: "1" },
+                            { value: 2, label: "2" },
+                            { value: 3, label: "3" },
+                            { value: 4, label: "4" },
+                            { value: 5, label: "5" },
+                            { value: 6, label: "6" },
+                            { value: 7, label: "7" },
+                            { value: 8, label: "8" },
+                            { value: 9, label: "9" },
+                            { value: 10, label: "10" },
+                            { value: 11, label: "11" },
+                            { value: 12, label: "12" },
+                            { value: 13, label: "13" },
+                            { value: 14, label: "14" },
+                            { value: 15, label: "15" },
+                            { value: 16, label: "16" },
+                            { value: 17, label: "17" },
+                            { value: 18, label: "18" },
+                            { value: 19, label: "19" },
+                            { value: 20, label: "20" },
+                          ]}
+                          menuPosition="fixed"
+                          value={values?.intEndServiceLengthInYear}
+                          label=""
+                          onChange={(valueOption) => {
+                            setFieldValue(
+                              "intEndServiceLengthInYear",
+                              valueOption
+                            );
+                          }}
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-lg-6">
+                        <label>Leave in Days</label>
+                        <DefaultInput
+                          // label="Days"
+                          placeholder=" "
+                          classes="input-sm"
+                          value={values?.intLveInDay}
+                          onChange={(e) => {
+                            setFieldValue("intLveInDay", e.target.value);
+                          }}
+                          name="intLveInDay"
+                          type="number"
+                          step="any"
+                          min={0}
+                          // className="form-control"
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-3 d-flex mt-4 ml-1 ">
+                        <button
+                          type="button"
+                          className="btn btn-green"
+                          onClick={() => {
+                            setTableData((prev) => [
+                              ...prev,
+                              {
+                                intStartServiceLengthInYear:
+                                  values?.intStartServiceLengthInYear,
+                                intEndServiceLengthInYear:
+                                  values?.intEndServiceLengthInYear,
+                                intLveInDay: values?.intLveInDay,
+                              },
+                            ]);
+                            setFieldValue("intStartServiceLengthInYear", "");
+                            setFieldValue("intEndServiceLengthInYear", "");
+                            setFieldValue("intLveInDay", "");
+                          }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                      {tableData?.length > 0 && (
+                        <div className="table-card-body pt-3">
+                          <div
+                            className=" table-card-styled tableOne"
+                            style={{ padding: "0px 12px" }}
                           >
-                            Add
-                          </button>
-                        </div>
-                        {tableData?.length > 0 && (
-                          <div className="table-card-body pt-3">
-                            <div
-                              className=" table-card-styled tableOne"
-                              style={{ padding: "0px 12px" }}
-                            >
-                              <table className="table align-middle">
-                                <thead style={{ color: "#212529" }}>
-                                  <tr>
-                                    <th>
-                                      <div className="d-flex align-items-center">
-                                        Starting Service Length
-                                      </div>
-                                    </th>
-                                    <th>
-                                      <div className="d-flex align-items-center">
-                                        End Service Length
-                                      </div>
-                                    </th>
-                                    <th>
-                                      <div className="d-flex align-items-center">
-                                        Leave in Days
-                                      </div>
-                                    </th>
-                                    <th>
-                                      <div className="d-flex align-items-center justify-content-end">
-                                        Action
-                                      </div>
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {tableData?.length > 0 && (
-                                    <>
-                                      {tableData.map((item, index) => {
-                                        // const { strWorkplace } = item;
-                                        return (
-                                          <tr key={index}>
-                                            <td>
-                                              {
-                                                item
-                                                  ?.intStartServiceLengthInYear
-                                                  ?.label
-                                              }
-                                            </td>
-                                            <td>
-                                              {
-                                                item?.intEndServiceLengthInYear
-                                                  ?.label
-                                              }
-                                            </td>
-                                            <td>{item?.intLveInDay}</td>
-                                            <td>
-                                              <div className="d-flex align-items-end justify-content-end">
-                                                <IconButton
-                                                  type="button"
-                                                  style={{
-                                                    height: "25px",
-                                                    width: "25px",
-                                                  }}
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    remover(index);
-                                                    // deleteRow(item?.intWorkplaceId);
-                                                  }}
-                                                >
-                                                  <Tooltip title="Delete">
-                                                    <DeleteOutline
-                                                      sx={{
-                                                        height: "25px",
-                                                        width: "25px",
-                                                      }}
-                                                    />
-                                                  </Tooltip>
-                                                </IconButton>
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        );
-                                      })}
-                                    </>
-                                  )}
-                                </tbody>
-                              </table>
-                            </div>
+                            <table className="table align-middle">
+                              <thead style={{ color: "#212529" }}>
+                                <tr>
+                                  <th>
+                                    <div className="d-flex align-items-center">
+                                      Starting Service Length
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div className="d-flex align-items-center">
+                                      End Service Length
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div className="d-flex align-items-center">
+                                      Leave in Days
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div className="d-flex align-items-center justify-content-end">
+                                      Action
+                                    </div>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {tableData?.length > 0 && (
+                                  <>
+                                    {tableData.map((item, index) => {
+                                      // const { strWorkplace } = item;
+                                      return (
+                                        <tr key={index}>
+                                          <td>
+                                            {
+                                              item?.intStartServiceLengthInYear
+                                                ?.label
+                                            }
+                                          </td>
+                                          <td>
+                                            {
+                                              item?.intEndServiceLengthInYear
+                                                ?.label
+                                            }
+                                          </td>
+                                          <td>{item?.intLveInDay}</td>
+                                          <td>
+                                            <div className="d-flex align-items-end justify-content-end">
+                                              <IconButton
+                                                type="button"
+                                                style={{
+                                                  height: "25px",
+                                                  width: "25px",
+                                                }}
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  remover(index);
+                                                  // deleteRow(item?.intWorkplaceId);
+                                                }}
+                                              >
+                                                <Tooltip title="Delete">
+                                                  <DeleteOutline
+                                                    sx={{
+                                                      height: "25px",
+                                                      width: "25px",
+                                                    }}
+                                                  />
+                                                </Tooltip>
+                                              </IconButton>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
+                                  </>
+                                )}
+                              </tbody>
+                            </table>
                           </div>
-                        )}
-                      </>
-                    ) : null}
-                  </div>
-                )}
-              {/* <div className="" style={{ marginTop: "12px" }}>
+                        </div>
+                      )}
+                    </>
+                  ) : null}
+                </div>
+              )}
+            {/* <div className="" style={{ marginTop: "12px" }}>
               <label className="main-label">Per day salary calculation</label>
               <div className="d-flex">
                 <div>
@@ -1645,7 +1635,7 @@ const CreateEditLeavePolicy = ({ singleData }) => {
               </div>
             </div> */}
 
-              {/* <div className="">
+            {/* <div className="">
               <label className="main-label">Gross will be</label>
               <div className="row">
                 <div className="col-md-10 d-flex align-items-center">
@@ -1754,10 +1744,9 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                 </div>
               </div>
             </div> */}
-            </>
-          </div>
+          </>
         </div>
-        <div className="col-md-3"></div>
+        {/* </div> */}
       </div>
     </form>
   );
