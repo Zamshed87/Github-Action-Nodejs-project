@@ -24,6 +24,7 @@ import FormikSelect from "../../../../common/FormikSelect";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { IconButton, Tooltip } from "@mui/material";
+import MultiCheckedSelect from "../../../../common/MultiCheckedSelect";
 
 const CreateEditLeavePolicy = ({ singleData }) => {
   const validationSchema = Yup.object().shape({
@@ -63,7 +64,7 @@ const CreateEditLeavePolicy = ({ singleData }) => {
   });
 
   const initData = {
-    intWorkPlace: "",
+    intWorkPlace: [],
     intYear: "",
     intEmploymentTypeList: "",
     intLeaveType: "",
@@ -111,10 +112,15 @@ const CreateEditLeavePolicy = ({ singleData }) => {
     isApplicableBeforeAndAfterOffday: false,
     isMonthWiseExpired: false,
     howMuchMonth: "",
+    bu: "",
+    wg: "",
   };
   const [employmentTypeDDL, setEmploymentTypeDDL] = useState([]);
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [buDDL, setBuDDL] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const { orgId, employeeId, buId, wgId } = useSelector(
@@ -174,15 +180,17 @@ const CreateEditLeavePolicy = ({ singleData }) => {
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
   };
-  const { handleSubmit, values, errors, touched, setFieldValue } = useFormik({
-    enableReinitialize: true,
-    validationSchema,
-    initialValues: singleData?.autoId
-      ? singleData
-      : { ...initData, gender: { value: 0, label: "Male & Female" } },
+  const { handleSubmit, values, errors, touched, setFieldValue, handleBlur } =
+    useFormik({
+      enableReinitialize: true,
+      validationSchema,
+      initialValues: singleData?.autoId
+        ? singleData
+        : { ...initData, gender: { value: 0, label: "Male & Female" } },
 
-    onSubmit: () => saveHandler(),
-  });
+      onSubmit: () => saveHandler(),
+    });
+  console.log(workplaceDDL);
   return (
     <form onSubmit={handleSubmit}>
       <div className="table-card">
@@ -493,6 +501,74 @@ const CreateEditLeavePolicy = ({ singleData }) => {
             <div className="row">
               <div className="col-3">
                 <div className="input-field-main">
+                  <label>Business Unit</label>
+                  <FormikSelect
+                    placeholder=" "
+                    classes="input-sm"
+                    styles={{
+                      ...customStyles,
+                    }}
+                    name="bu"
+                    options={buDDL || []}
+                    value={values?.bu}
+                    onChange={(valueOption) => {
+                      setFieldValue("bu", valueOption);
+                    }}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </div>
+              </div>
+              <div className="col-md-3">
+                <label>Workplace Group </label>
+                <FormikSelect
+                  placeholder=" "
+                  classes="input-sm"
+                  styles={{
+                    ...customStyles,
+                    control: (provided, state) => ({
+                      ...provided,
+                      minHeight: "auto",
+                      height: values?.wg?.length > 1 ? "auto" : "30px",
+                      borderRadius: "4px",
+                      boxShadow: `${success500}!important`,
+                      ":hover": {
+                        borderColor: `${gray600}!important`,
+                      },
+                      ":focus": {
+                        borderColor: `${gray600}!important`,
+                      },
+                    }),
+                    valueContainer: (provided, state) => ({
+                      ...provided,
+                      height: values?.wg?.length > 1 ? "auto" : "30px",
+                      padding: "0 6px",
+                    }),
+                    multiValue: (styles) => {
+                      return {
+                        ...styles,
+                        position: "relative",
+                        top: "-1px",
+                      };
+                    },
+                    multiValueLabel: (styles) => ({
+                      ...styles,
+                      padding: "0",
+                    }),
+                  }}
+                  name="wg"
+                  options={workplaceGroupDDL || []}
+                  value={values?.wg}
+                  onChange={(valueOption) => {
+                    setFieldValue("wg", valueOption);
+                  }}
+                  isMulti
+                  errors={errors}
+                  touched={touched}
+                />
+              </div>
+              {/* <div className="col-3">
+                <div className="input-field-main">
                   <label>Workplace</label>
                   <FormikSelect
                     placeholder=" "
@@ -511,6 +587,22 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                     touched={touched}
                   />
                 </div>
+              </div> */}
+              <div className="col-md-3">
+                <MultiCheckedSelect
+                  name="intWorkPlace"
+                  label="Workplace"
+                  value={values?.intWorkPlace}
+                  options={workplaceDDL || []}
+                  onChange={(value) => {
+                    setFieldValue("intWorkPlace", value);
+                  }}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  touched={touched}
+                  setFieldValue={setFieldValue}
+                  searchFieldPlaceholder=""
+                />
               </div>
             </div>
             {/* compensatory */}
