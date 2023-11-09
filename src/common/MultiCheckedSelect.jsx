@@ -87,8 +87,6 @@ const MultiCheckedSelect = ({
     e.stopPropagation();
   };
 
-  console.log(value, options);
-
   return (
     <>
       <FormControl

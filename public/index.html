@@ -56,10 +56,10 @@
 
       document.onkeydown = (e) => {
         if (
-          // e.keyCode === 123 ||
-          // ctrlShiftKey(e, "I") ||
-          // ctrlShiftKey(e, "J") ||
-          // ctrlShiftKey(e, "C") ||
+          e.keyCode === 123 ||
+          ctrlShiftKey(e, "I") ||
+          ctrlShiftKey(e, "J") ||
+          ctrlShiftKey(e, "C") ||
           (e.ctrlKey && e.keyCode === "U".charCodeAt(0))
         )
           return false;
