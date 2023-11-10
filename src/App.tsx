@@ -1,6 +1,6 @@
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 import Axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 // components
@@ -42,9 +42,8 @@ export const domainUrl =
 if (process.env.NODE_ENV === "production") {
   disableReactDevTools();
 }
-
 Axios.interceptors.request.use(
-  async function (config) {
+  async function (config: any) {
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
@@ -84,7 +83,7 @@ Axios.interceptors.request.use(
 );
 
 Axios.interceptors.response.use(
-  async function (response) {
+  async function (response: any) {
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
       if (response?.config?.url?.includes(`${element}`)) return response;
@@ -113,7 +112,8 @@ Axios.interceptors.response.use(
           payload
         );
         if (apiRefreshResponse?.status === 200) {
-          store.dispatch(
+          const dispatch: any = store.dispatch;
+          dispatch(
             refreshTokenAction({
               ...state?.auth?.profileData,
               token: apiRefreshResponse?.data?.accessToken,
@@ -142,12 +142,14 @@ Axios.interceptors.response.use(
 
 function App() {
   const { isAuth, isLoggedInWithOtp, isOtpAuth } = useSelector(
-    (state) => state?.auth?.profileData,
+    (state: any) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const { tokenData } = useSelector((state) => state?.auth, shallowEqual);
-  Axios.defaults.headers.common["Authorization"] = `Bearer ${tokenData}`;
+  const { tokenData } = useSelector((state: any) => state?.auth, shallowEqual);
+
+  if (tokenData)
+    Axios.defaults.headers.common["Authorization"] = `Bearer ${tokenData}`;
 
   useEffect(() => {
     let appVersion = localStorage.getItem("appVersion");
@@ -157,7 +159,7 @@ function App() {
     }
   }, []);
 
-  const componentRender = (isOpen) => {
+  const componentRender = (isOpen: boolean) => {
     if (isOpen) return "";
     if (isLoggedInWithOtp) {
       if (isOtpAuth) {
@@ -176,7 +178,7 @@ function App() {
 
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
-    let interval = null;
+    let interval: any = null;
     if (origin === prodUrl) {
       interval = setInterval(() => {
         if (!isOpen) {

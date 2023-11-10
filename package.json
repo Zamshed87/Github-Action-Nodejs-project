@@ -21,7 +21,7 @@
     "apexcharts": "^3.29.0",
     "axios": "0.21.1",
     "bootstrap": "^4.5.2",
-    "crypto-js": "^4.1.1",
+    "crypto-js": "^4.2.0",
     "date-fns": "^2.26.0",
     "exceljs": "^4.3.0",
     "file-saver": "^2.0.5",
