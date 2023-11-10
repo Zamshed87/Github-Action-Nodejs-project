@@ -77,7 +77,7 @@
     "webpack-remove-debug": "^0.1.0"
   },
   "scripts": {
-    "start": "set PORT=3013 && set NODE_OPTIONS=--max_old_space_size=4096 && react-scripts start",
+    "start": "set PORT=3013 && set NODE_OPTIONS=--max_old_space_size=6144 && react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts --max_old_space_size=16096 build",
     "build-dev": "react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=jsdom",

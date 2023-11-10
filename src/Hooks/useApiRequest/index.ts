@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ApiHookState, HttpMethod, TApiInfo } from "./TApiRequest";
 import axios from "axios";
+import { apiPath } from "./apiPath";
 
 export const useApiRequest = (initialState: any) => {
   const [state, setState] = useState<ApiHookState>({
@@ -13,28 +14,31 @@ export const useApiRequest = (initialState: any) => {
     // Setting Loading State True
     setState((prevState) => ({ ...prevState, loading: true, error: null }));
 
-    const { method, url, params, payload, onSuccess, onError } = apiInfo;
-
+    const { method, urlKey, params, payload, onSuccess, onError } = apiInfo;
     try {
       const response = await axios({
         method: method || "GET",
-        url: url,
+        url: apiPath[urlKey],
         data: payload,
         params: params,
       });
-      setState((prevState) => ({ ...prevState, data: response.data }));
+      setState((prevState) => ({
+        ...prevState,
+        loading: false,
+        data: response.data,
+      }));
       onSuccess && onSuccess(response.data);
     } catch (error) {
       setState((prevState) => ({
         ...prevState,
         error: error as Error,
       }));
-      onError && onError(error as Error);
-    } finally {
       setState((prevState) => ({ ...prevState, loading: false }));
+      onError && onError(error as Error);
     }
   };
 
+  // Reset the state to initial state
   const reset = () => {
     setState((prevState) => ({
       data: initialState,

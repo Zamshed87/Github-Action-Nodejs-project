@@ -1,1 +1,4 @@
-export const apiPath = {};
+export const apiPath = {
+  EmployeeProfileLandingPaginationWithMasterFilter:
+    "/Employee/EmployeeProfileLandingPaginationWithMasterFilter",
+};

@@ -8,7 +8,7 @@ export type ApiHookState = {
 };
 export type TApiInfo<T extends HttpMethod> = T extends "GET"
   ? {
-      url: keyof typeof apiPath;
+      urlKey: keyof typeof apiPath;
       method: T;
       params?: string | number;
       payload?: never;
@@ -16,7 +16,7 @@ export type TApiInfo<T extends HttpMethod> = T extends "GET"
       onError?: (error: Error) => void;
     }
   : {
-      url: keyof typeof apiPath;
+      urlKey: keyof typeof apiPath;
       method: T;
       params?: never;
       payload: any;
