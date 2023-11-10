@@ -67,6 +67,7 @@
     "@types/node": "^16.11.18",
     "@types/react": "^18.0.2",
     "@types/react-dom": "^18.0.2",
+    "@types/react-router-dom": "^5.3.3",
     "babel-loader": "^8.2.3",
     "babel-runtime": "^6.26.0",
     "socket.io-client": "^4.4.0",
