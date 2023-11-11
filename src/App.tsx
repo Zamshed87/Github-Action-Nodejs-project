@@ -75,7 +75,7 @@ Axios.interceptors.request.use(
     };
     return newConfig;
   },
-  function (error) {
+  function (error: any) {
     if (process.env.NODE_ENV === "development") {
     }
     return Promise.reject(error);
