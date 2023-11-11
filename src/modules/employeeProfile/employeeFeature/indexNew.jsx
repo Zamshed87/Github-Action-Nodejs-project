@@ -20,6 +20,7 @@ import {
   empListColumn,
   getBuDetails,
   getTableDataEmployee,
+  newEmpListColumn,
 } from "./helper";
 import "./styles.css";
 import axios from "axios";
@@ -32,6 +33,7 @@ import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../common/peopleDeskTable/helper";
+import { DataTable } from "Components";
 
 const initData = {
   searchString: "",
@@ -550,7 +552,38 @@ function EmployeeFeatureNew() {
                       </ul>
                     </div>
 
-                    {/* <div className="table-card-body"> */}
+                    {/* Example Using Data Table Designed By Ant-Design v4 */}
+                    <DataTable
+                      bordered
+                      data={resEmpLanding}
+                      header={newEmpListColumn(
+                        pages?.current,
+                        pages?.pageSize,
+                        headerList,
+                        wgName,
+                        history
+                      )}
+                      pagination={{
+                        pageSize: pages?.pageSize,
+                        total: pages?.total,
+                        onChange: (page, pageSize) => {
+                          //  console.log(page, pageSize);
+                          getData(
+                            {
+                              current: page,
+                              pageSize: pageSize,
+                              total: pages?.total,
+                            },
+                            "false",
+                            values?.searchString,
+                            -1,
+                            filterOrderList,
+                            checkedHeaderList
+                          );
+                        },
+                      }}
+                    />
+                    {/* Previous Table */}
                     {resEmpLanding.length > 0 ? (
                       <PeopleDeskTable
                         columnData={empListColumn(
@@ -606,7 +639,6 @@ function EmployeeFeatureNew() {
                     )}
                   </div>
                 ) : (
-                  // </div>
                   <NotPermittedPage />
                 )}
               </div>

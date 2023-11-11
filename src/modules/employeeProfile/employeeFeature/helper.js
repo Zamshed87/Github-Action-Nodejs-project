@@ -1,11 +1,12 @@
+import { EditOutlined } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
+import { Avatar } from "Components";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
+import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { todayDate } from "./../../../utility/todayDate";
-import { Tooltip } from "@mui/material";
-import { EditOutlined } from "@mui/icons-material";
-import { Cell } from "../../../utility/customExcel/createExcelHelper";
 
 const getYearMonth2 = (value) => {
   let splitMonth = value?.split("-");
@@ -353,7 +354,7 @@ export const empListColumn = (
     {
       title: "SL",
       render: (_, index) => (page - 1) * paginationSize + index + 1,
-      sort: false,
+      sorter: false,
       filter: false,
       className: "text-center",
     },
@@ -517,6 +518,195 @@ export const empListColumn = (
                     },
                   })
                 }
+              />
+            </button>
+          </Tooltip>
+        </div>
+      ),
+    },
+  ].filter((itm) => !itm?.hidden);
+};
+//UI table column
+export const newEmpListColumn = (
+  page,
+  paginationSize,
+  headerList,
+  wgName,
+  history,
+  orgId
+) => {
+  return [
+    {
+      title: "SL",
+      render: (_, rec, index) => (page - 1) * paginationSize + index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+      width: 50,
+      fixed: "left",
+    },
+    {
+      title: "Employee ID",
+      dataIndex: "strEmployeeCode",
+      sorter: true,
+      filter: false,
+      fixed: "left",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "strEmployeeName",
+      render: (_, record) => {
+        return (
+          // <div className="d-flex align-items-center">
+          //   <AvatarComponent
+          //     classess=""
+          //     letterCount={1}
+          //     label={record?.strEmployeeName}
+          //   />
+          //   <span className="ml-2">{record?.strEmployeeName}</span>
+          // </div>
+          <div className="d-flex align-items-center">
+            <Avatar title={record?.strEmployeeName} />
+            <span className="ml-2">{record?.strEmployeeName}</span>
+          </div>
+        );
+      },
+      sorter: true,
+      filter: true,
+      filterSearch: true,
+      fixed: "left",
+    },
+    {
+      title: "Reference Id",
+      dataIndex: "strReferenceId",
+      sorter: true,
+      filter: false,
+      filterSearch: true,
+      fieldType: "string",
+    },
+    {
+      title: "Designation",
+      dataIndex: "strDesignation",
+      sorter: true,
+      filter: true,
+      filterSearch: true,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Wing",
+      dataIndex: "wingName",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`wingNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Sole Depo",
+      dataIndex: "soleDepoName",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`soleDepoNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Region",
+      dataIndex: "regionName",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`regionNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Area",
+      dataIndex: "areaName",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`areaNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Territory",
+      dataIndex: "territoryName",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`territoryNameList`],
+      hidden: wgName === "Marketing" ? false : true,
+      fieldType: "string",
+    },
+    {
+      title: "Supervisor",
+      dataIndex: "strSupervisorName",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`strSupervisorNameList`],
+      fieldType: "string",
+    },
+    {
+      title: "Line Manager",
+      dataIndex: "strLinemanager",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`strLinemanagerList`],
+      fieldType: "string",
+    },
+    {
+      title: "Pin Number",
+      dataIndex: "pinNo",
+      sorter: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Contact No",
+      dataIndex: "contactNo",
+      sorter: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Type",
+      dataIndex: "strEmploymentType",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Joining Date",
+      dataIndex: "dteJoiningDate",
+      render: (_, record) => dateFormatter(record?.dteJoiningDate),
+      sorter: true,
+      filter: false,
+      dataType: "date",
+    },
+    {
+      title: "",
+      dataIndex: "",
+      width: 100,
+      className: "text-center",
+      align: "center",
+      render: (_, record) => (
+        <div className="table_button">
+          <Tooltip title="Edit" arrow>
+            <button className="iconButton" type="button">
+              <EditOutlined
+                onClick={() =>
+                  history.push({
+                    pathname: `/profile/employee/${record?.intEmployeeBasicInfoId}`,
+                    state: {
+                      buId: record?.intBusinessUnitId,
+                      wgId: record?.intWorkplaceGroupId,
+                    },
+                  })
+                }
+                style={{ fontSize: "15px" }}
               />
             </button>
           </Tooltip>

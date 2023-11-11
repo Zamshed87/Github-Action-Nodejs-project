@@ -1,0 +1,21 @@
+{
+  "React Funtional Component Snipad": {
+    "prefix": "rfc",
+    "body": [
+      "import React from 'react';",
+      "",
+      "type ${TM_FILENAME_BASE}Type = {}",
+      "const ${TM_FILENAME_BASE}: React.FC<${TM_FILENAME_BASE}Type> = () => {",
+      "  return (",
+      "    <>",
+      "      <div>${1:${TM_FILENAME_BASE}}</div>",
+      "    </>",
+      "  );",
+      "};",
+      "",
+      "export default ${TM_FILENAME_BASE};",
+      ""
+    ],
+    "description": "React Funtional Component Create SNIPADS => 'RFC'"
+  }
+}

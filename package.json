@@ -52,6 +52,7 @@
     "react-toastify": "^7.0.4",
     "redux": "^4.1.0",
     "redux-persist": "^6.0.0",
+    "sass": "^1.69.5",
     "swiper": "6.8.2",
     "yarn": "^1.22.19",
     "yup": "^0.32.9"
