@@ -34,6 +34,7 @@ import {
   setHeaderListDataDynamically,
 } from "../../../common/peopleDeskTable/helper";
 import { DataTable } from "Components";
+import { useApiRequest } from "Hooks";
 
 const initData = {
   searchString: "",
@@ -100,6 +101,41 @@ function EmployeeFeatureNew() {
   const [filterOrderList, setFilterOrderList] = useState([]);
   const [initialHeaderListData, setInitialHeaderListData] = useState({});
 
+  // Api Instance
+  const landingApi = useApiRequest({});
+
+  const landingApiCall = (pagination = {}, filerList = {}, searchText = "") => {
+    const payload = {
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      workplaceId: wId,
+      pageNo: pagination?.current || 1,
+      pageSize: pagination?.pageSize || 25,
+      isPaginated: true,
+      isHeaderNeed: true,
+      searchTxt: searchText || "",
+      strDepartmentList: filerList?.strDepartment || [],
+      strDesignationList: filerList?.strDesignation || [],
+      strSupervisorNameList: filerList?.strSupervisorName || [],
+      strEmploymentTypeList: filerList?.strEmploymentType || [],
+      strLinemanagerList: filerList?.strLinemanager || [],
+      wingNameList: [],
+      soleDepoNameList: [],
+      regionNameList: [],
+      areaNameList: [],
+      territoryNameList: [],
+    };
+    landingApi.action({
+      urlKey: "EmployeeProfileLandingPaginationWithMasterFilter",
+      method: "post",
+      payload: payload,
+    });
+  };
+
+  useEffect(() => {
+    landingApiCall();
+  }, [buId, wgId, wId]);
+
   // landing api call
   const getDataApiCall = async (
     modifiedPayload,
@@ -108,23 +144,24 @@ function EmployeeFeatureNew() {
     currentFilterSelection = -1,
     checkedHeaderList
   ) => {
-    try {
-      const payload = {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        workplaceId: wId,
-        pageNo: pagination.current,
-        pageSize: pagination.pageSize,
-        isPaginated: true,
-        isHeaderNeed: true,
-        searchTxt: searchText || "",
-      };
+    const payload = {
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      workplaceId: wId,
+      pageNo: pagination.current,
+      pageSize: pagination.pageSize,
+      isPaginated: true,
+      isHeaderNeed: true,
+      searchTxt: searchText || "",
+      ...modifiedPayload,
+    };
 
+    try {
       const res = await axios.post(
         `/Employee/EmployeeProfileLandingPaginationWithMasterFilter`,
-        { ...payload, ...modifiedPayload }
+        payload
       );
-
+      console.log(res?.data);
       if (res?.data?.data) {
         setHeaderListDataDynamically({
           currentFilterSelection,
@@ -157,7 +194,6 @@ function EmployeeFeatureNew() {
     checkedHeaderList = { ...initHeaderList }
   ) => {
     setLandingLoading(true);
-
     const modifiedPayload = createPayloadStructure({
       initHeaderList,
       currentFilterSelection,
@@ -551,11 +587,10 @@ function EmployeeFeatureNew() {
                         </li>
                       </ul>
                     </div>
-
                     {/* Example Using Data Table Designed By Ant-Design v4 */}
                     <DataTable
                       bordered
-                      data={resEmpLanding}
+                      data={landingApi?.data?.data || []}
                       header={newEmpListColumn(
                         pages?.current,
                         pages?.pageSize,
@@ -566,25 +601,22 @@ function EmployeeFeatureNew() {
                       pagination={{
                         pageSize: pages?.pageSize,
                         total: pages?.total,
-                        onChange: (page, pageSize) => {
-                          //  console.log(page, pageSize);
-                          getData(
-                            {
-                              current: page,
-                              pageSize: pageSize,
-                              total: pages?.total,
-                            },
-                            "false",
-                            values?.searchString,
-                            -1,
-                            filterOrderList,
-                            checkedHeaderList
-                          );
-                        },
+                      }}
+                      filterData={landingApi?.data?.employeeHeader}
+                      onChange={(pagination, filters, sorter, extra) => {
+                        // console.log(filters);
+                        // const { current, pageSize } = pagination;
+                        // Return if sort function is called
+                        if (extra.action === "sort") return;
+                        landingApiCall(
+                          pagination,
+                          filters,
+                          values?.searchString
+                        );
                       }}
                     />
                     {/* Previous Table */}
-                    {resEmpLanding.length > 0 ? (
+                    {/* {resEmpLanding.length > 0 ? (
                       <PeopleDeskTable
                         columnData={empListColumn(
                           pages?.current,
@@ -636,7 +668,7 @@ function EmployeeFeatureNew() {
                           </div>
                         )}
                       </>
-                    )}
+                    )} */}
                   </div>
                 ) : (
                   <NotPermittedPage />
