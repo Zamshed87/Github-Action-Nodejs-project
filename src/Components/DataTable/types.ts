@@ -8,6 +8,7 @@ export type TDataTableProps = {
   headerTitle?: (pageData: any) => JSX.Element | string;
   header: ColumnsType<any>;
   data: any[];
+  filterData?: { [key: string]: any };
   rowClassName?: (record: any, index: number) => string;
   rowSelection?: {
     isActive?: boolean;

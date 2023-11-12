@@ -31,6 +31,19 @@ export const generateFilters = (dataIndex: string, dataSource: any[]) => {
     value: value,
   }));
 };
+
+// Dynamically generate filter by provided filterData from api
+export const generateFilterBySrc = (
+  dataIndex: string,
+  dataSource: { [key: string]: any }
+) => {
+  const filterList = dataSource[dataIndex];
+  return filterList.map((data: any) => ({
+    text: data.label,
+    value: data.value,
+  }));
+};
+
 // Dynamically generate onFilter function based on 'dataIndex'
 export const generateOnFilter =
   (dataIndex: string) => (value: string, record: any) =>
