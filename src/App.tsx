@@ -44,7 +44,6 @@ if (process.env.NODE_ENV === "production") {
 }
 Axios.interceptors.request.use(
   (config: any) => {
-    console.log(config.params);
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
