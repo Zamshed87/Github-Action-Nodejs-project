@@ -48,7 +48,7 @@ const HolidayGroupModal = ({
   const [modifySingleData, setModifySingleData] = useState("");
   const history = useHistory();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -60,7 +60,13 @@ const HolidayGroupModal = ({
         orgId,
         buId,
         id,
-        setSingleData
+        setSingleData,
+        null,
+        null,
+        null,
+        null,
+        null,
+        wId
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,7 +120,7 @@ const HolidayGroupModal = ({
       daysOfWeekId: 0,
       remarks: "",
       rosterGroupName: "",
-      workplaceId: 0,
+      workplaceId: wId,
       workplaceGroupId: 0,
       overtimeDate: todayDate(),
       overtimeHour: 0,
@@ -133,14 +139,25 @@ const HolidayGroupModal = ({
           buId,
           "",
           setRowDto,
-          setAllData
+          setAllData,
+          null,
+          null,
+          null,
+          null,
+          wId
         );
         getPeopleDeskAllLanding(
           "HolidayGroupById",
           orgId,
           buId,
           id,
-          setSingleData
+          setSingleData,
+          null,
+          null,
+          null,
+          null,
+          null,
+          wId
         );
       };
       createTimeSheetAction(payload, setLoading, callback);
@@ -157,7 +174,12 @@ const HolidayGroupModal = ({
           buId,
           "",
           setRowDto,
-          setAllData
+          setAllData,
+          null,
+          null,
+          null,
+          null,
+          wId
         );
       };
       createTimeSheetAction(payload, setLoading, callback);

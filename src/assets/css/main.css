@@ -1021,3 +1021,12 @@ h6.count {
   overflow-y: scroll;
   max-height: 67vh;
 }
+.leavePolicy-container .table-card{
+  overflow: hidden;
+}
+.leavePolicy-container .table-card-body .card-style{
+  
+  height: calc(100vh - 170px);
+  overflow-y: auto;
+  overflow-x:hidden; 
+}

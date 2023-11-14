@@ -173,7 +173,7 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 process.env.NODE_ENV === "development"
-                                  ? "/document/downloadfile?id=2"
+                                  ? "/document/downloadfile?id=1"
                                   : "/document/downloadfile?id=1"
                               }`,
                               "Employee Bulk Upload",

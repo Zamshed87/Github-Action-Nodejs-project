@@ -1,7 +1,7 @@
 import { lazy } from "react";
 const CreateEditLeavePolicy = lazy(() =>
   import(
-    "../modules/leaveMovement/configuration/YearlyLeavePolicy/CreateEditLeavePolicy.jsx"
+    "../modules/leaveMovement/configuration/YearlyLeavePolicy/CreateEditLeavePolicy"
   )
 );
 const TerritoryType = lazy(() =>

@@ -186,15 +186,17 @@ export const getPeopleDeskAllLanding = async (
   setLoading,
   statusId,
   year,
-  wgId
+  wgId,
+  wId
 ) => {
   setLoading && setLoading(true);
 
   let status = statusId ? `&intStatusId=${statusId}` : "";
   let yearFilter = year ? `&YearId=${year}` : "";
+  let workplace = wId ? `&workplaceId=${wId}` : "";
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}&WorkplaceGroupId=${wgId}&intId=${id}`
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}${workplace}&WorkplaceGroupId=${wgId}&intId=${id}`
     );
     if (res?.data) {
       setter && setter(res?.data);
@@ -552,7 +554,13 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
     })
     .catch((err) => []);
 };
-export const getSearchEmployeeListForEmp = (buId, wgId,intAccountId,employeeId, v) => {
+export const getSearchEmployeeListForEmp = (
+  buId,
+  wgId,
+  intAccountId,
+  employeeId,
+  v
+) => {
   if (v?.length < 2) return [];
   return axios
     .get(

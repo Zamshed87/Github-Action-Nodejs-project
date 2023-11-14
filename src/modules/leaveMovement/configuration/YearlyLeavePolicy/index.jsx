@@ -20,6 +20,8 @@ import { yearDDLAction } from "../../../../utility/yearDDL";
 import "../style.css";
 import CreateYearlyPolicyModal from "./CreateYearlyPolicyModal";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useApiRequest } from "../../../../Hooks";
+import { getYearlyPolicyLanding } from "./helper";
 
 let date = new Date();
 let currentYear = date.getFullYear();
@@ -29,7 +31,10 @@ const initData = {
 };
 
 const YearlyLeavePolicy = () => {
+  const policyLanding = useApiRequest([]);
+
   const [show, setShow] = useState(false);
+  const [allPolicy, setAllPolicy] = useState([]);
   const [landingData, setLandingData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [singleData, setSingleData] = useState({});
@@ -91,11 +96,14 @@ const YearlyLeavePolicy = () => {
   };
 
   useEffect(() => {
-    getData();
+    getYearlyPolicyLanding(
+      `/SaasMasterData/AllLeavePolicyLanding?businessUnitId=${buId}&PageNo=${1}&PageSize=${100}&IsForXl=false`,
+      setAllPolicy
+    );
   }, [orgId, buId, wgId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-
+  console.log({ allPolicy });
   let permission = null;
   permissionList.forEach((item) => {
     if (item?.menuReferenceId === 38) {
