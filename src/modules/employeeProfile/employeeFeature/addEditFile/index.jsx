@@ -35,6 +35,7 @@ import {
   validationSchema,
 } from "./helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+import { PInput } from "Components/PForm";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -201,6 +202,28 @@ export default function AddEditForm({
       <div className="row content-input-field">
         <div className="col-12">
           <h6 className="title-item-name">Employee Information</h6>
+        </div>
+        {/* Checking New Fileds */}
+
+        <div className="col-6">
+          <div className="input-field-main">
+            {/* <DefaultInput
+              classes="input-sm"
+              value={values?.fullName}
+              onChange={(val) => {
+                setFieldValue("fullName", val.target.value);
+                setEmpName(val.target.value);
+              }}
+              name="fullName"
+              type="text"
+              className="form-control"
+              errors={errors}
+              touched={touched}
+            /> */}
+            <PInput type="date" label="Pick A Date" />
+            <PInput label="Write Somthing" />
+            <PInput type="checkbox" label="Write Somthing" />
+          </div>
         </div>
         <div className="col-6">
           <div className="input-field-main">

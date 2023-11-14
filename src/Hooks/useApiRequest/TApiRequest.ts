@@ -10,7 +10,7 @@ export type TApiInfo<T extends HttpMethod> = T extends "GET"
   ? {
       urlKey: keyof typeof apiPath;
       method: T;
-      params?: string | number;
+      params?: object;
       payload?: never;
       onSuccess?: (data: any) => void;
       onError?: (error: Error) => void;
