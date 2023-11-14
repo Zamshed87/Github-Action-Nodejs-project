@@ -1,5 +1,4 @@
 import { Checkbox, DatePicker, Form, Input } from "antd";
-import React from "react";
 import {
   InputProperty,
   InputType,
@@ -9,7 +8,7 @@ import {
 } from "../TForm";
 import "../styles.scss";
 
-export const PInput: React.FC<InputProperty<'text'>> = (property) => {
+export const PInput = <T extends InputType>(property: InputProperty<T>) => {
   const {
     placeholder,
     onChange,
@@ -28,53 +27,49 @@ export const PInput: React.FC<InputProperty<'text'>> = (property) => {
   } = property;
 
   const renderInput = (type?: InputType) => {
-    const renderDatePicker = (
-      onChange: onDateChange | undefined
-    ): React.ReactNode => (
+    return type === "date" ? (
       <DatePicker
-        placeholder={placeholder}
-        onChange={(date, dateString) => onChange && onChange(date, dateString)}
+        placeholder={placeholder || "DD/MM/YYYY"}
+        onChange={onChange as onDateChange}
         className="rounded"
         disabled={disabled}
         suffixIcon={suffix}
         value={value}
+        style={{ width: "100%" }}
+        format={"DD/MM/YYYY"}
       />
-    );
-
-    const renderCheckbox = (
-      onChange: onCheckBoxChange | undefined
-    ): React.ReactNode => (
+    ) : type === "checkbox" ? (
       <Checkbox
-        onChange={(e) => onChange && onChange(e)}
+        onChange={onChange as onCheckBoxChange}
         className="rounded"
         disabled={disabled}
         value={value}
         checked={checked}
       />
-    );
-
-    const renderDefault = (onChange: onChange | undefined): React.ReactNode => (
-      <Input
+    ) : type === "search" ? (
+      <Input.Search
         placeholder={placeholder}
-        onChange={(e) => onChange && onChange(e)}
+        onChange={onChange as onChange}
         className="rounded"
         defaultValue={defaultValue}
         disabled={disabled}
         prefix={prefix}
         suffix={suffix}
         value={value}
-        type=""
+      />
+    ) : (
+      <Input
+        placeholder={placeholder}
+        onChange={onChange as onChange}
+        className="rounded"
+        defaultValue={defaultValue}
+        disabled={disabled}
+        prefix={prefix}
+        suffix={suffix}
+        value={value}
+        type={type}
       />
     );
-
-    switch (type) {
-      case "date":
-        return renderDatePicker(onChange as onDateChange);
-      case "checkbox":
-        return renderCheckbox(onChange as onCheckBoxChange);
-      default:
-        return renderDefault(onChange as onChange);
-    }
   };
 
   return (
@@ -83,22 +78,13 @@ export const PInput: React.FC<InputProperty<'text'>> = (property) => {
         label={label}
         name={name}
         rules={rules}
-        valuePropName={valuePropName}
+        valuePropName={valuePropName || "checked"}
         hasFeedback={hasFeedback}
+        style={{ marginBottom: 0 }}
       >
         {renderInput(type)}
       </Form.Item>
     </div>
-    // <Input
-    //   placeholder={placeholder}
-    //   onChange={onChange}
-    //   className="rounded"
-    //   defaultValue={defaultValue}
-    //   disabled={disabled}
-    //   prefix={prefix}
-    //   suffix={suffix}
-    //   value={value}
-    // />
   );
 };
 
@@ -111,5 +97,3 @@ const CheckboxS = () => {
 };
 
 export default CheckboxS;
-
-// export const PInput: React.FC<InputProperty<"text">> = (property) => {};

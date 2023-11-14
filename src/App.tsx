@@ -23,6 +23,7 @@ import { _zx123_Zx001_45___45_9999_ } from "./utility/cz";
 import { _Ad_xcvbn_df__dfg_568_dfghfff_ } from "./utility/czy";
 import { detectBrowserConsole } from "./utility/devtools";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
+import { ConfigProvider } from "antd";
 
 const origin = window.location.origin;
 const prodUrl = "https://matador.peopledesk.io";

@@ -22,9 +22,9 @@ export const PForm: React.FC<FormProperty> = (property) => {
       onFinishFailed={onFinishFailed}
       autoComplete={autoComplete || "off"}
       form={form}
-      layout={layout}
-      size="small"
-      className="RMGFromWrapper"
+      layout={layout || "vertical"}
+      size="middle"
+      className="PeopleDeskFormWrapper"
       onValuesChange={onValuesChange}
       onFieldsChange={onFieldsChange}
     >

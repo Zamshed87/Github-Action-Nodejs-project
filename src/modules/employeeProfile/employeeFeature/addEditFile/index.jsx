@@ -35,7 +35,7 @@ import {
   validationSchema,
 } from "./helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
-import { PInput } from "Components/PForm";
+import { PForm, PInput } from "Components/PForm";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -220,12 +220,57 @@ export default function AddEditForm({
               errors={errors}
               touched={touched}
             /> */}
-            <PInput type="date" label="Pick A Date" />
-            <PInput label="Write Somthing" />
-            <PInput type="checkbox" label="Write Somthing" />
+            <PForm>
+              <PInput name="date" type="date" label="Pick A Date" />
+              <PInput name="number" label="Number"/>
+              <PInput
+                name="search"
+                type="search"
+                label="search"
+                placeholder="search"
+              />
+              <PInput
+                name="checkbox"
+                type="checkbox"
+                label="checkbox"
+                checked={true}
+              />
+            </PForm>
           </div>
         </div>
         <div className="col-6">
+          <div className="input-field-main">
+            <label>Name</label>
+            <DefaultInput
+              classes="input-sm"
+              value={values?.fullName}
+              onChange={(val) => {
+                setFieldValue("fullName", val.target.value);
+                setEmpName(val.target.value);
+              }}
+              name="fullName"
+              type="text"
+              className="form-control"
+              errors={errors}
+              touched={touched}
+            />
+          </div>
+          <div className="input-field-main">
+            <label>Name</label>
+            <DefaultInput
+              classes="input-sm"
+              value={values?.fullName}
+              onChange={(val) => {
+                setFieldValue("fullName", val.target.value);
+                setEmpName(val.target.value);
+              }}
+              name="fullName"
+              type="text"
+              className="form-control"
+              errors={errors}
+              touched={touched}
+            />
+          </div>
           <div className="input-field-main">
             <label>Name</label>
             <DefaultInput
