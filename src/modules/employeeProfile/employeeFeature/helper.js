@@ -572,8 +572,6 @@ export const newEmpListColumn = (
         );
       },
       sorter: true,
-      filter: true,
-      filterSearch: true,
       fixed: "left",
     },
     {
@@ -589,6 +587,7 @@ export const newEmpListColumn = (
       dataIndex: "strDesignation",
       sorter: true,
       filter: true,
+      filterKey: "strDesignationList",
       filterSearch: true,
     },
     {
@@ -596,6 +595,8 @@ export const newEmpListColumn = (
       dataIndex: "strDepartment",
       sorter: true,
       filter: true,
+      filterKey: "strDepartmentList",
+      filterSearch: true,
     },
     {
       title: "Wing",
@@ -638,7 +639,6 @@ export const newEmpListColumn = (
       dataIndex: "territoryName",
       sorter: true,
       filter: true,
-      filterDropDownList: headerList[`territoryNameList`],
       hidden: wgName === "Marketing" ? false : true,
       fieldType: "string",
     },
@@ -647,16 +647,14 @@ export const newEmpListColumn = (
       dataIndex: "strSupervisorName",
       sorter: true,
       filter: true,
-      filterDropDownList: headerList[`strSupervisorNameList`],
-      fieldType: "string",
+      filterKey: "strSupervisorNameList",
     },
     {
       title: "Line Manager",
       dataIndex: "strLinemanager",
       sorter: true,
       filter: true,
-      filterDropDownList: headerList[`strLinemanagerList`],
-      fieldType: "string",
+      filterKey: "strLinemanagerList",
     },
     {
       title: "Pin Number",
@@ -677,6 +675,7 @@ export const newEmpListColumn = (
       dataIndex: "strEmploymentType",
       sorter: true,
       filter: true,
+      filterKey: "strEmploymentTypeList",
     },
     {
       title: "Joining Date",
