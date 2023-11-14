@@ -130,7 +130,6 @@ function EmployeeFeatureNew() {
       urlKey: "EmployeeProfileLandingPaginationWithMasterFilter",
       method: "post",
       payload: payload,
-     
     });
   };
 
