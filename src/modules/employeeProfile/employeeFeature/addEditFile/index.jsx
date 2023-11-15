@@ -5,6 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   getPeopleDeskAllDDL,
   getSearchEmployeeList,
+  getSearchEmployeeListForEmp,
 } from "../../../../common/api";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import DefaultInput from "../../../../common/DefaultInput";
@@ -52,7 +53,7 @@ export default function AddEditForm({
     shallowEqual
   );
 
-  const { orgId, buId, employeeId, intUrlId, wgId } = useSelector(
+  const { orgId, buId, employeeId, intUrlId, wgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -398,7 +399,7 @@ export default function AddEditForm({
               className="form-control"
               errors={errors}
               touched={touched}
-              disabled={generateEmployeeCode[0]?.value !== ""}
+              // disabled={generateEmployeeCode[0]?.value !== ""}
             />
           </div>
         </div>
@@ -811,7 +812,7 @@ export default function AddEditForm({
                 setFieldValue("supervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
@@ -825,7 +826,7 @@ export default function AddEditForm({
                 setFieldValue("dottedSupervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
@@ -839,7 +840,7 @@ export default function AddEditForm({
                 setFieldValue("lineManager", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>

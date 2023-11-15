@@ -389,6 +389,7 @@ export const crudOffDayAssign = async (obj) => {
     cb,
     isAssignAll,
     empIDString,
+    wId,
   } = obj;
 
   try {
@@ -397,6 +398,7 @@ export const crudOffDayAssign = async (obj) => {
     let commonObj = {
       ...values,
       accountId: orgId,
+      workplaceId: wId,
       businessUnitId: buId,
       workplaceGroupId: wgId, // question
       isActive: true,

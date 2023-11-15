@@ -12,9 +12,9 @@ const LeaveBalanceTable = ({ leaveBalanceData }) => {
               }}
             >
               <th>Leave Type</th>
-              <th className="text-center">Remaining</th>
-              <th className="text-center">Taken</th>
               <th className="text-center">Balance</th>
+              <th className="text-center">Taken</th>
+              <th className="text-center">Total</th>
             </tr>
           </thead>
           <tbody>

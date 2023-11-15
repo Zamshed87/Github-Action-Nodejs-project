@@ -145,7 +145,7 @@ function ShiftManagement() {
         businessUnitId: buId,
         workplaceGroupId: wgId , // null 
         isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
-        workplaceId: wId,
+        workplaceId: wId || 0,
         accountId: orgId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,

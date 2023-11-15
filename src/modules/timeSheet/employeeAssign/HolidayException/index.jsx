@@ -36,7 +36,7 @@ const statusDDL = [
 ];
 
 const HolidayException = () => {
-  const { buId, wgId, wgName } = useSelector(
+  const { buId, wgId, wgName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );

@@ -1,5 +1,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
+import { TablePagination } from "@mui/material";
+import { EditOutlined } from "@mui/icons-material";
 import { Avatar } from "@material-ui/core";
 import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -19,6 +21,10 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import { yearDDLAction } from "../../../../utility/yearDDL";
 import "../style.css";
 import CreateYearlyPolicyModal from "./CreateYearlyPolicyModal";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useApiRequest } from "../../../../Hooks";
+import { getYearlyPolicyLanding } from "./helper";
+import ScrollableTable from "../../../../common/ScrollableTable";
 
 let date = new Date();
 let currentYear = date.getFullYear();
@@ -28,12 +34,20 @@ const initData = {
 };
 
 const YearlyLeavePolicy = () => {
+  const policyLanding = useApiRequest([]);
+
   const [show, setShow] = useState(false);
+  const [allPolicy, setAllPolicy] = useState([]);
   const [landingData, setLandingData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [singleData, setSingleData] = useState({});
   const [sortType, setSortType] = useState("desc");
-
+  const history = useHistory();
+  const [pages, setPages] = useState({
+    currentPage: 0,
+    pageSize: 25,
+    totalCount: 0,
+  });
   const [, setYear] = useState(null);
 
   const saveHandler = (values, cb) => {};
@@ -87,13 +101,20 @@ const YearlyLeavePolicy = () => {
     });
     setLandingData(newData);
   };
-
+  const getLanding = (pages) => {
+    getYearlyPolicyLanding(
+      `/SaasMasterData/AllLeavePolicyLanding?businessUnitId=${buId}&PageNo=${pages?.currentPage}&PageSize=${pages?.pageSize}&IsForXl=false`,
+      setAllPolicy,
+      setPages,
+      setLoading
+    );
+  };
   useEffect(() => {
-    getData();
+    getLanding(pages);
   }, [orgId, buId, wgId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-
+  console.log({ allPolicy });
   let permission = null;
   permissionList.forEach((item) => {
     if (item?.menuReferenceId === 38) {
@@ -204,6 +225,29 @@ const YearlyLeavePolicy = () => {
       filter: false,
     },
   ];
+  // handleChangePage
+  const handleChangePage = (event, newPage) => {
+    setPages((prev) => {
+      return { ...prev, currentPage: newPage + 1 };
+    });
+
+    getLanding({
+      currentPage: newPage + 1,
+      pageSize: pages?.pageSize,
+      totalCount: pages?.totalCount,
+    });
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPages((prev) => {
+      return { ...prev, pageSize: +event.target.value };
+    });
+    getLanding({
+      currentPage: pages?.currentPage,
+      pageSize: +event.target.value,
+      totalCount: pages?.totalCount,
+    });
+  };
   const formikRef = useRef();
   return (
     <>
@@ -275,7 +319,10 @@ const YearlyLeavePolicy = () => {
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
                             setSingleData({});
-                            setShow(true);
+                            // setShow(true);
+                            history.push(
+                              "/administration/leaveandmovement/yearlyLeavePolicy/create"
+                            );
                           }}
                           style={{ marginLeft: "16px" }}
                         />
@@ -294,7 +341,123 @@ const YearlyLeavePolicy = () => {
                         Year {values?.year ? values?.year.label : currentYear}
                       </h5>
                       <div className="table-card-styled tableOne">
-                        <AntTable data={landingData} columnsData={columns} />
+                        <ScrollableTable
+                          classes="salary-process-table"
+                          secondClasses="table-card-styled tableOne scroll-table-height"
+                          customClass="salary-details-custom"
+                        >
+                          <thead>
+                            <tr>
+                              {/* <th rowSpan="2" className="text-center">
+                                SL
+                              </th> */}
+                              <th
+                                rowSpan="2"
+                                style={{ minWidth: "100px" }}
+                                className="text-center"
+                              >
+                                Policy Name
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Leave Type
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Employee Type
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Gender{" "}
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Hr Position
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Year
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.entries(allPolicy).map(
+                              ([workplaceName, policies]) => (
+                                <React.Fragment key={workplaceName}>
+                                  {/* Row with workplace name */}
+                                  <tr>
+                                    <td colSpan="6">
+                                      {" "}
+                                      <span
+                                        style={{
+                                          fontWeight: "700",
+                                          color: "black",
+                                        }}
+                                      >
+                                        {workplaceName}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                  {/* Rows with policy details */}
+                                  {policies.map((policy, index) => (
+                                    <tr key={index}>
+                                      <td>{policy?.strPolicyName}</td>
+                                      <td>{policy?.strLeaveTypeName}</td>
+                                      <td>
+                                        {policy?.employmentTypeList?.map(
+                                          (employmentType) =>
+                                            employmentType?.strEmploymentTypeName +
+                                            " "
+                                        )}
+                                      </td>
+                                      <td>
+                                        {" "}
+                                        {policy?.genderListDTO?.map(
+                                          (gender) =>
+                                            gender?.strGenderName + " "
+                                        )}
+                                      </td>
+                                      <td>
+                                        {" "}
+                                        {policy?.hrPositionListDTO?.map(
+                                          (employmentType) =>
+                                            employmentType?.strEmploymentTypeName +
+                                            " "
+                                        )}
+                                      </td>
+                                      <td>
+                                        <div className="d-flex jusitify-content-around ">
+                                          <p className="mr-5 pr-5">
+                                            {policy?.intYear}
+                                          </p>
+                                          <Tooltip title="Edit" arrow>
+                                            <button
+                                              className="iconButton"
+                                              type="button"
+                                            >
+                                              <EditOutlined
+                                                onClick={() =>
+                                                  history.push(
+                                                    `/administration/leaveandmovement/yearlyLeavePolicy/edit/${policy?.policyId}`
+                                                  )
+                                                }
+                                                style={{ fontSize: "15px" }}
+                                              />
+                                            </button>
+                                          </Tooltip>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </React.Fragment>
+                              )
+                            )}
+                          </tbody>
+                        </ScrollableTable>
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10, 15, 25, 100]}
+                          component="div"
+                          count={pages?.totalCount}
+                          rowsPerPage={pages?.pageSize}
+                          page={pages?.currentPage}
+                          onPageChange={handleChangePage}
+                          onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
                       </div>
                     </div>
                   </div>

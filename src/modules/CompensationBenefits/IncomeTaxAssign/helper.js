@@ -6,6 +6,8 @@ export const getTaxAssignLanding = async (
   orgId,
   pages,
   values,
+  wgId,
+  wId,
   setter,
   setPages,
   setLoading,
@@ -15,8 +17,8 @@ export const getTaxAssignLanding = async (
   try {
     const res = await axios.get(
       `/Employee/GetAllEmployeeForTaxAssign?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
-        values?.workplaceGroup?.value || 0
-      }&IntWorkplaceId=${values?.workplace?.value || 0}&IntEmployeeId=${
+        wgId || 0
+      }&IntWorkplaceId=${wId || 0}&IntEmployeeId=${
         values?.employee?.value || 0
       }&searchTxt=${searchText}&PageNo=${pages?.current}&PageSize=${
         pages?.pageSize
@@ -131,7 +133,12 @@ export const incomeTaxColumnData = (
             placeholder=" "
             type="number"
             onChange={(e) => {
-              rowDtoHandler("numTaxAmount", index, e.target.value);
+              const value = e.target.value;
+              if (!value.includes(".") && value >= 0) {
+                rowDtoHandler("numTaxAmount", index, value);
+              } else {
+                rowDtoHandler("numTaxAmount", index, "");
+              }
             }}
             required
             errors={errors}

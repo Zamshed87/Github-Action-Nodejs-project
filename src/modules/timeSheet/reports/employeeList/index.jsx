@@ -131,7 +131,7 @@ export default function EmployeeList() {
     getData(pages);
     getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));

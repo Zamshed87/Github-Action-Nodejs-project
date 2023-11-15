@@ -44,7 +44,7 @@ export default function AddEditFormComponent({
   empIDString,
 }) {
   const [loading, setLoading] = useState(false);
-  const { employeeId, buId, orgId, wgId } = useSelector(
+  const { employeeId, buId, orgId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -56,6 +56,7 @@ export default function AddEditFormComponent({
         initialValues={singleData?.isEdit ? singleData : initData}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           let obj = {
+            wId,
             values,
             orgId,
             buId,
