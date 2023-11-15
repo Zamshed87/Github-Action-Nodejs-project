@@ -287,14 +287,14 @@ const CreateEditLeavePolicy = ({ singleData }) => {
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
   };
-  const removerPolicy = (payload) => {
-    const filterArr = existingPolicies.filter((itm, idx) => idx !== payload);
-    setExistingPolicies(filterArr);
-    const temp = values?.intWorkplaceList?.filter(
-      (item) => item?.value !== existingPolicies[payload]?.intWorkplace
-    );
-    values.intWorkplaceList = temp;
-  };
+  // const removerPolicy = (payload) => {
+  //   const filterArr = existingPolicies.filter((itm, idx) => idx !== payload);
+  //   setExistingPolicies(filterArr);
+  //   const temp = values?.intWorkplaceList?.filter(
+  //     (item) => item?.value !== existingPolicies[payload]?.intWorkplace
+  //   );
+  //   values.intWorkplaceList = temp;
+  // };
   const {
     handleSubmit,
     values,
@@ -318,42 +318,42 @@ const CreateEditLeavePolicy = ({ singleData }) => {
     },
   });
 
-  const isPolicyExist = (values) => {
-    if (
-      !values?.intLeaveType?.value ||
-      !values?.intYear?.value ||
-      values?.intGender?.length === 0 ||
-      values?.intEmploymentTypeList?.length === 0 ||
-      values?.intWorkplaceList?.length === 0
-    ) {
-      return;
-    }
+  // const isPolicyExist = (values) => {
+  //   if (
+  //     !values?.intLeaveType?.value ||
+  //     !values?.intYear?.value ||
+  //     values?.intGender?.length === 0 ||
+  //     values?.intEmploymentTypeList?.length === 0 ||
+  //     values?.intWorkplaceList?.length === 0
+  //   ) {
+  //     return;
+  //   }
 
-    const existingData = [];
+  //   const existingData = [];
 
-    allPolicies?.forEach((policy, idx) => {
-      if (
-        policy.intLeaveType === values?.intLeaveType?.value &&
-        policy.intYear === values?.intYear?.value
-      ) {
-        const isGenderExist = values?.intGender?.some(
-          (itm) => itm.value === policy.intGenderId
-        );
-        const isEmploymentTypeExist = values?.intEmploymentTypeList?.some(
-          (itm) => itm.Id === policy.intEmploymentId
-        );
-        const isWorkplaceExist = values?.intWorkplaceList?.some(
-          (itm) => itm.value === policy.intWorkplace
-        );
-        if (isGenderExist && isEmploymentTypeExist && isWorkplaceExist) {
-          existingData?.push(policy);
-        }
-      }
-    });
+  //   allPolicies?.forEach((policy, idx) => {
+  //     if (
+  //       policy.intLeaveType === values?.intLeaveType?.value &&
+  //       policy.intYear === values?.intYear?.value
+  //     ) {
+  //       const isGenderExist = values?.intGender?.some(
+  //         (itm) => itm.value === policy.intGenderId
+  //       );
+  //       const isEmploymentTypeExist = values?.intEmploymentTypeList?.some(
+  //         (itm) => itm.Id === policy.intEmploymentId
+  //       );
+  //       const isWorkplaceExist = values?.intWorkplaceList?.some(
+  //         (itm) => itm.value === policy.intWorkplace
+  //       );
+  //       if (isGenderExist && isEmploymentTypeExist && isWorkplaceExist) {
+  //         existingData?.push(policy);
+  //       }
+  //     }
+  //   });
 
-    setExistingPolicies(existingData);
-    // return existingData
-  };
+  //   setExistingPolicies(existingData);
+  //   // return existingData
+  // };
   // console.log(policyApi?.data, "policyApi?.data");
   // console.log({ workplaceDDL });
   return (
@@ -424,10 +424,14 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                               const temp = { ...values };
 
                               setFieldValue("intLeaveType", valueOption);
-                              isPolicyExist({
-                                ...temp,
-                                intLeaveType: valueOption,
-                              });
+                              isPolicyExist(
+                                {
+                                  ...temp,
+                                  intLeaveType: valueOption,
+                                },
+                                allPolicies,
+                                setExistingPolicies
+                              );
                               // isPolicyExist(values);
                               setFieldValue("isCompensatoryLve", false);
                               setFieldValue("isEarnLeave", false);
@@ -656,10 +660,14 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                               const temp = { ...values };
                               // isPolicyExist(values);
 
-                              isPolicyExist({
-                                ...temp,
-                                intEmploymentTypeList: valueOption,
-                              });
+                              isPolicyExist(
+                                {
+                                  ...temp,
+                                  intEmploymentTypeList: valueOption,
+                                },
+                                allPolicies,
+                                setExistingPolicies
+                              );
                             }}
                             isMulti
                             errors={errors}
@@ -722,10 +730,14 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                             onChange={(valueOption) => {
                               setFieldValue("intGender", valueOption);
                               const temp = { ...values };
-                              isPolicyExist({
-                                ...temp,
-                                intGender: valueOption,
-                              });
+                              isPolicyExist(
+                                {
+                                  ...temp,
+                                  intGender: valueOption,
+                                },
+                                allPolicies,
+                                setExistingPolicies
+                              );
                             }}
                             isMulti
                             errors={errors}
@@ -787,10 +799,14 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                             onChange={(valueOption) => {
                               setFieldValue("hrPositionListDTO", valueOption);
                               const temp = { ...values };
-                              isPolicyExist({
-                                ...temp,
-                                hrPositionListDTO: valueOption,
-                              });
+                              isPolicyExist(
+                                {
+                                  ...temp,
+                                  hrPositionListDTO: valueOption,
+                                },
+                                allPolicies,
+                                setExistingPolicies
+                              );
                             }}
                             isMulti
                             errors={errors}
@@ -810,10 +826,14 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                             onChange={(valueOption) => {
                               setFieldValue("intYear", valueOption);
                               const temp = { ...values };
-                              isPolicyExist({
-                                ...temp,
-                                intYear: valueOption,
-                              });
+                              isPolicyExist(
+                                {
+                                  ...temp,
+                                  intYear: valueOption,
+                                },
+                                allPolicies,
+                                setExistingPolicies
+                              );
                             }}
                             menuPosition="fixed"
                             placeholder=" "
@@ -2160,10 +2180,14 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                             onChange={(value) => {
                               setFieldValue("intWorkplaceList", value);
                               const temp = { ...values };
-                              isPolicyExist({
-                                ...temp,
-                                intWorkplaceList: value,
-                              });
+                              isPolicyExist(
+                                {
+                                  ...temp,
+                                  intWorkplaceList: value,
+                                },
+                                allPolicies,
+                                setExistingPolicies
+                              );
                             }}
                             onBlur={handleBlur}
                             errors={errors}
@@ -2200,7 +2224,12 @@ const CreateEditLeavePolicy = ({ singleData }) => {
                           }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            removerPolicy(index);
+                            removerPolicy(
+                              index,
+                              existingPolicies,
+                              setExistingPolicies,
+                              values
+                            );
                             // deleteRow(item?.intWorkplaceId);
                           }}
                         >

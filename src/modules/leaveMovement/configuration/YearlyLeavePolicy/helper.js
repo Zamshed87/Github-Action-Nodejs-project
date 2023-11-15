@@ -27,21 +27,31 @@ export const getYearlyPolicyLanding = async (apiUrl, setter, cb = {}) => {
     let i = 1;
     // console.log({ res });
     if (res?.data?.data) {
-      let tempArr = res?.data?.data?.map((item, idx) => {
-        if (item?.strWorkplaceName.trim()) {
-          return {
-            ...item,
-            strWorkplaceName: item?.strWorkplaceName,
-            sl: null,
-          };
-        } else {
-          return {
-            ...item,
-            sl: i++,
-          };
+      const groupedData = res?.data?.data.reduce((acc, item) => {
+        const { strWorkplaceName, ...rest } = item;
+        if (!acc[strWorkplaceName]) {
+          acc[strWorkplaceName] = [];
         }
-      });
-      console.log(tempArr);
+        acc[strWorkplaceName].push(rest);
+        return acc;
+      }, {});
+      setter?.(groupedData);
+      console.log({ groupedData });
+      // let tempArr = res?.data?.data?.map((item, idx) => {
+      //   if (item?.strWorkplaceName.trim()) {
+      //     return {
+      //       ...item,
+      //       strWorkplaceName: item?.strWorkplaceName,
+      //       sl: null,
+      //     };
+      //   } else {
+      //     return {
+      //       ...item,
+      //       sl: i++,
+      //     };
+      //   }
+      // });
+      // console.log(tempArr);
 
       // setter(tempArr);
     }
@@ -50,4 +60,54 @@ export const getYearlyPolicyLanding = async (apiUrl, setter, cb = {}) => {
   } catch (error) {
     toast.error(error?.response?.data?.message);
   }
+};
+
+export const removerPolicy = (
+  payload,
+  existingPolicies,
+  setExistingPolicies,
+  values
+) => {
+  const filterArr = existingPolicies.filter((itm, idx) => idx !== payload);
+  setExistingPolicies(filterArr);
+  const temp = values?.intWorkplaceList?.filter(
+    (item) => item?.value !== existingPolicies[payload]?.intWorkplace
+  );
+  values.intWorkplaceList = temp;
+};
+export const isPolicyExist = (values, allPolicies, setExistingPolicies) => {
+  if (
+    !values?.intLeaveType?.value ||
+    !values?.intYear?.value ||
+    values?.intGender?.length === 0 ||
+    values?.intEmploymentTypeList?.length === 0 ||
+    values?.intWorkplaceList?.length === 0
+  ) {
+    return;
+  }
+
+  const existingData = [];
+
+  allPolicies?.forEach((policy, idx) => {
+    if (
+      policy.intLeaveType === values?.intLeaveType?.value &&
+      policy.intYear === values?.intYear?.value
+    ) {
+      const isGenderExist = values?.intGender?.some(
+        (itm) => itm.value === policy.intGenderId
+      );
+      const isEmploymentTypeExist = values?.intEmploymentTypeList?.some(
+        (itm) => itm.Id === policy.intEmploymentId
+      );
+      const isWorkplaceExist = values?.intWorkplaceList?.some(
+        (itm) => itm.value === policy.intWorkplace
+      );
+      if (isGenderExist && isEmploymentTypeExist && isWorkplaceExist) {
+        existingData?.push(policy);
+      }
+    }
+  });
+
+  setExistingPolicies(existingData);
+  // return existingData
 };

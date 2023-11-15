@@ -1,5 +1,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
+import MUIDataTable from "mui-datatables";
+
 import { Avatar } from "@material-ui/core";
 import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -22,6 +24,7 @@ import CreateYearlyPolicyModal from "./CreateYearlyPolicyModal";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useApiRequest } from "../../../../Hooks";
 import { getYearlyPolicyLanding } from "./helper";
+import ScrollableTable from "../../../../common/ScrollableTable";
 
 let date = new Date();
 let currentYear = date.getFullYear();
@@ -307,7 +310,93 @@ const YearlyLeavePolicy = () => {
                         Year {values?.year ? values?.year.label : currentYear}
                       </h5>
                       <div className="table-card-styled tableOne">
-                        <AntTable data={landingData} columnsData={columns} />
+                        <ScrollableTable
+                          classes="salary-process-table"
+                          secondClasses="table-card-styled tableOne scroll-table-height"
+                          customClass="salary-details-custom"
+                        >
+                          <thead>
+                            <tr>
+                              {/* <th rowSpan="2" className="text-center">
+                                SL
+                              </th> */}
+                              <th
+                                rowSpan="2"
+                                style={{ minWidth: "100px" }}
+                                className="text-center"
+                              >
+                                Policy Name
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Leave Type
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Employee Type
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Gender{" "}
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Hr Position
+                              </th>
+                              <th rowSpan="2" className="text-center">
+                                Year
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.entries(allPolicy).map(
+                              ([workplaceName, policies]) => (
+                                <React.Fragment key={workplaceName}>
+                                  {/* Row with workplace name */}
+                                  <tr>
+                                    <td colSpan="6">
+                                      {" "}
+                                      <span
+                                        style={{
+                                          fontWeight: "700",
+                                          color: "black",
+                                        }}
+                                      >
+                                        {workplaceName}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                  {/* Rows with policy details */}
+                                  {policies.map((policy, index) => (
+                                    <tr key={index}>
+                                      <td>{policy?.strPolicyName}</td>
+                                      <td>{policy?.strLeaveTypeName}</td>
+                                      <td>
+                                        {policy?.employmentTypeList?.map(
+                                          (employmentType) =>
+                                            employmentType?.strEmploymentTypeName +
+                                            " "
+                                        )}
+                                      </td>
+                                      <td>
+                                        {" "}
+                                        {policy?.genderListDTO?.map(
+                                          (gender) =>
+                                            gender?.strGenderName + " "
+                                        )}
+                                      </td>
+                                      <td>
+                                        {" "}
+                                        {policy?.hrPositionListDTO?.map(
+                                          (employmentType) =>
+                                            employmentType?.strEmploymentTypeName +
+                                            " "
+                                        )}
+                                      </td>
+                                      <td>{policy?.intYear}</td>
+                                    </tr>
+                                  ))}
+                                </React.Fragment>
+                              )
+                            )}
+                          </tbody>
+                        </ScrollableTable>
                       </div>
                     </div>
                   </div>
