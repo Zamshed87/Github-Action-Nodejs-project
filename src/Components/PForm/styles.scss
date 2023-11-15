@@ -1,0 +1,49 @@
+.PeopleDeskInputWrapper {
+  font-family: var(--interFont);
+  margin: 0;
+  .ant-form-item-label {
+    color: var(--gray700);
+    margin: 0;
+    padding: 0;
+    label {
+      font-size: 12px;
+      line-height: normal;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+  }
+  .ant-form-item-control {
+    .ant-input {
+      padding-block: 4px;
+      &[placeholder] {
+        color: var(--gray);
+        font-size: inherit;
+        line-height: inherit;
+      }
+      &:focus,
+      &:hover,
+      .ant-picker-focused {
+        border-color: var(--primary-color) !important;
+        outline: 0;
+      }
+      &:focus {
+        -webkit-box-shadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
+        box-shadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
+      }
+    }
+    .ant-picker:hover,
+    .ant-picker-focused {
+      border-color: var(--primary-color) !important;
+      outline: 0;
+    }
+    .ant-picker-focused {
+      -webkit-box-shadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
+      box-shadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
+    }
+  }
+}
+
+// Date Picker Z-Index
+.ant-picker-dropdown {
+  z-index: 99999999 !important;
+}
