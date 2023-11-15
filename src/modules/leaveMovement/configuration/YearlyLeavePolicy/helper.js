@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getMonthName } from "../../../../utility/monthUtility";
 
 export const getYearlyPolicyPopUpDDL = async (
   apiUrl,
@@ -108,4 +109,59 @@ export const isPolicyExist = (values, allPolicies, setExistingPolicies) => {
 
   setExistingPolicies(existingData);
   // return existingData
+};
+
+export const getYearlyPolicyById = async (id, setter, cb = {}) => {
+  // setLoading?.(true);
+  try {
+    const res = await axios.get(
+      `/SaasMasterData/GetLeavePolicyById?policyId=${id}`
+    );
+    console.log(res?.data);
+    const temp = {
+      ...res?.data,
+      intWorkplaceList: res?.data?.workplaceList?.map((itm) => {
+        return {
+          ...itm,
+          value: itm?.intWorkplaceId,
+          label: itm?.strWorkplaceName,
+        };
+      }),
+
+      intGender: res?.data?.genderListDTO?.map((itm) => {
+        return {
+          ...itm,
+          value: itm?.intGenderId,
+          label: itm?.strGenderName,
+        };
+      }),
+      intEmploymentTypeList: res?.data?.employmentTypeList?.map((itm) => {
+        return {
+          ...itm,
+          value: itm?.intEmploymentTypeId,
+          label: itm?.strEmploymentTypeName,
+        };
+      }),
+      intCarryForwardMonth: {
+        value: res?.data?.intCarryForwardMonth,
+        label: getMonthName(res?.data?.intCarryForwardMonth),
+      },
+      intCarryForwarExpiryMonth: {
+        value: res?.data?.intCarryForwarExpiryMonth,
+        label: getMonthName(res?.data?.intCarryForwarExpiryMonth),
+      },
+      intYear: {
+        value: res?.data?.intYear,
+        label: res?.data?.intYear,
+      },
+    };
+    setter?.(temp);
+
+    cb && cb();
+    // setLoading?.(false);
+  } catch (error) {
+    // setLoading?.(false);
+
+    toast.error(error?.response?.data?.message);
+  }
 };
