@@ -23,6 +23,7 @@ import { _zx123_Zx001_45___45_9999_ } from "./utility/cz";
 import { _Ad_xcvbn_df__dfg_568_dfghfff_ } from "./utility/czy";
 import { detectBrowserConsole } from "./utility/devtools";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
+import { ConfigProvider } from "antd";
 
 const origin = window.location.origin;
 const prodUrl = "https://matador.peopledesk.io";
@@ -43,7 +44,7 @@ if (process.env.NODE_ENV === "production") {
   disableReactDevTools();
 }
 Axios.interceptors.request.use(
-  async function (config: any) {
+  (config: any) => {
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
@@ -54,15 +55,21 @@ Axios.interceptors.request.use(
 
     if (isIncludesQueryString) {
       let splitUrl = url.split("?");
-      const encryptedQuery = await _zx123_Zx001_45___45_9999_(splitUrl[1]);
+      const encryptedQuery = _zx123_Zx001_45___45_9999_(splitUrl[1]);
       url = `${splitUrl[0]}?${encryptedQuery}`;
 
       newConfig = { ...config, url };
     }
+    if (config.params) {
+      const encryptedQuery = _zx123_Zx001_45___45_9999_(
+        JSON.stringify(config.params)
+      );
+      newConfig.params = encryptedQuery;
+    }
     let payload = null;
 
     if (config.data) {
-      payload = await _zx123_Zx001_45___45_9999_(JSON.stringify(config.data));
+      payload = _zx123_Zx001_45___45_9999_(JSON.stringify(config.data));
     }
 
     if (process.env.NODE_ENV === "development") {
@@ -75,7 +82,7 @@ Axios.interceptors.request.use(
     };
     return newConfig;
   },
-  function (error: any) {
+  (error: any) => {
     if (process.env.NODE_ENV === "development") {
     }
     return Promise.reject(error);
