@@ -51,28 +51,45 @@ Axios.interceptors.request.use(
       if (url.includes(`${element}`)) return config;
     }
     let newConfig = { ...config };
+    let paramsQuery = "";
+
     const isIncludesQueryString = url.includes("?");
 
     if (isIncludesQueryString) {
       let splitUrl = url.split("?");
-      const encryptedQuery = _zx123_Zx001_45___45_9999_(splitUrl[1]);
-      url = `${splitUrl[0]}?${encryptedQuery}`;
-
-      newConfig = { ...config, url };
+      paramsQuery += splitUrl[1];
+      url = splitUrl[0];
     }
     if (config.params) {
-      const encryptedQuery = _zx123_Zx001_45___45_9999_(
-        JSON.stringify(config.params)
-      );
-      newConfig.params = encryptedQuery;
+      const params = Object.keys(config.params)
+        .map(
+          (key) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(
+              config.params[key]
+            )}`
+        )
+        .join("&");
+
+      paramsQuery += (paramsQuery ? "&" : "") + params;
+      config.params = null;
+      newConfig.params = null;
     }
+
+    if (paramsQuery) {
+      const encryptedParamsQuery = _zx123_Zx001_45___45_9999_(paramsQuery);
+      url += "?" + encryptedParamsQuery;
+    }
+
+    newConfig.url = url;
+
     let payload = null;
 
     if (config.data) {
-      payload = _zx123_Zx001_45___45_9999_(JSON.stringify(config.data));
-    }
-
-    if (process.env.NODE_ENV === "development") {
+      try {
+        payload = _zx123_Zx001_45___45_9999_(JSON.stringify(config.data));
+      } catch (error) {
+        console.error("Error encrypting payload", error);
+      }
     }
 
     newConfig = {
@@ -84,11 +101,11 @@ Axios.interceptors.request.use(
   },
   (error: any) => {
     if (process.env.NODE_ENV === "development") {
+      console.error("Error in request", error);
     }
     return Promise.reject(error);
   }
 );
-
 Axios.interceptors.response.use(
   async function (response: any) {
     for (let index = 0; index < withoutEncryptionList.length; index++) {
