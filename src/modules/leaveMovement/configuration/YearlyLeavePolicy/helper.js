@@ -20,13 +20,24 @@ export const getYearlyPolicyPopUpDDL = async (
   } catch (error) {}
 };
 
-export const getYearlyPolicyLanding = async (apiUrl, setter, cb = {}) => {
+export const getYearlyPolicyLanding = async (
+  apiUrl,
+  setter,
+  setPages,
+  setLoading,
+  cb = {}
+) => {
+  setLoading?.(true);
   try {
     const res = await axios.get(apiUrl);
     // setter?.(res?.data);
-    let i = 1;
     // console.log({ res });
     if (res?.data?.data) {
+      setPages({
+        currentPage: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        totalCount: res?.data?.totalCount,
+      });
       const groupedData = res?.data?.data.reduce((acc, item) => {
         const { strWorkplaceName, ...rest } = item;
         if (!acc[strWorkplaceName]) {
@@ -35,29 +46,16 @@ export const getYearlyPolicyLanding = async (apiUrl, setter, cb = {}) => {
         acc[strWorkplaceName].push(rest);
         return acc;
       }, {});
+
       setter?.(groupedData);
       console.log({ groupedData });
-      // let tempArr = res?.data?.data?.map((item, idx) => {
-      //   if (item?.strWorkplaceName.trim()) {
-      //     return {
-      //       ...item,
-      //       strWorkplaceName: item?.strWorkplaceName,
-      //       sl: null,
-      //     };
-      //   } else {
-      //     return {
-      //       ...item,
-      //       sl: i++,
-      //     };
-      //   }
-      // });
-      // console.log(tempArr);
-
-      // setter(tempArr);
     }
-    console.log(1);
+
     cb && cb();
+    setLoading?.(false);
   } catch (error) {
+    setLoading?.(false);
+
     toast.error(error?.response?.data?.message);
   }
 };

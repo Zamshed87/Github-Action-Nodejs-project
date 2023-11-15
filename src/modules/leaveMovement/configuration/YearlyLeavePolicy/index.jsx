@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
-import MUIDataTable from "mui-datatables";
+import { TablePagination } from "@mui/material";
 
 import { Avatar } from "@material-ui/core";
 import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
@@ -43,7 +43,11 @@ const YearlyLeavePolicy = () => {
   const [singleData, setSingleData] = useState({});
   const [sortType, setSortType] = useState("desc");
   const history = useHistory();
-
+  const [pages, setPages] = useState({
+    currentPage: 0,
+    pageSize: 25,
+    totalCount: 0,
+  });
   const [, setYear] = useState(null);
 
   const saveHandler = (values, cb) => {};
@@ -97,12 +101,16 @@ const YearlyLeavePolicy = () => {
     });
     setLandingData(newData);
   };
-
-  useEffect(() => {
+  const getLanding = (pages) => {
     getYearlyPolicyLanding(
-      `/SaasMasterData/AllLeavePolicyLanding?businessUnitId=${buId}&PageNo=${1}&PageSize=${100}&IsForXl=false`,
-      setAllPolicy
+      `/SaasMasterData/AllLeavePolicyLanding?businessUnitId=${buId}&PageNo=${pages?.currentPage}&PageSize=${pages?.pageSize}&IsForXl=false`,
+      setAllPolicy,
+      setPages,
+      setLoading
     );
+  };
+  useEffect(() => {
+    getLanding(pages);
   }, [orgId, buId, wgId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -217,6 +225,29 @@ const YearlyLeavePolicy = () => {
       filter: false,
     },
   ];
+  // handleChangePage
+  const handleChangePage = (event, newPage) => {
+    setPages((prev) => {
+      return { ...prev, currentPage: newPage + 1 };
+    });
+
+    getLanding({
+      currentPage: newPage + 1,
+      pageSize: pages?.pageSize,
+      totalCount: pages?.totalCount,
+    });
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPages((prev) => {
+      return { ...prev, pageSize: +event.target.value };
+    });
+    getLanding({
+      currentPage: pages?.currentPage,
+      pageSize: +event.target.value,
+      totalCount: pages?.totalCount,
+    });
+  };
   const formikRef = useRef();
   return (
     <>
@@ -397,6 +428,15 @@ const YearlyLeavePolicy = () => {
                             )}
                           </tbody>
                         </ScrollableTable>
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10, 15, 25, 100]}
+                          component="div"
+                          count={pages?.totalCount}
+                          rowsPerPage={pages?.pageSize}
+                          page={pages?.currentPage}
+                          onPageChange={handleChangePage}
+                          onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
                       </div>
                     </div>
                   </div>
