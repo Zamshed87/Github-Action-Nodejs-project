@@ -5,6 +5,8 @@ import {
   onChange,
   onCheckBoxChange,
   onDateChange,
+  onSearch,
+  onTextAreaChange,
 } from "../TForm";
 import "../styles.scss";
 
@@ -24,6 +26,13 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
     hasFeedback,
     type,
     checked,
+    onPressEnter,
+    onSearch,
+    showCount,
+    minLength,
+    maxLength,
+    allowClear,
+    autoSize,
   } = property;
 
   const renderInput = (type?: InputType) => {
@@ -31,17 +40,16 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       <DatePicker
         placeholder={placeholder || "DD/MM/YYYY"}
         onChange={onChange as onDateChange}
-        className="rounded"
         disabled={disabled}
         suffixIcon={suffix}
         value={value}
         style={{ width: "100%" }}
         format={"DD/MM/YYYY"}
+        allowClear={allowClear}
       />
     ) : type === "checkbox" ? (
       <Checkbox
         onChange={onChange as onCheckBoxChange}
-        className="rounded"
         disabled={disabled}
         value={value}
         checked={checked}
@@ -50,22 +58,37 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       <Input.Search
         placeholder={placeholder}
         onChange={onChange as onChange}
-        className="rounded"
         defaultValue={defaultValue}
         disabled={disabled}
         prefix={prefix}
         suffix={suffix}
         value={value}
+        onSearch={onSearch as onSearch}
+        allowClear={allowClear}
+      />
+    ) : type === "textarea" ? (
+      <Input.TextArea
+        placeholder={placeholder}
+        onChange={onChange as onTextAreaChange}
+        onPressEnter={onPressEnter}
+        showCount={showCount}
+        defaultValue={defaultValue}
+        disabled={disabled}
+        value={value}
+        minLength={minLength}
+        maxLength={maxLength}
+        allowClear={allowClear}
+        autoSize={autoSize}
       />
     ) : (
       <Input
         placeholder={placeholder}
         onChange={onChange as onChange}
-        className="rounded"
         defaultValue={defaultValue}
         disabled={disabled}
         prefix={prefix}
         suffix={suffix}
+        allowClear={allowClear}
         value={value}
         type={type}
       />
@@ -91,7 +114,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
 const CheckboxS = () => {
   return (
     <>
-      <PInput type="text" onChange={(e) => {}} />
+      <PInput type="search" onChange={(e) => {}} />
     </>
   );
 };

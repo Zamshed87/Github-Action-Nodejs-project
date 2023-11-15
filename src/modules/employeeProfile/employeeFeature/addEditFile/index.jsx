@@ -35,7 +35,7 @@ import {
   validationSchema,
 } from "./helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
-import { PForm, PInput } from "Components/PForm";
+import { PForm, PInput, PSelect } from "Components/PForm";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -222,11 +222,26 @@ export default function AddEditForm({
             /> */}
             <PForm>
               <PInput name="date" type="date" label="Pick A Date" />
-              <PInput name="number" label="Number"/>
+              <PInput
+                name="number"
+                type="number"
+                label="Number"
+                placeholder="number"
+              />
               <PInput
                 name="search"
                 type="search"
                 label="search"
+                placeholder="search"
+                onSearch={(e) => {
+                  console.log(e);
+                }}
+              />
+              <PInput
+                name="textarea"
+                type="textarea"
+                label="textarea"
+                showCount={true}
                 placeholder="search"
               />
               <PInput
@@ -235,6 +250,7 @@ export default function AddEditForm({
                 label="checkbox"
                 checked={true}
               />
+              <PSelect options={[]} label="Select somthing" />
             </PForm>
           </div>
         </div>
