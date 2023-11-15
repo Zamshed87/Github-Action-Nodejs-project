@@ -10,7 +10,11 @@ import { DeleteOutline } from "@mui/icons-material";
 import { AddOutlined } from "@mui/icons-material";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { getYearlyPolicyPopUpDDL } from "./helper";
+import {
+  getYearlyPolicyById,
+  getYearlyPolicyPopUpDDL,
+  isPolicyExist,
+} from "./helper";
 import { getPeopleDeskAllDDL } from "../../../../common/api";
 import BackButton from "../../../../common/BackButton";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
@@ -34,7 +38,6 @@ import { useApiRequest } from "../../../../Hooks";
 const CreateEditLeavePolicy = () => {
   const policyApi = useApiRequest([]);
   const params = useParams();
-  console.log({ params });
   const validationSchema = Yup.object().shape({
     // businessUnit: Yup.object()
     //   .shape({
@@ -289,14 +292,7 @@ const CreateEditLeavePolicy = () => {
   //  for edit
   useEffect(() => {
     if (params?.id) {
-      policyApi?.action({
-        method: "GET",
-        urlKey: "SaasMasterDataLeavePolicyById",
-        params: { policyId: params?.id || 0 },
-        onSuccess: (data) => {
-          setSingleData(data || {});
-        },
-      });
+      getYearlyPolicyById(params?.id, setSingleData);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -313,6 +309,8 @@ const CreateEditLeavePolicy = () => {
   //   );
   //   values.intWorkplaceList = temp;
   // };
+
+  console.log({ singleData });
   const {
     handleSubmit,
     values,
@@ -324,7 +322,7 @@ const CreateEditLeavePolicy = () => {
   } = useFormik({
     enableReinitialize: true,
     validationSchema,
-    initialValues: singleData?.autoId
+    initialValues: params?.id
       ? singleData
       : {
           ...initData,
@@ -456,7 +454,9 @@ const CreateEditLeavePolicy = () => {
                               setFieldValue("isEarnLeave", false);
                               setFieldValue("isDependOnServiceLength", false);
                               setFieldValue("isProdataBasis", false);
-                              if (valueOption?.label === "Earn Leave") {
+                              if (
+                                valueOption?.label === "Earn Leave/Annual Leave"
+                              ) {
                                 setFieldValue("isEarnLeave", true);
                               } else if (
                                 valueOption?.label === "Compensatory Leave"
@@ -882,7 +882,8 @@ const CreateEditLeavePolicy = () => {
                             }}
                             disabled={
                               values?.isDependOnServiceLength ||
-                              values?.intLeaveType?.label === "Earn Leave" ||
+                              values?.intLeaveType?.label ===
+                                "Earn Leave/Annual Leave" ||
                               values?.intLeaveType?.label ===
                                 "Compensatory Leave"
                             }
@@ -974,7 +975,8 @@ const CreateEditLeavePolicy = () => {
                             );
                           }}
                           disabled={
-                            values?.intLeaveType?.label === "Earn Leave" ||
+                            values?.intLeaveType?.label ===
+                              "Earn Leave/Annual Leave" ||
                             values?.intLeaveType?.label === "Compensatory Leave"
                           }
                           labelFontSize="12px"
@@ -1292,7 +1294,7 @@ const CreateEditLeavePolicy = () => {
                   ) : null}
                   {/* ----------------------------------------- */}
                   {/* Earn Leave*/}
-                  {values?.intLeaveType?.label === "Earn Leave" ? (
+                  {values?.intLeaveType?.label === "Earn Leave/Annual Leave" ? (
                     <>
                       <div className="col-12">
                         <h2>Earn Leave Configuration</h2>
@@ -1762,7 +1764,23 @@ const CreateEditLeavePolicy = () => {
                           How Much Month
                         </label>
                         <div style={{ width: "120px", marginLeft: "0.5em" }}>
-                          <FormikSelect
+                          <DefaultInput
+                            min={0}
+                            placeholder=" "
+                            inputClasses="w-80"
+                            classes="input-sm"
+                            value={values?.howMuchMonth}
+                            onChange={(e) => {
+                              setFieldValue("howMuchMonth", e.target.value);
+                            }}
+                            disabled={!values?.isMonthWiseExpired}
+                            name="howMuchMonth"
+                            type="number"
+                            // className="form-control"
+                            errors={errors}
+                            touched={touched}
+                          />
+                          {/* <FormikSelect
                             name="howMuchMonth"
                             options={monthDDL}
                             menuPosition="fixed"
@@ -1776,7 +1794,7 @@ const CreateEditLeavePolicy = () => {
                             styles={customStyles}
                             errors={errors}
                             touched={touched}
-                          />
+                          /> */}
                         </div>
                       </div>
 
@@ -1970,7 +1988,8 @@ const CreateEditLeavePolicy = () => {
                           }}
                           labelFontSize="12px"
                           disabled={
-                            values?.intLeaveType?.label === "Earn Leave" ||
+                            values?.intLeaveType?.label ===
+                              "Earn Leave/Annual Leave" ||
                             values?.intLeaveType?.label === "Compensatory Leave"
                           }
                         />
