@@ -74,7 +74,7 @@ function EmployeeFeatureNew() {
   const history = useHistory();
 
   // redux
-  const { orgId, buId, buName, wgId, wgName, wId } = useSelector(
+  const { buId, buName, wgId, wgName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -257,15 +257,12 @@ function EmployeeFeatureNew() {
   });
 
   useEffect(() => {
-    getBuDetails(buId, setBuDetails, setLoading);
-  }, [orgId, buId, wgId, wId]);
-
-  useEffect(() => {
     setHeaderList({});
     setEmpLanding([]);
+    getBuDetails(buId, setBuDetails, setLoading);
     getData(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId, wId]);
+  }, [wgId, wId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -305,7 +302,7 @@ function EmployeeFeatureNew() {
                                   const payload = {
                                     businessUnitId: buId,
                                     workplaceGroupId: wgId,
-                                    workplaceId: 0,
+                                    workplaceId: wId,
                                     pageNo: 0,
                                     pageSize: 0,
                                     isPaginated: false,

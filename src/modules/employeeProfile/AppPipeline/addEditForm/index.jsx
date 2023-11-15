@@ -81,8 +81,8 @@ export default function AddEditFormComponent({
 
   // handler
   const addHandler = (values) => {
-    if (!values?.workplace) return toast.warn("Please select workplace type");
-    if (!values?.orgName) return toast.warn("Please select workplaceGroup ");
+    // if (!values?.workplace) return toast.warn("Please select workplace type");
+    // if (!values?.orgName) return toast.warn("Please select workplaceGroup ");
     // if (values?.orgName?.label === "Marketing" && !values?.wing)
     //   return toast.warn("Please select wing");
     // if (values?.wing?.value > 0 && !values?.soleDepo)
@@ -174,8 +174,10 @@ export default function AddEditFormComponent({
       strRemarks: values?.remarks || "",
       intAccountId: orgId,
       intBusinessUnitId: buId,
-      intWorkplaceGroupId: values?.orgName?.value || 0,
-      intWorkplaceId: values?.workplace?.value,
+      intWorkplaceGroupId: 0,
+      intWorkplaceId: 0,
+      // intWorkplaceGroupId: values?.orgName?.value || 0,
+      // intWorkplaceId: values?.workplace?.value,
       // intTerritoryId: values?.territory?.value,
       // intAreaId: values?.area?.value,
       // intRegionId: values?.region?.value,
@@ -388,7 +390,7 @@ export default function AddEditFormComponent({
                             />
                           </div> */}
                           {/* workPlaceGroup */}
-                          <div className="col-md-6">
+                          <div className="col-md-6 d-none">
                             <label className="mb-2">Workplace Group </label>
                             <FormikSelect
                               isDisabled={isEdit}
@@ -409,21 +411,6 @@ export default function AddEditFormComponent({
                                   setWorkPlaceDDL
                                 );
                                 setLoader(false);
-
-                                // if (valueOption?.label === "Marketing") {
-                                //   setFieldValue("wing", "");
-                                //   setFieldValue("soleDepo", "");
-                                //   setFieldValue("region", "");
-                                //   setFieldValue("area", "");
-                                //   setFieldValue("territory", "");
-
-                                //   getPeopleDeskWithoutAllDDL(
-                                //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
-                                //     "WingId",
-                                //     "WingName",
-                                //     setWingDDL
-                                //   );
-                                // }
                               }}
                               errors={errors}
                               touched={touched}
@@ -432,7 +419,7 @@ export default function AddEditFormComponent({
                             />
                           </div>
                           {/* workPlace */}
-                          <div className="col-md-6 ">
+                          <div className="col-md-6 d-none ">
                             <label className="mb-2">Workplace </label>
                             <FormikSelect
                               // isDisabled={!values?.orgType}

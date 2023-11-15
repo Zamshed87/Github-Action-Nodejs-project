@@ -48,7 +48,7 @@ export default function HolidaySetup() {
     setIsHolidayGroup(false);
   };
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -61,9 +61,10 @@ export default function HolidaySetup() {
       "",
       setRowDto,
       setAllData,
-      setLoading
+      setLoading,
+      wId
     );
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
 
   // search
   const filterData = (keywords, allData, setRowDto) => {

@@ -4,6 +4,7 @@ import {
   Attachment,
   Cancel,
   CheckCircle,
+  EditOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip, tooltipClasses } from "@mui/material";
@@ -27,6 +28,7 @@ import ResetButton from "../../../../common/ResetButton";
 import SortingIcon from "../../../../common/SortingIcon";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
+  blackColor90,
   failColor,
   gray900,
   greenColor,
@@ -34,6 +36,7 @@ import {
 } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import {
+  getAllAnnouncement,
   getAllLeaveApplicatonListDataForApproval,
   leaveApproveReject,
 } from "../helper";
@@ -47,6 +50,10 @@ import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/action
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import Chips from "../../../../common/Chips";
 import { LightTooltip } from "../../../../common/LightTooltip";
+import ViewModal from "../../../../common/ViewModal";
+import LeaveApprovalEditForm from "./component/editForm";
+import SingleNotice from "./component/SingleNotice";
+import NoticeBoard from "./component/NoticeBoard";
 
 const initData = {
   searchString: "",
@@ -62,7 +69,7 @@ const initData = {
 };
 
 export default function LeaveApproval() {
-  const { orgId, employeeId, isOfficeAdmin } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -86,6 +93,10 @@ export default function LeaveApproval() {
   const [isFilter, setIsFilter] = useState(false);
   const [allData, setAllData] = useState();
   const [filterData, setFilterData] = useState([]);
+  const [viewModalRow, setViewModalRow] = useState(false);
+  const [singleNoticeData, setSingleNoticeData] = useState("");
+  const [ApplicationId, setApplicationId] = useState(0)
+  const [allNoticeData , setAllNoticeData] = useState([])
   // filter
   const [empOrder, setEmpOrder] = useState("desc");
   const [designationOrder, setDesignationOrder] = useState("desc");
@@ -121,6 +132,7 @@ export default function LeaveApproval() {
     setAllLeaveApplicatonData({ listData: modifyRowData });
   };
 
+
   useEffect(() => {
     const array = [];
     filterData?.listData?.forEach((data) => {
@@ -149,11 +161,12 @@ export default function LeaveApproval() {
       setRowDto([]);
     }
   };
-
   const getLandingData = (/* isSupOrLineManager = 1 */) => {
+    getAllAnnouncement(ApplicationId, setAllNoticeData);
     getAllLeaveApplicatonListDataForApproval(
       {
         approverId: employeeId,
+        // workplaceGroupId: wgId,
         workplaceGroupId: 0,
         departmentId: 0,
         designationId: 0,
@@ -175,7 +188,7 @@ export default function LeaveApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [employeeId]);
+  }, [employeeId, orgId, wgId,ApplicationId]);
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);
@@ -183,6 +196,8 @@ export default function LeaveApproval() {
   const [filterValues, setFilterValues] = useState({});
   const openFilter = Boolean(filterAnchorEl);
   const id = openFilter ? "simple-popover" : undefined;
+  const [show, setShow] = useState(false);
+  const [singleApplication, setSingleApplication] = useState({});
 
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -191,7 +206,7 @@ export default function LeaveApproval() {
     getAllLeaveApplicatonListDataForApproval(
       {
         approverId: employeeId,
-        workplaceGroupId: values?.workplace?.id || 0,
+        workplaceGroupId: wgId || 0,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
         applicantId: values?.employee?.id || 0,
@@ -249,7 +264,7 @@ export default function LeaveApproval() {
       getAllLeaveApplicatonListDataForApproval(
         {
           approverId: employeeId,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: wgId || 0,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -304,7 +319,7 @@ export default function LeaveApproval() {
       getAllLeaveApplicatonListDataForApproval(
         {
           approverId: employeeId,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: wgId || 0,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -335,7 +350,6 @@ export default function LeaveApproval() {
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
-
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -416,6 +430,7 @@ export default function LeaveApproval() {
                   e.stopPropagation();
                   let leaveAppData = leaveApplicationData?.listData?.map(
                     (item) => {
+                      
                       if (
                         item?.leaveApplication?.intApplicationId ===
                         record?.leaveApplication?.intApplicationId
@@ -591,12 +606,62 @@ export default function LeaveApproval() {
             {status === "Approved" && (
               <Chips label="Approved" classess="success" />
             )}
+            {/* {status === "Pending" && (
+              <>
+                <div className="actionChip">
+                  <Chips label="Pending" classess=" warning" />
+                </div>
+                <div className="d-flex actionIcon justify-content-center">
+                  <Tooltip title="Approve">
+                    <div
+                      className="mx-2 muiIconHover success "
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        singlePopup("approve", "Approve", record);
+                      }}
+                    >
+                      <MuiIcon
+                        icon={<CheckCircle sx={{ color: successColor }} />}
+                      />
+                    </div>
+                  </Tooltip>
+                  <Tooltip title="Reject">
+                    <div
+                      className="muiIconHover  danger"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        singlePopup("reject", "Reject", record);
+                      }}
+                    >
+                      <MuiIcon icon={<Cancel sx={{ color: failColor }} />} />
+                    </div>
+                  </Tooltip>
+                </div>
+              </>
+            )} */}
             {status === "Pending" && (
               <>
                 <div className="actionChip">
                   <Chips label="Pending" classess=" warning" />
                 </div>
                 <div className="d-flex actionIcon justify-content-center">
+                  {isOfficeAdmin ? (
+                    <Tooltip title="Edit" arrow>
+                      <div
+                        className="muiIconHover success "
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShow(true);
+                          setSingleApplication([]);
+                          setSingleApplication(record);
+                        }}
+                      >
+                        <MuiIcon
+                          icon={<EditOutlined sx={{ color: blackColor90 }} />}
+                        />
+                      </div>
+                    </Tooltip>
+                  ) : null}
                   <Tooltip title="Approve">
                     <div
                       className="mx-2 muiIconHover success "
@@ -634,7 +699,6 @@ export default function LeaveApproval() {
       },
     ];
   };
-
 
   return (
     <>
@@ -841,6 +905,10 @@ export default function LeaveApproval() {
                                     rowKey={(record) =>
                                       record?.leaveApplication?.intApplicationId
                                     }
+                                    onRowClick={(record) => {
+                                      setApplicationId(record?.leaveApplication?.intApplicationId)
+                                      setViewModalRow(true);
+                                    }}
                                   />
                                 </>
                               ) : (
@@ -852,6 +920,13 @@ export default function LeaveApproval() {
                           )}
                         </div>
                       </div>
+                    </div>
+                    <div
+                      className="col-md-3 pr-0 h-100"
+                      style={{
+                        boxShadow: "0px 1px 4px 1px rgba(99, 115, 129, 0.3)",
+                      }}
+                    >
                     </div>
                   </div>
                 </div>
@@ -926,6 +1001,43 @@ export default function LeaveApproval() {
           isSupOrLineManager,
         }}
       />
+      <ViewModal
+        size="lg"
+        title="Details Modification"
+        backdrop="static"
+        classes="default-modal preview-modal"
+        show={viewModalRow}
+        onHide={() => {
+          setViewModalRow(false);
+          setSingleNoticeData("");
+        }}
+      >
+        <SingleNotice
+          setViewModalRow={setViewModalRow}
+          allNoticeData={allNoticeData}
+        />
+      </ViewModal>
+
+      <ViewModal
+        size="lg"
+        title="Edit Leave Application"
+        backdrop="static"
+        classes="default-modal preview-modal asset-requision-modal"
+        show={show}
+        onHide={() => {
+          setShow(false);
+          setSingleApplication([]);
+        }}
+      >
+        <LeaveApprovalEditForm
+          objProps={{
+            singleApplication,
+            setSingleApplication,
+            setShow,
+            getLandingData,
+          }}
+        />
+      </ViewModal>
     </>
   );
 }

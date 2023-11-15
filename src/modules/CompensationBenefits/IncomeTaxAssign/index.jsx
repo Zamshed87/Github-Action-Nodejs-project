@@ -45,7 +45,7 @@ export default function IncomeTaxAssign() {
   const history = useHistory();
 
   // redux data
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -75,6 +75,8 @@ export default function IncomeTaxAssign() {
         orgId,
         pages,
         values,
+        wgId,
+        wId,
         setRowDto,
         setPages,
         setLoading,
@@ -89,6 +91,8 @@ export default function IncomeTaxAssign() {
         intCreatedBy: employeeId,
         intAccountId: item?.intAccountId,
         intBusinessUnitId: item?.intBusinessUnitId,
+        intWorkplaceId: wId || 0,
+        intWorkplaceGroupId: wgId || 0,
       };
     });
     createTaxAssign(payload, setLoading, callBack);
@@ -144,6 +148,8 @@ export default function IncomeTaxAssign() {
         total: pages?.total,
       },
       values,
+      wgId,
+      wId,
       setRowDto,
       setPages,
       setLoading,
@@ -165,6 +171,8 @@ export default function IncomeTaxAssign() {
         total: pages?.total,
       },
       values,
+      wgId,
+      wId,
       setRowDto,
       setPages,
       setLoading,
@@ -176,6 +184,7 @@ export default function IncomeTaxAssign() {
     <>
       {loading && <Loading />}
       <form onSubmit={handleSubmit}>
+        {console.log("values", values)}
         {permission?.isCreate ? (
           <div className="table-card">
             <div className="table-card-heading">
@@ -269,6 +278,8 @@ export default function IncomeTaxAssign() {
                             pageSize: paginationSize,
                           },
                           values,
+                          wgId,
+                          wId,
                           setRowDto,
                           setPages,
                           setLoading
@@ -303,6 +314,8 @@ export default function IncomeTaxAssign() {
                           buId,
                           orgId,
                           values,
+                          wgId,
+                          wId,
                           setRowDto,
                           setLoading,
                           setAllData
@@ -339,6 +352,8 @@ export default function IncomeTaxAssign() {
                               pageSize: pages?.pageSize,
                             },
                             values,
+                            wgId,
+                            wId,
                             setRowDto,
                             setPages,
                             setLoading,
@@ -353,6 +368,8 @@ export default function IncomeTaxAssign() {
                           orgId,
                           pages,
                           values,
+                          wgId,
+                          wId,
                           setRowDto,
                           setPages,
                           setLoading,

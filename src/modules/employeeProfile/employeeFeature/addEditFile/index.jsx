@@ -5,6 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   getPeopleDeskAllDDL,
   getSearchEmployeeList,
+  getSearchEmployeeListForEmp,
 } from "../../../../common/api";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import DefaultInput from "../../../../common/DefaultInput";
@@ -35,7 +36,7 @@ import {
   validationSchema,
 } from "./helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
-import { PForm, PInput } from "Components/PForm";
+import { PForm, PInput, PSelect } from "Components/PForm";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -52,7 +53,7 @@ export default function AddEditForm({
     shallowEqual
   );
 
-  const { orgId, buId, employeeId, intUrlId, wgId } = useSelector(
+  const { orgId, buId, employeeId, intUrlId, wgId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -222,11 +223,26 @@ export default function AddEditForm({
             /> */}
             <PForm>
               <PInput name="date" type="date" label="Pick A Date" />
-              <PInput name="number" label="Number"/>
+              <PInput
+                name="number"
+                type="number"
+                label="Number"
+                placeholder="number"
+              />
               <PInput
                 name="search"
                 type="search"
                 label="search"
+                placeholder="search"
+                onSearch={(e) => {
+                  console.log(e);
+                }}
+              />
+              <PInput
+                name="textarea"
+                type="textarea"
+                label="textarea"
+                showCount={true}
                 placeholder="search"
               />
               <PInput
@@ -235,6 +251,7 @@ export default function AddEditForm({
                 label="checkbox"
                 checked={true}
               />
+              <PSelect options={[]} label="Select somthing" />
             </PForm>
           </div>
         </div>
@@ -382,7 +399,7 @@ export default function AddEditForm({
               className="form-control"
               errors={errors}
               touched={touched}
-              disabled={generateEmployeeCode[0]?.value !== ""}
+              // disabled={generateEmployeeCode[0]?.value !== ""}
             />
           </div>
         </div>
@@ -795,7 +812,7 @@ export default function AddEditForm({
                 setFieldValue("supervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
@@ -809,7 +826,7 @@ export default function AddEditForm({
                 setFieldValue("dottedSupervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>
@@ -823,7 +840,7 @@ export default function AddEditForm({
                 setFieldValue("lineManager", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
             />
           </div>
         </div>

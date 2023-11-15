@@ -13,6 +13,7 @@ import {
   initDataForLeaveApplication,
   validationSchemaForLeaveApplication,
 } from "./utils";
+import { toast } from "react-toastify";
 
 const withLeaveApplication = (WrappedComponent) => {
   const HocLeaveApplication = () => {
@@ -25,7 +26,7 @@ const withLeaveApplication = (WrappedComponent) => {
         employeeId,
         wgId,
       },
-      permissionList
+      permissionList,
     } = useSelector((state) => state?.auth, shallowEqual);
     // states
     const [allData, setAllData] = useState([]);
@@ -113,6 +114,28 @@ const withLeaveApplication = (WrappedComponent) => {
         cb();
         setImageFile("");
       };
+
+      if (
+        (values?.leaveType?.label === "Casual Leave" ||
+          values?.leaveType?.label === "Earn Leave" ||
+          values?.leaveType?.label === "Sick Leave") &&
+        values?.fromDate === values?.toDate &&
+        values?.isHalfDay === ""
+      ) {
+        toast.error("Please Select Half Day");
+        return;
+      }
+      if (
+        (values?.leaveType?.label === "Casual Leave" ||
+          values?.leaveType?.label === "Earn Leave" ||
+          values?.leaveType?.label === "Sick Leave") &&
+        values?.fromDate === values?.toDate &&
+        values?.isHalfDay?.label === "Half Day" &&
+        values?.halfTime === ""
+      ) {
+        toast.error("Please Select half Time");
+        return;
+      }
       const payload = {
         partId: singleData?.intApplicationId ? 2 : 1,
         leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
@@ -127,6 +150,8 @@ const withLeaveApplication = (WrappedComponent) => {
         leaveReason: values?.reason,
         addressDuetoLeave: values?.location,
         insertBy: employeeId,
+        isHalfDay: values?.isHalfDay?.label === "Half Day" ? true : false,
+        strHalDayRange: values?.halfTime?.label ? values?.halfTime?.label : " ",
         workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
       };
 
@@ -267,7 +292,7 @@ const withLeaveApplication = (WrappedComponent) => {
           buId,
           setAllData,
           wgId,
-          permission
+          permission,
         }}
       />
     );

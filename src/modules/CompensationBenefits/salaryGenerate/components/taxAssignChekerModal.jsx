@@ -34,7 +34,7 @@ export default function TaxAssignCheckerModal({
   state,
   setAllData,
 }) {
-  const { orgId, employeeId, wgId } = useSelector(
+  const { orgId, employeeId, wgId, wId, wName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -60,6 +60,8 @@ export default function TaxAssignCheckerModal({
       strSalaryCode: " ",
       intAccountId: orgId,
       intWorkplaceGroupId: wgId,
+      intWorkplaceId: wId,
+      strWorkplace: wName,
       intBusinessUnitId: values?.businessUnit?.value,
       strBusinessUnit: values?.businessUnit?.label,
       intMonthId: values?.monthId,

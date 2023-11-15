@@ -7,12 +7,13 @@ export const getHolidaySetupLanding = async (
   id,
   setter,
   setAllData,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}&intId=${id}`
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}&workplaceId=${wId}&intId=${id}`
     );
     if (res?.data) {
       let newData = res?.data?.map((item) => {

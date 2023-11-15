@@ -1,4 +1,5 @@
-.PeopleDeskInputWrapper {
+.PeopleDeskInputWrapper,
+.PeopleDeskSelectWrapper {
   font-family: var(--interFont);
   margin: 0;
   .ant-form-item-label {
@@ -13,7 +14,19 @@
     }
   }
   .ant-form-item-control {
+    .ant-picker,
+    .ant-select-selector,
     .ant-input {
+      border-radius: 4px;
+    }
+    .ant-input-group{
+      .ant-input {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+    .ant-input,
+    .ant-select {
       padding-block: 4px;
       &[placeholder] {
         color: var(--gray);
