@@ -1630,6 +1630,10 @@ export const routingList = [
     component: CreateEditLeavePolicy,
   },
   {
+    path: "/administration/leaveandmovement/yearlyLeavePolicy/edit/:id",
+    component: CreateEditLeavePolicy,
+  },
+  {
     path: "/administration/timeManagement/holidaySetup",
     component: HolidaySetup,
   },

@@ -1,7 +1,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { TablePagination } from "@mui/material";
-
+import { EditOutlined } from "@mui/icons-material";
 import { Avatar } from "@material-ui/core";
 import { AddOutlined, ModeEditOutlineOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -420,7 +420,28 @@ const YearlyLeavePolicy = () => {
                                             " "
                                         )}
                                       </td>
-                                      <td>{policy?.intYear}</td>
+                                      <td>
+                                        <div className="d-flex jusitify-content-around ">
+                                          <p className="mr-5 pr-5">
+                                            {policy?.intYear}
+                                          </p>
+                                          <Tooltip title="Edit" arrow>
+                                            <button
+                                              className="iconButton"
+                                              type="button"
+                                            >
+                                              <EditOutlined
+                                                onClick={() =>
+                                                  history.push(
+                                                    `/administration/leaveandmovement/yearlyLeavePolicy/edit/${policy?.policyId}`
+                                                  )
+                                                }
+                                                style={{ fontSize: "15px" }}
+                                              />
+                                            </button>
+                                          </Tooltip>
+                                        </div>
+                                      </td>
                                     </tr>
                                   ))}
                                 </React.Fragment>

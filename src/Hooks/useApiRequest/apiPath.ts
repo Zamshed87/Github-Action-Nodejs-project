@@ -4,4 +4,5 @@ export const apiPath = {
   SaasMasterDataAllLeavePolicy: "/SaasMasterData/AllLeavePolicy",
   SaasMasterDataCRUDLeavePolicy: "/SaasMasterData/CRUDLeavePolicy",
   SaasMasterDataLeavePolicyLanding: "/SaasMasterData/AllLeavePolicyLanding",
+  SaasMasterDataLeavePolicyById: "/SaasMasterData/GetLeavePolicyById",
 };

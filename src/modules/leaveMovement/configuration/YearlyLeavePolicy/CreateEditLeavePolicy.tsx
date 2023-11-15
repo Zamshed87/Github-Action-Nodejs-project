@@ -31,9 +31,10 @@ import { toast } from "react-toastify";
 import { Col, List, Row, Typography } from "antd";
 import { useApiRequest } from "../../../../Hooks";
 
-const CreateEditLeavePolicy = ({ singleData }) => {
+const CreateEditLeavePolicy = () => {
   const policyApi = useApiRequest([]);
   const params = useParams();
+  console.log({ params });
   const validationSchema = Yup.object().shape({
     // businessUnit: Yup.object()
     //   .shape({
@@ -133,6 +134,7 @@ const CreateEditLeavePolicy = ({ singleData }) => {
   const [buDDL, setBuDDL] = useState([]);
   const [hrPositionDDL, setHrPositionDDL] = useState([]);
   const [allPolicies, setAllPolicies] = useState([]);
+  const [singleData, setSingleData] = useState({});
   const [existingPolicies, setExistingPolicies] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -283,6 +285,22 @@ const CreateEditLeavePolicy = ({ singleData }) => {
       setWorkplaceDDL
     );
   }, [orgId, buId, employeeId, wgId]);
+
+  //  for edit
+  useEffect(() => {
+    if (params?.id) {
+      policyApi?.action({
+        method: "GET",
+        urlKey: "SaasMasterDataLeavePolicyById",
+        params: { policyId: params?.id || 0 },
+        onSuccess: (data) => {
+          setSingleData(data || {});
+        },
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params?.id]);
   const remover = (payload) => {
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
@@ -356,6 +374,7 @@ const CreateEditLeavePolicy = ({ singleData }) => {
   // };
   // console.log(policyApi?.data, "policyApi?.data");
   // console.log({ workplaceDDL });
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="leavePolicy-container table-card ">
