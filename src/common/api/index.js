@@ -74,12 +74,19 @@ export const getAllGlobalEmploymentType = async (
   }
 };
 
-export const getAllGlobalLoanType = async (setter, setAllData, setLoading) => {
+export const getAllGlobalLoanType = async (
+  wId,
+  setter,
+  setAllData,
+  setLoading
+) => {
   setLoading && setLoading(true);
 
   // let status = statusId ? `&intStatusId=${statusId}` : "";
   try {
-    const res = await axios.get(`/SaasMasterData/GetAllEmpLoanType`);
+    const res = await axios.get(
+      `/SaasMasterData/GetAllEmpLoanType?workplaceId=${wId}`
+    );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({
         ...item,
