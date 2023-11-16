@@ -16,7 +16,7 @@ import { blackColor40, greenColor } from "./../../../../utility/customColor";
 import {
   createEditWorklineConfig,
   getAllWorklineConfig,
-  getWorklineConfigById
+  getWorklineConfigById,
 } from "./../helper";
 
 const initData = {
@@ -57,7 +57,7 @@ export default function AddEditFormComponent({
   const [employmentTypeDDL, setEmploymentTypeDDL] = useState([]);
   const [modifySingleData, setModifySingleData] = useState({});
 
-  const { employeeId, orgId, buId } = useSelector(
+  const { employeeId, orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -88,12 +88,12 @@ export default function AddEditFormComponent({
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/SaasMasterData/GetAllEmploymentTypeForWorkline?accountId=${orgId}`,
+      `/SaasMasterData/GetAllEmploymentTypeForWorkline?accountId=${orgId}&workplaceId=${wId}`,
       "intEmploymentTypeId",
       "strEmploymentType",
       setEmploymentTypeDDL
     );
-  }, [orgId, buId]);
+  }, [orgId, buId,wId]);
 
   const saveHandler = (values, cb) => {
     let payload = {

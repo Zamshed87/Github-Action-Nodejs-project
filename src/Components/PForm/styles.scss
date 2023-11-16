@@ -87,6 +87,20 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         }
       }
     }
+    .ant-input-affix-wrapper{
+      border-radius: 4px;
+      &:hover{
+        @include inputHover;
+      }
+      &.ant-input-affix-wrapper-focused{
+        @include inputFocus;
+        .ant-input{
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+        }
+      }
+    }
   }
 }
 
