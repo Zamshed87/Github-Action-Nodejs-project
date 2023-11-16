@@ -41,7 +41,7 @@ export default function AddEditFormComponent({
 
   const [modifySingleData, setModifySingleData] = useState("");
 
-  const { employeeId, orgId } = useSelector(
+  const { employeeId, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -72,11 +72,12 @@ export default function AddEditFormComponent({
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
+      intWorkplaceId: wId,
     };
     const callback = () => {
       cb();
       onHide();
-      getAllGlobalLoanType(setRowDto, setAllData, setLoading);
+      getAllGlobalLoanType(wId, setRowDto, setAllData, setLoading);
     };
 
     if (id) {
