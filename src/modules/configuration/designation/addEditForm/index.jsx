@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import {
   PeopleDeskSaasDDL,
-  PeopleDeskSaasDDLWithFilter
+  PeopleDeskSaasDDLWithFilter,
 } from "../../../../common/api/index";
 import DefaultInput from "../../../../common/DefaultInput";
 import FormikSelect from "../../../../common/FormikSelect";
@@ -18,7 +18,7 @@ import {
   blackColor80,
   gray600,
   greenColor,
-  success500
+  success500,
 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/newSelectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
@@ -62,7 +62,7 @@ export default function AddEditFormComponent({
 
   const [modifySingleData, setModifySingleData] = useState("");
 
-  const { employeeId, orgId, buId, wgId } = useSelector(
+  const { employeeId, orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -163,7 +163,6 @@ export default function AddEditFormComponent({
       userRoleListId = values?.userRole?.map((itm) => itm?.value);
     }
 
-
     // if (busUnitListId[0] !== 0 && busUnitListId?.length > 1) {
     //   return toast.warn("Please remove all busisness unit type !!!");
     // }
@@ -180,6 +179,7 @@ export default function AddEditFormComponent({
       dteCreatedAt: todayDate(),
       dteUpdatedAt: todayDate(),
       intPayscaleGradeId: values?.payscaleGrade?.value,
+      intWorkplaceId: wId,
     };
 
     const callback = () => {
@@ -187,7 +187,7 @@ export default function AddEditFormComponent({
       onHide();
 
       // For landing page data
-      getAllDesignation(orgId, buId, setRowDto, setAllData);
+      getAllDesignation(orgId, buId, setRowDto, setAllData,'', wId);
     };
 
     if (singleData?.intDesignationId) {
@@ -350,9 +350,7 @@ export default function AddEditFormComponent({
                             top: "-1px",
                           }),
                         }}
-                        options={
-                          [...businessUnitDDL] || []
-                        }
+                        options={[...businessUnitDDL] || []}
                         value={values?.businessUnit}
                         name="businessUnit"
                         onChange={(valueOption) => {

@@ -56,7 +56,7 @@ const SelfExpanseApplicationAddForm = () => {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -121,7 +121,7 @@ const SelfExpanseApplicationAddForm = () => {
 
   const getExpenseTypeDDL = (orgId) => {
     getExpenseType(
-      `/SaasMasterData/GetAllEmpExpenseType?IntAccountId=${orgId}`,
+      `/SaasMasterData/GetAllEmpExpenseType?IntAccountId=${orgId}}&workplaceId=${wId}`,
       (data) => {
         const modifyData =
           data?.length > 0 &&
@@ -178,7 +178,7 @@ const SelfExpanseApplicationAddForm = () => {
 
   useEffect(() => {
     getExpenseType(
-      `/SaasMasterData/GetAllEmpExpenseType?IntAccountId=${orgId}`,
+      `/SaasMasterData/GetAllEmpExpenseType?IntAccountId=${orgId}&workplaceId=${wId}`,
       (data) => {
         const modifyData =
           data?.length > 0 &&

@@ -1,5 +1,5 @@
-import { toast } from "react-toastify";
 import axios from "axios";
+import { toast } from "react-toastify";
 import Chips from "../../../common/Chips";
 
 // search
@@ -52,12 +52,13 @@ export const getAllEmpDepartment = async (
   buId,
   setter,
   setAllData,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/GetAllEmpDepartment?accountId=${accountId}&businessUnitId=${buId}`
+      `/Employee/GetAllEmpDepartment?accountId=${accountId}&businessUnitId=${buId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({

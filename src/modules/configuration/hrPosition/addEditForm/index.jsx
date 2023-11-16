@@ -11,7 +11,6 @@ import Loading from "./../../../../common/loading/Loading";
 import { blackColor80, greenColor } from "./../../../../utility/customColor";
 import { createPosition, getPositionById } from "./../helper";
 
-
 const initData = {
   hrPosition: "",
   code: "",
@@ -46,7 +45,7 @@ export default function AddEditFormComponent({
   setSingleData,
   setRowDto,
   setAllData,
-  getData
+  getData,
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -55,7 +54,7 @@ export default function AddEditFormComponent({
 
   const [, setAddNewType] = useState(false);
 
-  const { employeeId, orgId, buId } = useSelector(
+  const { employeeId, orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -132,6 +131,7 @@ export default function AddEditFormComponent({
       intCreatedBy: id ? 0 : employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: id ? employeeId : 0,
+      intWorkplaceId: wId,
     };
     const callback = () => {
       cb();
@@ -139,17 +139,9 @@ export default function AddEditFormComponent({
       getData();
     };
     if (id) {
-      createPosition(
-        { ...payload, intPositionId: id, },
-        setLoading,
-        callback
-      );
+      createPosition({ ...payload, intPositionId: id }, setLoading, callback);
     } else {
-      createPosition(
-        { ...payload, intPositionId: 0, },
-        setLoading,
-        callback
-      );
+      createPosition({ ...payload, intPositionId: 0 }, setLoading, callback);
     }
   };
   return (
@@ -206,7 +198,7 @@ export default function AddEditFormComponent({
                               } else {
                                 resetForm(initData);
                               }
-                              setAddNewType(false)
+                              setAddNewType(false);
                               onHide();
                             }}
                           >
@@ -371,28 +363,32 @@ export default function AddEditFormComponent({
                               </div>
                             </>
                           )} */}
-                          {id && (<div className="col-6 d-none">
-                            <div className="input-main position-group-select mt-2">
-                              <h6 className="title-item-name" style={{ fontSize: "14px" }}>
-                                HR Position Activation
-                              </h6>
-                              <p className="subtitle-p">
-                                Activation toggle indicates to the particular HR
-                                Position status (Active/Inactive)
-                              </p>
+                          {id && (
+                            <div className="col-6 d-none">
+                              <div className="input-main position-group-select mt-2">
+                                <h6
+                                  className="title-item-name"
+                                  style={{ fontSize: "14px" }}
+                                >
+                                  HR Position Activation
+                                </h6>
+                                <p className="subtitle-p">
+                                  Activation toggle indicates to the particular
+                                  HR Position status (Active/Inactive)
+                                </p>
+                              </div>
+                              <FormikToggle
+                                name="isActive"
+                                color={
+                                  values?.isActive ? greenColor : blackColor80
+                                }
+                                checked={values?.isActive}
+                                onChange={(e) => {
+                                  setFieldValue("isActive", e.target.checked);
+                                }}
+                              />
                             </div>
-                            <FormikToggle
-                              name="isActive"
-                              color={
-                                values?.isActive ? greenColor : blackColor80
-                              }
-                              checked={values?.isActive}
-                              onChange={(e) => {
-                                setFieldValue("isActive", e.target.checked);
-                              }}
-                            />
-                          </div>)}
-
+                          )}
                         </div>
                       </div>
                     </div>

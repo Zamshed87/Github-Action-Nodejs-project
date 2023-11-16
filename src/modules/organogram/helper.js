@@ -2,10 +2,20 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { todayDate } from "../../utility/todayDate";
 
-export const createPosition = async ({orgId, employeeId, buId, positionName, positionCode, setLoading, cb}) => {
+export const createPosition = async ({
+  orgId,
+  employeeId,
+  buId,
+  positionName,
+  positionCode,
+  intWorkplaceId,
+  setLoading,
+  cb,
+}) => {
   try {
     // if (!positionName || !positionGroupId) return toast.warn("Position and position group are required");
-    if (!positionName || !positionCode) return toast.warn("Position and position code are required");
+    if (!positionName || !positionCode)
+      return toast.warn("Position and position code are required");
     setLoading(true);
     const res = await axios.post(`/SaasMasterData/SavePosition`, {
       intPositionId: 0,
@@ -13,11 +23,12 @@ export const createPosition = async ({orgId, employeeId, buId, positionName, pos
       intBusinessUnitId: buId,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
-      intCreatedBy:employeeId,
+      intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: 0,
       strPositionCode: positionCode,
       isActive: true,
+      intWorkplaceId: intWorkplaceId,
     });
     setLoading(false);
     toast.success(res?.data?.message);
@@ -28,7 +39,13 @@ export const createPosition = async ({orgId, employeeId, buId, positionName, pos
   }
 };
 
-export const createPositionGroup = async (accId, userId, positionGroupName, setLoading, cb) => {
+export const createPositionGroup = async (
+  accId,
+  userId,
+  positionGroupName,
+  setLoading,
+  cb
+) => {
   try {
     if (!positionGroupName) return toast.warn("Position group is required");
     setLoading(true);
@@ -52,7 +69,9 @@ export const createPositionGroup = async (accId, userId, positionGroupName, setL
 
 export const getOrganogramAction = async (buId, setter) => {
   try {
-    const res = await axios.get(`/Organogram/GetOrganogramTree?businessUnitId=${buId}`);
+    const res = await axios.get(
+      `/Organogram/GetOrganogramTree?businessUnitId=${buId}`
+    );
     setter(res?.data);
   } catch (error) {
     setter({});
@@ -60,9 +79,23 @@ export const getOrganogramAction = async (buId, setter) => {
 };
 
 export const organogramSaveUpdate = async (obj) => {
-  const { autoId, parentId, childList, employee, position, employeeId, isActive, buId, setLoading, cb, sequence, isDrag } = obj;
+  const {
+    autoId,
+    parentId,
+    childList,
+    employee,
+    position,
+    employeeId,
+    isActive,
+    buId,
+    setLoading,
+    cb,
+    sequence,
+    isDrag,
+  } = obj;
 
-  if (!isDrag && isActive && !position?.value) return toast.warn("Position is required");
+  if (!isDrag && isActive && !position?.value)
+    return toast.warn("Position is required");
 
   try {
     let payload = [
