@@ -36,7 +36,8 @@ import {
   validationSchema,
 } from "./helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
-import { PForm, PInput } from "Components/PForm";
+import { PForm, PInput, PSelect } from "Components/PForm";
+import { ModalFooter } from "Components/Modal";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -223,11 +224,26 @@ export default function AddEditForm({
             /> */}
             <PForm>
               <PInput name="date" type="date" label="Pick A Date" />
-              <PInput name="number" label="Number"/>
+              <PInput
+                name="number"
+                type="number"
+                label="Number"
+                placeholder="number"
+              />
               <PInput
                 name="search"
                 type="search"
                 label="search"
+                placeholder="search"
+                onSearch={(e) => {
+                  console.log(e);
+                }}
+              />
+              <PInput
+                name="textarea"
+                type="textarea"
+                label="textarea"
+                showCount={true}
                 placeholder="search"
               />
               <PInput
@@ -236,6 +252,7 @@ export default function AddEditForm({
                 label="checkbox"
                 checked={true}
               />
+              <PSelect options={[]} label="Select somthing" />
             </PForm>
           </div>
         </div>
@@ -796,7 +813,15 @@ export default function AddEditForm({
                 setFieldValue("supervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) =>
+                getSearchEmployeeListForEmp(
+                  buId,
+                  wgId,
+                  intAccountId,
+                  employeeId,
+                  v
+                )
+              }
             />
           </div>
         </div>
@@ -810,7 +835,15 @@ export default function AddEditForm({
                 setFieldValue("dottedSupervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) =>
+                getSearchEmployeeListForEmp(
+                  buId,
+                  wgId,
+                  intAccountId,
+                  employeeId,
+                  v
+                )
+              }
             />
           </div>
         </div>
@@ -824,7 +857,15 @@ export default function AddEditForm({
                 setFieldValue("lineManager", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) =>
+                getSearchEmployeeListForEmp(
+                  buId,
+                  wgId,
+                  intAccountId,
+                  employeeId,
+                  v
+                )
+              }
             />
           </div>
         </div>
@@ -1336,7 +1377,7 @@ export default function AddEditForm({
         )}
       </div>
 
-      <div className=" emp-create buttons-form-main row">
+      {/* <div className=" emp-create buttons-form-main row">
         <button
           type="button"
           className="btn btn-cancel mr-3"
@@ -1348,7 +1389,9 @@ export default function AddEditForm({
         <button type="submit" className="btn btn-green">
           submit
         </button>
-      </div>
+      </div> */}
+
+      <ModalFooter />
     </form>
   );
 }

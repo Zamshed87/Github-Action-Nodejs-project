@@ -32,6 +32,7 @@ export const createExpenseType = async (payload, setLoading, cb) => {
 export const getAllGlobalExpenseType = async (
   setter,
   accountId,
+  wId,
   setAllData,
   setLoading
 ) => {
@@ -39,7 +40,7 @@ export const getAllGlobalExpenseType = async (
 
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetAllEmpExpenseType?IntAccountId=${accountId}`
+      `/SaasMasterData/GetAllEmpExpenseType?IntAccountId=${accountId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({

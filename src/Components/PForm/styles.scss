@@ -1,44 +1,105 @@
-.PeopleDeskInputWrapper {
+//  Variables
+$borderColor: var(--primary-color);
+$boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
+// Mixin
+// Path: src/Components/PForm/styles.scss
+@mixin inputLabel {
+  color: var(--gray700);
+  margin: 0;
+  padding: 0;
+  label {
+    font-size: 12px;
+    line-height: normal;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+}
+@mixin inputHover {
+  border-color: $borderColor !important;
+  outline: 0;
+}
+@mixin inputFocus {
+  @include inputHover;
+  -webkit-box-shadow: $boxShadow !important;
+  box-shadow: $boxShadow !important;
+}
+
+.PeopleDeskInputWrapper,
+.PeopleDeskSelectWrapper {
   font-family: var(--interFont);
   margin: 0;
   .ant-form-item-label {
-    color: var(--gray700);
-    margin: 0;
-    padding: 0;
-    label {
-      font-size: 12px;
-      line-height: normal;
-      font-weight: 500;
-      margin-bottom: 2px;
-    }
+    @include inputLabel;
   }
   .ant-form-item-control {
+    .ant-picker,
+    .ant-select-selector,
     .ant-input {
-      padding-block: 4px;
+      border-radius: 4px;
+    }
+    .ant-input-group {
+      .ant-input {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+
+    .ant-checkbox {
+      &:hover {
+        &.ant-checkbox-checked::after,
+        .ant-checkbox-inner {
+          @include inputHover;
+        }
+      }
+    }
+
+    .ant-input {
+      // Placeholder
       &[placeholder] {
         color: var(--gray);
         font-size: inherit;
         line-height: inherit;
       }
-      &:focus,
-      &:hover,
-      .ant-picker-focused {
-        border-color: var(--primary-color) !important;
-        outline: 0;
+      &:hover {
+        @include inputHover;
       }
       &:focus {
-        -webkit-box-shadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
-        box-shadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
+        @include inputFocus;
       }
     }
-    .ant-picker:hover,
-    .ant-picker-focused {
-      border-color: var(--primary-color) !important;
-      outline: 0;
+    .ant-picker {
+      &:hover {
+        @include inputHover;
+      }
+      &.ant-picker-focused {
+        @include inputFocus;
+      }
     }
-    .ant-picker-focused {
-      -webkit-box-shadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
-      box-shadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
+    .ant-select {
+      &:hover {
+        .ant-select-selector {
+          @include inputHover;
+        }
+      }
+      &.ant-select-focused {
+        .ant-select-selector {
+          @include inputFocus;
+        }
+      }
+    }
+    .ant-input-affix-wrapper{
+      border-radius: 4px;
+      &:hover{
+        @include inputHover;
+      }
+      &.ant-input-affix-wrapper-focused{
+        @include inputFocus;
+        .ant-input{
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+        }
+      }
     }
   }
 }

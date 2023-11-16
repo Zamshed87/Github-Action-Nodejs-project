@@ -1,11 +1,16 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const getAllPayrollElementType = async (accId, setter, setLoading) => {
+export const getAllPayrollElementType = async (
+  accId,
+  wId,
+  setter,
+  setLoading
+) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/GetAllPayrollElementType?accountId=${accId}`
+      `/Payroll/GetAllPayrollElementType?accountId=${accId}&workplaceId=${wId}`
     );
     if (res?.data) {
       setter(res?.data);

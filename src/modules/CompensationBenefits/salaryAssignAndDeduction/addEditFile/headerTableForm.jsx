@@ -11,6 +11,7 @@ const HeaderTableForm = ({
   errors,
   touched,
   orgId,
+  wId,
   buId,
   setAllowanceAndDeductionDDL,
   setLoading,
@@ -98,6 +99,7 @@ const HeaderTableForm = ({
             getAllAllowanceAndDeduction(
               orgId,
               buId,
+              wId,
               setAllowanceAndDeductionDDL,
               valueOption?.value === 1 ? true : false,
               setLoading

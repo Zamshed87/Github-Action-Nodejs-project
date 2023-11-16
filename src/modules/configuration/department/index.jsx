@@ -50,7 +50,7 @@ function Department() {
 
   // for view Modal
   const handleViewClose = () => setViewModal(false);
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -65,7 +65,7 @@ function Department() {
   }, []);
 
   useEffect(() => {
-    getAllEmpDepartment(orgId, buId, setRowDto, setAllData, setLoading);
+    getAllEmpDepartment(orgId, buId, setRowDto, setAllData, setLoading, wId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
 

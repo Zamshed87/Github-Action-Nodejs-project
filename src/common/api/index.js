@@ -49,14 +49,15 @@ export const getAllGlobalEmploymentType = async (
   setter,
   setAllData,
   setLoading,
-  orgId
+  orgId,
+  wId
 ) => {
   setLoading && setLoading(true);
 
   // let status = statusId ? `&intStatusId=${statusId}` : "";
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetAllEmploymentType?accountId=${orgId}`
+      `/SaasMasterData/GetAllEmploymentType?accountId=${orgId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({

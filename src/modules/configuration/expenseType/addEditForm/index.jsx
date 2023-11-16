@@ -44,7 +44,7 @@ export default function AddEditFormComponent({
 
   const [modifySingleData, setModifySingleData] = useState("");
 
-  const { employeeId, orgId } = useSelector(
+  const { employeeId, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -75,11 +75,12 @@ export default function AddEditFormComponent({
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
+      intWorkplaceId: wId,
     };
     const callback = () => {
       cb();
       onHide();
-      getAllGlobalExpenseType(setRowDto, orgId, setAllData, setLoading);
+      getAllGlobalExpenseType(setRowDto, orgId, wId, setAllData, setLoading);
     };
 
     if (id) {

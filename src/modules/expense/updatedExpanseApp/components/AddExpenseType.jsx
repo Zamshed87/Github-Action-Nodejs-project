@@ -16,7 +16,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const AddExpenseType = ({ setShow, getExpenseTypeDDL }) => {
-  const { orgId, employeeId } = useSelector(
+  const { orgId, employeeId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -30,6 +30,7 @@ const AddExpenseType = ({ setShow, getExpenseTypeDDL }) => {
       intAccountId: orgId,
       intCreatedBy: employeeId,
       dteCreatedAt: todayDate(),
+      intWorkplaceId: wId,
     };
 
     saveExpenseType(

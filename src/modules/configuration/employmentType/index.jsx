@@ -1,7 +1,7 @@
 import {
   AddOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -58,7 +58,7 @@ function EmploymentTypeCreate() {
     setId("");
   };
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -72,8 +72,8 @@ function EmploymentTypeCreate() {
   }, []);
 
   useEffect(() => {
-    getAllGlobalEmploymentType(setRowDto, setAllData, setLoading, orgId);
-  }, [orgId]);
+    getAllGlobalEmploymentType(setRowDto, setAllData, setLoading, orgId, wId);
+  }, [orgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 

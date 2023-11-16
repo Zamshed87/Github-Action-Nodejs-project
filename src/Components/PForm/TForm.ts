@@ -52,9 +52,14 @@ type checked = InputType extends "checkbox" ? boolean : undefined;
 
 // On Change types
 export type onDateChange = (value?: Moment | any, dateString?: string) => void;
-export type onChange = (e?: ChangeEvent<HTMLInputElement>) => void | any;
 export type onCheckBoxChange = (e?: CheckboxChangeEvent) => void | any;
-
+export type onTextAreaChange = (
+  e?: React.ChangeEvent<HTMLTextAreaElement>
+) => void;
+export type onChange = (e?: ChangeEvent<HTMLInputElement>) => void | any;
+export type onSearch = (value: any, event: any) => void;
+export type onPressEnter = (event: any) => void;
+type autoSize = boolean | { minRows: number; maxRows: number };
 type InputTypeMapping = {
   text: onChange;
   password: onChange;
@@ -62,7 +67,8 @@ type InputTypeMapping = {
   number: onChange;
   date: onDateChange;
   checkbox: onCheckBoxChange;
-  textarea: onChange;
+  textarea: onTextAreaChange;
+  search: onChange;
 };
 
 export type InputProperty<T extends InputType> = {
@@ -76,6 +82,7 @@ export type InputProperty<T extends InputType> = {
   name?: string;
   label?: string;
   valuePropName?: string;
+  allowClear?: boolean;
   type?: T;
   // Additional properties based on InputType
   onChange?: T extends keyof InputTypeMapping ? InputTypeMapping[T] : never;
@@ -83,4 +90,10 @@ export type InputProperty<T extends InputType> = {
   picker?: picker;
   format?: format;
   checked?: checked;
+  onSearch?: T extends "search" ? onSearch : never;
+  onPressEnter?: T extends "textarea" ? onPressEnter : never;
+  showCount?: T extends "textarea" ? boolean : never;
+  minLength?: T extends "textarea" ? number : never;
+  maxLength?: T extends "textarea" ? number : never;
+  autoSize?: T extends "textarea" ? autoSize : never;
 };

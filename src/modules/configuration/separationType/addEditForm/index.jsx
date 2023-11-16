@@ -9,9 +9,17 @@ import FormikCheckBox from "../../../../common/FormikCheckbox";
 import FormikInput from "./../../../../common/FormikInput";
 import FormikToggle from "./../../../../common/FormikToggle";
 import Loading from "./../../../../common/loading/Loading";
-import { blackColor40, gray900, greenColor } from "./../../../../utility/customColor";
+import {
+  blackColor40,
+  gray900,
+  greenColor,
+} from "./../../../../utility/customColor";
 import { todayDate } from "./../../../../utility/todayDate";
-import { saveSeparationType, getSeparationTypeById, getSeparationType } from "./../helper";
+import {
+  saveSeparationType,
+  getSeparationTypeById,
+  getSeparationType,
+} from "./../helper";
 
 const initData = {
   separationType: "",
@@ -42,7 +50,7 @@ export default function AddEditFormComponent({
 
   const [modifySingleData, setModifySingleData] = useState("");
 
-  const { employeeId, orgId } = useSelector(
+  const { employeeId, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -73,12 +81,13 @@ export default function AddEditFormComponent({
       intAccountId: orgId,
       intCreatedBy: employeeId,
       dteCreatedAt: todayDate(),
+      intWorkplaceId: wId,
     };
 
     const callback = () => {
       cb();
       onHide();
-      getSeparationType(orgId, setRowDto, setAllData, setLoading);
+      getSeparationType(orgId, setRowDto, setAllData, setLoading, wId);
     };
 
     if (id) {
@@ -212,7 +221,6 @@ export default function AddEditFormComponent({
                               </div>
                             </div>
                           )}
-
                         </div>
                       </div>
                     </div>

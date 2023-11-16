@@ -50,11 +50,11 @@ export default function AddEditFormComponent({
 
   const [modifySingleData, setModifySingleData] = useState("");
 
-  const { employeeId, orgId, buId, wgId } = useSelector(
+  const { employeeId, orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
+  console.log("DEPT");
   useEffect(() => {
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
@@ -63,7 +63,7 @@ export default function AddEditFormComponent({
       setBusinessUnitDDL
     );
     getPeopleDeskAllDDL(
-      `/Employee/GetAllEmpDepartment?accountId=${orgId}&businessUnitId=${buId}`,
+      `/Employee/GetAllEmpDepartment?accountId=${orgId}&businessUnitId=${buId}&workplaceId=${wId}`,
       "intDepartmentId",
       "strDepartment",
       setSectionDepartmentDDL
@@ -103,6 +103,7 @@ export default function AddEditFormComponent({
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
+      intWorkplaceId: wId,
     };
 
     const callback = () => {
@@ -110,7 +111,7 @@ export default function AddEditFormComponent({
       onHide();
 
       // For landing page data
-      getAllEmpDepartment(orgId, buId, setRowDto, setAllData, setLoading);
+      getAllEmpDepartment(orgId, buId, setRowDto, setAllData, setLoading, wId);
     };
 
     if (singleData?.strDepartment) {
@@ -140,9 +141,9 @@ export default function AddEditFormComponent({
           singleData?.strDepartment
             ? modifySingleData
             : {
-              ...initData,
-              businessUnit: { value: 0, label: "All" },
-            }
+                ...initData,
+                businessUnit: { value: 0, label: "All" },
+              }
         }
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -205,7 +206,10 @@ export default function AddEditFormComponent({
 
                   <Modal.Body id="example-modal-sizes-title-xl">
                     <div className="businessUnitModal">
-                      <div className="modalBody" style={{ padding: "0px 12px" }}>
+                      <div
+                        className="modalBody"
+                        style={{ padding: "0px 12px" }}
+                      >
                         <div className="row mx-0">
                           <div className="col-12 px-0">
                             <label>Department Name </label>
@@ -243,8 +247,7 @@ export default function AddEditFormComponent({
                             <label>Department Section</label>
                             <FormikSelect
                               name="sectionDepartment"
-                              options={sectionDepartmentDDL || []
-                              }
+                              options={sectionDepartmentDDL || []}
                               value={values?.sectionDepartment}
                               onChange={(valueOption) => {
                                 setFieldValue("sectionDepartment", valueOption);
