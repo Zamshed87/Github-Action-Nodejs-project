@@ -118,7 +118,6 @@ export const getYearlyPolicyById = async (
   allPolicies,
   setExistingPolicies,
   setLoading,
-
   cb = {}
 ) => {
   try {
@@ -129,7 +128,7 @@ export const getYearlyPolicyById = async (
     );
 
     if (res?.data) {
-      const newState1 = workplaceDDL.filter((obj1) =>
+      const newState1 = workplaceDDL?.filter((obj1) =>
         res?.data?.workplaceList?.some(
           (obj2) => obj2?.intWorkplaceId == obj1?.intWorkplaceId
         )
@@ -202,7 +201,6 @@ export const getYearlyPolicyById = async (
           label: res?.data?.intLeaveType?.strLeaveType,
         },
       };
-      console.log({ allPolicies });
       // setExistingPolicies?.(
       let dummy = [];
 
@@ -212,7 +210,7 @@ export const getYearlyPolicyById = async (
           dummy.push(a);
         }
       });
-      setExistingPolicies(dummy);
+      setExistingPolicies((prev = []) => [...dummy, ...prev]);
       // );
       setter?.(temp);
     }

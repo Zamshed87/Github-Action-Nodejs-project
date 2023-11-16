@@ -37,6 +37,8 @@ import { Col, List, Row, Typography } from "antd";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { useApiRequest } from "../../../../Hooks";
+import Loading from "common/loading/Loading";
+import { useHistory } from "react-router-dom";
 
 const CreateEditLeavePolicy = () => {
   const policyApi = useApiRequest([]);
@@ -143,6 +145,7 @@ const CreateEditLeavePolicy = () => {
   const [allPolicies, setAllPolicies] = useState([]);
   const [singleData, setSingleData] = useState({});
   const [existingPolicies, setExistingPolicies] = useState([]);
+  const history = useHistory();
 
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -254,9 +257,17 @@ const CreateEditLeavePolicy = () => {
       urlKey: "SaasMasterDataCRUDLeavePolicy",
       payload: payload,
       onSuccess: (data) => {
+        console.log(data);
+
         toast.success(data?.message || "Submitted successfully", {
           toastId: "savePolicy",
         });
+        if (data?.statusCode === 201) {
+          history.push({
+            pathname: `/administration/timeManagement/leavePolicyAssign`,
+            state: { list: data?.intPolicyIdList },
+          });
+        }
       },
     });
   };
@@ -391,6 +402,7 @@ const CreateEditLeavePolicy = () => {
           </ul>
         </div>
         {/* -------------------------------- */}
+        {loading && <Loading />}
         <div className="table-card-body">
           <div className="card-style">
             <Row gutter={[10, 2]}>
@@ -2246,7 +2258,7 @@ const CreateEditLeavePolicy = () => {
                   <Alert
                     icon={<InfoOutlinedIcon fontSize="inherit" />}
                     severity="warning"
-                    style={{ position: "sticky", top: "2px" }}
+                    style={{ width: "27rem", position: "sticky", top: "1px" }}
                   >
                     <div>
                       <div className="mb-3">
