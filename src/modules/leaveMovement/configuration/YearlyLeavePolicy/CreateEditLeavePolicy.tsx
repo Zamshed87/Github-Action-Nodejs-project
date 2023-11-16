@@ -176,7 +176,7 @@ const CreateEditLeavePolicy = () => {
     const serviceLengthList = tableData?.map((item, idx) => {
       return {
         intId: 0,
-        intSerial: idx,
+        intSerial: idx + 1,
         intStartServiceLengthInYear: item?.intStartServiceLengthInYear?.value,
         intEndServiceLengthInYear: item?.intEndServiceLengthInYear?.value,
         intLveInDay: +item?.intLveInDay,
