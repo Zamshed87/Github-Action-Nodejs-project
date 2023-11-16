@@ -1064,6 +1064,9 @@ const UnderCreateRosterSetup = lazy(() =>
 const Calendar = lazy(() =>
   import("../modules/timeSheet/employeeAssign/calendar/index.jsx")
 );
+const LeavePolicyAssign = lazy(() =>
+  import("../modules/timeSheet/employeeAssign/leavePolicyAssign/index.jsx")
+);
 const HolidayException = lazy(() =>
   import("../modules/timeSheet/employeeAssign/HolidayException/index.jsx")
 );
@@ -1680,6 +1683,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/calendarAssign",
     component: Calendar,
+  },
+  {
+    path: "/administration/timeManagement/leavePolicyAssign",
+    component: LeavePolicyAssign,
   },
   {
     path: "/administration/timeManagement/offDayAssign",
