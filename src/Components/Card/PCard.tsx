@@ -8,3 +8,5 @@ export const PCard: React.FC<PCardType> = ({ className, children }) => {
     </div>
   );
 };
+export { PCardHeader } from "./CardHeader/PCardHeader";
+export { PCardBody } from "./CardBody/PCardBody";

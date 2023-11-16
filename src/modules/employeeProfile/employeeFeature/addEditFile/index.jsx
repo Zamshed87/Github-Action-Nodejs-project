@@ -37,6 +37,7 @@ import {
 } from "./helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import { PForm, PInput, PSelect } from "Components/PForm";
+import { ModalFooter } from "Components/Modal";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -812,7 +813,15 @@ export default function AddEditForm({
                 setFieldValue("supervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) =>
+                getSearchEmployeeListForEmp(
+                  buId,
+                  wgId,
+                  intAccountId,
+                  employeeId,
+                  v
+                )
+              }
             />
           </div>
         </div>
@@ -826,7 +835,15 @@ export default function AddEditForm({
                 setFieldValue("dottedSupervisor", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) =>
+                getSearchEmployeeListForEmp(
+                  buId,
+                  wgId,
+                  intAccountId,
+                  employeeId,
+                  v
+                )
+              }
             />
           </div>
         </div>
@@ -840,7 +857,15 @@ export default function AddEditForm({
                 setFieldValue("lineManager", valueOption);
               }}
               placeholder="Search (min 3 letter)"
-              loadOptions={(v) => getSearchEmployeeListForEmp(buId, wgId,intAccountId, employeeId, v)}
+              loadOptions={(v) =>
+                getSearchEmployeeListForEmp(
+                  buId,
+                  wgId,
+                  intAccountId,
+                  employeeId,
+                  v
+                )
+              }
             />
           </div>
         </div>
@@ -1352,7 +1377,7 @@ export default function AddEditForm({
         )}
       </div>
 
-      <div className=" emp-create buttons-form-main row">
+      {/* <div className=" emp-create buttons-form-main row">
         <button
           type="button"
           className="btn btn-cancel mr-3"
@@ -1364,7 +1389,9 @@ export default function AddEditForm({
         <button type="submit" className="btn btn-green">
           submit
         </button>
-      </div>
+      </div> */}
+
+      <ModalFooter />
     </form>
   );
 }

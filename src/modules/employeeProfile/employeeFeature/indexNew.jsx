@@ -1,6 +1,5 @@
 import { AddOutlined, SaveAlt } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { DataTable, PCard, PCardHeader } from "Components";
 import { useApiRequest } from "Hooks";
 import axios from "axios";
 import { Form, Formik } from "formik";
@@ -31,7 +30,8 @@ import {
   newEmpListColumn,
 } from "./helper";
 import "./styles.css";
-import { PForm } from "Components/PForm";
+import { PButton, PCard, PCardBody, PCardHeader, PForm } from "Components";
+import { ModalFooter, PModal } from "Components/Modal";
 
 const initData = {
   searchString: "",
@@ -279,20 +279,25 @@ function EmployeeFeatureNew() {
                 type: "primary",
                 content: "Create New",
                 icon: "plus",
+                onClick: () => {
+                  setIsAddEditForm(true);
+                },
               },
             ]}
-          ></PCardHeader>
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sequi
-            nulla, asperiores eum perferendis ipsum odio, nisi placeat sint
-            dolore praesentium earum dolor illum distinctio quod aut itaque
-            possimus nihil porro! Provident assumenda quidem modi repellat.
-            Ullam culpa voluptates nesciunt optio minima excepturi praesentium
-            aliquam in expedita ratione. Sapiente, corporis ex.
-          </p>
+          />
+          <PCardBody>
+            <p>
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sequi
+              nulla, asperiores eum perferendis ipsum odio, nisi placeat sint
+              dolore praesentium earum dolor illum distinctio quod aut itaque
+              possimus nihil porro! Provident assumenda quidem modi repellat.
+              Ullam culpa voluptates nesciunt optio minima excepturi praesentium
+              aliquam in expedita ratione. Sapiente, corporis ex.
+            </p>
+          </PCardBody>
         </PCard>
       </PForm>
-      <ViewModal
+      {/* <ViewModal
         show={isAddEditForm}
         title="Create New Employee"
         onHide={() => setIsAddEditForm(false)}
@@ -305,7 +310,21 @@ function EmployeeFeatureNew() {
           pages={pages}
           setIsAddEditForm={setIsAddEditForm}
         />
-      </ViewModal>
+      </ViewModal> */}
+
+      <PModal
+        open={isAddEditForm}
+        title="Create New Employee"
+        components={
+          <>
+            <AddEditForm
+              getData={getData}
+              pages={pages}
+              setIsAddEditForm={setIsAddEditForm}
+            />
+          </>
+        }
+      />
     </>
   );
 }

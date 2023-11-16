@@ -11,9 +11,11 @@ $primary_disbaled_bg_color: rgb(121, 169, 218);
 $primary_disbaled_border_color: rgb(121, 169, 218);
 $primary_disbaled_color: rgb(255, 255, 255);
 // Secondary Button Variables
-$secondary_border_color: var(--primary-color);
+$secondary_border_color: var(--gray300);
 $secondary_bg_color: var(--white);
-$secondary_text_color: var(--primary-color);
+$secondary_text_color: var(--gray500);
+// Hover
+$secondary_border_color_dark:  var(--gray100);
 // Disabled
 $secondary_disbaled_bg_color: rgb(121, 169, 218);
 $secondary_disbaled_border_color: rgb(121, 169, 218);
@@ -113,8 +115,9 @@ $lg_ButtonLoadingSize: 8px;
     background: $secondary_bg_color;
     color: $secondary_text_color;
     &:hover {
-      color: var(--secondary_border_color_dark);
-      border: 1px solid var(--secondary_border_color_dark);
+      color: var($secondary_border_color_dark);
+      border: 1px solid var($secondary_border_color_dark);
+      background: $secondary_border_color_dark;
     }
     // Small Button
     @include smallButton;
@@ -133,8 +136,8 @@ $lg_ButtonLoadingSize: 8px;
     background: var(--white);
     color: $primary_outline;
     &:hover {
-      color: var(--secondary_border_color_dark);
-      border: 1px solid var(--secondary_border_color_dark);
+      color: var($secondary_border_color_dark);
+      border: 1px solid var($secondary_border_color_dark);
     }
     // Small Button
     @include smallButton;

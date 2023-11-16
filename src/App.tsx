@@ -23,7 +23,6 @@ import { _zx123_Zx001_45___45_9999_ } from "./utility/cz";
 import { _Ad_xcvbn_df__dfg_568_dfghfff_ } from "./utility/czy";
 import { detectBrowserConsole } from "./utility/devtools";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
-import { ConfigProvider } from "antd";
 
 const origin = window.location.origin;
 const prodUrl = "https://matador.peopledesk.io";
@@ -40,9 +39,9 @@ export const domainUrl =
     ? "https://devmatador.peopledesk.io"
     : origin;
 
-if (process.env.NODE_ENV === "production") {
-  disableReactDevTools();
-}
+// if (process.env.NODE_ENV === "production") {
+//   disableReactDevTools();
+// }
 Axios.interceptors.request.use(
   (config: any) => {
     let url = config.url;
@@ -217,7 +216,7 @@ function App() {
 
   return (
     <div className="app">
-      {componentRender(isOpen)}
+      {componentRender(false)}
       <ToastContainer
         position="bottom-right"
         newestOnTop={true}
