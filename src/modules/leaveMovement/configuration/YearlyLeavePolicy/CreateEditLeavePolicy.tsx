@@ -2246,7 +2246,7 @@ const CreateEditLeavePolicy = () => {
                   <Alert
                     icon={<InfoOutlinedIcon fontSize="inherit" />}
                     severity="warning"
-                    style={{ position: "sticky", top: "2px" }}
+                    style={{ width: "27rem", position: "sticky", top: "1px" }}
                   >
                     <div>
                       <div className="mb-3">
