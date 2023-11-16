@@ -18,6 +18,7 @@ import { yearDDLAction } from "../../../../utility/yearDDL";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { getYearlyPolicyLanding } from "./helper";
 import ScrollableTable from "../../../../common/ScrollableTable";
+import NoResult from "common/NoResult";
 
 let date = new Date();
 let currentYear = date.getFullYear();
@@ -213,117 +214,127 @@ const YearlyLeavePolicy = () => {
                       >
                         Year {values?.year ? values?.year.label : currentYear}
                       </h5>
-                      <div className="table-card-styled tableOne">
-                        <ScrollableTable
-                          classes="salary-process-table"
-                          secondClasses="table-card-styled tableOne scroll-table-height"
-                          customClass="salary-details-custom"
-                        >
-                          <thead>
-                            <tr>
-                              {/* <th rowSpan="2" className="text-center">
+                      {Object.entries(allPolicy).length > 0 ? (
+                        <div className="table-card-styled tableOne">
+                          <ScrollableTable
+                            classes="salary-process-table"
+                            secondClasses="table-card-styled tableOne scroll-table-height"
+                            customClass="salary-details-custom"
+                          >
+                            <thead>
+                              <tr>
+                                {/* <th rowSpan="2" className="text-center">
                                 SL
                               </th> */}
-                              <th
-                                rowSpan="2"
-                                style={{ minWidth: "100px" }}
-                                className="text-center"
-                              >
-                                Policy Name
-                              </th>
-                              <th rowSpan="2" className="text-center">
-                                Leave Type
-                              </th>
-                              <th rowSpan="2" className="text-center">
-                                Employee Type
-                              </th>
-                              <th rowSpan="2" className="text-center">
-                                Gender{" "}
-                              </th>
-                              <th rowSpan="2" className="text-center">
-                                Hr Position
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Object.entries(allPolicy).map(
-                              ([workplaceName, policies]) => (
-                                <React.Fragment key={workplaceName}>
-                                  {/* Row with workplace name */}
-                                  <tr>
-                                    <td colSpan="6">
-                                      {" "}
-                                      <span
-                                        style={{
-                                          fontWeight: "700",
-                                          color: "black",
-                                        }}
-                                      >
-                                        {workplaceName}
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  {/* Rows with policy details */}
-                                  {policies.map((policy, index) => (
-                                    <tr key={index}>
-                                      <td>{policy?.strPolicyName}</td>
-                                      <td>{policy?.strLeaveTypeName}</td>
-                                      <td>
-                                        {policy?.employmentTypeList?.map(
-                                          (employmentType) =>
-                                            employmentType?.strEmploymentTypeName +
-                                            " "
-                                        )}
-                                      </td>
-                                      <td>
+                                <th
+                                  rowSpan="2"
+                                  style={{ minWidth: "100px" }}
+                                  className="text-center"
+                                >
+                                  Policy Name
+                                </th>
+                                <th rowSpan="2" className="text-center">
+                                  Leave Type
+                                </th>
+                                <th rowSpan="2" className="text-center">
+                                  Employee Type
+                                </th>
+                                <th rowSpan="2" className="text-center">
+                                  Gender{" "}
+                                </th>
+                                <th rowSpan="2" className="text-center">
+                                  Hr Position
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {Object.entries(allPolicy).map(
+                                ([workplaceName, policies]) => (
+                                  <React.Fragment key={workplaceName}>
+                                    {/* Row with workplace name */}
+                                    <tr>
+                                      <td colSpan="6">
                                         {" "}
-                                        {policy?.genderListDTO?.map(
-                                          (gender) =>
-                                            gender?.strGenderName + " "
-                                        )}
+                                        <span
+                                          style={{
+                                            fontWeight: "700",
+                                            color: "black",
+                                          }}
+                                        >
+                                          {workplaceName}
+                                        </span>
                                       </td>
-                                      <td>
-                                        {" "}
-                                        {policy?.hrPositionListDTO?.map(
-                                          (pos) => pos?.strHrPositionName + " "
-                                        )}
-                                      </td>
-                                      {orgId !== 0 && (
-                                        <td>
-                                          <Tooltip title="Edit" arrow>
-                                            <button
-                                              className="iconButton"
-                                              type="button"
-                                            >
-                                              <ModeEditOutlineOutlined
-                                                onClick={() =>
-                                                  history.push(
-                                                    `/administration/leaveandmovement/yearlyLeavePolicy/edit/${policy?.policyId}`
-                                                  )
-                                                }
-                                                style={{ fontSize: "15px" }}
-                                              />
-                                            </button>
-                                          </Tooltip>
-                                        </td>
-                                      )}
                                     </tr>
-                                  ))}
-                                </React.Fragment>
-                              )
-                            )}
-                          </tbody>
-                        </ScrollableTable>
-                        <TablePagination
-                          rowsPerPageOptions={[5, 10, 15, 25, 100]}
-                          component="div"
-                          count={pages?.totalCount}
-                          rowsPerPage={pages?.pageSize}
-                          page={pages?.currentPage - 1}
-                          onPageChange={handleChangePage}
-                          onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                      </div>
+                                    {/* Rows with policy details */}
+                                    {policies.map((policy, index) => (
+                                      <tr key={index}>
+                                        <td>{policy?.strPolicyName}</td>
+                                        <td>{policy?.strLeaveTypeName}</td>
+                                        <td>
+                                          {policy?.employmentTypeList
+                                            ?.map(
+                                              (employmentType) =>
+                                                employmentType?.strEmploymentTypeName
+                                            )
+                                            ?.join(", ")}
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {policy?.genderListDTO
+                                            ?.map(
+                                              (gender) =>
+                                                gender?.strGenderName + " "
+                                            )
+                                            ?.join(", ")}
+                                        </td>
+                                        <td>
+                                          {" "}
+                                          {policy?.hrPositionListDTO
+                                            ?.map(
+                                              (pos) =>
+                                                pos?.strHrPositionName + " "
+                                            )
+                                            ?.join(", ")}
+                                        </td>
+                                        {orgId !== 0 && (
+                                          <td>
+                                            <Tooltip title="Edit" arrow>
+                                              <button
+                                                className="iconButton"
+                                                type="button"
+                                              >
+                                                <ModeEditOutlineOutlined
+                                                  onClick={() =>
+                                                    history.push(
+                                                      `/administration/leaveandmovement/yearlyLeavePolicy/edit/${policy?.policyId}`
+                                                    )
+                                                  }
+                                                  style={{ fontSize: "15px" }}
+                                                />
+                                              </button>
+                                            </Tooltip>
+                                          </td>
+                                        )}
+                                      </tr>
+                                    ))}
+                                  </React.Fragment>
+                                )
+                              )}
+                            </tbody>
+                          </ScrollableTable>
+                          <TablePagination
+                            rowsPerPageOptions={[5, 10, 15, 25, 100]}
+                            component="div"
+                            count={pages?.totalCount}
+                            rowsPerPage={pages?.pageSize}
+                            page={pages?.currentPage - 1}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                          />
+                        </div>
+                      ) : (
+                        <NoResult />
+                      )}
                     </div>
                   </div>
                 </div>

@@ -309,7 +309,8 @@ const CreateEditLeavePolicy = () => {
         workplaceDDL,
         setTableData,
         allPolicies,
-        setExistingPolicies
+        setExistingPolicies,
+        setLoading
       );
     }
 
@@ -358,7 +359,7 @@ const CreateEditLeavePolicy = () => {
         <div className="table-card-heading ">
           <div className="d-flex align-items-center">
             <BackButton />
-            <h2>{params?.id ? "Create Leave Policy" : "Edit Leave Policy"}</h2>
+            <h2>{params?.id ? "Edit Leave Policy" : "Create Leave Policy"}</h2>
           </div>
           <ul className="d-flex flex-wrap">
             <li>
@@ -2240,48 +2241,50 @@ const CreateEditLeavePolicy = () => {
               </Col>
               {existingPolicies?.length > 0 ? (
                 <Col span={10}>
-                  <div className="mb-3">
-                    <h2>Exisitng Policies</h2>
+                  <div style={{ position: "sticky", top: "1px" }}>
+                    <div className="mb-3">
+                      <h2>Exisitng Policies</h2>
+                    </div>
+                    {/* <Divider orientation="left">Small Size</Divider> */}
+                    <List
+                      size="small"
+                      // header={<div>Header</div>}
+                      // footer={<div>Footer</div>}
+                      bordered
+                      dataSource={existingPolicies}
+                      renderItem={(item, index) => (
+                        <List.Item key={index} className="d-flex ">
+                          <p>{item?.strPolicyName}</p>
+                          <IconButton
+                            type="button"
+                            style={{
+                              height: "25px",
+                              width: "25px",
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removerPolicy(
+                                index,
+                                existingPolicies,
+                                setExistingPolicies,
+                                values
+                              );
+                              // deleteRow(item?.intWorkplaceId);
+                            }}
+                          >
+                            <Tooltip title="Delete">
+                              <DeleteOutline
+                                sx={{
+                                  height: "20px",
+                                  width: "20px",
+                                }}
+                              />
+                            </Tooltip>
+                          </IconButton>
+                        </List.Item>
+                      )}
+                    />
                   </div>
-                  {/* <Divider orientation="left">Small Size</Divider> */}
-                  <List
-                    size="small"
-                    // header={<div>Header</div>}
-                    // footer={<div>Footer</div>}
-                    bordered
-                    dataSource={existingPolicies}
-                    renderItem={(item, index) => (
-                      <List.Item key={index} className="d-flex ">
-                        <p>{item?.strPolicyName}</p>
-                        <IconButton
-                          type="button"
-                          style={{
-                            height: "25px",
-                            width: "25px",
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removerPolicy(
-                              index,
-                              existingPolicies,
-                              setExistingPolicies,
-                              values
-                            );
-                            // deleteRow(item?.intWorkplaceId);
-                          }}
-                        >
-                          <Tooltip title="Delete">
-                            <DeleteOutline
-                              sx={{
-                                height: "20px",
-                                width: "20px",
-                              }}
-                            />
-                          </Tooltip>
-                        </IconButton>
-                      </List.Item>
-                    )}
-                  />
                 </Col>
               ) : null}
             </Row>

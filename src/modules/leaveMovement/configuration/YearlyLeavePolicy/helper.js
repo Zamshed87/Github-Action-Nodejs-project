@@ -117,26 +117,16 @@ export const getYearlyPolicyById = async (
   setTableData,
   allPolicies,
   setExistingPolicies,
+  setLoading,
+
   cb = {}
 ) => {
-  // setLoading?.(true);
+  setLoading?.(true);
   try {
     const res = await axios.get(
       `/SaasMasterData/GetLeavePolicyById?policyId=${id}`
     );
 
-    console.log({ allPolicies });
-
-    console.log(res?.data);
-    // setWorkplaceDDL(
-    //   res?.data?.workplaceList?.map((itm) => {
-    //     return {
-    //       ...itm,
-    //       value: itm?.intWorkplaceId,
-    //       label: itm?.strWorkplaceName,
-    //     };
-    //   })
-    // );
     setTableData(
       res?.data?.serviceLengthList?.map((itm) => {
         return {
@@ -212,19 +202,25 @@ export const getYearlyPolicyById = async (
           label: res?.data?.intLeaveType?.strLeaveType,
         },
       };
+      console.log({ allPolicies });
+      // setExistingPolicies?.(
+      let dummy = [];
 
-      setExistingPolicies?.(
-        allPolicies?.filter((itm) =>
-          res?.data?.intExistingPolicyIdList?.includes(itm?.intPolicyId)
-        )
-      );
+      res?.data?.intExistingPolicyIdList?.forEach((itm) => {
+        let a = allPolicies?.find((it) => it.intPolicyId === itm);
+        if (a) {
+          dummy.push(a);
+        }
+      });
+      setExistingPolicies(dummy);
+      // );
       setter?.(temp);
     }
 
     cb && cb();
-    // setLoading?.(false);
+    setLoading?.(false);
   } catch (error) {
-    // setLoading?.(false);
+    setLoading?.(false);
 
     toast.error(error?.response?.data?.message);
   }
