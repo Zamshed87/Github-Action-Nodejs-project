@@ -29,11 +29,13 @@ import DefaultInput from "../../../../common/DefaultInput";
 import FormikSelect from "../../../../common/FormikSelect";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton, Tooltip, Alert } from "@mui/material";
 import MultiCheckedSelect from "../../../../common/MultiCheckedSelect";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { toast } from "react-toastify";
 import { Col, List, Row, Typography } from "antd";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+
 import { useApiRequest } from "../../../../Hooks";
 
 const CreateEditLeavePolicy = () => {
@@ -2241,50 +2243,57 @@ const CreateEditLeavePolicy = () => {
               </Col>
               {existingPolicies?.length > 0 ? (
                 <Col span={10}>
-                  <div style={{ position: "sticky", top: "1px" }}>
-                    <div className="mb-3">
-                      <h2>Exisitng Policies</h2>
+                  <Alert
+                    icon={<InfoOutlinedIcon fontSize="inherit" />}
+                    severity="warning"
+                    style={{ position: "sticky", top: "2px" }}
+                  >
+                    <div>
+                      <div className="mb-3">
+                        <h2>Exisitng Policies</h2>
+                      </div>
+                      {/* <Divider orientation="left">Small Size</Divider> */}
+                      <List
+                        size="small"
+                        style={{ width: "20rem" }}
+                        // header={<div>Header</div>}
+                        // footer={<div>Footer</div>}
+                        bordered
+                        dataSource={existingPolicies}
+                        renderItem={(item, index) => (
+                          <List.Item key={index} className="d-flex ">
+                            <p>{item?.strPolicyName}</p>
+                            <IconButton
+                              type="button"
+                              style={{
+                                height: "25px",
+                                width: "25px",
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removerPolicy(
+                                  index,
+                                  existingPolicies,
+                                  setExistingPolicies,
+                                  values
+                                );
+                                // deleteRow(item?.intWorkplaceId);
+                              }}
+                            >
+                              <Tooltip title="Delete">
+                                <DeleteOutline
+                                  sx={{
+                                    height: "20px",
+                                    width: "20px",
+                                  }}
+                                />
+                              </Tooltip>
+                            </IconButton>
+                          </List.Item>
+                        )}
+                      />
                     </div>
-                    {/* <Divider orientation="left">Small Size</Divider> */}
-                    <List
-                      size="small"
-                      // header={<div>Header</div>}
-                      // footer={<div>Footer</div>}
-                      bordered
-                      dataSource={existingPolicies}
-                      renderItem={(item, index) => (
-                        <List.Item key={index} className="d-flex ">
-                          <p>{item?.strPolicyName}</p>
-                          <IconButton
-                            type="button"
-                            style={{
-                              height: "25px",
-                              width: "25px",
-                            }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removerPolicy(
-                                index,
-                                existingPolicies,
-                                setExistingPolicies,
-                                values
-                              );
-                              // deleteRow(item?.intWorkplaceId);
-                            }}
-                          >
-                            <Tooltip title="Delete">
-                              <DeleteOutline
-                                sx={{
-                                  height: "20px",
-                                  width: "20px",
-                                }}
-                              />
-                            </Tooltip>
-                          </IconButton>
-                        </List.Item>
-                      )}
-                    />
-                  </div>
+                  </Alert>
                 </Col>
               ) : null}
             </Row>

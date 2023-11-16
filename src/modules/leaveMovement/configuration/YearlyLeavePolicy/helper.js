@@ -121,34 +121,34 @@ export const getYearlyPolicyById = async (
 
   cb = {}
 ) => {
-  setLoading?.(true);
   try {
+    setLoading?.(true);
+
     const res = await axios.get(
       `/SaasMasterData/GetLeavePolicyById?policyId=${id}`
     );
 
-    setTableData(
-      res?.data?.serviceLengthList?.map((itm) => {
-        return {
-          ...itm,
-          intStartServiceLengthInYear: {
-            value: itm?.intStartServiceLengthInYear,
-            label: itm?.intStartServiceLengthInYear,
-          },
-          intEndServiceLengthInYear: {
-            value: itm?.intEndServiceLengthInYear,
-            label: itm?.intEndServiceLengthInYear,
-          },
-        };
-      })
-    );
     if (res?.data) {
       const newState1 = workplaceDDL.filter((obj1) =>
         res?.data?.workplaceList?.some(
           (obj2) => obj2?.intWorkplaceId == obj1?.intWorkplaceId
         )
       );
-
+      setTableData(
+        res?.data?.serviceLengthList?.map((itm) => {
+          return {
+            ...itm,
+            intStartServiceLengthInYear: {
+              value: itm?.intStartServiceLengthInYear,
+              label: itm?.intStartServiceLengthInYear,
+            },
+            intEndServiceLengthInYear: {
+              value: itm?.intEndServiceLengthInYear,
+              label: itm?.intEndServiceLengthInYear,
+            },
+          };
+        })
+      );
       const temp = {
         ...res?.data,
         intWorkplaceList: newState1,
@@ -218,7 +218,7 @@ export const getYearlyPolicyById = async (
     }
 
     cb && cb();
-    setLoading?.(false);
+    setLoading(false);
   } catch (error) {
     setLoading?.(false);
 
