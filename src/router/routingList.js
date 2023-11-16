@@ -1,3 +1,4 @@
+import MultiCalendarAssign from "modules/TimeManagement/MultiCalendarAssign";
 import { lazy } from "react";
 const CreateEditLeavePolicy = lazy(() =>
   import(
@@ -1692,6 +1693,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/locationAssign",
     component: LocationAssign,
+  },
+  {
+    path: "/administration/timeManagement/multiCalendarAssign",
+    component: MultiCalendarAssign,
   },
   { path: "/administration/loanManagement/loanType", component: LoanType },
   {

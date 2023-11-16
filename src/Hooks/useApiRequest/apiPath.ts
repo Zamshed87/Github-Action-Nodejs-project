@@ -5,4 +5,6 @@ export const apiPath = {
   SaasMasterDataCRUDLeavePolicy: "/SaasMasterData/CRUDLeavePolicy",
   SaasMasterDataLeavePolicyLanding: "/SaasMasterData/AllLeavePolicyLanding",
   SaasMasterDataLeavePolicyById: "/SaasMasterData/GetLeavePolicyById",
+  MultiCalendarAssignLandingFilter:
+    "/Employee/MultiCalendarAssignLandingFilter",
 };
