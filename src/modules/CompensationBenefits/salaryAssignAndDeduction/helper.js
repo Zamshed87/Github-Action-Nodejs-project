@@ -162,6 +162,7 @@ export const getSalaryAdditionAndDeductionById = async (
 export const getAllAllowanceAndDeduction = async (
   orgId,
   buId,
+  wId,
   setter,
   AdditionAndDeduction,
   setLoading
@@ -169,7 +170,7 @@ export const getAllAllowanceAndDeduction = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/GetAllPayrollElementType?accountId=${orgId}&businessUnitId=${buId}`
+      `/Payroll/GetAllPayrollElementType?accountId=${orgId}&businessUnitId=${buId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const additionDDL = res?.data
