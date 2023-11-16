@@ -14,6 +14,7 @@ import {
   getYearlyPolicyById,
   getYearlyPolicyPopUpDDL,
   isPolicyExist,
+  removerPolicy,
 } from "./helper";
 import { getPeopleDeskAllDDL } from "../../../../common/api";
 import BackButton from "../../../../common/BackButton";
@@ -82,6 +83,7 @@ const CreateEditLeavePolicy = () => {
     intGender: "",
     days: "",
     strDisplayName: "",
+    strPolicyName: "",
     isDependOnServiceLength: false,
     intStartServiceLengthInYear: "",
     intEndServiceLengthInYear: "",
@@ -166,6 +168,7 @@ const CreateEditLeavePolicy = () => {
       intEmploymentTypeList,
       intEndServiceLengthInYear,
       intStartServiceLengthInYear,
+
       ...rest
     } = values;
     const serviceLengthList = tableData?.map((item, idx) => {
@@ -183,7 +186,9 @@ const CreateEditLeavePolicy = () => {
       ...rest,
       policyId: params?.id || 0,
       isActive: true,
-      serviceLengthList,
+      serviceLengthList: values?.isDependOnServiceLength
+        ? serviceLengthList
+        : [],
       workplaceList: intWorkplaceList?.map((item, index) => {
         const exists = existingPolicies?.some(
           (em) => em.intWorkplace === item.value
@@ -234,7 +239,13 @@ const CreateEditLeavePolicy = () => {
       intEarnLveInDay: +values?.intEarnLveInDay,
       intMaxForAdvLveInYear: +values?.intMaxForAdvLveInYear,
       intExistingPolicyIdList: policyList?.length > 0 ? policyList : [],
-      hrPositionListDTO: [],
+      hrPositionListDTO: values?.hrPositionListDTO?.map((item) => {
+        return {
+          ...item,
+          strHrPositionName: item?.label,
+          intHrPositionId: item?.value,
+        };
+      }),
     };
     policyApi?.action({
       method: "POST",
@@ -268,8 +279,8 @@ const CreateEditLeavePolicy = () => {
     );
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
-      "LeaveTypeId",
-      "LeaveType",
+      "PositionId",
+      "PositionName",
       setHrPositionDDL
     );
   }, [orgId, buId, wgId]);
@@ -291,12 +302,19 @@ const CreateEditLeavePolicy = () => {
 
   //  for edit
   useEffect(() => {
-    if (params?.id) {
-      getYearlyPolicyById(params?.id, setSingleData);
+    if (params?.id && workplaceDDL?.length > 0) {
+      getYearlyPolicyById(
+        params?.id,
+        setSingleData,
+        workplaceDDL,
+        setTableData,
+        allPolicies,
+        setExistingPolicies
+      );
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params?.id]);
+  }, [params?.id, workplaceDDL]);
   const remover = (payload) => {
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
@@ -310,7 +328,6 @@ const CreateEditLeavePolicy = () => {
   //   values.intWorkplaceList = temp;
   // };
 
-  console.log({ singleData });
   const {
     handleSubmit,
     values,
@@ -333,45 +350,6 @@ const CreateEditLeavePolicy = () => {
       saveHandler(values, () => resetForm(initData));
     },
   });
-
-  // const isPolicyExist = (values) => {
-  //   if (
-  //     !values?.intLeaveType?.value ||
-  //     !values?.intYear?.value ||
-  //     values?.intGender?.length === 0 ||
-  //     values?.intEmploymentTypeList?.length === 0 ||
-  //     values?.intWorkplaceList?.length === 0
-  //   ) {
-  //     return;
-  //   }
-
-  //   const existingData = [];
-
-  //   allPolicies?.forEach((policy, idx) => {
-  //     if (
-  //       policy.intLeaveType === values?.intLeaveType?.value &&
-  //       policy.intYear === values?.intYear?.value
-  //     ) {
-  //       const isGenderExist = values?.intGender?.some(
-  //         (itm) => itm.value === policy.intGenderId
-  //       );
-  //       const isEmploymentTypeExist = values?.intEmploymentTypeList?.some(
-  //         (itm) => itm.Id === policy.intEmploymentId
-  //       );
-  //       const isWorkplaceExist = values?.intWorkplaceList?.some(
-  //         (itm) => itm.value === policy.intWorkplace
-  //       );
-  //       if (isGenderExist && isEmploymentTypeExist && isWorkplaceExist) {
-  //         existingData?.push(policy);
-  //       }
-  //     }
-  //   });
-
-  //   setExistingPolicies(existingData);
-  //   // return existingData
-  // };
-  // console.log(policyApi?.data, "policyApi?.data");
-  // console.log({ workplaceDDL });
 
   return (
     <form onSubmit={handleSubmit}>
@@ -486,6 +464,27 @@ const CreateEditLeavePolicy = () => {
                             className="form-control"
                             onChange={(e) => {
                               setFieldValue("strDisplayName", e.target.value);
+                            }}
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                      </div>
+                      {/* Policy name */}
+                      <div className="input-field-main d-flex ">
+                        <label style={{ marginTop: "0.7em" }}>
+                          Policy Name Name
+                        </label>
+                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                          <DefaultInput
+                            classes="input-sm"
+                            value={values?.strPolicyName}
+                            placeholder=""
+                            name="strPolicyName"
+                            type="text"
+                            className="form-control"
+                            onChange={(e) => {
+                              setFieldValue("strPolicyName", e.target.value);
                             }}
                             errors={errors}
                             touched={touched}

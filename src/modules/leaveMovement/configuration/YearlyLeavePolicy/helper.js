@@ -31,13 +31,13 @@ export const getYearlyPolicyLanding = async (
   setLoading?.(true);
   try {
     const res = await axios.get(apiUrl);
-    // setter?.(res?.data);
-    // console.log({ res });
+
     if (res?.data?.data) {
-      setPages({
-        currentPage: res?.data?.currentPage,
-        pageSize: res?.data?.pageSize,
-        totalCount: res?.data?.totalCount,
+      setPages((prev) => {
+        return {
+          ...prev,
+          totalCount: res?.data?.totalCount,
+        };
       });
       const groupedData = res?.data?.data.reduce((acc, item) => {
         const { strWorkplaceName, ...rest } = item;
@@ -49,7 +49,6 @@ export const getYearlyPolicyLanding = async (
       }, {});
 
       setter?.(groupedData);
-      console.log({ groupedData });
     }
 
     cb && cb();
@@ -107,55 +106,120 @@ export const isPolicyExist = (values, allPolicies, setExistingPolicies) => {
     }
   });
 
-  setExistingPolicies(existingData);
+  setExistingPolicies((prev) => [...prev, ...existingData]);
   // return existingData
 };
 
-export const getYearlyPolicyById = async (id, setter, cb = {}) => {
+export const getYearlyPolicyById = async (
+  id,
+  setter,
+  workplaceDDL,
+  setTableData,
+  allPolicies,
+  setExistingPolicies,
+  cb = {}
+) => {
   // setLoading?.(true);
   try {
     const res = await axios.get(
       `/SaasMasterData/GetLeavePolicyById?policyId=${id}`
     );
-    console.log(res?.data);
-    const temp = {
-      ...res?.data,
-      intWorkplaceList: res?.data?.workplaceList?.map((itm) => {
-        return {
-          ...itm,
-          value: itm?.intWorkplaceId,
-          label: itm?.strWorkplaceName,
-        };
-      }),
 
-      intGender: res?.data?.genderListDTO?.map((itm) => {
+    console.log({ allPolicies });
+
+    console.log(res?.data);
+    // setWorkplaceDDL(
+    //   res?.data?.workplaceList?.map((itm) => {
+    //     return {
+    //       ...itm,
+    //       value: itm?.intWorkplaceId,
+    //       label: itm?.strWorkplaceName,
+    //     };
+    //   })
+    // );
+    setTableData(
+      res?.data?.serviceLengthList?.map((itm) => {
         return {
           ...itm,
-          value: itm?.intGenderId,
-          label: itm?.strGenderName,
+          intStartServiceLengthInYear: {
+            value: itm?.intStartServiceLengthInYear,
+            label: itm?.intStartServiceLengthInYear,
+          },
+          intEndServiceLengthInYear: {
+            value: itm?.intEndServiceLengthInYear,
+            label: itm?.intEndServiceLengthInYear,
+          },
         };
-      }),
-      intEmploymentTypeList: res?.data?.employmentTypeList?.map((itm) => {
-        return {
-          ...itm,
-          value: itm?.intEmploymentTypeId,
-          label: itm?.strEmploymentTypeName,
-        };
-      }),
-      intCarryForwardMonth: {
-        value: res?.data?.intCarryForwardMonth,
-        label: getMonthName(res?.data?.intCarryForwardMonth),
-      },
-      intCarryForwarExpiryMonth: {
-        value: res?.data?.intCarryForwarExpiryMonth,
-        label: getMonthName(res?.data?.intCarryForwarExpiryMonth),
-      },
-      intYear: {
-        value: res?.data?.intYear,
-        label: res?.data?.intYear,
-      },
-    };
-    setter?.(temp);
+      })
+    );
+    if (res?.data) {
+      const newState1 = workplaceDDL.filter((obj1) =>
+        res?.data?.workplaceList?.some(
+          (obj2) => obj2?.intWorkplaceId == obj1?.intWorkplaceId
+        )
+      );
+
+      const temp = {
+        ...res?.data,
+        intWorkplaceList: newState1,
+
+        intGender: res?.data?.genderListDTO?.map((itm) => {
+          return {
+            ...itm,
+            value: itm?.intGenderId,
+            label: itm?.strGenderName,
+          };
+        }),
+        intEmploymentTypeList: res?.data?.employmentTypeList?.map((itm) => {
+          return {
+            ...itm,
+            value: itm?.intEmploymentTypeId,
+            label: itm?.strEmploymentTypeName,
+          };
+        }),
+        intCarryForwardMonth: {
+          value: res?.data?.intCarryForwardMonth,
+          label: getMonthName(res?.data?.intCarryForwardMonth),
+        },
+        intCarryForwarExpiryMonth: {
+          value: res?.data?.intCarryForwarExpiryMonth,
+          label: getMonthName(res?.data?.intCarryForwarExpiryMonth),
+        },
+        intYear: {
+          value: res?.data?.intYear,
+          label: res?.data?.intYear,
+        },
+        hrPositionListDTO: res?.data?.hrPositionListDTO?.map((itm) => {
+          return {
+            ...itm,
+            value: itm?.intHrPositionId,
+            label: itm?.strHrPositionName,
+          };
+        }),
+        inPreviousLveTypeEnd: {
+          ...res?.data?.inPreviousLveTypeEnd,
+          value: res?.data?.inPreviousLveTypeEnd?.intLeaveTypeId,
+          label: res?.data?.inPreviousLveTypeEnd?.strLeaveType,
+        },
+        intHalfdayPreviousLveTypeEnd: {
+          ...res?.data?.intHalfdayPreviousLveTypeEnd,
+          value: res?.data?.intHalfdayPreviousLveTypeEnd?.intLeaveTypeId,
+          label: res?.data?.intHalfdayPreviousLveTypeEnd?.strLeaveType,
+        },
+        intLeaveType: {
+          ...res?.data?.intLeaveType,
+          value: res?.data?.intLeaveType?.intLeaveTypeId,
+          label: res?.data?.intLeaveType?.strLeaveType,
+        },
+      };
+
+      setExistingPolicies?.(
+        allPolicies?.filter((itm) =>
+          res?.data?.intExistingPolicyIdList?.includes(itm?.intPolicyId)
+        )
+      );
+      setter?.(temp);
+    }
 
     cb && cb();
     // setLoading?.(false);
