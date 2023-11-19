@@ -32,7 +32,8 @@
     "no-constant-condition": "off",
     "no-compare-neg-zero": "off",
     "@typescript-eslint/no-array-constructor": "off",
-    "no-prototype-builtins": "off"
+    "no-prototype-builtins": "off",
+    "jsx-a11y/img-redundant-alt": "off"
   },
   "settings": {
     "react": {
