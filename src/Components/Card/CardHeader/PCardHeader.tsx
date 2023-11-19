@@ -12,8 +12,11 @@ import { PButton, buttonType } from "Components/Button/PButton";
 type PCardHeaderType = {
   title?: string | React.ReactNode;
   exportIcon?: boolean | React.ReactNode;
+  onExport?: (e: any) => void;
   backButton?: boolean | string;
-  onSearch?: (value: string) => void;
+  onSearch?: (e: any) => void;
+  submitText?: string;
+  submitIcon?: React.ReactNode;
   buttonList?: Array<{
     content: string;
     type: buttonType;
@@ -22,7 +25,16 @@ type PCardHeaderType = {
   }>;
 };
 export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
-  const { title, exportIcon, backButton, onSearch, buttonList } = props;
+  const {
+    title,
+    exportIcon,
+    onExport,
+    backButton,
+    onSearch,
+    submitText,
+    submitIcon,
+    buttonList,
+  } = props;
 
   const isShowExportIcon = typeof exportIcon === "boolean" && exportIcon;
   const history = useHistory();
@@ -44,7 +56,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
         ) : undefined}
         {/*Default Export Icon  */}
         {isShowExportIcon ? (
-          <div className="export_icon">
+          <div className="export_icon" onClick={onExport}>
             <DownloadOutlined />
           </div>
         ) : undefined}
@@ -58,7 +70,8 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
             placeholder="Search"
             prefix={<SearchOutlined />}
             onChange={onSearch}
-            onPressEnter={onSearch}
+            type="text"
+            // onPressEnter={onSearch}
           />
         ) : undefined}
         {/* Button List */}
@@ -73,6 +86,16 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
               />
             ))
           : undefined}
+
+        {/* Submit Button */}
+        {submitText !== undefined ? (
+          <PButton
+            content={submitText || "Save"}
+            type={"primary"}
+            action="submit"
+            icon={submitIcon}
+          />
+        ) : undefined}
       </div>
     </div>
   );

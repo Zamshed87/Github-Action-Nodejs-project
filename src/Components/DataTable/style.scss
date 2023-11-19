@@ -1,3 +1,13 @@
+@mixin tableCheckbox {
+  span.ant-checkbox-inner {
+    height: 12px;
+    width: 12px;
+    &::after {
+      width: 4.714286px;
+      height: 8.142857px;
+    }
+  }
+}
 .data_table {
   // overwriting antd styles
   .ant-table-thead > tr > th,
@@ -6,6 +16,14 @@
   }
   .ant-table-wrapper {
     .ant-table-container {
+      .ant-table-header {
+        th.ant-table-selection-column {
+          .ant-table-selection {
+            z-index: 1;
+          }
+          @include tableCheckbox;
+        }
+      }
       .ant-table-body {
         .ant-table-row {
           // Button Inside Table
@@ -37,6 +55,12 @@
             }
           }
         }
+        td.ant-table-selection-column {
+          .ant-table-selection {
+            z-index: 1;
+          }
+          @include tableCheckbox;
+        }
       }
     }
     // Pagination styles overwriting
@@ -67,6 +91,46 @@
           }
         }
       }
+    }
+  }
+  // Hide Scroll Bar when no data
+  &.hidden_scroolbar {
+    .ant-table-body {
+      overflow-y: hidden !important;
+    }
+  }
+}
+
+// Table Button Style
+.PTableButton {
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+  display: inline-flex;
+  .anticon {
+    font-size: 14px;
+    background: #e7e7e7;
+    border: 1px solid #e7e7e7;
+    padding: 3px;
+    border-radius: 50%;
+  }
+  > span {
+    margin-right: 5px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+.ant-table-row:hover .PTableButton {
+  opacity: 1;
+}
+// Delete Confirmation Popups
+.table_delete_popover {
+  max-width: 250px !important;
+  .ant-popover-buttons {
+    .ant-btn.ant-btn-dangerous {
+      background-color: red !important;
+      color: #fff;
     }
   }
 }

@@ -5,8 +5,8 @@ import { gray400, gray600 } from "../utility/customColor";
 export default function NoResult({ title, para }) {
   return (
     <>
-      <div className="no-result">
-        <div className="no-result-img mb-4 mt-5">
+      <div className="no-result my-4">
+        <div className="no-result-img mb-4">
           <img className="img-fluid" src={noResult} alt="People Desk" />
         </div>
         <div className="no-result-txt">

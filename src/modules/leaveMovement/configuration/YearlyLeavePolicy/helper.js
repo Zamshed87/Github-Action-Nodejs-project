@@ -18,7 +18,9 @@ export const getYearlyPolicyPopUpDDL = async (
     }));
     setter?.([...newDDL]);
     cb && cb(newDDL);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error?.message);
+  }
 };
 
 export const getYearlyPolicyLanding = async (
