@@ -1,78 +1,25 @@
-import { AddOutlined, SaveAlt } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
-import { useApiRequest } from "Hooks";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { toast } from "react-toastify";
-import MasterFilter from "../../../common/MasterFilter";
-import PrimaryButton from "../../../common/PrimaryButton";
-import ViewModal from "../../../common/ViewModal";
-import Loading from "../../../common/loading/Loading";
-import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import {
-  createPayloadStructure,
-  setHeaderListDataDynamically,
-} from "../../../common/peopleDeskTable/helper";
-import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { gray900 } from "../../../utility/customColor";
-import { createCommonExcelFile } from "../../../utility/customExcel/generateExcelAction";
-import { dateFormatter } from "../../../utility/dateFormatter";
-import { paginationSize } from "./../../../common/peopleDeskTable/index";
-import AddEditForm from "./addEditFile";
-import {
-  columnForHeadOffice,
-  columnForMarketing,
-  getBuDetails,
-  getTableDataEmployee,
-  newEmpListColumn,
-} from "./helper";
-import "./styles.css";
+import { AddOutlined } from "@mui/icons-material";
 import {
   Avatar,
   DataTable,
-  PButton,
   PCard,
-  PCardBody,
   PCardHeader,
   PForm,
   TableButton,
 } from "Components";
-import { ModalFooter, PModal } from "Components/Modal";
-import { Form } from "antd";
+import { PModal } from "Components/Modal";
+import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
-
-const initData = {
-  searchString: "",
-  payrollGroup: "",
-  supervisor: "",
-  rosterGroup: "",
-  department: "",
-  designation: "",
-  calendar: "",
-  gender: "",
-  religion: "",
-  employementType: "",
-  joiningFromDate: "",
-  joiningToDate: "",
-  contractualFromDate: "",
-  contractualToDate: "",
-  employmentStatus: "",
-};
-
-const initHeaderList = {
-  strDepartmentList: [],
-  strDesignationList: [],
-  strSupervisorNameList: [],
-  strEmploymentTypeList: [],
-  strLinemanagerList: [],
-  wingNameList: [],
-  soleDepoNameList: [],
-  regionNameList: [],
-  areaNameList: [],
-  territoryNameList: [],
-};
+import { Form } from "antd";
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
+import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
+import { dateFormatter } from "../../../utility/dateFormatter";
+import AddEditForm from "./addEditFile";
+import "./styles.css";
 
 function EmployeeFeatureNew() {
   // hook
@@ -80,25 +27,18 @@ function EmployeeFeatureNew() {
   const history = useHistory();
 
   // redux
-  const { buId, buName, wgId, wgName, wId } = useSelector(
-    (state) => state?.auth?.profileData,
+  const { buId, wgId, wgName, wId } = useSelector(
+    (state: any) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+  const { permissionList } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
 
   // state
-  const [loading, setLoading] = useState(false);
-  const [landingLoading, setLandingLoading] = useState(false);
-  const [buDetails, setBuDetails] = useState("");
   const [open, setOpen] = useState(false);
-
-  // landing table
-  const [headerList, setHeaderList] = useState({});
-  const [checkedHeaderList, setCheckedHeaderList] = useState({
-    ...initHeaderList,
-  });
-  const [resEmpLanding, setEmpLanding] = useState([]);
 
   // Form Instance
   const [form] = Form.useForm();
@@ -107,7 +47,19 @@ function EmployeeFeatureNew() {
   const landingApi = useApiRequest({});
   const GetBusinessDetailsByBusinessUnitId = useApiRequest({});
 
-  const landingApiCall = (pagination = {}, filerList = {}, searchText = "") => {
+  type TLandingApi = {
+    pagination?: {
+      current?: number;
+      pageSize?: number;
+    };
+    filerList?: any;
+    searchText?: string;
+  };
+  const landingApiCall = ({
+    pagination = {},
+    filerList,
+    searchText = "",
+  }: TLandingApi = {}) => {
     const payload = {
       businessUnitId: buId,
       workplaceGroupId: wgId,
@@ -130,7 +82,7 @@ function EmployeeFeatureNew() {
     };
     landingApi.action({
       urlKey: "EmployeeProfileLandingPaginationWithMasterFilter",
-      method: "post",
+      method: "POST",
       payload: payload,
     });
   };
@@ -152,8 +104,8 @@ function EmployeeFeatureNew() {
   }, [buId, wgId, wId]);
 
   // menu permission
-  let employeeFeature = null;
-  permissionList.forEach((item) => {
+  let employeeFeature: any = null;
+  permissionList.forEach((item: any) => {
     if (item?.menuReferenceId === 8) {
       employeeFeature = item;
     }
@@ -164,11 +116,15 @@ function EmployeeFeatureNew() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const searchFunc = debounce((value) => {
+    landingApiCall({ searchText: value });
+  }, 500);
+
   // Header
   const header = [
     {
       title: "SL",
-      render: (_, rec, index) =>
+      render: (_: any, rec: any, index: number) =>
         getSerial({
           currentPage: landingApi?.data?.currentPage,
           pageSize: landingApi?.data?.pageSize,
@@ -187,11 +143,11 @@ function EmployeeFeatureNew() {
     {
       title: "Employee Name",
       dataIndex: "strEmployeeName",
-      render: (_, record) => {
+      render: (_: any, rec: any) => {
         return (
           <div className="d-flex align-items-center">
-            <Avatar title={record?.strEmployeeName} />
-            <span className="ml-2">{record?.strEmployeeName}</span>
+            <Avatar title={rec?.strEmployeeName} />
+            <span className="ml-2">{rec?.strEmployeeName}</span>
           </div>
         );
       },
@@ -292,24 +248,24 @@ function EmployeeFeatureNew() {
     {
       title: "Joining Date",
       dataIndex: "dteJoiningDate",
-      render: (_, record) => dateFormatter(record?.dteJoiningDate),
+      render: (_: any, rec: any) => dateFormatter(rec?.dteJoiningDate),
       sorter: true,
       dataType: "date",
     },
     {
       width: 50,
       align: "center",
-      render: (_, record) => (
+      render: (_: any, rec: any) => (
         <TableButton
           buttonsList={[
             {
               type: "edit",
               onClick: () => {
                 history.push({
-                  pathname: `/profile/employee/${record?.intEmployeeBasicInfoId}`,
+                  pathname: `/profile/employee/${rec?.intEmployeeBasicInfoId}`,
                   state: {
-                    buId: record?.intBusinessUnitId,
-                    wgId: record?.intWorkplaceGroupId,
+                    buId: rec?.intBusinessUnitId,
+                    wgId: rec?.intWorkplaceGroupId,
                   },
                 });
               },
@@ -319,38 +275,33 @@ function EmployeeFeatureNew() {
       ),
     },
   ];
+  console.log(landingApi?.data);
   return employeeFeature?.isView ? (
     <>
       <PForm
         form={form}
-        onFinish={(values) => {
+        onFinish={() => {
           setOpen(true);
         }}
       >
         <PCard>
           <PCardHeader
-            backButton
             exportIcon={true}
-            title="Total 64 employees"
-            onSearch={(value) => {}}
+            title={`Total ${landingApi?.data?.totalCount || 0} employees`}
+            onSearch={(e) => {
+              searchFunc(e?.target?.value);
+            }}
             submitText="Create New"
             submitIcon={<AddOutlined />}
-            // buttonList={[
-            //   {
-            //     type: "primary",
-            //     content: "Create New",
-            //     icon: "plus",
-            //     onClick: () => {
-            //       setIsAddEditForm(true);
-            //     },
-            //   },
-            // ]}
+            onExport={() => {
+              console.log("ecport");
+            }}
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
           <DataTable
             bordered
-            data={[] || landingApi?.data?.data || []}
+            data={landingApi?.data?.data || []}
             loading={landingApi?.loading}
             header={header?.filter((item) => !item?.hidden)}
             pagination={{
@@ -362,26 +313,16 @@ function EmployeeFeatureNew() {
               // Return if sort function is called
               if (extra.action === "sort") return;
               const { search } = form.getFieldsValue(true);
-              landingApiCall(pagination, filters, search);
+              landingApiCall({
+                pagination,
+                filerList: filters,
+                searchText: search,
+              });
             }}
             scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>
-      {/* <ViewModal
-      show={isAddEditForm}
-      title="Create New Employee"
-      onHide={() => setIsAddEditForm(false)}
-      size="lg"
-      backdrop="static"
-      classes="default-modal form-modal"
-    >
-      <AddEditForm
-        getData={getData}
-        pages={pages}
-        setIsAddEditForm={setIsAddEditForm}
-      />
-    </ViewModal> */}
 
       <PModal
         open={open}
@@ -390,7 +331,13 @@ function EmployeeFeatureNew() {
         onCancel={() => setOpen(false)}
         components={
           <>
-            <AddEditForm getData={landingApiCall} setIsAddEditForm={setOpen} />
+            <AddEditForm
+              getData={landingApiCall}
+              setIsAddEditForm={setOpen}
+              isEdit={false}
+              pages={undefined}
+              singleData={undefined}
+            />
           </>
         }
       />

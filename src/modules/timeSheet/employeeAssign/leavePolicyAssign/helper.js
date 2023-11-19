@@ -1,14 +1,14 @@
-import { toast } from "react-toastify";
-import moment from "moment";
-import axios from "axios";
-import { dateFormatter } from "../../../../utility/dateFormatter";
-import RoasterInfo from "./component/RosterInfo";
 import { InfoOutlined } from "@mui/icons-material";
+import axios from "axios";
+import moment from "moment";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
+import { dateFormatter } from "../../../../utility/dateFormatter";
+import RoasterInfo from "./component/RosterInfo";
 
 export const getShiftInfo = async (id, setter) => {
   try {
@@ -21,7 +21,9 @@ export const getShiftInfo = async (id, setter) => {
       setter && setter(res?.data);
     }
     res?.data?.length === 0 && toast.warn("no data found");
-  } catch (error) {}
+  } catch (error) {
+    // console.log(error?.message)
+  }
 };
 export const getCalendarAssignFilter = async (
   setter,

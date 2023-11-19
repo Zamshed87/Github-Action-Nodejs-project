@@ -1,5 +1,8 @@
-import MultiCalendarAssign from "modules/TimeManagement/MultiCalendarAssign";
 import { lazy } from "react";
+
+const MultiCalendarAssign = lazy(() =>
+  import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
+);
 const CreateEditLeavePolicy = lazy(() =>
   import(
     "../modules/leaveMovement/configuration/YearlyLeavePolicy/CreateEditLeavePolicy"
@@ -592,7 +595,7 @@ const AboutMeDetails = lazy(() =>
   import("../modules/employeeProfile/employeeFeature/AboutMeCommon/index.jsx")
 );
 const EmployeeFeatureNew = lazy(() =>
-  import("../modules/employeeProfile/employeeFeature/indexNew.jsx")
+  import("../modules/employeeProfile/employeeFeature/indexNew")
 );
 const FoodCorner = lazy(() =>
   import("../modules/employeeProfile/foodCorner/FoodCorner.jsx")

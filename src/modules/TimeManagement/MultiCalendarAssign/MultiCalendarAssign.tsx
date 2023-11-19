@@ -27,7 +27,7 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
   };
   const landingApi = ({
     pagination = {},
-    filerList = [],
+    filerList,
     searchText = "",
   }: TLandingApi = {}) => {
     MultiCalendarAssignLandingFilter?.action({

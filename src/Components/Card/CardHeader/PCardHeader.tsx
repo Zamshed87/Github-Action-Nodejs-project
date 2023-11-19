@@ -12,8 +12,9 @@ import { PButton, buttonType } from "Components/Button/PButton";
 type PCardHeaderType = {
   title?: string | React.ReactNode;
   exportIcon?: boolean | React.ReactNode;
+  onExport?: (e: any) => void;
   backButton?: boolean | string;
-  onSearch?: (value: string) => void;
+  onSearch?: (e: any) => void;
   submitText?: string;
   submitIcon?: React.ReactNode;
   buttonList?: Array<{
@@ -27,6 +28,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
   const {
     title,
     exportIcon,
+    onExport,
     backButton,
     onSearch,
     submitText,
@@ -54,7 +56,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
         ) : undefined}
         {/*Default Export Icon  */}
         {isShowExportIcon ? (
-          <div className="export_icon">
+          <div className="export_icon" onClick={onExport}>
             <DownloadOutlined />
           </div>
         ) : undefined}
@@ -68,7 +70,8 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
             placeholder="Search"
             prefix={<SearchOutlined />}
             onChange={onSearch}
-            onPressEnter={onSearch}
+            type="text"
+            // onPressEnter={onSearch}
           />
         ) : undefined}
         {/* Button List */}
