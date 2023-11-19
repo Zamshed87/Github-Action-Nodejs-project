@@ -38,13 +38,15 @@ export const domainUrl =
   process.env.NODE_ENV === "development"
     ? "https://devmatador.peopledesk.io"
     : origin;
+const isDevServer = APIUrl.includes("dev");
 
 // if (process.env.NODE_ENV === "production") {
 //   disableReactDevTools();
 // }
+
 Axios.interceptors.request.use(
   (config: any) => {
-    if (process.env.NODE_ENV === "development") return config;
+    if (process.env.NODE_ENV === "development" || isDevServer) return config;
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
@@ -108,7 +110,7 @@ Axios.interceptors.request.use(
 );
 Axios.interceptors.response.use(
   async function (response: any) {
-    if (process.env.NODE_ENV === "development") return response;
+    if (process.env.NODE_ENV === "development" || isDevServer) return response;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
       if (response?.config?.url?.includes(`${element}`)) return response;
