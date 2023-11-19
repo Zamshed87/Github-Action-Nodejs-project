@@ -9,6 +9,7 @@ import {
 import { useHistory } from "react-router-dom";
 import { PInput } from "Components/PForm";
 import { PButton, buttonType } from "Components/Button/PButton";
+import { debounce } from "lodash";
 type PCardHeaderType = {
   title?: string | React.ReactNode;
   exportIcon?: boolean | React.ReactNode;
@@ -38,6 +39,10 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
 
   const isShowExportIcon = typeof exportIcon === "boolean" && exportIcon;
   const history = useHistory();
+
+  // for search
+  // for search
+  const debouncedOnSearch = onSearch ? debounce(onSearch, 300) : undefined;
   return (
     <div className="people_desk_cardHeader">
       <div className="header_left">
@@ -69,8 +74,9 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
           <PInput
             placeholder="Search"
             prefix={<SearchOutlined />}
-            onChange={onSearch}
+            onChange={debouncedOnSearch}
             type="text"
+            onPressEnter={onSearch}
             // onPressEnter={onSearch}
           />
         ) : undefined}
