@@ -22,19 +22,19 @@ export const useApiRequest = (initialState: any) => {
         data: payload,
         params: params,
       });
+      onSuccess && onSuccess(response.data);
       setState((prevState) => ({
         ...prevState,
         loading: false,
         data: response.data,
       }));
-      onSuccess && onSuccess(response.data);
     } catch (error) {
+      onError && onError(error as Error);
       setState((prevState) => ({
         ...prevState,
+        loading: false,
         error: error as Error,
       }));
-      setState((prevState) => ({ ...prevState, loading: false }));
-      onError && onError(error as Error);
     }
   };
 

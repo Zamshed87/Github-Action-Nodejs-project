@@ -119,7 +119,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
             rowSelection={
               rowSelection &&
               (rowSelection?.isActive || rowSelection?.isActive === undefined)
-                ? rowSelection
+                ? { ...rowSelection, columnWidth: 15 }
                 : undefined
             }
             scroll={{

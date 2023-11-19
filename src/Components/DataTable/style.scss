@@ -1,3 +1,13 @@
+@mixin tableCheckbox {
+  span.ant-checkbox-inner {
+    height: 12px;
+    width: 12px;
+    &::after {
+      width: 4.714286px;
+      height: 8.142857px;
+    }
+  }
+}
 .data_table {
   // overwriting antd styles
   .ant-table-thead > tr > th,
@@ -6,6 +16,14 @@
   }
   .ant-table-wrapper {
     .ant-table-container {
+      .ant-table-header {
+        th.ant-table-selection-column {
+          .ant-table-selection {
+            z-index: 1;
+          }
+          @include tableCheckbox;
+        }
+      }
       .ant-table-body {
         .ant-table-row {
           // Button Inside Table
@@ -36,6 +54,12 @@
               }
             }
           }
+        }
+        td.ant-table-selection-column {
+          .ant-table-selection {
+            z-index: 1;
+          }
+          @include tableCheckbox;
         }
       }
     }

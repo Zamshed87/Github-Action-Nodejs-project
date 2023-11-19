@@ -44,6 +44,7 @@ export const domainUrl =
 // }
 Axios.interceptors.request.use(
   (config: any) => {
+    if (process.env.NODE_ENV === "development") return config;
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
@@ -55,7 +56,7 @@ Axios.interceptors.request.use(
     const isIncludesQueryString = url.includes("?");
 
     if (isIncludesQueryString) {
-      let splitUrl = url.split("?");
+      const splitUrl = url.split("?");
       paramsQuery += splitUrl[1];
       url = splitUrl[0];
     }
@@ -107,13 +108,14 @@ Axios.interceptors.request.use(
 );
 Axios.interceptors.response.use(
   async function (response: any) {
+    if (process.env.NODE_ENV === "development") return response;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
       if (response?.config?.url?.includes(`${element}`)) return response;
     }
 
-    let decryptedData = _Ad_xcvbn_df__dfg_568_dfghfff_(response?.data);
-    let decryptedRes = {
+    const decryptedData = _Ad_xcvbn_df__dfg_568_dfghfff_(response?.data);
+    const decryptedRes = {
       status: response.status,
       data: decryptedData,
     };
@@ -130,7 +132,7 @@ Axios.interceptors.response.use(
       };
 
       try {
-        let apiRefreshResponse = await Axios.post(
+        const apiRefreshResponse = await Axios.post(
           "/Auth/GenerateRefreshToken",
           payload
         );
@@ -150,15 +152,15 @@ Axios.interceptors.response.use(
           window.location.reload();
           // return Axios(originalConfig);
         }
-      } catch (error) {}
+      } catch (error) {
+        // console.log(error)
+      }
     }
 
-    if (process.env.NODE_ENV === "development") {
-    }
-    let decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
+    const decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
       error?.response?.data
     );
-    let newError = { response: { data: decryptedData } };
+    const newError = { response: { data: decryptedData } };
     return Promise.reject(newError);
   }
 );
@@ -175,7 +177,7 @@ function App() {
     Axios.defaults.headers.common["Authorization"] = `Bearer ${tokenData}`;
 
   useEffect(() => {
-    let appVersion = localStorage.getItem("appVersion");
+    const appVersion = localStorage.getItem("appVersion");
     if (appVersion !== PackageJson.version) {
       localStorage.setItem("appVersion", PackageJson.version);
       window.location.reload();

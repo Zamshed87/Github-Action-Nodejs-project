@@ -5,6 +5,7 @@ import {
   EyeOutlined,
   InfoOutlined,
   PlusOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 import React from "react";
 import { TableButtonType, buttonList, buttonType } from "./types";
@@ -19,6 +20,7 @@ export const TableButton: React.FC<TableButtonType> = (property) => {
     view: <EyeOutlined />,
     info: <InfoOutlined />,
     plus: <PlusOutlined />,
+    calender: <CalendarOutlined />,
   };
 
   const renderButton = (type: buttonType) => {

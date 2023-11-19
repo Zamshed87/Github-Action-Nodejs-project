@@ -82,7 +82,7 @@ export type TDataTableProps = {
 };
 
 // Table Button Types
-export type buttonType = "edit" | "delete" | "view" | "info" | "plus";
+export type buttonType = "edit" | "delete" | "view" | "info" | "plus"|'calender';
 export type buttonList = {
   isActive?: boolean;
   type: buttonType;

@@ -5,6 +5,9 @@ import { getSerial } from "Utils";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import { debounce } from "lodash";
+import { PModal } from "Components/Modal";
+import AssignMultipleCalendar from "./Assign/AssignMultipleCalendar";
 
 type TMultiCalendarAssign = {};
 const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
@@ -13,6 +16,9 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  // States
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [rowData, setRowData] = React.useState<any>("");
   // Api Actions
   const MultiCalendarAssignLandingFilter = useApiRequest({});
 
@@ -22,7 +28,7 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
       current?: number;
       pageSize?: number;
     };
-    filerList?: any[];
+    filerList?: any;
     searchText?: string;
   };
   const landingApi = ({
@@ -30,6 +36,7 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     filerList,
     searchText = "",
   }: TLandingApi = {}) => {
+    console.log(filerList);
     MultiCalendarAssignLandingFilter?.action({
       urlKey: "MultiCalendarAssignLandingFilter",
       method: "POST",
@@ -37,7 +44,11 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
         businessUnitId: buId,
         workplaceGroupId: wgId,
         workplaceId: wId,
-        isNotAssign: false,
+        isNotAssign: filerList?.calendarAssignId?.length
+          ? filerList?.calendarAssignId?.includes(2)
+            ? true
+            : false
+          : undefined,
         pageNo: pagination?.current || 1,
         pageSize: pagination?.pageSize || 25,
         isPaginated: true,
@@ -53,6 +64,16 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
         areaNameList: [],
         territoryNameList: [],
       },
+      onSuccess: (res) => {
+        res.calendarAssignHeader.status = [
+          {
+            value: 1,
+            label: "Assign",
+          },
+          { value: 2, label: "Not Assign" },
+        ];
+        console.log(res);
+      },
     });
   };
 
@@ -61,6 +82,11 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
+
+  // Search
+  const searchFunc = debounce((value) => {
+    landingApi({ searchText: value });
+  }, 500);
 
   // Table Header
   const header: any = [
@@ -75,6 +101,7 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
 
       align: "center",
       width: 20,
+      fixed: "left",
     },
     {
       title: "Employee Name",
@@ -103,7 +130,7 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
       title: "Generate Date",
       dataIndex: "generateDate",
       render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
+        data ? moment(data).format("DD-MMM-YYYY") : "N/A",
     },
     {
       title: "Joining Date",
@@ -113,12 +140,17 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "calendarAssignId",
       align: "center",
-      render: (data: any, record: any, index: number) => (
+      filter: true,
+      filterKey: "status",
+      render: (data: any, record: any, index: number) =>
         // Write condition to check status
-        <PBadge type="primary" text="Active" />
-      ),
+        data ? (
+          <PBadge type="primary" text="Assigned" />
+        ) : (
+          <PBadge type="danger" text="Not Assign" />
+        ),
       width: "50px",
     },
     {
@@ -129,16 +161,11 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
           <TableButton
             buttonsList={[
               {
-                type: "edit",
-                onClick: (e) => {},
-              },
-              {
-                type: "delete",
-                onClick: (e) => {},
-              },
-              {
-                type: "view",
-                onClick: (e) => {},
+                type: "calender",
+                onClick: (e) => {
+                  setRowData(record);
+                  setOpen(true);
+                },
               },
             ]}
           />
@@ -147,13 +174,15 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
       width: "60px",
     },
   ];
-  console.log(MultiCalendarAssignLandingFilter?.data);
+
   return (
     <>
       <PCard>
         <PCardHeader
-          title="Multi Calendar Assign"
-          onSearch={() => {}}
+          title={`Total Record: ${
+            MultiCalendarAssignLandingFilter?.data?.totalCount || 0
+          }`}
+          onSearch={(e) => searchFunc(e?.target?.value || "")}
           buttonList={[{ type: "primary", content: "Assign" }]}
         />
 
@@ -180,6 +209,21 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
           }}
         />
       </PCard>
+      {console.log(rowData)}
+      <PModal
+        open={open}
+        title={`Multiple Calendar Assign ${
+          rowData?.employeeName ? "| Employee: " + rowData?.employeeName : ""
+        }`}
+        onCancel={() => {
+          setOpen(false);
+          setRowData("");
+        }}
+        width={500}
+        components={
+          <AssignMultipleCalendar setOpen={setOpen} rowData={rowData} />
+        }
+      />
     </>
   );
 };

@@ -9,4 +9,6 @@ export const apiPath = {
     "/Employee/MultiCalendarAssignLandingFilter",
   GetBusinessDetailsByBusinessUnitId:
     "/SaasMasterData/GetBusinessDetailsByBusinessUnitId",
+  DatewiseCalanderForEmployee: "/Employee/DatewiseCalanderForEmployee",
+  PeopleDeskAllDDL: "/PeopleDeskDDL/PeopleDeskAllDDL",
 };
