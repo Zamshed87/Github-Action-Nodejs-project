@@ -22,7 +22,9 @@
     "react/prop-types": "off",
     "react/display-name": "off",
     "no-case-declarations": "off",
-    "no-console": "off"
+    "no-console": "off",
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": "warn"
   },
   "settings": {
     "react": {
