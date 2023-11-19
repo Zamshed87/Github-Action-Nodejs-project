@@ -10,9 +10,9 @@ type TModalType = {
     onClick: () => void;
   }[];
 };
-type PModalType = ModalProps & TModalType;
+type PModalType = TModalType & ModalProps;
 export const PModal: React.FC<PModalType> = (property) => {
-  const { components, wrapClassName } = property;
+  const { components, wrapClassName, width } = property;
 
   return (
     <Modal
@@ -21,6 +21,8 @@ export const PModal: React.FC<PModalType> = (property) => {
         wrapClassName ? wrapClassName : ""
       }`}
       footer={null}
+      width={width || 800}
+      destroyOnClose
     >
       {components}
     </Modal>
@@ -45,18 +47,18 @@ export const ModalFooter: React.FC<modalFooterType> = ({
 
   const hideCancelButton = submitText === false;
   const cancelButtonText =
-    typeof cancelText === "string" ? cancelText : "Submit";
+    typeof cancelText === "string" ? cancelText : "Cancel";
   return (
-    <div className="modal_footer_button_list">
+    <div className="ant-modal-footer modal_footer_button_list">
       {!hideCancelButton ? (
         <PButton
           type="secondary"
           content={cancelButtonText}
-          onClick={onSubmit}
+          onClick={onCancel}
         />
       ) : undefined}
       {!hideSubmitButton ? (
-        <PButton type="primary" content={submitButtonText} onClick={onCancel} />
+        <PButton type="primary" content={submitButtonText} onClick={onSubmit} />
       ) : undefined}
     </div>
   );

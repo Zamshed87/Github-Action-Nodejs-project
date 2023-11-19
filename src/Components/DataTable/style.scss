@@ -69,4 +69,44 @@
       }
     }
   }
+  // Hide Scroll Bar when no data
+  &.hidden_scroolbar {
+    .ant-table-body {
+      overflow-y: hidden !important;
+    }
+  }
+}
+
+// Table Button Style
+.PTableButton {
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+  display: inline-flex;
+  .anticon {
+    font-size: 14px;
+    background: #e7e7e7;
+    border: 1px solid #e7e7e7;
+    padding: 3px;
+    border-radius: 50%;
+  }
+  > span {
+    margin-right: 5px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+.ant-table-row:hover .PTableButton {
+  opacity: 1;
+}
+// Delete Confirmation Popups
+.table_delete_popover {
+  max-width: 250px !important;
+  .ant-popover-buttons {
+    .ant-btn.ant-btn-dangerous {
+      background-color: red !important;
+      color: #fff;
+    }
+  }
 }

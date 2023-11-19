@@ -8,7 +8,7 @@ export type TDataTableProps = {
   headerTitle?: (pageData: any) => JSX.Element | string;
   header: ColumnsType<any>;
   data: any[];
-  filterData?: { [key: string]: any };
+  filterData?: Record<string, unknown>;
   rowClassName?: (record: any, index: number) => string;
   rowSelection?: {
     isActive?: boolean;
@@ -79,4 +79,17 @@ export type TDataTableProps = {
   pagination?: TablePaginationConfig;
   bordered?: boolean;
   loading?: boolean;
+};
+
+// Table Button Types
+export type buttonType = "edit" | "delete" | "view" | "info" | "plus";
+export type buttonList = {
+  isActive?: boolean;
+  type: buttonType;
+  onClick?: (e: any) => any;
+  prompt?: string;
+};
+export type TableButtonType = {
+  buttonsList: buttonList[];
+  parentStyle?: React.CSSProperties;
 };

@@ -5,8 +5,8 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
 // Path: src/Components/PForm/styles.scss
 @mixin inputLabel {
   color: var(--gray700);
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   label {
     font-size: 12px;
     line-height: normal;

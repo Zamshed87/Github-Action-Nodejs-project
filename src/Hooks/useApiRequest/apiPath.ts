@@ -7,4 +7,6 @@ export const apiPath = {
   SaasMasterDataLeavePolicyById: "/SaasMasterData/GetLeavePolicyById",
   MultiCalendarAssignLandingFilter:
     "/Employee/MultiCalendarAssignLandingFilter",
+  GetBusinessDetailsByBusinessUnitId:
+    "/SaasMasterData/GetBusinessDetailsByBusinessUnitId",
 };

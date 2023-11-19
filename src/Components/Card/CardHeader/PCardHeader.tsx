@@ -14,6 +14,8 @@ type PCardHeaderType = {
   exportIcon?: boolean | React.ReactNode;
   backButton?: boolean | string;
   onSearch?: (value: string) => void;
+  submitText?: string;
+  submitIcon?: React.ReactNode;
   buttonList?: Array<{
     content: string;
     type: buttonType;
@@ -22,7 +24,15 @@ type PCardHeaderType = {
   }>;
 };
 export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
-  const { title, exportIcon, backButton, onSearch, buttonList } = props;
+  const {
+    title,
+    exportIcon,
+    backButton,
+    onSearch,
+    submitText,
+    submitIcon,
+    buttonList,
+  } = props;
 
   const isShowExportIcon = typeof exportIcon === "boolean" && exportIcon;
   const history = useHistory();
@@ -73,6 +83,16 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
               />
             ))
           : undefined}
+
+        {/* Submit Button */}
+        {submitText !== undefined ? (
+          <PButton
+            content={submitText || "Save"}
+            type={"primary"}
+            action="submit"
+            icon={submitIcon}
+          />
+        ) : undefined}
       </div>
     </div>
   );
