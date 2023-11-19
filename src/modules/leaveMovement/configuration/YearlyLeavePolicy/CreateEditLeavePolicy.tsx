@@ -244,13 +244,16 @@ const CreateEditLeavePolicy = () => {
       intEarnLveInDay: +values?.intEarnLveInDay,
       intMaxForAdvLveInYear: +values?.intMaxForAdvLveInYear,
       intExistingPolicyIdList: policyList?.length > 0 ? policyList : [],
-      hrPositionListDTO: values?.hrPositionListDTO?.map((item) => {
-        return {
-          ...item,
-          strHrPositionName: item?.label,
-          intHrPositionId: item?.value,
-        };
-      }),
+      hrPositionListDTO:
+        values?.hrPositionListDTO?.length > 0
+          ? values?.hrPositionListDTO?.map((item) => {
+              return {
+                ...item,
+                strHrPositionName: item?.label,
+                intHrPositionId: item?.value,
+              };
+            })
+          : [],
     };
     policyApi?.action({
       method: "POST",
@@ -2011,18 +2014,20 @@ const CreateEditLeavePolicy = () => {
                       {/* Generate  */}
 
                       <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Do you want assign right now?"
-                          checked={values?.isGenerate}
-                          onChange={(e) => {
-                            setFieldValue("isGenerate", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
+                        <div className="highlight">
+                          <FormikCheckBox
+                            styleObj={{
+                              color: gray900,
+                              checkedColor: greenColor,
+                            }}
+                            label="Do you want assign right now?"
+                            checked={values?.isGenerate}
+                            onChange={(e) => {
+                              setFieldValue("isGenerate", e.target.checked);
+                            }}
+                            labelFontSize="12px"
+                          />
+                        </div>
                       </div>
                     </div>
                   </>

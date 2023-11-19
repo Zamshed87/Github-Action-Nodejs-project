@@ -1,4 +1,3 @@
-import { InfoOutlined } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
@@ -8,7 +7,6 @@ import {
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
 import { dateFormatter } from "../../../../utility/dateFormatter";
-import RoasterInfo from "./component/RosterInfo";
 
 export const getShiftInfo = async (id, setter) => {
   try {
@@ -87,10 +85,10 @@ export const columns = (
     },
     {
       title: "Employee Id",
-      dataIndex: "employeeCode",
+      dataIndex: "intEmpId",
       sort: true,
       filter: false,
-      fieldType: "string",
+      fieldType: "number",
       width: 150,
     },
     {
@@ -99,8 +97,8 @@ export const columns = (
       render: (record) => {
         return (
           <div className="d-flex align-items-center">
-            <span className="ml-2">{record?.employeeName}</span>
-            <InfoOutlined
+            <span className="ml-2">{record?.strEmpName}</span>
+            {/* <InfoOutlined
               style={{ cursor: "pointer" }}
               className="ml-2"
               onClick={(e) => {
@@ -109,7 +107,7 @@ export const columns = (
                 getShiftInfo(record?.employeeId, setSingleShiftData);
                 setAnchorEl2(e.currentTarget);
               }}
-            />
+            /> */}
           </div>
         );
       },
@@ -120,7 +118,7 @@ export const columns = (
 
     {
       title: "Department",
-      dataIndex: "department",
+      dataIndex: "strEmpDepartment",
       sort: true,
       filter: true,
       filterDropDownList: headerList[`departmentList`],
@@ -128,70 +126,95 @@ export const columns = (
     },
     {
       title: "Designation",
-      dataIndex: "designation",
+      dataIndex: "strEmpDesignation",
       sort: true,
       filter: true,
       filterDropDownList: headerList[`designationList`],
       fieldType: "string",
     },
     {
-      title: "Wing",
-      dataIndex: "wingName",
+      title: "HR Position",
+      dataIndex: "strHrPositionName",
       sort: true,
       filter: true,
-      filterDropDownList: headerList[`wingNameList`],
-      hidden: wgName === "Marketing" ? false : true,
+      filterDropDownList: headerList[`hrList`],
       fieldType: "string",
     },
     {
-      title: "Sole Depo",
-      dataIndex: "soleDepoName",
+      title: "Gender",
+      dataIndex: "strGenderName",
       sort: true,
       filter: true,
-      filterDropDownList: headerList[`soleDepoNameList`],
-      hidden: wgName === "Marketing" ? false : true,
+      filterDropDownList: headerList[`genderList`],
       fieldType: "string",
     },
     {
-      title: "Region",
-      dataIndex: "regionName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`regionNameList`],
-      hidden: wgName === "Marketing" ? false : true,
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      // sort: true,
+      // filter: true,
+      // filterDropDownList: headerList[`designationList`],
       fieldType: "string",
     },
-    {
-      title: "Area",
-      dataIndex: "areaName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`areaNameList`],
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Territory",
-      dataIndex: "territoryName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`territoryNameList`],
-      hidden: wgName === "Marketing" ? false : true,
-      fieldType: "string",
-    },
-    {
-      title: "Supervisor",
-      dataIndex: "supervisorName",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`supervisorNameList`],
-      fieldType: "string",
-    },
-    {
-      title: "Generate Date",
-      dataIndex: "generateDate",
-      render: (record) => dateFormatter(record?.generateDate),
-    },
+
+    // {
+    //   title: "Wing",
+    //   dataIndex: "wingName",
+    //   sort: true,
+    //   filter: true,
+    //   filterDropDownList: headerList[`wingNameList`],
+    //   hidden: wgName === "Marketing" ? false : true,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Sole Depo",
+    //   dataIndex: "soleDepoName",
+    //   sort: true,
+    //   filter: true,
+    //   filterDropDownList: headerList[`soleDepoNameList`],
+    //   hidden: wgName === "Marketing" ? false : true,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Region",
+    //   dataIndex: "regionName",
+    //   sort: true,
+    //   filter: true,
+    //   filterDropDownList: headerList[`regionNameList`],
+    //   hidden: wgName === "Marketing" ? false : true,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Area",
+    //   dataIndex: "areaName",
+    //   sort: true,
+    //   filter: true,
+    //   filterDropDownList: headerList[`areaNameList`],
+    //   hidden: wgName === "Marketing" ? false : true,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Territory",
+    //   dataIndex: "territoryName",
+    //   sort: true,
+    //   filter: true,
+    //   filterDropDownList: headerList[`territoryNameList`],
+    //   hidden: wgName === "Marketing" ? false : true,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Supervisor",
+    //   dataIndex: "supervisorName",
+    //   sort: true,
+    //   filter: true,
+    //   filterDropDownList: headerList[`supervisorNameList`],
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Generate Date",
+    //   dataIndex: "generateDate",
+    //   render: (record) => dateFormatter(record?.generateDate),
+    // },
     // {
     //   title: () => <span style={{ color: gray600 }}>Generate Date</span>,
     //   dataIndex: "GenerateDate",
@@ -213,28 +236,28 @@ export const columns = (
     //   filter: true,
     //   isDate: true,
     // },
-    {
-      title: "Roster Name",
-      dataIndex: "rosterGroupName",
-      sort: true,
-      fieldType: "string",
-    },
-    {
-      title: "Calender Name",
-      dataIndex: "calendarName",
-      render: (record) => (
-        <>
-          {record?.calendarName ? (
-            <div className="d-flex align-items-center">
-              <RoasterInfo item={record} />
-              <div className="pl-2">{record?.calendarName} </div>
-            </div>
-          ) : (
-            ""
-          )}
-        </>
-      ),
-    },
+    // {
+    //   title: "Roster Name",
+    //   dataIndex: "rosterGroupName",
+    //   sort: true,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Calender Name",
+    //   dataIndex: "calendarName",
+    //   render: (record) => (
+    //     <>
+    //       {record?.calendarName ? (
+    //         <div className="d-flex align-items-center">
+    //           <RoasterInfo item={record} />
+    //           <div className="pl-2">{record?.calendarName} </div>
+    //         </div>
+    //       ) : (
+    //         ""
+    //       )}
+    //     </>
+    //   ),
+    // },
     {
       title: "Action",
       className: "text-center",
@@ -309,21 +332,21 @@ export const bgColors = [
   "#FEF0D7",
 ];
 export const initHeaderList = {
-  designationList: [],
-  departmentList: [],
-  supervisorNameList: [],
-  wingNameList: [],
-  soleDepoNameList: [],
-  regionNameList: [],
-  areaNameList: [],
-  territoryNameList: [],
-  employmentTypeList: [],
+  designations: [],
+  departments: [],
+  genders: [],
+  hrLists: [],
+  // soleDepoNameList: [],
+  // regionNameList: [],
+  // areaNameList: [],
+  // territoryNameList: [],
+  // employmentTypeList: [],
 };
-export const statusDDL = [
-  { value: 0, label: "All" },
-  { value: 1, label: "Assigned" },
-  { value: 2, label: "Not Assigned" },
-];
+// export const statusDDL = [
+//   { value: 0, label: "All" },
+//   { value: 1, label: "Assigned" },
+//   { value: 2, label: "Not Assigned" },
+// ];
 // landing api call
 const getDataApiCall = async (
   modifiedPayload,
@@ -361,21 +384,31 @@ const getDataApiCall = async (
       isPaginated: true,
       isHeaderNeed: true,
       searchTxt: searchText || "",
+      intYear: year,
     };
 
     const res = await axios.post(
-      `/SaasMasterData/GetEmployeeLandingForLeavePolicy?partName=${isAssigned}&intYear=${year}`,
+      `/SaasMasterData/GetEmployeeLandingForLeavePolicy`,
       {
         ...payload,
         ...modifiedPayload,
       }
     );
     if (res?.data?.data) {
+      console.log(res?.data, "data");
       setLandingLoading(true);
+      console.log(
+        { headerList },
+        { initialHeaderListData },
+        { currentFilterSelection },
+        { initialHeaderListData },
+        { checkedHeaderList },
+        { filterOrderList }
+      );
       setHeaderListDataDynamically({
         currentFilterSelection,
         checkedHeaderList,
-        headerListKey: "calendarAssignHeader",
+        headerListKey: "employeeHeader",
         headerList,
         setHeaderList,
         response: res?.data,
@@ -391,11 +424,12 @@ const getDataApiCall = async (
       const modifiedData = res?.data?.data?.map((item, index) => ({
         ...item,
         initialSerialNumber: index + 1,
-        isSelected: checkedList?.find(
-          ({ employeeCode }) => item?.employeeCode === employeeCode
-        )
-          ? true
-          : false,
+        isSelected: true,
+        // isSelected: checkedList?.find(
+        //   ({ employeeCode }) => item?.employeeCode === employeeCode
+        // )
+        //   ? true
+        //   : false,
       }));
 
       setRowDto(modifiedData);
@@ -484,7 +518,9 @@ export const handleChangePage = (
   checkedList,
   pages,
   filterOrderList,
-  checkedHeaderList
+  checkedHeaderList,
+  list,
+  year
 ) => {
   setPages((prev) => {
     return { ...prev, current: newPage };
@@ -511,7 +547,10 @@ export const handleChangePage = (
     checkedList,
     -1,
     filterOrderList,
-    checkedHeaderList
+    checkedHeaderList,
+    null,
+    list,
+    year
   );
 };
 
@@ -533,7 +572,9 @@ export const handleChangeRowsPerPage = (
   checkedList,
   pages,
   filterOrderList,
-  checkedHeaderList
+  checkedHeaderList,
+  list,
+  year
 ) => {
   setPages((prev) => {
     return { current: 1, total: pages?.total, pageSize: +event.target.value };
@@ -560,6 +601,9 @@ export const handleChangeRowsPerPage = (
     checkedList,
     -1,
     filterOrderList,
-    checkedHeaderList
+    checkedHeaderList,
+    null,
+    list,
+    year
   );
 };

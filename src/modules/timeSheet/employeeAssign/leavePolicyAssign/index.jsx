@@ -123,11 +123,11 @@ function LeavePolicyAssign() {
       setEmpIDString,
       setRowDto,
       "",
-      null,
-      null,
-      null,
       [],
-      values?.salaryStatus?.value || "unassigned",
+      -1,
+      [],
+      initHeaderList,
+      null,
       temp,
       values?.year?.value
     );
@@ -282,7 +282,7 @@ function LeavePolicyAssign() {
                         </div>
                       )}
                     </li>
-                    <li className="mr-3" style={{ width: "150px" }}>
+                    {/* <li className="mr-3" style={{ width: "150px" }}>
                       <FormikSelect
                         name="salaryStatus"
                         options={[
@@ -320,7 +320,7 @@ function LeavePolicyAssign() {
                         styles={customStyles}
                         isClearable={false}
                       />
-                    </li>
+                    </li> */}
                     <li className="mr-3" style={{ width: "150px" }}>
                       <FormikSelect
                         name="year"
@@ -346,10 +346,11 @@ function LeavePolicyAssign() {
                             -1,
                             filterOrderList,
                             checkedHeaderList,
-                            valueOption?.value,
-                            [],
-                            values?.year?.value
+                            null,
+                            state?.list,
+                            valueOption?.value
                           );
+                          setFieldValue("year", valueOption);
                         }}
                         styles={customStyles}
                         isClearable={false}
@@ -381,7 +382,9 @@ function LeavePolicyAssign() {
                               -1,
                               filterOrderList,
                               checkedHeaderList,
-                              values?.salaryStatus?.value
+                              null,
+                              state?.list,
+                              values?.year?.value
                             );
                           } else {
                             getData(
@@ -403,7 +406,9 @@ function LeavePolicyAssign() {
                               -1,
                               filterOrderList,
                               checkedHeaderList,
-                              values?.salaryStatus?.value
+                              null,
+                              state?.list,
+                              values?.year?.value
                             );
                           }
                         }}
@@ -482,7 +487,9 @@ function LeavePolicyAssign() {
                       checkedList,
                       pages,
                       filterOrderList,
-                      checkedHeaderList
+                      checkedHeaderList,
+                      state?.list,
+                      values?.year?.value
                     )
                   }
                   handleChangeRowsPerPage={(e) =>
@@ -504,17 +511,27 @@ function LeavePolicyAssign() {
                       checkedList,
                       pages,
                       filterOrderList,
-                      checkedHeaderList
+                      checkedHeaderList,
+                      state?.list,
+                      values?.year?.value
                     )
                   }
                   filterOrderList={filterOrderList}
                   setFilterOrderList={setFilterOrderList}
-                  uniqueKey="employeeCode"
+                  uniqueKey="intEmpId"
                   getFilteredData={(
                     currentFilterSelection,
                     updatedFilterData,
                     updatedCheckedHeaderData
                   ) => {
+                    console.log(
+                      { headerList },
+                      { initialHeaderListData },
+                      { currentFilterSelection },
+                      { initialHeaderListData },
+                      { updatedFilterData },
+                      { updatedCheckedHeaderData }
+                    );
                     getData(
                       {
                         current: 1,
@@ -537,7 +554,10 @@ function LeavePolicyAssign() {
                       [],
                       currentFilterSelection,
                       updatedFilterData,
-                      updatedCheckedHeaderData
+                      updatedCheckedHeaderData,
+                      [],
+                      state?.list,
+                      values?.year?.value
                     );
                   }}
                   isCheckBox={true}
