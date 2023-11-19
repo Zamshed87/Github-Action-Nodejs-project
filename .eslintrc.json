@@ -14,6 +14,8 @@
     "react/no-unescaped-entities": "warn",
     "prefer-spread": "warn",
     "@typescript-eslint/ban-ts-comment": "warn",
+    "react/no-unknown-property": "warn",
+    "@typescript-eslint/no-empty-function": "warn",
     // rules off
     "@typescript-eslint/no-explicit-any": "off",
     "react-hooks/exhaustive-deps": "off",
@@ -24,7 +26,13 @@
     "no-case-declarations": "off",
     "no-console": "off",
     "no-empty-function": "off",
-    "@typescript-eslint/no-empty-function": "warn"
+    "no-empty": "off",
+    "no-extra-boolean-cast": "off",
+    "no-undef": "off",
+    "no-constant-condition": "off",
+    "no-compare-neg-zero": "off",
+    "@typescript-eslint/no-array-constructor": "off",
+    "no-prototype-builtins": "off"
   },
   "settings": {
     "react": {
@@ -33,5 +41,8 @@
   },
   "env": {
     "browser": true
+  },
+  "globals": {
+    "process": "readonly"
   }
 }
