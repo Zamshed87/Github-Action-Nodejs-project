@@ -133,7 +133,6 @@ function LeavePolicyAssign() {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
-  console.log({ state });
   // assign colors to shift on shift load
   useEffect(() => {
     setUniqueShift([]);
@@ -524,14 +523,6 @@ function LeavePolicyAssign() {
                     updatedFilterData,
                     updatedCheckedHeaderData
                   ) => {
-                    console.log(
-                      { headerList },
-                      { initialHeaderListData },
-                      { currentFilterSelection },
-                      { initialHeaderListData },
-                      { updatedFilterData },
-                      { updatedCheckedHeaderData }
-                    );
                     getData(
                       {
                         current: 1,

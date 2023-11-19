@@ -395,16 +395,7 @@ const getDataApiCall = async (
       }
     );
     if (res?.data?.data) {
-      console.log(res?.data, "data");
       setLandingLoading(true);
-      console.log(
-        { headerList },
-        { initialHeaderListData },
-        { currentFilterSelection },
-        { initialHeaderListData },
-        { checkedHeaderList },
-        { filterOrderList }
-      );
       setHeaderListDataDynamically({
         currentFilterSelection,
         checkedHeaderList,
