@@ -6,9 +6,9 @@ export type TDataTableProps = {
   customScrollBar?: "thin";
   title?: string | JSX.Element;
   headerTitle?: (pageData: any) => JSX.Element | string;
-  header: ColumnsType<any>;
+  header: ColumnsType<any> | any;
   data: any[];
-  filterData?: { [key: string]: any };
+  filterData?: Record<string, unknown>;
   rowClassName?: (record: any, index: number) => string;
   rowSelection?: {
     isActive?: boolean;
@@ -47,11 +47,11 @@ export type TDataTableProps = {
     record: any,
     rowIndex: any
   ) => {
-    onClick: (event: any) => {}; // click row
-    onDoubleClick: (event: any) => {}; // double click row
-    onContextMenu: (event: any) => {}; // right button click row
-    onMouseEnter: (event: any) => {}; // mouse enter row
-    onMouseLeave: (event: any) => {}; // mouse leave row
+    onClick: (event: any) => any; // click row
+    onDoubleClick: (event: any) => any; // double click row
+    onContextMenu: (event: any) => any; // right button click row
+    onMouseEnter: (event: any) => any; // mouse enter row
+    onMouseLeave: (event: any) => any; // mouse leave row
     className?: string; // className for this row
   };
   components?: any;
@@ -79,4 +79,17 @@ export type TDataTableProps = {
   pagination?: TablePaginationConfig;
   bordered?: boolean;
   loading?: boolean;
+};
+
+// Table Button Types
+export type buttonType = "edit" | "delete" | "view" | "info" | "plus"|'calender';
+export type buttonList = {
+  isActive?: boolean;
+  type: buttonType;
+  onClick?: (e: any) => any;
+  prompt?: string;
+};
+export type TableButtonType = {
+  buttonsList: buttonList[];
+  parentStyle?: React.CSSProperties;
 };

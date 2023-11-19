@@ -13,7 +13,7 @@ export type FormProperty = {
   initialValues?: { [key: string]: any };
   formName?: string;
   onFinish?: (values: any) => void;
-  onFinishFailed: ({
+  onFinishFailed?: ({
     values,
     errorFields,
     outOfDate,

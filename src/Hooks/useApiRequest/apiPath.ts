@@ -5,4 +5,10 @@ export const apiPath = {
   SaasMasterDataCRUDLeavePolicy: "/SaasMasterData/CRUDLeavePolicy",
   SaasMasterDataLeavePolicyLanding: "/SaasMasterData/AllLeavePolicyLanding",
   SaasMasterDataLeavePolicyById: "/SaasMasterData/GetLeavePolicyById",
+  MultiCalendarAssignLandingFilter:
+    "/Employee/MultiCalendarAssignLandingFilter",
+  GetBusinessDetailsByBusinessUnitId:
+    "/SaasMasterData/GetBusinessDetailsByBusinessUnitId",
+  DatewiseCalanderForEmployee: "/Employee/DatewiseCalanderForEmployee",
+  PeopleDeskAllDDL: "/PeopleDeskDDL/PeopleDeskAllDDL",
 };

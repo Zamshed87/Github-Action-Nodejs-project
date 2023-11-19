@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Table, ConfigProvider } from "antd";
 import React from "react";
 import { TDataTableProps } from "./types";
 import {
@@ -9,7 +9,7 @@ import {
   generateOnFilter,
 } from "./Utils";
 import type { ColumnsType } from "antd/es/table";
-import "./SDataTable.scss";
+import "./style.scss";
 import NoResult from "common/NoResult";
 import { paginationSize } from "common/AntTable";
 export const DataTable: React.FC<TDataTableProps> = (property) => {
@@ -101,21 +101,31 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
         }${!data?.length ? "hidden_scroolbar" : ""}`}
       >
         {title ? <h6 className="table_title">{title}</h6> : ""}
-        {data?.length ? (
+        <ConfigProvider
+          renderEmpty={(cmp) => {
+            return <NoResult title={"No Data Found"} para={""} />;
+          }}
+        >
           <Table
             bordered={bordered}
             title={headerTitle}
             columns={columnsModify}
-            dataSource={data}
+            dataSource={data?.map((itm: any, index: number) => ({
+              ...itm,
+              key: index,
+            }))}
             loading={loading}
             rowClassName={rowClassName}
             rowSelection={
               rowSelection &&
               (rowSelection?.isActive || rowSelection?.isActive === undefined)
-                ? rowSelection
+                ? { ...rowSelection, columnWidth: 15 }
                 : undefined
             }
-            scroll={scroll ? scroll : { y: 465, x: "100%" }}
+            scroll={{
+              x: (scroll && scroll.x) || "100%",
+              y: (scroll && scroll.y) || 465,
+            }}
             onHeaderRow={onHeaderRow}
             onRow={onRow}
             pagination={
@@ -130,6 +140,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
                     pageSize: pagination.pageSize || pageSize,
 
                     pageSizeOptions: pagination.pageSizeOptions || [
+                      "5",
                       "25",
                       "100",
                       "500",
@@ -146,9 +157,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
             expandable={expandable}
             rowKey={(record) => record?.key}
           />
-        ) : (
-          <NoResult title={"No Data Found"} para={""} />
-        )}
+        </ConfigProvider>
       </div>
     </>
   );
