@@ -76,6 +76,8 @@ export const removerPolicy = (
   values.intWorkplaceList = temp;
 };
 export const isPolicyExist = (values, allPolicies, setExistingPolicies) => {
+  // console.log({ values });
+  // console.log({ allPolicies });
   if (
     !values?.intLeaveType?.value ||
     !values?.intYear?.value ||
@@ -97,18 +99,19 @@ export const isPolicyExist = (values, allPolicies, setExistingPolicies) => {
         (itm) => itm.value === policy.intGenderId
       );
       const isEmploymentTypeExist = values?.intEmploymentTypeList?.some(
-        (itm) => itm.Id === policy.intEmploymentId
+        (itm) => itm.value === policy.intEmploymentId
       );
       const isWorkplaceExist = values?.intWorkplaceList?.some(
         (itm) => itm.value === policy.intWorkplace
       );
+
       if (isGenderExist && isEmploymentTypeExist && isWorkplaceExist) {
         existingData?.push(policy);
       }
     }
   });
 
-  setExistingPolicies((prev) => [...prev, ...existingData]);
+  setExistingPolicies((prev) => [...existingData]);
   // return existingData
 };
 
@@ -204,15 +207,15 @@ export const getYearlyPolicyById = async (
         },
       };
       // setExistingPolicies?.(
-      let dummy = [];
+      const dummy = [];
 
       res?.data?.intExistingPolicyIdList?.forEach((itm) => {
         let a = allPolicies?.find((it) => it.intPolicyId === itm);
-        if (a) {
+        if (a?.intPolicyId) {
           dummy.push(a);
         }
       });
-      setExistingPolicies((prev = []) => [...dummy, ...prev]);
+      setExistingPolicies((prev) => [...dummy]);
       // );
       setter?.(temp);
     }

@@ -332,10 +332,10 @@ export const bgColors = [
   "#FEF0D7",
 ];
 export const initHeaderList = {
-  designations: [],
-  departments: [],
-  genders: [],
-  hrLists: [],
+  designationList: [],
+  departmentList: [],
+  genderList: [],
+  hrList: [],
   // soleDepoNameList: [],
   // regionNameList: [],
   // areaNameList: [],
