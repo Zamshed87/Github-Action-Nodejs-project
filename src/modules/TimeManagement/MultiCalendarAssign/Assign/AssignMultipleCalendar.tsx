@@ -22,7 +22,7 @@ const AssignMultipleCalendar: React.FC<AssignMultipleCalendarType> = ({
   const [form] = Form.useForm();
 
   const DatewiseCalanderForEmployee = useApiRequest({});
-  const CalendarDDL = useApiRequest({});
+  const CalendarDDL = useApiRequest([]);
 
   const getEmpCalendarInfo = () => {
     const { date } = form.getFieldsValue(true);
