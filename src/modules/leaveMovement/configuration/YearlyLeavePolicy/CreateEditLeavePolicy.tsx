@@ -468,7 +468,7 @@ const CreateEditLeavePolicy = () => {
                               Leave Type?
                             </label>
                             <div
-                              style={{ width: "140px", marginLeft: "0.5em" }}
+                              style={{ width: "180px", marginLeft: "0.5em" }}
                             >
                               <FormikSelect
                                 name="intLeaveType"
@@ -521,7 +521,7 @@ const CreateEditLeavePolicy = () => {
                           <label style={{ marginTop: "0.7em" }}>
                             Previous Leave Type End
                           </label>
-                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                          <div style={{ width: "180px", marginLeft: "0.5em" }}>
                             <FormikSelect
                               name="inPreviousLveTypeEnd"
                               options={[
@@ -2343,6 +2343,7 @@ const CreateEditLeavePolicy = () => {
                               onChange={(value) => {
                                 setFieldValue("intWorkplaceList", value);
                                 const temp = { ...values };
+
                                 isPolicyExist(
                                   {
                                     ...temp,
@@ -2370,7 +2371,7 @@ const CreateEditLeavePolicy = () => {
                     className="d-flex"
                     style={{
                       borderLeft: `3px solid ${success500}`,
-                      minHeight: "215vh",
+                      minHeight: "219vh ",
                     }}
                   ></div>
                 </Col>
