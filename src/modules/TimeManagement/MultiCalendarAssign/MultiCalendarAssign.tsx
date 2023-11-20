@@ -36,7 +36,6 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     filerList,
     searchText = "",
   }: TLandingApi = {}) => {
-    console.log(searchText);
     MultiCalendarAssignLandingFilter?.action({
       urlKey: "MultiCalendarAssignLandingFilter",
       method: "POST",
