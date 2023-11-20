@@ -20,7 +20,6 @@ import {
   handleChangeRowsPerPage,
   initData,
   initHeaderList,
-  statusDDL,
   validationSchema,
 } from "./helper";
 import { Clear, SettingsBackupRestoreOutlined } from "@mui/icons-material";
@@ -154,20 +153,12 @@ function LeavePolicyAssign() {
     }
     // eslint-disable-next-line
   }, [singleShiftData]);
-  const {
-    handleSubmit,
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleBlur,
-    resetForm,
-  } = useFormik({
+  const { handleSubmit, values, setFieldValue } = useFormik({
     enableReinitialize: true,
     validationSchema,
     initialValues: initData,
 
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: (values, { resetForm }) => {
       resetForm(initData);
     },
   });
