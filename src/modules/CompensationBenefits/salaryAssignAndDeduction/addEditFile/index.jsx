@@ -122,7 +122,7 @@ function AddEditForm() {
   const [singleData, setSingleData] = useState("");
 
   //redux data
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -598,6 +598,7 @@ function AddEditForm() {
                                 getAllAllowanceAndDeduction(
                                   orgId,
                                   buId,
+                                  wId,
                                   setAllowanceAndDeductionDDL,
                                   valueOption?.value === "Addition"
                                     ? true
@@ -877,76 +878,75 @@ function AddEditForm() {
 
                                   <td width="40px">
                                     <div className="d-flex">
-                                      {isView &&(
-                                          <Tooltip title="Edit" arrow>
-                                            <button
-                                              className="iconButton"
-                                              type="button"
-                                            >
-                                              <EditOutlinedIcon
-                                                onClick={(e) => {
-                                                  setIsEdit(true);
-                                                  e.stopPropagation();
-                                                  scrollRef.current.scrollIntoView(
-                                                    {
-                                                      behavior: "smooth",
-                                                    }
-                                                  );
-                                                  setSingleData(item);
-                                                  setValues({
-                                                    ...values,
-                                                    employee: {
-                                                      value:
-                                                        item?.intEmployeeId,
-                                                      label:
-                                                        item?.strEmployeeName,
-                                                    },
-                                                    isAutoRenew:
-                                                      item?.isAutoRenew,
-                                                    fromMonth: `${
-                                                      item?.intYear
-                                                    }-${
-                                                      item?.intMonth <= 9
-                                                        ? `0${item?.intMonth}`
-                                                        : `${item?.intMonth}`
-                                                    }`,
-                                                    toMonth: `${
-                                                      item?.intToYear
-                                                    }-${
-                                                      item?.intToMonth <= 9
-                                                        ? `0${item?.intToMonth}`
-                                                        : `${item?.intToMonth}`
-                                                    }`,
-                                                    salaryType: {
-                                                      value: item?.isAddition
-                                                        ? "Addition"
-                                                        : "Deduction",
-                                                      label: item?.isAddition
-                                                        ? "Addition"
-                                                        : "Deduction",
-                                                    },
-                                                    allowanceAndDeduction: {
-                                                      value:
-                                                        item?.intAdditionNDeductionTypeId,
-                                                      label:
-                                                        item?.strAdditionNDeduction,
-                                                    },
-                                                    amountDimension: {
-                                                      value:
-                                                        item?.intAmountWillBeId,
-                                                      label:
-                                                        item?.strAmountWillBe,
-                                                    },
-                                                    amount: item?.numAmount,
-                                                  });
-                                                  !isFromOpen &&
-                                                    setIsFormOpen(!isFromOpen);
-                                                  deleteHandler(index);
-                                                }}
-                                              />
-                                            </button>
-                                          </Tooltip>
-                                        )}
+                                      {isView && (
+                                        <Tooltip title="Edit" arrow>
+                                          <button
+                                            className="iconButton"
+                                            type="button"
+                                          >
+                                            <EditOutlinedIcon
+                                              onClick={(e) => {
+                                                setIsEdit(true);
+                                                e.stopPropagation();
+                                                scrollRef.current.scrollIntoView(
+                                                  {
+                                                    behavior: "smooth",
+                                                  }
+                                                );
+                                                setSingleData(item);
+                                                setValues({
+                                                  ...values,
+                                                  employee: {
+                                                    value: item?.intEmployeeId,
+                                                    label:
+                                                      item?.strEmployeeName,
+                                                  },
+                                                  isAutoRenew:
+                                                    item?.isAutoRenew,
+                                                  fromMonth: `${
+                                                    item?.intYear
+                                                  }-${
+                                                    item?.intMonth <= 9
+                                                      ? `0${item?.intMonth}`
+                                                      : `${item?.intMonth}`
+                                                  }`,
+                                                  toMonth: `${
+                                                    item?.intToYear
+                                                  }-${
+                                                    item?.intToMonth <= 9
+                                                      ? `0${item?.intToMonth}`
+                                                      : `${item?.intToMonth}`
+                                                  }`,
+                                                  salaryType: {
+                                                    value: item?.isAddition
+                                                      ? "Addition"
+                                                      : "Deduction",
+                                                    label: item?.isAddition
+                                                      ? "Addition"
+                                                      : "Deduction",
+                                                  },
+                                                  allowanceAndDeduction: {
+                                                    value:
+                                                      item?.intAdditionNDeductionTypeId,
+                                                    label:
+                                                      item?.strAdditionNDeduction,
+                                                  },
+                                                  amountDimension: {
+                                                    value:
+                                                      item?.intAmountWillBeId,
+                                                    label:
+                                                      item?.strAmountWillBe,
+                                                  },
+                                                  amount: item?.numAmount,
+                                                });
+                                                !isFromOpen &&
+                                                  setIsFormOpen(!isFromOpen);
+                                                deleteHandler(index);
+                                              }}
+                                            />
+                                          </button>
+                                        </Tooltip>
+                                      )}
                                       {!isView && (
                                         <Tooltip title="Delete" arrow>
                                           <button

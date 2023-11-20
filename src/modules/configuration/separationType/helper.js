@@ -34,12 +34,13 @@ export const getSeparationType = async (
   accId,
   setter,
   setAllData,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetAllSeparationType?accountId=${accId}`
+      `/SaasMasterData/GetAllSeparationType?accountId=${accId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({

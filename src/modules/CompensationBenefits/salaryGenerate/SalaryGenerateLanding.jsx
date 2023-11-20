@@ -96,7 +96,7 @@ const SalaryGenerateLanding = () => {
     setOpen(false);
   };
 
-  const { orgId, buId, buName, employeeId, wgId } = useSelector(
+  const { orgId, buId, buName, employeeId, wgId, wId, wName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -113,6 +113,7 @@ const SalaryGenerateLanding = () => {
       orgId,
       buId,
       wgId,
+      wId,
       "",
       "",
       values?.filterFromDate,
@@ -129,6 +130,7 @@ const SalaryGenerateLanding = () => {
       orgId,
       buId,
       wgId,
+      wId,
       "",
       "",
       values?.filterFromDate,
@@ -191,8 +193,8 @@ const SalaryGenerateLanding = () => {
       intAccountId: orgId,
       intBusinessUnitId: buId,
       strBusinessUnit: buName,
-      intWorkplaceId: values?.workplace?.value,
-      strWorkplace: values?.workplace?.label,
+      intWorkplaceId: wId,
+      strWorkplace: wName,
       intWorkplaceGroupId: values?.workplaceGroup?.value,
       strWorkplaceGroup: values?.workplaceGroup?.label,
       intPayrollGroupId: values?.payrollGroup?.value,
@@ -293,7 +295,7 @@ const SalaryGenerateLanding = () => {
         filter: true,
         width: 120,
       },
-      {
+  /*     {
         title: "Wing",
         dataIndex: "wingName",
         sorter: true,
@@ -327,7 +329,7 @@ const SalaryGenerateLanding = () => {
         sorter: true,
         filter: true,
         width: 100,
-      },
+      }, */
       {
         title: "Payroll Month",
         dataIndex: "intMonth",
@@ -636,6 +638,7 @@ const SalaryGenerateLanding = () => {
                         orgId,
                         buId,
                         wgId,
+                        wId,
                         "",
                         "",
                         values?.filterFromDate,

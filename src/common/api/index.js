@@ -49,14 +49,15 @@ export const getAllGlobalEmploymentType = async (
   setter,
   setAllData,
   setLoading,
-  orgId
+  orgId,
+  wId
 ) => {
   setLoading && setLoading(true);
 
   // let status = statusId ? `&intStatusId=${statusId}` : "";
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetAllEmploymentType?accountId=${orgId}`
+      `/SaasMasterData/GetAllEmploymentType?accountId=${orgId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({
@@ -73,12 +74,19 @@ export const getAllGlobalEmploymentType = async (
   }
 };
 
-export const getAllGlobalLoanType = async (setter, setAllData, setLoading) => {
+export const getAllGlobalLoanType = async (
+  wId,
+  setter,
+  setAllData,
+  setLoading
+) => {
   setLoading && setLoading(true);
 
   // let status = statusId ? `&intStatusId=${statusId}` : "";
   try {
-    const res = await axios.get(`/SaasMasterData/GetAllEmpLoanType`);
+    const res = await axios.get(
+      `/SaasMasterData/GetAllEmpLoanType?workplaceId=${wId}`
+    );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({
         ...item,
@@ -186,15 +194,17 @@ export const getPeopleDeskAllLanding = async (
   setLoading,
   statusId,
   year,
-  wgId
+  wgId,
+  wId
 ) => {
   setLoading && setLoading(true);
 
   let status = statusId ? `&intStatusId=${statusId}` : "";
   let yearFilter = year ? `&YearId=${year}` : "";
+  let workplace = wId ? `&workplaceId=${wId}` : "";
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}&WorkplaceGroupId=${wgId}&intId=${id}`
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}${workplace}&WorkplaceGroupId=${wgId}&intId=${id}`
     );
     if (res?.data) {
       setter && setter(res?.data);
@@ -538,13 +548,39 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
   return axios
     .get(
       `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
+      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoForEmpMgmt&AccountId=${intAccountId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}&SearchTxt=${v}`
     )
     .then((res) => {
       const modifiedData = res?.data?.map((item) => {
         return {
           ...item,
           value: item?.employeeId,
-          label: item?.employeeNameWithCode,
+          label: item?.employeeName,
+        };
+      });
+      return modifiedData;
+    })
+    .catch((err) => []);
+};
+export const getSearchEmployeeListForEmp = (
+  buId,
+  wgId,
+  intAccountId,
+  employeeId,
+  v
+) => {
+  if (v?.length < 2) return [];
+  return axios
+    .get(
+      // `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoForEmpMgmt&AccountId=${intAccountId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}&SearchTxt=${v}`
+    )
+    .then((res) => {
+      const modifiedData = res?.data?.map((item) => {
+        return {
+          ...item,
+          value: item?.EmployeeId,
+          label: item?.EmployeeOnlyName,
         };
       });
       return modifiedData;

@@ -32,12 +32,13 @@ export const getAllRoleAssignLanding = async (
   buId,
   setter,
   setAllData,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetAllDesignation?accountId=${orgId}&businessUnitId=${buId}`
+      `/SaasMasterData/GetAllDesignation?accountId=${orgId}&businessUnitId=${buId}&workplaceId=${wId}`
     );
     if (res?.data) {
       setter(res?.data);

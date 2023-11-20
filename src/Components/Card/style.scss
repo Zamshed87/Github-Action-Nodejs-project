@@ -1,0 +1,55 @@
+.PeopleDeskCardWrapper {
+  margin: 46px 0 10px;
+}
+.people_desk_cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  .header_left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    .back_button {
+      cursor: pointer;
+      .anticon {
+        font-size: 14px;
+        font-weight: 600;
+        color: #000;
+        padding: 5px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        &:hover {
+          background: var(--gray200);
+        }
+      }
+    }
+    .export_icon .anticon {
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+      background: var(--gray200);
+      border-radius: 50%;
+      padding: 5px;
+      cursor: pointer;
+    }
+    .title {
+      color: var(--gray600);
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+  .header_right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+}
+.peopleDeskCardBody {
+  background: var(--white);
+  border-radius: 4px;
+  box-shadow: var(--shadowTwo);
+  padding: 10px 10px;
+}

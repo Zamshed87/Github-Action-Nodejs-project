@@ -20,6 +20,8 @@ export const initDataForLeaveApplication = {
   reason: "",
   fromDate: "",
   toDate: "",
+  halfTime: "",
+  isHalfDay: "",
   year: { value: moment().year(), label: moment().year() },
 };
 
@@ -127,6 +129,10 @@ export const empMgmtLeaveApplicationDtoColumn = (
       render: (date) => dateFormatter(date),
       sorter: false,
       filter: false,
+    },
+    {
+      title: "Half Day",
+      dataIndex: "HalfDayRange",
     },
     {
       title: "Status",

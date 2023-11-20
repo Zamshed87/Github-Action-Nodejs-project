@@ -44,7 +44,7 @@ const PayrollElementCreate = () => {
   ] = useAxiosGet();
   const [permissionDisabled, setPermissionDisabled] = useState(false);
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -98,7 +98,7 @@ const PayrollElementCreate = () => {
   });
 
   useEffect(() => {
-    getAllPayrollElementType(orgId, setRowDto, setLoading);
+    getAllPayrollElementType(orgId, wId, setRowDto, setLoading);
     setEditPermission(null);
   }, [orgId, buId]);
 
@@ -106,7 +106,7 @@ const PayrollElementCreate = () => {
     const callback = () => {
       cb();
       setEditPermission(null);
-      getAllPayrollElementType(orgId, setRowDto, setLoading);
+      getAllPayrollElementType(orgId, wId, setRowDto, setLoading);
       setIsEdit(false);
       setSingleData("");
     };
@@ -126,6 +126,7 @@ const PayrollElementCreate = () => {
     const payload = {
       intPayrollElementTypeId: singleData?.intPayrollElementTypeId || 0,
       intAccountId: orgId,
+      intWorkplaceId: wId,
       strPayrollElementName: values?.elementName,
       strCode: " ",
       isBasicSalary: values?.isBasic || false,
@@ -157,7 +158,7 @@ const PayrollElementCreate = () => {
       setIsEdit(false);
       resetForm(initData);
       setSingleData("");
-      getAllPayrollElementType(orgId, setRowDto, setLoading);
+      getAllPayrollElementType(orgId, wId, setRowDto, setLoading);
     };
     let confirmObject = {
       closeOnClickOutside: false,
@@ -236,7 +237,7 @@ const PayrollElementCreate = () => {
                   setPermissionDisabled(false);
                   setEditPermission(null);
                   getEditPermission(
-                    `/Payroll/IsSalaryElementById?accountId=${orgId}&bussinessUnitId=${buId}&typeId=${item?.intPayrollElementTypeId}`
+                    `/Payroll/IsSalaryElementById?accountId=${orgId}&bussinessUnitId=${buId}&typeId=${item?.intPayrollElementTypeId}&workplaceId${wId}`
                   );
                   setValues({
                     ...values,
@@ -262,7 +263,7 @@ const PayrollElementCreate = () => {
                   setPermissionDisabled(false);
                   setEditPermission(null);
                   getEditPermission(
-                    `/Payroll/IsSalaryElementById?accountId=${orgId}&bussinessUnitId=${buId}&typeId=${item?.intPayrollElementTypeId}`,
+                    `/Payroll/IsSalaryElementById?accountId=${orgId}&bussinessUnitId=${buId}&typeId=${item?.intPayrollElementTypeId}&workplaceId${wId}`,
                     (res) => {
                       if (res?.isSalary || res?.isAllowance) {
                         toast.warning(

@@ -1,6 +1,6 @@
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 import Axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 // components
@@ -38,35 +38,60 @@ export const domainUrl =
   process.env.NODE_ENV === "development"
     ? "https://devmatador.peopledesk.io"
     : origin;
+const isDevServer = APIUrl.includes("dev");
 
-if (process.env.NODE_ENV === "production") {
-  disableReactDevTools();
-}
+// if (process.env.NODE_ENV === "production") {
+//   disableReactDevTools();
+// }
 
 Axios.interceptors.request.use(
-  async function (config) {
+  (config: any) => {
+    if (process.env.NODE_ENV === "development" || isDevServer) return config;
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
       if (url.includes(`${element}`)) return config;
     }
     let newConfig = { ...config };
+    let paramsQuery = "";
+
     const isIncludesQueryString = url.includes("?");
 
     if (isIncludesQueryString) {
-      let splitUrl = url.split("?");
-      const encryptedQuery = await _zx123_Zx001_45___45_9999_(splitUrl[1]);
-      url = `${splitUrl[0]}?${encryptedQuery}`;
-
-      newConfig = { ...config, url };
+      const splitUrl = url.split("?");
+      paramsQuery += splitUrl[1];
+      url = splitUrl[0];
     }
+    if (config.params) {
+      const params = Object.keys(config.params)
+        .map(
+          (key) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(
+              config.params[key]
+            )}`
+        )
+        .join("&");
+
+      paramsQuery += (paramsQuery ? "&" : "") + params;
+      config.params = null;
+      newConfig.params = null;
+    }
+
+    if (paramsQuery) {
+      const encryptedParamsQuery = _zx123_Zx001_45___45_9999_(paramsQuery);
+      url += "?" + encryptedParamsQuery;
+    }
+
+    newConfig.url = url;
+
     let payload = null;
 
     if (config.data) {
-      payload = await _zx123_Zx001_45___45_9999_(JSON.stringify(config.data));
-    }
-
-    if (process.env.NODE_ENV === "development") {
+      try {
+        payload = _zx123_Zx001_45___45_9999_(JSON.stringify(config.data));
+      } catch (error) {
+        console.error("Error encrypting payload", error);
+      }
     }
 
     newConfig = {
@@ -76,22 +101,23 @@ Axios.interceptors.request.use(
     };
     return newConfig;
   },
-  function (error) {
+  (error: any) => {
     if (process.env.NODE_ENV === "development") {
+      console.error("Error in request", error);
     }
     return Promise.reject(error);
   }
 );
-
 Axios.interceptors.response.use(
-  async function (response) {
+  async function (response: any) {
+    if (process.env.NODE_ENV === "development" || isDevServer) return response;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
       if (response?.config?.url?.includes(`${element}`)) return response;
     }
 
-    let decryptedData = _Ad_xcvbn_df__dfg_568_dfghfff_(response?.data);
-    let decryptedRes = {
+    const decryptedData = _Ad_xcvbn_df__dfg_568_dfghfff_(response?.data);
+    const decryptedRes = {
       status: response.status,
       data: decryptedData,
     };
@@ -108,12 +134,13 @@ Axios.interceptors.response.use(
       };
 
       try {
-        let apiRefreshResponse = await Axios.post(
+        const apiRefreshResponse = await Axios.post(
           "/Auth/GenerateRefreshToken",
           payload
         );
         if (apiRefreshResponse?.status === 200) {
-          store.dispatch(
+          const dispatch: any = store.dispatch;
+          dispatch(
             refreshTokenAction({
               ...state?.auth?.profileData,
               token: apiRefreshResponse?.data?.accessToken,
@@ -127,37 +154,39 @@ Axios.interceptors.response.use(
           window.location.reload();
           // return Axios(originalConfig);
         }
-      } catch (error) {}
+      } catch (error) {
+        // console.log(error)
+      }
     }
 
-    if (process.env.NODE_ENV === "development") {
-    }
-    let decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
+    const decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
       error?.response?.data
     );
-    let newError = { response: { data: decryptedData } };
+    const newError = { response: { data: decryptedData } };
     return Promise.reject(newError);
   }
 );
 
 function App() {
   const { isAuth, isLoggedInWithOtp, isOtpAuth } = useSelector(
-    (state) => state?.auth?.profileData,
+    (state: any) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const { tokenData } = useSelector((state) => state?.auth, shallowEqual);
-  Axios.defaults.headers.common["Authorization"] = `Bearer ${tokenData}`;
+  const { tokenData } = useSelector((state: any) => state?.auth, shallowEqual);
+
+  if (tokenData)
+    Axios.defaults.headers.common["Authorization"] = `Bearer ${tokenData}`;
 
   useEffect(() => {
-    let appVersion = localStorage.getItem("appVersion");
+    const appVersion = localStorage.getItem("appVersion");
     if (appVersion !== PackageJson.version) {
       localStorage.setItem("appVersion", PackageJson.version);
       window.location.reload();
     }
   }, []);
 
-  const componentRender = (isOpen) => {
+  const componentRender = (isOpen: boolean) => {
     if (isOpen) return "";
     if (isLoggedInWithOtp) {
       if (isOtpAuth) {
@@ -176,7 +205,7 @@ function App() {
 
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
-    let interval = null;
+    let interval: any = null;
     if (origin === prodUrl) {
       interval = setInterval(() => {
         if (!isOpen) {
@@ -191,7 +220,7 @@ function App() {
 
   return (
     <div className="app">
-      {componentRender(isOpen)}
+      {componentRender(false)}
       <ToastContainer
         position="bottom-right"
         newestOnTop={true}

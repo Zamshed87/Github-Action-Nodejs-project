@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import AvatarComponent from "../../../../common/AvatarComponent";
+import { convertTo12HourFormat } from "../../../../utility/timeFormatter";
 
 export const getBuDetails = async (buId, setter, setLoading) => {
   try {
@@ -122,16 +123,27 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
     {
       title: "In Time",
       dataIndex: "inTime",
-      render: (record) => record?.inTime || "N/A",
+      render: (record) => (
+        <span>
+          {record?.inTime ? convertTo12HourFormat(record?.inTime) : "N/A"}
+        </span>
+      ),
       sort: false,
       filter: false,
+      width:80
     },
     {
       title: "Out Time",
       dataIndex: "outTime",
-      render: (record) => record?.outTime || "N/A",
+      render: (record) => (
+        <span>
+          {record?.outTime ? convertTo12HourFormat(record?.outTime) : "N/A"}
+        </span>
+      ),
+
       sort: false,
       filter: false,
+      width:80
     },
     {
       title: "Duration",

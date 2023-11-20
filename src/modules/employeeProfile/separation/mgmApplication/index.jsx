@@ -139,7 +139,7 @@ export default function ManagementSeparation() {
       wId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   return (
     <>

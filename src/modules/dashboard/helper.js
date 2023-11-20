@@ -1,5 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import AvatarComponent from "../../common/AvatarComponent";
+import { gray600 } from "../../utility/customColor";
 
 export const getPeopleDeskAllLanding = async (
   tableName,
@@ -52,6 +54,19 @@ export const getMidLevelDashboard = async (
     setter(res?.data);
   } catch (error) {}
 };
+
+export const getBirthAnniversary = async (setter, setLoading) =>{
+  try{
+    setLoading(true)
+
+    const res = await axios.get(`/SaasMasterData/BirthDayWorkAnniversary`)
+    setter(res?.data)
+    setLoading(false)
+
+  }catch(error){
+
+  }
+}
 
 export const getTopLevelDashboard = async (employeeId, buId, setter) => {
   try {
@@ -266,4 +281,27 @@ export const getDashboardDeptSecEmpTypeWiseEmployee = async (
   } catch (error) {
     setter([]);
   }
+};
+
+
+export const workannivarsayList = (
+  rowDto,
+  filterData,
+  setFilterData,
+  setRowDto,
+  setLoading,
+  
+) => {
+  return [
+    {
+      title: "SL",
+      render: (text, record, index) => index + 1,
+      className: "text-center",
+    },
+    
+    {
+      title: () => <span style={{ color: gray600 }}>Description</span>,
+      dataIndex: "birthDay",
+    },
+  ].filter((item) => !item.hidden);
 };

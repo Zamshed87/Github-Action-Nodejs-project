@@ -40,7 +40,7 @@ const statusDDL = [
 ];
 
 function HRPosition() {
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -86,7 +86,7 @@ function HRPosition() {
 
   const getData = () => {
     getControlPanelAllLanding({
-      apiUrl: `/SaasMasterData/GetAllPosition?accountId=${orgId}&businessUnitId=${buId}`,
+      apiUrl: `/SaasMasterData/GetAllPosition?accountId=${orgId}&businessUnitId=${buId}&workplaceId=${wId}`,
       setLoading,
       setter: setRowDto,
       setAllData,

@@ -1,4 +1,13 @@
 import { lazy } from "react";
+
+const MultiCalendarAssign = lazy(() =>
+  import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
+);
+const CreateEditLeavePolicy = lazy(() =>
+  import(
+    "../modules/leaveMovement/configuration/YearlyLeavePolicy/CreateEditLeavePolicy"
+  )
+);
 const TerritoryType = lazy(() =>
   import("../modules/configuration/territoryType/index.js")
 );
@@ -586,7 +595,7 @@ const AboutMeDetails = lazy(() =>
   import("../modules/employeeProfile/employeeFeature/AboutMeCommon/index.jsx")
 );
 const EmployeeFeatureNew = lazy(() =>
-  import("../modules/employeeProfile/employeeFeature/indexNew.jsx")
+  import("../modules/employeeProfile/employeeFeature/indexNew")
 );
 const FoodCorner = lazy(() =>
   import("../modules/employeeProfile/foodCorner/FoodCorner.jsx")
@@ -1011,7 +1020,9 @@ const AttendanceProcessLanding = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceProcess/index.jsx")
 );
 const AttendanceGenerateProcessForm = lazy(() =>
-  import("../modules/timeSheet/attendence/attendanceProcess/AttendanceGenerateProcessForm.jsx")
+  import(
+    "../modules/timeSheet/attendence/attendanceProcess/AttendanceGenerateProcessForm.jsx"
+  )
 );
 const CalendarSetup = lazy(() =>
   import("../modules/timeSheet/configuration/calenderSetup/index.jsx")
@@ -1056,6 +1067,9 @@ const UnderCreateRosterSetup = lazy(() =>
 );
 const Calendar = lazy(() =>
   import("../modules/timeSheet/employeeAssign/calendar/index.jsx")
+);
+const LeavePolicyAssign = lazy(() =>
+  import("../modules/timeSheet/employeeAssign/leavePolicyAssign/index.jsx")
 );
 const HolidayException = lazy(() =>
   import("../modules/timeSheet/employeeAssign/HolidayException/index.jsx")
@@ -1619,6 +1633,14 @@ export const routingList = [
     component: YearlyLeavePolicy,
   },
   {
+    path: "/administration/leaveandmovement/yearlyLeavePolicy/create",
+    component: CreateEditLeavePolicy,
+  },
+  {
+    path: "/administration/leaveandmovement/yearlyLeavePolicy/edit/:id",
+    component: CreateEditLeavePolicy,
+  },
+  {
     path: "/administration/timeManagement/holidaySetup",
     component: HolidaySetup,
   },
@@ -1667,6 +1689,10 @@ export const routingList = [
     component: Calendar,
   },
   {
+    path: "/administration/timeManagement/leavePolicyAssign",
+    component: LeavePolicyAssign,
+  },
+  {
     path: "/administration/timeManagement/offDayAssign",
     component: OffDay,
   },
@@ -1677,6 +1703,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/locationAssign",
     component: LocationAssign,
+  },
+  {
+    path: "/administration/timeManagement/multiCalendarAssign",
+    component: MultiCalendarAssign,
   },
   { path: "/administration/loanManagement/loanType", component: LoanType },
   {

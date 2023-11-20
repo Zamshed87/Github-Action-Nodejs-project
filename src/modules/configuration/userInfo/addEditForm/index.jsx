@@ -41,10 +41,10 @@ const validationSchema = Yup.object().shape({
     .typeError("Password is required")
     .min(4, "Minimum 4 character"),
   email: Yup.string().required("Invalid email").typeError("Invalid email"),
-  phone: Yup.string()
-    .matches(/^01[1-9]\d{8}$/, "Phone number is invalid")
-    .required("Phone number is required")
-    .typeError("Phone number is required"),
+  // phone: Yup.string()
+  //   .matches(/^01[1-9]\d{8}$/, "Phone number is invalid")
+  //   .required("Phone number is required")
+  //   .typeError("Phone number is required"),
   userType: Yup.object()
     .shape({
       label: Yup.string().required("User type is required"),
