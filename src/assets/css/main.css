@@ -1033,8 +1033,11 @@ h6.count {
   overflow-y: scroll;
   max-height: 67vh;
 }
-.leavePolicy-container .highlight .css-duqz4i-MuiFormControlLabel-root .MuiFormControlLabel-label {
-  color: black !important;  
+.leavePolicy-container
+  .highlight
+  .css-duqz4i-MuiFormControlLabel-root
+  .MuiFormControlLabel-label {
+  color: black !important;
   font-weight: 700 !important;
 }
 .leavePolicy-container .table-card {
