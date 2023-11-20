@@ -36,7 +36,6 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     filerList,
     searchText = "",
   }: TLandingApi = {}) => {
-    console.log(filerList);
     MultiCalendarAssignLandingFilter?.action({
       urlKey: "MultiCalendarAssignLandingFilter",
       method: "POST",
@@ -82,11 +81,6 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
-
-  // Search
-  const searchFunc = debounce((value) => {
-    landingApi({ searchText: value });
-  }, 500);
 
   // Table Header
   const header: any = [
@@ -182,7 +176,10 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
           title={`Total Record: ${
             MultiCalendarAssignLandingFilter?.data?.totalCount || 0
           }`}
-          onSearch={(e) => searchFunc(e?.target?.value || "")}
+          onSearch={(e) => {
+            landingApi({ searchText: e?.target?.value || "" });
+          }}
+          // onSearch={(e) => searchFunc(e?.target?.value || "")}
           buttonList={[{ type: "primary", content: "Assign" }]}
         />
 

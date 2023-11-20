@@ -91,7 +91,7 @@ export type InputProperty<T extends InputType> = {
   format?: format;
   checked?: checked;
   onSearch?: T extends "search" ? onSearch : never;
-  onPressEnter?: T extends "textarea" ? onPressEnter : never;
+  onPressEnter?: onPressEnter;
   showCount?: T extends "textarea" ? boolean : never;
   minLength?: T extends "textarea" ? number : never;
   maxLength?: T extends "textarea" ? number : never;

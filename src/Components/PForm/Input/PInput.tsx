@@ -84,6 +84,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       <Input
         placeholder={placeholder}
         onChange={onChange as onChange}
+        onPressEnter={onPressEnter}
         defaultValue={defaultValue}
         disabled={disabled}
         prefix={prefix}
