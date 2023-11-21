@@ -14,7 +14,7 @@ import { Popconfirm, Tooltip } from "antd";
 export const TableButton: React.FC<TableButtonType> = (property) => {
   const { parentStyle, buttonsList } = property;
 
-  const btnList: Record<buttonType, JSX.Element> = {
+  const btnList: Record<buttonType, React.ReactElement> = {
     edit: <EditOutlined />,
     delete: <DeleteOutlined />,
     view: <EyeOutlined />,

@@ -33,7 +33,8 @@
     "no-compare-neg-zero": "off",
     "@typescript-eslint/no-array-constructor": "off",
     "no-prototype-builtins": "off",
-    "jsx-a11y/img-redundant-alt": "off"
+    "jsx-a11y/img-redundant-alt": "off",
+    "no-unexpected-multiline": "warn"
   },
   "settings": {
     "react": {
