@@ -35,12 +35,13 @@ import { IconButton, Tooltip, Alert } from "@mui/material";
 import MultiCheckedSelect from "../../../../common/MultiCheckedSelect";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { toast } from "react-toastify";
-import { Col, List, Row, Typography } from "antd";
+import { Col, Form, List, Row, Typography, Divider } from "antd";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { useApiRequest } from "../../../../Hooks";
 import Loading from "common/loading/Loading";
 import { useHistory } from "react-router-dom";
+import { PForm, PInput, PSelect } from "Components";
 
 const CreateEditLeavePolicy = () => {
   const policyApi = useApiRequest([]);
@@ -301,6 +302,7 @@ const CreateEditLeavePolicy = () => {
       saveHandler(values, () => resetForm(initData));
     },
   });
+  const [form] = Form.useForm();
 
   return (
     <form onSubmit={handleSubmit}>
