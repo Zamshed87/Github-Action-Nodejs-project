@@ -1,3 +1,4 @@
+import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import { lazy } from "react";
 
 const MultiCalendarAssign = lazy(() =>
@@ -1801,6 +1802,10 @@ export const routingList = [
   {
     path: "/administration/configuration/managementDashboardPermission/view/:id",
     component: ManagementDashboardPermissionDetails,
+  },
+  {
+    path: "/administration/configuration/employeeDivision",
+    component: EmployeeDivision,
   },
   { path: "/SelfService/dashboard", component: SelfDashboard },
   { path: "/SelfService/aboutMe", component: AboutMe },

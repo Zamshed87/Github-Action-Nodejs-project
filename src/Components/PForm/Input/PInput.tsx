@@ -91,7 +91,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
         suffix={suffix}
         allowClear={allowClear}
         value={value}
-        type={type}
+        type={type || "text"}
       />
     );
   };
@@ -102,7 +102,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
         label={label}
         name={name}
         rules={rules}
-        valuePropName={valuePropName || "checked"}
+        valuePropName={type === "checkbox" ? "checked" : valuePropName}
         hasFeedback={hasFeedback}
         style={{ marginBottom: 0 }}
       >
