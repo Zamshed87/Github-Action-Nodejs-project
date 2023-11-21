@@ -107,9 +107,19 @@ export const isPolicyExist = (values, allPolicies, setExistingPolicies) => {
       const isHR = values?.hrPositionListDTO?.some(
         (itm) => itm.value === policy.intHrPositionId
       );
-
-      if (isGenderExist && isEmploymentTypeExist && isWorkplaceExist && isHR) {
-        existingData?.push(policy);
+      if (values?.hrPositionListDTO?.length > 0) {
+        if (
+          isGenderExist &&
+          isEmploymentTypeExist &&
+          isWorkplaceExist &&
+          isHR
+        ) {
+          existingData?.push(policy);
+        }
+      } else {
+        if (isGenderExist && isEmploymentTypeExist && isWorkplaceExist) {
+          existingData?.push(policy);
+        }
       }
     }
   });
@@ -230,4 +240,61 @@ export const getYearlyPolicyById = async (
 
     toast.error(error?.response?.data?.message);
   }
+};
+export const initData = {
+  intWorkplaceList: [],
+  intYear: "",
+  intEmploymentTypeList: "",
+  intLeaveType: "",
+  intGender: "",
+  days: "",
+  strDisplayName: "",
+  strPolicyName: "",
+  isDependOnServiceLength: false,
+  intStartServiceLengthInYear: "",
+  intEndServiceLengthInYear: "",
+  intLveInDay: "",
+  intAllocatedLveInDay: "",
+  isMinuteBased: false,
+  isIncludeOffday: false,
+  isIncludeHoliday: false,
+  isLveBalanceApplyForSelfService: false,
+  isLveBalanceShowForSelfService: false,
+  isProdataBasis: false,
+  inPreviousLveTypeEnd: false,
+  intMaxLveDaySelf: "",
+  intMaxLveApplicationSelfInYear: "",
+  intMaxLveApplicationSelfInMonth: "",
+  isHalfDayLeave: false,
+  intHalfdayMaxInMonth: "",
+  intHalfdayMaxInYear: "",
+  intHalfdayPreviousLveTypeEnd: "",
+  isEncashable: false,
+  intMaxEncashableLveInDay: "",
+  intEncashableMonth: "",
+  isCompensatoryLve: false,
+  intConpensatoryLveExpireInDays: "",
+  isEarnLeave: false,
+  intDayForOneEarnLve: "",
+  isEarnLveIncludeHoliday: false,
+  isEarnLveIncludeOffday: false,
+  intEarnLveInDay: "",
+  isCarryForward: false,
+  intCarryForwardMaxInDay: "",
+  intCarryForwardMonth: "",
+  intCarryForwarExpiryMonth: "",
+  intCarryForwarExpiryDay: "",
+  isAutoRenewable: false,
+  intActiveFromJoiningdayInDay: "",
+  intActiveFromConfirmationInDay: "",
+  isApplicableBeforeAndAfterHoliday: false,
+  isApplicableBeforeAndAfterOffday: false,
+  isMonthWiseExpired: false,
+  howMuchMonth: "",
+  bu: "",
+  wg: "",
+  isGenerate: false,
+  isAdvanceLeave: false,
+  intMaxForAdvLveInYear: "",
+  hrPositionListDTO: "",
 };
