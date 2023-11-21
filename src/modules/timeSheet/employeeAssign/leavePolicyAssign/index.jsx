@@ -259,7 +259,7 @@ function LeavePolicyAssign() {
                                     payload.push({
                                       intEmpId: item?.intEmpId,
                                       intPolicyId: item?.intPolicyId,
-                                      intLeaveYear: values?.year?.value,
+                                      intYear: values?.year?.value,
                                     });
                                   }
                                 });
