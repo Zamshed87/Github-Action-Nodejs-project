@@ -1,7 +1,7 @@
 import { FormInstance } from "antd/es/form";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import { Moment } from "moment";
-import { ChangeEvent } from "react";
+import moment, { Moment } from "moment";
+import React, { ChangeEvent } from "react";
 
 type onFinishFailedParams = {
   values: any;
@@ -23,7 +23,7 @@ export type FormProperty = {
   layout?: "horizontal" | "vertical" | "inline";
   onValuesChange?: (changedValues: any, allValues: any) => void;
   onFieldsChange?: (changedValues: any, allValues: any) => void;
-  children?: React.ReactNode;
+  children?: any;
 };
 
 export type InputType =
@@ -53,9 +53,7 @@ type checked = InputType extends "checkbox" ? boolean : undefined;
 // On Change types
 export type onDateChange = (value?: Moment | any, dateString?: string) => void;
 export type onCheckBoxChange = (e?: CheckboxChangeEvent) => void | any;
-export type onTextAreaChange = (
-  e?: React.ChangeEvent<HTMLTextAreaElement>
-) => void;
+export type onTextAreaChange = (e?: ChangeEvent<HTMLTextAreaElement>) => void;
 export type onChange = (e?: ChangeEvent<HTMLInputElement>) => void | any;
 export type onSearch = (value: any, event: any) => void;
 export type onPressEnter = (event: any) => void;

@@ -11,4 +11,6 @@ export const apiPath = {
     "/SaasMasterData/GetBusinessDetailsByBusinessUnitId",
   DatewiseCalanderForEmployee: "/Employee/DatewiseCalanderForEmployee",
   PeopleDeskAllDDL: "/PeopleDeskDDL/PeopleDeskAllDDL",
+  GetEmployeeDivision: "/SaasMasterData/GetEmployeeDivision",
+  SaveEmployeeDivision: "/SaasMasterData/SaveEmployeeDivision",
 };

@@ -3,7 +3,7 @@ import { Modal, ModalProps } from "antd";
 import { PButton, buttonType } from "Components/Button/PButton";
 import "./style.scss";
 type TModalType = {
-  components: React.ReactNode | JSX.Element;
+  components: React.ReactNode;
   footerButtons?: {
     type: buttonType;
     content: string;
@@ -34,12 +34,14 @@ type modalFooterType = {
   cancelText?: string | boolean;
   onSubmit?: () => void;
   onCancel?: () => void;
+  submitAction?: "submit" | "button";
 };
 export const ModalFooter: React.FC<modalFooterType> = ({
   cancelText,
   submitText,
   onSubmit,
   onCancel,
+  submitAction,
 }) => {
   const hideSubmitButton = submitText === false;
   const submitButtonText =
@@ -58,7 +60,12 @@ export const ModalFooter: React.FC<modalFooterType> = ({
         />
       ) : undefined}
       {!hideSubmitButton ? (
-        <PButton type="primary" content={submitButtonText} onClick={onSubmit} />
+        <PButton
+          type="primary"
+          content={submitButtonText}
+          onClick={onSubmit}
+          action={submitAction}
+        />
       ) : undefined}
     </div>
   );
