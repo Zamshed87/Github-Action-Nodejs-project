@@ -2,7 +2,6 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import moment from "moment";
 import MasterFilter from "../../../../common/MasterFilter";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
@@ -12,21 +11,16 @@ import AddEditFormComponent from "./addEditForm";
 import ResetButton from "./../../../../common/ResetButton";
 import "./calendar.css";
 import {
-  bgColors,
-  colors,
   columns,
+  demoPopup,
   getData,
   handleChangePage,
   handleChangeRowsPerPage,
   initData,
   initHeaderList,
-  statusDDL,
   validationSchema,
 } from "./helper";
-import { Clear, SettingsBackupRestoreOutlined } from "@mui/icons-material";
-import Calender from "./component/Calender";
-import { IconButton, Popover } from "@mui/material";
-import { gray900 } from "../../../../utility/customColor";
+import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import PeopleDeskTable, {
   paginationSize,
 } from "../../../../common/peopleDeskTable";
@@ -59,28 +53,6 @@ function LeavePolicyAssign() {
   const [singleData, setSingleData] = useState([]);
   // const [checked, setChecked] = useState([]);
 
-  // shift info
-  const [singleShiftData, setSingleShiftData] = useState([]);
-  const [uniqueShift, setUniqueShift] = useState([]);
-
-  // colors
-  const [uniqueShiftColor, setUniqueShiftColor] = useState({});
-  const [uniqueShiftBg, setUniqueShiftBg] = useState({});
-
-  // modals
-  const [createModal, setCreateModal] = useState(false);
-  const handleCreateClose = () => setCreateModal(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
-  const [anchorEl2, setAnchorEl2] = useState(null);
-  const open2 = Boolean(anchorEl2);
-  const id2 = open2 ? "simple-popover" : undefined;
-
   // pagination
   const [pages, setPages] = useState({
     current: 1,
@@ -96,7 +68,7 @@ function LeavePolicyAssign() {
     ...initHeaderList,
   });
   const [checkedList, setCheckedList] = useState([]);
-  const [empIDString, setEmpIDString] = useState("");
+  const [empIDString, setEmpIDString] = useState([]);
   const [isAssignAll, setIsAssignAll] = useState(false);
 
   // sidebar
@@ -129,48 +101,22 @@ function LeavePolicyAssign() {
       initHeaderList,
       null,
       temp,
-      values?.year?.value
+      values?.year?.value,
+      setCheckedList
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
-  // assign colors to shift on shift load
-  useEffect(() => {
-    setUniqueShift([]);
-    if (singleShiftData?.length > 0) {
-      const data = [
-        ...new Set(singleShiftData.map((item) => item.strCalendarName)),
-      ];
-      let colorData = {};
-      let colorDataBg = {};
-      data.forEach((status, index) => {
-        colorData[status] = colors[index % colors.length];
-      });
-      setUniqueShiftColor(colorData);
-      data.forEach((status, index) => {
-        colorDataBg[status] = bgColors[index % bgColors.length];
-      });
-      setUniqueShiftBg(colorDataBg);
-      setUniqueShift(data);
-    }
-    // eslint-disable-next-line
-  }, [singleShiftData]);
-  const {
-    handleSubmit,
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleBlur,
-    resetForm,
-  } = useFormik({
+
+  const { handleSubmit, values, setFieldValue } = useFormik({
     enableReinitialize: true,
     validationSchema,
     initialValues: initData,
 
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: (values, { resetForm }) => {
       resetForm(initData);
     },
   });
+
   return (
     <>
       {landingLoading && <Loading />}
@@ -195,7 +141,7 @@ function LeavePolicyAssign() {
                 </div>
                 <div className="table-card-head-right">
                   <ul>
-                    {checkedList.length > 1 && (
+                    {/* {checkedList.length > 1 && (
                       <li>
                         <ResetButton
                           title="reset"
@@ -223,7 +169,11 @@ function LeavePolicyAssign() {
                               [],
                               -1,
                               filterOrderList,
-                              checkedHeaderList
+                              checkedHeaderList,
+                              null,
+                              state?.list,
+                              values?.year?.value,
+                              setCheckedList
                             );
 
                             // setRowDto(allData);
@@ -232,7 +182,7 @@ function LeavePolicyAssign() {
                           }}
                         />
                       </li>
-                    )}
+                    )} */}
                     <li>
                       {rowDto?.length > 0 && (
                         <div className="d-flex">
@@ -248,8 +198,42 @@ function LeavePolicyAssign() {
                               e.stopPropagation();
                               if (!permission?.isCreate)
                                 return toast.warn("You don't have permission");
-                              setIsAssignAll(true);
-                              setCreateModal(true);
+                              const cb = () => {
+                                getData(
+                                  {
+                                    current: 1,
+                                    pageSize: paginationSize,
+                                    total: 0,
+                                  },
+                                  setLandingLoading,
+                                  buId,
+                                  wgId,
+                                  wId,
+                                  headerList,
+                                  setHeaderList,
+                                  setFilterOrderList,
+                                  initialHeaderListData,
+                                  setInitialHeaderListData,
+                                  setPages,
+                                  setEmpIDString,
+                                  setRowDto,
+                                  "",
+                                  [],
+                                  -1,
+                                  [],
+                                  initHeaderList,
+                                  null,
+                                  state?.list,
+                                  values?.year?.value,
+                                  setCheckedList
+                                );
+                              };
+                              demoPopup(
+                                "assign",
+                                empIDString,
+                                cb,
+                                setLandingLoading
+                              );
                             }}
                           >
                             Assign {pages.total}
@@ -269,8 +253,52 @@ function LeavePolicyAssign() {
                                   return toast.warn(
                                     "You don't have permission"
                                   );
-                                setIsAssignAll(false);
-                                setCreateModal(true);
+                                let payload = [];
+                                rowDto?.forEach((item) => {
+                                  if (item?.isSelected) {
+                                    payload.push({
+                                      intEmpId: item?.intEmpId,
+                                      intPolicyId: item?.intPolicyId,
+                                      intLeaveYear: values?.year?.value,
+                                    });
+                                  }
+                                });
+                                const cb = () => {
+                                  getData(
+                                    {
+                                      current: 1,
+                                      pageSize: paginationSize,
+                                      total: 0,
+                                    },
+                                    setLandingLoading,
+                                    buId,
+                                    wgId,
+                                    wId,
+                                    headerList,
+                                    setHeaderList,
+                                    setFilterOrderList,
+                                    initialHeaderListData,
+                                    setInitialHeaderListData,
+                                    setPages,
+                                    setEmpIDString,
+                                    setRowDto,
+                                    "",
+                                    [],
+                                    -1,
+                                    [],
+                                    initHeaderList,
+                                    null,
+                                    state?.list,
+                                    values?.year?.value,
+                                    setCheckedList
+                                  );
+                                };
+                                demoPopup(
+                                  "assign",
+                                  payload,
+                                  cb,
+                                  setLandingLoading
+                                );
                               }}
                             >
                               Assign {checkedList.length}
@@ -383,7 +411,8 @@ function LeavePolicyAssign() {
                               checkedHeaderList,
                               null,
                               state?.list,
-                              values?.year?.value
+                              values?.year?.value,
+                              setCheckedList
                             );
                           } else {
                             getData(
@@ -435,7 +464,6 @@ function LeavePolicyAssign() {
                             0
                           );
                         }}
-                        handleClick={handleClick}
                         width="200px"
                         inputWidth="200px"
                       />
@@ -453,9 +481,6 @@ function LeavePolicyAssign() {
                     checkedList,
                     setCheckedList,
                     setSingleData,
-                    setCreateModal,
-                    setSingleShiftData,
-                    setAnchorEl2,
                     headerList,
                     wgName
                   )}
@@ -561,137 +586,6 @@ function LeavePolicyAssign() {
           </div>
         ) : (
           <NotPermittedPage />
-        )}
-
-        {/* View Form Modal */}
-        <AddEditFormComponent
-          show={createModal}
-          title={id ? "Edit Assign Calendar" : "Assign Calendar"}
-          onHide={handleCreateClose}
-          size="lg"
-          backdrop="static"
-          classes="default-modal"
-          id={id}
-          orgId={orgId}
-          buId={buId}
-          singleData={singleData}
-          setSingleData={setSingleData}
-          checked={checkedList}
-          getData={(checked) =>
-            getData(
-              { current: 1, pageSize: paginationSize },
-              setLandingLoading,
-              buId,
-              wgId,
-              wId,
-              headerList,
-              setHeaderList,
-              setFilterOrderList,
-              initialHeaderListData,
-              setInitialHeaderListData,
-              setPages,
-              setEmpIDString,
-              setRowDto,
-              "",
-              checked,
-              -1,
-              filterOrderList,
-              checkedHeaderList
-            )
-          }
-          setChecked={setCheckedList}
-          setFieldValueParent={setFieldValue}
-          isAssignAll={isAssignAll}
-          setIsAssignAll={setIsAssignAll}
-          empIDString={empIDString}
-          setRowDto={setRowDto}
-          rowDto={rowDto}
-        />
-
-        {/* i button calendar view */}
-        {singleShiftData.length > 0 ? (
-          <Popover
-            sx={{
-              "& .MuiPaper-root": {
-                width: "675px",
-                minHeight: "200px",
-                borderRadius: "4px",
-              },
-            }}
-            id={id2}
-            open={open2}
-            anchorEl={anchorEl2}
-            onClose={() => {
-              setAnchorEl2(null);
-            }}
-            anchorOrigin={{
-              horizontal: "middle",
-            }}
-          >
-            <div
-              className="master-filter-modal-container employeeProfile-src-filter-main"
-              style={{ height: "auto" }}
-            >
-              <div className="master-filter-header employeeProfile-src-filter-header">
-                <div></div>
-                <IconButton
-                  onClick={() => {
-                    setAnchorEl2(null);
-                    setSingleShiftData([]);
-                  }}
-                >
-                  <Clear sx={{ fontSize: "18px", color: gray900 }} />
-                </IconButton>
-              </div>
-              <hr />
-
-              {singleShiftData?.length > 0 ? (
-                <>
-                  <h6 className="ml-3 fs-1 text-center">
-                    {" "}
-                    {moment().format("MMMM")}-{moment().format("YYYY")}
-                  </h6>
-
-                  <div
-                    className="body-employeeProfile-master-filter d-flex"
-                    style={{ height: "380px" }}
-                  >
-                    <div className="row ml-3  my-2">
-                      <Calender
-                        monthYear={moment().format("YYYY-MM")}
-                        singleShiftData={singleShiftData}
-                        uniqueShiftColor={uniqueShiftColor}
-                        uniqueShiftBg={uniqueShiftBg}
-                      />
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <NoResult title="No Result Found" para="" />
-              )}
-
-              <div className=" mt-2 mb-3 d-flex justify-content-around">
-                {uniqueShift.length > 0 &&
-                  uniqueShift.map((item, index) => (
-                    <div key={index} className="text-center">
-                      {/* <p style={getChipStyleShift(item)}>{`${item} Shift `}</p> */}
-                      <p
-                        style={{
-                          borderRadius: "99px",
-                          fontSize: "14px",
-                          padding: "2px 5px",
-                          fontWeight: 500,
-                          color: `${uniqueShiftColor[item]}`,
-                          backgroundColor: `${uniqueShiftBg[item]}`,
-                        }}
-                      >{`${item} Shift `}</p>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </Popover>
-        ) : (
-          ""
         )}
       </form>
     </>
