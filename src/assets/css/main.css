@@ -1035,8 +1035,10 @@ h6.count {
 }
 .leavePolicy-container
   .highlight
-  .css-duqz4i-MuiFormControlLabel-root
-  .MuiFormControlLabel-label {
+  .MuiTypography-root
+  .MuiTypography-body1
+  .MuiFormControlLabel-label
+  .css-9l3uo3 {
   color: black !important;
   font-weight: 700 !important;
 }

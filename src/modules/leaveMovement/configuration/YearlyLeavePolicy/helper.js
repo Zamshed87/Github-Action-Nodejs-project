@@ -104,8 +104,11 @@ export const isPolicyExist = (values, allPolicies, setExistingPolicies) => {
       const isWorkplaceExist = values?.intWorkplaceList?.some(
         (itm) => itm.value === policy.intWorkplace
       );
+      const isHR = values?.hrPositionListDTO?.some(
+        (itm) => itm.value === policy.intHrPositionId
+      );
 
-      if (isGenderExist && isEmploymentTypeExist && isWorkplaceExist) {
+      if (isGenderExist && isEmploymentTypeExist && isWorkplaceExist && isHR) {
         existingData?.push(policy);
       }
     }
