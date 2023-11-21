@@ -18,7 +18,6 @@ export const PSelect: React.FC<PSelectProps> = (props) => {
         label={label}
         name={name}
         rules={rules}
-        valuePropName={valuePropName || "checked"}
         hasFeedback={hasFeedback}
         style={{ marginBottom: 0 }}
       >

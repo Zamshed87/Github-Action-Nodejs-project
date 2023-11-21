@@ -35,7 +35,7 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
     .ant-picker,
     .ant-select-selector,
     .ant-input {
-      border-radius: 4px;
+      border-radius: 4px !important;
     }
     .ant-input-group {
       .ant-input {
@@ -76,6 +76,11 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
       }
     }
     .ant-select {
+      .ant-select-selection-placeholder {
+        // color: var(--gray);
+        font-size: inherit;
+        // line-height: inherit;
+      }
       &:hover {
         .ant-select-selector {
           @include inputHover;
@@ -87,18 +92,25 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         }
       }
     }
-    .ant-input-affix-wrapper{
+    .ant-input-affix-wrapper {
       border-radius: 4px;
-      &:hover{
+      &:hover {
         @include inputHover;
       }
-      &.ant-input-affix-wrapper-focused{
+      &.ant-input-affix-wrapper-focused {
         @include inputFocus;
-        .ant-input{
+        .ant-input {
           border: none !important;
           outline: none !important;
           box-shadow: none !important;
         }
+      }
+    }
+
+    // Error Message
+    .ant-form-item-explain {
+      .ant-form-item-explain-error {
+        font-size: 11px;
       }
     }
   }
