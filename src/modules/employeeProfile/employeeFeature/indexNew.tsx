@@ -304,9 +304,6 @@ function EmployeeFeatureNew() {
             onExport={() => {
               const excelLanding = async () => {
                 try {
-                  // const res = await axios.get(
-                  //   `/Employee/EmployeeProfileLandingPagination?accountId=${orgId}&businessUnitId=${buId}&EmployeeId=${employeeId}&PageNo=1&PageSize=1000000&searchTxt=&WorkplaceGroupId=${wgId}&IsForXl=true`
-                  // );
                   const { search } = form.getFieldsValue(true);
                   const payload = {
                     businessUnitId: buId,

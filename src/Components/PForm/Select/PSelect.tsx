@@ -34,5 +34,3 @@ export const PSelect: React.FC<PSelectProps> = (props) => {
     </div>
   );
 };
-
-<PSelect />;
