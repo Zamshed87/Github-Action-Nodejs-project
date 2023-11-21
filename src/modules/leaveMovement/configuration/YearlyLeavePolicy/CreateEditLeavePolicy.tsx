@@ -360,10 +360,10 @@ const CreateEditLeavePolicy = () => {
                       <div className="col-12">
                         {/* Policy name */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
-                            Policy Name Name
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Policy Name
                           </label>
-                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                          <div style={{ width: "180px", marginLeft: "0.5em" }}>
                             <DefaultInput
                               classes="input-sm"
                               value={values?.strPolicyName}
@@ -379,90 +379,80 @@ const CreateEditLeavePolicy = () => {
                             />
                           </div>
                         </div>
-                        <div className="d-flex">
-                          {/* display name */}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Leave Display Name
-                            </label>
-                            <div
-                              style={{ width: "140px", marginLeft: "0.5em" }}
-                            >
-                              <DefaultInput
-                                classes="input-sm"
-                                value={values?.strDisplayName}
-                                placeholder=""
-                                name="strDisplayName"
-                                type="text"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "strDisplayName",
-                                    e.target.value
-                                  );
-                                }}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                          {/* leave type */}
-                          <div className="input-field-main d-flex pl-4 ml-5">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Leave Type?
-                            </label>
-                            <div
-                              style={{ width: "180px", marginLeft: "0.5em" }}
-                            >
-                              <FormikSelect
-                                name="intLeaveType"
-                                options={leaveTypeDDL}
-                                menuPosition="fixed"
-                                value={values?.intLeaveType}
-                                label=""
-                                onChange={(valueOption) => {
-                                  const temp = { ...values };
-
-                                  setFieldValue("intLeaveType", valueOption);
-                                  isPolicyExist(
-                                    {
-                                      ...temp,
-                                      intLeaveType: valueOption,
-                                    },
-                                    allPolicies,
-                                    setExistingPolicies
-                                  );
-                                  // isPolicyExist(values);
-                                  setFieldValue("isCompensatoryLve", false);
-                                  setFieldValue("isEarnLeave", false);
-                                  setFieldValue(
-                                    "isDependOnServiceLength",
-                                    false
-                                  );
-                                  setFieldValue("isProdataBasis", false);
-                                  if (
-                                    valueOption?.label ===
-                                    "Earn Leave/Annual Leave"
-                                  ) {
-                                    setFieldValue("isEarnLeave", true);
-                                  } else if (
-                                    valueOption?.label === "Compensatory Leave"
-                                  ) {
-                                    setFieldValue("isCompensatoryLve", true);
-                                  }
-                                }}
-                                placeholder=" "
-                                styles={customStyles}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
+                        {/* <div className="d-flex"> */}
+                        {/* display name */}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Leave Display Name
+                          </label>
+                          <div style={{ width: "180px", marginLeft: "0.5em" }}>
+                            <DefaultInput
+                              classes="input-sm"
+                              value={values?.strDisplayName}
+                              placeholder=""
+                              name="strDisplayName"
+                              type="text"
+                              className="form-control"
+                              onChange={(e) => {
+                                setFieldValue("strDisplayName", e.target.value);
+                              }}
+                              errors={errors}
+                              touched={touched}
+                            />
                           </div>
                         </div>
+                        {/* leave type */}
+                        <div className="input-field-main d-flex">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Leave Type
+                          </label>
+                          <div style={{ width: "180px", marginLeft: "0.5em" }}>
+                            <FormikSelect
+                              name="intLeaveType"
+                              options={leaveTypeDDL}
+                              menuPosition="fixed"
+                              value={values?.intLeaveType}
+                              label=""
+                              onChange={(valueOption) => {
+                                const temp = { ...values };
+
+                                setFieldValue("intLeaveType", valueOption);
+                                isPolicyExist(
+                                  {
+                                    ...temp,
+                                    intLeaveType: valueOption,
+                                  },
+                                  allPolicies,
+                                  setExistingPolicies
+                                );
+                                // isPolicyExist(values);
+                                setFieldValue("isCompensatoryLve", false);
+                                setFieldValue("isEarnLeave", false);
+                                setFieldValue("isDependOnServiceLength", false);
+                                setFieldValue("isProdataBasis", false);
+                                if (
+                                  valueOption?.label ===
+                                  "Earn Leave/Annual Leave"
+                                ) {
+                                  setFieldValue("isEarnLeave", true);
+                                } else if (
+                                  valueOption?.label === "Compensatory Leave"
+                                ) {
+                                  setFieldValue("isCompensatoryLve", true);
+                                }
+                              }}
+                              placeholder=" "
+                              styles={customStyles}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                        </div>
+                        {/* </div> */}
 
                         {/* Previous Leave Type End */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             Previous Leave Type End
                           </label>
                           <div style={{ width: "180px", marginLeft: "0.5em" }}>
@@ -493,7 +483,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                         {/* Max Leave Available from Self  */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             Max Leave Available from Self
                           </label>
                           <div style={{ width: "140px", marginLeft: "0.5em" }}>
@@ -517,64 +507,60 @@ const CreateEditLeavePolicy = () => {
                             />
                           </div>
                         </div>
-                        <div className="d-flex">
-                          {/* Max Leave Application In Month   */}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Max Leave Application In Month
-                            </label>
-                            <div
-                              style={{ width: "140px", marginLeft: "0.5em" }}
-                            >
-                              <DefaultInput
-                                min={0}
-                                placeholder=" "
-                                inputClasses="w-80"
-                                classes="input-sm"
-                                value={values?.intMaxLveApplicationSelfInMonth}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "intMaxLveApplicationSelfInMonth",
-                                    e.target.value
-                                  );
-                                }}
-                                name="intMaxLveApplicationSelfInMonth"
-                                type="number"
-                                // className="form-control"
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                          {/*Max Leave Application In Year  */}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Max Leave Application In Year
-                            </label>
-                            <div
-                              style={{ width: "140px", marginLeft: "0.5em" }}
-                            >
-                              <DefaultInput
-                                min={0}
-                                placeholder=" "
-                                inputClasses="w-80"
-                                classes="input-sm"
-                                value={values?.intMaxLveApplicationSelfInYear}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "intMaxLveApplicationSelfInYear",
-                                    e.target.value
-                                  );
-                                }}
-                                name="intMaxLveApplicationSelfInYear"
-                                type="number"
-                                // className="form-control"
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
+                        {/* <div className="d-flex"> */}
+                        {/* Max Leave Application In Month   */}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Max Leave Application In Month
+                          </label>
+                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                            <DefaultInput
+                              min={0}
+                              placeholder=" "
+                              inputClasses="w-80"
+                              classes="input-sm"
+                              value={values?.intMaxLveApplicationSelfInMonth}
+                              onChange={(e) => {
+                                setFieldValue(
+                                  "intMaxLveApplicationSelfInMonth",
+                                  e.target.value
+                                );
+                              }}
+                              name="intMaxLveApplicationSelfInMonth"
+                              type="number"
+                              // className="form-control"
+                              errors={errors}
+                              touched={touched}
+                            />
                           </div>
                         </div>
+                        {/*Max Leave Application In Year  */}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Max Leave Application In Year
+                          </label>
+                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                            <DefaultInput
+                              min={0}
+                              placeholder=" "
+                              inputClasses="w-80"
+                              classes="input-sm"
+                              value={values?.intMaxLveApplicationSelfInYear}
+                              onChange={(e) => {
+                                setFieldValue(
+                                  "intMaxLveApplicationSelfInYear",
+                                  e.target.value
+                                );
+                              }}
+                              name="intMaxLveApplicationSelfInYear"
+                              type="number"
+                              // className="form-control"
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                        </div>
+                        {/* </div> */}
                       </div>
                     </>
                     {/* --------------------- */}
@@ -590,7 +576,7 @@ const CreateEditLeavePolicy = () => {
                       <div className="col-lg-12">
                         {/* Employment Type */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             Employment Type
                           </label>
                           <div style={{ width: "230px", marginLeft: "0.5em" }}>
@@ -673,7 +659,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                         {/* hr position */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             HR Position
                           </label>
                           <div style={{ width: "230px", marginLeft: "0.5em" }}>
@@ -742,7 +728,9 @@ const CreateEditLeavePolicy = () => {
                         </div>
                         {/* Gender */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>Gender</label>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Gender
+                          </label>
                           <div style={{ width: "190px", marginLeft: "0.5em" }}>
                             <FormikSelect
                               placeholder=" "
@@ -813,7 +801,9 @@ const CreateEditLeavePolicy = () => {
 
                         {/* Year */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>Year</label>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Year
+                          </label>
                           <div style={{ width: "140px", marginLeft: "0.5em" }}>
                             <FormikSelect
                               name="intYear"
@@ -842,7 +832,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                         {/* Allocated Leave in Day  */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             Allocated Leave in Day
                           </label>
                           <div style={{ width: "140px", marginLeft: "0.5em" }}>
@@ -873,66 +863,62 @@ const CreateEditLeavePolicy = () => {
                             />
                           </div>
                         </div>
-                        <div className="d-flex">
-                          {/*Active From Joining day In Day  */}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Active From Joining day In Day
-                            </label>
-                            <div
-                              style={{ width: "140px", marginLeft: "0.5em" }}
-                            >
-                              <DefaultInput
-                                min={0}
-                                step="any"
-                                placeholder=" "
-                                inputClasses="w-80"
-                                classes="input-sm"
-                                value={values?.intActiveFromJoiningdayInDay}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "intActiveFromJoiningdayInDay",
-                                    e.target.value
-                                  );
-                                }}
-                                name="intActiveFromJoiningdayInDay"
-                                type="number"
-                                // className="form-control"
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                          {/*Active From Confirmation In Day */}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Active From Confirmation In Day
-                            </label>
-                            <div
-                              style={{ width: "140px", marginLeft: "0.5em" }}
-                            >
-                              <DefaultInput
-                                min={0}
-                                step="any"
-                                placeholder=" "
-                                inputClasses="w-80"
-                                classes="input-sm"
-                                value={values?.intActiveFromConfirmationInDay}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "intActiveFromConfirmationInDay",
-                                    e.target.value
-                                  );
-                                }}
-                                name="intActiveFromConfirmationInDay"
-                                type="number"
-                                // className="form-control"
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
+                        {/* <div className="d-flex"> */}
+                        {/*Active From Joining day In Day  */}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Active From Joining day In Day
+                          </label>
+                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                            <DefaultInput
+                              min={0}
+                              step="any"
+                              placeholder=" "
+                              inputClasses="w-80"
+                              classes="input-sm"
+                              value={values?.intActiveFromJoiningdayInDay}
+                              onChange={(e) => {
+                                setFieldValue(
+                                  "intActiveFromJoiningdayInDay",
+                                  e.target.value
+                                );
+                              }}
+                              name="intActiveFromJoiningdayInDay"
+                              type="number"
+                              // className="form-control"
+                              errors={errors}
+                              touched={touched}
+                            />
                           </div>
                         </div>
+                        {/*Active From Confirmation In Day */}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Active From Confirmation In Day
+                          </label>
+                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                            <DefaultInput
+                              min={0}
+                              step="any"
+                              placeholder=" "
+                              inputClasses="w-80"
+                              classes="input-sm"
+                              value={values?.intActiveFromConfirmationInDay}
+                              onChange={(e) => {
+                                setFieldValue(
+                                  "intActiveFromConfirmationInDay",
+                                  e.target.value
+                                );
+                              }}
+                              name="intActiveFromConfirmationInDay"
+                              type="number"
+                              // className="form-control"
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                        </div>
+                        {/* </div> */}
 
                         {/* service length */}
                         <div className="d-flex align-items-center small-checkbox">
@@ -969,110 +955,108 @@ const CreateEditLeavePolicy = () => {
                             labelFontSize="12px"
                           />
                         </div>
-                        <div className="d-flex">
-                          {/* Starting Service Length In Year */}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Starting Service Length In Years
-                            </label>
-                            <div style={{ width: "80px", marginLeft: "0.5em" }}>
-                              <FormikSelect
-                                name="intStartServiceLengthInYear"
-                                options={[
-                                  { value: 0, label: "0" },
-                                  { value: 1, label: "1" },
-                                  { value: 2, label: "2" },
-                                  { value: 3, label: "3" },
-                                  { value: 4, label: "4" },
-                                  { value: 5, label: "5" },
-                                  { value: 6, label: "6" },
-                                  { value: 7, label: "7" },
-                                  { value: 8, label: "8" },
-                                  { value: 9, label: "9" },
-                                  { value: 10, label: "10" },
-                                  { value: 11, label: "11" },
-                                  { value: 12, label: "12" },
-                                  { value: 13, label: "13" },
-                                  { value: 14, label: "14" },
-                                  { value: 15, label: "15" },
-                                  { value: 16, label: "16" },
-                                  { value: 17, label: "17" },
-                                  { value: 18, label: "18" },
-                                  { value: 19, label: "19" },
-                                  { value: 20, label: "20" },
-                                ]}
-                                menuPosition="fixed"
-                                value={values?.intStartServiceLengthInYear}
-                                label=""
-                                onChange={(valueOption) => {
-                                  setFieldValue(
-                                    "intStartServiceLengthInYear",
-                                    valueOption
-                                  );
-                                }}
-                                placeholder=" "
-                                styles={customStyles}
-                                errors={errors}
-                                isDisabled={!values?.isDependOnServiceLength}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                          {/*End Service Length in Years*/}
-                          <div className="input-field-main d-flex ml-5">
-                            <label style={{ marginTop: "0.7em" }}>
-                              End Service Length in Years
-                            </label>
-                            <div
-                              style={{ width: "120px", marginLeft: "0.5em" }}
-                            >
-                              <FormikSelect
-                                isDisabled={!values?.isDependOnServiceLength}
-                                name="intEndServiceLengthInYear"
-                                options={[
-                                  { value: 100, label: "Above(100)" },
-                                  { value: 1, label: "1" },
-                                  { value: 2, label: "2" },
-                                  { value: 3, label: "3" },
-                                  { value: 4, label: "4" },
-                                  { value: 5, label: "5" },
-                                  { value: 6, label: "6" },
-                                  { value: 7, label: "7" },
-                                  { value: 8, label: "8" },
-                                  { value: 9, label: "9" },
-                                  { value: 10, label: "10" },
-                                  { value: 11, label: "11" },
-                                  { value: 12, label: "12" },
-                                  { value: 13, label: "13" },
-                                  { value: 14, label: "14" },
-                                  { value: 15, label: "15" },
-                                  { value: 16, label: "16" },
-                                  { value: 17, label: "17" },
-                                  { value: 18, label: "18" },
-                                  { value: 19, label: "19" },
-                                  { value: 20, label: "20" },
-                                ]}
-                                menuPosition="fixed"
-                                value={values?.intEndServiceLengthInYear}
-                                label=""
-                                onChange={(valueOption) => {
-                                  setFieldValue(
-                                    "intEndServiceLengthInYear",
-                                    valueOption
-                                  );
-                                }}
-                                placeholder=" "
-                                styles={customStyles}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
+                        {/* <div className="d-flex"> */}
+                        {/* Starting Service Length In Year */}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Starting Service Length In Years
+                          </label>
+                          <div style={{ width: "80px", marginLeft: "0.5em" }}>
+                            <FormikSelect
+                              name="intStartServiceLengthInYear"
+                              options={[
+                                { value: 0, label: "0" },
+                                { value: 1, label: "1" },
+                                { value: 2, label: "2" },
+                                { value: 3, label: "3" },
+                                { value: 4, label: "4" },
+                                { value: 5, label: "5" },
+                                { value: 6, label: "6" },
+                                { value: 7, label: "7" },
+                                { value: 8, label: "8" },
+                                { value: 9, label: "9" },
+                                { value: 10, label: "10" },
+                                { value: 11, label: "11" },
+                                { value: 12, label: "12" },
+                                { value: 13, label: "13" },
+                                { value: 14, label: "14" },
+                                { value: 15, label: "15" },
+                                { value: 16, label: "16" },
+                                { value: 17, label: "17" },
+                                { value: 18, label: "18" },
+                                { value: 19, label: "19" },
+                                { value: 20, label: "20" },
+                              ]}
+                              menuPosition="fixed"
+                              value={values?.intStartServiceLengthInYear}
+                              label=""
+                              onChange={(valueOption) => {
+                                setFieldValue(
+                                  "intStartServiceLengthInYear",
+                                  valueOption
+                                );
+                              }}
+                              placeholder=" "
+                              styles={customStyles}
+                              errors={errors}
+                              isDisabled={!values?.isDependOnServiceLength}
+                              touched={touched}
+                            />
                           </div>
                         </div>
+                        {/*End Service Length in Years*/}
+                        <div className="input-field-main d-flex">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            End Service Length in Years
+                          </label>
+                          <div style={{ width: "120px", marginLeft: "0.5em" }}>
+                            <FormikSelect
+                              isDisabled={!values?.isDependOnServiceLength}
+                              name="intEndServiceLengthInYear"
+                              options={[
+                                { value: 100, label: "Above(100)" },
+                                { value: 1, label: "1" },
+                                { value: 2, label: "2" },
+                                { value: 3, label: "3" },
+                                { value: 4, label: "4" },
+                                { value: 5, label: "5" },
+                                { value: 6, label: "6" },
+                                { value: 7, label: "7" },
+                                { value: 8, label: "8" },
+                                { value: 9, label: "9" },
+                                { value: 10, label: "10" },
+                                { value: 11, label: "11" },
+                                { value: 12, label: "12" },
+                                { value: 13, label: "13" },
+                                { value: 14, label: "14" },
+                                { value: 15, label: "15" },
+                                { value: 16, label: "16" },
+                                { value: 17, label: "17" },
+                                { value: 18, label: "18" },
+                                { value: 19, label: "19" },
+                                { value: 20, label: "20" },
+                              ]}
+                              menuPosition="fixed"
+                              value={values?.intEndServiceLengthInYear}
+                              label=""
+                              onChange={(valueOption) => {
+                                setFieldValue(
+                                  "intEndServiceLengthInYear",
+                                  valueOption
+                                );
+                              }}
+                              placeholder=" "
+                              styles={customStyles}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                        </div>
+                        {/* </div> */}
                         {/*Leave in Days */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
-                            Leave in Days
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Leave Days
                           </label>
                           <div
                             style={{
@@ -1141,7 +1125,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                         {tableData?.length > 0 && (
                           <div
-                            className="table-card-body pt-3 w-25"
+                            className="table-card-body pt-3 w-50"
                             style={{ marginLeft: "-1em" }}
                           >
                             <div
@@ -1262,7 +1246,9 @@ const CreateEditLeavePolicy = () => {
                           </div>
                           {/* Conpensatory Leave Expire In Days */}
                           <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
+                            <label
+                              style={{ marginTop: "0.7em", width: "200px" }}
+                            >
                               Conpensatory Leave Expire In Days
                             </label>
                             <div
@@ -1342,7 +1328,9 @@ const CreateEditLeavePolicy = () => {
                           </div>
                           {/* Day For One Earn Leave*/}
                           <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
+                            <label
+                              style={{ marginTop: "0.7em", width: "200px" }}
+                            >
                               Day For One Earn Leave
                             </label>
                             <div
@@ -1371,7 +1359,9 @@ const CreateEditLeavePolicy = () => {
                           </div>
                           {/*  Earn Leave*/}
                           <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
+                            <label
+                              style={{ marginTop: "0.7em", width: "200px" }}
+                            >
                               Earn Leave In Day
                             </label>
                             <div
@@ -1430,67 +1420,63 @@ const CreateEditLeavePolicy = () => {
                             labelFontSize="12px"
                           />
                         </div>
-                        <div className="d-flex">
-                          {/* Half day Max In Month*/}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Half day Max In Month
-                            </label>
-                            <div
-                              style={{ width: "140px", marginLeft: "0.5em" }}
-                            >
-                              <DefaultInput
-                                min={0}
-                                placeholder=" "
-                                inputClasses="w-80"
-                                classes="input-sm"
-                                value={values?.intHalfdayMaxInMonth}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "intHalfdayMaxInMonth",
-                                    e.target.value
-                                  );
-                                }}
-                                name="intHalfdayMaxInMonth"
-                                type="number"
-                                disabled={!values?.isHalfDayLeave}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                          {/*  Half day Max In Year*/}
-                          <div className="input-field-main d-flex ml-5">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Half day Max In Year
-                            </label>
-                            <div
-                              style={{ width: "140px", marginLeft: "0.5em" }}
-                            >
-                              <DefaultInput
-                                // label="Days"
-                                placeholder=" "
-                                inputClasses="w-80"
-                                classes="input-sm"
-                                value={values?.intHalfdayMaxInYear}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "intHalfdayMaxInYear",
-                                    e.target.value
-                                  );
-                                }}
-                                name="intHalfdayMaxInYear"
-                                type="number"
-                                disabled={!values?.isHalfDayLeave}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
+                        {/* <div className="d-flex"> */}
+                        {/* Half day Max In Month*/}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Half day Max In Month
+                          </label>
+                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                            <DefaultInput
+                              min={0}
+                              placeholder=" "
+                              inputClasses="w-80"
+                              classes="input-sm"
+                              value={values?.intHalfdayMaxInMonth}
+                              onChange={(e) => {
+                                setFieldValue(
+                                  "intHalfdayMaxInMonth",
+                                  e.target.value
+                                );
+                              }}
+                              name="intHalfdayMaxInMonth"
+                              type="number"
+                              disabled={!values?.isHalfDayLeave}
+                              errors={errors}
+                              touched={touched}
+                            />
                           </div>
                         </div>
+                        {/*  Half day Max In Year*/}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Half day Max In Year
+                          </label>
+                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                            <DefaultInput
+                              // label="Days"
+                              placeholder=" "
+                              inputClasses="w-80"
+                              classes="input-sm"
+                              value={values?.intHalfdayMaxInYear}
+                              onChange={(e) => {
+                                setFieldValue(
+                                  "intHalfdayMaxInYear",
+                                  e.target.value
+                                );
+                              }}
+                              name="intHalfdayMaxInYear"
+                              type="number"
+                              disabled={!values?.isHalfDayLeave}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                        </div>
+                        {/* </div> */}
                         {/*  Half day Previous Leave End*/}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             Half day Previous Leave End
                           </label>
                           <div style={{ width: "170px", marginLeft: "0.5em" }}>
@@ -1547,124 +1533,116 @@ const CreateEditLeavePolicy = () => {
                             labelFontSize="12px"
                           />
                         </div>
-                        <div className="d-flex">
-                          {/* Carry Forward Max In Day*/}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Carry Forward Max In Day
-                            </label>
-                            <div
-                              style={{ width: "140px", marginLeft: "0.5em" }}
-                            >
-                              <DefaultInput
-                                min={0}
-                                step="any"
-                                placeholder=" "
-                                inputClasses="w-80"
-                                classes="input-sm"
-                                value={values?.intCarryForwardMaxInDay}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "intCarryForwardMaxInDay",
-                                    e.target.value
-                                  );
-                                }}
-                                name="intCarryForwardMaxInDay"
-                                type="number"
-                                disabled={!values?.isCarryForward}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                          {/*  Carry Forward Expiry Day*/}
-                          <div className="input-field-main d-flex ml-4">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Carry Forward Expiry Day{" "}
-                            </label>
-                            <div
-                              style={{ width: "170px", marginLeft: "0.5em" }}
-                            >
-                              <DefaultInput
-                                min={1}
-                                max={31}
-                                placeholder=" "
-                                inputClasses="w-80"
-                                classes="input-sm"
-                                value={values?.intCarryForwarExpiryDay}
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "intCarryForwarExpiryDay",
-                                    e.target.value
-                                  );
-                                }}
-                                name="intCarryForwarExpiryDay"
-                                type="number"
-                                disabled={!values?.isCarryForward}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
+                        {/* <div className="d-flex"> */}
+                        {/* Carry Forward Max In Day*/}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Carry Forward Max In Day
+                          </label>
+                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
+                            <DefaultInput
+                              min={0}
+                              step="any"
+                              placeholder=" "
+                              inputClasses="w-80"
+                              classes="input-sm"
+                              value={values?.intCarryForwardMaxInDay}
+                              onChange={(e) => {
+                                setFieldValue(
+                                  "intCarryForwardMaxInDay",
+                                  e.target.value
+                                );
+                              }}
+                              name="intCarryForwardMaxInDay"
+                              type="number"
+                              disabled={!values?.isCarryForward}
+                              errors={errors}
+                              touched={touched}
+                            />
                           </div>
                         </div>
-                        <div className="d-flex">
-                          {/*  CF Month*/}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Carry Forward Month
-                            </label>
-                            <div
-                              style={{ width: "120px", marginLeft: "0.5em" }}
-                            >
-                              <FormikSelect
-                                name="intCarryForwardMonth"
-                                options={monthDDL}
-                                menuPosition="fixed"
-                                value={values?.intCarryForwardMonth}
-                                label=""
-                                onChange={(valueOption) => {
-                                  setFieldValue(
-                                    "intCarryForwardMonth",
-                                    valueOption
-                                  );
-                                }}
-                                placeholder=" "
-                                styles={customStyles}
-                                errors={errors}
-                                isDisabled={!values?.isCarryForward}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                          {/*  CF Expire Month*/}
-                          <div className="input-field-main d-flex ml-5 pl-4">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Carry Forwar Expiry Month
-                            </label>
-                            <div
-                              style={{ width: "120px", marginLeft: "0.5em" }}
-                            >
-                              <FormikSelect
-                                name="intCarryForwarExpiryMonth"
-                                options={monthDDL}
-                                menuPosition="fixed"
-                                value={values?.intCarryForwarExpiryMonth}
-                                label=""
-                                onChange={(valueOption) => {
-                                  setFieldValue(
-                                    "intCarryForwarExpiryMonth",
-                                    valueOption
-                                  );
-                                }}
-                                placeholder=" "
-                                isDisabled={!values?.isCarryForward}
-                                styles={customStyles}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
+                        {/*  Carry Forward Expiry Day*/}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Carry Forward Expiry Day{" "}
+                          </label>
+                          <div style={{ width: "170px", marginLeft: "0.5em" }}>
+                            <DefaultInput
+                              min={1}
+                              max={31}
+                              placeholder=" "
+                              inputClasses="w-80"
+                              classes="input-sm"
+                              value={values?.intCarryForwarExpiryDay}
+                              onChange={(e) => {
+                                setFieldValue(
+                                  "intCarryForwarExpiryDay",
+                                  e.target.value
+                                );
+                              }}
+                              name="intCarryForwarExpiryDay"
+                              type="number"
+                              disabled={!values?.isCarryForward}
+                              errors={errors}
+                              touched={touched}
+                            />
                           </div>
                         </div>
+                        {/* </div> */}
+                        {/* <div className="d-flex"> */}
+                        {/*  CF Month*/}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Carry Forward Month
+                          </label>
+                          <div style={{ width: "120px", marginLeft: "0.5em" }}>
+                            <FormikSelect
+                              name="intCarryForwardMonth"
+                              options={monthDDL}
+                              menuPosition="fixed"
+                              value={values?.intCarryForwardMonth}
+                              label=""
+                              onChange={(valueOption) => {
+                                setFieldValue(
+                                  "intCarryForwardMonth",
+                                  valueOption
+                                );
+                              }}
+                              placeholder=" "
+                              styles={customStyles}
+                              errors={errors}
+                              isDisabled={!values?.isCarryForward}
+                              touched={touched}
+                            />
+                          </div>
+                        </div>
+                        {/*  CF Expire Month*/}
+                        <div className="input-field-main d-flex ">
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
+                            Carry Forwar Expiry Month
+                          </label>
+                          <div style={{ width: "120px", marginLeft: "0.5em" }}>
+                            <FormikSelect
+                              name="intCarryForwarExpiryMonth"
+                              options={monthDDL}
+                              menuPosition="fixed"
+                              value={values?.intCarryForwarExpiryMonth}
+                              label=""
+                              onChange={(valueOption) => {
+                                setFieldValue(
+                                  "intCarryForwarExpiryMonth",
+                                  valueOption
+                                );
+                              }}
+                              placeholder=" "
+                              isDisabled={!values?.isCarryForward}
+                              styles={customStyles}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                        </div>
+                        {/* </div> */}
                       </div>
                     </>
                     {/* --------------------------- */}
@@ -1697,7 +1675,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                         {/* Max Encashable */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             Max Encashable
                           </label>
                           <div style={{ width: "140px", marginLeft: "0.5em" }}>
@@ -1724,7 +1702,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                         {/*  Encashable Month*/}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             Encashable Month{" "}
                           </label>
                           <div style={{ width: "170px", marginLeft: "0.5em" }}>
@@ -1782,7 +1760,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                         {/* How Much Month */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             How Much Month
                           </label>
                           <div style={{ width: "120px", marginLeft: "0.5em" }}>
@@ -1837,7 +1815,7 @@ const CreateEditLeavePolicy = () => {
                         </div>
                         {/* intMaxForAdvLveInYear */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             Max Advance Leave in Year
                           </label>
                           <div style={{ width: "120px", marginLeft: "0.5em" }}>
@@ -2088,7 +2066,9 @@ const CreateEditLeavePolicy = () => {
                         workplaceDDL?.length ? (
                           <>
                             <div className="input-field-main d-flex ">
-                              <label style={{ marginTop: "0.7em" }}>
+                              <label
+                                style={{ marginTop: "0.7em", width: "200px" }}
+                              >
                                 Business Unit
                               </label>
                               <div
@@ -2158,7 +2138,9 @@ const CreateEditLeavePolicy = () => {
                             </div>
                             {/*wg  */}
                             <div className="input-field-main d-flex ">
-                              <label style={{ marginTop: "0.7em" }}>
+                              <label
+                                style={{ marginTop: "0.7em", width: "200px" }}
+                              >
                                 Workplace Group
                               </label>
                               <div
@@ -2275,7 +2257,7 @@ const CreateEditLeavePolicy = () => {
                         ) : null}
                         {/* workplace */}
                         <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
+                          <label style={{ marginTop: "0.7em", width: "200px" }}>
                             Workplace
                           </label>
                           <div style={{ width: "280px", marginLeft: "0.5em" }}>
@@ -2315,7 +2297,7 @@ const CreateEditLeavePolicy = () => {
                     className="d-flex"
                     style={{
                       borderLeft: `3px solid ${success500}`,
-                      minHeight: "219vh ",
+                      minHeight: tableData?.length > 0 ? "280vh" : "260vh",
                     }}
                   ></div>
                 </Col>
