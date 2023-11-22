@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { getPeopleDeskAllLanding, PeopleDeskSaasDDL } from "../api";
+import { toast } from "react-toastify";
 import IConfirmModal from "../IConfirmModal";
+import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
 import {
   createLeaveApplication,
   getEmployeeLeaveBalanceAndHistory,
@@ -13,7 +13,6 @@ import {
   initDataForLeaveApplication,
   validationSchemaForLeaveApplication,
 } from "./utils";
-import { toast } from "react-toastify";
 
 const withLeaveApplication = (WrappedComponent) => {
   const HocLeaveApplication = () => {
@@ -194,8 +193,8 @@ const withLeaveApplication = (WrappedComponent) => {
         wgId,
         buId,
         setLeaveTypeDDL,
-        "LeaveTypeId",
-        "LeaveType",
+        "intLeaveTypeId",
+        "strLeaveType",
         empId ? empId : employeeId
       );
       getEmployeeLeaveBalanceAndHistory(
