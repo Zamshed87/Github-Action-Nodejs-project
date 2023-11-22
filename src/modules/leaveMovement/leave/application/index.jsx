@@ -219,11 +219,15 @@ function LeaveApplication(props) {
                         leaveTypeDDL,
                         setLoading,
                         loading,
+                        show: true,
                       }}
                     />
                   </div>
                   <div className="col-lg-6 col-md-10 leave-movement-FormCard">
-                    <LeaveBalanceTable leaveBalanceData={leaveBalanceData} />
+                    <LeaveBalanceTable
+                      leaveBalanceData={leaveBalanceData}
+                      show={true}
+                    />
                   </div>
                 </div>
                 <div className="row">
