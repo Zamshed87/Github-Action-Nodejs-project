@@ -35,6 +35,7 @@ type modalFooterType = {
   onSubmit?: () => void;
   onCancel?: () => void;
   submitAction?: "submit" | "button";
+  loading?: boolean;
 };
 export const ModalFooter: React.FC<modalFooterType> = ({
   cancelText,
@@ -42,6 +43,7 @@ export const ModalFooter: React.FC<modalFooterType> = ({
   onSubmit,
   onCancel,
   submitAction,
+  loading,
 }) => {
   const hideSubmitButton = submitText === false;
   const submitButtonText =
@@ -65,6 +67,7 @@ export const ModalFooter: React.FC<modalFooterType> = ({
           content={submitButtonText}
           onClick={onSubmit}
           action={submitAction}
+          loading={loading}
         />
       ) : undefined}
     </div>

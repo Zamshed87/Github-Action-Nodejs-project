@@ -1,3 +1,5 @@
+import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
+import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import { lazy } from "react";
 
@@ -2528,6 +2530,15 @@ export const routingList = [
   {
     path: "/administration/payrollConfiguration/overtimePolicy",
     component: OvertimePolicy,
+  },
+  // Policy Create/Landing
+  {
+    path: "/administration/payrollConfiguration/overtimePolicyNew",
+    component: OvertimePolicyN,
+  },
+  {
+    path: "/administration/payrollConfiguration/overtimePolicyNew/create",
+    component: CreateOvertimePolicy,
   },
   {
     path: "/administration/payrollConfiguration/payrollBasic/create",

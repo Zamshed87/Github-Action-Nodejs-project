@@ -158,10 +158,11 @@ Axios.interceptors.response.use(
         // console.log(error)
       }
     }
-
-    const decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
-      error?.response?.data
-    );
+    let decryptedData = error?.response?.data;
+    if (!isDevServer)
+      decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
+        JSON.stringify(error?.response?.data)
+      );
     const newError = { response: { data: decryptedData } };
     return Promise.reject(newError);
   }
