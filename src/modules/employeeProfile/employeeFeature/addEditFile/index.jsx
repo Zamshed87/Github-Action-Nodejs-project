@@ -481,11 +481,12 @@ export default function AddEditForm({
           </Col>
           <Col md={12} sm={24}>
             <PInput
-              type="text"
+              type="number"
               name="employeeCode"
               label="Employee Code"
               placeholder="Employee Code"
               rules={[{ required: true, message: "Employee Code is required" }]}
+              min
             />
           </Col>
           <Col md={12} sm={24}>
@@ -546,7 +547,7 @@ export default function AddEditForm({
                     <>
                       <Col md={12} sm={24}>
                         <PInput
-                          type="date"
+                          type="text"
                           name="joiningDate"
                           label={`Probation Start Date`}
                           disabled={true}
