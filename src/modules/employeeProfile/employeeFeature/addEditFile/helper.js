@@ -326,7 +326,7 @@ export const submitHandler = ({
 }) => {
   const cb = () => {
     getData({ current: 1, pageSize: pages?.pageSize }, "false");
-    resetForm(initData);
+    resetForm();
     setIsAddEditForm(false);
     if (values?.empId === employeeId) {
       dispatch(updateUerAndEmpNameAction(values?.fullName));

@@ -1,47 +1,13 @@
-import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
-import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import {
-  getPeopleDeskAllDDL,
-  getSearchEmployeeList,
-  getSearchEmployeeListForEmp,
-} from "../../../../common/api";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
-import DefaultInput from "../../../../common/DefaultInput";
-import FormikSelect from "../../../../common/FormikSelect";
-import FormikToggle from "../../../../common/FormikToggle";
-import Loading from "../../../../common/loading/Loading";
-import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
-import {
-  blackColor40,
-  failColor,
-  gray900,
-  greenColor,
-  success800,
-} from "../../../../utility/customColor";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
-import { customStyles } from "../../../../utility/selectCustomStyle";
-import { todayDate } from "../../../../utility/todayDate";
-import {
-  createEditEmpAction,
-  getPeopleDeskWithoutAllDDL,
-  userExistValidation,
-} from "../helper";
-import {
-  getCreateDDLs,
-  getEditDDLs,
-  initData,
-  submitHandler,
-  validationSchema,
-} from "./helper";
-import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
-import { PForm, PInput, PSelect } from "Components/PForm";
 import { ModalFooter } from "Components/Modal";
-import { Form, Row, Col, Divider } from "antd";
-import { PCard } from "Components";
+import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
+import { Col, Divider, Form, Row } from "antd";
 import { debounce } from "lodash";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
+import { createEditEmpAction, userExistValidation } from "../helper";
+import { submitHandler } from "./helper";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -58,141 +24,14 @@ export default function AddEditForm({
     shallowEqual
   );
 
-  const { orgId, buId, employeeId, intUrlId, wgId, intAccountId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const [loading, setLoading] = useState(false);
 
   // states
 
-  const [empTypeDDL, setEmpTypeDDL] = useState([]);
-  const [departmentDDL, setDepartmentDDL] = useState([]);
-  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
-  // const [workplaceDDL, setWorkplaceDDL] = useState([]);
-  const [empStatusDDL, setEmpStatusDDL] = useState([]);
-  const [designationDDL, setDesignationDDL] = useState([]);
-  const [hrPositionDDL, setHrPositionDDL] = useState([]);
-  const [generateEmployeeCode, setGenerateEmployeeCode] = useState("");
-  const [isShowPassword, setIsShowPassword] = useState(false);
   const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
-  const [workplaceGroupName, setWorkplaceGroupName] = useState("");
-
-  // calender assigne
-  const [calenderDDL, setCalenderDDL] = useState([]);
-  const [calenderRoasterDDL, setCalenderRoasterDDL] = useState([]);
-  const [startingCalenderDDL, setStartingCalenderDDL] = useState([]);
-
-  const getDDL = (value) => {
-    let ddlType = value === 1 ? "Calender" : "RosterGroup";
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&BusinessUnitId=${buId}&WorkplaceGroupId=0`,
-      value === 1 ? "CalenderId" : "RosterGroupId",
-      value === 1 ? "CalenderName" : "RosterGroupName",
-      value === 1 ? setCalenderDDL : setCalenderRoasterDDL
-    );
-  };
-
-  const [empName, setEmpName] = useState("");
-  const [empType, setEmpType] = useState("");
-
-  // useEffect(() => {
-  //   getPeopleDeskAllDDL(
-  //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=UserType&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
-  //     "intUserTypeId",
-  //     "strUserType",
-  //     setUserTypeDDL
-  //   );
-  // }, [wgId, buId]);
-
-  // for create
-  // useEffect(() => {
-  //   getCreateDDLs({
-  //     getPeopleDeskAllDDL,
-  //     setReligionDDL,
-  //     setGenderDDL,
-  //     setEmpTypeDDL,
-  //     setDepartmentDDL,
-  //     getPeopleDeskWithoutAllDDL,
-  //     employeeId,
-  //     setWorkplaceGroupDDL,
-  //     orgId,
-  //     wgId,
-  //     buId,
-  //     setDesignationDDL,
-  //     setEmpStatusDDL,
-  //     setHrPositionDDL,
-  //   });
-  // }, [orgId, buId, wgId, employeeId]);
-
-  // for edit
-  useEffect(() => {
-    if (singleData?.empId) {
-      getEditDDLs({
-        singleData,
-        getPeopleDeskWithoutAllDDL,
-        orgId,
-        buId,
-        employeeId,
-        // setWorkplaceDDL,
-        // setWingDDL,
-        // setSoleDepoDDL,
-        // setRegionDDL,
-        // setAreaDDL,
-        // setTerritoryDDL,
-      });
-    }
-  }, [orgId, buId, singleData, employeeId]);
-
-  useEffect(() => {
-    if (workplaceGroupName?.value) {
-      getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AutoEmployeeCode&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupName?.value}&intId=0`,
-        "EmployeeCode",
-        "EmployeeCode",
-        setGenerateEmployeeCode
-      );
-    }
-  }, [workplaceGroupName?.value, buId]);
-
-  const { values, setFieldValue, handleSubmit, resetForm, errors, touched } =
-    useFormik({
-      enableReinitialize: true,
-      initialValues: isEdit
-        ? {
-            ...singleData,
-            isCreate: false,
-          }
-        : {
-            ...initData,
-            fullName: empName || "",
-            employeeType: empType || "",
-            employeeCode: generateEmployeeCode[0]?.value || "",
-            workplaceGroup: workplaceGroupName?.value ? workplaceGroupName : "",
-            isCreate: true,
-          },
-
-      validationSchema: validationSchema(supervisor),
-      onSubmit: () =>
-        submitHandler({
-          values,
-          getData,
-          resetForm,
-          pages,
-          setIsAddEditForm,
-          employeeId,
-          dispatch,
-          updateUerAndEmpNameAction,
-          isUserCheckMsg,
-          createEditEmpAction,
-          isEdit,
-          orgId,
-          buId,
-          intUrlId,
-          setLoading,
-        }),
-    });
 
   // Pages Start From Here code from above will be removed soon
 
@@ -216,6 +55,7 @@ export default function AddEditForm({
   const employeeStatusDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   const userTypeDDL = useApiRequest([]);
+  const generateEmpCode = useApiRequest([]);
 
   // Api Functions
   const getSuperVisorDDL = debounce((value) => {
@@ -383,6 +223,7 @@ export default function AddEditForm({
       },
     });
   };
+
   const commonConfigurationDDL = () => {
     religionDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -457,8 +298,10 @@ export default function AddEditForm({
       method: "GET",
       params: {
         DDLType: "EmpDesignation",
+        AccountId: intAccountId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
+        workplaceId: wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -512,6 +355,29 @@ export default function AddEditForm({
         WorkplaceGroupId: wgId,
         intId: 0,
       },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+  };
+
+  const autoGenerateEmployeeCode = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    generateEmpCode?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "AutoEmployeeCode",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        form.setFieldsValue({ employeeCode: res[0]?.value });
+      },
     });
   };
 
@@ -520,9 +386,42 @@ export default function AddEditForm({
     getUserTypeDDL();
   }, [orgId, buId, wgId, employeeId]);
 
+  useEffect(() => {
+    if (singleData?.empId) {
+      form.setFieldsValue(singleData);
+    }
+  }, [orgId, buId, singleData, employeeId]);
+
   return (
     <>
-      <PForm form={form}>
+      <PForm
+        form={form}
+        onFinish={(values) => {
+          submitHandler({
+            values,
+            getData,
+            resetForm: form.resetFields,
+            pages,
+            setIsAddEditForm,
+            employeeId,
+            dispatch,
+            updateUerAndEmpNameAction,
+            isUserCheckMsg,
+            createEditEmpAction,
+            isEdit,
+            orgId,
+            buId,
+            intUrlId,
+            setLoading,
+          });
+        }}
+        initialValues={{}}
+        onValuesChange={(changedFields, allFields) => {
+          if (allFields?.workplaceGroup && changedFields?.workplaceGroup) {
+            setTimeout(autoGenerateEmployeeCode, 500);
+          }
+        }}
+      >
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24}>
             <PInput
@@ -1055,18 +954,24 @@ export default function AddEditForm({
                 </>
               ) : (
                 <Col md={12} sm={24}>
-                  <PInput Label="Is Active" name="isActive" type="checkbox" />
+                  <PInput
+                    Label="Is Active"
+                    name="isActive"
+                    type="checkbox"
+                    label="Is Active"
+                  />
                 </Col>
               );
             }}
           </Form.Item>
         </Row>
+        <ModalFooter
+          onCancel={() => {
+            setIsAddEditForm(false);
+          }}
+          submitAction="submit"
+        />
       </PForm>
-      <ModalFooter
-        onCancel={() => {
-          setIsAddEditForm(false);
-        }}
-      />
     </>
   );
 }
