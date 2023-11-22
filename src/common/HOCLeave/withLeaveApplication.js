@@ -72,7 +72,12 @@ const withLeaveApplication = (WrappedComponent) => {
 
     const demoPopupForDelete = (item, values) => {
       const payload = {
+        isHalfDay: item?.HalfDay,
+        strHalDayRange: item?.HalfDayRange,
+        isActive: false,
         partId: 3,
+        yearId: item?.yearId,
+        leavePolicyId: item?.intPolicyId,
         leaveApplicationId: item?.intApplicationId,
         leaveTypeId: item?.LeaveTypeId,
         employeeId: employeeId,
@@ -136,6 +141,9 @@ const withLeaveApplication = (WrappedComponent) => {
         return;
       }
       const payload = {
+        isActive: true,
+        yearId: values?.year?.value,
+        leavePolicyId: values?.leaveType?.intPolicyId,
         partId: singleData?.intApplicationId ? 2 : 1,
         leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
         leaveTypeId: values?.leaveType?.value,
