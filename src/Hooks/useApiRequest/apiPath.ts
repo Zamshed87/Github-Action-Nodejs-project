@@ -13,4 +13,5 @@ export const apiPath = {
   PeopleDeskAllDDL: "/PeopleDeskDDL/PeopleDeskAllDDL",
   GetEmployeeDivision: "/SaasMasterData/GetEmployeeDivision",
   SaveEmployeeDivision: "/SaasMasterData/SaveEmployeeDivision",
+  AccountWiseGetOverTimeConfig: "/Payroll/AccountWiseGetOverTimeConfig",
 };

@@ -98,6 +98,8 @@ export type FormProperty = {
 //   autoSize?: T extends "textarea" ? autoSize : never;
 // };
 
+// All comments from above will be removed after testing
+
 type BaseProps = FormItemProps & {
   placeholder?: string;
   suffix?: React.ReactNode;

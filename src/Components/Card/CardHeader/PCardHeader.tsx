@@ -12,6 +12,7 @@ import { PButton, buttonType } from "Components/Button/PButton";
 import { debounce } from "lodash";
 type PCardHeaderType = {
   title?: string | React.ReactNode;
+  text?: string | React.ReactNode;
   exportIcon?: boolean | React.ReactNode;
   onExport?: (e: any) => void;
   backButton?: boolean | string;
@@ -28,6 +29,7 @@ type PCardHeaderType = {
 export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
   const {
     title,
+    text,
     exportIcon,
     onExport,
     backButton,
@@ -67,6 +69,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
         ) : undefined}
 
         {title ? <div className="title">{title}</div> : undefined}
+        {text ? <div className="text">{text}</div> : undefined}
       </div>
       <div className="header_right">
         {/* Search Input */}

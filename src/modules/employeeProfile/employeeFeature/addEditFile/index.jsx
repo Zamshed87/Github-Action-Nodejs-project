@@ -266,6 +266,7 @@ export default function AddEditForm({
         DDLType: "EmpDepartment",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -301,7 +302,7 @@ export default function AddEditForm({
         AccountId: intAccountId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        workplaceId: wId,
+        IntWorkplaceId: wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -971,6 +972,7 @@ export default function AddEditForm({
             setIsAddEditForm(false);
           }}
           submitAction="submit"
+          loading={loading}
         />
       </PForm>
     </>
