@@ -2528,16 +2528,16 @@ export const routingList = [
     component: PfGratuityPolicy,
   },
   {
-    path: "/administration/payrollConfiguration/overtimePolicy",
+    path: "/administration/payrollConfiguration/overtimePolicyPrevious",
     component: OvertimePolicy,
   },
   // Policy Create/Landing
   {
-    path: "/administration/payrollConfiguration/overtimePolicyNew",
+    path: "/administration/payrollConfiguration/overtimePolicy",
     component: OvertimePolicyN,
   },
   {
-    path: "/administration/payrollConfiguration/overtimePolicyNew/create",
+    path: "/administration/payrollConfiguration/overtimePolicy/create",
     component: CreateOvertimePolicy,
   },
   {

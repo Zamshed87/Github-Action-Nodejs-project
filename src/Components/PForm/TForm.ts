@@ -119,6 +119,7 @@ type BaseProps = FormItemProps & {
   autoSize?: boolean | { minRows?: number; maxRows?: number };
   picker?: string;
   prefix?: React.ReactNode;
+  layout?: "horizontal" | "vertical";
 };
 
 type InputTypeMapping = {

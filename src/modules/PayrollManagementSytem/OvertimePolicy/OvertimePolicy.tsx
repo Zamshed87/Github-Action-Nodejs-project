@@ -136,7 +136,9 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
     <>
       <PForm
         onFinish={() => {
-          history.push("create");
+          history.push(
+            "/administration/payrollConfiguration/overtimePolicy/create"
+          );
         }}
       >
         <PCard>

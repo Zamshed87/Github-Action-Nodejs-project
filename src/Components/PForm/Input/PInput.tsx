@@ -27,6 +27,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       valuePropName,
       hasFeedback,
       prefix,
+      layout,
     } = property;
 
     const Components =
@@ -91,7 +92,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       );
 
     return (
-      <div className="PeopleDeskInputWrapper">
+      <div className={`PeopleDeskInputWrapper ${layout ? layout : ""}`}>
         <Form.Item
           label={label}
           name={name}
