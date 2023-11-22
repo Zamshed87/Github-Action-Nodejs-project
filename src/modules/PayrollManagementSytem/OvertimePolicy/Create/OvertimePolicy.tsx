@@ -1,8 +1,6 @@
-import { DataTable, PCard, PCardHeader, TableButton } from "Components";
-import PBadge from "Components/Badge";
+import { PCard, PCardHeader, PForm, PInput, PRadio, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
-import { getSerial } from "Utils";
-import moment from "moment";
+import { Col, Divider, Form, Row } from "antd";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 
@@ -13,173 +11,211 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+
+  // Form Instance
+  const [form] = Form.useForm();
+
   // Api Actions
   const apiKeyFromApiPath = useApiRequest({});
 
   // Landing Api
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any[];
-    searchText?: string;
-  };
-  const landingApi = ({
-    pagination = {},
-    filerList = [],
-    searchText = "",
-  }: TLandingApi = {}) => {
-    // apiKeyFromApiPath?.action({
-    //   urlKey: "apiKeyFromApiPath",
-    //   method: "POST",
-    //   payload: {
-    //     businessUnitId: buId,
-    //     workplaceGroupId: wgId,
-    //     workplaceId: wId,
-    //     isNotAssign: false,
-    //     pageNo: pagination?.current || 1,
-    //     pageSize: pagination?.pageSize || 25,
-    //     isPaginated: true,
-    //     isHeaderNeed: true,
-    //     searchTxt: searchText || "",
-    //     designationList: [],
-    //     departmentList: [],
-    //     supervisorNameList: [],
-    //     employmentTypeList: [],
-    //     wingNameList: [],
-    //     soleDepoNameList: [],
-    //     regionNameList: [],
-    //     areaNameList: [],
-    //     territoryNameList: [],
-    //   },
-    // });
-  };
+  const landingApi = () => {};
 
   // Life Cycle Hooks
   useEffect(() => {
-    landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
-  // Table Header
-  const header: any = [
-    {
-      title: "SL",
-      render: (value: any, row: any, index: number) =>
-        getSerial({
-          currentPage: apiKeyFromApiPath?.data?.currentPage,
-          pageSize: apiKeyFromApiPath?.data?.pageSize,
-          index,
-        }),
-
-      align: "center",
-      width: 20,
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "employeeName",
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sorter: true,
-      filter: true,
-      filterKey: "departmentList",
-    },
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      sorter: true,
-      filter: true,
-      filterKey: "designationList",
-    },
-    {
-      title: "Supervisor",
-      dataIndex: "supervisorName",
-      width: "80px",
-    },
-    {
-      title: "Generate Date",
-      dataIndex: "generateDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
-    },
-    {
-      title: "Joining Date",
-      dataIndex: "joiningDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      align: "center",
-      render: (data: any, record: any, index: number) => (
-        // Write condition to check status
-        <PBadge type="primary" text="Active" />
-      ),
-      width: "50px",
-    },
-    {
-      title: "Action",
-      align: "center",
-      render: (data: any, record: any, index: number) => {
-        return (
-          <TableButton
-            buttonsList={[
-              {
-                type: "edit",
-                onClick: (e) => {},
-              },
-              {
-                type: "delete",
-                onClick: (e) => {},
-              },
-              {
-                type: "view",
-                onClick: (e) => {},
-              },
-            ]}
-          />
-        );
-      },
-      width: "60px",
-    },
-  ];
-  console.log(apiKeyFromApiPath?.data);
   return (
     <>
-      <PCard>
-        <PCardHeader
-          title="Multi Calendar Assign"
-          onSearch={() => {}}
-          buttonList={[{ type: "primary", content: "Assign" }]}
-        />
+      <PForm
+        form={form}
+        initialValues={{
+          overtimeDependsOn: 3,
+          overtimeCountFrom: 1,
+        }}
+      >
+        <PCard>
+          <PCardHeader
+            title="Create OT Policy"
+            onSearch={() => {}}
+            buttonList={[{ type: "primary", content: "Assign" }]}
+            backButton
+          />
+        </PCard>
 
-        <DataTable
-          header={header}
-          bordered
-          data={apiKeyFromApiPath?.data?.data || []}
-          filterData={
-            apiKeyFromApiPath?.data?.calendarAssignHeader // Filter Object From Api Response
-          }
-          pagination={{
-            current: apiKeyFromApiPath?.data?.currentPage, // Current Page From Api Response
-            pageSize: apiKeyFromApiPath?.data?.pageSize, // Page Size From Api Response
-            total: apiKeyFromApiPath?.data?.totalCount, // Total Count From Api Response
-          }}
-          loading={apiKeyFromApiPath?.loading}
-          scroll={{ x: 1000 }}
-          onChange={(pagination, filters, sorter, extra) => {
-            if (extra.action === "sort") return;
-            landingApi({
-              pagination,
-              filerList: filters,
-            });
-          }}
-        />
-      </PCard>
+        <Row>
+          <Col span={12}>
+            {/* Left Side Fields */}
+            <Row gutter={[10, 2]}>
+              <Col md={12} sm={24}>
+                <PInput
+                  type="text"
+                  label="Policy Name"
+                  name="policyName"
+                  placeholder="Policy Name"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input Policy Name!",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={12} sm={24}>
+                <PSelect
+                  label="Workplace"
+                  name="workplace"
+                  placeholder="Workplace Name"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please Select Workplace!",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={12} sm={24}>
+                <PSelect
+                  label="Policy Type"
+                  name="policyType"
+                  placeholder="Policy Type"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please Select Policy Type!",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={12} sm={24}>
+                <PSelect
+                  label="HR Position"
+                  name="hrPosition"
+                  placeholder="HR Position"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please Select HR Position!",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={12} sm={24}>
+                <PSelect
+                  label="Employment Type"
+                  name="employmentType"
+                  placeholder="Employment Type"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please Select Employment Type!",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={12} sm={24}>
+                <PInput
+                  label="From Salary"
+                  placeholder="From Salary"
+                  type="number"
+                  name="fromSalary"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input From Salary!",
+                    },
+                  ]}
+                />
+              </Col>
+              <Col md={12} sm={24}>
+                <PInput
+                  label="To Salary"
+                  placeholder="To Salary"
+                  type="number"
+                  name="toSalary"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input To Salary!",
+                    },
+                  ]}
+                />
+              </Col>
+              {/* OT Depents on */}
+              <Divider
+                style={{ margin: "3px 0", fontSize: 12 }}
+                orientation="left"
+              >
+                Overtime Depend On
+              </Divider>
+              <Col md={12} sm={24}>
+                <PRadio
+                  type="group"
+                  name="overtimeDependsOn"
+                  onChange={(e) => {
+                    console.log(e);
+                  }}
+                  options={[
+                    { value: 1, label: "Basic" },
+                    { value: 2, label: "Gross" },
+                    { value: 3, label: "Fixed Amount" },
+                  ]}
+                />
+              </Col>
+              {/* Fixed Amount Input  */}
+              <Form.Item noStyle shouldUpdate>
+                {() => {
+                  const { overtimeDependsOn } = form.getFieldsValue(true);
+                  return (
+                    overtimeDependsOn === 3 && (
+                      <Col md={12} sm={24}>
+                        <PInput
+                          placeholder="Fixed Amount"
+                          type="number"
+                          name="fixedAmount"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input Fixed Amount!",
+                            },
+                          ]}
+                          min={0}
+                        />
+                      </Col>
+                    )
+                  );
+                }}
+              </Form.Item>
+
+              {/* OT Depents on */}
+              <Divider
+                style={{ margin: "3px 0", fontSize: 12 }}
+                orientation="left"
+              >
+                Overtime Count From
+              </Divider>
+              <Col md={24} sm={24}>
+                <PRadio
+                  type="group"
+                  name="overtimeCountFrom"
+                  onChange={(e) => {
+                    console.log(e);
+                  }}
+                  options={[
+                    { value: 1, label: "Assign Calendar" },
+                    {
+                      value: 2,
+                      label: "Count Minimum Overtime Start(Minutes)",
+                    },
+                  ]}
+                />
+              </Col>
+            </Row>
+          </Col>
+          <Col span={12}></Col>
+        </Row>
+      </PForm>
     </>
   );
 };

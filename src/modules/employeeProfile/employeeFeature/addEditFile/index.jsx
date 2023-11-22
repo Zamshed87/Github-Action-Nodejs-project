@@ -197,8 +197,8 @@ export default function AddEditForm({
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.UserTypeName;
-          res[i].value = item?.UserTypeId;
+          res[i].label = item?.strUserType;
+          res[i].value = item?.intUserTypeId;
         });
       },
     });
@@ -354,6 +354,7 @@ export default function AddEditForm({
         DDLType: "Position",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
         intId: 0,
       },
       onSuccess: (res) => {
