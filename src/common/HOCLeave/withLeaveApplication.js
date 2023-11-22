@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { getPeopleDeskAllLanding, PeopleDeskSaasDDL } from "../api";
+import { toast } from "react-toastify";
 import IConfirmModal from "../IConfirmModal";
+import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
 import {
   createLeaveApplication,
   getEmployeeLeaveBalanceAndHistory,
@@ -13,7 +13,6 @@ import {
   initDataForLeaveApplication,
   validationSchemaForLeaveApplication,
 } from "./utils";
-import { toast } from "react-toastify";
 
 const withLeaveApplication = (WrappedComponent) => {
   const HocLeaveApplication = () => {
@@ -73,7 +72,12 @@ const withLeaveApplication = (WrappedComponent) => {
 
     const demoPopupForDelete = (item, values) => {
       const payload = {
+        isHalfDay: item?.HalfDay,
+        strHalDayRange: item?.HalfDayRange,
+        isActive: false,
         partId: 3,
+        yearId: item?.yearId,
+        leavePolicyId: item?.intPolicyId,
         leaveApplicationId: item?.intApplicationId,
         leaveTypeId: item?.LeaveTypeId,
         employeeId: employeeId,
@@ -116,9 +120,7 @@ const withLeaveApplication = (WrappedComponent) => {
       };
 
       if (
-        (values?.leaveType?.label === "Casual Leave" ||
-          values?.leaveType?.label === "Earn Leave" ||
-          values?.leaveType?.label === "Sick Leave") &&
+        values?.leaveType?.isHalfDayLeave &&
         values?.fromDate === values?.toDate &&
         values?.isHalfDay === ""
       ) {
@@ -126,9 +128,7 @@ const withLeaveApplication = (WrappedComponent) => {
         return;
       }
       if (
-        (values?.leaveType?.label === "Casual Leave" ||
-          values?.leaveType?.label === "Earn Leave" ||
-          values?.leaveType?.label === "Sick Leave") &&
+        values?.leaveType?.isHalfDayLeave &&
         values?.fromDate === values?.toDate &&
         values?.isHalfDay?.label === "Half Day" &&
         values?.halfTime === ""
@@ -137,6 +137,9 @@ const withLeaveApplication = (WrappedComponent) => {
         return;
       }
       const payload = {
+        isActive: true,
+        yearId: values?.year?.value,
+        leavePolicyId: values?.leaveType?.intPolicyId,
         partId: singleData?.intApplicationId ? 2 : 1,
         leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
         leaveTypeId: values?.leaveType?.value,
@@ -194,8 +197,8 @@ const withLeaveApplication = (WrappedComponent) => {
         wgId,
         buId,
         setLeaveTypeDDL,
-        "LeaveTypeId",
-        "LeaveType",
+        "intLeaveTypeId",
+        "strLeaveType",
         empId ? empId : employeeId
       );
       getEmployeeLeaveBalanceAndHistory(

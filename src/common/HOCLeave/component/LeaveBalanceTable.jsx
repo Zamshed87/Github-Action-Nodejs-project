@@ -1,6 +1,14 @@
-import React from "react";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
 
-const LeaveBalanceTable = ({ leaveBalanceData }) => {
+const LeaveBalanceTable = ({ leaveBalanceData = [], show = false }) => {
+  let leaves = leaveBalanceData;
+  if (show) {
+    leaves = leaveBalanceData?.filter(
+      (item) => item?.isLveBalanceShowForSelfService
+    );
+  }
+
   return (
     <div className="card-style" style={{ minHeight: "213px" }}>
       <div className="table-card-styled tableOne">
@@ -15,16 +23,30 @@ const LeaveBalanceTable = ({ leaveBalanceData }) => {
               <th className="text-center">Balance</th>
               <th className="text-center">Taken</th>
               <th className="text-center">Total</th>
+              <th className="text-center">Carry Balance</th>
+              <th className="text-center">Carry Taken</th>
+              <th className="text-center">Carry Allocated</th>
+              <th className="text-center">Carry Expire</th>
             </tr>
           </thead>
           <tbody>
-            {leaveBalanceData?.length > 0 &&
-              leaveBalanceData.map((item) => (
-                <tr key={item?.LeaveBalanceId}>
-                  <td>{item?.LeaveType}</td>
-                  <td className="text-center">{item?.RemainingDays}</td>
-                  <td className="text-center">{item?.LeaveTakenDays}</td>
-                  <td className="text-center">{item?.BalanceDays}</td>
+            {leaves?.length > 0 &&
+              leaves.map((item) => (
+                <tr key={item?.strLeaveType}>
+                  <td>{item?.strLeaveType}</td>
+                  <td className="text-center">{item?.intBalanceLveInDay}</td>
+                  <td className="text-center">{item?.intTakenLveInDay}</td>
+                  <td className="text-center">{item?.intAllocatedLveInDay}</td>
+                  <td className="text-center">
+                    {item?.intCarryBalanceLveInDay}
+                  </td>
+                  <td className="text-center">{item?.inyCarryTakenLveInDay}</td>
+                  <td className="text-center">
+                    {item?.intCarryAllocatedLveInDay}
+                  </td>
+                  <td className="text-center">
+                    {moment(item?.intExpireyDate).format("DD MMM, YYYY")}
+                  </td>
                 </tr>
               ))}
           </tbody>
