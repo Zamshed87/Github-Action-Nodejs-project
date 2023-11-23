@@ -2,24 +2,22 @@
 import { PrintOutlined } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 // import moment from "moment";
+import { PModal } from "Components/Modal";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import BackButton from "../../../../common/BackButton";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import ViewModal from "../../../../common/ViewModal";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray900 } from "../../../../utility/customColor";
-import { dateFormatterForInput } from "../../../../utility/dateFormatter";
 import BankDetails from "../../aboutMe/bankDetails";
 import ProfileCard from "../../aboutMe/profileCard";
 import OverviewTab from "../../employeeOverview/components/OverviewTab";
 import AddEditForm from "../addEditFile";
 import { getEmployeeProfileViewData } from "../helper";
 import "./aboutMeCommon.css";
-import { PModal } from "Components/Modal";
-import moment from "moment";
 
 function AboutMeDetails() {
   const dispatch = useDispatch();
