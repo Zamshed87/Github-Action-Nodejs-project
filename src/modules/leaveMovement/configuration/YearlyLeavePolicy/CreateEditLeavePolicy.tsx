@@ -82,7 +82,7 @@ const CreateEditLeavePolicy = () => {
       setLeaveTypeDDL
     );
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
       "PositionId",
       "PositionName",
       setHrPositionDDL

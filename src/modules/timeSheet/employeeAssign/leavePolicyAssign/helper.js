@@ -453,7 +453,6 @@ export const getData = async (
   year,
   setCheckedList = {}
 ) => {
-  console.log({ checkedHeaderList });
   const modifiedPayload = createPayloadStructure({
     initHeaderList,
     currentFilterSelection,
