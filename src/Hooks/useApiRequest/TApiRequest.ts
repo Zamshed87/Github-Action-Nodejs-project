@@ -12,6 +12,7 @@ export type TApiInfo<T extends HttpMethod> = T extends "GET"
       method: T;
       params?: object;
       payload?: never;
+      toast?: boolean;
       onSuccess?: (data: any) => any;
       onError?: (error: Error) => void;
     }
@@ -20,6 +21,7 @@ export type TApiInfo<T extends HttpMethod> = T extends "GET"
       method: T;
       params?: any;
       payload: any;
+      toast?: boolean;
       onSuccess?: (data: any) => any;
       onError?: (error: Error) => void;
     };

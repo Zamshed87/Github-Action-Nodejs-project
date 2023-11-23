@@ -14,4 +14,5 @@ export const apiPath = {
   GetEmployeeDivision: "/SaasMasterData/GetEmployeeDivision",
   SaveEmployeeDivision: "/SaasMasterData/SaveEmployeeDivision",
   AccountWiseGetOverTimeConfig: "/Payroll/AccountWiseGetOverTimeConfig",
+  AssignMultiCalander: "/Employee/AssignMultiCalander",
 };
