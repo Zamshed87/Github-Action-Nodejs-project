@@ -400,7 +400,8 @@ export default function AddEditForm({
     <>
       <PForm
         form={form}
-        onFinish={(values) => {
+        onFinish={() => {
+          const values = form.getFieldsValue(true);
           submitHandler({
             values,
             getData,
