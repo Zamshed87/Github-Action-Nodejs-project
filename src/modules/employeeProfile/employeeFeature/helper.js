@@ -155,6 +155,7 @@ export const createEditEmpAction = async (
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
     setLoading(false);
+    console.log(error);
     toast.warn(error?.response?.data?.message, { toastId: 1 });
   }
 };

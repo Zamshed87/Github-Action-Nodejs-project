@@ -197,8 +197,8 @@ export default function AddEditForm({
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.UserTypeName;
-          res[i].value = item?.UserTypeId;
+          res[i].label = item?.strUserType;
+          res[i].value = item?.intUserTypeId;
         });
       },
     });
@@ -266,6 +266,7 @@ export default function AddEditForm({
         DDLType: "EmpDepartment",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -301,7 +302,7 @@ export default function AddEditForm({
         AccountId: intAccountId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        workplaceId: wId,
+        IntWorkplaceId: wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -319,6 +320,7 @@ export default function AddEditForm({
         DDLType: "EmployeeStatus",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -353,6 +355,7 @@ export default function AddEditForm({
         DDLType: "Position",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -389,6 +392,7 @@ export default function AddEditForm({
   useEffect(() => {
     if (singleData?.empId) {
       form.setFieldsValue(singleData);
+      getWorkplace();
     }
   }, [orgId, buId, singleData, employeeId]);
 
@@ -875,8 +879,13 @@ export default function AddEditForm({
           ) : undefined}
 
           {/* Hold Salary */}
-          <Col md={12} sm={24}>
-            <PInput label="Salary Hold" type="checkbox" name="isSalaryHold" />
+          <Col md={12} sm={24} style={{ marginTop: "20px" }}>
+            <PInput
+              label="Salary Hold"
+              type="checkbox"
+              name="isSalaryHold"
+              layout="horizontal"
+            />
           </Col>
 
           {/* User Create */}
@@ -885,11 +894,12 @@ export default function AddEditForm({
               const { isUsersection } = form.getFieldsValue();
               return !isEdit ? (
                 <>
-                  <Col md={12} sm={24}>
+                  <Col md={12} sm={24} style={{ marginTop: "20px" }}>
                     <PInput
                       label="Create User"
                       type="checkbox"
                       name="isUsersection"
+                      layout="horizontal"
                     />
                   </Col>
                   {isUsersection ? (
@@ -954,12 +964,13 @@ export default function AddEditForm({
                   ) : undefined}
                 </>
               ) : (
-                <Col md={12} sm={24}>
+                <Col md={12} sm={24} style={{ marginTop: "20px" }}>
                   <PInput
                     Label="Is Active"
                     name="isActive"
                     type="checkbox"
                     label="Is Active"
+                    layout="horizontal"
                   />
                 </Col>
               );
@@ -971,6 +982,7 @@ export default function AddEditForm({
             setIsAddEditForm(false);
           }}
           submitAction="submit"
+          loading={loading}
         />
       </PForm>
     </>

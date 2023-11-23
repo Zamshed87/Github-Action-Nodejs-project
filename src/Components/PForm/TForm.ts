@@ -98,6 +98,8 @@ export type FormProperty = {
 //   autoSize?: T extends "textarea" ? autoSize : never;
 // };
 
+// All comments from above will be removed after testing
+
 type BaseProps = FormItemProps & {
   placeholder?: string;
   suffix?: React.ReactNode;
@@ -117,6 +119,7 @@ type BaseProps = FormItemProps & {
   autoSize?: boolean | { minRows?: number; maxRows?: number };
   picker?: string;
   prefix?: React.ReactNode;
+  layout?: "horizontal" | "vertical";
 };
 
 type InputTypeMapping = {

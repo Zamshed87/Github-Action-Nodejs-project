@@ -114,6 +114,22 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
       }
     }
   }
+
+  // horizontal alignment
+  &.horizontal {
+    .ant-form-item-row {
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      .ant-form-item-label {
+      }
+      .ant-form-item-control {
+        width: fit-content;
+        flex-grow: unset;
+      }
+    }
+  }
 }
 
 // Date Picker Z-Index
