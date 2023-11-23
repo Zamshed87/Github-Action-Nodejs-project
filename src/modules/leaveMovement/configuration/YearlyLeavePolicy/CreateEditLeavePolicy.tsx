@@ -313,13 +313,20 @@ const CreateEditLeavePolicy = () => {
                                     name="intAllocatedLveInDay"
                                     label="Allocated Leave in Day"
                                     placeholder="Allocated Leave in Day"
-                                    // rules={[
-                                    //   {
-                                    //     required: true,
-                                    //     message:
-                                    //       " Allocated Leave in Day is required",
-                                    //   },
-                                    // ]}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message:
+                                          " Allocated Leave in Day is required",
+                                      },
+                                      {
+                                        message:
+                                          "Allocated Leave in Day must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                     disabled={
                                       isDependOnServiceLength ||
                                       intLeaveType?.label ===
@@ -345,6 +352,13 @@ const CreateEditLeavePolicy = () => {
                                 message:
                                   " Max Leave Available from Self is required",
                               },
+                              {
+                                message:
+                                  " Max Leave Available must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
+                              },
                             ]}
                           />
                         </Col>
@@ -360,6 +374,13 @@ const CreateEditLeavePolicy = () => {
                                 message:
                                   " Max Leave Application In Month is required",
                               },
+                              {
+                                message:
+                                  " Max Leave Application must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
+                              },
                             ]}
                           />
                         </Col>
@@ -374,6 +395,13 @@ const CreateEditLeavePolicy = () => {
                                 required: true,
                                 message:
                                   " Max Leave Application In Year is required",
+                              },
+                              {
+                                message:
+                                  "Max Leave Application must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
                               },
                             ]}
                           />
@@ -489,7 +517,7 @@ const CreateEditLeavePolicy = () => {
                             ]}
                           />
                         </Col>
-                        <Col md={12} sm={24}>
+                        {/* <Col md={12} sm={24}>
                           <PInput
                             type="number"
                             name="intMaxLveDaySelf"
@@ -503,7 +531,7 @@ const CreateEditLeavePolicy = () => {
                               },
                             ]}
                           />
-                        </Col>
+                        </Col> */}
                         <Col md={12} sm={24}>
                           <PSelect
                             options={yearDDLAction()}
@@ -559,6 +587,13 @@ const CreateEditLeavePolicy = () => {
                                 message:
                                   "Active From Joining day In Day is required",
                               },
+                              {
+                                message:
+                                  "Active From Joining day In Day must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
+                              },
                             ]}
                           />
                         </Col>
@@ -573,6 +608,13 @@ const CreateEditLeavePolicy = () => {
                                 required: true,
                                 message:
                                   "Active From Confirmation In Day is required",
+                              },
+                              {
+                                message:
+                                  "Active From Confirmation In Day must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
                               },
                             ]}
                           />
@@ -702,6 +744,14 @@ const CreateEditLeavePolicy = () => {
                                     label="Leave Days"
                                     placeholder="Leave Days"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message: "Leave Days must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                                 <Col span={2} className="mt-1">
@@ -884,6 +934,13 @@ const CreateEditLeavePolicy = () => {
                                         message:
                                           "Conpensatory Leave Expire In Days is required",
                                       },
+                                      {
+                                        message:
+                                          "Conpensatory Leave Expire In Days must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
                                     ]}
                                   />
                                 </Col>
@@ -940,9 +997,11 @@ const CreateEditLeavePolicy = () => {
                                     size="small"
                                     rules={[
                                       {
-                                        required: true,
                                         message:
-                                          "Day For One Earn Leave is required",
+                                          "Day For One Earn Leave must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
                                       },
                                     ]}
                                   />
@@ -956,9 +1015,11 @@ const CreateEditLeavePolicy = () => {
                                     size="small"
                                     rules={[
                                       {
-                                        required: true,
                                         message:
-                                          " Earn Leave In Day is required",
+                                          "Earn Leave In Day must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
                                       },
                                     ]}
                                   />
@@ -1019,6 +1080,15 @@ const CreateEditLeavePolicy = () => {
                                     label="Half day Max In Month"
                                     placeholder="Half day Max In Month"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Half day Max In Month must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                                 <Col md={12} sm={24}>
@@ -1029,6 +1099,15 @@ const CreateEditLeavePolicy = () => {
                                     label=" Half day Max In Year"
                                     placeholder=" Half day Max In Year"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Half day Max In Year must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                                 <Col md={12} sm={24}>
@@ -1098,6 +1177,15 @@ const CreateEditLeavePolicy = () => {
                                     label="Carry Forward Max In Day"
                                     placeholder="Carry Forward Max In Day"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Carry Forward Max In Day must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                                 <Col md={12} sm={24}>
@@ -1108,6 +1196,15 @@ const CreateEditLeavePolicy = () => {
                                     label=" Carry Forward Expiry Day"
                                     placeholder=" Carry Forward Expiry Day"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Carry Forward Expiry Day must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                                 <Col md={12} sm={24}>
@@ -1118,6 +1215,15 @@ const CreateEditLeavePolicy = () => {
                                     label="Carry Forward Month"
                                     placeholder="Carry Forward Month"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Carry Forward Month must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                               </>
@@ -1167,6 +1273,15 @@ const CreateEditLeavePolicy = () => {
                                     label="Max Encashable"
                                     placeholder="Max Encashable"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Max Encashable must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                                 <Col md={12} sm={24}>
@@ -1177,6 +1292,15 @@ const CreateEditLeavePolicy = () => {
                                     label=" Encashable Month"
                                     placeholder=" Encashable Month"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Encashable Month must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                               </>
@@ -1230,6 +1354,15 @@ const CreateEditLeavePolicy = () => {
                                     label=" How Much Month"
                                     placeholder=" How Much Month"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "How Much Month must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                                 <Col md={12} sm={24}>
@@ -1252,6 +1385,15 @@ const CreateEditLeavePolicy = () => {
                                     label="Max Advance Leave in Year"
                                     placeholder="Max Advance Leave in Year"
                                     size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Max Advance Leave must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
                                   />
                                 </Col>
                                 <Col md={12} sm={24}>
