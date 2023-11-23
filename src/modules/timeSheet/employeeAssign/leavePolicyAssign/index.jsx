@@ -383,7 +383,7 @@ function LeavePolicyAssign() {
                         isClearable={false}
                       />
                     </li>
-                    <li>
+                    {/* <li>
                       <MasterFilter
                         isHiddenFilter
                         value={values?.searchString}
@@ -467,7 +467,7 @@ function LeavePolicyAssign() {
                         width="200px"
                         inputWidth="200px"
                       />
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>
@@ -548,6 +548,30 @@ function LeavePolicyAssign() {
                     updatedFilterData,
                     updatedCheckedHeaderData
                   ) => {
+                    const filterNameUpdate = {
+                      designationList:
+                        updatedCheckedHeaderData.strEmpDesignationList?.length >
+                        0
+                          ? updatedCheckedHeaderData.strEmpDesignationList
+                          : [],
+
+                      departmentList:
+                        updatedCheckedHeaderData.strEmpDepartmentList?.length >
+                        0
+                          ? updatedCheckedHeaderData.strEmpDepartmentList
+                          : [],
+
+                      genderList:
+                        updatedCheckedHeaderData.strGenderNameList?.length > 0
+                          ? updatedCheckedHeaderData.strGenderNameList
+                          : [],
+
+                      hrList:
+                        updatedCheckedHeaderData.strHrPositionNameList?.length >
+                        0
+                          ? updatedCheckedHeaderData.strHrPositionNameList
+                          : [],
+                    };
                     getData(
                       {
                         current: 1,
@@ -570,10 +594,11 @@ function LeavePolicyAssign() {
                       [],
                       currentFilterSelection,
                       updatedFilterData,
-                      updatedCheckedHeaderData,
+                      filterNameUpdate,
                       [],
                       state?.list,
-                      values?.year?.value
+                      values?.year?.value,
+                      setCheckedList
                     );
                   }}
                   isCheckBox={true}
