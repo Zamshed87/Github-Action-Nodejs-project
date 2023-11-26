@@ -50,8 +50,8 @@ export const createEditEmpAction = async (
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
-      strEmployeeCode: values?.employeeCode,
-      strCardNumber: values?.employeeCode,
+      strEmployeeCode: String(values?.employeeCode),
+      strCardNumber: String(values?.employeeCode),
       strEmployeeName: values?.fullName,
       intGenderId: values?.gender?.value,
       strGender: values?.gender?.label,

@@ -924,17 +924,21 @@ export default function AddEditForm({
                                     intUrlId: intUrlId,
                                     intAccountId: orgId,
                                   };
-                                  userValidation(payload, (data) => {
-                                    if (data.message === "Valid") {
-                                      resolve();
-                                    } else {
-                                      reject(
-                                        new Error(
-                                          data.message || "User is not valid"
-                                        )
-                                      );
+                                  userValidation(
+                                    payload,
+                                    setIsUserCheckMsg,
+                                    (data) => {
+                                      if (data.message === "Valid") {
+                                        resolve();
+                                      } else {
+                                        reject(
+                                          new Error(
+                                            data.message || "User is not valid"
+                                          )
+                                        );
+                                      }
                                     }
-                                  });
+                                  );
                                 });
                               },
                             }),
