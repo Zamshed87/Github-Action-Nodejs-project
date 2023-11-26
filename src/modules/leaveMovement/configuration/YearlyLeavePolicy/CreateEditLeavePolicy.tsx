@@ -638,6 +638,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Depends on Service Length"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isDependOnServiceLength"
                                     disabled={
                                       intLeaveType?.label ===
@@ -917,6 +918,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Compensatory Leave Expire"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isConpensatoryLveExpire"
                                   />
                                 </Col>
@@ -978,6 +980,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Earn Leave Include Offday"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isEarnLveIncludeOffday"
                                   />
                                 </Col>
@@ -985,6 +988,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Earn Leave Include Holiday"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isEarnLveIncludeHoliday"
                                   />
                                 </Col>
@@ -1062,6 +1066,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Half Day Leave"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isHalfDayLeave"
                                     onChange={() => {
                                       form.setFieldsValue({
@@ -1159,6 +1164,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Carry Forward"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isCarryForward"
                                     onChange={() => {
                                       form.setFieldsValue({
@@ -1257,6 +1263,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Encashable"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isEncashable"
                                     onChange={() => {
                                       form.setFieldsValue({
@@ -1338,6 +1345,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Month Wise Expired"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isMonthWiseExpired"
                                     onChange={() => {
                                       form.setFieldsValue({
@@ -1369,6 +1377,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Max Advance Leave in Year"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isAdvanceLeave"
                                     onChange={() => {
                                       form.setFieldsValue({
@@ -1400,6 +1409,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Minute Based "
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isMinuteBased"
                                   />
                                 </Col>
@@ -1407,6 +1417,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Include Offday"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isIncludeOffday"
                                   />
                                 </Col>
@@ -1414,6 +1425,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Include Holiday"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isIncludeHoliday"
                                   />
                                 </Col>
@@ -1421,6 +1433,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Balance Show For SelfService"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isLveBalanceShowForSelfService"
                                   />
                                 </Col>
@@ -1428,6 +1441,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Leave Apply For SelfService"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isLveBalanceApplyForSelfService"
                                   />
                                 </Col>
@@ -1435,6 +1449,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Applicable Before And After Offday"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isApplicableBeforeAndAfterOffday"
                                   />
                                 </Col>
@@ -1442,6 +1457,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Applicable Before And After Holiday"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isApplicableBeforeAndAfterHoliday"
                                   />
                                 </Col>
@@ -1449,6 +1465,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Auto Renewable"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isAutoRenewable"
                                   />
                                 </Col>
@@ -1456,6 +1473,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Prodata"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isProdataBasis"
                                     disabled={
                                       intLeaveType?.label ===
@@ -1469,6 +1487,7 @@ const CreateEditLeavePolicy = () => {
                                   <PInput
                                     label="Do you want assign right now?"
                                     type="checkbox"
+                                    layout="horizontal"
                                     name="isGenerate"
                                   />
                                 </Col>

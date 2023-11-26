@@ -355,8 +355,8 @@ export const PeopleDeskSaasDDL = async (
       const newDDL = res?.data?.map((itm) => {
         return {
           ...itm,
-          value: itm[value],
-          label: itm[label],
+          value: itm?.LeaveTypeId,
+          label: itm?.LeaveType,
         };
       });
       setter(newDDL);
