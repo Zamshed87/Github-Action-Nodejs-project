@@ -57,7 +57,7 @@ const DefaultSalary = ({ propsObj }) => {
       partType: "SalaryAssignLanding",
       businessUnitId: buId,
       workplaceGroupId: wgId || 0,
-      workplaceId: wId,
+      workplaceId: wId || 0,
       departmentId: 0,
       designationId: 0,
       supervisorId: 0,
