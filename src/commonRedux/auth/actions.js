@@ -183,7 +183,7 @@ export const getMenuListAction = (employeeId, setLoading) => (dispatch) => {
     .catch((error) => {
       setLoading(false);
       dispatch(slice.setMenuList([]));
-      console.log(error?.response);
+
       if (error?.response?.data?.statusCode === 401) {
         dispatch(setIsExpiredTokenAction(true));
         dispatch(setLogoutAction());

@@ -34,7 +34,8 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
   .ant-form-item-control {
     .ant-picker,
     .ant-select-selector,
-    .ant-input {
+    .ant-input,
+    .ant-input-number {
       border-radius: 4px !important;
     }
     .ant-input-group {
@@ -67,6 +68,7 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         @include inputFocus;
       }
     }
+
     .ant-picker {
       &:hover {
         @include inputHover;
@@ -89,6 +91,22 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
       &.ant-select-focused {
         .ant-select-selector {
           @include inputFocus;
+        }
+      }
+    }
+    .ant-input-number {
+      width: 100%;
+      &:hover {
+        @include inputHover;
+      }
+      &.ant-input-number-focused {
+        @include inputFocus;
+      }
+      .ant-input-number-input {
+        &[placeholder] {
+          color: var(--gray);
+          font-size: inherit;
+          line-height: inherit;
         }
       }
     }
