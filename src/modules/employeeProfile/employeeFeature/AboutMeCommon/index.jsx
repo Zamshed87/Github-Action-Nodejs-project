@@ -406,6 +406,7 @@ function AboutMeDetails() {
         />
       </ViewModal> */}
 
+      {console.log(empBasic, "Basic")}
       <PModal
         open={isAddEditForm}
         title={`Edit Employee(${empBasic?.employeeProfileLandingView?.strEmployeeName})`}
@@ -618,23 +619,26 @@ function AboutMeDetails() {
               isCreateUser:
                 empBasic?.employeeProfileLandingView?.isCreateUser || false,
               loginUserId:
-                empBasic?.userVM?.loginId ||
+                empBasic?.employeeProfileLandingView?.loginId ||
                 empBasic?.employeeProfileLandingView?.strEmployeeCode ||
                 undefined,
-              password: empBasic?.userVM?.strPassword || "123456",
-              email: empBasic?.userVM?.officeMail,
-              phone: empBasic?.userVM?.strPersonalMobile,
-              userType: empBasic?.userVM?.userTypeId
+              password: empBasic?.employeeProfileLandingView?.strPassword || "123456",
+              email: empBasic?.employeeProfileLandingView?.strPersonalMail,
+              workMail: empBasic?.employeeProfileLandingView?.strOfficeMail || "",
+              workPhone: empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
+              phone: empBasic?.employeeProfileLandingView?.strPersonalMobile,
+              userType: empBasic?.employeeProfileLandingView?.userTypeId
                 ? {
-                    value: empBasic?.userVM?.userTypeId,
-                    label: empBasic?.userVM?.strUserType,
+                    value: empBasic?.employeeProfileLandingView?.userTypeId,
+                    label: empBasic?.employeeProfileLandingView?.strUserType,
                   }
                 : undefined,
-              isActive: empBasic?.userVM?.userStatus,
+              isActive: empBasic?.employeeProfileLandingView?.userStatus,
 
               // calender assigne
             }}
             getData={getEmpData}
+            // empBasic={empBasic}
             setIsAddEditForm={setIsAddEditForm}
           />
         }

@@ -12,6 +12,7 @@ import { submitHandler } from "./helper";
 export default function AddEditForm({
   setIsAddEditForm,
   getData,
+  // empBasic,
   isEdit,
   singleData,
   pages,
@@ -391,6 +392,7 @@ export default function AddEditForm({
 
   useEffect(() => {
     if (singleData?.empId) {
+      console.log(singleData, 'Single Data')
       form.setFieldsValue(singleData);
       getWorkplace();
     }
@@ -405,6 +407,7 @@ export default function AddEditForm({
           submitHandler({
             values,
             getData,
+            // empBasic,
             resetForm: form.resetFields,
             pages,
             setIsAddEditForm,

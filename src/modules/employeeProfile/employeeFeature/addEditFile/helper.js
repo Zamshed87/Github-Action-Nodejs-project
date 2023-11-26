@@ -310,6 +310,7 @@ export const getEditDDLs = ({
 export const submitHandler = ({
   values,
   getData,
+  // empBasic,
   resetForm,
   pages,
   setIsAddEditForm,
