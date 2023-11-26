@@ -165,6 +165,8 @@ export default function AddEditForm({
     });
   };
 
+  const userValidation = debounce(userExistValidation, 500); // delay of 1 second
+
   const getCalendarByRosterDDL = () => {
     const { calender } = form.getFieldsValue(true);
     calendarByRosterGroupDDL?.action({
@@ -912,16 +914,31 @@ export default function AddEditForm({
                           type="text"
                           placeholder="User Id"
                           label="User Id"
-                          onChange={(e) => {
-                            const payload = {
-                              strLoginId: e.target.value,
-                              intUrlId: intUrlId,
-                              intAccountId: orgId,
-                            };
-                            debounce(() => {
-                              userExistValidation(payload, setIsUserCheckMsg);
-                            }, 500);
-                          }}
+                          rules={[
+                            { required: true, message: "User Id is required" },
+                            () => ({
+                              validator(_, value) {
+                                return new Promise((resolve, reject) => {
+                                  const payload = {
+                                    strLoginId: value,
+                                    intUrlId: intUrlId,
+                                    intAccountId: orgId,
+                                  };
+                                  userValidation(payload, (data) => {
+                                    if (data.message === "Valid") {
+                                      resolve();
+                                    } else {
+                                      reject(
+                                        new Error(
+                                          data.message || "User is not valid"
+                                        )
+                                      );
+                                    }
+                                  });
+                                });
+                              },
+                            }),
+                          ]}
                         />
                       </Col>
                       <Col md={12} sm={24}>
