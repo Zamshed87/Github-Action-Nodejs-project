@@ -37,6 +37,7 @@ export const getBuDetails = async (buId, setter, setLoading) => {
 
 export const createEditEmpAction = async (
   values,
+  empBasic,
   buId,
   intUrlId,
   setLoading,
@@ -95,10 +96,10 @@ export const createEditEmpAction = async (
       strCalenderName: "",
       intHrpositionId: values?.hrPosition?.value || 0,
       strHrpostionName: values?.hrPosition?.label || "",
-      strPersonalMail: "",
-      strOfficeMail: "",
-      strPersonalMobile: "",
-      strOfficeMobile: "",
+      strPersonalMail: values?.email || "",
+      strOfficeMail: values?.workMail || "",
+      strPersonalMobile: values?.phone || "",
+      strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
       calendarAssignViewModel: null,
     };
@@ -140,7 +141,7 @@ export const createEditEmpAction = async (
           intUrlId: intUrlId,
           intCountryId: 0,
           intOfficeMail: values?.email,
-          strContactNo: values?.phone,
+          strContactNo: values?.phone || "",
           dteCreatedAt: todayDate(),
         },
       };
