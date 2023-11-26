@@ -1,4 +1,4 @@
-import { Checkbox, DatePicker, Form, Input } from "antd";
+import { Checkbox, DatePicker, Form, Input, InputNumber } from "antd";
 import { InputProperty, InputType } from "../TForm";
 import "../styles.scss";
 
@@ -75,6 +75,17 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           maxLength={maxLength}
           allowClear={allowClear}
           autoSize={autoSize}
+        />
+      ) : type === "number" ? (
+        <InputNumber
+          placeholder={placeholder}
+          onChange={onChange as (e: any) => void}
+          onPressEnter={onPressEnter}
+          defaultValue={defaultValue}
+          disabled={disabled}
+          prefix={prefix}
+          value={value}
+          type={"number"}
         />
       ) : (
         <Input
