@@ -328,7 +328,7 @@ export default function AddEditForm({
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
-          res[i].label = item?.EmployeeStatusName;
+          res[i].label = item?.EmployeeStatus;
           res[i].value = item?.EmployeeStatusId;
         });
       },
@@ -394,7 +394,7 @@ export default function AddEditForm({
 
   useEffect(() => {
     if (singleData?.empId) {
-      console.log(singleData, 'Single Data')
+      console.log(singleData, "Single Data");
       form.setFieldsValue(singleData);
       getWorkplace();
     }
