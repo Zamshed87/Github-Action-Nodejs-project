@@ -103,7 +103,8 @@ const CreateEditLeavePolicy = () => {
       setWorkplaceDDL
     );
   }, [orgId, buId, employeeId, wgId]);
-  //  for edit
+
+  // for edit
   useEffect(() => {
     if (params?.id && workplaceDDL?.length > 0) {
       getYearlyPolicyById(
@@ -119,6 +120,7 @@ const CreateEditLeavePolicy = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params?.id, workplaceDDL, allPolicies]);
+
   useEffect(() => {
     if (singleData?.policyId) {
       form.setFieldsValue(singleData);
@@ -291,7 +293,7 @@ const CreateEditLeavePolicy = () => {
                             }}
                             rules={[
                               {
-                                required: true,
+                                required: false,
                                 message: "Leave Type is required",
                               },
                             ]}
@@ -1204,6 +1206,7 @@ const CreateEditLeavePolicy = () => {
                                     size="small"
                                     rules={[
                                       {
+                                        required: false,
                                         message:
                                           "Carry Forward Expiry Day must be positive",
                                         pattern: new RegExp(
@@ -1223,6 +1226,7 @@ const CreateEditLeavePolicy = () => {
                                     size="small"
                                     rules={[
                                       {
+                                        required: false,
                                         message:
                                           "Carry Forward Month must be positive",
                                         pattern: new RegExp(
