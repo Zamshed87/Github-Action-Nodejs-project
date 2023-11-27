@@ -7,12 +7,13 @@ import {
   PRadio,
   PSelect,
 } from "Components";
+import "../style.scss";
 import { useApiRequest } from "Hooks";
 import { Col, Divider, Form, Row } from "antd";
+import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { OTPolicyGenerate, policyType } from "../Utils";
-import moment from "moment";
+import { OTPolicyGenerate, checkPolicyExistance, policyType } from "../Utils";
 
 type TOvertimePolicy = unknown;
 const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
@@ -21,12 +22,23 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  const { workplaceDDL } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+  const workplaceList = workplaceDDL?.map((item: any) => {
+    return {
+      value: item?.WorkplaceId,
+      label: item?.WorkplaceName,
+    };
+  });
 
+  // States
+  const [matchingData, setMatchingData] = React.useState<any[]>([]);
   // Form Instance
   const [form] = Form.useForm();
 
   // Api Actions
-  const WorkplaceDDL = useApiRequest([]);
   const HRPositionDDL = useApiRequest([]);
   const EmploymentTypeDDL = useApiRequest([]);
   const AccountWiseGetOverTimeConfig = useApiRequest([]);
@@ -34,7 +46,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
 
   // Life Cycle Hooks
   useEffect(() => {
-    getWorkplaceDDL();
     getHRPositionDDL();
     getEmploymentTypeDDL();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,24 +56,6 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     getAllExistingOvertimePolicy();
   }, []);
 
-  const getWorkplaceDDL = () => {
-    WorkplaceDDL?.action({
-      method: "GET",
-      urlKey: "PeopleDeskAllDDL",
-      params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        intId: employeeId,
-      },
-      onSuccess: (data) => {
-        data?.forEach((item: any, i: number) => {
-          data[i].value = item?.intWorkplaceId;
-          data[i].label = item?.strWorkplace;
-        });
-      },
-    });
-  };
   const getHRPositionDDL = () => {
     HRPositionDDL?.action({
       method: "GET",
@@ -130,7 +123,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       },
     });
   };
-
+  console.log(matchingData);
   return (
     <>
       <PForm
@@ -143,6 +136,19 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
           benefitHours: 1,
         }}
         onFinish={onFinish}
+        onValuesChange={(changedFields, allFields) => {
+          const changedKey = Object.keys(changedFields);
+          const check = ["policyType", "hrPosition", "employmentType"].some(
+            (key) => changedKey.includes(key)
+          );
+          if (check) {
+            checkPolicyExistance(
+              form,
+              AccountWiseGetOverTimeConfig?.data,
+              setMatchingData
+            );
+          }
+        }}
       >
         <PCard>
           <PCardHeader title="Create OT Policy" backButton submitText="Save" />
@@ -170,8 +176,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       label="Workplace"
                       name="workplace"
                       placeholder="Workplace Name"
-                      options={WorkplaceDDL?.data || []}
-                      loading={WorkplaceDDL?.loading}
+                      options={workplaceList || []}
                       onChange={(value, option) => {
                         form.setFieldsValue({
                           workplace: option,
@@ -341,7 +346,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                     <PRadio
                       type="group"
                       name="overtimeDependsOn"
-                      onChange={(e) => {
+                      onChange={() => {
                         form.setFieldsValue({
                           fixedAmount: undefined,
                         });
@@ -635,7 +640,44 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   </Col>
                 </Row>
               </Col>
-              <Col span={12}></Col>
+              <Col span={12}>
+                <Row gutter={[10, 10]}>
+                  {matchingData?.map((item: any, idx: number) => (
+                    <Col md={12} sm={24} key={idx}>
+                      <div className="policyInfo">
+                        <p>
+                          Policy Name:<strong> {item?.strPolicyName}</strong>
+                        </p>
+                        <p>
+                          Workplace:<strong> {item?.strWorkplaceName}</strong>
+                        </p>
+                        {item?.strHrPositionName ? (
+                          <p>
+                            HR Position:
+                            <strong> {item?.strHrPositionName}</strong>
+                          </p>
+                        ) : undefined}
+                        {item?.employmentType ? (
+                          <p>
+                            Employment Type:
+                            <strong> {item?.employmentType}</strong>
+                          </p>
+                        ) : undefined}
+                        {item?.numFromSalary ? (
+                          <p>
+                            From Salary: <strong> {item?.numFromSalary}</strong>
+                          </p>
+                        ) : undefined}
+                        {item?.numToSalary ? (
+                          <p>
+                            To Salary: <strong> {item?.numToSalary}</strong>
+                          </p>
+                        ) : undefined}
+                      </div>
+                    </Col>
+                  ))}
+                </Row>
+              </Col>
             </Row>
           </PCardBody>
         </PCard>
