@@ -191,15 +191,15 @@ export const getYearlyPolicyById = async (
             label: itm?.strEmploymentTypeName,
           };
         }),
-        intCarryForwardMonth: {
+        intCarryForwardMonth: res?.data?.intCarryForwardMonth && {
           value: res?.data?.intCarryForwardMonth,
           label: getMonthName(res?.data?.intCarryForwardMonth),
         },
-        intCarryForwarExpiryMonth: {
+        intCarryForwarExpiryMonth: res?.data?.intCarryForwarExpiryMonth && {
           value: res?.data?.intCarryForwarExpiryMonth,
           label: getMonthName(res?.data?.intCarryForwarExpiryMonth),
         },
-        intYear: {
+        intYear: res?.data?.intYear && {
           value: res?.data?.intYear,
           label: res?.data?.intYear,
         },
@@ -210,17 +210,19 @@ export const getYearlyPolicyById = async (
             label: itm?.strHrPositionName,
           };
         }),
-        inPreviousLveTypeEnd: {
+        inPreviousLveTypeEnd: res?.data?.inPreviousLveTypeEnd
+          ?.intLeaveTypeId && {
           ...res?.data?.inPreviousLveTypeEnd,
           value: res?.data?.inPreviousLveTypeEnd?.intLeaveTypeId,
           label: res?.data?.inPreviousLveTypeEnd?.strLeaveType,
         },
-        intHalfdayPreviousLveTypeEnd: {
+        intHalfdayPreviousLveTypeEnd: res?.data?.intHalfdayPreviousLveTypeEnd
+          ?.intLeaveTypeId && {
           ...res?.data?.intHalfdayPreviousLveTypeEnd,
           value: res?.data?.intHalfdayPreviousLveTypeEnd?.intLeaveTypeId,
           label: res?.data?.intHalfdayPreviousLveTypeEnd?.strLeaveType,
         },
-        intLeaveType: {
+        intLeaveType: res?.data?.intLeaveType?.intLeaveTypeId && {
           ...res?.data?.intLeaveType,
           value: res?.data?.intLeaveType?.intLeaveTypeId,
           label: res?.data?.intLeaveType?.strLeaveType,

@@ -35,8 +35,8 @@
     "no-prototype-builtins": "off",
     "jsx-a11y/img-redundant-alt": "off",
     "no-unexpected-multiline": "warn",
-    "no-unreachable": "off",
-      },
+    "no-unreachable": "off"
+  },
   "settings": {
     "react": {
       "version": "detect"
