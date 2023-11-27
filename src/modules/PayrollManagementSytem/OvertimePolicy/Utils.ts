@@ -1,5 +1,5 @@
-import { debounce, get } from "lodash";
 import { FormInstance } from "antd";
+import { debounce } from "lodash";
 export const policyType = [
   {
     value: 1,
@@ -114,43 +114,64 @@ function generateRows(
 
 // Checking policy existance
 export const checkPolicyExistance = debounce(
-  (form: FormInstance, allData: any, setMatchingData: any) => {
+  async (form: FormInstance, allData: any, setMatchingData: any) => {
     const values = form.getFieldsValue();
-    const matchingPolicy = getMatchingPolicy(values, allData);
+    const matchingPolicy = await getMatchingPolicy(values, allData);
     setMatchingData(matchingPolicy);
   },
   100
 );
 
 const getMatchingPolicy = (values: any, allData: any) => {
-  const { policyType, hrPosition, employmentType } = values;
+  return new Promise((resolve) => {
+    const { workplace, hrPosition, employmentType, fromSalary, toSalary } =
+      values;
 
-  // If both hrPosition and employmentType have no value, return an empty array
-  if (
-    (!hrPosition || hrPosition.length === 0) &&
-    (!employmentType || employmentType.length === 0)
-  ) {
-    return [];
-  }
-  const matchingPolicy: any = [];
-  allData?.forEach((policy: any) => {
-    let isMatch = true;
-    if (hrPosition?.length) {
-      isMatch =
-        isMatch &&
-        hrPosition.some((pos: any) => pos.value === policy.intHrPositionId);
+    // If hrPosition, employmentType, fromSalary, and toSalary have no value, return an empty array
+    if (
+      !workplace &&
+      (!hrPosition || hrPosition.length === 0) &&
+      (!employmentType || employmentType.length === 0) &&
+      (fromSalary === null || fromSalary === undefined) &&
+      (toSalary === null || toSalary === undefined)
+    ) {
+      resolve([]);
     }
-    if (employmentType?.length) {
-      isMatch =
-        isMatch &&
-        employmentType.some(
-          (type: any) => type.value === policy.intEmploymentTypeId
-        );
-    }
-    if (isMatch) {
-      matchingPolicy.push(policy);
-    }
+
+    const matchingPolicy: any = [];
+    allData?.forEach((policy: any) => {
+      let isMatch = true;
+      if (workplace?.value) {
+        isMatch = isMatch && policy.intWorkplaceId === workplace?.value;
+      }
+      if (hrPosition?.length) {
+        isMatch =
+          isMatch &&
+          hrPosition.some((pos: any) => pos.value === policy.intHrPositionId);
+      }
+      if (employmentType?.length) {
+        isMatch =
+          isMatch &&
+          employmentType.some(
+            (type: any) => type.value === policy.intEmploymentTypeId
+          );
+      }
+      if (fromSalary && toSalary) {
+        if (
+          (policy.numFromSalary <= fromSalary &&
+            policy.numToSalary >= fromSalary) ||
+          (policy.numFromSalary <= toSalary && policy.numToSalary >= toSalary)
+        ) {
+          isMatch = isMatch && true;
+        } else {
+          isMatch = false;
+        }
+      }
+      if (isMatch) {
+        matchingPolicy.push(policy);
+      }
+    });
+
+    resolve(matchingPolicy);
   });
-
-  return matchingPolicy;
 };

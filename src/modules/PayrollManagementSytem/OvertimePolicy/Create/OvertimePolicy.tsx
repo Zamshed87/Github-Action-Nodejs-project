@@ -7,13 +7,14 @@ import {
   PRadio,
   PSelect,
 } from "Components";
-import "../style.scss";
 import { useApiRequest } from "Hooks";
-import { Col, Divider, Form, Row } from "antd";
+import { Col, Divider, Form, Row, message } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { OTPolicyGenerate, checkPolicyExistance, policyType } from "../Utils";
+import "../style.scss";
 
 type TOvertimePolicy = unknown;
 const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
@@ -32,6 +33,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       label: item?.WorkplaceName,
     };
   });
+
+  const history = useHistory();
 
   // States
   const [matchingData, setMatchingData] = React.useState<any[]>([]);
@@ -102,6 +105,10 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   };
   // Submit Handler
   const onFinish = () => {
+    if (matchingData?.length)
+      return message.info(
+        "We are working on overriden policy. You can create new policy."
+      );
     const commonData = {
       dteCreateAt: moment().format("YYYY-MM-DDTHH:mm:ss"),
       intAccountId: orgId,
@@ -118,12 +125,11 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       urlKey: "SaveNUpdateOverTimeConfig",
       payload: payload,
       toast: true,
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: () => {
+        history?.goBack();
       },
     });
   };
-  console.log(matchingData);
   return (
     <>
       <PForm
@@ -136,11 +142,16 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
           benefitHours: 1,
         }}
         onFinish={onFinish}
-        onValuesChange={(changedFields, allFields) => {
+        onValuesChange={(changedFields) => {
           const changedKey = Object.keys(changedFields);
-          const check = ["policyType", "hrPosition", "employmentType"].some(
-            (key) => changedKey.includes(key)
-          );
+          const check = [
+            "workplace",
+            "policyType",
+            "hrPosition",
+            "employmentType",
+            "fromSalary",
+            "toSalary",
+          ].some((key) => changedKey.includes(key));
           if (check) {
             checkPolicyExistance(
               form,
@@ -154,8 +165,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
           <PCardHeader title="Create OT Policy" backButton submitText="Save" />
           <PCardBody>
             <Row gutter={[30, 2]}>
+              {/* Left Side Fields */}
               <Col span={12} style={{ borderRight: "1px solid #efefef" }}>
-                {/* Left Side Fields */}
                 <Row gutter={[10, 2]}>
                   <Col md={12} sm={24}>
                     <PInput
@@ -640,6 +651,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   </Col>
                 </Row>
               </Col>
+              {/* Right Side Fields */}
               <Col span={12}>
                 <Row gutter={[10, 10]}>
                   {matchingData?.map((item: any, idx: number) => (
