@@ -17,7 +17,7 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
   const history = useHistory();
 
   // Api Actions
-  const AccountWiseGetOverTimeConfig = useApiRequest({});
+  const AccountWiseGetOverTimeConfig = useApiRequest([]);
 
   // Landing Api
   type TLandingApi = {
@@ -50,19 +50,13 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
   const header: any = [
     {
       title: "SL",
-      render: (value: any, row: any, index: number) =>
-        getSerial({
-          currentPage: AccountWiseGetOverTimeConfig?.data?.currentPage,
-          pageSize: AccountWiseGetOverTimeConfig?.data?.pageSize,
-          index,
-        }),
-
+      dataIndex: "sl",
       align: "center",
       width: 20,
     },
     {
-      title: "Employee Name",
-      dataIndex: "employeeName",
+      title: "Policy Name",
+      dataIndex: "strPolicyName",
     },
     {
       title: "Department",
@@ -147,7 +141,7 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
           <DataTable
             header={header}
             bordered
-            data={AccountWiseGetOverTimeConfig?.data?.data || []}
+            data={AccountWiseGetOverTimeConfig?.data || []}
             loading={AccountWiseGetOverTimeConfig?.loading}
             scroll={{ x: 1000 }}
             onChange={(pagination, filters, sorter, extra) => {

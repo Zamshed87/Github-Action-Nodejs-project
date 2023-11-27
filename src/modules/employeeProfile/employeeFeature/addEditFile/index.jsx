@@ -931,6 +931,7 @@ export default function AddEditForm({
                                     payload,
                                     setIsUserCheckMsg,
                                     (data) => {
+                                      console.log(data)
                                       if (data.message === "Valid") {
                                         resolve();
                                       } else {
