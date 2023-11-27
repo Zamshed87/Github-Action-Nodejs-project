@@ -1,3 +1,5 @@
+import { debounce, get } from "lodash";
+import { FormInstance } from "antd";
 export const policyType = [
   {
     value: 1,
@@ -13,6 +15,7 @@ export const policyType = [
   },
 ];
 
+// Payload Generation for SaveNUpdateOverTimeConfig => Line 16 - 111
 type TOTPolicyGenerate = {
   values: any;
   commonData: any;
@@ -49,7 +52,6 @@ export const OTPolicyGenerate = ({ commonData, values }: TOTPolicyGenerate) => {
 };
 
 type Option = { label: string; value: number };
-
 function generateRows(
   policyType: Option[],
   hrPosition: Option[],
@@ -109,3 +111,46 @@ function generateRows(
 
   return rows;
 }
+
+// Checking policy existance
+export const checkPolicyExistance = debounce(
+  (form: FormInstance, allData: any, setMatchingData: any) => {
+    const values = form.getFieldsValue();
+    const matchingPolicy = getMatchingPolicy(values, allData);
+    setMatchingData(matchingPolicy);
+  },
+  100
+);
+
+const getMatchingPolicy = (values: any, allData: any) => {
+  const { policyType, hrPosition, employmentType } = values;
+
+  // If both hrPosition and employmentType have no value, return an empty array
+  if (
+    (!hrPosition || hrPosition.length === 0) &&
+    (!employmentType || employmentType.length === 0)
+  ) {
+    return [];
+  }
+  const matchingPolicy: any = [];
+  allData?.forEach((policy: any) => {
+    let isMatch = true;
+    if (hrPosition?.length) {
+      isMatch =
+        isMatch &&
+        hrPosition.some((pos: any) => pos.value === policy.intHrPositionId);
+    }
+    if (employmentType?.length) {
+      isMatch =
+        isMatch &&
+        employmentType.some(
+          (type: any) => type.value === policy.intEmploymentTypeId
+        );
+    }
+    if (isMatch) {
+      matchingPolicy.push(policy);
+    }
+  });
+
+  return matchingPolicy;
+};

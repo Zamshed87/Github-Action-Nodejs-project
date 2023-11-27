@@ -166,7 +166,7 @@ export default function AddEditForm({
     });
   };
 
-  const userValidation = debounce(userExistValidation, 500); // delay of 1 second
+  const userValidation = debounce(userExistValidation, 500); // delay time
 
   const getCalendarByRosterDDL = () => {
     const { calender } = form.getFieldsValue(true);
@@ -931,6 +931,7 @@ export default function AddEditForm({
                                     payload,
                                     setIsUserCheckMsg,
                                     (data) => {
+                                      console.log(data);
                                       if (data.message === "Valid") {
                                         resolve();
                                       } else {

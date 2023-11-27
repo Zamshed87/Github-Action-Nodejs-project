@@ -1,42 +1,31 @@
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
-import PBadge from "Components/Badge";
 import { useApiRequest } from "Hooks";
-import { getSerial } from "Utils";
-import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-type TOvertimePolicy = {};
+type TOvertimePolicy = unknown;
 const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
   // Data From Store
-  const { buId, wgId, wId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+
   const history = useHistory();
 
   // Api Actions
-  const AccountWiseGetOverTimeConfig = useApiRequest({});
+  const GetOverTimeConfig = useApiRequest([]);
 
   // Landing Api
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any[];
-    searchText?: string;
-  };
-
-  const landingApi = ({
-    pagination = {},
-    filerList = [],
-    searchText = "",
-  }: TLandingApi = {}) => {
-    AccountWiseGetOverTimeConfig?.action({
-      urlKey: "AccountWiseGetOverTimeConfig",
+  const landingApi = () => {
+    GetOverTimeConfig?.action({
+      urlKey: "GetOverTimeConfig",
       method: "GET",
+      params: {
+        accountId: orgId,
+        workplaceId: wId,
+      },
     });
   };
 
@@ -50,79 +39,45 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
   const header: any = [
     {
       title: "SL",
-      render: (value: any, row: any, index: number) =>
-        getSerial({
-          currentPage: AccountWiseGetOverTimeConfig?.data?.currentPage,
-          pageSize: AccountWiseGetOverTimeConfig?.data?.pageSize,
-          index,
-        }),
+      dataIndex: "sl",
+      align: "center",
+      width: 15,
+    },
+    {
+      title: "Policy Name",
+      dataIndex: "strPolicyName",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkplaceName",
+    },
+    {
+      title: "HR Position",
+      dataIndex: "strHrPositionName",
+    },
+    {
+      title: "Employment Type",
+      dataIndex: "employmentType",
+    },
 
-      align: "center",
-      width: 20,
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "employeeName",
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sorter: true,
-      filter: true,
-      filterKey: "departmentList",
-    },
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      sorter: true,
-      filter: true,
-      filterKey: "designationList",
-    },
-    {
-      title: "Supervisor",
-      dataIndex: "supervisorName",
-      width: "80px",
-    },
-    {
-      title: "Generate Date",
-      dataIndex: "generateDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
-    },
-    {
-      title: "Joining Date",
-      dataIndex: "joiningDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      align: "center",
-      render: (data: any, record: any, index: number) => (
-        // Write condition to check status
-        <PBadge type="primary" text="Active" />
-      ),
-      width: "50px",
-    },
     {
       title: "Action",
       align: "center",
-      render: (data: any, record: any, index: number) => {
+      render: () => {
         return (
           <TableButton
             buttonsList={[
               {
                 type: "edit",
-                onClick: (e) => {},
+                // onClick: () => {},
               },
               {
                 type: "delete",
-                onClick: (e) => {},
+                // onClick: () => {},
               },
               {
                 type: "view",
-                onClick: (e) => {},
+                // onClick: () => {},
               },
             ]}
           />
@@ -131,7 +86,7 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
       width: "60px",
     },
   ];
-  console.log(AccountWiseGetOverTimeConfig?.data);
+  console.log(GetOverTimeConfig?.data);
   return (
     <>
       <PForm
@@ -147,15 +102,11 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
           <DataTable
             header={header}
             bordered
-            data={AccountWiseGetOverTimeConfig?.data?.data || []}
-            loading={AccountWiseGetOverTimeConfig?.loading}
+            data={GetOverTimeConfig?.data || []}
+            loading={GetOverTimeConfig?.loading}
             scroll={{ x: 1000 }}
             onChange={(pagination, filters, sorter, extra) => {
               if (extra.action === "sort") return;
-              landingApi({
-                pagination,
-                filerList: filters,
-              });
             }}
           />
         </PCard>

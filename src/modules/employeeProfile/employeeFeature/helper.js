@@ -336,9 +336,9 @@ export const userExistValidation = async (payload, setter, cb) => {
   try {
     let res = await axios.post(`/Auth/UserIsExistsRemoteValidation`, payload);
     cb && cb(res?.data);
-    // toast.success(res?.data?.message);
     setter(res?.data);
   } catch (error) {
+    cb && cb(error?.response);
     setter(error?.response?.data);
   }
 };

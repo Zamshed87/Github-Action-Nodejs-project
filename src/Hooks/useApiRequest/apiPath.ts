@@ -16,4 +16,5 @@ export const apiPath = {
   AccountWiseGetOverTimeConfig: "/Payroll/AccountWiseGetOverTimeConfig",
   AssignMultiCalander: "/Employee/AssignMultiCalander",
   SaveNUpdateOverTimeConfig: "/Payroll/SaveNUpdateOverTimeConfig",
+  GetOverTimeConfig: "/Payroll/GetOverTimeConfig",
 };
