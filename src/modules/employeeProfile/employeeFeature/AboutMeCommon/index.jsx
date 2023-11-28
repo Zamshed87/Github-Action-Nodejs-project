@@ -406,12 +406,11 @@ function AboutMeDetails() {
         />
       </ViewModal> */}
 
-      {console.log(empBasic, "Basic")}
       <PModal
         open={isAddEditForm}
         title={`Edit Employee(${empBasic?.employeeProfileLandingView?.strEmployeeName})`}
-        width=""
         onCancel={() => setIsAddEditForm(false)}
+        maskClosable={false}
         components={
           <AddEditForm
             isEdit={true}
@@ -622,10 +621,13 @@ function AboutMeDetails() {
                 empBasic?.employeeProfileLandingView?.loginId ||
                 empBasic?.employeeProfileLandingView?.strEmployeeCode ||
                 undefined,
-              password: empBasic?.employeeProfileLandingView?.strPassword || "123456",
+              password:
+                empBasic?.employeeProfileLandingView?.strPassword || "123456",
               email: empBasic?.employeeProfileLandingView?.strPersonalMail,
-              workMail: empBasic?.employeeProfileLandingView?.strOfficeMail || "",
-              workPhone: empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
+              workMail:
+                empBasic?.employeeProfileLandingView?.strOfficeMail || "",
+              workPhone:
+                empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
               phone: empBasic?.employeeProfileLandingView?.strPersonalMobile,
               userType: empBasic?.employeeProfileLandingView?.userTypeId
                 ? {

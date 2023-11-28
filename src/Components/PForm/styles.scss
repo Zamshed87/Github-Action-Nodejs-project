@@ -25,7 +25,8 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
 }
 
 .PeopleDeskInputWrapper,
-.PeopleDeskSelectWrapper {
+.PeopleDeskSelectWrapper,
+.PeopleDeskRadioWrapper {
   font-family: var(--interFont);
   margin: 0;
   .ant-form-item-label {
@@ -44,7 +45,31 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         border-bottom-right-radius: 0;
       }
     }
-
+    .ant-radio-group {
+      .ant-radio-wrapper {
+        font-size: 12px;
+        margin-right: 0;
+        .ant-radio {
+          .ant-radio-inner::after {
+            background: var(--primary-color);
+          }
+        }
+      }
+      .ant-radio-wrapper:hover .ant-radio,
+      .ant-radio:hover .ant-radio-inner,
+      .ant-radio-input:focus + .ant-radio-inner {
+        border-color: var(--primary-color);
+      }
+      .ant-radio-checked .ant-radio-inner {
+        border-color: var(--primary-color);
+      }
+      .ant-radio-checked::after {
+        border-color: var(--primary-color);
+      }
+      span.ant-radio + * {
+        padding-left: 5px;
+      }
+    }
     .ant-checkbox {
       &:hover {
         &.ant-checkbox-checked::after,
@@ -53,7 +78,6 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         }
       }
     }
-
     .ant-input {
       // Placeholder
       &[placeholder] {
@@ -68,7 +92,6 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         @include inputFocus;
       }
     }
-
     .ant-picker {
       &:hover {
         @include inputHover;

@@ -86,7 +86,6 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
       width: "60px",
     },
   ];
-  console.log(GetOverTimeConfig?.data);
   return (
     <>
       <PForm

@@ -61,7 +61,7 @@ export default function AddEditForm({
   // Api Functions
   const getSuperVisorDDL = debounce((value) => {
     if (value?.length < 2) return supervisorDDL?.reset();
-
+    const { workplaceGroup } = form.getFieldsValue(true);
     supervisorDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -70,7 +70,7 @@ export default function AddEditForm({
         AccountId: intAccountId,
         BusinessUnitId: buId,
         intId: employeeId,
-        workplaceGroupId: wgId,
+        workplaceGroupId: workplaceGroup?.value,
         searchTxt: value || "",
       },
       onSuccess: (res) => {
@@ -188,25 +188,6 @@ export default function AddEditForm({
     });
   };
 
-  const getUserTypeDDL = () => {
-    userTypeDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "UserType",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        intId: 0, // employeeId, Previously set 0
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strUserType;
-          res[i].value = item?.intUserTypeId;
-        });
-      },
-    });
-  };
-
   const getWorkplace = () => {
     const { workplaceGroup } = form.getFieldsValue(true);
     workplaceDDL?.action({
@@ -227,14 +208,15 @@ export default function AddEditForm({
     });
   };
 
-  const commonConfigurationDDL = () => {
+  const getReligion = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
     religionDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Religion",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
+        WorkplaceGroupId: workplaceGroup?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -244,14 +226,17 @@ export default function AddEditForm({
         });
       },
     });
+  };
 
+  const getEmploymentType = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "EmploymentType",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
+        WorkplaceGroupId: workplaceGroup?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -261,6 +246,31 @@ export default function AddEditForm({
         });
       },
     });
+  };
+
+  const getUserTypeDDL = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    userTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "UserType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strUserType;
+          res[i].value = item?.intUserTypeId;
+        });
+      },
+    });
+  };
+
+  // workplace wise
+  const getEmployeDepartment = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDepartmentDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -268,8 +278,8 @@ export default function AddEditForm({
       params: {
         DDLType: "EmpDepartment",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -279,23 +289,10 @@ export default function AddEditForm({
         });
       },
     });
+  };
 
-    workplaceGroup?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "WorkplaceGroup",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        intId: employeeId,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.strWorkplaceGroup;
-          res[i].value = item?.intWorkplaceGroupId;
-        });
-      },
-    });
+  const getEmployeDesignation = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     empDesignationDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -304,8 +301,8 @@ export default function AddEditForm({
         DDLType: "EmpDesignation",
         AccountId: intAccountId,
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -315,6 +312,9 @@ export default function AddEditForm({
         });
       },
     });
+  };
+  const getEmployeeStatus = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
     employeeStatusDDL?.action({
       urlKey: "PeopleDeskAllDDL",
@@ -322,14 +322,55 @@ export default function AddEditForm({
       params: {
         DDLType: "EmployeeStatus",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
         intId: 0,
       },
       onSuccess: (res) => {
         res.forEach((item, i) => {
           res[i].label = item?.EmployeeStatus;
           res[i].value = item?.EmployeeStatusId;
+        });
+      },
+    });
+  };
+
+  const getEmployeePosition = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+  };
+
+  const commonConfigurationDDL = () => {
+    workplaceGroup?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "WorkplaceGroup",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId, // This should be removed
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplaceGroup;
+          res[i].value = item?.intWorkplaceGroupId;
         });
       },
     });
@@ -347,24 +388,6 @@ export default function AddEditForm({
         res.forEach((item, i) => {
           res[i].label = item?.GenderName;
           res[i].value = item?.GenderId;
-        });
-      },
-    });
-
-    positionDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Position",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.PositionName;
-          res[i].value = item?.PositionId;
         });
       },
     });
@@ -389,14 +412,19 @@ export default function AddEditForm({
 
   useEffect(() => {
     commonConfigurationDDL();
-    getUserTypeDDL();
   }, [orgId, buId, wgId, employeeId]);
 
   useEffect(() => {
     if (singleData?.empId) {
-      console.log(singleData, "Single Data");
       form.setFieldsValue(singleData);
       getWorkplace();
+      getReligion();
+      getEmploymentType();
+      getUserTypeDDL();
+      getEmployeDepartment();
+      getEmployeDesignation();
+      getEmployeeStatus();
+      getEmployeePosition();
     }
   }, [orgId, buId, singleData, employeeId]);
 
@@ -442,6 +470,49 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Full Name is required" }]}
             />
           </Col>
+
+          <Col md={12} sm={24}>
+            <PSelect
+              options={workplaceGroup.data || []}
+              name="workplaceGroup"
+              label="Workplace Group"
+              placeholder="Workplace Group"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplaceGroup: op,
+                });
+                if (value) {
+                  getWorkplace();
+                  getReligion();
+                  getEmploymentType();
+                  getUserTypeDDL();
+                }
+              }}
+              rules={[
+                { required: true, message: "Workplace Group is required" },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={workplaceDDL?.data || []}
+              name="workplace"
+              label="Workplace"
+              placeholder="Workplace"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplace: op,
+                });
+                if (value) {
+                  getEmployeDepartment();
+                  getEmployeDesignation();
+                  getEmployeeStatus();
+                  getEmployeePosition();
+                }
+              }}
+              rules={[{ required: true, message: "Workplace is required" }]}
+            />
+          </Col>
           <Col md={12} sm={24}>
             <PSelect
               options={employmentTypeDDL?.data || []}
@@ -459,44 +530,12 @@ export default function AddEditForm({
             />
           </Col>
           <Col md={12} sm={24}>
-            <PSelect
-              options={workplaceGroup.data || []}
-              name="workplaceGroup"
-              label="Workplace Group"
-              placeholder="Workplace Group"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  workplaceGroup: op,
-                });
-                value && getWorkplace();
-              }}
-              rules={[
-                { required: true, message: "Workplace Group is required" },
-              ]}
-            />
-          </Col>
-          <Col md={12} sm={24}>
-            <PSelect
-              options={workplaceDDL?.data || []}
-              name="workplace"
-              label="Workplace"
-              placeholder="Workplace"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  workplace: op,
-                });
-              }}
-              rules={[{ required: true, message: "Workplace is required" }]}
-            />
-          </Col>
-          <Col md={12} sm={24}>
             <PInput
-              type="number"
+              type="text"
               name="employeeCode"
-              label="Employee Code"
-              placeholder="Employee Code"
-              rules={[{ required: true, message: "Employee Code is required" }]}
-              min
+              label="Employee ID"
+              placeholder="Employee ID"
+              rules={[{ required: true, message: "Employee ID is required" }]}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -714,72 +753,103 @@ export default function AddEditForm({
             </Col>
           ) : undefined}
 
-          <Col md={12} sm={24}>
-            <PSelect
-              options={supervisorDDL?.data || []}
-              name="supervisor"
-              label="Supervisor"
-              placeholder="Search minimum 2 character"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  supervisor: op,
-                });
-              }}
-              showSearch
-              filterOption={false}
-              // notFoundContent={null}
-              loading={supervisorDDL?.loading}
-              onSearch={(value) => {
-                getSuperVisorDDL(value);
-              }}
-              rules={[{ required: true, message: "Supervisor is required" }]}
-            />
-          </Col>
-          {/*  Need Searchable */}
-          <Col md={12} sm={24}>
-            <PSelect
-              options={dottedSupervisorDDL?.data || []}
-              name="dottedSupervisor"
-              label="Dotted Supervisor"
-              placeholder="Search minimum 2 character"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  dottedSupervisor: op,
-                });
-              }}
-              showSearch
-              filterOption={false}
-              // notFoundContent={null}
-              loading={dottedSupervisorDDL?.loading}
-              onSearch={(value) => {
-                getDottedSuperVisorDDL(value);
-              }}
-              rules={[
-                { required: true, message: "Dotted Supervisor is required" },
-              ]}
-            />
-          </Col>
-          <Col md={12} sm={24}>
-            <PSelect
-              options={lineManagerDDL.data || []}
-              name="lineManager"
-              label="Line Manager"
-              placeholder="Search minimum 2 character"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  lineManager: op,
-                });
-              }}
-              showSearch
-              filterOption={false}
-              // notFoundContent={null}
-              loading={lineManagerDDL?.loading}
-              onSearch={(value) => {
-                getLineManagerDDL(value);
-              }}
-              rules={[{ required: true, message: "Line Manager is required" }]}
-            />
-          </Col>
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { workplaceGroup } = form.getFieldsValue(true);
+              return (
+                <>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      options={supervisorDDL?.data || []}
+                      name="supervisor"
+                      label="Supervisor"
+                      placeholder={`${
+                        workplaceGroup?.value
+                          ? "Search minimum 2 character"
+                          : "Select Workplace Group fast"
+                      }`}
+                      disabled={!workplaceGroup?.value}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          supervisor: op,
+                        });
+                      }}
+                      showSearch
+                      filterOption={false}
+                      // notFoundContent={null}
+                      loading={supervisorDDL?.loading}
+                      onSearch={(value) => {
+                        getSuperVisorDDL(value);
+                      }}
+                      rules={[
+                        { required: true, message: "Supervisor is required" },
+                      ]}
+                    />
+                  </Col>
+                  {/*  Need Searchable */}
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      options={dottedSupervisorDDL?.data || []}
+                      name="dottedSupervisor"
+                      label="Dotted Supervisor"
+                      placeholder={`${
+                        workplaceGroup?.value
+                          ? "Search minimum 2 character"
+                          : "Select Workplace Group fast"
+                      }`}
+                      disabled={!workplaceGroup?.value}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          dottedSupervisor: op,
+                        });
+                      }}
+                      showSearch
+                      filterOption={false}
+                      // notFoundContent={null}
+                      loading={dottedSupervisorDDL?.loading}
+                      onSearch={(value) => {
+                        getDottedSuperVisorDDL(value);
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Dotted Supervisor is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      options={lineManagerDDL.data || []}
+                      name="lineManager"
+                      label="Line Manager"
+                      placeholder={`${
+                        workplaceGroup?.value
+                          ? "Search minimum 2 character"
+                          : "Select Workplace Group fast"
+                      }`}
+                      disabled={!workplaceGroup?.value}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          lineManager: op,
+                        });
+                      }}
+                      showSearch
+                      filterOption={false}
+                      // notFoundContent={null}
+                      loading={lineManagerDDL?.loading}
+                      onSearch={(value) => {
+                        getLineManagerDDL(value);
+                      }}
+                      rules={[
+                        { required: true, message: "Line Manager is required" },
+                      ]}
+                    />
+                  </Col>
+                </>
+              );
+            }}
+          </Form.Item>
 
           {!isEdit ? (
             <>
@@ -931,7 +1001,6 @@ export default function AddEditForm({
                                     payload,
                                     setIsUserCheckMsg,
                                     (data) => {
-                                      console.log(data);
                                       if (data.message === "Valid") {
                                         resolve();
                                       } else {

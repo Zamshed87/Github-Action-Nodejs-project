@@ -19,8 +19,13 @@ export const policyType = [
 type TOTPolicyGenerate = {
   values: any;
   commonData: any;
+  matchingData: any;
 };
-export const OTPolicyGenerate = ({ commonData, values }: TOTPolicyGenerate) => {
+export const OTPolicyGenerate = ({
+  commonData,
+  values,
+  matchingData,
+}: TOTPolicyGenerate) => {
   const { policyType, hrPosition, employmentType } = values;
 
   const policyInfo = {
@@ -129,7 +134,7 @@ const getMatchingPolicy = (values: any, allData: any) => {
 
     // If hrPosition, employmentType, fromSalary, and toSalary have no value, return an empty array
     if (
-      !workplace &&
+      // !workplace &&
       (!hrPosition || hrPosition.length === 0) &&
       (!employmentType || employmentType.length === 0) &&
       (fromSalary === null || fromSalary === undefined) &&

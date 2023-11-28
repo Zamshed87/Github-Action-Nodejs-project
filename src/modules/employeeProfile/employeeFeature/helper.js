@@ -37,7 +37,6 @@ export const getBuDetails = async (buId, setter, setLoading) => {
 
 export const createEditEmpAction = async (
   values,
-  empBasic,
   buId,
   intUrlId,
   setLoading,
@@ -47,7 +46,7 @@ export const createEditEmpAction = async (
   let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
 
   let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
-
+  console.log("Come Here");
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
@@ -151,12 +150,13 @@ export const createEditEmpAction = async (
       `/Employee/CreateNUpdateEmployeeBasicInfo`,
       payload
     );
+    console.log("Come Here 2");
     setLoading(false);
-    cb && cb();
+    res?.data?.status === 200 && cb && cb();
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
+    console.log("Come Here 3");
     setLoading(false);
-    console.log(error);
     toast.warn(error?.response?.data?.message, { toastId: 1 });
   }
 };
