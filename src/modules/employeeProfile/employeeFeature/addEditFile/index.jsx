@@ -491,12 +491,11 @@ export default function AddEditForm({
           </Col>
           <Col md={12} sm={24}>
             <PInput
-              type="number"
+              type="text"
               name="employeeCode"
-              label="Employee Code"
-              placeholder="Employee Code"
-              rules={[{ required: true, message: "Employee Code is required" }]}
-              min
+              label="Employee ID"
+              placeholder="Employee ID"
+              rules={[{ required: true, message: "Employee ID is required" }]}
             />
           </Col>
           <Col md={12} sm={24}>
