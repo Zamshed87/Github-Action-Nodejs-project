@@ -394,7 +394,6 @@ export default function AddEditForm({
 
   useEffect(() => {
     if (singleData?.empId) {
-      console.log(singleData, "Single Data");
       form.setFieldsValue(singleData);
       getWorkplace();
     }
@@ -930,7 +929,6 @@ export default function AddEditForm({
                                     payload,
                                     setIsUserCheckMsg,
                                     (data) => {
-                                      console.log(data);
                                       if (data.message === "Valid") {
                                         resolve();
                                       } else {

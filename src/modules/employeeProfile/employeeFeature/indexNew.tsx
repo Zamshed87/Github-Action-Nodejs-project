@@ -283,7 +283,7 @@ function EmployeeFeatureNew() {
       ),
     },
   ];
-  console.log(landingApi?.data);
+  // console.log(landingApi?.data);
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -451,7 +451,7 @@ function EmployeeFeatureNew() {
                     });
                   }
                 } catch (error: any) {
-                  console.log(error?.message);
+                  // console.log(error?.message);
                 }
               };
               excelLanding();
@@ -489,6 +489,7 @@ function EmployeeFeatureNew() {
         title="Create New Employee"
         width=""
         onCancel={() => setOpen(false)}
+        maskClosable={false}
         components={
           <>
             <AddEditForm
