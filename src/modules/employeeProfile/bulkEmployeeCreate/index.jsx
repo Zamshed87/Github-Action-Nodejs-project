@@ -113,7 +113,6 @@ export default function BulkEmployeeCreate() {
   const processData = async (file) => {
     try {
       const processData = await excelFileToArray(file, "Employee Bulk Upload");
-      // console.log(processData);
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadEmployeeAction(
         processData,
@@ -173,8 +172,8 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 process.env.NODE_ENV === "development"
-                                  ? "/document/downloadfile?id=2"
-                                  : "/document/downloadfile?id=2"
+                                  ? "/document/downloadfile?id=3"
+                                  : "/document/downloadfile?id=3"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -226,6 +225,9 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th>
                                 <div>Department</div>
+                              </th>
+                              <th>
+                                <div>Employee Division</div>
                               </th>
                               <th>
                                 <div>Section</div>
@@ -343,6 +345,11 @@ export default function BulkEmployeeCreate() {
                                 <td>
                                   <div className="tableBody-title">
                                     {data?.strDepartment}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {data?.strEmpDivision }
                                   </div>
                                 </td>
                                 <td>

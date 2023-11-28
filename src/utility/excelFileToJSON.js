@@ -20,6 +20,7 @@ export const excelFileToArray = (file, sheetName) => {
         resolve(data);
       })
       .catch((err) => {
+        console.log(err)
         reject(err);
       });
   });

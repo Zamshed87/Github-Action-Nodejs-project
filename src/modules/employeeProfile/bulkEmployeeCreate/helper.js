@@ -21,6 +21,7 @@ export const processBulkUploadEmployeeAction = async (
       strWorkplaceGroup: item["Workplace Group"] || "",
       strWorkplace: item["Workplace"] || "",
       strDepartment: item["Department"] || "",
+      strEmpDivision: item["Employee Division"] || "",
       strDesignation: item["Designation"] || "",
       strHrPosition: item["HR Position"] || "",
       strEmploymentType: item["Employment Type"] || "",
@@ -28,7 +29,9 @@ export const processBulkUploadEmployeeAction = async (
       strEmployeeCode: item["Employee Code"] + "" || "",
       strCardNumber: item["Card Number"] + "" || "",
       strGender: item["Gender"] || "",
-      isSalaryHold: JSON.parse(item["Salary Hold"]) || false,
+      isSalaryHold: item["Salary Hold"]
+        ? JSON.parse(item["Salary Hold"]?.toLowerCase())
+        : false,
       strReligionName: item["Religion Name"] || "",
       dteDateOfBirth: item["DateOfBirth"] || null,
       dteJoiningDate: item["Joining Date"] || null,
@@ -62,6 +65,7 @@ export const processBulkUploadEmployeeAction = async (
   } catch (error) {
     setter([]);
     setLoading && setLoading(false);
+    console.log(error);
     toast.warn("Failed to process!");
   }
 };

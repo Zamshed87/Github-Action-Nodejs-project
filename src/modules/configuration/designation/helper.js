@@ -48,7 +48,7 @@ export const getAllDesignation = async (
         ...item,
         statusValue: item?.isActive ? "Active" : "Inactive",
       }));
-      modified?.length > 0 && setter(modified);
+      modified?.length > 0 ? setter(modified) : setter([]);
       setAllData && setAllData(res?.data);
       setLoading && setLoading(false);
     }

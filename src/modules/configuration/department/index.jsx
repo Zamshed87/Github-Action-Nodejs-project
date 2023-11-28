@@ -67,7 +67,7 @@ function Department() {
   useEffect(() => {
     getAllEmpDepartment(orgId, buId, setRowDto, setAllData, setLoading, wId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
