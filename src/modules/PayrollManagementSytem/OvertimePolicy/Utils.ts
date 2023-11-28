@@ -19,8 +19,13 @@ export const policyType = [
 type TOTPolicyGenerate = {
   values: any;
   commonData: any;
+  matchingData: any;
 };
-export const OTPolicyGenerate = ({ commonData, values }: TOTPolicyGenerate) => {
+export const OTPolicyGenerate = ({
+  commonData,
+  values,
+  matchingData,
+}: TOTPolicyGenerate) => {
   const { policyType, hrPosition, employmentType } = values;
 
   const policyInfo = {

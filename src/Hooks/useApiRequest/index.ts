@@ -17,6 +17,7 @@ export const useApiRequest = (initialState: any) => {
 
     const { method, urlKey, params, payload, toast, onSuccess, onError } =
       apiInfo;
+
     try {
       const response = await axios({
         method: method || "GET",
@@ -24,22 +25,23 @@ export const useApiRequest = (initialState: any) => {
         data: payload,
         params: params,
       });
-      onSuccess && onSuccess(response.data);
       toast &&
         message.success(response?.data?.message || "Submitted Successfully");
+
+      onSuccess && onSuccess(response.data);
       setState((prevState) => ({
         ...prevState,
         loading: false,
         data: response.data,
       }));
     } catch (error: any) {
-      onError && onError(error as Error);
       toast &&
         message.error(
           error?.response?.data?.message ||
             error?.message ||
             "Something went wrong"
         );
+      onError && onError(error as Error);
       setState((prevState) => ({
         ...prevState,
         loading: false,

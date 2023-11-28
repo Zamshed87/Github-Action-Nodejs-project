@@ -103,7 +103,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       urlKey: "AccountWiseGetOverTimeConfig",
     });
   };
-  
+
   // Submit Handler
   const onFinish = () => {
     if (matchingData?.length)
@@ -119,6 +119,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     const payload = OTPolicyGenerate({
       values: form.getFieldsValue(true),
       commonData,
+      matchingData
     });
 
     SaveNUpdateOverTimeConfig?.action({
@@ -153,6 +154,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
             "fromSalary",
             "toSalary",
           ].some((key) => changedKey.includes(key));
+
           if (check) {
             checkPolicyExistance(
               form,
@@ -354,7 +356,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   >
                     Overtime Depend On
                   </Divider>
-                  <Col md={12} sm={24}>
+                  <Col md={14} sm={24}>
                     <PRadio
                       type="group"
                       name="overtimeDependsOn"
@@ -376,7 +378,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       const { overtimeDependsOn } = form.getFieldsValue(true);
                       return (
                         overtimeDependsOn === 3 && (
-                          <Col md={12} sm={24}>
+                          <Col md={10} sm={24}>
                             <PInput
                               placeholder="Fixed Amount"
                               type="number"
@@ -401,7 +403,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   >
                     Overtime Count From
                   </Divider>
-                  <Col md={12} sm={24}>
+                  <Col md={14} sm={24}>
                     <PRadio
                       type="group"
                       name="overtimeCountFrom"
@@ -426,7 +428,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       const { overtimeCountFrom } = form.getFieldsValue(true);
                       return (
                         overtimeCountFrom === 2 && (
-                          <Col md={12} sm={24}>
+                          <Col md={10} sm={24}>
                             <PInput
                               placeholder="Delay Minutes"
                               type="number"
@@ -452,7 +454,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   >
                     Benefit Hour
                   </Divider>
-                  <Col md={12} sm={24}>
+                  <Col md={14} sm={24}>
                     <PRadio
                       type="group"
                       name="benefitHours"
@@ -480,7 +482,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       const { benefitHours } = form.getFieldsValue(true);
                       return (
                         benefitHours === 2 && (
-                          <Col md={12} sm={24}>
+                          <Col md={10} sm={24}>
                             <PInput
                               placeholder="Fixed Benefit Hour"
                               type="number"

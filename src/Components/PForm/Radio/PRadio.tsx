@@ -53,15 +53,17 @@ export const PRadio = (property: RadioProperty) => {
     );
 
   return (
-    <Form.Item
-      label={label}
-      name={name}
-      rules={rules}
-      valuePropName={valuePropName}
-      hasFeedback={hasFeedback}
-      style={{ marginBottom: 0 }}
-    >
-      {radioComponent}
-    </Form.Item>
+    <div className={`PeopleDeskRadioWrapper`}>
+      <Form.Item
+        label={label}
+        name={name}
+        rules={rules}
+        valuePropName={valuePropName}
+        hasFeedback={hasFeedback}
+        style={{ marginBottom: 0 }}
+      >
+        {radioComponent}
+      </Form.Item>
+    </div>
   );
 };
