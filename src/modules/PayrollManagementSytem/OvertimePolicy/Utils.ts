@@ -134,7 +134,7 @@ const getMatchingPolicy = (values: any, allData: any) => {
 
     // If hrPosition, employmentType, fromSalary, and toSalary have no value, return an empty array
     if (
-      !workplace &&
+      // !workplace &&
       (!hrPosition || hrPosition.length === 0) &&
       (!employmentType || employmentType.length === 0) &&
       (fromSalary === null || fromSalary === undefined) &&

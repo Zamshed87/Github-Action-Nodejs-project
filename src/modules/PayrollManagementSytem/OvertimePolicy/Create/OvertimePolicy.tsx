@@ -8,11 +8,12 @@ import {
   PSelect,
 } from "Components";
 import { useApiRequest } from "Hooks";
-import { Col, Divider, Form, Row, message } from "antd";
+import { Col, Divider, Form, Row } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 import { OTPolicyGenerate, checkPolicyExistance, policyType } from "../Utils";
 import "../style.scss";
 
@@ -107,7 +108,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   // Submit Handler
   const onFinish = () => {
     if (matchingData?.length)
-      return message.info(
+      return toast.info(
         "We are working on overriden policy. You can create new policy."
       );
     const commonData = {
@@ -147,7 +148,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
         onValuesChange={(changedFields) => {
           const changedKey = Object.keys(changedFields);
           const check = [
-            "workplace",
+            // "workplace",
             "policyType",
             "hrPosition",
             "employmentType",

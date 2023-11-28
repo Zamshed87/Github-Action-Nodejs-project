@@ -173,8 +173,8 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 process.env.NODE_ENV === "development"
-                                  ? "/document/downloadfile?id=1"
-                                  : "/document/downloadfile?id=1"
+                                  ? "/document/downloadfile?id=2"
+                                  : "/document/downloadfile?id=2"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -228,14 +228,20 @@ export default function BulkEmployeeCreate() {
                                 <div>Department</div>
                               </th>
                               <th>
+                                <div>Section</div>
+                              </th>
+                              <th>
+                                <div>HR Position</div>
+                              </th>
+                              <th>
                                 <div>Employment Type</div>
                               </th>
                               <th>
                                 <div>Gender</div>
                               </th>
-                              {/* <th>
+                              <th>
                                 <div>Salary Hold</div>
-                              </th> */}
+                              </th>
                               <th>
                                 <div>Religion Name</div>
                               </th>
@@ -244,6 +250,9 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th className="text-center">
                                 <div>Joining Date</div>
+                              </th>
+                              <th className="text-center">
+                                <div>Confirmation Date</div>
                               </th>
                               <th className="text-center">
                                 <div>Intern Close Date</div>
@@ -338,6 +347,16 @@ export default function BulkEmployeeCreate() {
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
+                                    {data?.strSection}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {data?.strHrPosition}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
                                     {data?.strEmploymentType}
                                   </div>
                                 </td>
@@ -346,11 +365,11 @@ export default function BulkEmployeeCreate() {
                                     {data?.strGender}
                                   </div>
                                 </td>
-                                {/* <td>
+                                <td>
                                   <div className="tableBody-title">
-                                    {data?.isSalaryHold}
+                                    {`${data?.isSalaryHold}`?.toUpperCase()}
                                   </div>
-                                </td> */}
+                                </td>
                                 <td>
                                   <div className="tableBody-title">
                                     {data?.strReligionName}
@@ -364,6 +383,11 @@ export default function BulkEmployeeCreate() {
                                 <td className="text-center">
                                   <div className="tableBody-title">
                                     {dateFormatter(data?.dteJoiningDate)}
+                                  </div>
+                                </td>
+                                <td className="text-center">
+                                  <div className="tableBody-title">
+                                    {dateFormatter(data?.dteConfirmationDate)}
                                   </div>
                                 </td>
                                 <td className="text-center">

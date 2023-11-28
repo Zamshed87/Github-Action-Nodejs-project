@@ -27,6 +27,7 @@ import {
   getTableDataEmployee,
 } from "./helper";
 import "./styles.css";
+import { toast } from "react-toastify";
 
 function EmployeeFeatureNew() {
   // hook
@@ -301,6 +302,19 @@ function EmployeeFeatureNew() {
             }}
             submitText="Create New"
             submitIcon={<AddOutlined />}
+            buttonList={[
+              {
+                type: "primary",
+                content: "Bulk Upload",
+                onClick: () => {
+                  if (employeeFeature?.isCreate) {
+                    history.push("/profile/employee/bulk");
+                  } else {
+                    toast.warn("You don't have permission");
+                  }
+                },
+              },
+            ]}
             onExport={() => {
               const excelLanding = async () => {
                 try {
