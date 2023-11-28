@@ -11,22 +11,22 @@ import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
 import { Form, message } from "antd";
+import axios from "axios";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import AddEditForm from "./addEditFile";
-import "./styles.css";
-import axios from "axios";
-import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import {
   columnForHeadOffice,
   columnForMarketing,
   getTableDataEmployee,
 } from "./helper";
+import "./styles.css";
 
 function EmployeeFeatureNew() {
   // hook
