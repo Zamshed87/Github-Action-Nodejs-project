@@ -418,6 +418,13 @@ export default function AddEditForm({
     if (singleData?.empId) {
       form.setFieldsValue(singleData);
       getWorkplace();
+      getReligion();
+      getEmploymentType();
+      getUserTypeDDL();
+      getEmployeDepartment();
+      getEmployeDesignation();
+      getEmployeeStatus();
+      getEmployeePosition();
     }
   }, [orgId, buId, singleData, employeeId]);
 
