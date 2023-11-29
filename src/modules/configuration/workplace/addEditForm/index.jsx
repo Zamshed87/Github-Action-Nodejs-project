@@ -17,7 +17,7 @@ import {
   createWorkplace,
   createWorkplaceGroup,
   getWorkplaceById,
-  getWorkplaceLanding
+  getWorkplaceLanding,
 } from "./../helper";
 
 const initData = {
@@ -70,7 +70,7 @@ export default function AddEditFormComponent({
 
   const [addNewType, setAddNewType] = useState(false);
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, wgId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -163,7 +163,7 @@ export default function AddEditFormComponent({
     const callback = () => {
       cb();
       onHide();
-      getWorkplaceLanding(orgId, buId, setRowDto, setAllData);
+      getWorkplaceLanding(orgId, buId, wgId, setRowDto, setAllData);
       id && getWorkplaceById(id, setSingleData);
     };
     if (id) {
