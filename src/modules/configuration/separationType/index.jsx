@@ -79,7 +79,7 @@ function SeparationType() {
 
   useEffect(() => {
     getSeparationType(orgId, setRowDto, setAllData, setLoading, wId);
-  }, [orgId]);
+  }, [orgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 

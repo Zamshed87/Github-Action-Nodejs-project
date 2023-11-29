@@ -27,7 +27,7 @@ const FilterModal = ({ propsObj, children }) => {
     setFieldValue,
   } = propsObj;
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -43,7 +43,9 @@ const FilterModal = ({ propsObj, children }) => {
       buId,
       setSeparationTypeDDL,
       "SeparationTypeId",
-      "SeparationType"
+      "SeparationType",
+      "",
+      wId
     );
   }, [wgId, buId]);
 

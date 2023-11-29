@@ -62,7 +62,7 @@ export default function ManagementApplicationSeparationForm() {
   const dispatch = useDispatch();
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -95,7 +95,7 @@ export default function ManagementApplicationSeparationForm() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intWorkplaceId=${wId}`,
       "SeparationTypeId",
       "SeparationType",
       setSeparationTypeDDL
@@ -126,11 +126,14 @@ export default function ManagementApplicationSeparationForm() {
           applicationBody: `${res?.strReason}`,
         }));
         setImgRow(res?.strDocumentId?.split(","));
-        const documentList = res?.strDocumentId?.length > 0 ? res?.strDocumentId?.split(",")?.map((image) => {
-          return {
-            globalFileUrlId: +image,
-          };
-        }) : [];
+        const documentList =
+          res?.strDocumentId?.length > 0
+            ? res?.strDocumentId?.split(",")?.map((image) => {
+                return {
+                  globalFileUrlId: +image,
+                };
+              })
+            : [];
         setEditImageRow(documentList);
         setSingleData(res);
       }
@@ -157,7 +160,7 @@ export default function ManagementApplicationSeparationForm() {
       // getSeparationLandingById(payload, setSingleData, setLoading);
       getEmpSeperationDataHandlerById();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId, params?.id]);
 
   // useEffect(() => {
@@ -456,7 +459,6 @@ export default function ManagementApplicationSeparationForm() {
                       </p>
                       {imageFile?.length
                         ? imageFile.map((image, i) => (
-                          
                             <div
                               className="d-flex align-items-center"
                               style={{ width: "160px" }}

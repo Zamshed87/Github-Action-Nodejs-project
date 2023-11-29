@@ -230,7 +230,7 @@ export default function AddEditForm({
   };
 
   const getEmploymentType = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -238,6 +238,7 @@ export default function AddEditForm({
         DDLType: "EmploymentType",
         BusinessUnitId: buId,
         WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -504,11 +505,12 @@ export default function AddEditForm({
               onChange={(value, op) => {
                 form.setFieldsValue({
                   workplaceGroup: op,
+                  workplace: undefined,
+                  employeeType: undefined,
                 });
                 if (value) {
                   getWorkplace();
                   getReligion();
-                  getEmploymentType();
                   getUserTypeDDL();
                 }
               }}
@@ -532,6 +534,7 @@ export default function AddEditForm({
                   getEmployeDesignation();
                   getEmployeeStatus();
                   getEmployeePosition();
+                  getEmploymentType();
                 }
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
