@@ -153,7 +153,7 @@ export const createEditEmpAction = async (
     );
     console.log("Come Here 2");
     setLoading(false);
-    res?.data?.status === 200 && cb && cb();
+     cb && cb();
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
     console.log("Come Here 3");
