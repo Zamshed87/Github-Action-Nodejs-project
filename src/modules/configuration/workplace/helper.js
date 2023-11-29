@@ -47,6 +47,7 @@ export const createWorkplace = async (payload, setLoading, cb) => {
 export const getWorkplaceLanding = async (
   accId,
   busId,
+  wgId,
   setter,
   setAllData,
   setLoading
@@ -54,7 +55,7 @@ export const getWorkplaceLanding = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetAllWorkplace?accountId=${accId}&businessUnitId=${busId}`
+      `/SaasMasterData/GetAllWorkplace?accountId=${accId}&businessUnitId=${busId}&workplaceGroupId=${wgId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({
