@@ -12,15 +12,23 @@ import { Col, Divider, Form, Row } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { OTPolicyGenerate, checkPolicyExistance, policyType } from "../Utils";
+import {
+  OTCountFrom,
+  OTPolicyGenerate,
+  checkPolicyExistance,
+  initDataGenerate,
+  otCountFrom,
+  otDependsOn,
+  policyType,
+} from "../Utils";
 import "../style.scss";
 
 type TOvertimePolicy = unknown;
 const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   // Data From Store
-  const { orgId, buId, wgId, wId, employeeId } = useSelector(
+  const { orgId, buId, wgId, employeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -36,6 +44,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   });
 
   const history = useHistory();
+  const { state }: any = useLocation();
 
   // States
   const [matchingData, setMatchingData] = React.useState<any[]>([]);
@@ -47,20 +56,23 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   const EmploymentTypeDDL = useApiRequest([]);
   const AccountWiseGetOverTimeConfig = useApiRequest([]);
   const SaveNUpdateOverTimeConfig = useApiRequest([]);
+  const GetOverTimeConfigById = useApiRequest([]);
 
   // Life Cycle Hooks
-  useEffect(() => {
-    getHRPositionDDL();
-    getEmploymentTypeDDL();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId, wId, employeeId]);
 
   // Get All Existing Overtime Policy
   useEffect(() => {
     getAllExistingOvertimePolicy();
   }, []);
 
+  useEffect(() => {
+    if (state?.intOtconfigId) {
+      getOverTimeConfigById();
+    }
+  }, [state]);
+
   const getHRPositionDDL = () => {
+    const { workplace } = form.getFieldsValue(true);
     HRPositionDDL?.action({
       method: "GET",
       urlKey: "PeopleDeskAllDDL",
@@ -68,7 +80,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
         DDLType: "Position",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        IntWorkplaceId: workplace?.value,
         intId: 0,
       },
       onSuccess: (data) => {
@@ -80,6 +92,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     });
   };
   const getEmploymentTypeDDL = () => {
+    const { workplace } = form.getFieldsValue(true);
     EmploymentTypeDDL?.action({
       method: "GET",
       urlKey: "PeopleDeskAllDDL",
@@ -87,6 +100,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
         DDLType: "EmploymentType",
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
+        IntWorkplaceId: workplace?.value,
         intId: 0,
       },
       onSuccess: (data) => {
@@ -105,11 +119,27 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     });
   };
 
+  // Get Overtime Policy By Id
+  const getOverTimeConfigById = () => {
+    GetOverTimeConfigById?.action({
+      urlKey: "GetOverTimeConfigById",
+      method: "GET",
+      params: {
+        intOtconfigId: state?.intOtconfigId,
+      },
+      onSuccess: (data) => {
+        const initialData = initDataGenerate(data);
+        form.setFieldsValue(initialData);
+        getHRPositionDDL();
+        getEmploymentTypeDDL();
+      },
+    });
+  };
   // Submit Handler
   const onFinish = () => {
     if (matchingData?.length)
       return toast.info(
-        "We are working on overriden policy. You can create new policy."
+        "Please delete existing policy first or create new policy."
       );
     const commonData = {
       dteCreateAt: moment().format("YYYY-MM-DDTHH:mm:ss"),
@@ -120,7 +150,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
     const payload = OTPolicyGenerate({
       values: form.getFieldsValue(true),
       commonData,
-      matchingData
+      matchingData,
     });
 
     SaveNUpdateOverTimeConfig?.action({
@@ -166,7 +196,11 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
         }}
       >
         <PCard>
-          <PCardHeader title="Create OT Policy" backButton submitText="Save" />
+          <PCardHeader
+            title={`${state?.intOtconfigId ? "Edit" : "Create"} OT Policy`}
+            backButton
+            submitText="Save"
+          />
           <PCardBody>
             <Row gutter={[30, 2]}>
               {/* Left Side Fields */}
@@ -196,7 +230,10 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         form.setFieldsValue({
                           workplace: option,
                         });
+                        getHRPositionDDL();
+                        getEmploymentTypeDDL();
                       }}
+                      disabled={state?.intOtconfigId}
                       rules={[
                         {
                           required: true,
@@ -205,31 +242,39 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       ]}
                     />
                   </Col>
-                  <Col md={12} sm={24}>
-                    <PSelect
-                      label="Policy Type"
-                      name="policyType"
-                      placeholder="Policy Type"
-                      options={policyType}
-                      mode="multiple"
-                      maxTagCount={"responsive"}
-                      onChange={(value, option) => {
-                        form.setFieldsValue({
-                          policyType: option,
-                          hrPosition: undefined,
-                          employmentType: undefined,
-                          fromSalary: undefined,
-                          toSalary: undefined,
-                        });
-                      }}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please Select Policy Type!",
-                        },
-                      ]}
-                    />
-                  </Col>
+                  <Form.Item noStyle shouldUpdate>
+                    {() => {
+                      const { workplace } = form.getFieldsValue(true);
+                      return (
+                        <Col md={12} sm={24}>
+                          <PSelect
+                            label="Policy Type"
+                            name="policyType"
+                            placeholder="Policy Type"
+                            options={policyType}
+                            mode="multiple"
+                            maxTagCount={"responsive"}
+                            disabled={state?.intOtconfigId || !workplace}
+                            onChange={(value, option) => {
+                              form.setFieldsValue({
+                                policyType: option,
+                                hrPosition: undefined,
+                                employmentType: undefined,
+                                fromSalary: undefined,
+                                toSalary: undefined,
+                              });
+                            }}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please Select Policy Type!",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      );
+                    }}
+                  </Form.Item>
 
                   {/* Fields Render Using Policy Type */}
                   <Form.Item noStyle shouldUpdate>
@@ -252,6 +297,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                                 placeholder="HR Position"
                                 mode="multiple"
                                 maxTagCount={"responsive"}
+                                disabled={state?.intOtconfigId}
                                 options={HRPositionDDL?.data || []}
                                 onChange={(value, option) => {
                                   form.setFieldsValue({
@@ -276,6 +322,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                                 name="employmentType"
                                 placeholder="Employment Type"
                                 mode="multiple"
+                                disabled={state?.intOtconfigId}
                                 maxTagCount={"responsive"}
                                 options={EmploymentTypeDDL?.data || []}
                                 onChange={(value, option) => {
@@ -366,11 +413,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                           fixedAmount: undefined,
                         });
                       }}
-                      options={[
-                        { value: 1, label: "Basic" },
-                        { value: 2, label: "Gross" },
-                        { value: 3, label: "Fixed Amount" },
-                      ]}
+                      options={otDependsOn}
                     />
                   </Col>
                   {/* Fixed Amount Input  */}
@@ -397,6 +440,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       );
                     }}
                   </Form.Item>
+
                   {/* OT Depents on */}
                   <Divider
                     style={{ margin: "3px 0", fontSize: 12 }}
@@ -408,19 +452,12 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                     <PRadio
                       type="group"
                       name="overtimeCountFrom"
-                      onChange={(e) => {
-                        console.log(e);
+                      onChange={() => {
                         form.setFieldsValue({
                           otStartDelay: undefined,
                         });
                       }}
-                      options={[
-                        { value: 1, label: "Assign Calendar" },
-                        {
-                          value: 2,
-                          label: "OT Start Delay (Minutes)",
-                        },
-                      ]}
+                      options={otCountFrom}
                     />
                   </Col>
                   {/* OT Start Delay Input  */}
@@ -603,20 +640,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                     <PRadio
                       type="group"
                       name="overtimeCount"
-                      onChange={(e) => {
-                        console.log(e);
-                      }}
-                      options={[
-                        { value: 1, label: "At Actual" },
-                        {
-                          value: 2,
-                          label: "Round Down",
-                        },
-                        {
-                          value: 3,
-                          label: "Round Up",
-                        },
-                      ]}
+                      options={OTCountFrom}
                     />
                   </Col>
                   <Divider
@@ -629,20 +653,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                     <PRadio
                       type="group"
                       name="overtimeAmount"
-                      onChange={(e) => {
-                        console.log(e);
-                      }}
-                      options={[
-                        { value: 1, label: "At Actual" },
-                        {
-                          value: 2,
-                          label: "Round Down",
-                        },
-                        {
-                          value: 3,
-                          label: "Round Up",
-                        },
-                      ]}
+                      options={OTCountFrom}
                     />
                   </Col>
                   <Col md={24} sm={24}>

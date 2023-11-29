@@ -63,20 +63,21 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
     {
       title: "Action",
       align: "center",
-      render: () => {
+      render: (data: any, rec: any) => {
         return (
           <TableButton
             buttonsList={[
               {
                 type: "edit",
-                // onClick: () => {},
+                onClick: () => {
+                  history.push(
+                    `/administration/payrollConfiguration/overtimePolicy/edit/policyID:${rec?.intOtconfigId}`,
+                    { ...rec }
+                  );
+                },
               },
               {
                 type: "delete",
-                // onClick: () => {},
-              },
-              {
-                type: "view",
                 // onClick: () => {},
               },
             ]}
