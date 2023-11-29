@@ -11,22 +11,23 @@ import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
 import { Form, message } from "antd";
+import axios from "axios";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import AddEditForm from "./addEditFile";
-import "./styles.css";
-import axios from "axios";
-import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import {
   columnForHeadOffice,
   columnForMarketing,
   getTableDataEmployee,
 } from "./helper";
+import "./styles.css";
+import { toast } from "react-toastify";
 
 function EmployeeFeatureNew() {
   // hook
@@ -283,7 +284,7 @@ function EmployeeFeatureNew() {
       ),
     },
   ];
-  console.log(landingApi?.data);
+  // console.log(landingApi?.data);
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -301,12 +302,22 @@ function EmployeeFeatureNew() {
             }}
             submitText="Create New"
             submitIcon={<AddOutlined />}
+            buttonList={[
+              {
+                type: "primary",
+                content: "Bulk Upload",
+                onClick: () => {
+                  if (employeeFeature?.isCreate) {
+                    history.push("/profile/employee/bulk");
+                  } else {
+                    toast.warn("You don't have permission");
+                  }
+                },
+              },
+            ]}
             onExport={() => {
               const excelLanding = async () => {
                 try {
-                  // const res = await axios.get(
-                  //   `/Employee/EmployeeProfileLandingPagination?accountId=${orgId}&businessUnitId=${buId}&EmployeeId=${employeeId}&PageNo=1&PageSize=1000000&searchTxt=&WorkplaceGroupId=${wgId}&IsForXl=true`
-                  // );
                   const { search } = form.getFieldsValue(true);
                   const payload = {
                     businessUnitId: buId,
@@ -454,7 +465,7 @@ function EmployeeFeatureNew() {
                     });
                   }
                 } catch (error: any) {
-                  console.log(error?.message);
+                  // console.log(error?.message);
                 }
               };
               excelLanding();
@@ -492,6 +503,7 @@ function EmployeeFeatureNew() {
         title="Create New Employee"
         width=""
         onCancel={() => setOpen(false)}
+        maskClosable={false}
         components={
           <>
             <AddEditForm

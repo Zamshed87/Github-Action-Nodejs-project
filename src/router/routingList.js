@@ -1,3 +1,6 @@
+import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
+import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
+import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import { lazy } from "react";
 
 const MultiCalendarAssign = lazy(() =>
@@ -464,6 +467,9 @@ const DashboardCompPermissionDetails = lazy(() =>
 );
 const Department = lazy(() =>
   import("../modules/configuration/department/index.jsx")
+);
+const Section = lazy(() =>
+  import("../modules/configuration/section/index.jsx")
 );
 const DocumentType = lazy(() =>
   import("../modules/configuration/documentType/index.jsx")
@@ -1719,6 +1725,7 @@ export const routingList = [
   },
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
+  { path: "/administration/configuration/section", component: Section },
   { path: "/administration/configuration/hr-position", component: HRPosition },
   {
     path: "/administration/configuration/designation",
@@ -1801,6 +1808,10 @@ export const routingList = [
   {
     path: "/administration/configuration/managementDashboardPermission/view/:id",
     component: ManagementDashboardPermissionDetails,
+  },
+  {
+    path: "/administration/configuration/employeeDivision",
+    component: EmployeeDivision,
   },
   { path: "/SelfService/dashboard", component: SelfDashboard },
   { path: "/SelfService/aboutMe", component: AboutMe },
@@ -2521,8 +2532,17 @@ export const routingList = [
     component: PfGratuityPolicy,
   },
   {
-    path: "/administration/payrollConfiguration/overtimePolicy",
+    path: "/administration/payrollConfiguration/overtimePolicyPrevious",
     component: OvertimePolicy,
+  },
+  // Policy Create/Landing
+  {
+    path: "/administration/payrollConfiguration/overtimePolicy",
+    component: OvertimePolicyN,
+  },
+  {
+    path: "/administration/payrollConfiguration/overtimePolicy/create",
+    component: CreateOvertimePolicy,
   },
   {
     path: "/administration/payrollConfiguration/payrollBasic/create",

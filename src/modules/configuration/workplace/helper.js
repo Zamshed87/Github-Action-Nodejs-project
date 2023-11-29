@@ -1,8 +1,8 @@
-import { toast } from "react-toastify";
-import axios from "axios";
-import Chips from "../../../common/Chips";
 import { EditOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Chips from "../../../common/Chips";
 import { gray600 } from "../../../utility/customColor";
 
 // search
@@ -47,6 +47,7 @@ export const createWorkplace = async (payload, setLoading, cb) => {
 export const getWorkplaceLanding = async (
   accId,
   busId,
+  wgId,
   setter,
   setAllData,
   setLoading
@@ -54,7 +55,7 @@ export const getWorkplaceLanding = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetAllWorkplace?accountId=${accId}&businessUnitId=${busId}`
+      `/SaasMasterData/GetAllWorkplace?accountId=${accId}&businessUnitId=${busId}&workplaceGroupId=${wgId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({

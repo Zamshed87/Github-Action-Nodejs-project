@@ -16,9 +16,11 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+
   // States
   const [open, setOpen] = React.useState<boolean>(false);
-  const [rowData, setRowData] = React.useState<any>("");
+  const [selectedRowData, setSelectedRowData] = React.useState<any>("");
+
   // Api Actions
   const MultiCalendarAssignLandingFilter = useApiRequest({});
 
@@ -155,9 +157,10 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
           <TableButton
             buttonsList={[
               {
+                isActive: record?.calendarAssignId,
                 type: "calender",
                 onClick: (e) => {
-                  setRowData(record);
+                  setSelectedRowData(record);
                   setOpen(true);
                 },
               },
@@ -173,9 +176,10 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     <>
       <PCard>
         <PCardHeader
-          title={`Total Record: ${
-            MultiCalendarAssignLandingFilter?.data?.totalCount || 0
-          }`}
+          title="Multiple Calendar Assign"
+          // text={`Total Record: ${
+          //   MultiCalendarAssignLandingFilter?.data?.totalCount || 0
+          // }`}
           onSearch={(e) => {
             landingApi({ searchText: e?.target?.value || "" });
           }}
@@ -206,19 +210,23 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
           }}
         />
       </PCard>
-      {console.log(rowData)}
       <PModal
         open={open}
         title={`Multiple Calendar Assign ${
-          rowData?.employeeName ? "| Employee: " + rowData?.employeeName : ""
+          selectedRowData?.employeeName
+            ? "| Employee: " + selectedRowData?.employeeName
+            : ""
         }`}
         onCancel={() => {
           setOpen(false);
-          setRowData("");
+          setSelectedRowData("");
         }}
-        width={500}
+        width={800}
         components={
-          <AssignMultipleCalendar setOpen={setOpen} rowData={rowData} />
+          <AssignMultipleCalendar
+            setOpen={setOpen}
+            selectedRowData={selectedRowData}
+          />
         }
       />
     </>

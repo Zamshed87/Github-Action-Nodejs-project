@@ -21,19 +21,23 @@ export const processBulkUploadEmployeeAction = async (
       strWorkplaceGroup: item["Workplace Group"] || "",
       strWorkplace: item["Workplace"] || "",
       strDepartment: item["Department"] || "",
+      strEmpDivision: item["Employee Division"] || "",
       strDesignation: item["Designation"] || "",
-      strHrPosition: "",
+      strHrPosition: item["HR Position"] || "",
       strEmploymentType: item["Employment Type"] || "",
       strEmployeeName: item["Employee Name"] || "",
-      strEmployeeCode: item["Employee ID"] + "" || "",
+      strEmployeeCode: item["Employee Code"] + "" || "",
       strCardNumber: item["Card Number"] + "" || "",
       strGender: item["Gender"] || "",
-      isSalaryHold: JSON.parse(item["Salary Hold"].toLowerCase()),
+      isSalaryHold: item["Salary Hold"]
+        ? JSON.parse(item["Salary Hold"]?.toLowerCase())
+        : false,
       strReligionName: item["Religion Name"] || "",
-      dteDateOfBirth: item["Date Of Birth"] || null,
+      dteDateOfBirth: item["DateOfBirth"] || null,
       dteJoiningDate: item["Joining Date"] || null,
-      dteInternCloseDate: item["Intern Close Date"] || null,
-      dteProbationaryCloseDate: item["Probationary Close Date"] || null,
+      dteConfirmationDate: item["Confirmation Date"] || null,
+      dteInternCloseDate: item["InternCloseDate"] || null,
+      dteProbationaryCloseDate: item["ProbationaryCloseDate"] || null,
       dteContactFromDate: item["Contact From Date"] || null,
       dteContactToDate: item["Contact To Date"] || null,
       strSupervisorCode: item["Supervisor"] + "" || "",
@@ -54,12 +58,14 @@ export const processBulkUploadEmployeeAction = async (
       isActive: true,
       intCreateBy: employeeId,
       dteCreateAt: todayDate(),
+      strSection: item["Section"] || "",
     }));
     setter(modifiedData);
     setLoading && setLoading(false);
   } catch (error) {
     setter([]);
     setLoading && setLoading(false);
+    console.log(error);
     toast.warn("Failed to process!");
   }
 };

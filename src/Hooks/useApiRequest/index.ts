@@ -1,6 +1,7 @@
+import { message } from "antd";
+import axios from "axios";
 import { useState } from "react";
 import { ApiHookState, HttpMethod, TApiInfo } from "./TApiRequest";
-import axios from "axios";
 import { apiPath } from "./apiPath";
 
 export const useApiRequest = (initialState: any) => {
@@ -14,7 +15,9 @@ export const useApiRequest = (initialState: any) => {
     // Setting Loading State True
     setState((prevState) => ({ ...prevState, loading: true, error: null }));
 
-    const { method, urlKey, params, payload, onSuccess, onError } = apiInfo;
+    const { method, urlKey, params, payload, toast, onSuccess, onError } =
+      apiInfo;
+
     try {
       const response = await axios({
         method: method || "GET",
@@ -22,13 +25,22 @@ export const useApiRequest = (initialState: any) => {
         data: payload,
         params: params,
       });
+      toast &&
+        message.success(response?.data?.message || "Submitted Successfully");
+
       onSuccess && onSuccess(response.data);
       setState((prevState) => ({
         ...prevState,
         loading: false,
         data: response.data,
       }));
-    } catch (error) {
+    } catch (error: any) {
+      toast &&
+        message.error(
+          error?.response?.data?.message ||
+            error?.message ||
+            "Something went wrong"
+        );
       onError && onError(error as Error);
       setState((prevState) => ({
         ...prevState,
@@ -40,7 +52,7 @@ export const useApiRequest = (initialState: any) => {
 
   // Reset the state to initial state
   const reset = () => {
-    setState((prevState) => ({
+    setState(() => ({
       data: initialState,
       error: null,
       loading: false,

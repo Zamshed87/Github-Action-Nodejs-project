@@ -48,8 +48,11 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
     setLoading(false);
     // eslint-disable-next-line
   }, [employeeId, buId]);
+
   useEffect(
-    () => setDashboardRoles(employeeDashboard?.dashboardRoles),
+    () => {
+      setDashboardRoles(employeeDashboard?.dashboardRoles);
+    },
     // eslint-disable-next-line
     [employeeDashboard]
   );

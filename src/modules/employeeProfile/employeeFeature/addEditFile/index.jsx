@@ -1,1032 +1,912 @@
-import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
-import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import {
-  getPeopleDeskAllDDL,
-  getSearchEmployeeList,
-  getSearchEmployeeListForEmp,
-} from "../../../../common/api";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
-import DefaultInput from "../../../../common/DefaultInput";
-import FormikSelect from "../../../../common/FormikSelect";
-import FormikToggle from "../../../../common/FormikToggle";
-import Loading from "../../../../common/loading/Loading";
-import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
-import {
-  blackColor40,
-  failColor,
-  gray900,
-  greenColor,
-  success800,
-} from "../../../../utility/customColor";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
-import { customStyles } from "../../../../utility/selectCustomStyle";
-import { todayDate } from "../../../../utility/todayDate";
-import {
-  createEditEmpAction,
-  getPeopleDeskWithoutAllDDL,
-  userExistValidation,
-} from "../helper";
-import {
-  getCreateDDLs,
-  getEditDDLs,
-  initData,
-  submitHandler,
-  validationSchema,
-} from "./helper";
-import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
-import { PForm, PInput, PSelect } from "Components/PForm";
 import { ModalFooter } from "Components/Modal";
+import { PForm, PInput, PSelect } from "Components/PForm";
+import { useApiRequest } from "Hooks";
+import { Col, Divider, Form, Row } from "antd";
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
+import { createEditEmpAction, userExistValidation } from "../helper";
+import { submitHandler } from "./helper";
 
 export default function AddEditForm({
   setIsAddEditForm,
   getData,
+  // empBasic,
   isEdit,
   singleData,
   pages,
 }) {
   const dispatch = useDispatch();
-  const debounce = useDebounce();
+  // const debounce = useDebounce();
 
   const { supervisor } = useSelector(
     (state) => state?.auth?.keywords,
     shallowEqual
   );
 
-  const { orgId, buId, employeeId, intUrlId, wgId, intAccountId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const [loading, setLoading] = useState(false);
 
   // states
-  const [religionDDL, setReligionDDL] = useState([]);
-  const [genderDDL, setGenderDDL] = useState([]);
-  const [empTypeDDL, setEmpTypeDDL] = useState([]);
-  const [departmentDDL, setDepartmentDDL] = useState([]);
-  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
-  const [workplaceDDL, setWorkplaceDDL] = useState([]);
-  const [empStatusDDL, setEmpStatusDDL] = useState([]);
-  const [designationDDL, setDesignationDDL] = useState([]);
-  const [hrPositionDDL, setHrPositionDDL] = useState([]);
-  const [generateEmployeeCode, setGenerateEmployeeCode] = useState("");
-  const [isShowPassword, setIsShowPassword] = useState(false);
-  const [userTypeDDL, setUserTypeDDL] = useState([]);
+
   const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
-  const [workplaceGroupName, setWorkplaceGroupName] = useState("");
 
-  // const [wingDDL, setWingDDL] = useState([]);
-  // const [soleDepoDDL, setSoleDepoDDL] = useState([]);
-  // const [regionDDL, setRegionDDL] = useState([]);
-  // const [areaDDL, setAreaDDL] = useState([]);
-  // const [territoryDDL, setTerritoryDDL] = useState([]);
+  // Pages Start From Here code from above will be removed soon
 
-  // calender assigne
-  const [calenderDDL, setCalenderDDL] = useState([]);
-  const [calenderRoasterDDL, setCalenderRoasterDDL] = useState([]);
-  const [startingCalenderDDL, setStartingCalenderDDL] = useState([]);
+  // Form Instance
+  const [form] = Form.useForm();
 
-  const getDDL = (value) => {
-    let ddlType = value === 1 ? "Calender" : "RosterGroup";
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&BusinessUnitId=${buId}&WorkplaceGroupId=0`,
-      value === 1 ? "CalenderId" : "RosterGroupId",
-      value === 1 ? "CalenderName" : "RosterGroupName",
-      value === 1 ? setCalenderDDL : setCalenderRoasterDDL
-    );
+  // Api Instance
+  const supervisorDDL = useApiRequest([]);
+  const dottedSupervisorDDL = useApiRequest([]);
+  const lineManagerDDL = useApiRequest([]);
+  const calendarDDL = useApiRequest([]);
+  const rosterGroupDDL = useApiRequest([]);
+  const calendarByRosterGroupDDL = useApiRequest([]);
+  const religionDDL = useApiRequest([]);
+  const genderDDL = useApiRequest([]);
+  const employmentTypeDDL = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
+  const workplaceGroup = useApiRequest([]);
+  const workplaceDDL = useApiRequest([]);
+  const empDesignationDDL = useApiRequest([]);
+  const employeeStatusDDL = useApiRequest([]);
+  const positionDDL = useApiRequest([]);
+  const userTypeDDL = useApiRequest([]);
+  const generateEmpCode = useApiRequest([]);
+
+  // Api Functions
+  const getSuperVisorDDL = debounce((value) => {
+    if (value?.length < 2) return supervisorDDL?.reset();
+    const { workplaceGroup } = form.getFieldsValue(true);
+    supervisorDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        intId: employeeId,
+        workplaceGroupId: workplaceGroup?.value,
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getDottedSuperVisorDDL = debounce((value) => {
+    if (value?.length < 2) return dottedSupervisorDDL?.reset();
+
+    dottedSupervisorDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        intId: employeeId,
+        workplaceGroupId: wgId,
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getLineManagerDDL = debounce((value) => {
+    if (value?.length < 2) return lineManagerDDL?.reset();
+
+    lineManagerDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        intId: employeeId,
+        workplaceGroupId: wgId,
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getCalendarDDL = () => {
+    calendarDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Calender",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.CalenderName;
+          res[i].value = item?.CalenderId;
+        });
+      },
+    });
   };
 
-  const [empName, setEmpName] = useState("");
-  const [empType, setEmpType] = useState("");
-
-  useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=UserType&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
-      "intUserTypeId",
-      "strUserType",
-      setUserTypeDDL
-    );
-  }, [wgId, buId]);
-
-  // for create
-  useEffect(() => {
-    getCreateDDLs({
-      getPeopleDeskAllDDL,
-      setReligionDDL,
-      setGenderDDL,
-      setEmpTypeDDL,
-      setDepartmentDDL,
-      getPeopleDeskWithoutAllDDL,
-      employeeId,
-      setWorkplaceGroupDDL,
-      orgId,
-      wgId,
-      buId,
-      setDesignationDDL,
-      setEmpStatusDDL,
-      setHrPositionDDL,
+  const getRosterGroupDDL = () => {
+    rosterGroupDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "RosterGroup",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.RosterGroupName;
+          res[i].value = item?.RosterGroupId;
+        });
+      },
     });
+  };
+
+  const userValidation = debounce(userExistValidation, 500); // delay time
+
+  const getCalendarByRosterDDL = () => {
+    const { calender } = form.getFieldsValue(true);
+    calendarByRosterGroupDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "CalenderByRosterGroup",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: calender?.value, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.CalenderName;
+          res[i].value = item?.CalenderId;
+        });
+      },
+    });
+  };
+
+  const getWorkplace = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    workplaceDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Workplace",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  };
+
+  const getReligion = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    religionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Religion",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.ReligionName;
+          res[i].value = item?.ReligionId;
+        });
+      },
+    });
+  };
+
+  const getEmploymentType = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    employmentTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmploymentType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmploymentType;
+          res[i].value = item?.Id;
+        });
+      },
+    });
+  };
+
+  const getUserTypeDDL = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    userTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "UserType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strUserType;
+          res[i].value = item?.intUserTypeId;
+        });
+      },
+    });
+  };
+
+  // workplace wise
+  const getEmployeDepartment = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDepartmentDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDepartment",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.DepartmentName;
+          res[i].value = item?.DepartmentId;
+        });
+      },
+    });
+  };
+
+  // section wise ddl
+  const getEmployeeSection = () => {
+    const { department } = form.getFieldsValue(true);
+    empSectionDDL?.action({
+      urlKey: "SectionDDL",
+      method: "GET",
+      params: {
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        DepartmentId: department?.value || 0,
+        WorkplaceId: wId,
+      },
+      // onSuccess: (res) => {
+      //   console.log("res", res);
+      //   res.forEach((item, i) => {
+      //     res[i].label = item?.label;
+      //     res[i].value = item?.value;
+      //   });
+      // },
+    });
+  };
+
+  const getEmployeDesignation = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDesignationDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDesignation",
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.DesignationName;
+          res[i].value = item?.DesignationId;
+        });
+      },
+    });
+  };
+  const getEmployeeStatus = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    employeeStatusDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeStatus",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeStatus;
+          res[i].value = item?.EmployeeStatusId;
+        });
+      },
+    });
+  };
+
+  const getEmployeePosition = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+  };
+
+  const commonConfigurationDDL = () => {
+    workplaceGroup?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "WorkplaceGroup",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId, // This should be removed
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplaceGroup;
+          res[i].value = item?.intWorkplaceGroupId;
+        });
+      },
+    });
+
+    genderDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Gender",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.GenderName;
+          res[i].value = item?.GenderId;
+        });
+      },
+    });
+  };
+
+  const autoGenerateEmployeeCode = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    generateEmpCode?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "AutoEmployeeCode",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        form.setFieldsValue({ employeeCode: res[0]?.value });
+      },
+    });
+  };
+
+  useEffect(() => {
+    commonConfigurationDDL();
   }, [orgId, buId, wgId, employeeId]);
 
-  // for edit
   useEffect(() => {
     if (singleData?.empId) {
-      getEditDDLs({
-        singleData,
-        getPeopleDeskWithoutAllDDL,
-        orgId,
-        buId,
-        employeeId,
-        setWorkplaceDDL,
-        // setWingDDL,
-        // setSoleDepoDDL,
-        // setRegionDDL,
-        // setAreaDDL,
-        // setTerritoryDDL,
-      });
+      form.setFieldsValue(singleData);
+      getWorkplace();
+      getReligion();
+      getEmploymentType();
+      getUserTypeDDL();
+      getEmployeDepartment();
+      getEmployeDesignation();
+      getEmployeeStatus();
+      getEmployeePosition();
+      getEmployeeSection();
     }
   }, [orgId, buId, singleData, employeeId]);
 
-  useEffect(() => {
-    if (workplaceGroupName?.value) {
-      getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AutoEmployeeCode&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupName?.value}&intId=0`,
-        "EmployeeCode",
-        "EmployeeCode",
-        setGenerateEmployeeCode
-      );
-    }
-  }, [workplaceGroupName?.value, buId]);
-
-  const { values, setFieldValue, handleSubmit, resetForm, errors, touched } =
-    useFormik({
-      enableReinitialize: true,
-      initialValues: isEdit
-        ? {
-            ...singleData,
-            isCreate: false,
-          }
-        : {
-            ...initData,
-            fullName: empName || "",
-            employeeType: empType || "",
-            employeeCode: generateEmployeeCode[0]?.value || "",
-            workplaceGroup: workplaceGroupName?.value ? workplaceGroupName : "",
-            isCreate: true,
-          },
-
-      validationSchema: validationSchema(supervisor),
-      onSubmit: () =>
-        submitHandler({
-          values,
-          getData,
-          resetForm,
-          pages,
-          setIsAddEditForm,
-          employeeId,
-          dispatch,
-          updateUerAndEmpNameAction,
-          isUserCheckMsg,
-          createEditEmpAction,
-          isEdit,
-          orgId,
-          buId,
-          intUrlId,
-          setLoading,
-        }),
-    });
-
   return (
     <>
-      <form onSubmit={handleSubmit} className="add-new-employee-form">
-        {loading && <Loading />}
-        <div className="row content-input-field">
-          <div className="col-12">
-            <h6 className="title-item-name">Employee Information</h6>
-          </div>
-          {/* Checking New Fileds */}
-
-          <div className="col-6">
-            <div className="input-field-main">
-              {/* <DefaultInput
-              classes="input-sm"
-              value={values?.fullName}
-              onChange={(val) => {
-                setFieldValue("fullName", val.target.value);
-                setEmpName(val.target.value);
-              }}
-              name="fullName"
+      <PForm
+        form={form}
+        onFinish={() => {
+          const values = form.getFieldsValue(true);
+          submitHandler({
+            values,
+            getData,
+            // empBasic,
+            resetForm: form.resetFields,
+            pages,
+            setIsAddEditForm,
+            employeeId,
+            dispatch,
+            updateUerAndEmpNameAction,
+            isUserCheckMsg,
+            createEditEmpAction,
+            isEdit,
+            orgId,
+            buId,
+            intUrlId,
+            setLoading,
+          });
+        }}
+        initialValues={{}}
+        onValuesChange={(changedFields, allFields) => {
+          if (allFields?.workplaceGroup && changedFields?.workplaceGroup) {
+            setTimeout(autoGenerateEmployeeCode, 500);
+          }
+        }}
+      >
+        <Row gutter={[10, 2]}>
+          <Col md={12} sm={24}>
+            <PInput
               type="text"
-              className="form-control"
-              errors={errors}
-              touched={touched}
-            /> */}
-              <PForm>
-                <PInput name="date" type="date" label="Pick A Date" />
-                <PInput
-                  name="number"
-                  type="number"
-                  label="Number"
-                  placeholder="number"
-                />
-                <PInput
-                  name="search"
-                  type="search"
-                  label="search"
-                  placeholder="search"
-                  onSearch={(e) => {
-                    console.log(e);
-                  }}
-                />
-                <PInput
-                  name="textarea"
-                  type="textarea"
-                  label="textarea"
-                  showCount={true}
-                  placeholder="search"
-                />
-                <PInput
-                  name="checkbox"
-                  type="checkbox"
-                  label="checkbox"
-                  checked={true}
-                />
-                <PSelect options={[]} label="Select somthing" />
-              </PForm>
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Name</label>
-              <DefaultInput
-                classes="input-sm"
-                value={values?.fullName}
-                onChange={(val) => {
-                  setFieldValue("fullName", val.target.value);
-                  setEmpName(val.target.value);
-                }}
-                name="fullName"
-                type="text"
-                className="form-control"
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-            <div className="input-field-main">
-              <label>Name</label>
-              <DefaultInput
-                classes="input-sm"
-                value={values?.fullName}
-                onChange={(val) => {
-                  setFieldValue("fullName", val.target.value);
-                  setEmpName(val.target.value);
-                }}
-                name="fullName"
-                type="text"
-                className="form-control"
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-            <div className="input-field-main">
-              <label>Name</label>
-              <DefaultInput
-                classes="input-sm"
-                value={values?.fullName}
-                onChange={(val) => {
-                  setFieldValue("fullName", val.target.value);
-                  setEmpName(val.target.value);
-                }}
-                name="fullName"
-                type="text"
-                className="form-control"
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Employment Type</label>
-              <FormikSelect
-                menuPosition="fixed"
-                name="employeeType"
-                options={empTypeDDL || []}
-                value={values?.employeeType}
-                onChange={(valueOption) => {
-                  setFieldValue("employeeType", valueOption);
-                  setEmpType(valueOption);
-                }}
-                styles={customStyles}
-                errors={errors}
-                placeholder=""
-                touched={touched}
-                isClearable={false}
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Workplace Group</label>
-              <FormikSelect
-                menuPosition="fixed"
-                name="workplaceGroup"
-                options={workplaceGroupDDL || []}
-                value={values?.workplaceGroup}
-                onChange={(valueOption) => {
-                  setFieldValue("workplace", "");
-                  setWorkplaceGroupName(valueOption);
-                  setFieldValue("workplaceGroup", valueOption);
+              name="fullName"
+              label="Full Name"
+              placeholder="Full Name"
+              rules={[{ required: true, message: "Full Name is required" }]}
+            />
+          </Col>
 
-                  getPeopleDeskWithoutAllDDL(
-                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                    "intWorkplaceId",
-                    "strWorkplace",
-                    setWorkplaceDDL
-                  );
-                  // getPeopleDeskWithoutAllDDL(
-                  //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&ParentTerritoryId=0`,
-                  //   "WingId",
-                  //   "WingName",
-                  //   setWingDDL
-                  // );
-                  // if (!valueOption?.value) {
-                  //   setFieldValue("soleDepo", "");
-                  //   setFieldValue("region", "");
-                  //   setFieldValue("area", "");
-                  //   setFieldValue("territory", "");
-                  //   setFieldValue("wing", "");
-                  // }
-                }}
-                styles={customStyles}
-                placeholder=" "
-                errors={errors}
-                touched={touched}
-                isClearable={false}
-                isDisabled={isEdit && true}
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Workplace</label>
-              <FormikSelect
-                menuPosition="fixed"
-                name="workplace"
-                options={workplaceDDL || []}
-                value={values?.workplace}
-                onChange={(valueOption) => {
-                  setFieldValue("workplace", valueOption);
-                }}
-                styles={customStyles}
-                placeholder=""
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Employee Id</label>
-              <DefaultInput
-                classes="input-sm"
-                value={values?.employeeCode}
-                onChange={(val) => {
-                  setFieldValue("employeeCode", val.target.value);
-                }}
-                name="employeeCode"
-                type="text"
-                className="form-control"
-                errors={errors}
-                touched={touched}
-                // disabled={generateEmployeeCode[0]?.value !== ""}
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Religion</label>
-              <FormikSelect
-                menuPosition="fixed"
-                name="religion"
-                options={religionDDL || []}
-                value={values?.religion}
-                onChange={(valueOption) => {
-                  setFieldValue("religion", valueOption);
-                }}
-                styles={customStyles}
-                placeholder=""
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Gender</label>
-              <FormikSelect
-                menuPosition="fixed"
-                name="gender"
-                options={genderDDL || []}
-                value={values?.gender}
-                onChange={(valueOption) => {
-                  setFieldValue("gender", valueOption);
-                }}
-                styles={customStyles}
-                placeholder=""
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Date of Birth</label>
-              <DefaultInput
-                classes="input-sm"
-                value={values?.dateofBirth}
-                max={todayDate()}
-                onChange={(val) => {
-                  setFieldValue("dateofBirth", val.target.value);
-                }}
-                name="dateofBirth"
-                type="date"
-                className="form-control"
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Joining Date</label>
-              <DefaultInput
-                classes="input-sm"
-                value={values?.joiningDate}
-                onChange={(val) => {
-                  setFieldValue("generateDate", val.target.value);
-                  setFieldValue("joiningDate", val.target.value);
-                }}
-                name="joiningDate"
-                type="date"
-                className="form-control"
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          </div>
-          {/* ----------------------------- */}
-          {values?.employeeType.label === "Probationary" && (
-            <>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Probation Start Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.joiningDate}
-                    onChange={(val) => {
-                      setFieldValue("generateDate", val.target.value);
-                      setFieldValue("joiningDate", val.target.value);
-                    }}
-                    name="joiningDate"
-                    type="date"
-                    disabled={true}
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-              </div>
-            </>
-          )}
-          {values?.employeeType.label === "Probationary" && (
-            <>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Probation Close Date</label>
-
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.dteProbationaryCloseDate}
-                    onChange={(val) => {
-                      setFieldValue(
-                        "dteProbationaryCloseDate",
-                        val.target.value
-                      );
-                    }}
-                    name="dteProbationaryCloseDate"
-                    type="date"
-                    className="form-control"
-                    errors={errors}
-                    disabled={!values?.joiningDate}
-                    touched={touched}
-                    min={values?.joiningDate}
-                  />
-
-                  {/* <FormikInput
-                  classes="input-sm"
-                  value={values?.dteProbationaryCloseDate}
-                  onChange={(val) => {
-                    setFieldValue("dteProbationaryCloseDate", val.target.value);
-                  }}
-                  name="dteProbationaryCloseDate"
-                  type="date"
-                  className="form-control"
-                  errors={errors}
-                  touched={touched}
-                  disabled={!values?.joiningDate}
-                  min={values?.joiningDate}
-                /> */}
-                </div>
-              </div>
-            </>
-          )}
-          {values?.employeeType.label === "Intern" && (
-            <>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Intern Start</label>
-
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.joiningDate}
-                    onChange={(val) => {
-                      setFieldValue("generateDate", val.target.value);
-                      setFieldValue("joiningDate", val.target.value);
-                    }}
-                    name="joiningDate"
-                    type="date"
-                    disabled={true}
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-
-                  {/* <FormikInput
-                  classes="input-sm"
-                  value={values?.joiningDate}
-                  // onChange={(val) => {
-                  //   setFieldValue("generateDate", val.target.value);
-                  //   setFieldValue("joiningDate", val.target.value);
-                  // }}
-                  name="joiningDate"
-                  type="date"
-                  className="form-control"
-                  disabled={true}
-                  errors={errors}
-                  touched={touched}
-                /> */}
-                </div>
-              </div>
-            </>
-          )}
-
-          {values?.employeeType.label === "Intern" && (
-            <>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Intern Close</label>
-
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.dteProbationaryCloseDate}
-                    onChange={(val) => {
-                      setFieldValue("dteInternCloseDate", val.target.value);
-                    }}
-                    name="dteInternCloseDate"
-                    type="date"
-                    className="form-control"
-                    errors={errors}
-                    disabled={!values?.joiningDate}
-                    touched={touched}
-                    min={values?.joiningDate}
-                  />
-
-                  {/* <FormikInput
-                  classes="input-sm"
-                  value={values?.dteInternCloseDate}
-                  onChange={(val) => {
-                    setFieldValue("dteInternCloseDate", val.target.value);
-                  }}
-                  name="dteInternCloseDate"
-                  type="date"
-                  className="form-control"
-                  errors={errors}
-                  touched={touched}
-                  disabled={!values?.joiningDate}
-                  min={values?.joiningDate}
-                /> */}
-                </div>
-              </div>
-            </>
-          )}
-          {/* -------------------- */}
-
-          {/* {values?.employeeType?.ParentId === 1 && (
-          <>
-            <div className="col-6">
-              <div className="input-field-main">
-                <label>Probation Closing</label>
-                <DefaultInput
-                  classes="input-sm"
-                  value={values?.dteProbationaryCloseDate}
-                  onChange={(val) => {
-                    setFieldValue("dteProbationaryCloseDate", val.target.value);
-                  }}
-                  name="dteProbationaryCloseDate"
-                  type="date"
-                  className="form-control"
-                  errors={errors}
-                  touched={touched}
-                  disabled={!values?.joiningDate}
-                  min={values?.joiningDate}
-                />
-              </div>
-            </div>
-          </>
-        )}
-        {(values?.employeeType?.isManual === 1 ||
-          values?.employeeType?.isManual === true) &&
-          values?.employeeType?.ParentId === 3 && (
-            <>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Intern Duration</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.dteInternCloseDate}
-                    onChange={(val) => {
-                      setFieldValue("dteInternCloseDate", val.target.value);
-                    }}
-                    name="dteInternCloseDate"
-                    type="month"
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                    disabled={!values?.joiningDate}
-                    min={values?.joiningDate}
-                  />
-                </div>
-              </div>
-            </>
-          )} */}
-          {values?.employeeType.label ===
-            ("Contractual" || "contractual" || "contract" || "Contract") && (
-            <>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Contract From Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.contractualFromDate}
-                    onChange={(val) => {
-                      setFieldValue("contractualFromDate", val.target.value);
-                    }}
-                    name="contractualFromDate"
-                    type="date"
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Contract To Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.contractualToDate}
-                    onChange={(val) => {
-                      setFieldValue("contractualToDate", val.target.value);
-                    }}
-                    name="contractualToDate"
-                    type="date"
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-              </div>
-            </>
-          )}
-          {values?.employeeType.label === ("Permanent" || "permanent") && (
-            <>
-              <div className="col-6">
-                <div className="input-field-main">
-                  <label>Confirmation Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.dteConfirmationDate}
-                    onChange={(val) => {
-                      setFieldValue("dteConfirmationDate", val.target.value);
-                    }}
-                    name="dteConfirmationDate"
-                    type="date"
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-              </div>
-            </>
-          )}
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Department</label>
-              <FormikSelect
-                menuPosition="fixed"
-                name="department"
-                options={departmentDDL || []}
-                value={values?.department}
-                onChange={(valueOption) => {
-                  setFieldValue("department", valueOption);
-                }}
-                styles={customStyles}
-                placeholder=""
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Designation</label>
-              <FormikSelect
-                menuPosition="fixed"
-                name="designation"
-                options={designationDDL || []}
-                value={values?.designation}
-                onChange={(valueOption) => {
-                  setFieldValue("designation", valueOption);
-                }}
-                styles={customStyles}
-                placeholder=""
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          </div>
-          <div className="col-6 d-none">
-            <div className="input-field-main">
-              <label>HR Position</label>
-              <FormikSelect
-                menuPosition="fixed"
-                name="hrPosition"
-                options={hrPositionDDL || []}
-                value={values?.hrPosition}
-                onChange={(valueOption) => {
-                  setFieldValue("hrPosition", valueOption);
-                }}
-                styles={customStyles}
-                placeholder=""
-                errors={errors}
-                touched={touched}
-              />
-            </div>
-          </div>
-          {isEdit && (
-            <div className="col-6">
-              <div className="input-field-main">
-                <label>Employee Status</label>
-                <FormikSelect
-                  name="employeeStatus"
-                  menuPosition="fixed"
-                  options={empStatusDDL || []}
-                  value={values?.employeeStatus}
-                  onChange={(valueOption) => {
-                    setFieldValue("employeeStatus", valueOption);
-                  }}
-                  styles={customStyles}
-                  placeholder=""
-                  errors={errors}
-                  touched={touched}
-                />
-              </div>
-            </div>
-          )}
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Supervisor</label>
-              <AsyncFormikSelect
-                selectedValue={values?.supervisor}
-                isSearchIcon={true}
-                handleChange={(valueOption) => {
-                  setFieldValue("dottedSupervisor", valueOption);
-                  setFieldValue("supervisor", valueOption);
-                }}
-                placeholder="Search (min 3 letter)"
-                loadOptions={(v) =>
-                  getSearchEmployeeListForEmp(
-                    buId,
-                    wgId,
-                    intAccountId,
-                    employeeId,
-                    v
-                  )
+          <Col md={12} sm={24}>
+            <PSelect
+              options={workplaceGroup.data || []}
+              name="workplaceGroup"
+              label="Workplace Group"
+              placeholder="Workplace Group"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplaceGroup: op,
+                  workplace: undefined,
+                  employeeType: undefined,
+                });
+                if (value) {
+                  getWorkplace();
+                  getReligion();
+                  getUserTypeDDL();
                 }
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>Dotted Supervisor</label>
-              <AsyncFormikSelect
-                selectedValue={values?.dottedSupervisor}
-                isSearchIcon={true}
-                handleChange={(valueOption) => {
-                  setFieldValue("dottedSupervisor", valueOption);
-                }}
-                placeholder="Search (min 3 letter)"
-                loadOptions={(v) =>
-                  getSearchEmployeeListForEmp(
-                    buId,
-                    wgId,
-                    intAccountId,
-                    employeeId,
-                    v
-                  )
+              }}
+              rules={[
+                { required: true, message: "Workplace Group is required" },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={workplaceDDL?.data || []}
+              name="workplace"
+              label="Workplace"
+              placeholder="Workplace"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplace: op,
+                });
+                if (value) {
+                  getEmployeDepartment();
+                  getEmployeDesignation();
+                  getEmployeeStatus();
+                  getEmployeePosition();
+                  getEmploymentType();
                 }
-              />
-            </div>
-          </div>
-          <div className="col-6">
-            <div className="input-field-main">
-              <label>{orgId === 10015 ? "Team Leader" : "Line Manager"}</label>
-              <AsyncFormikSelect
-                selectedValue={values?.lineManager}
-                isSearchIcon={true}
-                handleChange={(valueOption) => {
-                  setFieldValue("lineManager", valueOption);
+              }}
+              rules={[{ required: true, message: "Workplace is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={employmentTypeDDL?.data || []}
+              name="employeeType"
+              label="Employment Type"
+              placeholder="Employment Type"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  employeeType: op,
+                });
+              }}
+              rules={[
+                { required: true, message: "Employment Type is required" },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="employeeCode"
+              label="Employee ID"
+              placeholder="Employee ID"
+              rules={[{ required: true, message: "Employee ID is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={religionDDL?.data || []}
+              name="religion"
+              label="Religion"
+              placeholder="Religion"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  religion: op,
+                });
+              }}
+              rules={[{ required: true, message: "Religion is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={genderDDL?.data || []}
+              name="gender"
+              label="Gender"
+              placeholder="Gender"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  gender: op,
+                });
+              }}
+              rules={[{ required: true, message: "Gender is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="date"
+              name="dateofBirth"
+              label="Date of Birth"
+              placeholder="Date of Birth"
+              rules={[{ required: true, message: "Date of Birth is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="date"
+              name="joiningDate"
+              label="Joining Date"
+              placeholder="Joining Date"
+              rules={[{ required: true, message: "Joining Date is required" }]}
+            />
+          </Col>
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { employeeType } = form.getFieldsValue();
+
+              const empType = employeeType?.label;
+
+              return (
+                <>
+                  {empType === "Probationary" ? (
+                    <>
+                      <Col md={12} sm={24}>
+                        <PInput
+                          type="text"
+                          name="joiningDate"
+                          label={`Probation Start Date`}
+                          disabled={true}
+                        />
+                      </Col>
+                      <Col md={12} sm={24}>
+                        <PInput
+                          type="date"
+                          name="dteProbationaryCloseDate"
+                          label="Probation Close Date"
+                          placeholder="Probation Close Date"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Probation Close Date is required",
+                            },
+                          ]}
+                        />
+                      </Col>
+                    </>
+                  ) : empType === "Intern" ? (
+                    <>
+                      <Col md={12} sm={24}>
+                        <PInput
+                          type="date"
+                          name="joiningDate"
+                          label={`Intern Start Date`}
+                          disabled={true}
+                        />
+                      </Col>
+                      <Col md={12} sm={24}>
+                        <PInput
+                          type="date"
+                          name="dteInternCloseDate"
+                          label="Intern Close Date"
+                          placeholder="Intern Close Date"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Intern Close Date is required",
+                            },
+                          ]}
+                        />
+                      </Col>
+                    </>
+                  ) : [
+                      "Contractual",
+                      "contractual",
+                      "contract",
+                      "Contract",
+                    ].includes(empType) ? (
+                    <>
+                      <Col md={12} sm={24}>
+                        <PInput
+                          type="date"
+                          name="contractualFromDate"
+                          label={`Contract From Date`}
+                          disabled={true}
+                        />
+                      </Col>
+                      <Col md={12} sm={24}>
+                        <PInput
+                          type="date"
+                          name="contractualToDate"
+                          label="Contract To Date"
+                          placeholder="Contract To Date"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Contract To Date is required",
+                            },
+                          ]}
+                        />
+                      </Col>
+                    </>
+                  ) : ["Permanent" || "permanent"].includes(empType) ? (
+                    <Col md={12} sm={24}>
+                      <PInput
+                        type="date"
+                        name="dteConfirmationDate"
+                        label="Confirmation Date"
+                        placeholder="Confirmation Date"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Confirmation Date is required",
+                          },
+                        ]}
+                      />
+                    </Col>
+                  ) : undefined}
+                </>
+              );
+            }}
+          </Form.Item>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={empDepartmentDDL?.data || []}
+              name="department"
+              label="Department"
+              allowClear
+              placeholder="Department"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  department: op,
+                });
+                value && getEmployeeSection();
+              }}
+              rules={[{ required: true, message: "Department is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={empSectionDDL.data || []}
+              name="section"
+              label="Section"
+              placeholder="Section"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  section: op,
+                });
+              }}
+              rules={[{ required: true, message: "Section is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={empDesignationDDL.data || []}
+              name="designation"
+              label="Designation"
+              placeholder="Designation"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  designation: op,
+                });
+              }}
+              rules={[{ required: true, message: "Designation is required" }]}
+            />
+          </Col>
+
+          <Col md={12} sm={24}>
+            <PSelect
+              options={positionDDL?.data || []}
+              name="hrPosition"
+              label="HR Position"
+              placeholder="HR Position"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  hrPosition: op,
+                });
+              }}
+              rules={[{ required: true, message: "HR Position is required" }]}
+            />
+          </Col>
+          {isEdit ? (
+            <Col md={12} sm={24}>
+              <PSelect
+                options={employeeStatusDDL?.data || []}
+                name="employeeStatus"
+                label="Employee Status"
+                placeholder="Employee Status"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    employeeStatus: op,
+                  });
                 }}
-                placeholder="Search (min 3 letter)"
-                loadOptions={(v) =>
-                  getSearchEmployeeListForEmp(
-                    buId,
-                    wgId,
-                    intAccountId,
-                    employeeId,
-                    v
-                  )
-                }
+                rules={[
+                  { required: true, message: "Employee Status is required" },
+                ]}
               />
-            </div>
-          </div>
+            </Col>
+          ) : undefined}
 
-          {/* marketing setup */}
-          {/* {values?.workplaceGroup?.label === "Marketing" && (
-          <>
-            <div className="col-6">
-              <div className="input-field-main">
-                <label>Wing</label>
-                <FormikSelect
-                  menuPosition="fixed"
-                  name="wing"
-                  options={wingDDL || []}
-                  value={values?.wing}
-                  onChange={(valueOption) => {
-                    getPeopleDeskWithoutAllDDL(
-                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SoleDepoDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&ParentTerritoryId=${valueOption?.value}`,
-                      "SoleDepoId",
-                      "SoleDepoName",
-                      setSoleDepoDDL
-                    );
-                    setFieldValue("soleDepo", "");
-                    setFieldValue("region", "");
-                    setFieldValue("area", "");
-                    setFieldValue("territory", "");
-                    setFieldValue("wing", valueOption);
-                  }}
-                  styles={customStyles}
-                  placeholder=""
-                  errors={errors}
-                  touched={touched}
-                />
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="input-field-main">
-                <label>Sole Depo</label>
-                <FormikSelect
-                  menuPosition="fixed"
-                  name="soleDepo"
-                  options={soleDepoDDL || []}
-                  value={values?.soleDepo}
-                  onChange={(valueOption) => {
-                    getPeopleDeskWithoutAllDDL(
-                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=RegionDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&ParentTerritoryId=${valueOption?.value}`,
-                      "RegionId",
-                      "RegionName",
-                      setRegionDDL
-                    );
-                    setFieldValue("region", "");
-                    setFieldValue("area", "");
-                    setFieldValue("territory", "");
-                    setFieldValue("soleDepo", valueOption);
-                  }}
-                  styles={customStyles}
-                  placeholder=""
-                  errors={errors}
-                  touched={touched}
-                />
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="input-field-main">
-                <label>Region</label>
-                <FormikSelect
-                  menuPosition="fixed"
-                  name="region"
-                  options={regionDDL || []}
-                  value={values?.region}
-                  onChange={(valueOption) => {
-                    getPeopleDeskWithoutAllDDL(
-                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AreaDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&ParentTerritoryId=${valueOption?.value}`,
-                      "AreaId",
-                      "AreaName",
-                      setAreaDDL
-                    );
-                    setFieldValue("area", "");
-                    setFieldValue("territory", "");
-                    setFieldValue("region", valueOption);
-                  }}
-                  styles={customStyles}
-                  placeholder=""
-                  errors={errors}
-                  touched={touched}
-                />
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="input-field-main">
-                <label>Area</label>
-                <FormikSelect
-                  menuPosition="fixed"
-                  name="area"
-                  options={areaDDL || []}
-                  value={values?.area}
-                  onChange={(valueOption) => {
-                    getPeopleDeskWithoutAllDDL(
-                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=TerritoryDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&ParentTerritoryId=${valueOption?.value}`,
-                      "TerritoryId",
-                      "TerritoryName",
-                      setTerritoryDDL
-                    );
-                    setFieldValue("territory", "");
-                    setFieldValue("area", valueOption);
-                  }}
-                  styles={customStyles}
-                  placeholder=""
-                  errors={errors}
-                  touched={touched}
-                />
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="input-field-main">
-                <label>Territory</label>
-                <FormikSelect
-                  menuPosition="fixed"
-                  name="territory"
-                  options={territoryDDL || []}
-                  value={values?.territory}
-                  onChange={(valueOption) => {
-                    setFieldValue("territory", valueOption);
-                  }}
-                  styles={customStyles}
-                  placeholder=""
-                  errors={errors}
-                  touched={touched}
-                />
-              </div>
-            </div>
-          </>
-        )} */}
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { workplaceGroup } = form.getFieldsValue(true);
+              return (
+                <>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      options={supervisorDDL?.data || []}
+                      name="supervisor"
+                      label="Supervisor"
+                      placeholder={`${
+                        workplaceGroup?.value
+                          ? "Search minimum 2 character"
+                          : "Select Workplace Group fast"
+                      }`}
+                      disabled={!workplaceGroup?.value}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          supervisor: op,
+                        });
+                      }}
+                      showSearch
+                      filterOption={false}
+                      // notFoundContent={null}
+                      loading={supervisorDDL?.loading}
+                      onSearch={(value) => {
+                        getSuperVisorDDL(value);
+                      }}
+                      rules={[
+                        { required: true, message: "Supervisor is required" },
+                      ]}
+                    />
+                  </Col>
+                  {/*  Need Searchable */}
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      options={dottedSupervisorDDL?.data || []}
+                      name="dottedSupervisor"
+                      label="Dotted Supervisor"
+                      placeholder={`${
+                        workplaceGroup?.value
+                          ? "Search minimum 2 character"
+                          : "Select Workplace Group fast"
+                      }`}
+                      disabled={!workplaceGroup?.value}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          dottedSupervisor: op,
+                        });
+                      }}
+                      showSearch
+                      filterOption={false}
+                      // notFoundContent={null}
+                      loading={dottedSupervisorDDL?.loading}
+                      onSearch={(value) => {
+                        getDottedSuperVisorDDL(value);
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Dotted Supervisor is required",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      options={lineManagerDDL.data || []}
+                      name="lineManager"
+                      label="Line Manager"
+                      placeholder={`${
+                        workplaceGroup?.value
+                          ? "Search minimum 2 character"
+                          : "Select Workplace Group fast"
+                      }`}
+                      disabled={!workplaceGroup?.value}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          lineManager: op,
+                        });
+                      }}
+                      showSearch
+                      filterOption={false}
+                      // notFoundContent={null}
+                      loading={lineManagerDDL?.loading}
+                      onSearch={(value) => {
+                        getLineManagerDDL(value);
+                      }}
+                      rules={[
+                        { required: true, message: "Line Manager is required" },
+                      ]}
+                    />
+                  </Col>
+                </>
+              );
+            }}
+          </Form.Item>
 
-          {/* calender assigne */}
-          {!isEdit && (
+          {!isEdit ? (
             <>
-              <div className="col-6">
-                <label>Generate Date</label>
-                <DefaultInput
-                  classes="input-sm"
+              <Col md={12} sm={24}>
+                <PInput
                   type="date"
-                  value={values?.generateDate}
                   name="generateDate"
-                  onChange={(e) => {
-                    // setFieldValue("generateDate", values?.joiningDate);
-                  }}
-                  errors={errors}
-                  touched={touched}
-                  disabled
+                  label="Generate Date"
+                  placeholder="Generate Date"
                 />
-              </div>
-              <div className="col-6">
-                <label>Calendar Type</label>
-                <FormikSelect
-                  menuPosition="fixed"
-                  name="calenderType"
+              </Col>
+              <Col md={12} sm={24}>
+                <PSelect
                   options={[
                     {
                       value: 1,
@@ -1034,372 +914,216 @@ export default function AddEditForm({
                     },
                     { value: 2, label: "Roster" },
                   ]}
-                  value={values?.calenderType}
-                  onChange={(valueOption) => {
-                    getDDL(valueOption?.value);
-                    setFieldValue("calender", "");
-                    setFieldValue("startingCalender", "");
-                    setFieldValue("nextChangeDate", "");
-                    setFieldValue("calenderType", valueOption);
+                  type="date"
+                  name="calenderType"
+                  label="Calendar Type"
+                  placeholder="Calendar Type"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      calenderType: op,
+                    });
+
+                    value === 1 ? getCalendarDDL() : getRosterGroupDDL();
                   }}
-                  placeholder=" "
-                  styles={customStyles}
-                  errors={errors}
-                  touched={touched}
-                  isDisabled={false}
                 />
-              </div>
-              <div className="col-6">
-                <label>
-                  {values?.calenderType?.value === 2
-                    ? `Roster Name`
-                    : `Calendar Name`}
-                </label>
-                <FormikSelect
-                  menuPosition="fixed"
-                  name="calender"
-                  options={
-                    values?.calenderType?.value === 2
-                      ? calenderRoasterDDL
-                      : calenderDDL
-                  }
-                  value={values?.calender}
-                  onChange={(valueOption) => {
-                    setFieldValue("calender", valueOption);
-                    if (values?.calenderType?.value === 2) {
-                      getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CalenderByRosterGroup&intId=${valueOption?.value}&WorkplaceGroupId=${values?.workplaceGroup?.value}`,
-                        "CalenderId",
-                        "CalenderName",
-                        setStartingCalenderDDL
-                      );
-                    }
-                  }}
-                  placeholder=" "
-                  styles={customStyles}
-                  errors={errors}
-                  touched={touched}
-                  isDisabled={!values?.calenderType}
-                />
-              </div>
-              {values?.calenderType?.value === 2 && (
-                <>
-                  <div className="col-6">
-                    <label>Starting Calendar</label>
-                    <FormikSelect
-                      menuPosition="fixed"
-                      name="startingCalender"
-                      options={startingCalenderDDL || []}
-                      value={values?.startingCalender}
-                      onChange={(valueOption) => {
-                        setFieldValue("startingCalender", valueOption);
-                      }}
-                      placeholder=" "
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                      isDisabled={false}
-                    />
-                  </div>
-                  <div className="col-6">
-                    <label>Next Calendar Change</label>
-                    <DefaultInput
-                      classes="input-sm"
-                      type="date"
-                      label=""
-                      value={values?.nextChangeDate}
-                      name="nextChangeDate"
-                      onChange={(e) => {
-                        setFieldValue("nextChangeDate", e.target.value);
-                      }}
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-                </>
-              )}
-            </>
-          )}
-
-          {/* salary hold */}
-          <div className="col-3">
-            <label> </label>
-            <div className="d-flex align-items-center small-checkbox">
-              <FormikCheckBox
-                styleObj={{
-                  color: gray900,
-                  checkedColor: greenColor,
-                }}
-                label="Salary Hold"
-                checked={values?.isSalaryHold}
-                onChange={(e) => {
-                  setFieldValue("isSalaryHold", e.target.checked);
-                }}
-                labelFontSize="12px"
-              />
-            </div>
-          </div>
-
-          {/* take-home pay */}
-          <div className="col-3 d-none">
-            <label> </label>
-            <div className="d-flex align-items-center small-checkbox">
-              <FormikCheckBox
-                styleObj={{
-                  color: gray900,
-                  checkedColor: greenColor,
-                }}
-                label="Take-Home Pay"
-                checked={values?.isTakeHomePay}
-                onChange={(e) => {
-                  setFieldValue("isTakeHomePay", e.target.checked);
-                }}
-                labelFontSize="12px"
-              />
-            </div>
-          </div>
-
-          {/* user */}
-          {!isEdit && (
-            <div className="col-3">
-              <label> </label>
-              <div className="d-flex align-items-center small-checkbox">
-                <FormikCheckBox
-                  styleObj={{
-                    color: gray900,
-                    checkedColor: greenColor,
-                  }}
-                  label="Create User"
-                  checked={values?.isUsersection}
-                  onChange={(e) => {
-                    setFieldValue("isUsersection", e.target.checked);
-                  }}
-                  labelFontSize="12px"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* isCreate check */}
-          {!isEdit && (
-            <div className="col-3 d-none">
-              <label> </label>
-              <div className="d-flex align-items-center small-checkbox">
-                <FormikCheckBox
-                  styleObj={{
-                    color: gray900,
-                    checkedColor: greenColor,
-                  }}
-                  label="is Create"
-                  checked={values?.isCreate}
-                  onChange={(e) => {
-                    if (isEdit) {
-                      setFieldValue("isCreate", false);
-                    } else {
-                      setFieldValue("isCreate", true);
-                    }
-                  }}
-                  labelFontSize="12px"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* user create section */}
-          <div className="col-12"></div>
-          {values?.isUsersection && (
-            <div className={isEdit ? `col-12 d-none` : `col-12`}>
-              <div className="row">
-                <div className="col-12">
-                  <h6 className="title-item-name">User Information</h6>
-                </div>
-                <div className="col-6">
-                  <label>Login User ID</label>
-                  <DefaultInput
-                    isParentFormContainerClass={"employee-form-container"}
-                    classes="input-sm"
-                    value={values?.loginUserId}
-                    name="loginUserId"
-                    type="text"
-                    className="form-control"
-                    placeholder=""
-                    onChange={(e) => {
-                      // remove empty space
-                      if (e.target.value.includes(" ")) {
-                        e.target.value = e.target.value.replace(/\s/g, "");
-
-                        setFieldValue("loginUserId", e.target.value);
-                      } else {
-                        setFieldValue("loginUserId", e.target.value);
-                      }
-
-                      const payload = {
-                        strLoginId: e.target.value,
-                        intUrlId: intUrlId,
-                        intAccountId: orgId,
-                      };
-                      debounce(() => {
-                        userExistValidation(payload, setIsUserCheckMsg);
-                      }, 500);
-                    }}
-                    // disabled={true}
-                    errors={errors}
-                    touched={touched}
-                    style={{ margin: "0px!important" }}
-                    disabled={values?.isCreateUser}
-                  />
-                  {values?.loginUserId && (
-                    <div>
-                      <span
-                        style={{
-                          fontSize: "10px",
-                          color:
-                            isUserCheckMsg?.statusCode !== 200
-                              ? failColor
-                              : success800,
-                        }}
-                      >
-                        {isUserCheckMsg?.statusCode === 200
-                          ? isUserCheckMsg?.message
-                          : "User has not available" ||
-                            isUserCheckMsg?.message ||
-                            isUserCheckMsg?.Message}
-                      </span>
-                    </div>
-                  )}
-                </div>
-                <div className="col-6">
-                  <div className="input-field-password-main">
-                    <label>Password</label>
-                    <div className="input-password">
-                      <DefaultInput
-                        classes="input-sm"
-                        value={values?.password}
-                        name="password"
-                        type={isShowPassword ? "text" : "password"}
-                        className="form-control"
-                        placeholder=""
-                        onChange={(e) => {
-                          if (e.target.value.includes(" ")) {
-                            e.target.value = e.target.value.replace(/\s/g, "");
-                            setFieldValue("password", e.target.value);
+              </Col>
+              <Form.Item shouldUpdate noStyle>
+                {() => {
+                  const { calenderType } = form.getFieldsValue();
+                  return (
+                    <>
+                      <Col md={12} sm={24}>
+                        <PSelect
+                          options={
+                            calenderType?.value === 2
+                              ? rosterGroupDDL.data || []
+                              : calendarDDL?.data || []
                           }
-                          setFieldValue("password", e.target.value);
-                        }}
-                        errors={errors}
-                        touched={touched}
-                        disabled={values?.isCreateUser}
-                      />
-                      {values?.password && (
-                        <button
-                          type="button"
-                          onClick={() => setIsShowPassword(!isShowPassword)}
-                          className="btn-showPassword"
-                        >
-                          {isShowPassword ? (
-                            <VisibilityOutlined sx={{ color: gray900 }} />
-                          ) : (
-                            <VisibilityOffOutlined sx={{ color: gray900 }} />
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="col-6">
-                  <label>Office Email</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.email}
-                    name="email"
-                    type="email"
-                    className="form-control"
-                    placeholder=""
-                    onChange={(e) => {
-                      setFieldValue("email", e.target.value);
-                    }}
-                    errors={errors}
-                    touched={touched}
-                    disabled={values?.isCreateUser}
-                  />
-                </div>
-                <div className="col-6">
-                  <label>Contact No.</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.phone}
-                    name="phone"
-                    type="text"
-                    className="form-control"
-                    placeholder=""
-                    onChange={(e) => {
-                      setFieldValue("phone", e.target.value);
-                    }}
-                    errors={errors}
-                    touched={touched}
-                    disabled={values?.isCreateUser}
-                  />
-                </div>
-                <div className="col-6">
-                  <label>User Type</label>
-                  <FormikSelect
-                    name="userType"
-                    menuPosition="fixed"
-                    options={userTypeDDL || []}
-                    value={values?.userType}
-                    onChange={(valueOption) => {
-                      setFieldValue("userType", valueOption);
-                    }}
-                    placeholder=" "
-                    styles={customStyles}
-                    errors={errors}
-                    touched={touched}
-                    isDisabled={values?.isCreateUser}
-                  />
-                </div>
+                          name="calender"
+                          label={
+                            calenderType?.value === 2
+                              ? `Roster Name`
+                              : `Calendar Name`
+                          }
+                          placeholder={
+                            calenderType?.value === 2
+                              ? `Roster Name`
+                              : `Calendar Name`
+                          }
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              calender: op,
+                            });
 
-                {isEdit && (
-                  <>
-                    <div className="col-6">
-                      <div className="input-main position-group-select mt-2">
-                        <h6 className="title-item-name">User Activation</h6>
-                      </div>
-                      <FormikToggle
-                        name="isActive"
-                        color={values?.isActive ? greenColor : blackColor40}
-                        checked={values?.isActive}
-                        onChange={(e) => {
-                          setFieldValue("isActive", e.target.checked);
-                        }}
-                        disabled={values?.isCreateUser}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+                            const { calenderType } = form.getFieldsValue();
+                            calenderType?.value === 2 &&
+                              getCalendarByRosterDDL();
+                          }}
+                        />
+                      </Col>
+                      {calenderType?.value === 2 ? (
+                        <>
+                          <Col md={12} sm={24}>
+                            <PSelect
+                              options={calendarByRosterGroupDDL?.data || []}
+                              name="startingCalender"
+                              label="Starting Calendar"
+                              placeholder={"Starting Calendar"}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  startingCalender: op,
+                                });
+                              }}
+                            />
+                          </Col>
+                          <Col md={12} sm={24}>
+                            <PInput
+                              type="date"
+                              name="nextChangeDate"
+                              label="Next Calendar Change"
+                              placeholder={"Next Calendar Change"}
+                              onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  nextChangeDate: op,
+                                });
+                              }}
+                            />
+                          </Col>
+                        </>
+                      ) : undefined}
+                    </>
+                  );
+                }}
+              </Form.Item>
+            </>
+          ) : undefined}
 
-        {/* <div className=" emp-create buttons-form-main row">
-        <button
-          type="button"
-          className="btn btn-cancel mr-3"
-          onClick={() => setIsAddEditForm(false)}
-        >
-          Cancel
-        </button>
+          {/* Hold Salary */}
+          <Col md={12} sm={24} style={{ marginTop: "20px" }}>
+            <PInput
+              label="Salary Hold"
+              type="checkbox"
+              name="isSalaryHold"
+              layout="horizontal"
+            />
+          </Col>
 
-        <button type="submit" className="btn btn-green">
-          submit
-        </button>
-      </div> */}
-      </form>
-      <ModalFooter
-        onCancel={() => {
-          setIsAddEditForm(false);
-        }}
-      />
+          {/* User Create */}
+          <Form.Item noStyle shouldUpdate>
+            {() => {
+              const { isUsersection } = form.getFieldsValue();
+              return !isEdit ? (
+                <>
+                  <Col md={12} sm={24} style={{ marginTop: "20px" }}>
+                    <PInput
+                      label="Create User"
+                      type="checkbox"
+                      name="isUsersection"
+                      layout="horizontal"
+                    />
+                  </Col>
+                  {isUsersection ? (
+                    <>
+                      <Divider style={{ margin: "3px 0" }} />
+                      <Col md={12} sm={24}>
+                        <PInput
+                          name="loginUserId"
+                          type="text"
+                          placeholder="User Id"
+                          label="User Id"
+                          rules={[
+                            { required: true, message: "User Id is required" },
+                            () => ({
+                              validator(_, value) {
+                                return new Promise((resolve, reject) => {
+                                  const payload = {
+                                    strLoginId: value,
+                                    intUrlId: intUrlId,
+                                    intAccountId: orgId,
+                                  };
+                                  userValidation(
+                                    payload,
+                                    setIsUserCheckMsg,
+                                    (data) => {
+                                      if (data.message === "Valid") {
+                                        resolve();
+                                      } else {
+                                        reject(
+                                          new Error(
+                                            data.message || "User is not valid"
+                                          )
+                                        );
+                                      }
+                                    }
+                                  );
+                                });
+                              },
+                            }),
+                          ]}
+                        />
+                      </Col>
+                      <Col md={12} sm={24}>
+                        <PInput
+                          name="password"
+                          type="password"
+                          placeholder="Password"
+                          label="Password"
+                        />
+                      </Col>
+                      <Col md={12} sm={24}>
+                        <PInput
+                          name="email"
+                          type="email"
+                          placeholder="Office Email"
+                          label="Office Email"
+                        />
+                      </Col>
+                      <Col md={12} sm={24}>
+                        <PInput
+                          name="phone"
+                          type="text"
+                          placeholder="Contact No."
+                          label="Contact No."
+                        />
+                      </Col>
+                      <Col md={12} sm={24}>
+                        <PSelect
+                          options={userTypeDDL.data || []}
+                          name="userType"
+                          label="User Type"
+                          placeholder="User Type"
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              userType: op,
+                            });
+                          }}
+                        />
+                      </Col>
+                    </>
+                  ) : undefined}
+                </>
+              ) : (
+                <Col md={12} sm={24} style={{ marginTop: "20px" }}>
+                  <PInput
+                    Label="Is Active"
+                    name="isActive"
+                    type="checkbox"
+                    label="Is Active"
+                    layout="horizontal"
+                  />
+                </Col>
+              );
+            }}
+          </Form.Item>
+        </Row>
+        <ModalFooter
+          onCancel={() => {
+            setIsAddEditForm(false);
+          }}
+          submitAction="submit"
+          loading={loading}
+        />
+      </PForm>
     </>
   );
 }

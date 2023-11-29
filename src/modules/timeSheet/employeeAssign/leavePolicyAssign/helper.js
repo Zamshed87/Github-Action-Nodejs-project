@@ -1,4 +1,5 @@
 import axios from "axios";
+import IConfirmModal from "common/IConfirmModal";
 import moment from "moment";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
@@ -6,7 +7,6 @@ import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
-import { dateFormatter } from "../../../../utility/dateFormatter";
 
 export const getShiftInfo = async (id, setter) => {
   try {
@@ -66,12 +66,7 @@ export const columns = (
   setRowDto,
   checkedList,
   setCheckedList,
-  // isAlreadyPresent,
   setSingleData,
-  setCreateModal,
-  // rowDtoHandler,
-  setSingleShiftData,
-  setAnchorEl2,
   headerList,
   wgName
 ) =>
@@ -223,11 +218,11 @@ export const columns = (
     //   filter: true,
     //   isDate: true,
     // },
-    {
-      title: "Joining Date",
-      dataIndex: "joiningDate",
-      render: (record) => dateFormatter(record?.joiningDate),
-    },
+    // {
+    //   title: "Joining Date",
+    //   dataIndex: "joiningDate",
+    //   render: (record) => dateFormatter(record?.joiningDate),
+    // },
     // {
     //   title: () => <span style={{ color: gray600 }}>Joining Date</span>,
     //   dataIndex: "JoiningDate",
@@ -258,41 +253,40 @@ export const columns = (
     //     </>
     //   ),
     // },
-    {
-      title: "Action",
-      className: "text-center",
-      dataIndex: "",
-      render: (record) => (
-        <div>
-          {!(record?.calendarAssignId || record?.isSelected) && (
-            <div className="assign-btn">
-              <button
-                style={{
-                  marginRight: "25px",
-                  height: "24px",
-                  fontSize: "12px",
-                  padding: "0px 12px 0px 12px",
-                }}
-                type="button"
-                className="btn btn-default"
-                onClick={(e) => {
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  setSingleData([record]);
-                  setCreateModal(true);
-                  // rowDtoHandler(record);
-                }}
-                disabled={checkedList.length > 1}
-              >
-                Assign
-              </button>
-            </div>
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   className: "text-center",
+    //   dataIndex: "",
+    //   render: (record) => (
+    //     <div>
+    //       {!(record?.calendarAssignId || record?.isSelected) && (
+    //         <div className="assign-btn">
+    //           <button
+    //             style={{
+    //               marginRight: "25px",
+    //               height: "24px",
+    //               fontSize: "12px",
+    //               padding: "0px 12px 0px 12px",
+    //             }}
+    //             type="button"
+    //             className="btn btn-default"
+    //             onClick={(e) => {
+    //               if (!permission?.isCreate)
+    //                 return toast.warn("You don't have permission");
+    //               if (!permission?.isCreate)
+    //                 return toast.warn("You don't have permission");
+    //               setSingleData([record]);
+    //               // rowDtoHandler(record);
+    //             }}
+    //             disabled={checkedList.length > 1}
+    //           >
+    //             Assign
+    //           </button>
+    //         </div>
+    //       )}
+    //     </div>
+    //   ),
+    // },
   ].filter((item) => item.hidden !== true);
 
 let date = new Date();
@@ -332,10 +326,10 @@ export const bgColors = [
   "#FEF0D7",
 ];
 export const initHeaderList = {
-  designations: [],
-  departments: [],
-  genders: [],
-  hrLists: [],
+  designationList: [],
+  departmentList: [],
+  genderList: [],
+  hrList: [],
   // soleDepoNameList: [],
   // regionNameList: [],
   // areaNameList: [],
@@ -370,7 +364,8 @@ const getDataApiCall = async (
   setEmpIDString,
   setRowDto,
   list,
-  year
+  year,
+  setCheckedList
 ) => {
   setLandingLoading(true);
   try {
@@ -411,7 +406,7 @@ const getDataApiCall = async (
         setPages,
       });
 
-      setEmpIDString(res?.data?.employeeIdList);
+      setEmpIDString(res?.data?.employeeList);
       const modifiedData = res?.data?.data?.map((item, index) => ({
         ...item,
         initialSerialNumber: index + 1,
@@ -422,8 +417,9 @@ const getDataApiCall = async (
         //   ? true
         //   : false,
       }));
-
       setRowDto(modifiedData);
+      setCheckedList?.(modifiedData);
+
       setLandingLoading(false);
     } else {
       setRowDto([]);
@@ -454,7 +450,8 @@ export const getData = async (
   checkedHeaderList = { ...initHeaderList },
   isAssigned,
   list,
-  year
+  year,
+  setCheckedList = {}
 ) => {
   const modifiedPayload = createPayloadStructure({
     initHeaderList,
@@ -485,7 +482,8 @@ export const getData = async (
     setEmpIDString,
     setRowDto,
     list,
-    year
+    year,
+    setCheckedList
   );
 };
 
@@ -597,4 +595,35 @@ export const handleChangeRowsPerPage = (
     list,
     year
   );
+};
+
+const leavePolicyAssign = async (payload, cb, setLandingLoading) => {
+  setLandingLoading(true);
+  try {
+    const res = await axios.post(
+      `/SaasMasterData/LeaveBalanceGenerate`,
+      payload
+    );
+    if (res?.status === 200) {
+      toast.success(res?.data?.message || "Submitted Successfully");
+      cb?.();
+    }
+    setLandingLoading(false);
+  } catch (error) {
+    setLandingLoading(false);
+  }
+};
+
+export const demoPopup = (action, array, cb, setLandingLoading) => {
+  let confirmObject = {
+    closeOnClickOutside: false,
+    message: `Do you want to ${action}? `,
+    yesAlertFunc: () => {
+      if (array.length) {
+        leavePolicyAssign(array, cb, setLandingLoading);
+      }
+    },
+    noAlertFunc: () => {},
+  };
+  IConfirmModal(confirmObject);
 };

@@ -27,18 +27,18 @@ import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
 const origin = window.location.origin;
 const prodUrl = "https://matador.peopledesk.io";
 
+const isDevServer =
+  origin.includes("dev") || process.env.NODE_ENV === "development";
+
 // set axios base url
-export const APIUrl =
-  process.env.NODE_ENV === "development"
-    ? "https://devmatador.peopledesk.io/api"
-    : `${origin}/api`;
+export const APIUrl = isDevServer
+  ? "https://devmatador.peopledesk.io/api"
+  : `${origin}/api`;
 Axios.defaults.baseURL = APIUrl;
 
-export const domainUrl =
-  process.env.NODE_ENV === "development"
-    ? "https://devmatador.peopledesk.io"
-    : origin;
-const isDevServer = APIUrl.includes("dev");
+export const domainUrl = isDevServer
+  ? "https://devmatador.peopledesk.io"
+  : origin;
 
 // if (process.env.NODE_ENV === "production") {
 //   disableReactDevTools();
@@ -46,7 +46,7 @@ const isDevServer = APIUrl.includes("dev");
 
 Axios.interceptors.request.use(
   (config: any) => {
-    if (process.env.NODE_ENV === "development" || isDevServer) return config;
+    if (isDevServer) return config;
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
@@ -110,7 +110,7 @@ Axios.interceptors.request.use(
 );
 Axios.interceptors.response.use(
   async function (response: any) {
-    if (process.env.NODE_ENV === "development" || isDevServer) return response;
+    if (isDevServer) return response;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
       if (response?.config?.url?.includes(`${element}`)) return response;
@@ -158,10 +158,11 @@ Axios.interceptors.response.use(
         // console.log(error)
       }
     }
-
-    const decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
-      error?.response?.data
-    );
+    let decryptedData = error?.response?.data;
+    if (!isDevServer)
+      decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
+        JSON.stringify(error?.response?.data)
+      );
     const newError = { response: { data: decryptedData } };
     return Promise.reject(newError);
   }

@@ -5,20 +5,24 @@ export const excelFileToArray = (file, sheetName) => {
   return new Promise((resolve, reject) => {
     const workbook = new Excel.Workbook();
     const data = [];
-    workbook.xlsx.load(file).then(function() {
-      const worksheet = workbook.getWorksheet(sheetName);
-      if (!worksheet) return toast.warning("Sheet name does not match");
-      const firstRowValues = worksheet.getRow(1).values;
+    workbook.xlsx
+      .load(file)
+      .then(function () {
+        const worksheet = workbook.getWorksheet(sheetName);
+        if (!worksheet) return toast.warning("Sheet name does not match");
+        const firstRowValues = worksheet.getRow(1).values;
 
-      worksheet.eachRow((row, rowIndex) => {
-        if (rowIndex !== 1) {
-          data.push(createObject(firstRowValues, row.values));
-        }
+        worksheet.eachRow((row, rowIndex) => {
+          if (rowIndex !== 1) {
+            data.push(createObject(firstRowValues, row.values));
+          }
+        });
+        resolve(data);
+      })
+      .catch((err) => {
+        console.log(err)
+        reject(err);
       });
-      resolve(data);
-    }).catch(err => {
-        reject(err)
-    });
   });
 };
 export const excelFileToJSON = (file) => {

@@ -183,6 +183,12 @@ export const getMenuListAction = (employeeId, setLoading) => (dispatch) => {
     .catch((error) => {
       setLoading(false);
       dispatch(slice.setMenuList([]));
+
+      if (error?.response?.data?.statusCode === 401) {
+        dispatch(setIsExpiredTokenAction(true));
+        dispatch(setLogoutAction());
+        toast.error("Session Expired, Please login again");
+      }
     });
 };
 export const getKeywordsAction =

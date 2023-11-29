@@ -1,10 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 //  @ts-nocheck
-import { useFormik } from "formik";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import * as Yup from "yup";
-import { monthDDL } from "../../../../utility/monthUtility";
 import { yearDDLAction } from "../../../../utility/yearDDL";
 import { DeleteOutline } from "@mui/icons-material";
 import { AddOutlined } from "@mui/icons-material";
@@ -14,128 +12,28 @@ import {
   getYearlyPolicyById,
   getYearlyPolicyPopUpDDL,
   isPolicyExist,
-  removerPolicy,
+  saveHandler,
 } from "./helper";
 import { getPeopleDeskAllDDL } from "../../../../common/api";
 import BackButton from "../../../../common/BackButton";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
-import {
-  gray600,
-  gray900,
-  greenColor,
-  success500,
-} from "../../../../utility/customColor";
-import DefaultInput from "../../../../common/DefaultInput";
-import FormikSelect from "../../../../common/FormikSelect";
-import { customStyles } from "../../../../utility/selectCustomStyle";
+import { success500 } from "../../../../utility/customColor";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { IconButton, Tooltip, Alert } from "@mui/material";
-import MultiCheckedSelect from "../../../../common/MultiCheckedSelect";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { toast } from "react-toastify";
-import { Col, List, Row, Typography } from "antd";
+import { Col, Form, List, Row, Typography, Divider } from "antd";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { useApiRequest } from "../../../../Hooks";
 import Loading from "common/loading/Loading";
 import { useHistory } from "react-router-dom";
+import { PButton, PForm, PInput, PSelect } from "Components";
 
 const CreateEditLeavePolicy = () => {
   const policyApi = useApiRequest([]);
   const params = useParams();
-  const validationSchema = Yup.object().shape({
-    // businessUnit: Yup.object()
-    //   .shape({
-    //     label: Yup.string().required("Business Unit type is required"),
-    //     value: Yup.string().required("Business Unit type is required"),
-    //   })
-    //   .typeError("Business Unit type is required"),
-    days: Yup.number()
-      .min(0, "Days must be a non-negative number")
-      .required("Days is required"),
-    leaveType: Yup.object()
-      .shape({
-        label: Yup.string().required("Leave type is required"),
-        value: Yup.string().required("Leave type is required"),
-      })
-      .typeError("Leave type is required"),
-    employmentType: Yup.object()
-      .shape({
-        label: Yup.string().required("Employment type is required"),
-        value: Yup.string().required("Employment type is required"),
-      })
-      .typeError("Employment type is required"),
-    gender: Yup.object()
-      .shape({
-        label: Yup.string().required("Gender is required"),
-        value: Yup.string().required("Gender is required"),
-      })
-      .typeError("Gender is required"),
-    year: Yup.object()
-      .shape({
-        label: Yup.string().required("Year is required"),
-        value: Yup.string().required("Year is required"),
-      })
-      .typeError("Year is required"),
-  });
+  const [form] = Form.useForm();
 
-  const initData = {
-    intWorkplaceList: [],
-    intYear: "",
-    intEmploymentTypeList: "",
-    intLeaveType: "",
-    intGender: "",
-    days: "",
-    strDisplayName: "",
-    strPolicyName: "",
-    isDependOnServiceLength: false,
-    intStartServiceLengthInYear: "",
-    intEndServiceLengthInYear: "",
-    intLveInDay: "",
-    intAllocatedLveInDay: "",
-    isMinuteBased: false,
-    isIncludeOffday: false,
-    isIncludeHoliday: false,
-    isLveBalanceApplyForSelfService: false,
-    isLveBalanceShowForSelfService: false,
-    isProdataBasis: false,
-    inPreviousLveTypeEnd: false,
-    intMaxLveDaySelf: "",
-    intMaxLveApplicationSelfInYear: "",
-    intMaxLveApplicationSelfInMonth: "",
-    isHalfDayLeave: false,
-    intHalfdayMaxInMonth: "",
-    intHalfdayMaxInYear: "",
-    intHalfdayPreviousLveTypeEnd: "",
-    isEncashable: false,
-    intMaxEncashableLveInDay: "",
-    intEncashableMonth: "",
-    isCompensatoryLve: false,
-    intConpensatoryLveExpireInDays: "",
-    isEarnLeave: false,
-    intDayForOneEarnLve: "",
-    isEarnLveIncludeHoliday: false,
-    isEarnLveIncludeOffday: false,
-    intEarnLveInDay: "",
-    isCarryForward: false,
-    intCarryForwardMaxInDay: "",
-    intCarryForwardMonth: "",
-    intCarryForwarExpiryMonth: "",
-    intCarryForwarExpiryDay: "",
-    isAutoRenewable: false,
-    intActiveFromJoiningdayInDay: "",
-    intActiveFromConfirmationInDay: "",
-    isApplicableBeforeAndAfterHoliday: false,
-    isApplicableBeforeAndAfterOffday: false,
-    isMonthWiseExpired: false,
-    howMuchMonth: "",
-    bu: "",
-    wg: "",
-    isGenerate: false,
-    isAdvanceLeave: false,
-    intMaxForAdvLveInYear: "",
-    hrPositionListDTO: "",
-  };
   const [employmentTypeDDL, setEmploymentTypeDDL] = useState([]);
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState(null);
@@ -163,117 +61,7 @@ const CreateEditLeavePolicy = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const saveHandler = (values, cb) => {
-    const {
-      bu,
-      wg,
-      days,
-      intWorkplaceList,
-      intGender,
-      intEmploymentTypeList,
-      intEndServiceLengthInYear,
-      intStartServiceLengthInYear,
 
-      ...rest
-    } = values;
-    const serviceLengthList = tableData?.map((item, idx) => {
-      return {
-        intId: 0,
-        intSerial: idx + 1,
-        intStartServiceLengthInYear: item?.intStartServiceLengthInYear?.value,
-        intEndServiceLengthInYear: item?.intEndServiceLengthInYear?.value,
-        intLveInDay: +item?.intLveInDay,
-        isActive: true,
-      };
-    });
-    const policyList = existingPolicies?.map((item) => item?.intPolicyId);
-    const payload = {
-      ...rest,
-      policyId: params?.id || 0,
-      isActive: true,
-      serviceLengthList: values?.isDependOnServiceLength
-        ? serviceLengthList
-        : [],
-      workplaceList: intWorkplaceList?.map((item, index) => {
-        const exists = existingPolicies?.some(
-          (em) => em.intWorkplace === item.value
-        );
-        return {
-          ...item,
-          strWorkplaceName: item?.label,
-          id: exists ? 1 : 0,
-        };
-      }),
-      employmentTypeList: intEmploymentTypeList?.map((item) => {
-        return {
-          ...item,
-          strEmploymentTypeName: item?.label,
-          intEmploymentTypeId: item?.value,
-        };
-      }),
-      intLeaveType: +values?.intLeaveType?.value,
-      genderListDTO: intGender?.map((item) => {
-        return {
-          ...item,
-          strGenderName: item?.label,
-          intGenderId: item?.value,
-        };
-      }),
-      intYear: +values?.intYear?.value,
-      inPreviousLveTypeEnd: +values?.inPreviousLveTypeEnd?.value,
-      intMaxLveDaySelf: +values?.intMaxLveDaySelf,
-      intMaxLveApplicationSelfInMonth: +values?.intMaxLveApplicationSelfInMonth,
-      intMaxLveApplicationSelfInYear: +values?.intMaxLveApplicationSelfInYear,
-      intEncashableMonth: +values?.intEncashableMonth,
-      intEndServiceLengthInYear: +values?.intEndServiceLengthInYear,
-      intHalfdayMaxInMonth: +values?.intHalfdayMaxInMonth,
-      intHalfdayMaxInYear: +values?.intHalfdayMaxInYear,
-      intHalfdayPreviousLveTypeEnd:
-        +values?.intHalfdayPreviousLveTypeEnd?.value,
-      intMaxEncashableLveInDay: +values?.intMaxEncashableLveInDay,
-      intAllocatedLveInDay: +values?.intAllocatedLveInDay,
-      intCarryForwarExpiryMonth: +values?.intCarryForwarExpiryMonth?.value,
-      intCarryForwarExpiryDay: +values?.intCarryForwarExpiryDay,
-      intActiveFromJoiningdayInDay: +values?.intActiveFromJoiningdayInDay,
-      intActiveFromConfirmationInDay: +values?.intActiveFromConfirmationInDay,
-      howMuchMonth: +values?.howMuchMonth?.value,
-      intCarryForwardMaxInDay: +values?.intCarryForwardMaxInDay,
-      intCarryForwardMonth: +values?.intCarryForwardMonth?.value,
-      intConpensatoryLveExpireInDays: +values?.intConpensatoryLveExpireInDays,
-      intDayForOneEarnLve: +values?.intDayForOneEarnLve,
-      intEarnLveInDay: +values?.intEarnLveInDay,
-      intMaxForAdvLveInYear: +values?.intMaxForAdvLveInYear,
-      intExistingPolicyIdList: policyList?.length > 0 ? policyList : [],
-      hrPositionListDTO:
-        values?.hrPositionListDTO?.length > 0
-          ? values?.hrPositionListDTO?.map((item) => {
-              return {
-                ...item,
-                strHrPositionName: item?.label,
-                intHrPositionId: item?.value,
-              };
-            })
-          : [],
-    };
-    policyApi?.action({
-      method: "POST",
-      urlKey: "SaasMasterDataCRUDLeavePolicy",
-      payload: payload,
-      onSuccess: (data) => {
-        console.log(data);
-
-        toast.success(data?.message || "Submitted successfully", {
-          toastId: "savePolicy",
-        });
-        if (data?.statusCode === 201) {
-          history.push({
-            pathname: `/administration/timeManagement/leavePolicyAssign`,
-            state: { list: data?.intPolicyIdList },
-          });
-        }
-      },
-    });
-  };
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -294,7 +82,7 @@ const CreateEditLeavePolicy = () => {
       setLeaveTypeDDL
     );
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
       "PositionId",
       "PositionName",
       setHrPositionDDL
@@ -316,7 +104,7 @@ const CreateEditLeavePolicy = () => {
     );
   }, [orgId, buId, employeeId, wgId]);
 
-  //  for edit
+  // for edit
   useEffect(() => {
     if (params?.id && workplaceDDL?.length > 0) {
       getYearlyPolicyById(
@@ -331,1993 +119,1694 @@ const CreateEditLeavePolicy = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params?.id, workplaceDDL]);
+  }, [params?.id, workplaceDDL, allPolicies]);
+
+  useEffect(() => {
+    if (singleData?.policyId) {
+      form.setFieldsValue(singleData);
+    }
+  }, [singleData]);
+
   const remover = (payload) => {
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
   };
-  // const removerPolicy = (payload) => {
-  //   const filterArr = existingPolicies.filter((itm, idx) => idx !== payload);
-  //   setExistingPolicies(filterArr);
-  //   const temp = values?.intWorkplaceList?.filter(
-  //     (item) => item?.value !== existingPolicies[payload]?.intWorkplace
-  //   );
-  //   values.intWorkplaceList = temp;
-  // };
-
-  const {
-    handleSubmit,
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleBlur,
-    resetForm,
-  } = useFormik({
-    enableReinitialize: true,
-    validationSchema,
-    initialValues: params?.id
-      ? singleData
-      : {
-          ...initData,
-          //  intGender: { value: 0, label: "Male & Female" }
-        },
-
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      saveHandler(values, () => resetForm(initData));
-    },
-  });
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="leavePolicy-container table-card ">
-        {/* btns */}
-        <div className="table-card-heading ">
-          <div className="d-flex align-items-center">
-            <BackButton />
-            <h2>{params?.id ? "Edit Leave Policy" : "Create Leave Policy"}</h2>
+    <>
+      <PForm
+        form={form}
+        onFinish={(values) => {
+          saveHandler(
+            values,
+            form.resetFields,
+            policyApi,
+            tableData,
+            existingPolicies,
+            params,
+            history
+          );
+        }}
+        initialValues={{}}
+        onValuesChange={(changedFields, allFields) => {
+          console.log({ changedFields }, { allFields });
+        }}
+      >
+        <div className="leavePolicy-container table-card ">
+          {/* btns */}
+          <div className="table-card-heading ">
+            <div className="d-flex align-items-center">
+              <BackButton />
+              <h2>
+                {params?.id ? "Edit Leave Policy" : "Create Leave Policy"}
+              </h2>
+            </div>
+
+            <ul className="d-flex flex-wrap">
+              <li>
+                <button
+                  type="button"
+                  className="btn btn-cancel mr-2"
+                  onClick={() => {
+                    form.resetFields();
+                  }}
+                >
+                  Reset
+                </button>
+              </li>
+              <li>
+                <PButton
+                  type="primary"
+                  content={"Save"}
+                  // onClick={onSubmit}
+                  action={"submit"}
+                />
+              </li>
+            </ul>
           </div>
-          <ul className="d-flex flex-wrap">
-            <li>
-              <button
-                type="button"
-                className="btn btn-cancel mr-2"
-                onClick={() => {
-                  resetForm(initData);
-                }}
-              >
-                Reset
-              </button>
-            </li>
-            <li>
-              <div
-                type="submit"
-                className="btn btn-default flex-center"
-                onClick={(e) => {
-                  e.preventDefault();
-                  // resetForm(initData);
-                  saveHandler(values, () => resetForm(initData));
-                }}
-              >
-                Save
-              </div>
-            </li>
-          </ul>
-        </div>
-        {/* -------------------------------- */}
-        {loading && <Loading />}
-        <div className="table-card-body">
-          <div className="card-style">
-            <Row gutter={[10, 2]}>
-              <Col span={14}>
-                <div className="row">
-                  {/* leave config */}
-                  <>
-                    <div className="col-12">
-                      <h2>Leave Configuration</h2>
+          {/* -------------------------------- */}
+          {loading ? (
+            <Loading />
+          ) : (
+            <div className="table-card-body">
+              <div className="card-style">
+                <Row gutter={[10, 2]}>
+                  <Col span={14}>
+                    <div className="row">
+                      {/* leave config */}
+                      <>
+                        <div className="col-12">
+                          <h2>Leave Configuration</h2>
+                        </div>
+                        <div
+                          className="col-12"
+                          style={{ marginBottom: "12px" }}
+                        ></div>
+                      </>
                     </div>
-                    <div
-                      className="col-12"
-                      style={{ marginBottom: "12px" }}
-                    ></div>
-                    <div className="col-lg-12">
-                      {/* leave type */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Leave Type?
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            name="intLeaveType"
-                            options={leaveTypeDDL}
-                            menuPosition="fixed"
-                            value={values?.intLeaveType}
-                            label=""
-                            onChange={(valueOption) => {
-                              const temp = { ...values };
-
-                              setFieldValue("intLeaveType", valueOption);
-                              isPolicyExist(
-                                {
-                                  ...temp,
-                                  intLeaveType: valueOption,
-                                },
-                                allPolicies,
-                                setExistingPolicies
-                              );
-                              // isPolicyExist(values);
-                              setFieldValue("isCompensatoryLve", false);
-                              setFieldValue("isEarnLeave", false);
-                              setFieldValue("isDependOnServiceLength", false);
-                              setFieldValue("isProdataBasis", false);
-                              if (
-                                valueOption?.label === "Earn Leave/Annual Leave"
-                              ) {
-                                setFieldValue("isEarnLeave", true);
-                              } else if (
-                                valueOption?.label === "Compensatory Leave"
-                              ) {
-                                setFieldValue("isCompensatoryLve", true);
-                              }
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/* display name */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Leave Display Name
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            classes="input-sm"
-                            value={values?.strDisplayName}
-                            placeholder=""
-                            name="strDisplayName"
+                    <Row gutter={[10, 2]}>
+                      {/* leave config */}
+                      <>
+                        <Col md={12} sm={24}>
+                          <PInput
                             type="text"
-                            className="form-control"
-                            onChange={(e) => {
-                              setFieldValue("strDisplayName", e.target.value);
-                            }}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/* Policy name */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Policy Name Name
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            classes="input-sm"
-                            value={values?.strPolicyName}
-                            placeholder=""
                             name="strPolicyName"
+                            label="Policy Name"
+                            placeholder="Policy Name"
+                          />
+                        </Col>
+
+                        <Col md={12} sm={24}>
+                          <PInput
                             type="text"
-                            className="form-control"
-                            onChange={(e) => {
-                              setFieldValue("strPolicyName", e.target.value);
-                            }}
-                            errors={errors}
-                            touched={touched}
+                            name="strDisplayName"
+                            label="Leave Display Name"
+                            placeholder="Display Name"
                           />
-                        </div>
-                      </div>
-                      {/* Previous Leave Type End */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Previous Leave Type End
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            name="inPreviousLveTypeEnd"
-                            options={[
-                              { value: 0, label: "None" },
-                              ...leaveTypeDDL?.filter(
-                                (item) =>
-                                  item?.value !== values?.intLeaveType?.value
-                              ),
-                            ]}
-                            menuPosition="fixed"
-                            value={values?.inPreviousLveTypeEnd}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "inPreviousLveTypeEnd",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/* Max Leave Available from Self  */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Max Leave Available from Self
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intMaxLveDaySelf}
-                            onChange={(e) => {
-                              setFieldValue("intMaxLveDaySelf", e.target.value);
-                            }}
-                            name="intMaxLveDaySelf"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/* Max Leave Application In Month   */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Max Leave Application In Month
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intMaxLveApplicationSelfInMonth}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intMaxLveApplicationSelfInMonth",
-                                e.target.value
-                              );
-                            }}
-                            name="intMaxLveApplicationSelfInMonth"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/*Max Leave Application In Year  */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Max Leave Application In Year
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intMaxLveApplicationSelfInYear}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intMaxLveApplicationSelfInYear",
-                                e.target.value
-                              );
-                            }}
-                            name="intMaxLveApplicationSelfInYear"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                  {/* --------------------- */}
-                  {/* employee */}
-                  <>
-                    <div className="col-12">
-                      <h2>Employee Configuration</h2>
-                    </div>
-                    <div
-                      className="col-12"
-                      style={{ marginBottom: "12px" }}
-                    ></div>
-                    <div className="col-lg-12">
-                      {/* Employment Type */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Employment Type
-                        </label>
-                        <div style={{ width: "230px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            placeholder=" "
-                            isClearable={false}
-                            classes="input-sm"
-                            styles={{
-                              ...customStyles,
-                              control: (provided, state) => ({
-                                ...provided,
-                                minHeight: "auto",
-                                height:
-                                  values?.intEmploymentTypeList?.length > 1
-                                    ? "auto"
-                                    : "30px",
-                                borderRadius: "4px",
-                                boxShadow: `${success500}!important`,
-                                ":hover": {
-                                  borderColor: `${gray600}!important`,
+                        </Col>
+                        <Col md={12} sm={24}>
+                          <PSelect
+                            options={leaveTypeDDL || []}
+                            name="intLeaveType"
+                            label="Leave Type"
+                            placeholder="  Leave Type"
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                isProdataBasis: false,
+                                isDependOnServiceLength: false,
+                                isEarnLeave: false,
+                                isCompensatoryLve: false,
+                                intLeaveType: op,
+                                isEarnLveIncludeOffday: false,
+                                isEarnLveIncludeHoliday: false,
+                                intDayForOneEarnLve: undefined,
+                                intEarnLveInDay: undefined,
+                                intConpensatoryLveExpireInDays: undefined,
+                                isConpensatoryLveExpire: false,
+                              });
+
+                              if (op.label === "Earn Leave/Annual Leave") {
+                                form.setFieldsValue({
+                                  isEarnLeave: true,
+                                  intAllocatedLveInDay: undefined,
+                                });
+                              }
+                              if (op.label === "Compensatory Leave") {
+                                form.setFieldsValue({
+                                  isCompensatoryLve: true,
+                                  intAllocatedLveInDay: undefined,
+                                });
+                              }
+                              const temp = form.getFieldsValue();
+                              isPolicyExist(
+                                {
+                                  ...temp,
+                                  intLeaveType: op,
                                 },
-                                ":focus": {
-                                  borderColor: `${gray600}!important`,
-                                },
-                              }),
-                              valueContainer: (provided, state) => ({
-                                ...provided,
-                                height:
-                                  values?.intEmploymentTypeList?.length > 1
-                                    ? "auto"
-                                    : "30px",
-                                padding: "0 6px",
-                              }),
-                              multiValue: (styles) => {
-                                return {
-                                  ...styles,
-                                  position: "relative",
-                                  top: "-1px",
-                                };
+                                allPolicies,
+                                setExistingPolicies
+                              );
+                              // value && getWorkplace();
+                            }}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Leave Type is required",
                               },
-                              multiValueLabel: (styles) => ({
-                                ...styles,
-                                padding: "0",
-                              }),
-                            }}
-                            name="intEmploymentTypeList"
+                            ]}
+                          />
+                        </Col>
+                        <Col md={12} sm={24}>
+                          <PSelect
                             options={
-                              values?.intEmploymentTypeList &&
-                              values?.intEmploymentTypeList?.filter(
-                                (itm) => itm.label === "All"
-                              ).length > 0
-                                ? [{ value: 0, label: "All" }]
-                                : values?.intEmploymentTypeList?.length > 0
-                                ? [...employmentTypeDDL]
-                                : [...employmentTypeDDL] || []
+                              [{ value: 0, label: "None" }, ...leaveTypeDDL] ||
+                              []
                             }
-                            value={values?.intEmploymentTypeList}
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intEmploymentTypeList",
-                                valueOption
-                              );
-                              const temp = { ...values };
-                              // isPolicyExist(values);
+                            name="inPreviousLveTypeEnd"
+                            label="Previous Leave Type End"
+                            placeholder="Previous Leave Type End"
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                inPreviousLveTypeEnd: op,
+                              });
+                              console.log(form.getFieldsValue());
+                            }}
+                            rules={[
+                              {
+                                required: false,
+                                message: "Leave Type is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Form.Item shouldUpdate noStyle>
+                          {() => {
+                            const { isDependOnServiceLength, intLeaveType } =
+                              form.getFieldsValue();
+
+                            // const empType = employeeType?.label;
+
+                            return (
+                              <>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    type="number"
+                                    min={0}
+                                    name="intAllocatedLveInDay"
+                                    label="Allocated Leave in Day"
+                                    placeholder="Allocated Leave in Day"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message:
+                                          " Allocated Leave in Day is required",
+                                      },
+                                      {
+                                        message:
+                                          "Allocated Leave in Day must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                    disabled={
+                                      isDependOnServiceLength ||
+                                      intLeaveType?.label ===
+                                        "Earn Leave/Annual Leave" ||
+                                      intLeaveType?.label ===
+                                        "Compensatory Leave"
+                                    }
+                                  />
+                                </Col>
+                              </>
+                            );
+                          }}
+                        </Form.Item>
+                        <Col md={12} sm={24}>
+                          <PInput
+                            type="number"
+                            name="intMaxLveDaySelf"
+                            label="Max Leave Available from Self"
+                            placeholder="Max Leave Available from Self"
+                            rules={[
+                              {
+                                required: true,
+                                message:
+                                  " Max Leave Available from Self is required",
+                              },
+                              {
+                                message:
+                                  " Max Leave Available must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Col md={12} sm={24}>
+                          <PInput
+                            type="number"
+                            name="intMaxLveApplicationSelfInMonth"
+                            label="Max Leave Application In Month"
+                            placeholder="Max Leave Application In Month"
+                            rules={[
+                              {
+                                required: true,
+                                message:
+                                  " Max Leave Application In Month is required",
+                              },
+                              {
+                                message:
+                                  " Max Leave Application must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Col md={12} sm={24}>
+                          <PInput
+                            type="number"
+                            name="intMaxLveApplicationSelfInYear"
+                            label="Max Leave Application In Year"
+                            placeholder="Max Leave Application In Year"
+                            rules={[
+                              {
+                                required: true,
+                                message:
+                                  " Max Leave Application In Year is required",
+                              },
+                              {
+                                message:
+                                  "Max Leave Application must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
+                              },
+                            ]}
+                          />
+                        </Col>
+                      </>
+                      {/* employee */}
+                      <>
+                        <div
+                          className="col-12 mt-3"
+                          style={{ marginLeft: "-0.8em" }}
+                        >
+                          <h2>Employee Configuration</h2>
+                        </div>
+                        <div
+                          className="col-12"
+                          style={{ marginBottom: "12px" }}
+                        ></div>
+                      </>
+                      <>
+                        <Col md={12} sm={24}>
+                          <PSelect
+                            mode="multiple"
+                            allowClear
+                            options={[...employmentTypeDDL] || []}
+                            name="intEmploymentTypeList"
+                            label=" Employment Type"
+                            placeholder="  Employment Type"
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                intEmploymentTypeList: op,
+                              });
+                              const temp = form.getFieldsValue();
 
                               isPolicyExist(
                                 {
                                   ...temp,
-                                  intEmploymentTypeList: valueOption,
+                                  intEmploymentTypeList: op,
+                                },
+                                allPolicies,
+                                setExistingPolicies
+                              );
+
+                              // value && getWorkplace();
+                            }}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Employment Type is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Col md={12} sm={24}>
+                          <PSelect
+                            mode="multiple"
+                            allowClear
+                            options={[...hrPositionDDL] || []}
+                            name="hrPositionListDTO"
+                            label="HR Position"
+                            placeholder="HR Position"
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                hrPositionListDTO: op,
+                              });
+                              const temp = form.getFieldsValue();
+                              isPolicyExist(
+                                {
+                                  ...temp,
+                                  hrPositionListDTO: op,
                                 },
                                 allPolicies,
                                 setExistingPolicies
                               );
                             }}
-                            isMulti
-                            errors={errors}
-                            touched={touched}
+                            // rules={[
+                            //   {
+                            //     required: true,
+                            //     message: "  HR Position is required",
+                            //   },
+                            // ]}
                           />
-                        </div>
-                      </div>
-                      {/* Gender */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>Gender</label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            placeholder=" "
-                            isClearable={false}
-                            classes="input-sm"
-                            styles={{
-                              ...customStyles,
-                              control: (provided, state) => ({
-                                ...provided,
-                                minHeight: "auto",
-                                height:
-                                  values?.intGender?.length > 1
-                                    ? "auto"
-                                    : "30px",
-                                borderRadius: "4px",
-                                boxShadow: `${success500}!important`,
-                                ":hover": {
-                                  borderColor: `${gray600}!important`,
-                                },
-                                ":focus": {
-                                  borderColor: `${gray600}!important`,
-                                },
-                              }),
-                              valueContainer: (provided, state) => ({
-                                ...provided,
-                                height:
-                                  values?.intGender?.length > 1
-                                    ? "auto"
-                                    : "30px",
-                                padding: "0 6px",
-                              }),
-                              multiValue: (styles) => {
-                                return {
-                                  ...styles,
-                                  position: "relative",
-                                  top: "-1px",
-                                };
-                              },
-                              multiValueLabel: (styles) => ({
-                                ...styles,
-                                padding: "0",
-                              }),
-                            }}
-                            name="intGender"
+                        </Col>
+                        <Col md={12} sm={24}>
+                          <PSelect
+                            mode="multiple"
+                            allowClear
                             options={[
                               { value: 1, label: "Male" },
                               { value: 2, label: "Female" },
                             ]}
-                            value={values?.intGender}
-                            onChange={(valueOption) => {
-                              setFieldValue("intGender", valueOption);
-                              const temp = { ...values };
-                              isPolicyExist(
-                                {
-                                  ...temp,
-                                  intGender: valueOption,
-                                },
-                                allPolicies,
-                                setExistingPolicies
-                              );
-                            }}
-                            isMulti
-                            errors={errors}
-                            touched={touched}
-                          />{" "}
-                        </div>
-                      </div>
-                      {/* hr position */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          HR Position
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            placeholder=" "
-                            isClearable={false}
-                            classes="input-sm"
-                            styles={{
-                              ...customStyles,
-                              control: (provided, state) => ({
-                                ...provided,
-                                minHeight: "auto",
-                                height:
-                                  values?.hrPositionListDTO?.length > 1
-                                    ? "auto"
-                                    : "30px",
-                                borderRadius: "4px",
-                                boxShadow: `${success500}!important`,
-                                ":hover": {
-                                  borderColor: `${gray600}!important`,
-                                },
-                                ":focus": {
-                                  borderColor: `${gray600}!important`,
-                                },
-                              }),
-                              valueContainer: (provided, state) => ({
-                                ...provided,
-                                height:
-                                  values?.hrPositionListDTO?.length > 1
-                                    ? "auto"
-                                    : "30px",
-                                padding: "0 6px",
-                              }),
-                              multiValue: (styles) => {
-                                return {
-                                  ...styles,
-                                  position: "relative",
-                                  top: "-1px",
-                                };
-                              },
-                              multiValueLabel: (styles) => ({
-                                ...styles,
-                                padding: "0",
-                              }),
-                            }}
                             name="intGender"
-                            options={hrPositionDDL || []}
-                            value={values?.hrPositionListDTO}
-                            onChange={(valueOption) => {
-                              setFieldValue("hrPositionListDTO", valueOption);
-                              const temp = { ...values };
+                            label="Gender"
+                            placeholder="Gender"
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                intGender: op,
+                              });
+                              const temp = form.getFieldsValue();
                               isPolicyExist(
                                 {
                                   ...temp,
-                                  hrPositionListDTO: valueOption,
+                                  intGender: op,
                                 },
                                 allPolicies,
                                 setExistingPolicies
                               );
                             }}
-                            isMulti
-                            errors={errors}
-                            touched={touched}
-                          />{" "}
-                        </div>
-                      </div>
-                      {/* Year */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>Year</label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            name="intYear"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Gender is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                        {/* <Col md={12} sm={24}>
+                          <PInput
+                            type="number"
+                            name="intMaxLveDaySelf"
+                            label="Max Leave Available from Self"
+                            placeholder="Max Leave Available from Self"
+                            rules={[
+                              {
+                                required: true,
+                                message:
+                                  " Max Leave Available from Self is required",
+                              },
+                            ]}
+                          />
+                        </Col> */}
+                        <Col md={12} sm={24}>
+                          <PSelect
                             options={yearDDLAction()}
-                            value={values?.intYear}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue("intYear", valueOption);
-                              const temp = { ...values };
+                            name="intYear"
+                            label="Year"
+                            placeholder="Year"
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                intYear: op,
+                              });
+
+                              const temp = form.getFieldsValue();
                               isPolicyExist(
                                 {
                                   ...temp,
-                                  intYear: valueOption,
+                                  intYear: op,
                                 },
                                 allPolicies,
                                 setExistingPolicies
                               );
                             }}
-                            menuPosition="fixed"
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Year is required",
+                              },
+                            ]}
                           />
-                        </div>
-                      </div>
-                      {/* Allocated Leave in Day  */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Allocated Leave in Day
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intAllocatedLveInDay}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intAllocatedLveInDay",
-                                e.target.value
-                              );
-                            }}
-                            disabled={
-                              values?.isDependOnServiceLength ||
-                              values?.intLeaveType?.label ===
-                                "Earn Leave/Annual Leave" ||
-                              values?.intLeaveType?.label ===
-                                "Compensatory Leave"
-                            }
-                            name="intAllocatedLveInDay"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
+                          {/* <PInput
+                            type="date"
+                            picker={"year"}
+                            name="intYear"
+                            label="Year"
+                            placeholder="Year"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Year is required",
+                              },
+                            ]}
+                          /> */}
+                        </Col>
 
-                      {/*Active From Joining day In Day  */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Active From Joining day In Day
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            step="any"
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intActiveFromJoiningdayInDay}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intActiveFromJoiningdayInDay",
-                                e.target.value
-                              );
-                            }}
+                        <Col md={12} sm={24}>
+                          <PInput
+                            type="number"
                             name="intActiveFromJoiningdayInDay"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
+                            label="Active From Joining day In Day"
+                            placeholder="Active From Joining day In Day"
+                            rules={[
+                              {
+                                required: true,
+                                message:
+                                  "Active From Joining day In Day is required",
+                              },
+                              {
+                                message:
+                                  "Active From Joining day In Day must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
+                              },
+                            ]}
                           />
-                        </div>
-                      </div>
-                      {/*Active From Confirmation In Day */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Active From Confirmation In Day
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            step="any"
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intActiveFromConfirmationInDay}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intActiveFromConfirmationInDay",
-                                e.target.value
-                              );
-                            }}
+                        </Col>
+                        <Col md={12} sm={24}>
+                          <PInput
+                            type="number"
                             name="intActiveFromConfirmationInDay"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
+                            label="Active From Confirmation In Day"
+                            placeholder="Active From Confirmation In Day"
+                            rules={[
+                              {
+                                required: true,
+                                message:
+                                  "Active From Confirmation In Day is required",
+                              },
+                              {
+                                message:
+                                  "Active From Confirmation In Day must be positive",
+                                pattern: new RegExp(
+                                  /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                ),
+                              },
+                            ]}
                           />
-                        </div>
-                      </div>
+                        </Col>
 
-                      {/* service length */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Depends on Service Length"
-                          checked={values?.isDependOnServiceLength}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setFieldValue("intAllocatedLveInDay", "");
-                            } else {
-                              setFieldValue("intStartServiceLengthInYear", "");
-                              setFieldValue("intEndServiceLengthInYear", "");
-                              setFieldValue("intLveInDay", "");
-                              setTableData([]);
-                            }
-                            setFieldValue(
-                              "isDependOnServiceLength",
-                              e.target.checked
+                        <Form.Item shouldUpdate noStyle>
+                          {() => {
+                            const {
+                              intLeaveType,
+                              isDependOnServiceLength,
+                              intLveInDay,
+                              intEndServiceLengthInYear,
+                              intStartServiceLengthInYear,
+                            } = form.getFieldsValue();
+
+                            // const empType = employeeType?.label;
+
+                            return (
+                              <>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Depends on Service Length"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isDependOnServiceLength"
+                                    disabled={
+                                      intLeaveType?.label ===
+                                        "Earn Leave/Annual Leave" ||
+                                      intLeaveType?.label ===
+                                        "Compensatory Leave"
+                                    }
+                                    onChange={(e) => {
+                                      setTableData([]);
+                                      if (e.target.checked) {
+                                        form.setFieldsValue({
+                                          intAllocatedLveInDay: undefined,
+                                        });
+                                      } else {
+                                        form.setFieldsValue({
+                                          intLveInDay: undefined,
+                                          intEndServiceLengthInYear: undefined,
+                                          intStartServiceLengthInYear:
+                                            undefined,
+                                        });
+                                      }
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PSelect
+                                    options={[
+                                      { value: 0, label: "0" },
+                                      { value: 1, label: "1" },
+                                      { value: 2, label: "2" },
+                                      { value: 3, label: "3" },
+                                      { value: 4, label: "4" },
+                                      { value: 5, label: "5" },
+                                      { value: 6, label: "6" },
+                                      { value: 7, label: "7" },
+                                      { value: 8, label: "8" },
+                                      { value: 9, label: "9" },
+                                      { value: 10, label: "10" },
+                                      { value: 11, label: "11" },
+                                      { value: 12, label: "12" },
+                                      { value: 13, label: "13" },
+                                      { value: 14, label: "14" },
+                                      { value: 15, label: "15" },
+                                      { value: 16, label: "16" },
+                                      { value: 17, label: "17" },
+                                      { value: 18, label: "18" },
+                                      { value: 19, label: "19" },
+                                      { value: 20, label: "20" },
+                                    ]}
+                                    name="intStartServiceLengthInYear"
+                                    label=" Starting Service Length In Years"
+                                    disabled={!isDependOnServiceLength}
+                                    placeholder="Starting Service Length In Years"
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        intStartServiceLengthInYear: op,
+                                      });
+                                      console.log(form.getFieldsValue());
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PSelect
+                                    options={[
+                                      { value: 100, label: "Above" },
+                                      { value: 1, label: "1" },
+                                      { value: 2, label: "2" },
+                                      { value: 3, label: "3" },
+                                      { value: 4, label: "4" },
+                                      { value: 5, label: "5" },
+                                      { value: 6, label: "6" },
+                                      { value: 7, label: "7" },
+                                      { value: 8, label: "8" },
+                                      { value: 9, label: "9" },
+                                      { value: 10, label: "10" },
+                                      { value: 11, label: "11" },
+                                      { value: 12, label: "12" },
+                                      { value: 13, label: "13" },
+                                      { value: 14, label: "14" },
+                                      { value: 15, label: "15" },
+                                      { value: 16, label: "16" },
+                                      { value: 17, label: "17" },
+                                      { value: 18, label: "18" },
+                                      { value: 19, label: "19" },
+                                      { value: 20, label: "20" },
+                                    ]}
+                                    name="intEndServiceLengthInYear"
+                                    label="End Service Length in Years"
+                                    disabled={!isDependOnServiceLength}
+                                    placeholder="End Service Length in Years"
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        intEndServiceLengthInYear: op,
+                                      });
+                                      console.log(form.getFieldsValue());
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={10} sm={22}>
+                                  <PInput
+                                    disabled={!isDependOnServiceLength}
+                                    type="number"
+                                    name="intLveInDay"
+                                    label="Leave Days"
+                                    placeholder="Leave Days"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message: "Leave Days must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col span={2} className="mt-1">
+                                  <button
+                                    type="button"
+                                    className="mt-4  btn add-ddl-btn "
+                                    style={{
+                                      margin: "0.4em 0 0 0.7em",
+                                      padding: "0.2em",
+                                    }}
+                                    onClick={() => {
+                                      if (
+                                        intEndServiceLengthInYear === "" ||
+                                        intLveInDay === "" ||
+                                        intStartServiceLengthInYear === ""
+                                      ) {
+                                        return toast.warn(
+                                          "Please fill up the fields"
+                                        );
+                                      }
+                                      setTableData((prev) => [
+                                        ...prev,
+                                        {
+                                          intStartServiceLengthInYear:
+                                            intStartServiceLengthInYear,
+                                          intEndServiceLengthInYear:
+                                            intEndServiceLengthInYear,
+                                          intLveInDay: intLveInDay,
+                                        },
+                                      ]);
+                                      form.setFieldsValue({
+                                        intLveInDay: undefined,
+                                        intEndServiceLengthInYear: undefined,
+                                        intStartServiceLengthInYear: undefined,
+                                      });
+                                    }}
+                                  >
+                                    <AddOutlined sx={{ fontSize: "16px" }} />
+                                  </button>
+                                </Col>
+                              </>
                             );
                           }}
-                          disabled={
-                            values?.intLeaveType?.label ===
-                              "Earn Leave/Annual Leave" ||
-                            values?.intLeaveType?.label === "Compensatory Leave"
-                          }
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* Starting Service Length In Year */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Starting Service Length In Years
-                        </label>
-                        <div style={{ width: "80px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            name="intStartServiceLengthInYear"
-                            options={[
-                              { value: 0, label: "0" },
-                              { value: 1, label: "1" },
-                              { value: 2, label: "2" },
-                              { value: 3, label: "3" },
-                              { value: 4, label: "4" },
-                              { value: 5, label: "5" },
-                              { value: 6, label: "6" },
-                              { value: 7, label: "7" },
-                              { value: 8, label: "8" },
-                              { value: 9, label: "9" },
-                              { value: 10, label: "10" },
-                              { value: 11, label: "11" },
-                              { value: 12, label: "12" },
-                              { value: 13, label: "13" },
-                              { value: 14, label: "14" },
-                              { value: 15, label: "15" },
-                              { value: 16, label: "16" },
-                              { value: 17, label: "17" },
-                              { value: 18, label: "18" },
-                              { value: 19, label: "19" },
-                              { value: 20, label: "20" },
-                            ]}
-                            menuPosition="fixed"
-                            value={values?.intStartServiceLengthInYear}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intStartServiceLengthInYear",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            isDisabled={!values?.isDependOnServiceLength}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/*End Service Length in Years*/}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          End Service Length in Years
-                        </label>
-                        <div style={{ width: "120px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            isDisabled={!values?.isDependOnServiceLength}
-                            name="intEndServiceLengthInYear"
-                            options={[
-                              { value: 100, label: "Above(100)" },
-                              { value: 1, label: "1" },
-                              { value: 2, label: "2" },
-                              { value: 3, label: "3" },
-                              { value: 4, label: "4" },
-                              { value: 5, label: "5" },
-                              { value: 6, label: "6" },
-                              { value: 7, label: "7" },
-                              { value: 8, label: "8" },
-                              { value: 9, label: "9" },
-                              { value: 10, label: "10" },
-                              { value: 11, label: "11" },
-                              { value: 12, label: "12" },
-                              { value: 13, label: "13" },
-                              { value: 14, label: "14" },
-                              { value: 15, label: "15" },
-                              { value: 16, label: "16" },
-                              { value: 17, label: "17" },
-                              { value: 18, label: "18" },
-                              { value: 19, label: "19" },
-                              { value: 20, label: "20" },
-                            ]}
-                            menuPosition="fixed"
-                            value={values?.intEndServiceLengthInYear}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intEndServiceLengthInYear",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/*Leave in Days */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Leave in Days
-                        </label>
-                        <div
-                          style={{
-                            width: "80px",
-                            marginLeft: "0.5em",
-                            padding: "0",
-                          }}
-                        >
-                          <DefaultInput
-                            // label="Days"
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intLveInDay}
-                            onChange={(e) => {
-                              setFieldValue("intLveInDay", e.target.value);
-                            }}
-                            name="intLveInDay"
-                            type="number"
-                            step="any"
-                            min={0}
-                            disabled={!values?.isDependOnServiceLength}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                        <>
-                          <button
-                            type="button"
-                            className="btn add-ddl-btn "
-                            style={{
-                              margin: "0.4em 0 0 0.7em",
-                              padding: "0.2em",
-                            }}
-                            onClick={() => {
-                              if (
-                                values?.intEndServiceLengthInYear === "" ||
-                                values?.intLveInDay === "" ||
-                                values?.intStartServiceLengthInYear === ""
-                              ) {
-                                return toast.warn("Please fill up the fields");
-                              }
-                              setTableData((prev) => [
-                                ...prev,
-                                {
-                                  intStartServiceLengthInYear:
-                                    values?.intStartServiceLengthInYear,
-                                  intEndServiceLengthInYear:
-                                    values?.intEndServiceLengthInYear,
-                                  intLveInDay: values?.intLveInDay,
-                                },
-                              ]);
-                              setFieldValue("intStartServiceLengthInYear", "");
-                              setFieldValue("intEndServiceLengthInYear", "");
-                              setFieldValue("intLveInDay", "");
-                            }}
-                          >
-                            <AddOutlined sx={{ fontSize: "16px" }} />
-                          </button>
-                        </>
-                      </div>
-                      {tableData?.length > 0 && (
-                        <div
-                          className="table-card-body pt-3 w-25"
-                          style={{ marginLeft: "-1em" }}
-                        >
-                          <div
-                            className=" table-card-styled tableOne"
-                            style={{ padding: "0px 12px" }}
-                          >
-                            <table className="table align-middle">
-                              <thead style={{ color: "#212529" }}>
-                                <tr>
-                                  <th>
-                                    <div className="d-flex align-items-center">
-                                      Service Duration
-                                    </div>
-                                  </th>
-                                  <th>
-                                    <div className="d-flex align-items-center">
-                                      Leave in Days
-                                    </div>
-                                  </th>
-                                  <th>
-                                    <div className="d-flex align-items-center justify-content-end">
-                                      Action
-                                    </div>
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {tableData?.length > 0 && (
-                                  <>
-                                    {tableData.map(
-                                      (item: any, index: number) => {
-                                        return (
-                                          <tr key={index}>
-                                            <td>
-                                              {item?.intStartServiceLengthInYear
-                                                ?.label ===
-                                              item?.intEndServiceLengthInYear
-                                                ?.label
-                                                ? `${item?.intEndServiceLengthInYear?.label}
-                                              "years"`
-                                                : item
+                        </Form.Item>
+                        <Col md={12} sm={24}>
+                          {tableData?.length > 0 && (
+                            <div
+                              className="table-card-body pt-3 "
+                              style={{ marginLeft: "-1em" }}
+                            >
+                              <div
+                                className=" table-card-styled tableOne"
+                                style={{ padding: "0px 12px" }}
+                              >
+                                <table className="table align-middle">
+                                  <thead style={{ color: "#212529" }}>
+                                    <tr>
+                                      <th>
+                                        <div className="d-flex align-items-center">
+                                          Service Duration
+                                        </div>
+                                      </th>
+                                      <th>
+                                        <div className="d-flex align-items-center">
+                                          Leave in Days
+                                        </div>
+                                      </th>
+                                      <th>
+                                        <div className="d-flex align-items-center justify-content-end">
+                                          Action
+                                        </div>
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {tableData?.length > 0 && (
+                                      <>
+                                        {tableData.map(
+                                          (item: any, index: number) => {
+                                            return (
+                                              <tr key={index}>
+                                                <td>
+                                                  {item
                                                     ?.intStartServiceLengthInYear
-                                                    ?.label +
-                                                  " - " +
-                                                  `${item?.intEndServiceLengthInYear?.label}` +
-                                                  " years "}
-                                            </td>
-                                            <td>{item?.intLveInDay}</td>
-                                            <td>
-                                              <div className="d-flex align-items-end justify-content-end">
-                                                <IconButton
-                                                  type="button"
-                                                  style={{
-                                                    height: "25px",
-                                                    width: "25px",
-                                                  }}
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    remover(index);
-                                                    // deleteRow(item?.intWorkplaceId);
-                                                  }}
-                                                >
-                                                  <Tooltip title="Delete">
-                                                    <DeleteOutline
-                                                      sx={{
+                                                    ?.label ===
+                                                  item
+                                                    ?.intEndServiceLengthInYear
+                                                    ?.label
+                                                    ? `${item?.intEndServiceLengthInYear?.label}
+                                              years`
+                                                    : item
+                                                        ?.intStartServiceLengthInYear
+                                                        ?.label +
+                                                      " - " +
+                                                      `${item?.intEndServiceLengthInYear?.label}` +
+                                                      " years "}
+                                                </td>
+                                                <td>{item?.intLveInDay}</td>
+                                                <td>
+                                                  <div className="d-flex align-items-end justify-content-end">
+                                                    <IconButton
+                                                      type="button"
+                                                      style={{
                                                         height: "25px",
                                                         width: "25px",
                                                       }}
-                                                    />
-                                                  </Tooltip>
-                                                </IconButton>
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        );
-                                      }
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        remover(index);
+                                                        // deleteRow(item?.intWorkplaceId);
+                                                      }}
+                                                    >
+                                                      <Tooltip title="Delete">
+                                                        <DeleteOutline
+                                                          sx={{
+                                                            height: "25px",
+                                                            width: "25px",
+                                                          }}
+                                                        />
+                                                      </Tooltip>
+                                                    </IconButton>
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            );
+                                          }
+                                        )}
+                                      </>
                                     )}
-                                  </>
-                                )}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                  {/* -------------------------- */}
-                  {/* compensatory */}
-                  {values?.intLeaveType?.label === "Compensatory Leave" ? (
-                    <>
-                      <div className="col-12">
-                        <h2>Compensatory Leave Configuration</h2>
-                      </div>
-                      <div
-                        className="col-12"
-                        style={{ marginBottom: "12px" }}
-                      ></div>
-
-                      <div className="col-lg-12">
-                        {/* Compensatory Type */}
-                        <div className="d-flex align-items-center small-checkbox">
-                          <FormikCheckBox
-                            styleObj={{
-                              color: gray900,
-                              checkedColor: greenColor,
-                            }}
-                            label="Compensatory Leave Expire"
-                            checked={values?.isConpensatoryLveExpire}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "isConpensatoryLveExpire",
-                                e.target.checked
-                              );
-                            }}
-                            labelFontSize="12px"
-                          />
-                        </div>
-                        {/* Conpensatory Leave Expire In Days */}
-                        <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
-                            Conpensatory Leave Expire In Days
-                          </label>
-                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                            <DefaultInput
-                              min={0}
-                              placeholder=" "
-                              inputClasses="w-80"
-                              classes="input-sm"
-                              value={values?.intConpensatoryLveExpireInDays}
-                              onChange={(e) => {
-                                setFieldValue(
-                                  "intConpensatoryLveExpireInDays",
-                                  e.target.value
-                                );
-                              }}
-                              name="intConpensatoryLveExpireInDays"
-                              type="number"
-                              // className="form-control"
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  ) : null}
-                  {/* ----------------------------------------- */}
-                  {/* Earn Leave*/}
-                  {values?.intLeaveType?.label === "Earn Leave/Annual Leave" ? (
-                    <>
-                      <div className="col-12">
-                        <h2>Earn Leave Configuration</h2>
-                      </div>
-                      <div
-                        className="col-12"
-                        style={{ marginBottom: "12px" }}
-                      ></div>
-
-                      <div className="col-lg-12">
-                        {/* Earn Type */}
-                        <div className="d-flex align-items-center small-checkbox">
-                          <FormikCheckBox
-                            styleObj={{
-                              color: gray900,
-                              checkedColor: greenColor,
-                            }}
-                            label="Earn Leave Include Offday"
-                            checked={values?.isEarnLveIncludeOffday}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "isEarnLveIncludeOffday",
-                                e.target.checked
-                              );
-                            }}
-                            labelFontSize="12px"
-                          />
-                        </div>
-                        <div className="d-flex align-items-center small-checkbox">
-                          <FormikCheckBox
-                            styleObj={{
-                              color: gray900,
-                              checkedColor: greenColor,
-                            }}
-                            label="Earn Leave Include Holiday"
-                            checked={values?.isEarnLveIncludeHoliday}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "isEarnLveIncludeHoliday",
-                                e.target.checked
-                              );
-                            }}
-                            labelFontSize="12px"
-                          />
-                        </div>
-                        {/* Day For One Earn Leave*/}
-                        <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
-                            Day For One Earn Leave
-                          </label>
-                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                            <DefaultInput
-                              // label="Days"
-                              step="any"
-                              placeholder=" "
-                              inputClasses="w-80"
-                              classes="input-sm"
-                              value={values?.intDayForOneEarnLve}
-                              onChange={(e) => {
-                                setFieldValue(
-                                  "intDayForOneEarnLve",
-                                  e.target.value
-                                );
-                              }}
-                              name="intDayForOneEarnLve"
-                              type="number"
-                              // className="form-control"
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                        </div>
-                        {/*  Earn Leave*/}
-                        <div className="input-field-main d-flex ">
-                          <label style={{ marginTop: "0.7em" }}>
-                            Earn Leave In Day
-                          </label>
-                          <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                            <DefaultInput
-                              // label="Days"
-                              step="any"
-                              placeholder=" "
-                              inputClasses="w-80"
-                              classes="input-sm"
-                              value={values?.intEarnLveInDay}
-                              onChange={(e) => {
-                                setFieldValue(
-                                  "intEarnLveInDay",
-                                  e.target.value
-                                );
-                              }}
-                              name="intEarnLveInDay"
-                              type="number"
-                              // className="form-control"
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  ) : null}
-
-                  {/* --------------------------- */}
-                  {/* half Leave*/}
-
-                  <>
-                    <div className="col-12">
-                      <h2>Half Leave Configuration</h2>
-                    </div>
-                    <div
-                      className="col-12"
-                      style={{ marginBottom: "12px" }}
-                    ></div>
-
-                    <div className="col-lg-12">
-                      {/* Half leave */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Half Day Leave"
-                          checked={values?.isHalfDayLeave}
-                          onChange={(e) => {
-                            setFieldValue("isHalfDayLeave", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* Half day Max In Month*/}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Half day Max In Month
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intHalfdayMaxInMonth}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intHalfdayMaxInMonth",
-                                e.target.value
-                              );
-                            }}
-                            name="intHalfdayMaxInMonth"
-                            type="number"
-                            disabled={!values?.isHalfDayLeave}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/*  Half day Max In Year*/}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Half day Max In Year
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            // label="Days"
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intHalfdayMaxInYear}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intHalfdayMaxInYear",
-                                e.target.value
-                              );
-                            }}
-                            name="intHalfdayMaxInYear"
-                            type="number"
-                            disabled={!values?.isHalfDayLeave}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/*  Half day Previous Leave End*/}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Half day Previous Leave End
-                        </label>
-                        <div style={{ width: "170px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            name="intHalfdayPreviousLveTypeEnd"
-                            options={[
-                              { value: 0, label: "None" },
-                              ...leaveTypeDDL,
-                            ]}
-                            menuPosition="fixed"
-                            value={values?.intHalfdayPreviousLveTypeEnd}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intHalfdayPreviousLveTypeEnd",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            isDisabled={!values?.isHalfDayLeave}
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                  {/* --------------------------- */}
-                  {/* Carry Leave*/}
-
-                  <>
-                    <div className="col-12">
-                      <h2>Carry Forward Configuration</h2>
-                    </div>
-                    <div
-                      className="col-12"
-                      style={{ marginBottom: "12px" }}
-                    ></div>
-
-                    <div className="col-lg-12">
-                      {/* Carry leave */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Carry Forward"
-                          checked={values?.isCarryForward}
-                          onChange={(e) => {
-                            setFieldValue("isCarryForward", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* Carry Forward Max In Day*/}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Carry Forward Max In Day
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            step="any"
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intCarryForwardMaxInDay}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intCarryForwardMaxInDay",
-                                e.target.value
-                              );
-                            }}
-                            name="intCarryForwardMaxInDay"
-                            type="number"
-                            disabled={!values?.isCarryForward}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/*  Carry Forward Expiry Day*/}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Carry Forward Expiry Day{" "}
-                        </label>
-                        <div style={{ width: "170px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={1}
-                            max={31}
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intCarryForwarExpiryDay}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intCarryForwarExpiryDay",
-                                e.target.value
-                              );
-                            }}
-                            name="intCarryForwarExpiryDay"
-                            type="number"
-                            disabled={!values?.isCarryForward}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/*  CF Month*/}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Carry Forward Month
-                        </label>
-                        <div style={{ width: "120px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            name="intCarryForwardMonth"
-                            options={monthDDL}
-                            menuPosition="fixed"
-                            value={values?.intCarryForwardMonth}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intCarryForwardMonth",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            styles={customStyles}
-                            errors={errors}
-                            isDisabled={!values?.isCarryForward}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/*  CF Expire Month*/}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Carry Forwar Expiry Month
-                        </label>
-                        <div style={{ width: "120px", marginLeft: "0.5em" }}>
-                          <FormikSelect
-                            name="intCarryForwarExpiryMonth"
-                            options={monthDDL}
-                            menuPosition="fixed"
-                            value={values?.intCarryForwarExpiryMonth}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue(
-                                "intCarryForwarExpiryMonth",
-                                valueOption
-                              );
-                            }}
-                            placeholder=" "
-                            isDisabled={!values?.isCarryForward}
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                  {/* --------------------------- */}
-                  {/* encash Leave*/}
-
-                  <>
-                    <div className="col-12">
-                      <h2>Encashable Configuration</h2>
-                    </div>
-                    <div
-                      className="col-12"
-                      style={{ marginBottom: "12px" }}
-                    ></div>
-
-                    <div className="col-lg-12">
-                      {/* encash leave */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Encashable"
-                          checked={values?.isEncashable}
-                          onChange={(e) => {
-                            setFieldValue("isEncashable", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* Max Encashable */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Max Encashable
-                        </label>
-                        <div style={{ width: "140px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.IntMaxEncashableLveInDay}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "IntMaxEncashableLveInDay",
-                                e.target.value
-                              );
-                            }}
-                            disabled={!values?.isEncashable}
-                            name="IntMaxEncashableLveInDay"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                      {/*  Encashable Month*/}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Encashable Month{" "}
-                        </label>
-                        <div style={{ width: "170px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            classes="input-sm"
-                            value={values?.intEncashableMonth}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intEncashableMonth",
-                                e.target.value
-                              );
-                            }}
-                            name="intEncashableMonth"
-                            type="number"
-                            disabled={!values?.isEncashable}
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                  {/* --------------------------- */}
-                  {/* others */}
-
-                  <>
-                    <div className="col-12">
-                      <h2>Other Configurations</h2>
-                    </div>
-                    <div
-                      className="col-12"
-                      style={{ marginBottom: "12px" }}
-                    ></div>
-
-                    <div className="col-lg-12">
-                      {/* Month Wise Expired  */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Month Wise Expired"
-                          checked={values?.isMonthWiseExpired}
-                          onChange={(e) => {
-                            setFieldValue(
-                              "isMonthWiseExpired",
-                              e.target.checked
-                            );
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* How Much Month */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          How Much Month
-                        </label>
-                        <div style={{ width: "120px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.howMuchMonth}
-                            onChange={(e) => {
-                              setFieldValue("howMuchMonth", e.target.value);
-                            }}
-                            disabled={!values?.isMonthWiseExpired}
-                            name="howMuchMonth"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                          {/* <FormikSelect
-                            name="howMuchMonth"
-                            options={monthDDL}
-                            menuPosition="fixed"
-                            value={values?.howMuchMonth}
-                            label=""
-                            onChange={(valueOption) => {
-                              setFieldValue("howMuchMonth", valueOption);
-                            }}
-                            placeholder=" "
-                            isDisabled={!values?.isMonthWiseExpired}
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                          /> */}
-                        </div>
-                      </div>
-
-                      {/* isAdvanceLeave  */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Advance Leave"
-                          checked={values?.isAdvanceLeave}
-                          onChange={(e) => {
-                            setFieldValue("isAdvanceLeave", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* intMaxForAdvLveInYear */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>
-                          Max Advance Leave in Year
-                        </label>
-                        <div style={{ width: "120px", marginLeft: "0.5em" }}>
-                          <DefaultInput
-                            min={0}
-                            placeholder=" "
-                            inputClasses="w-80"
-                            classes="input-sm"
-                            value={values?.intMaxForAdvLveInYear}
-                            onChange={(e) => {
-                              setFieldValue(
-                                "intMaxForAdvLveInYear",
-                                e.target.value
-                              );
-                            }}
-                            disabled={!values?.isAdvanceLeave}
-                            name="intMaxForAdvLveInYear"
-                            type="number"
-                            // className="form-control"
-                            errors={errors}
-                            touched={touched}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Minute Based */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Minute Based"
-                          checked={values?.isMinuteBased}
-                          onChange={(e) => {
-                            setFieldValue("isMinuteBased", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* offday */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Include Offday"
-                          checked={values?.isIncludeOffday}
-                          onChange={(e) => {
-                            setFieldValue("isIncludeOffday", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* holiday */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Include Holiday"
-                          checked={values?.isIncludeHoliday}
-                          onChange={(e) => {
-                            setFieldValue("isIncludeHoliday", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* selfservice */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Balance Show For SelfService"
-                          checked={values?.isLveBalanceShowForSelfService}
-                          onChange={(e) => {
-                            setFieldValue(
-                              "isLveBalanceShowForSelfService",
-                              e.target.checked
-                            );
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* selfservice */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Leave Apply For SelfService"
-                          checked={values?.isLveBalanceApplyForSelfService}
-                          onChange={(e) => {
-                            setFieldValue(
-                              "isLveBalanceApplyForSelfService",
-                              e.target.checked
-                            );
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* Applicable Before And After Offday */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Applicable Before And After Offday"
-                          checked={values?.isApplicableBeforeAndAfterOffday}
-                          onChange={(e) => {
-                            setFieldValue(
-                              "isApplicableBeforeAndAfterOffday",
-                              e.target.checked
-                            );
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* Applicable Before And After Holiday */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Applicable Before And After Holiday"
-                          checked={values?.isApplicableBeforeAndAfterHoliday}
-                          onChange={(e) => {
-                            setFieldValue(
-                              "isApplicableBeforeAndAfterHoliday",
-                              e.target.checked
-                            );
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* auto renew */}
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Auto Renewable"
-                          checked={values?.isAutoRenewable}
-                          onChange={(e) => {
-                            setFieldValue("isAutoRenewable", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                        />
-                      </div>
-                      {/* Prodata  */}
-
-                      <div className="d-flex align-items-center small-checkbox">
-                        <FormikCheckBox
-                          styleObj={{
-                            color: gray900,
-                            checkedColor: greenColor,
-                          }}
-                          label="Prodata Basis"
-                          checked={values?.isProdataBasis}
-                          onChange={(e) => {
-                            setFieldValue("isProdataBasis", e.target.checked);
-                          }}
-                          labelFontSize="12px"
-                          disabled={
-                            values?.intLeaveType?.label ===
-                              "Earn Leave/Annual Leave" ||
-                            values?.intLeaveType?.label === "Compensatory Leave"
-                          }
-                        />
-                      </div>
-                      {/* Generate  */}
-
-                      <div className="d-flex align-items-center small-checkbox">
-                        <div className="highlight">
-                          <FormikCheckBox
-                            styleObj={{
-                              color: gray900,
-                              checkedColor: greenColor,
-                            }}
-                            label="Do you want assign right now?"
-                            checked={values?.isGenerate}
-                            onChange={(e) => {
-                              setFieldValue("isGenerate", e.target.checked);
-                            }}
-                            labelFontSize="12px"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                  {/* Orgnization */}
-
-                  <>
-                    <div className="col-12">
-                      <h2>Organization Configurations</h2>
-                    </div>
-                    <div
-                      className="col-12"
-                      style={{ marginBottom: "12px" }}
-                    ></div>
-
-                    <div className="col-lg-12">
-                      {/*Business Unit  */}
-                      {values?.intWorkplaceList?.length ===
-                      workplaceDDL?.length ? (
-                        <>
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Business Unit
-                            </label>
-                            <div
-                              style={{ width: "280px", marginLeft: "0.5em" }}
-                            >
-                              <FormikSelect
-                                placeholder=" "
-                                classes="input-sm"
-                                styles={{
-                                  ...customStyles,
-                                  control: (provided, state) => ({
-                                    ...provided,
-                                    minHeight: "auto",
-                                    height:
-                                      values?.bu?.length > 1 ? "auto" : "30px",
-                                    borderRadius: "4px",
-                                    boxShadow: `${success500}!important`,
-                                    ":hover": {
-                                      borderColor: `${gray600}!important`,
-                                    },
-                                    ":focus": {
-                                      borderColor: `${gray600}!important`,
-                                    },
-                                  }),
-                                  valueContainer: (provided, state) => ({
-                                    ...provided,
-                                    height:
-                                      values?.bu?.length > 1 ? "auto" : "30px",
-                                    padding: "0 6px",
-                                  }),
-                                  multiValue: (styles) => {
-                                    return {
-                                      ...styles,
-                                      position: "relative",
-                                      top: "-1px",
-                                    };
-                                  },
-                                  multiValueLabel: (styles) => ({
-                                    ...styles,
-                                    padding: "0",
-                                  }),
-                                }}
-                                name="bu"
-                                options={buDDL || []}
-                                value={values?.bu}
-                                onChange={(valueOption) => {
-                                  setFieldValue("bu", valueOption);
-                                  getPeopleDeskAllDDL(
-                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${
-                                      valueOption[valueOption?.length - 1]
-                                        ?.value
-                                    }&intId=${employeeId}`,
-                                    "intWorkplaceGroupId",
-                                    "strWorkplaceGroup",
-                                    setWorkplaceGroupDDL
-                                  );
-                                }}
-                                isMulti
-                                errors={errors}
-                                touched={touched}
-                              />
+                                  </tbody>
+                                </table>
+                              </div>
                             </div>
-                          </div>
-                          {/*wg  */}
-                          <div className="input-field-main d-flex ">
-                            <label style={{ marginTop: "0.7em" }}>
-                              Workplace Group
-                            </label>
-                            <div
-                              style={{ width: "280px", marginLeft: "0.5em" }}
-                            >
-                              <FormikSelect
-                                placeholder=" "
-                                classes="input-sm"
-                                styles={{
-                                  ...customStyles,
-                                  control: (provided, state) => ({
-                                    ...provided,
-                                    minHeight: "auto",
-                                    height:
-                                      values?.wg?.length > 1 ? "auto" : "30px",
-                                    borderRadius: "4px",
-                                    boxShadow: `${success500}!important`,
-                                    ":hover": {
-                                      borderColor: `${gray600}!important`,
-                                    },
-                                    ":focus": {
-                                      borderColor: `${gray600}!important`,
-                                    },
-                                  }),
-                                  valueContainer: (provided, state) => ({
-                                    ...provided,
-                                    height:
-                                      values?.wg?.length > 1 ? "auto" : "30px",
-                                    padding: "0 6px",
-                                  }),
-                                  multiValue: (styles) => {
-                                    return {
-                                      ...styles,
-                                      position: "relative",
-                                      top: "-1px",
-                                    };
-                                  },
-                                  multiValueLabel: (styles) => ({
-                                    ...styles,
-                                    padding: "0",
-                                  }),
-                                }}
-                                name="wg"
-                                options={workplaceGroupDDL || []}
-                                value={values?.wg}
-                                onChange={(valueOption) => {
-                                  const wddl = [...workplaceDDL];
-                                  // console.log(values?.bu, "bu");
-                                  setFieldValue("wg", valueOption);
-                                  console.log(valueOption[0]);
-                                  getYearlyPolicyPopUpDDL(
-                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${
-                                      values?.bu[0]?.value
-                                    }&WorkplaceGroupId=${
-                                      valueOption[valueOption?.length - 1]
-                                        ?.value
-                                    }&intId=${employeeId}`,
-                                    "intWorkplaceId",
-                                    "strWorkplace",
-                                    setWorkplaceDDL,
-                                    (res) => {
-                                      if (valueOption?.length === 1) {
-                                        const newState1 = res.filter((obj1) =>
-                                          values?.intWorkplaceList?.some(
-                                            (obj2) => obj2.value === obj1.value
-                                          )
-                                        );
-                                        setFieldValue(
-                                          "intWorkplaceList",
-                                          newState1
-                                        );
-                                      } else {
-                                        setWorkplaceDDL(() => {
-                                          const ar = [...wddl, ...res];
-                                          console.log({ wddl });
-                                          const uniqueObjectMap = new Map();
-                                          ar.forEach((obj) => {
-                                            uniqueObjectMap.set(obj.value, obj);
-                                          });
-                                          console.log(
-                                            Array.from(uniqueObjectMap.values())
-                                          );
-                                          const newState1 = Array.from(
-                                            uniqueObjectMap.values()
-                                          ).filter((obj1) =>
-                                            values?.intWorkplaceList?.some(
-                                              (obj2) =>
-                                                obj2.value === obj1.value
-                                            )
-                                          );
-                                          setFieldValue(
-                                            "intWorkplaceList",
-                                            newState1
-                                          );
-                                          return Array.from(
-                                            uniqueObjectMap.values()
-                                          );
-                                        });
-                                      }
+                          )}
+                        </Col>
+                      </>
+                      {/* Compensatory Leave Configuration  */}
+
+                      <>
+                        <Form.Item shouldUpdate noStyle>
+                          {() => {
+                            const { intLeaveType, isConpensatoryLveExpire } =
+                              form.getFieldsValue();
+
+                            // const empType = employeeType?.label;
+
+                            return intLeaveType?.label ===
+                              "Compensatory Leave" ? (
+                              <>
+                                <>
+                                  <div
+                                    className="col-12 mt-3"
+                                    style={{ marginLeft: "-0.8em" }}
+                                  >
+                                    <h2>Compensatory Leave Configuration</h2>
+                                  </div>
+                                  <div
+                                    className="col-12"
+                                    style={{ marginBottom: "12px" }}
+                                  ></div>
+                                </>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Compensatory Leave Expire"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isConpensatoryLveExpire"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isConpensatoryLveExpire}
+                                    type="number"
+                                    name="intConpensatoryLveExpireInDays"
+                                    label="Conpensatory Leave Expire In Days"
+                                    placeholder="Conpensatory Leave Expire In Days"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message:
+                                          "Conpensatory Leave Expire In Days is required",
+                                      },
+                                      {
+                                        message:
+                                          "Conpensatory Leave Expire In Days must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                              </>
+                            ) : null;
+                          }}
+                        </Form.Item>
+                      </>
+                      {/* Earn Leave Configuration  */}
+
+                      <>
+                        <Form.Item shouldUpdate noStyle>
+                          {() => {
+                            const { intLeaveType, isConpensatoryLveExpire } =
+                              form.getFieldsValue();
+
+                            // const empType = employeeType?.label;
+
+                            return intLeaveType?.label ===
+                              "Earn Leave/Annual Leave" ? (
+                              <>
+                                <>
+                                  <div
+                                    className="col-12 mt-3"
+                                    style={{ marginLeft: "-0.8em" }}
+                                  >
+                                    <h2>Earn Leave Configuration</h2>
+                                  </div>
+                                  <div
+                                    className="col-12"
+                                    style={{ marginBottom: "12px" }}
+                                  ></div>
+                                </>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Earn Leave Include Offday"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isEarnLveIncludeOffday"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Earn Leave Include Holiday"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isEarnLveIncludeHoliday"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    type="number"
+                                    name="intDayForOneEarnLve"
+                                    label="Day For One Earn Leave"
+                                    placeholder="Day For One Earn Leave"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Day For One Earn Leave must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    type="number"
+                                    name="intEarnLveInDay"
+                                    label=" Earn Leave In Day"
+                                    placeholder=" Earn Leave In Day"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Earn Leave In Day must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                              </>
+                            ) : null;
+                          }}
+                        </Form.Item>
+                      </>
+
+                      {/* Half Leave Configuration  */}
+                      <>
+                        <div
+                          className="col-12 mt-3"
+                          style={{ marginLeft: "-0.8em" }}
+                        >
+                          <h2>Half Leave Configuration</h2>
+                        </div>
+                        <div
+                          className="col-12"
+                          style={{ marginBottom: "12px" }}
+                        ></div>
+                      </>
+                      <>
+                        <Form.Item shouldUpdate noStyle>
+                          {() => {
+                            const {
+                              intLeaveType,
+                              isHalfDayLeave,
+                              intLveInDay,
+                              intEndServiceLengthInYear,
+                              intStartServiceLengthInYear,
+                            } = form.getFieldsValue();
+
+                            // const empType = employeeType?.label;
+
+                            return (
+                              <>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Half Day Leave"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isHalfDayLeave"
+                                    onChange={() => {
+                                      form.setFieldsValue({
+                                        intHalfdayMaxInMonth: undefined,
+                                        intHalfdayMaxInYear: undefined,
+                                        intHalfdayMaxInMonth: undefined,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isHalfDayLeave}
+                                    type="number"
+                                    name="intHalfdayMaxInMonth"
+                                    label="Half day Max In Month"
+                                    placeholder="Half day Max In Month"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Half day Max In Month must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isHalfDayLeave}
+                                    type="number"
+                                    name="intHalfdayMaxInYear"
+                                    label=" Half day Max In Year"
+                                    placeholder=" Half day Max In Year"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Half day Max In Year must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PSelect
+                                    options={[
+                                      { value: 0, label: "None" },
+                                      ...leaveTypeDDL,
+                                    ]}
+                                    name="intHalfdayPreviousLveTypeEnd"
+                                    label="Half day Previous Leave End"
+                                    placeholder="Half day Previous Leave End"
+                                    disabled={!isHalfDayLeave}
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        intHalfdayPreviousLveTypeEnd: op,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                              </>
+                            );
+                          }}
+                        </Form.Item>
+                      </>
+                      {/* Carry Forward Configuration  */}
+                      <>
+                        <div
+                          className="col-12 mt-3"
+                          style={{ marginLeft: "-0.8em" }}
+                        >
+                          <h2>Carry Forward Configuration</h2>
+                        </div>
+                        <div
+                          className="col-12"
+                          style={{ marginBottom: "12px" }}
+                        ></div>
+                      </>
+                      <>
+                        <Form.Item shouldUpdate noStyle>
+                          {() => {
+                            const { intLeaveType, isCarryForward } =
+                              form.getFieldsValue();
+
+                            // const empType = employeeType?.label;
+
+                            return (
+                              <>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Carry Forward"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isCarryForward"
+                                    onChange={() => {
+                                      form.setFieldsValue({
+                                        intCarryForwardMaxInDay: undefined,
+                                        intCarryForwarExpiryDay: undefined,
+                                        intCarryForwardMonth: undefined,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isCarryForward}
+                                    type="number"
+                                    name="intCarryForwardMaxInDay"
+                                    label="Carry Forward Max In Day"
+                                    placeholder="Carry Forward Max In Day"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Carry Forward Max In Day must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isCarryForward}
+                                    type="number"
+                                    name="intCarryForwarExpiryDay"
+                                    label=" Carry Forward Expiry Day"
+                                    placeholder=" Carry Forward Expiry Day"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        required: false,
+                                        message:
+                                          "Carry Forward Expiry Day must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isCarryForward}
+                                    type="number"
+                                    name="intCarryForwardMonth"
+                                    label="Carry Forward Month"
+                                    placeholder="Carry Forward Month"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        required: false,
+                                        message:
+                                          "Carry Forward Month must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                              </>
+                            );
+                          }}
+                        </Form.Item>
+                      </>
+                      {/*Encashable  Configuration  */}
+                      <>
+                        <div
+                          className="col-12 mt-3"
+                          style={{ marginLeft: "-0.8em" }}
+                        >
+                          <h2>Encashable Configuration</h2>
+                        </div>
+                        <div
+                          className="col-12"
+                          style={{ marginBottom: "12px" }}
+                        ></div>
+                      </>
+                      <>
+                        <Form.Item shouldUpdate noStyle>
+                          {() => {
+                            const { isEncashable } = form.getFieldsValue();
+
+                            // const empType = employeeType?.label;
+
+                            return (
+                              <>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Encashable"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isEncashable"
+                                    onChange={() => {
+                                      form.setFieldsValue({
+                                        IntMaxEncashableLveInDay: undefined,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isEncashable}
+                                    type="number"
+                                    name="IntMaxEncashableLveInDay"
+                                    label="Max Encashable"
+                                    placeholder="Max Encashable"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Max Encashable must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isEncashable}
+                                    type="number"
+                                    name="intEncashableMonth"
+                                    label=" Encashable Month"
+                                    placeholder=" Encashable Month"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Encashable Month must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                              </>
+                            );
+                          }}
+                        </Form.Item>
+                      </>
+                      {/*other  Configuration  */}
+                      <>
+                        <div
+                          className="col-12 mt-3"
+                          style={{ marginLeft: "-0.8em" }}
+                        >
+                          <h2>Other Configuration</h2>
+                        </div>
+                        <div
+                          className="col-12"
+                          style={{ marginBottom: "12px" }}
+                        ></div>
+                      </>
+                      <>
+                        <Form.Item shouldUpdate noStyle>
+                          {() => {
+                            const {
+                              isMonthWiseExpired,
+                              isAdvanceLeave,
+                              intLeaveType,
+                            } = form.getFieldsValue();
+
+                            // const empType = employeeType?.label;
+
+                            return (
+                              <>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Month Wise Expired"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isMonthWiseExpired"
+                                    onChange={() => {
+                                      form.setFieldsValue({
+                                        howMuchMonth: undefined,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isMonthWiseExpired}
+                                    type="number"
+                                    name="howMuchMonth"
+                                    label=" How Much Month"
+                                    placeholder=" How Much Month"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "How Much Month must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Max Advance Leave in Year"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isAdvanceLeave"
+                                    onChange={() => {
+                                      form.setFieldsValue({
+                                        intMaxForAdvLveInYear: undefined,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    disabled={!isAdvanceLeave}
+                                    type="number"
+                                    name="intMaxForAdvLveInYear"
+                                    label="Max Advance Leave in Year"
+                                    placeholder="Max Advance Leave in Year"
+                                    size="small"
+                                    rules={[
+                                      {
+                                        message:
+                                          "Max Advance Leave must be positive",
+                                        pattern: new RegExp(
+                                          /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                        ),
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Minute Based "
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isMinuteBased"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Include Offday"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isIncludeOffday"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Include Holiday"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isIncludeHoliday"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Balance Show For SelfService"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isLveBalanceShowForSelfService"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Leave Apply For SelfService"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isLveBalanceApplyForSelfService"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Applicable Before And After Offday"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isApplicableBeforeAndAfterOffday"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Applicable Before And After Holiday"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isApplicableBeforeAndAfterHoliday"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Auto Renewable"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isAutoRenewable"
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Prodata"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isProdataBasis"
+                                    disabled={
+                                      intLeaveType?.label ===
+                                        "Earn Leave/Annual Leave" ||
+                                      intLeaveType?.label ===
+                                        "Compensatory Leave"
                                     }
-                                  );
-                                }}
-                                isMulti
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                        </>
-                      ) : null}
-                      {/* workplace */}
-                      <div className="input-field-main d-flex ">
-                        <label style={{ marginTop: "0.7em" }}>Workplace</label>
-                        <div style={{ width: "280px", marginLeft: "0.5em" }}>
-                          <MultiCheckedSelect
-                            name="intWorkplaceList"
-                            label=""
-                            value={values?.intWorkplaceList}
-                            options={workplaceDDL}
-                            onChange={(value) => {
-                              setFieldValue("intWorkplaceList", value);
-                              const temp = { ...values };
-                              isPolicyExist(
-                                {
-                                  ...temp,
-                                  intWorkplaceList: value,
-                                },
-                                allPolicies,
-                                setExistingPolicies
-                              );
-                            }}
-                            onBlur={handleBlur}
-                            errors={errors}
-                            touched={touched}
-                            setFieldValue={setFieldValue}
-                            searchFieldPlaceholder=""
-                          />
+                                  />
+                                </Col>
+                                <Col md={12} sm={24}>
+                                  <PInput
+                                    label="Do you want assign right now?"
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isGenerate"
+                                  />
+                                </Col>
+                              </>
+                            );
+                          }}
+                        </Form.Item>
+                      </>
+
+                      {/* ORG */}
+                      <>
+                        <div
+                          className="col-12 mt-3"
+                          style={{ marginLeft: "-0.8em" }}
+                        >
+                          <h2>Organization Configuration</h2>
                         </div>
-                      </div>
-                    </div>
-                  </>
-                </div>
-              </Col>
-              {existingPolicies?.length > 0 ? (
-                <Col span={10}>
-                  <Alert
-                    icon={<InfoOutlinedIcon fontSize="inherit" />}
-                    severity="warning"
-                    style={{ width: "27rem", position: "sticky", top: "1px" }}
-                  >
-                    <div>
-                      <div className="mb-3">
-                        <h2>Exisitng Policies</h2>
-                      </div>
-                      {/* <Divider orientation="left">Small Size</Divider> */}
-                      <List
-                        size="small"
-                        style={{ width: "20rem" }}
-                        // header={<div>Header</div>}
-                        // footer={<div>Footer</div>}
-                        bordered
-                        dataSource={existingPolicies}
-                        renderItem={(item, index) => (
-                          <List.Item key={index} className="d-flex ">
-                            <p>{item?.strPolicyName}</p>
-                            <IconButton
-                              type="button"
+                        <div
+                          className="col-12"
+                          style={{ marginBottom: "12px" }}
+                        ></div>
+                      </>
+
+                      <Form.Item shouldUpdate noStyle>
+                        {() => {
+                          const { intWorkplaceList, wg, bu } =
+                            form.getFieldsValue();
+
+                          // const empType = employeeType?.label;
+
+                          return (
+                            <>
+                              {intWorkplaceList?.length ===
+                              workplaceDDL?.length ? (
+                                <>
+                                  <Col md={24}>
+                                    <PSelect
+                                      mode="multiple"
+                                      allowClear
+                                      options={[...buDDL] || []}
+                                      name="bu"
+                                      label="Business Unit"
+                                      placeholder="Business Unit"
+                                      onChange={(value, op) => {
+                                        form.setFieldsValue({
+                                          bu: op,
+                                        });
+                                        getPeopleDeskAllDDL(
+                                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${
+                                            op[op?.length - 1]?.value
+                                          }&intId=${employeeId}`,
+                                          "intWorkplaceGroupId",
+                                          "strWorkplaceGroup",
+                                          setWorkplaceGroupDDL
+                                        );
+                                      }}
+                                      // rules={[
+                                      //   {
+                                      //     required: true,
+                                      //     message: "Business Unit is required",
+                                      //   },
+                                      // ]}
+                                    />
+                                  </Col>
+                                  <Col md={24}>
+                                    <PSelect
+                                      mode="multiple"
+                                      allowClear
+                                      options={[...workplaceGroupDDL] || []}
+                                      name="wg"
+                                      label="Workplace Group"
+                                      placeholder="Workplace Group"
+                                      onChange={(value, op) => {
+                                        const wddl = [...workplaceDDL];
+                                        form.setFieldsValue({
+                                          wg: op,
+                                        });
+                                        getYearlyPolicyPopUpDDL(
+                                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${
+                                            bu[0]?.value
+                                          }&WorkplaceGroupId=${
+                                            op[op?.length - 1]?.value
+                                          }&intId=${employeeId}`,
+                                          "intWorkplaceId",
+                                          "strWorkplace",
+                                          setWorkplaceDDL,
+                                          (res) => {
+                                            if (op?.length === 1) {
+                                              const newState1 = res.filter(
+                                                (obj1) =>
+                                                  intWorkplaceList?.some(
+                                                    (obj2) =>
+                                                      obj2.value === obj1.value
+                                                  )
+                                              );
+                                              form.setFieldsValue({
+                                                intWorkplaceList: newState1,
+                                              });
+                                            } else {
+                                              setWorkplaceDDL(() => {
+                                                const ar = [...wddl, ...res];
+                                                const uniqueObjectMap =
+                                                  new Map();
+                                                ar.forEach((obj) => {
+                                                  uniqueObjectMap.set(
+                                                    obj.value,
+                                                    obj
+                                                  );
+                                                });
+
+                                                const newState1 = Array.from(
+                                                  uniqueObjectMap.values()
+                                                ).filter((obj1) =>
+                                                  intWorkplaceList?.some(
+                                                    (obj2) =>
+                                                      obj2.value === obj1.value
+                                                  )
+                                                );
+                                                form.setFieldsValue({
+                                                  intWorkplaceList: newState1,
+                                                });
+                                                return Array.from(
+                                                  uniqueObjectMap.values()
+                                                );
+                                              });
+                                            }
+                                          }
+                                        );
+                                      }}
+                                      // rules={[
+                                      //   {
+                                      //     required: true,
+                                      //     message:
+                                      //       "Workplace Group is required",
+                                      //   },
+                                      // ]}
+                                    />
+                                  </Col>
+                                </>
+                              ) : null}
+                              <Col md={24} sm={24}>
+                                <PSelect
+                                  mode="multiple"
+                                  allowClear
+                                  maxTagCount={5}
+                                  options={
+                                    workplaceDDL?.length > 0
+                                      ? [
+                                          { value: 0, label: "All" },
+                                          ...workplaceDDL,
+                                        ]
+                                      : [{ value: 0, label: "All" }]
+                                  }
+                                  name="intWorkplaceList"
+                                  label="Workplace"
+                                  placeholder="Workplace"
+                                  onChange={(value, op) => {
+                                    const temp = form.getFieldsValue();
+                                    const flag = op?.find(
+                                      (item) => item?.label === "All"
+                                    );
+                                    if (flag) {
+                                      form.setFieldsValue({
+                                        intWorkplaceList: workplaceDDL?.filter(
+                                          (itm) => itm.value !== 0
+                                        ),
+                                      });
+
+                                      isPolicyExist(
+                                        {
+                                          ...temp,
+                                          intWorkplaceList:
+                                            workplaceDDL?.filter(
+                                              (itm) => itm.label !== "All"
+                                            ),
+                                        },
+                                        allPolicies,
+                                        setExistingPolicies
+                                      );
+                                    } else {
+                                      form.setFieldsValue({
+                                        intWorkplaceList: op,
+                                      });
+                                      isPolicyExist(
+                                        {
+                                          ...temp,
+                                          intWorkplaceList: op,
+                                        },
+                                        allPolicies,
+                                        setExistingPolicies
+                                      );
+                                    }
+
+                                    // value && getWorkplace();
+                                  }}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Employment Type is required",
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            </>
+                          );
+                        }}
+                      </Form.Item>
+                    </Row>
+                  </Col>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { intWorkplaceList, wg, bu } =
+                        form.getFieldsValue();
+
+                      // const empType = employeeType?.label;
+
+                      return (
+                        <Col span={1}>
+                          <div
+                            className="d-flex"
+                            style={{
+                              borderLeft: `3px solid ${success500}`,
+                              minHeight:
+                                tableData?.length > 0 ? "250vh" : "240vh",
+                            }}
+                          ></div>
+                        </Col>
+                      );
+                    }}
+                  </Form.Item>
+                  <Form.Item shouldUpdate noStyle>
+                    {() => {
+                      const { intWorkplaceList } = form.getFieldsValue();
+
+                      // const empType = employeeType?.label;
+
+                      return (
+                        <Col span={8}>
+                          {existingPolicies?.length > 0 ? (
+                            <Alert
+                              icon={<InfoOutlinedIcon fontSize="inherit" />}
+                              severity="warning"
                               style={{
-                                height: "25px",
-                                width: "25px",
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removerPolicy(
-                                  index,
-                                  existingPolicies,
-                                  setExistingPolicies,
-                                  values
-                                );
-                                // deleteRow(item?.intWorkplaceId);
+                                width: "27rem",
+                                position: "sticky",
+                                top: "1px",
                               }}
                             >
-                              <Tooltip title="Delete">
-                                <DeleteOutline
-                                  sx={{
-                                    height: "20px",
-                                    width: "20px",
-                                  }}
+                              <div>
+                                <div className="mb-3">
+                                  <h2>Exisitng Policies</h2>
+                                </div>
+                                {/* <Divider orientation="left">Small Size</Divider> */}
+                                <List
+                                  size="small"
+                                  style={{ width: "20rem" }}
+                                  // header={<div>Header</div>}
+                                  // footer={<div>Footer</div>}
+                                  bordered
+                                  dataSource={existingPolicies}
+                                  renderItem={(item, index) => (
+                                    <List.Item key={index} className="d-flex ">
+                                      <p>{item?.strPolicyName}</p>
+                                      <IconButton
+                                        type="button"
+                                        style={{
+                                          height: "25px",
+                                          width: "25px",
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+
+                                          const filterArr =
+                                            existingPolicies.filter(
+                                              (itm, idx) => idx !== index
+                                            );
+                                          setExistingPolicies(filterArr);
+                                          const temp = intWorkplaceList?.filter(
+                                            (item) =>
+                                              item?.value !==
+                                              existingPolicies[index]
+                                                ?.intWorkplace
+                                          );
+                                          form.setFieldsValue({
+                                            intWorkplaceList: temp,
+                                          });
+                                          // deleteRow(item?.intWorkplaceId);
+                                        }}
+                                      >
+                                        <Tooltip title="Delete">
+                                          <DeleteOutline
+                                            sx={{
+                                              height: "20px",
+                                              width: "20px",
+                                            }}
+                                          />
+                                        </Tooltip>
+                                      </IconButton>
+                                    </List.Item>
+                                  )}
                                 />
-                              </Tooltip>
-                            </IconButton>
-                          </List.Item>
-                        )}
-                      />
-                    </div>
-                  </Alert>
-                </Col>
-              ) : null}
-            </Row>
-          </div>
+                              </div>
+                            </Alert>
+                          ) : null}
+                        </Col>
+                      );
+                    }}
+                  </Form.Item>
+                </Row>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-    </form>
+      </PForm>
+    </>
   );
 };
 

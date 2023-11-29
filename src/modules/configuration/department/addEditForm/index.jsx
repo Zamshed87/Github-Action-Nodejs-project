@@ -91,7 +91,7 @@ export default function AddEditFormComponent({
 
   const saveHandler = (values, cb) => {
     let payload = {
-      strDepartment: values?.department,
+      strDepartment: values?.department || "",
       strDepartmentCode: values?.code,
       isActive: values?.isActive,
       isDeleted: true,
@@ -243,7 +243,7 @@ export default function AddEditFormComponent({
                               touched={touched}
                             />
                           </div>
-                          <div className="col-12 px-0">
+                          {/* <div className="col-12 px-0">
                             <label>Department Section</label>
                             <FormikSelect
                               name="sectionDepartment"
@@ -257,7 +257,7 @@ export default function AddEditFormComponent({
                               touched={touched}
                               menuPosition="fixed"
                             />
-                          </div>
+                          </div> */}
                           <div className="col-12 px-0">
                             <label>Business Unit</label>
                             <FormikSelect

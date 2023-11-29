@@ -46,12 +46,12 @@ export const createEditEmpAction = async (
   let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
 
   let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
-
+  console.log("Come Here");
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
-      strEmployeeCode: values?.employeeCode,
-      strCardNumber: values?.employeeCode,
+      strEmployeeCode: String(values?.employeeCode),
+      strCardNumber: String(values?.employeeCode),
       strEmployeeName: values?.fullName,
       intGenderId: values?.gender?.value,
       strGender: values?.gender?.label,
@@ -59,6 +59,7 @@ export const createEditEmpAction = async (
       strReligion: values?.religion?.label,
       strMaritalStatus: "",
       strBloodGroup: "",
+      IntSectionId: values?.section?.value || 0,
       intDepartmentId: values?.department?.value,
       intDesignationId: values?.designation?.value,
       dteDateOfBirth: values?.dateofBirth,
@@ -95,10 +96,10 @@ export const createEditEmpAction = async (
       strCalenderName: "",
       intHrpositionId: values?.hrPosition?.value || 0,
       strHrpostionName: values?.hrPosition?.label || "",
-      strPersonalMail: "",
-      strOfficeMail: "",
-      strPersonalMobile: "",
-      strOfficeMobile: "",
+      strPersonalMail: values?.email || "",
+      strOfficeMail: values?.workMail || "",
+      strPersonalMobile: values?.phone || "",
+      strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
       calendarAssignViewModel: null,
     };
@@ -140,7 +141,7 @@ export const createEditEmpAction = async (
           intUrlId: intUrlId,
           intCountryId: 0,
           intOfficeMail: values?.email,
-          strContactNo: values?.phone,
+          strContactNo: values?.phone || "",
           dteCreatedAt: todayDate(),
         },
       };
@@ -150,10 +151,12 @@ export const createEditEmpAction = async (
       `/Employee/CreateNUpdateEmployeeBasicInfo`,
       payload
     );
+    console.log("Come Here 2");
     setLoading(false);
-    cb && cb();
+    res?.data?.status === 200 && cb && cb();
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
+    console.log("Come Here 3");
     setLoading(false);
     toast.warn(error?.response?.data?.message, { toastId: 1 });
   }
@@ -333,10 +336,10 @@ export const getPeopleDeskWithoutAllDDL = async (
 export const userExistValidation = async (payload, setter, cb) => {
   try {
     let res = await axios.post(`/Auth/UserIsExistsRemoteValidation`, payload);
-    cb && cb();
-    // toast.success(res?.data?.message);
+    cb && cb(res?.data);
     setter(res?.data);
   } catch (error) {
+    cb && cb(error?.response);
     setter(error?.response?.data);
   }
 };

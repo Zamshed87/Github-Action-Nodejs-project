@@ -1,5 +1,5 @@
 .peopleDeskModalWrapper {
-  $modalPadding_x: 12px;
+  $modalPadding_x: 20px;
   $modalHeaderPadding_y: 12px;
   $modalRadias: 8px;
   .ant-modal {
@@ -29,7 +29,9 @@
         $bodyPadding_y: 10px;
         padding-inline: $modalPadding_x;
         padding-top: $bodyPadding_y;
-        padding-bottom: $estFooterHeight + $bodyPadding_y;
+        margin-bottom: $estFooterHeight + $bodyPadding_y;
+        max-height: 520px;
+        overflow-y: auto;
         // Modal Footer Style
         .ant-modal-footer.modal_footer_button_list {
           padding-inline: $modalPadding_x;

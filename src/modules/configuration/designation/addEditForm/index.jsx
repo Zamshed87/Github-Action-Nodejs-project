@@ -149,15 +149,11 @@ export default function AddEditFormComponent({
     });
 
   const saveHandler = (values, cb) => {
-    if (values?.businessUnit?.length <= 0) {
-      return toast.warn("Busisness Unit is required!!!");
-    }
     // if (values?.userRole?.length <= 0) {
     //   return toast.warn("User role is required!!!");
     // }
 
     let userRoleListId = [];
-    let busUnitListId = values?.businessUnit?.map((itm) => itm?.value);
 
     if (values?.userRole?.length > 0) {
       userRoleListId = values?.userRole?.map((itm) => itm?.value);
@@ -173,13 +169,15 @@ export default function AddEditFormComponent({
       intPositionId: 0,
       isActive: values?.isActive,
       isDeleted: values?.isDeleted,
-      intBusinessUnitIdList: busUnitListId,
+      intBusinessUnitIdList: buId,
       intUserRoleIdList: userRoleListId,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       dteUpdatedAt: todayDate(),
       intPayscaleGradeId: values?.payscaleGrade?.value,
       intWorkplaceId: wId,
+      intRankingId: 0,
+      intBusinessUnitId: buId,
     };
 
     const callback = () => {
@@ -187,7 +185,7 @@ export default function AddEditFormComponent({
       onHide();
 
       // For landing page data
-      getAllDesignation(orgId, buId, setRowDto, setAllData,'', wId);
+      getAllDesignation(orgId, buId, setRowDto, setAllData, "", wId);
     };
 
     if (singleData?.intDesignationId) {
@@ -264,7 +262,7 @@ export default function AddEditFormComponent({
                         name="designation"
                         type="text"
                         className="form-control"
-                        placeholder=""
+                        placeholder="Designation"
                         onChange={(e) => {
                           setFieldValue("designation", e.target.value);
                         }}
@@ -284,7 +282,7 @@ export default function AddEditFormComponent({
                         styles={customStyles}
                         errors={errors}
                         touched={touched}
-                        placeholder=" "
+                        placeholder="Select Payscale Grade"
                         isDisabled={false}
                         menuPosition="fixed"
                       />
@@ -297,7 +295,7 @@ export default function AddEditFormComponent({
                         name="code"
                         type="text"
                         className="form-control"
-                        placeholder=""
+                        placeholder="Code"
                         onChange={(e) => {
                           setFieldValue("code", e.target.value);
                         }}
@@ -305,7 +303,7 @@ export default function AddEditFormComponent({
                         touched={touched}
                       />
                     </div>
-                    <div className="col-6">
+                    {/* <div className="col-6">
                       <label>Business Unit</label>
                       <FormikSelect
                         placeholder=" "
@@ -370,11 +368,11 @@ export default function AddEditFormComponent({
                         touched={touched}
                         isMulti
                       />
-                    </div>
-                    <div className="col-6">
+                    </div> */}
+                    {/* <div className="col-6">
                       <label>User Role</label>
                       <FormikSelect
-                        placeholder=" "
+                        placeholder="Select User Role"
                         classes="input-sm"
                         styles={{
                           ...customStyles,
@@ -433,7 +431,7 @@ export default function AddEditFormComponent({
                         touched={touched}
                         isMulti
                       />
-                    </div>
+                    </div> */}
                     {singleData?.DesignationName && (
                       <div className="col-6">
                         <div className="input-main position-group-select mt-2">

@@ -310,6 +310,7 @@ export const getEditDDLs = ({
 export const submitHandler = ({
   values,
   getData,
+  // empBasic,
   resetForm,
   pages,
   setIsAddEditForm,
@@ -325,9 +326,10 @@ export const submitHandler = ({
   setLoading,
 }) => {
   const cb = () => {
-    getData({ current: 1, pageSize: pages?.pageSize }, "false");
-    resetForm(initData);
+    console.log('callback calling...')
+    resetForm();
     setIsAddEditForm(false);
+    getData({ current: 1, pageSize: pages?.pageSize }, "false");
     if (values?.empId === employeeId) {
       dispatch(updateUerAndEmpNameAction(values?.fullName));
     }

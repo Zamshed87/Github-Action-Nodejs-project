@@ -1,6 +1,5 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import AvatarComponent from "../../common/AvatarComponent";
 import { gray600 } from "../../utility/customColor";
 
 export const getPeopleDeskAllLanding = async (
@@ -55,18 +54,17 @@ export const getMidLevelDashboard = async (
   } catch (error) {}
 };
 
-export const getBirthAnniversary = async (setter, setLoading) =>{
-  try{
-    setLoading(true)
+export const getBirthAnniversary = async (setter, setLoading) => {
+  try {
+    setLoading && setLoading(true);
 
-    const res = await axios.get(`/SaasMasterData/BirthDayWorkAnniversary`)
-    setter(res?.data)
-    setLoading(false)
-
-  }catch(error){
-
-  }
-}
+    const res = await axios.get(`/SaasMasterData/BirthDayWorkAnniversary`);
+    if (res?.status === 200) {
+      setter(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {}
+};
 
 export const getTopLevelDashboard = async (employeeId, buId, setter) => {
   try {
@@ -283,14 +281,12 @@ export const getDashboardDeptSecEmpTypeWiseEmployee = async (
   }
 };
 
-
 export const workannivarsayList = (
   rowDto,
   filterData,
   setFilterData,
   setRowDto,
-  setLoading,
-  
+  setLoading
 ) => {
   return [
     {
@@ -298,7 +294,7 @@ export const workannivarsayList = (
       render: (text, record, index) => index + 1,
       className: "text-center",
     },
-    
+
     {
       title: () => <span style={{ color: gray600 }}>Description</span>,
       dataIndex: "birthDay",

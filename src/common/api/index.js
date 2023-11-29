@@ -343,20 +343,21 @@ export const PeopleDeskSaasDDL = async (
   setter,
   value,
   label,
-  id
+  id,
+  wId
 ) => {
   try {
     const res = await axios.get(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&WorkplaceGroupId=${wgId}&BusinessUnitId=${busId}&intId=${
         id || 0
-      }`
+      }&intWorkplaceId=${wId || 0}`
     );
     if (res?.data) {
       const newDDL = res?.data?.map((itm) => {
         return {
           ...itm,
-          value: itm[value],
-          label: itm[label],
+          value: value ? itm[value] : itm?.LeaveTypeId,
+          label: label ? itm[label] : itm?.LeaveType,
         };
       });
       setter(newDDL);
