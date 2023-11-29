@@ -50,6 +50,7 @@ export default function AddEditForm({
   const genderDDL = useApiRequest([]);
   const employmentTypeDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
   const workplaceGroup = useApiRequest([]);
   const workplaceDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
@@ -291,6 +292,28 @@ export default function AddEditForm({
     });
   };
 
+  // section wise ddl
+  const getEmployeeSection = () => {
+    const { department } = form.getFieldsValue(true);
+    empSectionDDL?.action({
+      urlKey: "SectionDDL",
+      method: "GET",
+      params: {
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        DepartmentId: department?.value || 0,
+        WorkplaceId: wId,
+      },
+      // onSuccess: (res) => {
+      //   console.log("res", res);
+      //   res.forEach((item, i) => {
+      //     res[i].label = item?.label;
+      //     res[i].value = item?.value;
+      //   });
+      // },
+    });
+  };
+
   const getEmployeDesignation = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
@@ -425,6 +448,7 @@ export default function AddEditForm({
       getEmployeDesignation();
       getEmployeeStatus();
       getEmployeePosition();
+      getEmployeeSection();
     }
   }, [orgId, buId, singleData, employeeId]);
 
@@ -697,13 +721,29 @@ export default function AddEditForm({
               options={empDepartmentDDL?.data || []}
               name="department"
               label="Department"
+              allowClear
               placeholder="Department"
               onChange={(value, op) => {
                 form.setFieldsValue({
                   department: op,
                 });
+                value && getEmployeeSection();
               }}
               rules={[{ required: true, message: "Department is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={empSectionDDL.data || []}
+              name="section"
+              label="Section"
+              placeholder="Section"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  section: op,
+                });
+              }}
+              rules={[{ required: true, message: "Section is required" }]}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -720,6 +760,7 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Designation is required" }]}
             />
           </Col>
+
           <Col md={12} sm={24}>
             <PSelect
               options={positionDDL?.data || []}

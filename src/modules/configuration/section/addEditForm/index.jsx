@@ -13,19 +13,19 @@ import FormikToggle from "./../../../../common/FormikToggle";
 import Loading from "./../../../../common/loading/Loading";
 import { blackColor80, greenColor } from "./../../../../utility/customColor";
 import { customStyles } from "./../../../../utility/newSelectCustomStyle";
-import { createDepartment, getAllEmpDepartment } from "./../helper";
+import { createSection, getAllEmpSection } from "../helper";
 
 const initData = {
   department: "",
-  code: "",
-  sectionDepartment: "",
+  section: "",
   businessUnit: "",
   isActive: true,
 };
 
 const validationSchema = Yup.object().shape({
-  department: Yup.string().required("Department is required"),
-  code: Yup.string().required("Code is required"),
+  section: Yup.string().required("section is required"),
+  department: Yup.object().required("department is required").nullable(),
+  businessUnit: Yup.object().required("businessUnit is required").nullable(),
 });
 
 export default function AddEditFormComponent({
@@ -54,7 +54,6 @@ export default function AddEditFormComponent({
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-  console.log("DEPT");
   useEffect(() => {
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
@@ -71,17 +70,16 @@ export default function AddEditFormComponent({
   }, [orgId, buId, employeeId, wgId]);
 
   useEffect(() => {
-    if (singleData?.strDepartment) {
+    if (singleData?.sectionId) {
       const newRowData = {
-        department: singleData?.strDepartment,
-        code: singleData?.strDepartmentCode,
-        sectionDepartment: {
-          value: singleData?.intParentDepId,
-          label: singleData?.strParentDepName,
+        section: singleData?.sectionName || "",
+        department: {
+          value: singleData?.departmentId || 0,
+          label: singleData?.departmentName || "",
         },
         businessUnit: {
-          value: singleData?.intBusinessUnitId,
-          label: singleData?.strBusinessUnit,
+          value: singleData?.businessUnitId,
+          label: singleData?.businessUnitName,
         },
         isActive: singleData?.isActive || false,
       };
@@ -91,64 +89,41 @@ export default function AddEditFormComponent({
 
   const saveHandler = (values, cb) => {
     let payload = {
-      strDepartment: values?.department || "",
-      strDepartmentCode: values?.code,
+      sectionId: singleData?.sectionId || 0,
+      sectionName: values?.section || "",
+      accountId: orgId,
+      businessUnitId: buId,
+      actionBy: employeeId,
+      workplaceId: wId,
+      departmentId: values?.department?.value || 0,
+      departmentName: values?.department?.label || "",
       isActive: values?.isActive,
-      isDeleted: true,
-      intParentDepId: values?.sectionDepartment?.value,
-      strParentDepName: values?.sectionDepartment?.label,
-      intBusinessUnitId: values?.businessUnit?.value || 0,
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      dteUpdatedAt: todayDate(),
-      intUpdatedBy: employeeId,
-      intWorkplaceId: wId,
     };
 
     const callback = () => {
       cb();
       onHide();
-
       // For landing page data
-      getAllEmpDepartment(orgId, buId, setRowDto, setAllData, setLoading, wId);
+      getAllEmpSection(orgId, buId, setRowDto, setAllData, setLoading, wId);
     };
-
-    if (singleData?.strDepartment) {
-      createDepartment(
-        {
-          ...payload,
-          actionTypeId: 2,
-          intDepartmentId: singleData?.intDepartmentId,
-        },
-        setLoading,
-        callback
-      );
-    } else {
-      createDepartment(
-        { ...payload, actionTypeId: 1, intDepartmentId: 0 },
-        setLoading,
-        callback
-      );
-    }
+    createSection(payload, setLoading, callback);
   };
-
+  console.log("modifySingleData", modifySingleData);
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={
-          singleData?.strDepartment
+          singleData?.sectionId
             ? modifySingleData
             : {
                 ...initData,
-                businessUnit: { value: 0, label: "All" },
               }
         }
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
-            if (singleData?.strDepartment) {
+            if (singleData?.sectionId) {
               resetForm(modifySingleData);
             } else {
               resetForm(initData);
@@ -188,7 +163,7 @@ export default function AddEditFormComponent({
                         <div>
                           <IconButton
                             onClick={() => {
-                              if (singleData?.strDepartment) {
+                              if (singleData?.sectionId) {
                                 resetForm(modifySingleData);
                               } else {
                                 resetForm(initData);
@@ -212,65 +187,42 @@ export default function AddEditFormComponent({
                       >
                         <div className="row mx-0">
                           <div className="col-12 px-0">
-                            <label>Department Name </label>
+                            <label>Section Name </label>
                             <FormikInput
                               classes="input-sm"
-                              value={values?.department}
-                              name="department"
+                              value={values?.section}
+                              name="section"
                               type="text"
                               className="form-control"
                               placeholder=""
                               onChange={(e) => {
-                                setFieldValue("department", e.target.value);
+                                setFieldValue("section", e.target.value);
                               }}
                               errors={errors}
                               touched={touched}
                             />
                           </div>
+
                           <div className="col-12 px-0">
-                            <label>Code</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.code}
-                              name="code"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("code", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          {/* <div className="col-12 px-0">
-                            <label>Department Section</label>
+                            <label>Department Name</label>
                             <FormikSelect
-                              name="sectionDepartment"
+                              name="department"
                               options={sectionDepartmentDDL || []}
-                              value={values?.sectionDepartment}
+                              value={values?.department}
                               onChange={(valueOption) => {
-                                setFieldValue("sectionDepartment", valueOption);
+                                setFieldValue("department", valueOption);
                               }}
                               styles={customStyles}
                               errors={errors}
                               touched={touched}
                               menuPosition="fixed"
                             />
-                          </div> */}
+                          </div>
                           <div className="col-12 px-0">
                             <label>Business Unit</label>
                             <FormikSelect
                               name="businessUnit"
-                              options={
-                                [
-                                  {
-                                    value: 0,
-                                    label: "All",
-                                  },
-                                  ...businessUnitDDL,
-                                ] || []
-                              }
+                              options={businessUnitDDL}
                               value={values?.businessUnit}
                               onChange={(valueOption) => {
                                 setFieldValue("businessUnit", valueOption);
@@ -281,7 +233,7 @@ export default function AddEditFormComponent({
                               menuPosition="fixed"
                             />
                           </div>
-                          {singleData?.strDepartment && (
+                          {singleData?.sectionId && (
                             <>
                               <div className="col-12 px-0">
                                 <div className="input-main position-group-select mt-2">
@@ -289,12 +241,11 @@ export default function AddEditFormComponent({
                                     className="lebel-bold"
                                     style={{ fontSize: "14px" }}
                                   >
-                                    Department Activation
+                                    Section Activation
                                   </label>
                                   <p>
                                     Activation toggle indicates to the
-                                    particular department status
-                                    (Active/Inactive)
+                                    particular section status (Active/Inactive)
                                   </p>
                                 </div>
                               </div>
