@@ -2541,6 +2541,10 @@ export const routingList = [
     component: CreateOvertimePolicy,
   },
   {
+    path: "/administration/payrollConfiguration/overtimePolicy/edit/:id",
+    component: CreateOvertimePolicy,
+  },
+  {
     path: "/administration/payrollConfiguration/payrollBasic/create",
     component: PayrollGrossWiseBasicForm,
   },

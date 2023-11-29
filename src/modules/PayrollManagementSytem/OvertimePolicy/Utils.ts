@@ -15,6 +15,30 @@ export const policyType = [
   },
 ];
 
+export const otDependsOn = [
+  { value: 1, label: "Basic" },
+  { value: 2, label: "Gross" },
+  { value: 3, label: "Fixed Amount" },
+];
+
+export const otCountFrom = [
+  { value: 1, label: "Assign Calendar" },
+  {
+    value: 2,
+    label: "OT Start Delay (Minutes)",
+  },
+];
+export const OTCountFrom = [
+  { value: 1, label: "At Actual" },
+  {
+    value: 2,
+    label: "Round Down",
+  },
+  {
+    value: 3,
+    label: "Round Up",
+  },
+];
 // Payload Generation for SaveNUpdateOverTimeConfig => Line 16 - 111
 type TOTPolicyGenerate = {
   values: any;
@@ -24,11 +48,12 @@ type TOTPolicyGenerate = {
 export const OTPolicyGenerate = ({
   commonData,
   values,
-  matchingData,
+  // matchingData,
 }: TOTPolicyGenerate) => {
   const { policyType, hrPosition, employmentType } = values;
 
   const policyInfo = {
+    intOtconfigId: values?.intOtconfigId || 0,
     intMaxOverTimeDaily: values?.maxOverTimeDaily || 0,
     intMaxOverTimeMonthly: values?.maxOverTimeMonthly || 0,
     intOtAmountShouldBe: values?.overtimeAmount,
@@ -80,7 +105,7 @@ function generateRows(
           ...policyInfo,
           intEmploymentTypeId: emp?.value,
           intHrPositionId: hr?.value,
-          intOtconfigId: 0,
+          // intOtconfigId: 0,
         });
       }
     }
@@ -91,7 +116,7 @@ function generateRows(
         ...policyInfo,
         intEmploymentTypeId: 0,
         intHrPositionId: hr?.value,
-        intOtconfigId: 0,
+        // intOtconfigId: 0,
       });
     }
   } else if (policyLabels.includes("Employment Type")) {
@@ -179,4 +204,74 @@ const getMatchingPolicy = (values: any, allData: any) => {
 
     resolve(matchingPolicy);
   });
+};
+
+// OT Policy Initial Data Generate by GetOverTimeConfigById
+export const initDataGenerate = (data: any) => {
+  const policyTypeInfo: any = [];
+
+  if (data?.intHrPositionId) {
+    policyTypeInfo.push({
+      value: 1,
+      label: "HR Position",
+    });
+  }
+  if (data?.intEmploymentTypeId) {
+    policyTypeInfo.push({
+      value: 2,
+      label: "Employment Type",
+    });
+  }
+  if (data?.numFromSalary && data?.numToSalary) {
+    policyTypeInfo.push({
+      value: 3,
+      label: "Salary Range",
+    });
+  }
+  const formData = {
+    policyType: policyTypeInfo,
+    policyName: data?.strPolicyName,
+    workplace: data?.intWorkplaceId && {
+      value: data?.intWorkplaceId,
+      label: data?.strWorkplaceName,
+    },
+    hrPosition: data?.intHrPositionId && [
+      {
+        value: data?.intHrPositionId,
+        label: data?.strHrPositionName,
+      },
+    ],
+    employmentType: data?.intEmploymentTypeId && [
+      {
+        value: data?.intEmploymentTypeId,
+        label: data?.employmentType,
+      },
+    ],
+    fromSalary: data?.numFromSalary,
+    toSalary: data?.numToSalary,
+    overtimeDependsOn: otDependsOn?.find(
+      (ot) => ot.value === data?.intOtdependOn
+    )?.value,
+    fixedAmount: data?.numFixedAmount,
+
+    overtimeCountFrom: data?.intOverTimeCountFrom ? 2 : 1,
+    otStartDelay: data?.intOverTimeCountFrom,
+
+    benefitHours: data?.isCalendarTimeHours ? 1 : 2,
+    fixedBenefitHours: data?.numDevidedFixedHours,
+    workingDays: data?.intDevidedWorkingDays,
+    benifitPercentageWorkingDays: data?.intOtbenefitsPercentWorkingDay,
+    benifitPercentageHoliDays: data?.intOtbenefitsPercentHoliday,
+    benifitPercentageOffDays: data?.intOtbenefitsPercentOffday,
+    maxOverTimeDaily: data?.intMaxOverTimeDaily,
+    maxOverTimeMonthly: data?.intMaxOverTimeMonthly,
+    overtimeCount: data?.intOtcalculationShouldBe,
+    overtimeAmount: OTCountFrom?.find(
+      (ot) => ot.value === data?.intOtAmountShouldBe
+    )?.value,
+    calculateAutoAttendance: data?.isOvertimeAutoCalculate,
+
+    intOtconfigId: data?.intOtconfigId,
+  };
+  return formData;
 };
