@@ -59,6 +59,7 @@ export const createEditEmpAction = async (
       strReligion: values?.religion?.label,
       strMaritalStatus: "",
       strBloodGroup: "",
+      IntSectionId: values?.section?.value || 0,
       intDepartmentId: values?.department?.value,
       intDesignationId: values?.designation?.value,
       dteDateOfBirth: values?.dateofBirth,
