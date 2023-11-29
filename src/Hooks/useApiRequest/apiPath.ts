@@ -17,4 +17,5 @@ export const apiPath = {
   AssignMultiCalander: "/Employee/AssignMultiCalander",
   SaveNUpdateOverTimeConfig: "/Payroll/SaveNUpdateOverTimeConfig",
   GetOverTimeConfig: "/Payroll/GetOverTimeConfig",
+  SectionDDL: "/SaasMasterData/SectionDDL",
 };

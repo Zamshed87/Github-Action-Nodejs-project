@@ -468,6 +468,9 @@ const DashboardCompPermissionDetails = lazy(() =>
 const Department = lazy(() =>
   import("../modules/configuration/department/index.jsx")
 );
+const Section = lazy(() =>
+  import("../modules/configuration/section/index.jsx")
+);
 const DocumentType = lazy(() =>
   import("../modules/configuration/documentType/index.jsx")
 );
@@ -1722,6 +1725,7 @@ export const routingList = [
   },
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
+  { path: "/administration/configuration/section", component: Section },
   { path: "/administration/configuration/hr-position", component: HRPosition },
   {
     path: "/administration/configuration/designation",
