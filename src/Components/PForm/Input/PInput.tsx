@@ -123,7 +123,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
 const CheckboxS = () => {
   return (
     <>
-      <PInput type="checkbox" onChange={(e) => {}} />
+      <PInput type="checkbox" />
     </>
   );
 };
