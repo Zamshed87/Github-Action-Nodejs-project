@@ -409,6 +409,204 @@ const CreateEditLeavePolicy = () => {
                           />
                         </Col>
                       </>
+                      {/* ORG */}
+                      <>
+                        <div
+                          className="col-12 mt-3"
+                          style={{ marginLeft: "-0.8em" }}
+                        >
+                          <h2>Organization Configuration</h2>
+                        </div>
+                        <div
+                          className="col-12"
+                          style={{ marginBottom: "12px" }}
+                        ></div>
+                      </>
+
+                      <Form.Item shouldUpdate noStyle>
+                        {() => {
+                          const { intWorkplaceList, wg, bu } =
+                            form.getFieldsValue();
+
+                          // const empType = employeeType?.label;
+
+                          return (
+                            <>
+                              {intWorkplaceList?.length ===
+                              workplaceDDL?.length ? (
+                                <>
+                                  <Col md={24}>
+                                    <PSelect
+                                      mode="multiple"
+                                      allowClear
+                                      options={[...buDDL] || []}
+                                      name="bu"
+                                      label="Business Unit"
+                                      placeholder="Business Unit"
+                                      onChange={(value, op) => {
+                                        form.setFieldsValue({
+                                          bu: op,
+                                        });
+                                        getPeopleDeskAllDDL(
+                                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${
+                                            op[op?.length - 1]?.value
+                                          }&intId=${employeeId}`,
+                                          "intWorkplaceGroupId",
+                                          "strWorkplaceGroup",
+                                          setWorkplaceGroupDDL
+                                        );
+                                      }}
+                                      // rules={[
+                                      //   {
+                                      //     required: true,
+                                      //     message: "Business Unit is required",
+                                      //   },
+                                      // ]}
+                                    />
+                                  </Col>
+                                  <Col md={24}>
+                                    <PSelect
+                                      mode="multiple"
+                                      allowClear
+                                      options={[...workplaceGroupDDL] || []}
+                                      name="wg"
+                                      label="Workplace Group"
+                                      placeholder="Workplace Group"
+                                      onChange={(value, op) => {
+                                        const wddl = [...workplaceDDL];
+                                        form.setFieldsValue({
+                                          wg: op,
+                                        });
+                                        getYearlyPolicyPopUpDDL(
+                                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${
+                                            bu[0]?.value
+                                          }&WorkplaceGroupId=${
+                                            op[op?.length - 1]?.value
+                                          }&intId=${employeeId}`,
+                                          "intWorkplaceId",
+                                          "strWorkplace",
+                                          setWorkplaceDDL,
+                                          (res) => {
+                                            if (op?.length === 1) {
+                                              const newState1 = res.filter(
+                                                (obj1) =>
+                                                  intWorkplaceList?.some(
+                                                    (obj2) =>
+                                                      obj2.value === obj1.value
+                                                  )
+                                              );
+                                              form.setFieldsValue({
+                                                intWorkplaceList: newState1,
+                                              });
+                                            } else {
+                                              setWorkplaceDDL(() => {
+                                                const ar = [...wddl, ...res];
+                                                const uniqueObjectMap =
+                                                  new Map();
+                                                ar.forEach((obj) => {
+                                                  uniqueObjectMap.set(
+                                                    obj.value,
+                                                    obj
+                                                  );
+                                                });
+
+                                                const newState1 = Array.from(
+                                                  uniqueObjectMap.values()
+                                                ).filter((obj1) =>
+                                                  intWorkplaceList?.some(
+                                                    (obj2) =>
+                                                      obj2.value === obj1.value
+                                                  )
+                                                );
+                                                form.setFieldsValue({
+                                                  intWorkplaceList: newState1,
+                                                });
+                                                return Array.from(
+                                                  uniqueObjectMap.values()
+                                                );
+                                              });
+                                            }
+                                          }
+                                        );
+                                      }}
+                                      // rules={[
+                                      //   {
+                                      //     required: true,
+                                      //     message:
+                                      //       "Workplace Group is required",
+                                      //   },
+                                      // ]}
+                                    />
+                                  </Col>
+                                </>
+                              ) : null}
+                              <Col md={24} sm={24}>
+                                <PSelect
+                                  mode="multiple"
+                                  allowClear
+                                  maxTagCount={5}
+                                  options={
+                                    workplaceDDL?.length > 0
+                                      ? [
+                                          { value: 0, label: "All" },
+                                          ...workplaceDDL,
+                                        ]
+                                      : [{ value: 0, label: "All" }]
+                                  }
+                                  name="intWorkplaceList"
+                                  label="Workplace"
+                                  placeholder="Workplace"
+                                  onChange={(value, op) => {
+                                    const temp = form.getFieldsValue();
+                                    const flag = op?.find(
+                                      (item) => item?.label === "All"
+                                    );
+                                    if (flag) {
+                                      form.setFieldsValue({
+                                        intWorkplaceList: workplaceDDL?.filter(
+                                          (itm) => itm.value !== 0
+                                        ),
+                                      });
+
+                                      isPolicyExist(
+                                        {
+                                          ...temp,
+                                          intWorkplaceList:
+                                            workplaceDDL?.filter(
+                                              (itm) => itm.label !== "All"
+                                            ),
+                                        },
+                                        allPolicies,
+                                        setExistingPolicies
+                                      );
+                                    } else {
+                                      form.setFieldsValue({
+                                        intWorkplaceList: op,
+                                      });
+                                      isPolicyExist(
+                                        {
+                                          ...temp,
+                                          intWorkplaceList: op,
+                                        },
+                                        allPolicies,
+                                        setExistingPolicies
+                                      );
+                                    }
+
+                                    // value && getWorkplace();
+                                  }}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Employment Type is required",
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            </>
+                          );
+                        }}
+                      </Form.Item>
                       {/* employee */}
                       <>
                         <div
@@ -1500,205 +1698,6 @@ const CreateEditLeavePolicy = () => {
                           }}
                         </Form.Item>
                       </>
-
-                      {/* ORG */}
-                      <>
-                        <div
-                          className="col-12 mt-3"
-                          style={{ marginLeft: "-0.8em" }}
-                        >
-                          <h2>Organization Configuration</h2>
-                        </div>
-                        <div
-                          className="col-12"
-                          style={{ marginBottom: "12px" }}
-                        ></div>
-                      </>
-
-                      <Form.Item shouldUpdate noStyle>
-                        {() => {
-                          const { intWorkplaceList, wg, bu } =
-                            form.getFieldsValue();
-
-                          // const empType = employeeType?.label;
-
-                          return (
-                            <>
-                              {intWorkplaceList?.length ===
-                              workplaceDDL?.length ? (
-                                <>
-                                  <Col md={24}>
-                                    <PSelect
-                                      mode="multiple"
-                                      allowClear
-                                      options={[...buDDL] || []}
-                                      name="bu"
-                                      label="Business Unit"
-                                      placeholder="Business Unit"
-                                      onChange={(value, op) => {
-                                        form.setFieldsValue({
-                                          bu: op,
-                                        });
-                                        getPeopleDeskAllDDL(
-                                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${
-                                            op[op?.length - 1]?.value
-                                          }&intId=${employeeId}`,
-                                          "intWorkplaceGroupId",
-                                          "strWorkplaceGroup",
-                                          setWorkplaceGroupDDL
-                                        );
-                                      }}
-                                      // rules={[
-                                      //   {
-                                      //     required: true,
-                                      //     message: "Business Unit is required",
-                                      //   },
-                                      // ]}
-                                    />
-                                  </Col>
-                                  <Col md={24}>
-                                    <PSelect
-                                      mode="multiple"
-                                      allowClear
-                                      options={[...workplaceGroupDDL] || []}
-                                      name="wg"
-                                      label="Workplace Group"
-                                      placeholder="Workplace Group"
-                                      onChange={(value, op) => {
-                                        const wddl = [...workplaceDDL];
-                                        form.setFieldsValue({
-                                          wg: op,
-                                        });
-                                        getYearlyPolicyPopUpDDL(
-                                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${
-                                            bu[0]?.value
-                                          }&WorkplaceGroupId=${
-                                            op[op?.length - 1]?.value
-                                          }&intId=${employeeId}`,
-                                          "intWorkplaceId",
-                                          "strWorkplace",
-                                          setWorkplaceDDL,
-                                          (res) => {
-                                            if (op?.length === 1) {
-                                              const newState1 = res.filter(
-                                                (obj1) =>
-                                                  intWorkplaceList?.some(
-                                                    (obj2) =>
-                                                      obj2.value === obj1.value
-                                                  )
-                                              );
-                                              form.setFieldsValue({
-                                                intWorkplaceList: newState1,
-                                              });
-                                            } else {
-                                              setWorkplaceDDL(() => {
-                                                const ar = [...wddl, ...res];
-                                                const uniqueObjectMap =
-                                                  new Map();
-                                                ar.forEach((obj) => {
-                                                  uniqueObjectMap.set(
-                                                    obj.value,
-                                                    obj
-                                                  );
-                                                });
-
-                                                const newState1 = Array.from(
-                                                  uniqueObjectMap.values()
-                                                ).filter((obj1) =>
-                                                  intWorkplaceList?.some(
-                                                    (obj2) =>
-                                                      obj2.value === obj1.value
-                                                  )
-                                                );
-                                                form.setFieldsValue({
-                                                  intWorkplaceList: newState1,
-                                                });
-                                                return Array.from(
-                                                  uniqueObjectMap.values()
-                                                );
-                                              });
-                                            }
-                                          }
-                                        );
-                                      }}
-                                      // rules={[
-                                      //   {
-                                      //     required: true,
-                                      //     message:
-                                      //       "Workplace Group is required",
-                                      //   },
-                                      // ]}
-                                    />
-                                  </Col>
-                                </>
-                              ) : null}
-                              <Col md={24} sm={24}>
-                                <PSelect
-                                  mode="multiple"
-                                  allowClear
-                                  maxTagCount={5}
-                                  options={
-                                    workplaceDDL?.length > 0
-                                      ? [
-                                          { value: 0, label: "All" },
-                                          ...workplaceDDL,
-                                        ]
-                                      : [{ value: 0, label: "All" }]
-                                  }
-                                  name="intWorkplaceList"
-                                  label="Workplace"
-                                  placeholder="Workplace"
-                                  onChange={(value, op) => {
-                                    const temp = form.getFieldsValue();
-                                    const flag = op?.find(
-                                      (item) => item?.label === "All"
-                                    );
-                                    if (flag) {
-                                      form.setFieldsValue({
-                                        intWorkplaceList: workplaceDDL?.filter(
-                                          (itm) => itm.value !== 0
-                                        ),
-                                      });
-
-                                      isPolicyExist(
-                                        {
-                                          ...temp,
-                                          intWorkplaceList:
-                                            workplaceDDL?.filter(
-                                              (itm) => itm.label !== "All"
-                                            ),
-                                        },
-                                        allPolicies,
-                                        setExistingPolicies
-                                      );
-                                    } else {
-                                      form.setFieldsValue({
-                                        intWorkplaceList: op,
-                                      });
-                                      isPolicyExist(
-                                        {
-                                          ...temp,
-                                          intWorkplaceList: op,
-                                        },
-                                        allPolicies,
-                                        setExistingPolicies
-                                      );
-                                    }
-
-                                    // value && getWorkplace();
-                                  }}
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: "Employment Type is required",
-                                    },
-                                  ]}
-                                />
-                              </Col>
-                            </>
-                          );
-                        }}
-                      </Form.Item>
                     </Row>
                   </Col>
                   <Form.Item shouldUpdate noStyle>
