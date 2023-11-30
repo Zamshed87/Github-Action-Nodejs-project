@@ -34,6 +34,9 @@ const CreateEditLeavePolicy = () => {
   const params = useParams();
   const [form] = Form.useForm();
 
+  const EmploymentTypeDDL = useApiRequest([]);
+  const HRPositionDDL = useApiRequest([]);
+
   const [employmentTypeDDL, setEmploymentTypeDDL] = useState([]);
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState(null);
@@ -68,19 +71,20 @@ const CreateEditLeavePolicy = () => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   useEffect(() => {
-    getYearlyPolicyPopUpDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
-      "Id",
-      "EmploymentType",
-      setEmploymentTypeDDL
-    );
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=LeaveType&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`,
-      "LeaveTypeId",
-      "LeaveType",
-      setLeaveTypeDDL
-    );
+    // getYearlyPolicyPopUpDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
+    //   "Id",
+    //   "EmploymentType",
+    //   setEmploymentTypeDDL
+    // );
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=LeaveType&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`,
+    //   "LeaveTypeId",
+    //   "LeaveType",
+    //   setLeaveTypeDDL
+    // );
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
       "PositionId",
@@ -124,12 +128,61 @@ const CreateEditLeavePolicy = () => {
   useEffect(() => {
     if (singleData?.policyId) {
       form.setFieldsValue(singleData);
+      getEmploymentType()
+      getHRPosition()
     }
   }, [singleData]);
 
   const remover = (payload) => {
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
+  };
+
+  const getEmploymentType = () => {
+    const { intWorkplaceList } = form.getFieldsValue();
+    const strWorkplaceIdList = intWorkplaceList
+      .map((item) => item.value)
+      .join(",");
+
+    EmploymentTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmploymentTypeWorkplaceWise",
+        WorkplaceGroupId: wgId,
+        BusinessUnitId: buId,
+        strWorkplaceIdList: strWorkplaceIdList,
+      },
+      onSuccess: (data) => {
+        data?.forEach((item: any, idx: number) => {
+          data[idx].label = item?.EmploymentType;
+          data[idx].value = item?.Id;
+        });
+      },
+    });
+  };
+  const getHRPosition = () => {
+    const { intWorkplaceList } = form.getFieldsValue();
+    const strWorkplaceIdList = intWorkplaceList
+      .map((item) => item.value)
+      .join(",");
+
+    HRPositionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "AllPosition",
+        WorkplaceGroupId: wgId,
+        BusinessUnitId: buId,
+        strWorkplaceIdList: strWorkplaceIdList,
+      },
+      onSuccess: (data) => {
+        data?.forEach((item: any, idx: number) => {
+          data[idx].label = item?.PositionName;
+          data[idx].value = item?.PositionId;
+        });
+      },
+    });
   };
 
   return (
@@ -526,6 +579,12 @@ const CreateEditLeavePolicy = () => {
                                                 );
                                               });
                                             }
+                                            const { intWorkplaceList } =
+                                              form.getFieldsValue(true);
+
+                                            intWorkplaceList?.length &&
+                                              getEmploymentType();
+                                            getHRPosition();
                                           }
                                         );
                                       }}
@@ -592,8 +651,8 @@ const CreateEditLeavePolicy = () => {
                                         setExistingPolicies
                                       );
                                     }
-
-                                    // value && getWorkplace();
+                                    value && getEmploymentType();
+                                    value && getHRPosition();
                                   }}
                                   rules={[
                                     {
@@ -625,7 +684,7 @@ const CreateEditLeavePolicy = () => {
                           <PSelect
                             mode="multiple"
                             allowClear
-                            options={[...employmentTypeDDL] || []}
+                            options={EmploymentTypeDDL?.data || []}
                             name="intEmploymentTypeList"
                             label=" Employment Type"
                             placeholder="  Employment Type"
@@ -658,7 +717,7 @@ const CreateEditLeavePolicy = () => {
                           <PSelect
                             mode="multiple"
                             allowClear
-                            options={[...hrPositionDDL] || []}
+                            options={HRPositionDDL?.data || []}
                             name="hrPositionListDTO"
                             label="HR Position"
                             placeholder="HR Position"

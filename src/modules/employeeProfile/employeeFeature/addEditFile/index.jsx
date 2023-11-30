@@ -20,11 +20,6 @@ export default function AddEditForm({
   const dispatch = useDispatch();
   // const debounce = useDebounce();
 
-  const { supervisor } = useSelector(
-    (state) => state?.auth?.keywords,
-    shallowEqual
-  );
-
   const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
 
