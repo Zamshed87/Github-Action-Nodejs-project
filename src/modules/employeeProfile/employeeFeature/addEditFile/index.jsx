@@ -746,7 +746,7 @@ export default function AddEditForm({
                   section: op,
                 });
               }}
-              rules={[{ required: true, message: "Section is required" }]}
+              // rules={[{ required: true, message: "Section is required" }]}
             />
           </Col>
           <Col md={12} sm={24}>
