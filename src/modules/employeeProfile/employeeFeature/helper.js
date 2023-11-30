@@ -151,7 +151,6 @@ export const createEditEmpAction = async (
       `/Employee/CreateNUpdateEmployeeBasicInfo`,
       payload
     );
-    console.log("Come Here 2");
     setLoading(false);
     cb && cb();
     toast.success(res?.data?.message, { toastId: 1 });
