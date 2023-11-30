@@ -623,7 +623,7 @@ export default function AddEditForm({
                     <>
                       <Col md={12} sm={24}>
                         <PInput
-                          type="text"
+                          type="date"
                           name="joiningDate"
                           label={`Probation Start Date`}
                           disabled={true}
