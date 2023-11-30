@@ -59,7 +59,7 @@ export const getAllEmpSection = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetSectionDataLanding?AccountId=${accountId}&BusinessUnitId=${buId}&WorkplaceId=${wId || 0}
+      `/SaasMasterData/GetSectionDataLanding?AccountId=${accountId}&WorkplaceId=${wId || 0}
       `
     );
     if (res?.data) {
