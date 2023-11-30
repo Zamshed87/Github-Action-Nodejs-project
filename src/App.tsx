@@ -1,4 +1,3 @@
-import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 import Axios from "axios";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
@@ -159,10 +158,11 @@ Axios.interceptors.response.use(
       }
     }
     let decryptedData = error?.response?.data;
-    if (!isDevServer)
+    if (!isDevServer) {
       decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
         JSON.stringify(error?.response?.data)
       );
+    }
     const newError = { response: { data: decryptedData } };
     return Promise.reject(newError);
   }
