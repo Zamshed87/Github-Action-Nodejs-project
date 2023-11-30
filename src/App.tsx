@@ -159,9 +159,8 @@ Axios.interceptors.response.use(
     }
     let decryptedData = error?.response?.data;
     if (!isDevServer) {
-      decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
-        JSON.stringify(error?.response?.data)
-      );
+      const data = _Ad_xcvbn_df__dfg_568_dfghfff_(JSON.stringify(error));
+      decryptedData = data?.response?.data;
     }
     const newError = { response: { data: decryptedData } };
     return Promise.reject(newError);
