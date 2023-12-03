@@ -112,6 +112,22 @@ export default function EmployeeJobCard() {
         dataIndex: "OutTime",
       },
       {
+        title: "Late Min",
+        dataIndex: "lateMin",
+      },
+      {
+        title: "Break Start",
+        dataIndex: "BreakStartTime",
+      },
+      {
+        title: "Break End",
+        dataIndex: "BreakEndTime",
+      },
+      {
+        title: "Early Out",
+        dataIndex: "EarlyOut",
+      },
+      {
         title: "Total Working Hours",
         dataIndex: "WorkingHours",
       },
