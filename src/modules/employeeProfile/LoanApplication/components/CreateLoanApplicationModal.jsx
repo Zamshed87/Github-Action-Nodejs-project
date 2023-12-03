@@ -68,6 +68,9 @@ const initData = {
   approveAmountPerInstallment: "",
   description: "",
   effectiveDate: "",
+  guarantor: "",
+  interest: "",
+  totalwithinterest: "",
 };
 
 const CreateLoanApplicationModal = ({
@@ -81,7 +84,7 @@ const CreateLoanApplicationModal = ({
   const [loanType, setLoanType] = useState([]);
   // const [fileId, setFileId] = useState("");
   const [loading, setLoading] = useState(false);
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -136,7 +139,9 @@ const CreateLoanApplicationModal = ({
       buId,
       setLoanType,
       "LoanTypeId",
-      "LoanType"
+      "LoanType",
+      0,
+      wId
     );
   }, [wgId, buId]);
 
@@ -160,7 +165,7 @@ const CreateLoanApplicationModal = ({
       enableReinitialize={true}
       initialValues={singleData?.loanApplicationId ? singleData : initData}
       validationSchema={validationSchema}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
+      onSubmit={(values, { resetForm }) => {
         saveHandler(values, () => {
           getData();
           resetForm(initData);
@@ -178,7 +183,6 @@ const CreateLoanApplicationModal = ({
         errors,
         touched,
         setFieldValue,
-        isValid,
       }) => (
         <>
           <Form onSubmit={handleSubmit}>
@@ -237,6 +241,72 @@ const CreateLoanApplicationModal = ({
                         singleData?.loanApplicationId &&
                         singleData?.intCreatedBy !== employeeId
                       }
+                    />
+                  </div>
+                  <div className="col-6">
+                    <label>Interest (%)</label>
+                    <FormikInput
+                      classes="input-sm"
+                      value={values?.interest}
+                      name="interest"
+                      type="number"
+                      step="1"
+                      onChange={(e) => {
+                        setFieldValue("interest", e.target.value);
+                        const totalAmountwithInterest = (
+                          +values?.loanAmount +
+                          +values?.loanAmount * (e.target.value / 100)
+                        ).toFixed(2);
+                        // console.log({ totalAmountwithInterest });
+                        setFieldValue(
+                          "totalwithinterest",
+                          totalAmountwithInterest
+                        );
+                      }}
+                      max={100}
+                      min={0}
+                      className="form-control"
+                      placeholder=""
+                      errors={errors}
+                      touched={touched}
+                      disabled={!values?.loanAmount}
+                    />
+                  </div>
+                  <div className="col-6">
+                    <label>Total Loan Amount with interest</label>
+                    <FormikInput
+                      classes="input-sm"
+                      value={values?.totalwithinterest}
+                      name="totalwithinterest"
+                      type="number"
+                      step="1"
+                      onChange={(e) => {
+                        setFieldValue("totalwithinterest", e.target.value);
+                      }}
+                      className="form-control"
+                      placeholder=""
+                      errors={errors}
+                      touched={touched}
+                      disabled={true}
+                    />
+                  </div>
+                  <div className="col-6">
+                    <label>Guarantor Employee</label>
+                    <AsyncFormikSelect
+                      name="guarantor"
+                      selectedValue={values?.guarantor}
+                      isSearchIcon={true}
+                      handleChange={(valueOption) => {
+                        if (valueOption?.value === values?.employee?.value) {
+                          setFieldValue("guarantor", "");
+                          return toast.warn(
+                            "Please choose a different employee as the guarantor"
+                          );
+                        }
+                        setFieldValue("guarantor", valueOption);
+                      }}
+                      placeholder="Search (min 3 letter)"
+                      loadOptions={(v) =>getSearchEmployeeList(buId, wgId, v)}
                     />
                   </div>
                   <div className="col-6">
@@ -480,7 +550,7 @@ const CreateLoanApplicationModal = ({
                               .then((data) => {
                                 setFileId(data?.[0]);
                               })
-                              .catch((error) => {
+                              .catch(() => {
                                 setFileId("");
                               });
                           }
@@ -546,7 +616,7 @@ const CreateLoanApplicationModal = ({
                   style={{
                     marginRight: "15px",
                   }}
-                  onClick={(e) => {
+                  onClick={() => {
                     setShow(false);
                     resetForm(initData);
                     setFileId("");
