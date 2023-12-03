@@ -177,3 +177,8 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
 .ant-picker-dropdown {
   z-index: 99999999 !important;
 }
+
+// Select top menu search
+.top-menu-search .ant-select-selection-placeholder {
+  font-size: 11px !important;
+}
