@@ -11,7 +11,8 @@ type SelectProperty = {
 type PSelectProps = SelectProps & SelectProperty;
 
 export const PSelect: React.FC<PSelectProps> = (props) => {
-  const { name, label, rules, showSearch, hasFeedback } = props;
+  const { name, label, rules, showSearch, hasFeedback, getPopupContainer } =
+    props;
   return (
     <div className="PeopleDeskSelectWrapper">
       <Form.Item
@@ -23,7 +24,13 @@ export const PSelect: React.FC<PSelectProps> = (props) => {
       >
         <Select
           {...props}
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          getPopupContainer={
+            typeof getPopupContainer === "undefined"
+              ? undefined
+              : typeof getPopupContainer
+              ? getPopupContainer
+              : (triggerNode) => triggerNode.parentNode
+          }
           popupClassName="PeopleDeskSelectPopup"
           dropdownStyle={{
             zIndex: 9999,
