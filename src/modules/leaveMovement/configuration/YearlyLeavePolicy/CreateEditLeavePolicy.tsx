@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-//  @ts-nocheck
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -19,39 +18,36 @@ import BackButton from "../../../../common/BackButton";
 import { success500 } from "../../../../utility/customColor";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { IconButton, Tooltip, Alert } from "@mui/material";
-import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { toast } from "react-toastify";
 import { Col, Form, List, Row, Typography, Divider } from "antd";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { useApiRequest } from "../../../../Hooks";
 import Loading from "common/loading/Loading";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { PButton, PForm, PInput, PSelect } from "Components";
 
 const CreateEditLeavePolicy = () => {
   const policyApi = useApiRequest([]);
-  const params = useParams();
+  const params: any = useParams();
   const [form] = Form.useForm();
 
   const EmploymentTypeDDL = useApiRequest([]);
   const HRPositionDDL = useApiRequest([]);
 
-  const [employmentTypeDDL, setEmploymentTypeDDL] = useState([]);
   const [leaveTypeDDL, setLeaveTypeDDL] = useState([]);
-  const [workplaceDDL, setWorkplaceDDL] = useState(null);
+  const [workplaceDDL, setWorkplaceDDL] = useState<any>(null);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [buDDL, setBuDDL] = useState([]);
-  const [hrPositionDDL, setHrPositionDDL] = useState([]);
   const [allPolicies, setAllPolicies] = useState([]);
-  const [singleData, setSingleData] = useState({});
-  const [existingPolicies, setExistingPolicies] = useState([]);
+  const [singleData, setSingleData] = useState<any>({});
+  const [existingPolicies, setExistingPolicies] = useState<any>([]);
   const history = useHistory();
 
   const [loading, setLoading] = useState(false);
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState<any>([]);
   const { orgId, employeeId, buId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
+    (state: any) => state?.auth?.profileData,
     shallowEqual
   );
   useEffect(() => {
@@ -85,12 +81,12 @@ const CreateEditLeavePolicy = () => {
       "LeaveType",
       setLeaveTypeDDL
     );
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
-      "PositionId",
-      "PositionName",
-      setHrPositionDDL
-    );
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
+    //   "PositionId",
+    //   "PositionName",
+    //   setHrPositionDDL
+    // );
   }, [orgId, buId, wgId]);
 
   useEffect(() => {
@@ -128,20 +124,22 @@ const CreateEditLeavePolicy = () => {
   useEffect(() => {
     if (singleData?.policyId) {
       form.setFieldsValue(singleData);
-      getEmploymentType()
-      getHRPosition()
+      getEmploymentType();
+      getHRPosition();
     }
   }, [singleData]);
 
-  const remover = (payload) => {
-    const filterArr = tableData.filter((itm, idx) => idx !== payload);
+  const remover = (payload: number) => {
+    const filterArr = tableData.filter(
+      (itm: any, idx: number) => idx !== payload
+    );
     setTableData(filterArr);
   };
 
   const getEmploymentType = () => {
     const { intWorkplaceList } = form.getFieldsValue();
     const strWorkplaceIdList = intWorkplaceList
-      .map((item) => item.value)
+      .map((item: any) => item.value)
       .join(",");
 
     EmploymentTypeDDL?.action({
@@ -164,7 +162,7 @@ const CreateEditLeavePolicy = () => {
   const getHRPosition = () => {
     const { intWorkplaceList } = form.getFieldsValue();
     const strWorkplaceIdList = intWorkplaceList
-      .map((item) => item.value)
+      .map((item: any) => item.value)
       .join(",");
 
     HRPositionDDL?.action({
@@ -209,7 +207,7 @@ const CreateEditLeavePolicy = () => {
           {/* btns */}
           <div className="table-card-heading ">
             <div className="d-flex align-items-center">
-              <BackButton />
+              <BackButton title="" />
               <h2>
                 {params?.id ? "Edit Leave Policy" : "Create Leave Policy"}
               </h2>
@@ -283,7 +281,7 @@ const CreateEditLeavePolicy = () => {
                             name="intLeaveType"
                             label="Leave Type"
                             placeholder="  Leave Type"
-                            onChange={(value, op) => {
+                            onChange={(value: number, op: any) => {
                               form.setFieldsValue({
                                 isProdataBasis: false,
                                 isDependOnServiceLength: false,
@@ -496,7 +494,7 @@ const CreateEditLeavePolicy = () => {
                                       name="bu"
                                       label="Business Unit"
                                       placeholder="Business Unit"
-                                      onChange={(value, op) => {
+                                      onChange={(value, op: any) => {
                                         form.setFieldsValue({
                                           bu: op,
                                         });
@@ -525,7 +523,7 @@ const CreateEditLeavePolicy = () => {
                                       name="wg"
                                       label="Workplace Group"
                                       placeholder="Workplace Group"
-                                      onChange={(value, op) => {
+                                      onChange={(value, op: any) => {
                                         const wddl = [...workplaceDDL];
                                         form.setFieldsValue({
                                           wg: op,
@@ -539,12 +537,12 @@ const CreateEditLeavePolicy = () => {
                                           "intWorkplaceId",
                                           "strWorkplace",
                                           setWorkplaceDDL,
-                                          (res) => {
+                                          (res: any) => {
                                             if (op?.length === 1) {
                                               const newState1 = res.filter(
-                                                (obj1) =>
+                                                (obj1: any) =>
                                                   intWorkplaceList?.some(
-                                                    (obj2) =>
+                                                    (obj2: any) =>
                                                       obj2.value === obj1.value
                                                   )
                                               );
@@ -567,7 +565,7 @@ const CreateEditLeavePolicy = () => {
                                                   uniqueObjectMap.values()
                                                 ).filter((obj1) =>
                                                   intWorkplaceList?.some(
-                                                    (obj2) =>
+                                                    (obj2: any) =>
                                                       obj2.value === obj1.value
                                                   )
                                                 );
@@ -588,6 +586,7 @@ const CreateEditLeavePolicy = () => {
                                           }
                                         );
                                       }}
+
                                       // rules={[
                                       //   {
                                       //     required: true,
@@ -601,6 +600,7 @@ const CreateEditLeavePolicy = () => {
                               ) : null}
                               <Col md={24} sm={24}>
                                 <PSelect
+                                  showSearch
                                   mode="multiple"
                                   allowClear
                                   maxTagCount={5}
@@ -618,12 +618,12 @@ const CreateEditLeavePolicy = () => {
                                   onChange={(value, op) => {
                                     const temp = form.getFieldsValue();
                                     const flag = op?.find(
-                                      (item) => item?.label === "All"
+                                      (item: any) => item?.label === "All"
                                     );
                                     if (flag) {
                                       form.setFieldsValue({
                                         intWorkplaceList: workplaceDDL?.filter(
-                                          (itm) => itm.value !== 0
+                                          (itm: any) => itm.value !== 0
                                         ),
                                       });
 
@@ -632,7 +632,7 @@ const CreateEditLeavePolicy = () => {
                                           ...temp,
                                           intWorkplaceList:
                                             workplaceDDL?.filter(
-                                              (itm) => itm.label !== "All"
+                                              (itm: any) => itm.label !== "All"
                                             ),
                                         },
                                         allPolicies,
@@ -1032,7 +1032,7 @@ const CreateEditLeavePolicy = () => {
                                           "Please fill up the fields"
                                         );
                                       }
-                                      setTableData((prev) => [
+                                      setTableData((prev: any) => [
                                         ...prev,
                                         {
                                           intStartServiceLengthInYear:
@@ -1331,7 +1331,6 @@ const CreateEditLeavePolicy = () => {
                                       form.setFieldsValue({
                                         intHalfdayMaxInMonth: undefined,
                                         intHalfdayMaxInYear: undefined,
-                                        intHalfdayMaxInMonth: undefined,
                                       });
                                     }}
                                   />
@@ -1810,7 +1809,7 @@ const CreateEditLeavePolicy = () => {
                                   // footer={<div>Footer</div>}
                                   bordered
                                   dataSource={existingPolicies}
-                                  renderItem={(item, index) => (
+                                  renderItem={(item: any, index: number) => (
                                     <List.Item key={index} className="d-flex ">
                                       <p>{item?.strPolicyName}</p>
                                       <IconButton
@@ -1824,11 +1823,12 @@ const CreateEditLeavePolicy = () => {
 
                                           const filterArr =
                                             existingPolicies.filter(
-                                              (itm, idx) => idx !== index
+                                              (itm: any, idx: number) =>
+                                                idx !== index
                                             );
                                           setExistingPolicies(filterArr);
                                           const temp = intWorkplaceList?.filter(
-                                            (item) =>
+                                            (item: any) =>
                                               item?.value !==
                                               existingPolicies[index]
                                                 ?.intWorkplace
