@@ -79,12 +79,12 @@ const CreateEditLeavePolicy = () => {
     //   "EmploymentType",
     //   setEmploymentTypeDDL
     // );
-    // getPeopleDeskAllDDL(
-    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=LeaveType&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`,
-    //   "LeaveTypeId",
-    //   "LeaveType",
-    //   setLeaveTypeDDL
-    // );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=LeaveType&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`,
+      "LeaveTypeId",
+      "LeaveType",
+      setLeaveTypeDDL
+    );
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}&intId=0`,
       "PositionId",
