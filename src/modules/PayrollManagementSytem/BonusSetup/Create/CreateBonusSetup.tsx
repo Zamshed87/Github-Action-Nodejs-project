@@ -9,7 +9,7 @@ import { PlusOutlined } from "@ant-design/icons";
 type TCreateBonusSetup = unknown;
 const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   // Data From Store
-  const { buId, wgId, employeeId } = useSelector(
+  const { orgId, buId, wgId, employeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -21,6 +21,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const WorkplaceDDL = useApiRequest([]);
   const EmploymentTypeDDL = useApiRequest([]);
   const BonusAllLanding = useApiRequest([]);
+  const CheckBounsExist = useApiRequest({});
 
   // Life Cycle Hooks
   useEffect(() => {
@@ -100,11 +101,43 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       },
     });
   };
+  const checkBounsExistence = () => {
+    const { bonusName, workplace } = form.getFieldsValue(true);
+    CheckBounsExist?.action({
+      method: "post",
+      urlKey: "CRUDBonusSetup",
+      payload: {
+        intBonusSetupId: 0,
+        strPartName: "IsBonusAlreadyExistInWorkPlace",
+        intBonusId: bonusName?.value,
+        strBonusName: bonusName?.label,
+        strBonusDescription: "",
+        workPlaceId: workplace?.value,
+        workPlaceName: workplace?.label,
+        intAccountId: orgId,
+        intBusinessUnitId: buId,
+      },
+    });
+  };
+
   return (
     <>
       <PForm
         form={form}
         initialValues={{ serviceLengthType: 2 /* 1 for Month */ }}
+        onValuesChange={(changedFields, allFields) => {
+          console.log("changedFields", changedFields, allFields);
+
+          const { bonusName, workplace, employmentType } = allFields;
+
+          const isChanged =
+            changedFields?.bonusName ||
+            changedFields?.workplace ||
+            changedFields?.employmentType;
+          if (bonusName && workplace && employmentType && isChanged) {
+            checkBounsExistence();
+          }
+        }}
       >
         <PCard>
           <PCardHeader
@@ -128,6 +161,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                   label="Bonus Name"
                   name="bonusName"
                   placeholder="Select Bonus Name"
+                  onChange={(value: number, op: any) => {
+                    form.setFieldsValue({ bonusName: op });
+                  }}
                   rules={[
                     {
                       required: true,
@@ -148,9 +184,60 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                   marginTop: "23px",
                   cursor: "pointer",
                 }}
-                onTouchMove={(e) => {}}
               />
             </Col>
+            <Col md={6} sm={12}>
+              <PSelect
+                name="workplace"
+                label="Workplace"
+                placeholder="Select workplace"
+                options={WorkplaceDDL?.data || []}
+                onChange={(value: number, op: any) => {
+                  form.setFieldsValue({ workplace: op });
+                  getEmploymentTypeDDL();
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please Select Workplace",
+                  },
+                ]}
+              />
+            </Col>
+            <Form.Item
+              noStyle
+              shouldUpdate={(prev, current) => prev !== current}
+            >
+              {({ getFieldsValue: getValues }) => {
+                const { workplace } = getValues();
+                return (
+                  <Col md={6} sm={12}>
+                    <PSelect
+                      name="employmentType"
+                      label="Employment Type"
+                      placeholder={`${
+                        workplace
+                          ? "Select Employment Type"
+                          : "Select Workplace First"
+                      }`}
+                      options={EmploymentTypeDDL?.data || []}
+                      disabled={!workplace}
+                      mode="multiple"
+                      maxTagCount={"responsive"}
+                      onChange={(value: number, op: any) => {
+                        form.setFieldsValue({ employmentType: op });
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please Select Employment Type",
+                        },
+                      ]}
+                    />
+                  </Col>
+                );
+              }}
+            </Form.Item>
             <Col md={6} sm={12}>
               <PSelect
                 name="bounsDependOn"
@@ -187,6 +274,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 label="Religion"
                 name="religion"
                 placeholder="Select Religion"
+                onChange={(value: number, op: any) => {
+                  form.setFieldsValue({ religion: op });
+                }}
                 rules={[
                   {
                     required: true,
@@ -195,55 +285,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 ]}
               />
             </Col>
-            <Col md={6} sm={12}>
-              <PSelect
-                name="workplace"
-                label="Workplace"
-                placeholder="Select workplace"
-                options={WorkplaceDDL?.data || []}
-                onChange={(value: number, op: any) => {
-                  form.setFieldsValue({ workplace: op });
-                  getEmploymentTypeDDL();
-                }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Please Select Workplace",
-                  },
-                ]}
-              />
-            </Col>
-            <Form.Item
-              noStyle
-              shouldUpdate={(prev, current) => prev !== current}
-            >
-              {({ getFieldsValue: getValues }) => {
-                const { workplace } = getValues();
-                return (
-                  <Col md={6} sm={12}>
-                    <PSelect
-                      name="EmploymentType"
-                      label="Employment Type"
-                      placeholder={`${
-                        workplace
-                          ? "Select Employment Type"
-                          : "Select Workplace First"
-                      }`}
-                      options={EmploymentTypeDDL?.data || []}
-                      disabled={!workplace}
-                      mode="multiple"
-                      maxTagCount={"responsive"}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please Select Employment Type",
-                        },
-                      ]}
-                    />
-                  </Col>
-                );
-              }}
-            </Form.Item>
 
             {/* Service Length */}
             <Col md={6} sm={12}>
@@ -252,6 +293,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 label="Service Length Type"
                 placeholder="Select Service Length Type"
                 options={serviceLengthTypeList}
+                onChange={(value: number, op: any) => {
+                  form.setFieldsValue({ serviceLengthType: op });
+                }}
                 rules={[
                   {
                     required: true,

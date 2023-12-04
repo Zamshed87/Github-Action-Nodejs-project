@@ -1,7 +1,7 @@
 import Axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 // components
 import PackageJson from "../package.json";
 import AuthPage from "./router/AuthPage.jsx";
@@ -16,11 +16,14 @@ import "swiper/components/navigation/navigation.min.css";
 import "swiper/components/pagination/pagination.min.css";
 import "swiper/swiper.min.css";
 import "./assets/css/index.css";
-import { refreshTokenAction } from "./commonRedux/auth/actions";
+import {
+  refreshTokenAction,
+  setIsExpiredTokenAction,
+  setLogoutAction,
+} from "./commonRedux/auth/actions";
 import store from "./redux/store";
 import { _zx123_Zx001_45___45_9999_ } from "./utility/cz";
 import { _Ad_xcvbn_df__dfg_568_dfghfff_ } from "./utility/czy";
-import { detectBrowserConsole } from "./utility/devtools";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
 
 const origin = window.location.origin;
@@ -154,7 +157,10 @@ Axios.interceptors.response.use(
           // return Axios(originalConfig);
         }
       } catch (error) {
-        // console.log(error)
+        const dispatch: any = store.dispatch;
+        dispatch(setIsExpiredTokenAction(true));
+        dispatch(setLogoutAction());
+        toast.error("Session Expired, Please login again");
       }
     }
     let decryptedData = error?.response?.data;
@@ -202,21 +208,6 @@ function App() {
       }
     }
   };
-
-  const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => {
-    let interval: any = null;
-    if (origin === prodUrl) {
-      interval = setInterval(() => {
-        if (!isOpen) {
-          detectBrowserConsole(setIsOpen);
-        }
-      }, 500);
-    }
-    return () => {
-      interval && clearInterval(interval);
-    };
-  }, [isOpen]);
 
   return (
     <div className="app">
