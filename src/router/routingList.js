@@ -1,3 +1,4 @@
+import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/CreateBonusSetup";
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
@@ -2512,8 +2513,12 @@ export const routingList = [
     component: BonusSetupForm,
   },
   {
-    path: "/administration/payrollConfiguration/bonusSetup/create",
+    path: "/administration/payrollConfiguration/bonusSetup/createPrevious",
     component: BonusSetupForm,
+  },
+  {
+    path: "/administration/payrollConfiguration/bonusSetup/create",
+    component: CreateBonusSetup,
   },
   {
     path: "/administration/payrollConfiguration/bonusSetup",
