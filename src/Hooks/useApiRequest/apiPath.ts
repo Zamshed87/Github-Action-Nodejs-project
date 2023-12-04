@@ -19,4 +19,5 @@ export const apiPath = {
   GetOverTimeConfig: "/Payroll/GetOverTimeConfig",
   GetOverTimeConfigById: "/Payroll/GetOverTimeConfigById",
   SectionDDL: "/SaasMasterData/SectionDDL",
+  BonusAllLanding: "/Employee/BonusAllLanding",
 };

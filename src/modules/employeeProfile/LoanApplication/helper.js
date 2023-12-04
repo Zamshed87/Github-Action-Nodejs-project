@@ -4,7 +4,7 @@ import {
   DeleteOutline,
   InfoOutlined,
 } from "@mui/icons-material";
-import { styled, Tooltip, tooltipClasses } from "@mui/material";
+import { Tooltip, styled, tooltipClasses } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Chips from "../../../common/Chips";
@@ -114,7 +114,7 @@ export const loanRequestLandingTableColumns = (
       filter: true,
       render: (_, data) => (
         <div className="d-flex align-items-center justify-content-start tableBody-title">
-          <div className="pr-1">
+          <div className="pr-2">
             <LightTooltip
               title={
                 <div className="application-tooltip">
@@ -157,7 +157,7 @@ export const loanRequestLandingTableColumns = (
           </span>
         </div>
       ),
-      width: 150,
+      width: 100,
     },
     {
       title: () => <span style={{ color: gray600 }}>Loan Amount</span>,
@@ -166,6 +166,38 @@ export const loanRequestLandingTableColumns = (
       ),
       width: 150,
       className: "text-right",
+    },
+    {
+      title: "Interest",
+      dataIndex: "intInterest",
+      width: 150,
+      filter: true,
+      className: "text-right",
+
+      render: (_, record) => <>{record?.intInterest} %</>,
+    },
+    {
+      className: "text-right",
+
+      title: "Total Amount with Interest",
+      dataIndex: "designationName",
+      width: 200,
+      filter: true,
+      render: (_, record) => {
+        const amount = record?.intInterest
+          ? (
+              +record?.loanAmount +
+              +record?.loanAmount * (+record?.intInterest / 100)
+            ).toFixed(2)
+          : 0;
+        return <>{numberWithCommas(amount)}</>;
+      },
+    },
+    {
+      title: "Guarantor",
+      dataIndex: "GurrantorName",
+      width: 150,
+      filter: true,
     },
     {
       title: () => <span style={{ color: gray600 }}>Installment Amount</span>,
@@ -213,7 +245,7 @@ export const loanRequestLandingTableColumns = (
     {
       title: () => <span style={{ color: gray600 }}>Approve Installments</span>,
       dataIndex: "approveNumberOfInstallment",
-      width: 150,
+      width: 200,
     },
     {
       title: "Application Status",
@@ -333,6 +365,21 @@ export const setSingleLoanApplication = (data, setSingleData, setFileId) => {
     approveAmountPerInstallment:
       data?.approveNumberOfInstallmentAmount || data?.numberOfInstallmentAmount,
     intCreatedBy: data?.intCreatedBy,
+    // new requirment payload -- 2023-12-03
+    guarantor:
+      data?.GurrantorName && data?.GurrantorId
+        ? {
+            label: data?.GurrantorName,
+            value: data?.GurrantorId,
+          }
+        : "",
+    interest: data?.intInterest || 0,
+    totalwithinterest: data?.intInterest
+      ? (
+          +data?.loanAmount +
+          +data?.loanAmount * (+data?.intInterest / 100)
+        ).toFixed(2)
+      : 0,
   });
   setFileId(data?.fileUrl);
 };
@@ -348,6 +395,10 @@ export const loanCrudAction = async (
   buId,
   wgId
 ) => {
+  if (values?.intInterest > 100) {
+    toast.warn("Interest can't be greater than 100");
+    return;
+  }
   try {
     setLoading?.(true);
     let payload = {
@@ -360,6 +411,8 @@ export const loanCrudAction = async (
       loanApplicationId: values?.loanApplicationId || 0,
       employeeId: values?.employee?.value || 0,
       loanTypeId: values?.loanType?.value || 0,
+      intInterest: +values?.interest || 0,
+      intGurrantor: +values?.guarantor?.value || 0,
       loanAmount: +values?.loanAmount || 0,
       numberOfInstallment: +values?.installmentNumber || 0,
       numberOfInstallmentAmount: +values?.amountPerInstallment || 0,

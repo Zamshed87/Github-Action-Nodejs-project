@@ -2,7 +2,7 @@ import React from "react";
 import { Form, Select, SelectProps } from "antd";
 
 type SelectProperty = {
-  label?: string;
+  label?: string | React.ReactNode;
   name?: string;
   rules?: any[];
   valuePropName?: string;
