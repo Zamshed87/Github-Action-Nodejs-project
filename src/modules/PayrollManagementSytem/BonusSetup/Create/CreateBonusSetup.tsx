@@ -3,7 +3,11 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { bounusDependsOnList, serviceLengthTypeList } from "../Utils";
+import {
+  bounusDependsOnList,
+  payloadGenerate,
+  serviceLengthTypeList,
+} from "../Utils";
 import moment from "moment";
 import { PlusOutlined } from "@ant-design/icons";
 type TCreateBonusSetup = unknown;
@@ -22,6 +26,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const EmploymentTypeDDL = useApiRequest([]);
   const BonusAllLanding = useApiRequest([]);
   const CheckBounsExist = useApiRequest({});
+  const CRUDBonusSetup = useApiRequest({});
 
   // Life Cycle Hooks
   useEffect(() => {
@@ -104,19 +109,35 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const checkBounsExistence = () => {
     const { bonusName, workplace } = form.getFieldsValue(true);
     CheckBounsExist?.action({
+      method: "get",
+      urlKey: "CheckBonusAlreadyExistInWorkPlace",
+      params: {
+        bonusId: bonusName?.value,
+        workPlaceId: workplace?.value,
+      },
+    });
+  };
+
+  const submitHandler = () => {
+    const values = form.getFieldsValue(true);
+    const payload = payloadGenerate(values);
+    const commonData = {
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intCreatedBy: employeeId,
+      isActive: true,
+    };
+    CRUDBonusSetup?.action({
       method: "post",
       urlKey: "CRUDBonusSetup",
       payload: {
-        intBonusSetupId: 0,
-        strPartName: "IsBonusAlreadyExistInWorkPlace",
-        intBonusId: bonusName?.value,
-        strBonusName: bonusName?.label,
-        strBonusDescription: "",
-        workPlaceId: workplace?.value,
-        workPlaceName: workplace?.label,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
+        ...commonData,
+        ...payload,
       },
+      // onSuccess: (data) => {
+      //   form.resetFields();
+      //   getBounsList();
+      // },
     });
   };
 
@@ -126,18 +147,19 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
         form={form}
         initialValues={{ serviceLengthType: 2 /* 1 for Month */ }}
         onValuesChange={(changedFields, allFields) => {
-          console.log("changedFields", changedFields, allFields);
-
-          const { bonusName, workplace, employmentType } = allFields;
+          const { bonusName, workplace } = allFields;
 
           const isChanged =
             changedFields?.bonusName ||
             changedFields?.workplace ||
             changedFields?.employmentType;
-          if (bonusName && workplace && employmentType && isChanged) {
-            checkBounsExistence();
+          if (bonusName && workplace && isChanged) {
+            setTimeout(() => {
+              checkBounsExistence();
+            }, 100);
           }
         }}
+        onFinish={submitHandler}
       >
         <PCard>
           <PCardHeader
