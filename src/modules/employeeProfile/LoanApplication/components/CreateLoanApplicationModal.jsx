@@ -232,6 +232,17 @@ const CreateLoanApplicationModal = ({
                         setFieldValue("amountPerInstallment", "");
                         setFieldValue("approveLoanAmount", e.target.value);
                         setFieldValue("loanAmount", e.target.value);
+                        if (values?.interest) {
+                          const totalAmountwithInterest = (
+                            +e.target.value +
+                            +e.target.value * (values?.interest / 100)
+                          ).toFixed(2);
+                          // console.log({ totalAmountwithInterest });
+                          setFieldValue(
+                            "totalwithinterest",
+                            totalAmountwithInterest
+                          );
+                        }
                       }}
                       className="form-control"
                       placeholder=""
@@ -253,15 +264,17 @@ const CreateLoanApplicationModal = ({
                       step="1"
                       onChange={(e) => {
                         setFieldValue("interest", e.target.value);
-                        const totalAmountwithInterest = (
-                          +values?.loanAmount +
-                          +values?.loanAmount * (e.target.value / 100)
-                        ).toFixed(2);
-                        // console.log({ totalAmountwithInterest });
-                        setFieldValue(
-                          "totalwithinterest",
-                          totalAmountwithInterest
-                        );
+                        if (values?.loanAmount) {
+                          const totalAmountwithInterest = (
+                            +values?.loanAmount +
+                            +values?.loanAmount * (e.target.value / 100)
+                          ).toFixed(2);
+                          // console.log({ totalAmountwithInterest });
+                          setFieldValue(
+                            "totalwithinterest",
+                            totalAmountwithInterest
+                          );
+                        }
                       }}
                       max={100}
                       min={0}
@@ -306,7 +319,7 @@ const CreateLoanApplicationModal = ({
                         setFieldValue("guarantor", valueOption);
                       }}
                       placeholder="Search (min 3 letter)"
-                      loadOptions={(v) =>getSearchEmployeeList(buId, wgId, v)}
+                      loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
                     />
                   </div>
                   <div className="col-6">
