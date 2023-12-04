@@ -1,9 +1,13 @@
-import { InputProps, CheckboxProps, FormItemProps } from "antd";
+import {
+  CheckboxProps,
+  FormItemProps,
+  InputNumberProps,
+  InputProps,
+} from "antd";
 import { FormInstance } from "antd/es/form";
-import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { PickerProps } from "antd/lib/date-picker/generatePicker";
-import moment, { Moment } from "moment";
-import React, { ChangeEvent } from "react";
+import { Moment } from "moment";
+import React from "react";
 
 type onFinishFailedParams = {
   values: any;
@@ -120,13 +124,15 @@ type BaseProps = FormItemProps & {
   picker?: string;
   prefix?: React.ReactNode;
   layout?: "horizontal" | "vertical";
+  min?: number;
+  max?: number;
 };
 
 type InputTypeMapping = {
   text: InputProps & BaseProps;
   password: InputProps & BaseProps;
   email: InputProps & BaseProps;
-  number: InputProps & BaseProps;
+  number: InputNumberProps & BaseProps;
   date: PickerProps<Moment> & BaseProps;
   checkbox: CheckboxProps & BaseProps;
   textarea: InputProps & BaseProps;
