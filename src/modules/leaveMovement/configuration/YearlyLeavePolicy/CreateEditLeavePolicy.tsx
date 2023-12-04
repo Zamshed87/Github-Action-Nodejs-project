@@ -34,6 +34,7 @@ import {
   PInput,
   PSelect,
 } from "Components";
+import { generatePayload } from "./Utils";
 
 const CreateEditLeavePolicy = () => {
   const policyApi = useApiRequest([]);
@@ -191,25 +192,44 @@ const CreateEditLeavePolicy = () => {
     });
   };
 
+  const submitHandler = () => {
+    const values = form.getFieldsValue();
+    const payload = generatePayload(values, tableData, existingPolicies);
+    policyApi?.action({
+      method: "POST",
+      urlKey: "SaasMasterDataCRUDLeavePolicy",
+      payload: { ...payload, policyId: params?.id || 0 },
+      onSuccess: (data) => {
+        toast.success(data?.message || "Submitted successfully", {
+          toastId: "savePolicy",
+        });
+        if (data?.statusCode === 201) {
+          history.push({
+            pathname: `/administration/timeManagement/leavePolicyAssign`,
+            state: { list: data?.intPolicyIdList },
+          });
+        }
+      },
+    });
+  };
+
   return (
     <>
       <PForm
         form={form}
-        onFinish={(values) => {
-          saveHandler(
-            values,
-            form.resetFields,
-            policyApi,
-            tableData,
-            existingPolicies,
-            params,
-            history
-          );
-        }}
+        // onFinish={(values) => {
+        //   saveHandler(
+        //     values,
+        //     form.resetFields,
+        //     policyApi,
+        //     tableData,
+        //     existingPolicies,
+        //     params,
+        //     history
+        //   );
+        // }}
+        onFinish={submitHandler}
         initialValues={{}}
-        onValuesChange={(changedFields, allFields) => {
-          console.log({ changedFields }, { allFields });
-        }}
       >
         <PCard>
           <PCardHeader
@@ -471,8 +491,9 @@ const CreateEditLeavePolicy = () => {
                                 <PSelect
                                   mode="multiple"
                                   allowClear
-                                  options={[...workplaceGroupDDL] || []}
+                                  options={workplaceGroupDDL || []}
                                   name="wg"
+                                  disabled={params?.id}
                                   label="Workplace Group"
                                   placeholder="Workplace Group"
                                   onChange={(value, op: any) => {
@@ -552,55 +573,30 @@ const CreateEditLeavePolicy = () => {
                           <Col md={24} sm={24}>
                             <PSelect
                               showSearch
-                              mode="multiple"
                               allowClear
-                              maxTagCount={5}
-                              options={
-                                workplaceDDL?.length > 0
-                                  ? [
-                                      { value: 0, label: "All" },
-                                      ...workplaceDDL,
-                                    ]
-                                  : [{ value: 0, label: "All" }]
-                              }
+                              options={workplaceDDL || []}
                               name="intWorkplaceList"
                               label="Workplace"
                               placeholder="Workplace"
+                              disabled={params?.id}
                               onChange={(value, op) => {
+                                value
+                                  ? form.setFieldsValue({
+                                      intWorkplaceList: [op],
+                                    })
+                                  : form.setFieldsValue({
+                                      intWorkplaceList: undefined,
+                                    });
                                 const temp = form.getFieldsValue();
-                                const flag = op?.find(
-                                  (item: any) => item?.label === "All"
+                                console.log(temp);
+                                isPolicyExist(
+                                  temp,
+                                  allPolicies,
+                                  setExistingPolicies
                                 );
-                                if (flag) {
-                                  form.setFieldsValue({
-                                    intWorkplaceList: workplaceDDL?.filter(
-                                      (itm: any) => itm.value !== 0
-                                    ),
-                                  });
-
-                                  isPolicyExist(
-                                    {
-                                      ...temp,
-                                      intWorkplaceList: workplaceDDL?.filter(
-                                        (itm: any) => itm.label !== "All"
-                                      ),
-                                    },
-                                    allPolicies,
-                                    setExistingPolicies
-                                  );
-                                } else {
-                                  form.setFieldsValue({
-                                    intWorkplaceList: op,
-                                  });
-                                  isPolicyExist(
-                                    {
-                                      ...temp,
-                                      intWorkplaceList: op,
-                                    },
-                                    allPolicies,
-                                    setExistingPolicies
-                                  );
-                                }
+                                console.log(
+                                  form.getFieldValue("intWorkplaceList")
+                                );
                                 value && getEmploymentType();
                                 value && getHRPosition();
                               }}
@@ -632,7 +628,6 @@ const CreateEditLeavePolicy = () => {
                   <Col md={12} sm={24}>
                     <PSelect
                       mode="multiple"
-                      allowClear
                       options={EmploymentTypeDDL?.data || []}
                       name="intEmploymentTypeList"
                       label=" Employment Type"
