@@ -59,7 +59,7 @@ export default function ManagementViewSeparationForm() {
       accountId: orgId,
       tableName: "EmployeeSeparationReportBySeparationId",
     };
-    getSeparationLandingById(payload, setSingleData, setLoading);
+    getSeparationLandingById(+params?.id, setSingleData, setLoading);
   }, [orgId, buId, employeeId, params?.id, wgId]);
 
   return (
@@ -92,7 +92,7 @@ export default function ManagementViewSeparationForm() {
                           >
                             Separation Type -
                           </small>
-                          {singleData?.SeparationTypeName}
+                          {singleData?.strSeparationTypeName}
                         </p>
                       </div>
                       <div className="single-info">
@@ -105,7 +105,7 @@ export default function ManagementViewSeparationForm() {
                           >
                             Application Date -
                           </small>
-                          {dateFormatter(singleData?.SeparationDate)}
+                          {dateFormatter(singleData?.dteCreatedAt)}
                         </p>
                       </div>
                       <div className="single-info">
@@ -118,7 +118,7 @@ export default function ManagementViewSeparationForm() {
                           >
                             Last Working Date -
                           </small>
-                          {dateFormatter(singleData?.LastWorkingDay)}
+                          {dateFormatter(singleData?.dteLastWorkingDate)}
                         </p>
                       </div>
                     </div>
