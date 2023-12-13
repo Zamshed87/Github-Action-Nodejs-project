@@ -20,17 +20,22 @@ const getTableDataForExcel = (row) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
+      new Cell(item?.strWorkplaceGroupName || "N/A", "left", "text").getCell(),
+      new Cell(item?.strWorkplaceName || "N/A", "left", "text").getCell(),
+      new Cell(item?.strDepartment || "N/A", "center", "text").getCell(),
+      new Cell(item?.strSectionName || "N/A", "center", "text").getCell(),
+      new Cell(item?.strEmployeeCode || "N/A", "left", "text").getCell(),
       new Cell(item?.strEmployeeName || "N/A", "left", "text").getCell(),
       new Cell(item?.strDesignation || "N/A", "center", "text").getCell(),
-      new Cell(item?.strDepartment || "N/A", "center", "text").getCell(),
       new Cell(
         item?.strSeparationTypeName || "N/A",
         "center",
         "text"
       ).getCell(),
       new Cell(item?.dteJoiningDate || "N/A", "center", "text").getCell(),
-      new Cell(item?.serviceLength || "N/A", "center", "text").getCell(),
       new Cell(item?.dteSeparationDate || "N/A", "center", "text").getCell(),
+      new Cell(item?.serviceLength || "N/A", "center", "text").getCell(),
+      new Cell(item?.dteCreatedAt || "N/A", "center", "text").getCell(),
       new Cell(item?.intAdjustedAmount || 0, "center", "text").getCell(),
       new Cell(item?.approvalStatus || "N/A", "center", "text").getCell(),
     ];
@@ -56,7 +61,7 @@ const createExcelFile = (
           ["_blank*2"],
           [
             {
-              text: businessUnit,
+              text: comapanyNameHeader,
               fontSize: 18,
               bold: true,
               cellRange: "A1:J1",
@@ -64,19 +69,21 @@ const createExcelFile = (
               alignment: "center:middle",
             },
           ],
+          // [
+          //   {
+          //     text: buAddress,
+          //     fontSize: 15,
+          //     bold: true,
+          //     cellRange: "A1:J1",
+          //     merge: true,
+          //     alignment: "center:middle",
+          //   },
+          // ],
           [
             {
-              text: buAddress,
-              fontSize: 15,
-              bold: true,
-              cellRange: "A1:J1",
-              merge: true,
-              alignment: "center:middle",
-            },
-          ],
-          [
-            {
-              text: `${comapanyNameHeader}-${moment().format("LL")}`,
+              text: `${comapanyNameHeader} for the month of ${moment().format(
+                "LL"
+              )}`,
               fontSize: 15,
               bold: true,
               cellRange: "A1:J1",
@@ -94,10 +101,14 @@ const createExcelFile = (
               border: "all 000000 thin",
             },
             {
-              text: "Employee Name",
+              text: "Workplace Group",
               fontSize: 9,
-              // cellRange: "A1:B1",
-              // merge: true,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Workplace",
+              fontSize: 9,
               bold: true,
               border: "all 000000 thin",
             },
@@ -107,6 +118,27 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
+            {
+              text: "Section",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Employee Id",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Employee Name",
+              fontSize: 9,
+              // cellRange: "A1:B1",
+              // merge: true,
+              bold: true,
+              border: "all 000000 thin",
+            },
+
             {
               text: "Designation",
               fontSize: 9,
@@ -122,6 +154,12 @@ const createExcelFile = (
 
             {
               text: "Joining Date",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Separetion Date",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
