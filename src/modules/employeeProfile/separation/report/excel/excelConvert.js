@@ -1,4 +1,5 @@
 import moment from "moment";
+import { dateFormatter } from "utility/dateFormatter";
 import { createFile } from "./createFile";
 class Cell {
   constructor(label, align, format) {
@@ -32,16 +33,29 @@ const getTableDataForExcel = (row) => {
         "center",
         "text"
       ).getCell(),
-      new Cell(item?.dteJoiningDate || "N/A", "center", "text").getCell(),
-      new Cell(item?.dteSeparationDate || "N/A", "center", "text").getCell(),
+      new Cell(
+        dateFormatter(item?.dteJoiningDate) || "N/A",
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        dateFormatter(item?.dteSeparationDate) || "N/A",
+        "center",
+        "text"
+      ).getCell(),
       new Cell(item?.serviceLength || "N/A", "center", "text").getCell(),
-      new Cell(item?.dteCreatedAt || "N/A", "center", "text").getCell(),
+      new Cell(
+        dateFormatter(item?.dteCreatedAt) || "N/A",
+        "center",
+        "text"
+      ).getCell(),
       new Cell(item?.intAdjustedAmount || 0, "center", "text").getCell(),
       new Cell(item?.approvalStatus || "N/A", "center", "text").getCell(),
     ];
   });
   return data;
 };
+
 const createExcelFile = (
   comapanyNameHeader,
   fromDate,
@@ -81,7 +95,7 @@ const createExcelFile = (
           // ],
           [
             {
-              text: `${comapanyNameHeader} for the month of ${moment().format(
+              text: `Separation Report for the month of ${moment().format(
                 "LL"
               )}`,
               fontSize: 15,

@@ -181,7 +181,7 @@ const SeparationReport = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               generateExcelAction(
-                                "Separation Report",
+                                wName,
                                 "",
                                 "",
                                 wName,
