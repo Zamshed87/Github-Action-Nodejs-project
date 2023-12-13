@@ -580,6 +580,12 @@ const CreateEditLeavePolicy = () => {
                               placeholder="Workplace"
                               disabled={params?.id}
                               onChange={(value, op) => {
+                                form.setFieldsValue({
+                                  intEmploymentTypeList: undefined,
+                                });
+                                form.setFieldsValue({
+                                  hrPositionListDTO: undefined,
+                                });
                                 value
                                   ? form.setFieldsValue({
                                       intWorkplaceList: [op],

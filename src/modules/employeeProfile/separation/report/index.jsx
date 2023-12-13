@@ -39,7 +39,7 @@ const SeparationReport = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, buName, wId } = useSelector(
+  const { buId, wgId, wName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -181,10 +181,10 @@ const SeparationReport = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               generateExcelAction(
-                                "Separation Report",
+                                wName,
                                 "",
                                 "",
-                                buName,
+                                wName,
                                 rowDto,
                                 buDetails?.strBusinessUnitAddress
                               );
