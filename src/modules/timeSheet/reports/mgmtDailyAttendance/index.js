@@ -8,13 +8,22 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import DefaultInput from "../../../../common/DefaultInput";
-import Loading from "../../../../common/loading/Loading";
 import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../../utility/customColor";
 
+import MasterFilter from "../../../../common/MasterFilter";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
+import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import useDebounce from "../../../../utility/customHooks/useDebounce";
+import { todayDate } from "../../../../utility/todayDate";
+import { getBuDetails } from "../helper";
 import {
   column,
   dailyAttendenceDtoCol,
@@ -23,15 +32,6 @@ import {
   getTableDataSummaryHeadData,
   subHeaderColumn,
 } from "./helper";
-import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../../common/peopleDeskTable";
-import { todayDate } from "../../../../utility/todayDate";
-import MasterFilter from "../../../../common/MasterFilter";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
-import { getBuDetails } from "../helper";
-import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 
 const initialValues = {
   businessUnit: "",
@@ -136,9 +136,7 @@ const MgmtDailyAttendance = () => {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
-      return { current: 1, total: pages?.total, pageSize: +event.target.value };
-    });
+    setPages({ current: 1, total: pages?.total, pageSize: +event.target.value });
     getData(
       {
         current: 1,
