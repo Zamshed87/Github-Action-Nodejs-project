@@ -44,22 +44,22 @@ export default function ManagementViewSeparationForm() {
   }, []);
 
   useEffect(() => {
-    const payload = {
-      intSeparationId: +params?.id,
-      status: "",
-      workplaceGroupId: wgId,
-      departmentId: 0,
-      designationId: 0,
-      supervisorId: 0,
-      employeeId: employeeId,
-      separationTypeId: 0,
-      applicationFromDate: null,
-      applicationToDate: null,
-      businessUnitId: buId,
-      accountId: orgId,
-      tableName: "EmployeeSeparationReportBySeparationId",
-    };
-    getSeparationLandingById(+params?.id, setSingleData, setLoading);
+    // const payload = {
+    //   intSeparationId: +params?.id,
+    //   status: "",
+    //   workplaceGroupId: wgId,
+    //   departmentId: 0,
+    //   designationId: 0,
+    //   supervisorId: 0,
+    //   employeeId: employeeId,
+    //   separationTypeId: 0,
+    //   applicationFromDate: null,
+    //   applicationToDate: null,
+    //   businessUnitId: buId,
+    //   accountId: orgId,
+    //   tableName: "EmployeeSeparationReportBySeparationId",
+    // };
+    getSeparationLandingById(params?.id, setSingleData, setLoading);
   }, [orgId, buId, employeeId, params?.id, wgId]);
 
   return (
