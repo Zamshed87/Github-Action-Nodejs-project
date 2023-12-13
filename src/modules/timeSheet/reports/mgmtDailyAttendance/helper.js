@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import AvatarComponent from "../../../../common/AvatarComponent";
+import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import { convertTo12HourFormat } from "../../../../utility/timeFormatter";
 
 export const getBuDetails = async (buId, setter, setLoading) => {
@@ -98,6 +98,14 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       sort: false,
       filter: false,
       render: (record) => record?.department || "N/A",
+    },
+    {
+      title: "Section",
+      dataIndex: "strSectionName",
+      sort: true,
+      fieldType: "string",
+      filter: false,
+      // render: (record) => record?.department || "N/A",
     },
     {
       title: "Designation",
