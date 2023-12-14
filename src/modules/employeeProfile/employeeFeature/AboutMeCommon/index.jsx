@@ -405,7 +405,7 @@ function AboutMeDetails() {
           setIsAddEditForm={setIsAddEditForm}
         />
       </ViewModal> */}
-
+      {console.log(empBasic?.employeeProfileLandingView)}
       <PModal
         open={isAddEditForm}
         title={`Edit Employee(${empBasic?.employeeProfileLandingView?.strEmployeeName})`}
@@ -452,6 +452,12 @@ function AboutMeDetails() {
                       ?.dteProbationaryCloseDate
                   )
                 : "",
+              section: empBasic?.employeeProfileLandingView?.intSectionId
+                ? {
+                    value: empBasic?.employeeProfileLandingView?.intSectionId,
+                    label: empBasic?.employeeProfileLandingView?.strSectionName,
+                  }
+                : undefined,
               dteConfirmationDate: empBasic?.employeeProfileLandingView
                 ?.dteConfirmationDate
                 ? moment(
