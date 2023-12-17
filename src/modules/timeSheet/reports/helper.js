@@ -245,6 +245,34 @@ export const rosterReportDtoCol = (page, paginationSize, columnList) => {
       fixed: "left",
     },
     {
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroup",
+      sorter: false,
+      filter: false,
+      width: 180,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkplace ",
+      sorter: false,
+      filter: false,
+      width: 180,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sorter: true,
+      filter: true,
+      width: 180,
+    },
+    {
+      title: "Section",
+      dataIndex: "strSectionName",
+      sorter: true,
+      filter: true,
+      width: 180,
+    },
+    {
       title: () => <span style={{ color: gray600 }}>Employee ID</span>,
       dataIndex: "EmployeeCode",
       sorter: true,
@@ -279,13 +307,7 @@ export const rosterReportDtoCol = (page, paginationSize, columnList) => {
       filter: true,
       width: 180,
     },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sorter: true,
-      filter: true,
-      width: 180,
-    },
+
     ...(columnList?.length > 0 &&
       columnList.map((item) => ({
         title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
