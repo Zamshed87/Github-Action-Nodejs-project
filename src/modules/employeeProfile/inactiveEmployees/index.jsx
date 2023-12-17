@@ -29,6 +29,8 @@ import PeopleDeskTable, {
 import MasterFilter from "../../../common/MasterFilter";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
+import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
+import { getCurrentMonthName } from "utility/monthIdToMonthName";
 
 const initData = {
   search: "",
@@ -40,7 +42,7 @@ export default function ActiveInactiveEmployeeReport() {
   const dispatch = useDispatch();
 
   // eslint-disable-next-line no-unused-vars
-  const { buId, buName, wgId, wId } = useSelector(
+  const { buId, buName, wgId, wId, wName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -208,12 +210,11 @@ export default function ActiveInactiveEmployeeReport() {
                                   );
                                   const excelLanding = () => {
                                     createCommonExcelFile({
-                                      titleWithDate: `Inactive Employees Report`,
-                                      fromDate: "",
-                                      toDate: "",
-                                      buAddress:
-                                        buDetails?.strBusinessUnitAddress,
-                                      businessUnit: buName,
+                                      titleWithDate: `Inactive Employee list for the month of ${getCurrentMonthName()}-${currentYear()}`,
+                                      fromDate: values?.filterFromDate,
+                                      toDate: values?.filterToDate,
+                                      buAddress: wName,
+                                      businessUnit: "",
                                       tableHeader: column,
                                       getTableData: () =>
                                         getTableDataInactiveEmployees(
