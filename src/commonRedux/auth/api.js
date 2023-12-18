@@ -1,5 +1,5 @@
 import axios from "axios";
-import { APIUrl, domainUrl } from "./../../App";
+import { APIUrl, domainUrl, prodUrl } from "./../../App";
 
 export function loginApiCall(email, password) {
   return axios.post(`/Auth/Login`, {
@@ -8,10 +8,12 @@ export function loginApiCall(email, password) {
     intUrlId: 0,
     intAccountId: 1,
     // strUrl: "https://pentex.peopledesk.io",
-    strUrl:
-      domainUrl === "https://devmatador.peopledesk.io"
-        ? domainUrl
-        : "https://matador.peopledesk.io",
+    strUrl: domainUrl === prodUrl ? domainUrl : origin,
+
+    // strUrl:
+    //   domainUrl === "https://devmatador.peopledesk.io"
+    //     ? domainUrl
+    //     : "https://matador.peopledesk.io",
   });
 }
 
