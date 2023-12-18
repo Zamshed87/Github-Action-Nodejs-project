@@ -31,6 +31,7 @@ import useDebounce from "../../../utility/customHooks/useDebounce";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import { getCurrentMonthName } from "utility/monthIdToMonthName";
+import { getWorkplaceDetails } from "common/api";
 
 const initData = {
   search: "",
@@ -85,7 +86,7 @@ export default function ActiveInactiveEmployeeReport() {
 
   useEffect(() => {
     getData();
-    getBuDetails(buId, setBuDetails, setLoading);
+    getWorkplaceDetails(wId, setBuDetails);
   }, [wgId]);
 
   useEffect(() => {
@@ -213,8 +214,8 @@ export default function ActiveInactiveEmployeeReport() {
                                       titleWithDate: `Inactive Employee list for the month of ${getCurrentMonthName()}-${currentYear()}`,
                                       fromDate: values?.filterFromDate,
                                       toDate: values?.filterToDate,
-                                      buAddress: wName,
-                                      businessUnit: "",
+                                      buAddress: buDetails?.strWorkplace,
+                                      businessUnit: buDetails?.strAddress,
                                       tableHeader: column,
                                       getTableData: () =>
                                         getTableDataInactiveEmployees(
