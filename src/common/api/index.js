@@ -616,3 +616,17 @@ export const testApi = async (setLoading, cb) => {
     setLoading && setLoading(false);
   }
 };
+
+export const getWorkplaceDetails = async (wId, setter, setLoading) => {
+  // used in many component
+  try {
+    const res = await axios.get(`/SaasMasterData/GetWorkplaceById?Id=${wId}`);
+    if (res?.data) {
+      setter(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+    setter([]);
+  }
+};
