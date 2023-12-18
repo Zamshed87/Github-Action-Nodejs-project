@@ -26,21 +26,26 @@ import { _zx123_Zx001_45___45_9999_ } from "./utility/cz";
 import { _Ad_xcvbn_df__dfg_568_dfghfff_ } from "./utility/czy";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
 
-const origin = window.location.origin;
-const prodUrl = "https://matador.peopledesk.io";
+export const origin = window.location.origin;
+export const prodUrl = "https://devmatador.peopledesk.io";
 
 const isDevServer =
   origin.includes("dev") || process.env.NODE_ENV === "development";
 
 // set axios base url
-export const APIUrl = isDevServer
-  ? "https://devmatador.peopledesk.io/api"
-  : `${origin}/api`;
+// export const APIUrl = isDevServer
+//   ? "https://devmatador.peopledesk.io/api"
+//   : `${origin}/api`;
+export const APIUrl =
+  process.env.NODE_ENV === "development" ? `${prodUrl}/api` : `${origin}/api`;
 Axios.defaults.baseURL = APIUrl;
 
-export const domainUrl = isDevServer
-  ? "https://devmatador.peopledesk.io"
-  : origin;
+// export const domainUrl = isDevServer
+//   ? "https://devmatador.peopledesk.io"
+//   : origin;
+
+export const domainUrl =
+  process.env.NODE_ENV === "development" ? prodUrl : origin;
 
 // if (process.env.NODE_ENV === "production") {
 //   disableReactDevTools();
