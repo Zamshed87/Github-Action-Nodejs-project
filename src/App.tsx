@@ -32,17 +32,9 @@ export const prodUrl = "https://devmatador.peopledesk.io";
 const isDevServer =
   origin.includes("dev") || process.env.NODE_ENV === "development";
 
-// set axios base url
-// export const APIUrl = isDevServer
-//   ? "https://devmatador.peopledesk.io/api"
-//   : `${origin}/api`;
 export const APIUrl =
   process.env.NODE_ENV === "development" ? `${prodUrl}/api` : `${origin}/api`;
 Axios.defaults.baseURL = APIUrl;
-
-// export const domainUrl = isDevServer
-//   ? "https://devmatador.peopledesk.io"
-//   : origin;
 
 export const domainUrl =
   process.env.NODE_ENV === "development" ? prodUrl : origin;
