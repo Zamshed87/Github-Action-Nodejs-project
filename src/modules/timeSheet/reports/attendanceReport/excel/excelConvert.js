@@ -222,25 +222,25 @@ const createExcelFile = (
             },
 
             {
-              text: "CL",
+              text: "Casual Leave",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
             },
             {
-              text: "SL",
+              text: "Sick Leave",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
             },
             {
-              text: "EL",
+              text: "Earn Leave",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
             },
             {
-              text: "ML",
+              text: "Medical Leave",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",

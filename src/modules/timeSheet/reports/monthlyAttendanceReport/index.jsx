@@ -28,6 +28,7 @@ import {
   onGetMonthlyAttendanceReport,
 } from "./helper";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
+import { getWorkplaceDetails } from "common/api";
 
 const initialValues = {
   search: "",
@@ -41,7 +42,7 @@ const MonthlyAttendanceReport = () => {
   // redux
   const {
     permissionList,
-    profileData: { orgId, buId, buName, wgId },
+    profileData: { orgId, buId, buName, wgId, wId },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -87,7 +88,7 @@ const MonthlyAttendanceReport = () => {
   }, [orgId, buId, employeeId]); */
 
   useEffect(() => {
-    getBuDetails(buId, setBuDetails);
+    getWorkplaceDetails(wId, setBuDetails);
   }, [orgId, buId]);
 
   //  formik
@@ -180,8 +181,8 @@ const MonthlyAttendanceReport = () => {
                             )} to ${dateFormatter(values?.toDate)}`,
                             fromDate: "",
                             toDate: "",
-                            buAddress: buDetails?.strBusinessUnitAddress,
-                            businessUnit: buName,
+                            buAddress: buDetails?.strAddress,
+                            businessUnit: buDetails?.strWorkplace,
                             tableHeader: column(
                               values?.fromDate,
                               values?.toDate
@@ -198,6 +199,7 @@ const MonthlyAttendanceReport = () => {
                             tableHeadFontSize: 10,
                             widthList: {
                               C: 30,
+                              B: 30,
                               D: 30,
                               E: 25,
                               F: 20,
