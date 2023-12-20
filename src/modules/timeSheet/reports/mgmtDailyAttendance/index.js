@@ -16,6 +16,7 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import { gray500 } from "../../../../utility/customColor";
 
 import { getWorkplaceDetails } from "common/api";
+import { getPDFAction } from "utility/downloadFile";
 import MasterFilter from "../../../../common/MasterFilter";
 import PeopleDeskTable, {
   paginationSize,
@@ -49,7 +50,7 @@ const MgmtDailyAttendance = () => {
   // redux
   const dispatch = useDispatch();
 
-  const { buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -285,37 +286,30 @@ const MgmtDailyAttendance = () => {
                               </IconButton>
                             </Tooltip>
                           </li>
-                          <li className="pr-2 d-none">
+                          <li className="pr-2 ">
                             <Tooltip title="Print" arrow>
                               <IconButton
-                                disabled={
-                                  !values?.businessUnit || !values?.date
-                                }
                                 style={{ color: "#101828" }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  // getPDFAction(
-                                  //   `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${
-                                  //     values?.date
-                                  //   }${
-                                  //     values?.businessUnit?.value
-                                  //       ? `&IntBusinessUnitId=${values?.businessUnit?.value}`
-                                  //       : ""
-                                  //   }${
-                                  //     values?.workplaceGroup?.value
-                                  //       ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
-                                  //       : ""
-                                  //   }${
-                                  //     tableRowDto?.length > 0
-                                  //       ? `&EmployeeIdList=${null}`
-                                  //       : ""
-                                  //   }${
-                                  //     values?.workplace?.value
-                                  //       ? `&IntWorkplaceId=${values?.workplace?.value}`
-                                  //       : ""
-                                  //   }`,
-                                  //   setLoading
-                                  // );
+                                  const list = rowDto?.data?.map(
+                                    (item) => item?.employeeId
+                                  );
+                                  getPDFAction(
+                                    `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${
+                                      values?.date
+                                    }${
+                                      buId ? `&IntBusinessUnitId=${buId}` : ""
+                                    }${
+                                      wgId ? `&IntWorkplaceGroupId=${wgId}` : ""
+                                    }${
+                                      rowDto?.data?.length !==
+                                      rowDto?.totalCount
+                                        ? `&EmployeeIdList=${list}`
+                                        : ""
+                                    }${wId ? `&IntWorkplaceId=${wId}` : ""}`,
+                                    setLoading
+                                  );
                                 }}
                               >
                                 <LocalPrintshopIcon />
