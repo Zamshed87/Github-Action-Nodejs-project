@@ -1,7 +1,7 @@
 import { message } from "antd";
-import axios from "axios";
+import axios, { Method } from "axios";
 import { useState } from "react";
-import { ApiHookState, HttpMethod, TApiInfo } from "./TApiRequest";
+import { ApiHookState, TApiInfo } from "./TApiRequest";
 import { apiPath } from "./apiPath";
 
 export const useApiRequest = (initialState: any) => {
@@ -11,7 +11,7 @@ export const useApiRequest = (initialState: any) => {
     loading: false,
   });
 
-  const action = async <T extends HttpMethod>(apiInfo: TApiInfo<T>) => {
+  const action = async <T extends Method>(apiInfo: TApiInfo<T>) => {
     // Setting Loading State True
     setState((prevState) => ({ ...prevState, loading: true, error: null }));
 
@@ -20,7 +20,7 @@ export const useApiRequest = (initialState: any) => {
 
     try {
       const response = await axios({
-        method: method || "GET",
+        method: method,
         url: apiPath[urlKey],
         data: payload,
         params: params,

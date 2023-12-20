@@ -8,7 +8,10 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import { paginationSize } from "../../../../common/AntTable";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import {
+  getPeopleDeskAllDDL,
+  getWorkplaceDetails,
+} from "../../../../common/api";
 import DefaultInput from "../../../../common/DefaultInput";
 import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
@@ -60,7 +63,7 @@ export default function MonthlyInOutReport() {
   // redux
   const dispatch = useDispatch();
 
-  const { orgId, buId, buName, employeeId, wgId } = useSelector(
+  const { orgId, buId, buName, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -130,7 +133,8 @@ export default function MonthlyInOutReport() {
     setColumnList(
       fromToDateList(fromDate || initData?.fromDate, toDate || initData?.toDate)
     );
-    getBuDetails(buId, setBuDetails);
+    getWorkplaceDetails(wId, setBuDetails);
+
     // getRosterReport(orgId, buId, 0, 0, todayDate(), 0, setRowDto, setLoading);
   };
 
@@ -325,8 +329,8 @@ export default function MonthlyInOutReport() {
                                 )} to ${dateFormatter(values?.toDate)}`,
                                 fromDate: "",
                                 toDate: "",
-                                buAddress: buDetails?.strBusinessUnitAddress,
-                                businessUnit: buName,
+                                buAddress: buDetails?.strAddress,
+                                businessUnit: buDetails?.strWorkplace,
                                 tableHeader: montlyInOutXlCol(
                                   values?.fromDate,
                                   values?.toDate
@@ -535,6 +539,11 @@ export default function MonthlyInOutReport() {
                             workplaceGroup: valueOption,
                           }));
                           if (valueOption?.value) {
+                            getWorkplaceDetails(
+                              valueOption?.value,
+                              setBuDetails
+                            );
+
                             // getPeopleDeskAllDDL(
                             //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
                             //   "intWorkplaceId",

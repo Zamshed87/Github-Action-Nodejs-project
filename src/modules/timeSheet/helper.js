@@ -1,13 +1,10 @@
-import { toast } from "react-toastify";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const createTimeSheetAction = async (payload, setLoading, cb) => {
   try {
     setLoading(true);
-    const res = await axios.post(
-      `/TimeSheet/TimeSheetCRUD`,
-      payload
-    );
+    const res = await axios.post(`/TimeSheet/TimeSheetCRUD`, payload);
     cb(res?.data?.autoId, res?.data?.autoName);
     toast.success(res.data?.message || "Successful");
     setLoading(false);
@@ -17,13 +14,14 @@ export const createTimeSheetAction = async (payload, setLoading, cb) => {
   }
 };
 
-export const createTimeSheetActionForCalender = async (payload, setLoading, cb) => {
+export const createTimeSheetActionForCalender = async (
+  payload,
+  setLoading,
+  cb
+) => {
   try {
     setLoading(true);
-    const res = await axios.post(
-      `/TimeSheet/TimeSheetCalender`,
-      payload
-    );
+    const res = await axios.post(`/TimeSheet/TimeSheetCalender`, payload);
     cb(res?.data?.autoId, res?.data?.autoName);
     toast.success(res.data?.message || "Successful");
     setLoading(false);
@@ -34,20 +32,21 @@ export const createTimeSheetActionForCalender = async (payload, setLoading, cb) 
 };
 
 export const getPeopleDeskAllLandingForCalender = async (
+  wId,
   busId,
   setter,
   setAllData,
   setLoading,
   pageNo,
   pageSize,
-  search,
+  search
 ) => {
   setLoading && setLoading(true);
 
   let Search = search ? `&searchTxt=${search}` : "";
   try {
     const res = await axios.get(
-      `/TimeSheet/GetCalenderLanding?IntBusinessUnitId=${busId}&PageNo=${pageNo}&PageSize=${pageSize}${Search}`
+      `/TimeSheet/GetCalenderLanding?IntBusinessUnitId=${busId}&PageNo=${pageNo}&PageSize=${pageSize}&IntWorkplaceId=${wId}${Search}`
     );
     if (res?.data?.data) {
       setter && setter(res?.data?.data);

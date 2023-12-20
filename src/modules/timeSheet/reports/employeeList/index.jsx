@@ -1,7 +1,7 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
@@ -10,7 +10,6 @@ import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   columnForExcel,
-  columnForMarketingForExcel,
   empReportListColumns,
   getBuDetails,
   getTableDataEmployeeReports,
@@ -28,26 +27,7 @@ import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
-
-// const initData = {
-//   search: "",
-//   email: "",
-//   workplaceGroup: "",
-//   payrollGroup: "",
-//   supervisor: "",
-//   rosterGroup: "",
-//   department: "",
-//   designation: "",
-//   calendar: "",
-//   gender: "",
-//   religion: "",
-//   employmentType: "",
-//   joiningDate: "",
-//   confirmDate: "",
-//   birthCertificate: { value: 0, label: "All" },
-//   isNID: { value: 0, label: "All" },
-//   status: "",
-// };
+import { toast } from "react-toastify";
 
 const initData = {
   searchString: "",
@@ -78,6 +58,13 @@ const initHeaderList = {
   regionNameList: [],
   areaNameList: [],
   territoryNameList: [],
+
+  strWorkplaceGroupList: [],
+  strWorkplaceList: [],
+  strDivisionList: [],
+  strSectionList: [],
+  strHrPositionList: [],
+  strDottedSupervisorNameList: [],
 };
 
 export default function EmployeeList() {
@@ -107,23 +94,6 @@ export default function EmployeeList() {
   const [checkedHeaderList, setCheckedHeaderList] = useState({
     ...initHeaderList,
   });
-
-  // useEffect(() => {
-  //   // allEmployeeList(
-  //   //   { orgId, buId, wgId },
-  //   //   "",
-  //   //   setLoading,
-  //   //   setRowDto,
-  //   //   setAllData,
-  //   //   "",
-  //   //   pages,
-  //   //   "",
-  //   //   setPages
-  //   // );
-  //   getLandingData(pages, "", "true");
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [orgId, buId, wgId]);
 
   useEffect(() => {
     setHeaderList({});
@@ -238,9 +208,7 @@ export default function EmployeeList() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
-      return { current: 1, total: pages?.total, pageSize: +event.target.value };
-    });
+    setPages({ current: 1, total: pages?.total, pageSize: +event.target.value });
     getData(
       {
         current: 1,
@@ -254,23 +222,11 @@ export default function EmployeeList() {
       checkedHeaderList
     );
   };
-
+  
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {(loading || landingLoading) && <Loading />}
@@ -287,31 +243,31 @@ export default function EmployeeList() {
                             setLoading(true);
                             const excelLanding = async () => {
                               try {
-                                const res = await axios.post(
-                                  `/Employee/EmployeeReportWithFilter`,
-                                  {
-                                    businessUnitId: buId,
-                                    workplaceGroupId: wgId,
-                                    workplaceId: 0,
-                                    pageNo: 0,
-                                    pageSize: 0,
-                                    isPaginated: false,
-                                    isHeaderNeed: false,
-                                    searchTxt: values?.searchString,
-                                    strDesignationList: [],
-                                    strDepartmentList: [],
-                                    strSupervisorNameList: [],
-                                    strLinemanagerList: [],
-                                    strEmploymentTypeList: [],
-                                    wingNameList: [],
-                                    soleDepoNameList: [],
-                                    regionNameList: [],
-                                    areaNameList: [],
-                                    territoryNameList: [],
-                                  }
-                                );
-                                if (res?.data?.data) {
-                                  const newData = res?.data?.data?.map(
+                                // const res = await axios.post(
+                                //   `/Employee/EmployeeReportWithFilter`,
+                                //   {
+                                //     businessUnitId: buId,
+                                //     workplaceGroupId: wgId,
+                                //     workplaceId: 0,
+                                //     pageNo: 0,
+                                //     pageSize: 0,
+                                //     isPaginated: false,
+                                //     isHeaderNeed: false,
+                                //     searchTxt: values?.searchString,
+                                //     strDesignationList: [],
+                                //     strDepartmentList: [],
+                                //     strSupervisorNameList: [],
+                                //     strLinemanagerList: [],
+                                //     strEmploymentTypeList: [],
+                                //     wingNameList: [],
+                                //     soleDepoNameList: [],
+                                //     regionNameList: [],
+                                //     areaNameList: [],
+                                //     territoryNameList: [],
+                                //   }
+                                // );
+                                if (resEmpLanding?.length > 0) {
+                                  const newData = resEmpLanding?.map(
                                     (item, index) => {
                                       return {
                                         ...item,
@@ -339,62 +295,42 @@ export default function EmployeeList() {
                                     buAddress:
                                       buDetails?.strBusinessUnitAddress,
                                     businessUnit: buName,
-                                    tableHeader:
-                                      wgId === 3
-                                        ? columnForMarketingForExcel
-                                        : columnForExcel,
+                                    tableHeader: columnForExcel,
                                     getTableData: () =>
                                       getTableDataEmployeeReports(
-                                        newData,
-                                        wgId === 3
-                                          ? Object.keys(
-                                              columnForMarketingForExcel
-                                            )
-                                          : Object.keys(columnForExcel)
+                                        newData, Object.keys(columnForExcel)
                                       ),
                                     tableFooter: [],
                                     extraInfo: {},
                                     tableHeadFontSize: 10,
-                                    widthList:
-                                      wgId === 3
-                                        ? {
-                                            B: 30,
-                                            D: 20,
-                                            E: 20,
-                                            J: 15,
-                                            M: 15,
-                                            N: 15,
-                                            O: 20,
-                                            P: 20,
-                                            Q: 15,
-                                            T: 25,
-                                            U: 25,
-                                            V: 15,
-                                            AF: 25,
-                                          }
-                                        : {
-                                            B: 30,
-                                            D: 30,
-                                            E: 30,
-                                            G: 20,
-                                            H: 20,
-                                            T: 20,
-                                            J: 30,
-                                            K: 15,
-                                            M: 25,
-                                            N: 25,
-                                            O: 20,
-                                            P: 20,
-                                            Q: 15,
-                                            Y: 15,
-                                            AF: 35,
-                                          },
+                                    widthList: {
+                                      B: 30,
+                                      C: 30,
+                                      D: 30,
+                                      E: 30,
+                                      G: 20,
+                                      H: 30,
+                                      T: 20,
+                                      J: 30,
+                                      K: 15,
+                                      M: 25,
+                                      N: 25,
+                                      O: 20,
+                                      P: 20,
+                                      Q: 15,
+                                      Y: 15,
+                                      AF: 35,
+                                    },
                                     commonCellRange: "A1:J1",
                                     CellAlignment: "left",
                                   });
                                   setLoading && setLoading(false);
+                                } else {
+                                  setLoading && setLoading(false);
+                                  toast.warn("Empty Employee Data");
                                 }
                               } catch (error) {
+                                toast.warn("Failed to download excel");
                                 setLoading && setLoading(false);
                               }
                             };
@@ -540,6 +476,7 @@ export default function EmployeeList() {
                         }}
                         isCheckBox={false}
                         isScrollAble={true}
+                        scrollCustomClass="emp-report-landing-table"
                       />
                     ) : (
                       <>
@@ -555,41 +492,6 @@ export default function EmployeeList() {
               ) : (
                 <NotPermittedPage />
               )}
-              {/* <Popover
-                sx={{
-                  "& .MuiPaper-root": {
-                    width: "675px",
-                    minHeight: "auto",
-                    borderRadius: "4px",
-                  },
-                }}
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-              >
-                <FilterModal
-                  objProps={{
-                    resetForm,
-                    values,
-                    errors,
-                    touched,
-                    setFieldValue,
-                    setIsFilter,
-                    setAnchorEl,
-                    rowDto,
-                    setRowDto,
-                    setLoading,
-                    setAllData,
-                    allData,
-                    initData,
-                  }}
-                />
-              </Popover> */}
             </Form>
           </>
         )}

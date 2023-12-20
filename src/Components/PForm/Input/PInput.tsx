@@ -28,6 +28,8 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       hasFeedback,
       prefix,
       layout,
+      min,
+      max,
     } = property;
 
     const Components =
@@ -86,6 +88,8 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           prefix={prefix}
           value={value}
           type={"number"}
+          min={min}
+          max={max}
         />
       ) : (
         <Input
@@ -123,7 +127,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
 const CheckboxS = () => {
   return (
     <>
-      <PInput type="checkbox" onChange={(e) => {}} />
+      <PInput type="checkbox" />
     </>
   );
 };

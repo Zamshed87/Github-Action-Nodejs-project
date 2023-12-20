@@ -206,6 +206,7 @@ const YearlyLeavePolicy = () => {
                   <div className="table-card-body">
                     <div className="approval-table">
                       <h5
+                        className="d-none"
                         style={{
                           fontSize: "15px",
                           color: "rgba(0, 0, 0, 0.6)",

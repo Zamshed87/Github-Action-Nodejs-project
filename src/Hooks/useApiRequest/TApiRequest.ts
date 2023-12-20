@@ -1,27 +1,21 @@
+import { Method } from "axios";
 import { apiPath } from "./apiPath";
 
-export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+export interface IApiInfoBase {
+  urlKey: keyof typeof apiPath;
+  method: Method;
+  params?: any;
+  toast?: boolean;
+  onSuccess?: (data: any) => any;
+  onError?: (error: Error) => void;
+}
+
+export type TApiInfo<T extends Method> = T extends "GET" | "get"
+  ? IApiInfoBase & { payload?: never }
+  : IApiInfoBase & { payload: any };
+
 export type ApiHookState = {
   data: any;
   error: Error | null;
   loading: boolean;
 };
-export type TApiInfo<T extends HttpMethod> = T extends "GET"
-  ? {
-      urlKey: keyof typeof apiPath;
-      method: T;
-      params?: object;
-      payload?: never;
-      toast?: boolean;
-      onSuccess?: (data: any) => any;
-      onError?: (error: Error) => void;
-    }
-  : {
-      urlKey: keyof typeof apiPath;
-      method: T;
-      params?: any;
-      payload: any;
-      toast?: boolean;
-      onSuccess?: (data: any) => any;
-      onError?: (error: Error) => void;
-    };

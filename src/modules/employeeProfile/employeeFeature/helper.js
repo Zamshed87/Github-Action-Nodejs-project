@@ -90,8 +90,8 @@ export const createEditEmpAction = async (
       dteCreatedAt: todayDate(),
       intEmploymentTypeId: values?.employeeType?.value,
       strEmploymentType: values?.employeeType?.label,
-      intEmployeeStatusId: values?.employeeStatus?.value || 0,
-      strEmployeeStatus: values?.employeeStatus?.label || "",
+      intEmployeeStatusId: values?.employeeStatus?.value || 1,
+      strEmployeeStatus: values?.employeeStatus?.label || "Active",
       intCalenderId: 0,
       strCalenderName: "",
       intHrpositionId: values?.hrPosition?.value || 0,
@@ -151,9 +151,8 @@ export const createEditEmpAction = async (
       `/Employee/CreateNUpdateEmployeeBasicInfo`,
       payload
     );
-    console.log("Come Here 2");
     setLoading(false);
-     cb && cb();
+    cb && cb();
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
     console.log("Come Here 3");
