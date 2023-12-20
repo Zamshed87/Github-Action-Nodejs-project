@@ -20,11 +20,16 @@ const getTableDataForExcel = (row) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
-      new Cell(item?.employeeName || "N/A", "left", "text").getCell(),
+      new Cell(item?.workplaceGroupName || "N/A", "left", "text").getCell(),
+      new Cell(item?.workplaceName || "N/A", "left", "text").getCell(),
       new Cell(item?.departmentName || "N/A", "center", "text").getCell(),
+      new Cell(item?.sectionName || "N/A", "left", "text").getCell(),
+      new Cell(item?.employeeCode || "N/A", "left", "text").getCell(),
+      new Cell(item?.employeeName || "N/A", "left", "text").getCell(),
       new Cell(item?.designationName || "N/A", "center", "text").getCell(),
       new Cell(item?.employmentType || "N/A", "center", "text").getCell(),
       new Cell(item?.rawDuration || 0, "center", "text").getCell(),
+      new Cell(item?.reason || "N/A", "left", "text").getCell(),
     ];
   });
   return data;
@@ -87,18 +92,42 @@ const createExcelFile = (
               border: "all 000000 thin",
             },
             {
-              text: "Employee Name",
+              text: "Workplace Group",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
             },
-
+            {
+              text: "Workplace",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
             {
               text: "Department",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
             },
+            {
+              text: "Section",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Employee Id",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Employee Name",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+
             {
               text: "Designation",
               fontSize: 9,
@@ -114,6 +143,12 @@ const createExcelFile = (
 
             {
               text: "Duration (Day)",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Reason",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",

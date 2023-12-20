@@ -10,6 +10,8 @@ import {
 } from "../Utils";
 import moment from "moment";
 import { PlusOutlined } from "@ant-design/icons";
+import { PModal } from "Components/Modal";
+import CreateBouns from "./Bonus/CreateBouns";
 type TCreateBonusSetup = unknown;
 const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   // Data From Store
@@ -332,7 +334,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
             >
               {({ getFieldsValue: getValues }) => {
                 const { serviceLengthType } = getValues();
-                return serviceLengthType === 1 ? (
+                return serviceLengthType?.value === 1 ? (
                   <>
                     <Col md={6} sm={12}>
                       <PInput
@@ -445,6 +447,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
           </Row>
         </PCard>
       </PForm>
+      <PModal open={false} onCancel={() => {}} components={<CreateBouns />} />
     </>
   );
 };

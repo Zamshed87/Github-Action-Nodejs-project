@@ -1,8 +1,8 @@
 import { Method } from "axios";
-import { apiPath } from "./apiPath";
+import { apiList } from "data/apiList";
 
 export interface IApiInfoBase {
-  urlKey: keyof typeof apiPath;
+  urlKey: keyof typeof apiList;
   method: Method;
   params?: any;
   toast?: boolean;
