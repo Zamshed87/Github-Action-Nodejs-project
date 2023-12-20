@@ -69,7 +69,7 @@ const createExcelFile = (
     sheets: [
       {
         // name: `Salary Report-${monthYear}`,
-        name: `${comapanyNameHeader} ${moment().format("ll")}`,
+        name: ` ${moment().format("ll")}`,
         gridLine: false,
         rows: [
           ["_blank*2"],
@@ -83,16 +83,16 @@ const createExcelFile = (
               alignment: "center:middle",
             },
           ],
-          // [
-          //   {
-          //     text: buAddress,
-          //     fontSize: 15,
-          //     bold: true,
-          //     cellRange: "A1:J1",
-          //     merge: true,
-          //     alignment: "center:middle",
-          //   },
-          // ],
+          [
+            {
+              text: buAddress,
+              fontSize: 15,
+              bold: true,
+              cellRange: "A1:J1",
+              merge: true,
+              alignment: "center:middle",
+            },
+          ],
           [
             {
               text: `Separation Report for the month of ${moment().format(

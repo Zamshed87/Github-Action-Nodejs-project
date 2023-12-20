@@ -456,120 +456,172 @@ const CreateEditLeavePolicy = () => {
 
                       return (
                         <>
-                          {intWorkplaceList?.length === workplaceDDL?.length ? (
-                            <>
-                              <Col md={24}>
-                                <PSelect
-                                  mode="multiple"
-                                  allowClear
-                                  options={[...buDDL] || []}
-                                  name="bu"
-                                  label="Business Unit"
-                                  placeholder="Business Unit"
-                                  onChange={(value, op: any) => {
-                                    form.setFieldsValue({
-                                      bu: op,
-                                    });
-                                    getPeopleDeskAllDDL(
-                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${
-                                        op[op?.length - 1]?.value
-                                      }&intId=${employeeId}`,
-                                      "intWorkplaceGroupId",
-                                      "strWorkplaceGroup",
-                                      setWorkplaceGroupDDL
-                                    );
-                                  }}
-                                  // rules={[
-                                  //   {
-                                  //     required: true,
-                                  //     message: "Business Unit is required",
-                                  //   },
-                                  // ]}
-                                />
-                              </Col>
-                              <Col md={24}>
-                                <PSelect
-                                  mode="multiple"
-                                  allowClear
-                                  options={workplaceGroupDDL || []}
-                                  name="wg"
-                                  disabled={params?.id}
-                                  label="Workplace Group"
-                                  placeholder="Workplace Group"
-                                  onChange={(value, op: any) => {
-                                    const wddl = [...workplaceDDL];
-                                    form.setFieldsValue({
-                                      wg: op,
-                                    });
-                                    getYearlyPolicyPopUpDDL(
-                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${
-                                        bu[0]?.value
-                                      }&WorkplaceGroupId=${
-                                        op[op?.length - 1]?.value
-                                      }&intId=${employeeId}`,
-                                      "intWorkplaceId",
-                                      "strWorkplace",
-                                      setWorkplaceDDL,
-                                      (res: any) => {
-                                        if (op?.length === 1) {
-                                          const newState1 = res.filter(
-                                            (obj1: any) =>
-                                              intWorkplaceList?.some(
-                                                (obj2: any) =>
-                                                  obj2.value === obj1.value
-                                              )
-                                          );
-                                          form.setFieldsValue({
-                                            intWorkplaceList: newState1,
-                                          });
-                                        } else {
-                                          setWorkplaceDDL(() => {
-                                            const ar = [...wddl, ...res];
-                                            const uniqueObjectMap = new Map();
-                                            ar.forEach((obj) => {
-                                              uniqueObjectMap.set(
-                                                obj.value,
-                                                obj
-                                              );
-                                            });
+                          {/* {intWorkplaceList?.length === workplaceDDL?.length ? ( */}
+                          <>
+                            <Col md={24}>
+                              <PSelect
+                                // mode="multiple"
+                                allowClear
+                                options={[...buDDL] || []}
+                                name="bu"
+                                label="Business Unit"
+                                placeholder="Business Unit"
+                                onChange={(value, op: any) => {
+                                  form.setFieldsValue({
+                                    bu: op,
+                                  });
+                                  // getPeopleDeskAllDDL(
+                                  //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${
+                                  //     op[op?.length - 1]?.value
+                                  //   }&intId=${employeeId}`,
+                                  //   "intWorkplaceGroupId",
+                                  //   "strWorkplaceGroup",
+                                  //   setWorkplaceGroupDDL
+                                  // );
+                                  getPeopleDeskAllDDL(
+                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${op?.value}&intId=${employeeId}`,
+                                    "intWorkplaceGroupId",
+                                    "strWorkplaceGroup",
+                                    setWorkplaceGroupDDL
+                                  );
+                                }}
+                                // rules={[
+                                //   {
+                                //     required: true,
+                                //     message: "Business Unit is required",
+                                //   },
+                                // ]}
+                              />
+                            </Col>
+                            <Col md={24}>
+                              <PSelect
+                                // mode="multiple"
+                                allowClear
+                                options={workplaceGroupDDL || []}
+                                name="wg"
+                                disabled={params?.id}
+                                label="Workplace Group"
+                                placeholder="Workplace Group"
+                                onChange={(value, op: any) => {
+                                  const wddl = [...workplaceDDL];
+                                  form.setFieldsValue({
+                                    wg: op,
+                                  });
+                                  // getYearlyPolicyPopUpDDL(
+                                  //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${
+                                  //     bu[0]?.value
+                                  //   }&WorkplaceGroupId=${
+                                  //     op[op?.length - 1]?.value
+                                  //   }&intId=${employeeId}`,
+                                  //   "intWorkplaceId",
+                                  //   "strWorkplace",
+                                  //   setWorkplaceDDL
+                                  //   // (res: any) => {
+                                  //   //   if (op?.length === 1) {
+                                  //   //     const newState1 = res.filter(
+                                  //   //       (obj1: any) =>
+                                  //   //         intWorkplaceList?.some(
+                                  //   //           (obj2: any) =>
+                                  //   //             obj2.value === obj1.value
+                                  //   //         )
+                                  //   //     );
+                                  //   //     form.setFieldsValue({
+                                  //   //       intWorkplaceList: newState1,
+                                  //   //     });
+                                  //   //   } else {
+                                  //   //     setWorkplaceDDL(() => {
+                                  //   //       const ar = [...wddl, ...res];
+                                  //   //       const uniqueObjectMap = new Map();
+                                  //   //       ar.forEach((obj) => {
+                                  //   //         uniqueObjectMap.set(obj.value, obj);
+                                  //   //       });
 
-                                            const newState1 = Array.from(
-                                              uniqueObjectMap.values()
-                                            ).filter((obj1) =>
-                                              intWorkplaceList?.some(
-                                                (obj2: any) =>
-                                                  obj2.value === obj1.value
-                                              )
-                                            );
-                                            form.setFieldsValue({
-                                              intWorkplaceList: newState1,
-                                            });
-                                            return Array.from(
-                                              uniqueObjectMap.values()
-                                            );
-                                          });
-                                        }
-                                        const { intWorkplaceList } =
-                                          form.getFieldsValue(true);
+                                  //   //       const newState1 = Array.from(
+                                  //   //         uniqueObjectMap.values()
+                                  //   //       ).filter((obj1) =>
+                                  //   //         intWorkplaceList?.some(
+                                  //   //           (obj2: any) =>
+                                  //   //             obj2.value === obj1.value
+                                  //   //         )
+                                  //   //       );
+                                  //   //       form.setFieldsValue({
+                                  //   //         intWorkplaceList: newState1,
+                                  //   //       });
+                                  //   //       return Array.from(
+                                  //   //         uniqueObjectMap.values()
+                                  //   //       );
+                                  //   //     });
+                                  //   //   }
+                                  //   //   const { intWorkplaceList } =
+                                  //   //     form.getFieldsValue(true);
 
-                                        intWorkplaceList?.length &&
-                                          getEmploymentType();
-                                        getHRPosition();
-                                      }
-                                    );
-                                  }}
+                                  //   //   intWorkplaceList?.length &&
+                                  //   //     getEmploymentType();
+                                  //   //   getHRPosition();
+                                  //   // }
+                                  // );
+                                  getYearlyPolicyPopUpDDL(
+                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${bu?.value}&WorkplaceGroupId=${op?.value}&intId=${employeeId}`,
+                                    "intWorkplaceId",
+                                    "strWorkplace",
+                                    setWorkplaceDDL
+                                    // (res: any) => {
+                                    //   if (op?.length === 1) {
+                                    //     const newState1 = res.filter(
+                                    //       (obj1: any) =>
+                                    //         intWorkplaceList?.some(
+                                    //           (obj2: any) =>
+                                    //             obj2.value === obj1.value
+                                    //         )
+                                    //     );
+                                    //     form.setFieldsValue({
+                                    //       intWorkplaceList: newState1,
+                                    //     });
+                                    //   } else {
+                                    //     setWorkplaceDDL(() => {
+                                    //       const ar = [...wddl, ...res];
+                                    //       const uniqueObjectMap = new Map();
+                                    //       ar.forEach((obj) => {
+                                    //         uniqueObjectMap.set(obj.value, obj);
+                                    //       });
 
-                                  // rules={[
-                                  //   {
-                                  //     required: true,
-                                  //     message:
-                                  //       "Workplace Group is required",
-                                  //   },
-                                  // ]}
-                                />
-                              </Col>
-                            </>
-                          ) : null}
+                                    //       const newState1 = Array.from(
+                                    //         uniqueObjectMap.values()
+                                    //       ).filter((obj1) =>
+                                    //         intWorkplaceList?.some(
+                                    //           (obj2: any) =>
+                                    //             obj2.value === obj1.value
+                                    //         )
+                                    //       );
+                                    //       form.setFieldsValue({
+                                    //         intWorkplaceList: newState1,
+                                    //       });
+                                    //       return Array.from(
+                                    //         uniqueObjectMap.values()
+                                    //       );
+                                    //     });
+                                    //   }
+                                    //   const { intWorkplaceList } =
+                                    //     form.getFieldsValue(true);
+
+                                    //   intWorkplaceList?.length &&
+                                    //     getEmploymentType();
+                                    //   getHRPosition();
+                                    // }
+                                  );
+                                }}
+
+                                // rules={[
+                                //   {
+                                //     required: true,
+                                //     message:
+                                //       "Workplace Group is required",
+                                //   },
+                                // ]}
+                              />
+                            </Col>
+                          </>
+                          {/* // ) : null} */}
                           <Col md={24} sm={24}>
                             <PSelect
                               showSearch
@@ -940,9 +992,9 @@ const CreateEditLeavePolicy = () => {
                               }}
                               onClick={() => {
                                 if (
-                                  intEndServiceLengthInYear === "" ||
-                                  intLveInDay === "" ||
-                                  intStartServiceLengthInYear === ""
+                                  intEndServiceLengthInYear === undefined ||
+                                  intLveInDay === undefined ||
+                                  intStartServiceLengthInYear === undefined
                                 ) {
                                   return toast.warn(
                                     "Please fill up the fields"

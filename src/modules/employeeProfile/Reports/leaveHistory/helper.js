@@ -66,6 +66,30 @@ export const leaveHistoryCol = (page, paginationSize) => {
       width: 50,
     },
     {
+      title: "Workplace Group",
+      dataIndex: "workplaceGroup",
+      sorter: false,
+      filter: false,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplace",
+      sorter: false,
+      filter: false,
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+      sorter: false,
+      filter: false,
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
+      sorter: false,
+      filter: false,
+    },
+    {
       title: "Employee Id",
       dataIndex: "employeeCode",
       sorter: false,
@@ -98,12 +122,7 @@ export const leaveHistoryCol = (page, paginationSize) => {
       sorter: false,
       filter: false,
     },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sorter: false,
-      filter: false,
-    },
+
     {
       title: "CL",
       dataIndex: "clTaken",

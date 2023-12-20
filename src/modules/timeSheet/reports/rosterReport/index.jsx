@@ -24,6 +24,7 @@ import {
 } from "./helper";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { getWorkplaceDetails, getWorkplaceGroupDetails } from "common/api";
 
 const initialValues = {
   search: "",
@@ -36,7 +37,7 @@ const initialValues = {
 const RosterReport = () => {
   const {
     permissionList,
-    profileData: { orgId, buId, buName, wgId, wId },
+    profileData: { orgId, buId, buName, wgId, wId, wName },
   } = useSelector((state) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
 
@@ -124,9 +125,9 @@ const RosterReport = () => {
     }
   };
   useEffect(() => {
-    getBuDetails(buId, setBuDetails);
+    getWorkplaceDetails(wId, setBuDetails);
   }, []);
-
+  console.log({ buDetails });
   return (
     <>
       {(loadingOnGetRosterReportInformation || loading) && <Loading />}
@@ -160,9 +161,9 @@ const RosterReport = () => {
                             "Roster Report",
                             values?.fromDate,
                             values?.toDate,
-                            values?.businessUnit?.label || buName,
+                            buDetails?.strWorkplace,
                             res?.data,
-                            buDetails?.strBusinessUnitAddress,
+                            buDetails?.strAddress,
                             getfromToDateList(values?.fromDate, values?.toDate)
                           );
                           setLoading(false);
