@@ -2,7 +2,7 @@ import { message } from "antd";
 import axios, { Method } from "axios";
 import { useState } from "react";
 import { ApiHookState, TApiInfo } from "./TApiRequest";
-import { apiPath } from "./apiPath";
+import { apiList } from "data/apiList";
 
 export const useApiRequest = (initialState: any) => {
   const [state, setState] = useState<ApiHookState>({
@@ -21,7 +21,7 @@ export const useApiRequest = (initialState: any) => {
     try {
       const response = await axios({
         method: method,
-        url: apiPath[urlKey],
+        url: apiList[urlKey],
         data: payload,
         params: params,
       });
