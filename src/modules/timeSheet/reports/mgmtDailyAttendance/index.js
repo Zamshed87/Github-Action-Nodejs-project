@@ -102,7 +102,7 @@ const MgmtDailyAttendance = () => {
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
     getData({ current: 1, pageSize: paginationSize }, "", values?.date);
-  }, [wgId]);
+  }, [wId]);
 
   // formik
   const { setFieldValue, values, errors, touched, handleSubmit } = useFormik({

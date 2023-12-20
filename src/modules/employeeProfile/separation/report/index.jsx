@@ -149,7 +149,7 @@ const SeparationReport = () => {
 
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
-  }, [buId]);
+  }, [wId]);
 
   return (
     <>
