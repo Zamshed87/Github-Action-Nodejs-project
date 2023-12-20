@@ -20,7 +20,7 @@ export const apiPath = {
   GetOverTimeConfigById: "/Payroll/GetOverTimeConfigById",
   SectionDDL: "/SaasMasterData/SectionDDL",
   BonusAllLanding: "/Employee/BonusAllLanding",
-  CRUDBonusSetup: "https://localhost:7020/api/Employee/CRUDBonusSetup",
+  CRUDBonusSetup: "/Employee/CRUDBonusSetup",
   CheckBonusAlreadyExistInWorkPlace:
-    "https://localhost:7020/api/Employee/CheckBonusAlreadyExistInWorkPlace",
+    "/Employee/CheckBonusAlreadyExistInWorkPlace",
 };
