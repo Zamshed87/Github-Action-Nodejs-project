@@ -50,6 +50,7 @@ const YearlyLeavePolicy = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Leave Policy";
   }, []);
 
   // const filterData = (year) => {
@@ -85,7 +86,7 @@ const YearlyLeavePolicy = () => {
   };
   useEffect(() => {
     getLanding(pages, currentYear);
-  }, [orgId, buId, wgId]);
+  }, [buId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   let permission = null;
@@ -213,6 +214,7 @@ const YearlyLeavePolicy = () => {
                           fontWeight: "600",
                         }}
                       >
+                        {console.log({ values })}
                         Year {values?.year ? values?.year.label : currentYear}
                       </h5>
                       {Object.entries(allPolicy).length > 0 ? (

@@ -4,10 +4,11 @@ import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
 import moment from "moment";
 import React, { useEffect } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
 import { PModal } from "Components/Modal";
 import AssignMultipleCalendar from "./Assign/AssignMultipleCalendar";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 type TMultiCalendarAssign = {};
 const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
@@ -17,6 +18,11 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     shallowEqual
   );
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Multi Calendar Assign";
+  }, []);
   // States
   const [open, setOpen] = React.useState<boolean>(false);
   const [selectedRowData, setSelectedRowData] = React.useState<any>("");

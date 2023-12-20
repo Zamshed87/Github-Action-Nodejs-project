@@ -1,7 +1,8 @@
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { useApiRequest } from "Hooks";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import React, { useEffect } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 type TOvertimePolicy = unknown;
@@ -16,6 +17,13 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
 
   // Api Actions
   const GetOverTimeConfig = useApiRequest([]);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Overtime Policy";
+  }, []);
 
   // Landing Api
   const landingApi = () => {

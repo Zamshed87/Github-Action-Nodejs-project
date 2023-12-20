@@ -98,6 +98,7 @@ const SalaryBreakdown = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Payroll Group";
   }, []);
 
   const { orgId, buId, employeeId } = useSelector(

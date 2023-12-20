@@ -20,8 +20,6 @@ import { toast } from "react-toastify";
 import { todayDate } from "../../../utility/todayDate";
 import AntTable from "../../../common/AntTable";
 
-
-
 const initData = {
   status: "",
 };
@@ -49,9 +47,9 @@ export default function BonusSetupLanding() {
 
   const [status, setStatus] = useState("");
 
-
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Bonus Setup";
   }, [dispatch]);
 
   const getData = () => {
@@ -135,11 +133,7 @@ export default function BonusSetupLanding() {
     {
       title: "Max. Service Length",
       dataIndex: "intMaximumServiceLengthMonth",
-      render: (_, item) => (
-        <>
-          {item?.intMaximumServiceLengthMonth || "-"}
-        </>
-      ),
+      render: (_, item) => <>{item?.intMaximumServiceLengthMonth || "-"}</>,
       sorter: true,
       filter: false,
     },

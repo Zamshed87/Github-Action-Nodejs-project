@@ -77,6 +77,7 @@ export default function SalaryReport() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Salary Summary Report";
   }, []);
 
   useEffect(() => {

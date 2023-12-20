@@ -117,6 +117,7 @@ export default function IncomeTaxAssign() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Income Tax Assign";
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);

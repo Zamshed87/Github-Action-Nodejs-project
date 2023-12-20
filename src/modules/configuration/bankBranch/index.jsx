@@ -95,19 +95,21 @@ function BankBranch() {
       enableReinitialize: true,
       validationSchema,
       initialValues,
-      onSubmit: () => { },
+      onSubmit: () => {},
     });
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Bank Branch";
   }, []);
 
   const getLandingData = (search) => {
     const searchText = search ? `&search=${search}` : "";
     getData(
-      `/SaasMasterData/BankBranchLanding?bankId=${values?.bank?.value || 0
+      `/SaasMasterData/BankBranchLanding?bankId=${
+        values?.bank?.value || 0
       }&bankBranchId=0&accountId=${orgId}${searchText}
       `,
       (data) => {
@@ -421,8 +423,10 @@ function BankBranch() {
                       className="btn btn-green"
                       onClick={() => {
                         getData(
-                          `/SaasMasterData/BankBranchLanding?bankId=${values?.bank?.value || 0
-                          }&bankBranchId=0&accountId=${orgId}&pageNo=${pages?.current
+                          `/SaasMasterData/BankBranchLanding?bankId=${
+                            values?.bank?.value || 0
+                          }&bankBranchId=0&accountId=${orgId}&pageNo=${
+                            pages?.current
                           }&pageSize=${pages?.pageSize}${values?.search}
                     `,
                           (data) => {

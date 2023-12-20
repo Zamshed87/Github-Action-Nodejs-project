@@ -255,6 +255,7 @@ const SalaryGenerateLanding = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Salary Generate";
   }, [dispatch]);
 
   const salaryGenerateColumn = (page, paginationSize) => {
@@ -295,7 +296,7 @@ const SalaryGenerateLanding = () => {
         filter: true,
         width: 120,
       },
-  /*     {
+      /*     {
         title: "Wing",
         dataIndex: "wingName",
         sorter: true,

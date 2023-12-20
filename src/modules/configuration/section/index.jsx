@@ -12,14 +12,18 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { depertmentDtoCol, filterData, getAllEmpSection, sectionDtoCol } from "./helper";
+import {
+  depertmentDtoCol,
+  filterData,
+  getAllEmpSection,
+  sectionDtoCol,
+} from "./helper";
 import PrimaryButton from "common/PrimaryButton";
 import PeopleDeskTable from "common/peopleDeskTable";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import ViewFormComponent from "./viewForm";
 import AddEditFormComponent from "./addEditForm";
-
 
 const initData = {
   search: "",
@@ -63,6 +67,7 @@ function Section() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Section";
   }, []);
 
   useEffect(() => {
@@ -79,7 +84,7 @@ function Section() {
     }
   });
 
-  console.log("rowDto",rowDto)
+  console.log("rowDto", rowDto);
 
   return (
     <>
@@ -220,9 +225,7 @@ function Section() {
               <AddEditFormComponent
                 show={open}
                 title={
-                  singleData?.sectionId
-                    ? "Edit Section"
-                    : "Create Section"
+                  singleData?.sectionId ? "Edit Section" : "Create Section"
                 }
                 onHide={handleClose}
                 size="lg"

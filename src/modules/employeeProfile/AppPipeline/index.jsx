@@ -100,6 +100,7 @@ const CommonAppPipeline = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Common Approval Pipeline";
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);

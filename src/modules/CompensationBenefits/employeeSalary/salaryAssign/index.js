@@ -51,6 +51,7 @@ const SalaryAssign = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Salary Assign";
   }, []);
 
   const { orgId, buId, employeeId, wgId, wgName, wId } = useSelector(

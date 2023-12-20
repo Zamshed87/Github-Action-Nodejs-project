@@ -1,34 +1,34 @@
 import { Form, Formik } from "formik";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import moment from "moment";
 import MasterFilter from "../../../../common/MasterFilter";
+import ViewModal from "../../../../common/ViewModal";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import Loading from "./../../../../common/loading/Loading";
 import NoResult from "./../../../../common/NoResult";
-import ViewModal from "../../../../common/ViewModal";
+import Loading from "./../../../../common/loading/Loading";
 
-import ResetButton from "./../../../../common/ResetButton";
-import "./calendar.css";
-import { columns } from "./helper";
 import { Clear, SettingsBackupRestoreOutlined } from "@mui/icons-material";
-import Calender from "./component/Calender";
-import { IconButton, Popover, Avatar } from "@mui/material";
-import { gray900 } from "../../../../utility/customColor";
+import { Avatar, IconButton, Popover } from "@mui/material";
+import axios from "axios";
+import CommonEmpInfo from "../../../../common/CommonEmpInfo";
+import FormikSelect from "../../../../common/FormikSelect";
 import PeopleDeskTable, {
   paginationSize,
 } from "../../../../common/peopleDeskTable";
-import axios from "axios";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
-import FormikSelect from "../../../../common/FormikSelect";
+import { gray900 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
-import CommonEmpInfo from "../../../../common/CommonEmpInfo";
+import ResetButton from "./../../../../common/ResetButton";
+import "./calendar.css";
+import Calender from "./component/Calender";
+import { columns } from "./helper";
 import SingleShiftAssign from "./singleShiftAssign";
 
 const initData = {
@@ -143,7 +143,7 @@ function ShiftManagement() {
     try {
       const payload = {
         businessUnitId: buId,
-        workplaceGroupId: wgId , // null 
+        workplaceGroupId: wgId, // null
         isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
         workplaceId: wId || 0,
         accountId: orgId,
@@ -227,6 +227,7 @@ function ShiftManagement() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Shift Management";
   }, []);
 
   useEffect(() => {

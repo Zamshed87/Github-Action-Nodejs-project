@@ -1,7 +1,7 @@
 import {
   AddOutlined,
   DeleteOutlineOutlined,
-  ModeEditOutlineOutlined
+  ModeEditOutlineOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -37,6 +37,7 @@ const MovementType = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Movement Policy";
   }, []);
   const [loading] = useState(false);
 
