@@ -2510,7 +2510,7 @@ export const routingList = [
   },
   {
     path: "/administration/payrollConfiguration/bonusSetup/edit/:id",
-    component: BonusSetupForm,
+    component: CreateBonusSetup,
   },
   {
     path: "/administration/payrollConfiguration/bonusSetup/createPrevious",
