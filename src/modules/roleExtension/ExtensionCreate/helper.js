@@ -28,7 +28,7 @@ export const setOrganizationDDLFunc = (
     ? getPeopleDeskAllDDL(
         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
         "intBusinessUnitId",
-        "strShortCode",
+        "strBusinessUnit",
         setOrganizationDDL
       )
     : valueOption?.value === 2
