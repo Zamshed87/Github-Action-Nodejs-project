@@ -41,6 +41,7 @@ const EmLoanApplication = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Loan Request";
   }, []);
   const [show, setShow] = useState(false);
   const [fileId, setFileId] = useState("");

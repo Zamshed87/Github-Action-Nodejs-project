@@ -34,6 +34,7 @@ const MasterDashboardLanding = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("dashboard"));
+    document.title = "Dashboard";
     // eslint-disable-next-line
   }, []);
 

@@ -121,6 +121,7 @@ export default function ManagementSeparation() {
   // initial
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Separation";
   }, [dispatch]);
 
   useEffect(() => {

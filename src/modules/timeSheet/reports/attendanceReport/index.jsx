@@ -84,6 +84,7 @@ export default function AttendanceReport() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Attendance Report";
   }, []);
 
   const handleClick = (event) => {

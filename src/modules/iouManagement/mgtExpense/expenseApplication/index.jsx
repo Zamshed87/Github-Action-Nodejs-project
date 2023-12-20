@@ -132,6 +132,7 @@ const MgtExpenseApplication = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Expense Application";
   }, []);
 
   return (

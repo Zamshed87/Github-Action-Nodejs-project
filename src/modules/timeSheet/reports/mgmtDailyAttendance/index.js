@@ -118,6 +118,7 @@ const MgmtDailyAttendance = () => {
   //set to module
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Daily Attendance Report";
   }, [dispatch]);
 
   const handleChangePage = (_, newPage, searchText) => {

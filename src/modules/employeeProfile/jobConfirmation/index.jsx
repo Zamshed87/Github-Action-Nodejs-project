@@ -64,6 +64,7 @@ export default function JobConfirmationReport() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Job Confirmation";
   }, []);
 
   useEffect(() => {

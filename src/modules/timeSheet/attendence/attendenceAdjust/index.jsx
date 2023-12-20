@@ -82,6 +82,7 @@ export default function AttendenceAdjust() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Attendence Adjust";
   }, []);
 
   const getData = (values, initData) => {

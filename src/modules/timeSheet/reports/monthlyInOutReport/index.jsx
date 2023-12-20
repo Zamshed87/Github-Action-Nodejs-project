@@ -159,6 +159,7 @@ export default function MonthlyInOutReport() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Monthly IN-OUT Report";
   }, []);
 
   const masterFilterHandler = ({
