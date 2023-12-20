@@ -405,7 +405,7 @@ function AboutMeDetails() {
           setIsAddEditForm={setIsAddEditForm}
         />
       </ViewModal> */}
-
+{console.log("empBasic",empBasic)}
       <PModal
         open={isAddEditForm}
         title={`Edit Employee(${empBasic?.employeeProfileLandingView?.strEmployeeName})`}
