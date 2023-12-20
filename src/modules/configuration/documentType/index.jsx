@@ -1,7 +1,7 @@
 import {
   AddOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -69,6 +69,7 @@ function DocumentType() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Document Type";
   }, []);
 
   useEffect(() => {

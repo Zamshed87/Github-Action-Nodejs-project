@@ -36,6 +36,7 @@ export default function PfGratuityPolicy() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "PF & Gratuity";
   }, [dispatch]);
 
   const [loading, setLoading] = useState(false);

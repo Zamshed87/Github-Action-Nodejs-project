@@ -3,7 +3,7 @@ import {
   AttachmentOutlined,
   DeleteOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -23,7 +23,12 @@ import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
 import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../utility/customColor";
 import FormCard from "./components/FormCard";
-import { createPolicy, deletePolicy, getPolicyCategoryDDL, getPolicyLanding } from "./helper";
+import {
+  createPolicy,
+  deletePolicy,
+  getPolicyCategoryDDL,
+  getPolicyLanding,
+} from "./helper";
 
 const initData = {
   search: "",
@@ -67,6 +72,7 @@ export default function PolicyUpload() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Policy Upload";
   }, []);
 
   useEffect(() => {
@@ -155,7 +161,6 @@ export default function PolicyUpload() {
     createPolicy(payload, setLoading, callback);
   };
 
-
   const remover = (data) => {
     let confirmObject = {
       title: "Are you sure to delete this policy?",
@@ -166,7 +171,7 @@ export default function PolicyUpload() {
         };
         deletePolicy(data?.policyId, callback);
       },
-      noAlertFunc: () => { },
+      noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
   };

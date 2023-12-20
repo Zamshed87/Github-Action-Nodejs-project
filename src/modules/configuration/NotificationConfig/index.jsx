@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 // import { toast } from "react-toastify";
-import {
-  EditOutlined
-} from "@mui/icons-material";
+import { EditOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import Loading from "../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
@@ -14,7 +12,6 @@ import AvatarComponent from "../../../common/AvatarComponent";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { getNotificationSetupLanding } from "./helper";
-
 
 const initData = {
   search: "",
@@ -35,6 +32,7 @@ export default function NotificationConfig() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Notification Setup";
   }, []);
 
   useEffect(() => {
@@ -55,7 +53,7 @@ export default function NotificationConfig() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => { }}
+        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
         {({
           handleSubmit,
@@ -100,14 +98,17 @@ export default function NotificationConfig() {
                         </li>
                       </ul> */}
                     </div>
-                    <div className="table-card-body" style={{ marginTop: '40px' }}>
+                    <div
+                      className="table-card-body"
+                      style={{ marginTop: "40px" }}
+                    >
                       <div className="table-card-styled tableOne">
                         {rowDto?.length > 0 ? (
                           <>
                             <table className="table">
                               <thead>
                                 <tr>
-                                  <th style={{ width: '30px' }}>SL</th>
+                                  <th style={{ width: "30px" }}>SL</th>
                                   <th>
                                     <div className="sortable">
                                       <span>Company Name</span>
@@ -134,7 +135,7 @@ export default function NotificationConfig() {
                                           });
                                         }}
                                         style={{
-                                          cursor: 'pointer'
+                                          cursor: "pointer",
                                         }}
                                       >
                                         <td>

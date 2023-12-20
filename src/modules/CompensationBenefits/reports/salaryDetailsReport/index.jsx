@@ -45,6 +45,7 @@ export default function SalaryDetailsReport() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Salary Details Report";
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -145,9 +146,9 @@ export default function SalaryDetailsReport() {
                                 .split("")
                                 .slice(-2)
                                 .join("")}&IntYear=${+e.target.value
-                                  .split("")
-                                  .slice(0, 4)
-                                  .join("")}`,
+                                .split("")
+                                .slice(0, 4)
+                                .join("")}`,
                               "SalaryCode",
                               "SalaryCode",
                               setPayrollPolicyDDL
@@ -243,9 +244,7 @@ export default function SalaryDetailsReport() {
                 <div className="d-flex align-center-center">
                   {rowDto?.length > 0 && (
                     <div>
-                      <h2>
-                        Business Unit: {buName || "N/A"}
-                      </h2>
+                      <h2>Business Unit: {buName || "N/A"}</h2>
                       <div className="single-info">
                         <p style={{ fontWeight: "400", color: gray500 }}>
                           Salary report of{" "}
@@ -273,7 +272,8 @@ export default function SalaryDetailsReport() {
                               ),
                               buAddress:
                                 businessUnitDDL[0]?.BusinessUnitAddress,
-                              businessUnit: buName || values?.businessUnit?.label,
+                              businessUnit:
+                                buName || values?.businessUnit?.label,
                               data: rowDto,
                               tableColumn,
                               tableAllowanceHead,

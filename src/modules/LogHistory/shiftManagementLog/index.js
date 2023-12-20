@@ -1,20 +1,20 @@
 import { Form, Formik } from "formik";
-import { todayDate } from "../../../utility/todayDate";
-import * as Yup from "yup";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import Loading from "../../../common/loading/Loading";
-import PrimaryButton from "../../../common/PrimaryButton";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
 import AntTable from "../../../common/AntTable";
-import NoResult from "../../../common/NoResult";
-import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import { customStyles } from "../../../utility/selectCustomStyle";
-import FormikSelect from "../../../common/FormikSelect";
 import DefaultInput from "../../../common/DefaultInput";
+import FormikSelect from "../../../common/FormikSelect";
+import NoResult from "../../../common/NoResult";
+import PrimaryButton from "../../../common/PrimaryButton";
 import { getPeopleDeskAllDDL } from "../../../common/api";
-import { timeFormatter } from "../../../utility/timeFormatter";
+import Loading from "../../../common/loading/Loading";
+import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
+import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter, monthLastDate } from "../../../utility/dateFormatter";
+import { customStyles } from "../../../utility/selectCustomStyle";
+import { timeFormatter } from "../../../utility/timeFormatter";
+import { todayDate } from "../../../utility/todayDate";
 import { getLogData } from "./helper";
 
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -63,6 +63,7 @@ const ShiftManagementLog = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Shift Management Log";
   }, []);
 
   const columns = [

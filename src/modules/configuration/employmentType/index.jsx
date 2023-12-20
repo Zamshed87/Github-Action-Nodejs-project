@@ -69,6 +69,7 @@ function EmploymentTypeCreate() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Employment Type";
   }, []);
 
   useEffect(() => {

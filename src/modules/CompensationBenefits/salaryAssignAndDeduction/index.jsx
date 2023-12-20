@@ -160,6 +160,7 @@ function SalaryAssignAndDeduction() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Allowance & Deduction";
   }, []);
 
   const handleChangePage = (_, newPage, searchText) => {

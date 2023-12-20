@@ -72,6 +72,7 @@ const TaxChallanConfigLanding = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Tax Challan Config";
   }, []);
   return (
     <>

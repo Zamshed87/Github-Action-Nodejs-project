@@ -80,6 +80,7 @@ function HRPosition() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Hr-Position";
   }, []);
 
   const handleViewClose = () => setIsDetailsModal(false);

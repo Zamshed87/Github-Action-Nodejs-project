@@ -1,33 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loading from "../../../../common/loading/Loading";
 // import MasterFilter from "../../../../common/MasterFilter";
-import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../../common/ResetButton";
-import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { createMonthlyOffdayAssign, offDayAssignDtoCol } from "./helper";
-import "./monthlyOffday.css";
-import MasterFilter from "../../../../common/MasterFilter";
-import ViewModal from "../../../../common/ViewModal";
-import moment from "moment";
 import { Popover } from "@mui/material";
+import axios from "axios";
+import moment from "moment";
 import profileImg from "../../../../assets/images/profile.jpg";
-import PopoverCalender from "./components/PopoverCalender";
-import ViewModalCalender from "./components/ViewModalCalender";
+import MasterFilter from "../../../../common/MasterFilter";
+import NoResult from "../../../../common/NoResult";
+import ResetButton from "../../../../common/ResetButton";
+import ViewModal from "../../../../common/ViewModal";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable, {
   paginationSize,
 } from "../../../../common/peopleDeskTable";
-import axios from "axios";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { printDays } from "../offDay/helper";
+import PopoverCalender from "./components/PopoverCalender";
+import ViewModalCalender from "./components/ViewModalCalender";
+import { createMonthlyOffdayAssign, offDayAssignDtoCol } from "./helper";
+import "./monthlyOffday.css";
 
 const initData = {
   search: "",
@@ -62,6 +62,7 @@ function MonthlyOffdayAssignLanding() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Monthly Offday Assign";
   }, []);
   // const [resLanding, getLanding, loadingLanding, setLanding] = useAxiosPost();
   const [showModal, setShowModal] = useState(false);

@@ -197,10 +197,12 @@ const BankAdviceReport = () => {
   }, [orgId, buId, employeeId, wgId]);
 
   //set to module
-  useEffect(
-    () => dispatch(setFirstLevelNameAction("Compensation & Benefits")),
-    [dispatch]
-  );
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Bank Advice";
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <form onSubmit={handleSubmit}>

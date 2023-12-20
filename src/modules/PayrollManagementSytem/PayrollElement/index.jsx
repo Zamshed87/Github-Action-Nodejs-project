@@ -63,6 +63,7 @@ const PayrollElementCreate = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Payroll Element";
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);

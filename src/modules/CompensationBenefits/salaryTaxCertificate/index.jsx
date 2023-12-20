@@ -92,6 +92,7 @@ const SalaryTaxCertificate = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Salary Tax Certificate";
   }, [dispatch]);
 
   return (

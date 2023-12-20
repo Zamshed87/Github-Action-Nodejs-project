@@ -51,6 +51,7 @@ export default function AccountCreateLanding() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Account";
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);

@@ -2,7 +2,7 @@ import {
   AddOutlined,
   EditOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -72,6 +72,7 @@ function UserRole() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Users Role";
   }, []);
 
   useEffect(() => {

@@ -68,6 +68,7 @@ function OffDay() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "OffDay Assign";
   }, []);
   // const [resLanding, getLanding, loadingLanding, setLanding] = useAxiosPost();
   // const [checked, setChecked] = useState([]);
