@@ -126,7 +126,7 @@ const RosterReport = () => {
   };
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
-  }, []);
+  }, [wId]);
   console.log({ buDetails });
   return (
     <>

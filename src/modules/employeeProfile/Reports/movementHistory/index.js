@@ -1,26 +1,27 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import PrintIcon from "@mui/icons-material/Print";
 import { Tooltip } from "@mui/material";
+import { getWorkplaceDetails } from "common/api";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import FormikInput from "../../../../common/FormikInput";
-import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { getPDFAction } from "../../../../utility/downloadFile";
 import { todayDate } from "../../../../utility/todayDate";
-import FilterModal from "./component/FilterModal";
-import { generateExcelAction } from "./excel/excelConvert";
-import { getBuDetails, getMovementHistory } from "./helper";
 import PeopleDeskTable, {
   paginationSize,
 } from "./../../../../common/peopleDeskTable/index";
+import FilterModal from "./component/FilterModal";
+import { generateExcelAction } from "./excel/excelConvert";
+import { getMovementHistory } from "./helper";
 
 let initStartData = monthFirstDate();
 let initEndDate = todayDate();
@@ -128,8 +129,8 @@ const EmMovementHistory = () => {
   }, []);
 
   useEffect(() => {
-    getBuDetails(buId, setBuDetails, setLoading);
-  }, [buId]);
+    getWorkplaceDetails(wId, setBuDetails);
+  }, [wId]);
 
   useEffect(() => {
     getMovementHistory(
@@ -157,6 +158,34 @@ const EmMovementHistory = () => {
         filter: false,
         className: "text-center",
         width: 60,
+      },
+      {
+        title: "Workplace Group",
+        dataIndex: "workplaceGroupName",
+        sort: true,
+        filter: false,
+        fieldType: "string",
+      },
+      {
+        title: "Workplace",
+        dataIndex: "workplaceName",
+        sort: true,
+        filter: false,
+        fieldType: "string",
+      },
+      {
+        title: "Department",
+        dataIndex: "departmentName",
+        sort: true,
+        filter: false,
+        fieldType: "string",
+      },
+      {
+        title: "Section",
+        dataIndex: "sectionName",
+        sort: true,
+        filter: false,
+        fieldType: "string",
       },
       {
         title: "Employee Id",
@@ -190,18 +219,18 @@ const EmMovementHistory = () => {
         fieldType: "string",
       },
       {
-        title: "Department",
-        dataIndex: "departmentName",
-        sort: true,
-        filter: false,
-        fieldType: "string",
-      },
-      {
         title: "Duration (Day)",
         dataIndex: "rawDuration",
         sort: true,
         filter: false,
         fieldType: "number",
+      },
+      {
+        title: "Reason",
+        dataIndex: "reason",
+        sort: true,
+        filter: false,
+        fieldType: "string",
       },
     ];
   };
@@ -239,9 +268,9 @@ const EmMovementHistory = () => {
                                 "Movement Report",
                                 "",
                                 "",
-                                buName,
+                                buDetails?.strWorkplace,
                                 rowDto,
-                                buDetails?.strBusinessUnitAddress
+                                buDetails?.strAddress
                               );
                             }}
                           >

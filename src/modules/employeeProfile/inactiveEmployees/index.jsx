@@ -87,7 +87,7 @@ export default function ActiveInactiveEmployeeReport() {
   useEffect(() => {
     getData();
     getWorkplaceDetails(wId, setBuDetails);
-  }, [wgId]);
+  }, [wId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
