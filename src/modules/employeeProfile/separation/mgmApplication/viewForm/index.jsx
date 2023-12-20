@@ -44,22 +44,22 @@ export default function ManagementViewSeparationForm() {
   }, []);
 
   useEffect(() => {
-    const payload = {
-      intSeparationId: +params?.id,
-      status: "",
-      workplaceGroupId: wgId,
-      departmentId: 0,
-      designationId: 0,
-      supervisorId: 0,
-      employeeId: employeeId,
-      separationTypeId: 0,
-      applicationFromDate: null,
-      applicationToDate: null,
-      businessUnitId: buId,
-      accountId: orgId,
-      tableName: "EmployeeSeparationReportBySeparationId",
-    };
-    getSeparationLandingById(payload, setSingleData, setLoading);
+    // const payload = {
+    //   intSeparationId: +params?.id,
+    //   status: "",
+    //   workplaceGroupId: wgId,
+    //   departmentId: 0,
+    //   designationId: 0,
+    //   supervisorId: 0,
+    //   employeeId: employeeId,
+    //   separationTypeId: 0,
+    //   applicationFromDate: null,
+    //   applicationToDate: null,
+    //   businessUnitId: buId,
+    //   accountId: orgId,
+    //   tableName: "EmployeeSeparationReportBySeparationId",
+    // };
+    getSeparationLandingById(params?.id, setSingleData, setLoading);
   }, [orgId, buId, employeeId, params?.id, wgId]);
 
   return (
@@ -92,7 +92,7 @@ export default function ManagementViewSeparationForm() {
                           >
                             Separation Type -
                           </small>
-                          {singleData?.SeparationTypeName}
+                          {singleData?.strSeparationTypeName}
                         </p>
                       </div>
                       <div className="single-info">
@@ -105,7 +105,7 @@ export default function ManagementViewSeparationForm() {
                           >
                             Application Date -
                           </small>
-                          {dateFormatter(singleData?.SeparationDate)}
+                          {dateFormatter(singleData?.dteCreatedAt)}
                         </p>
                       </div>
                       <div className="single-info">
@@ -118,7 +118,7 @@ export default function ManagementViewSeparationForm() {
                           >
                             Last Working Date -
                           </small>
-                          {dateFormatter(singleData?.LastWorkingDay)}
+                          {dateFormatter(singleData?.dteLastWorkingDate)}
                         </p>
                       </div>
                     </div>

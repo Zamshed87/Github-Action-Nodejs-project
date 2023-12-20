@@ -83,13 +83,14 @@ export default function CalendarSetup() {
   // single Data
   const [id, setId] = useState("");
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
   const getLanding = () => {
     getPeopleDeskAllLandingForCalender(
+      wId,
       buId,
       setRowDto,
       setAllData,
@@ -114,7 +115,7 @@ export default function CalendarSetup() {
     //   wgId
     // );
     getLanding();
-  }, []);
+  }, [wId, buId]);
 
   // search
   const filterData = (keywords, allData, setRowDto) => {
@@ -337,6 +338,7 @@ export default function CalendarSetup() {
                           onChange={(e) => {
                             if (e.target.value) {
                               getPeopleDeskAllLandingForCalender(
+                                wId,
                                 buId,
                                 setRowDto,
                                 setAllData,

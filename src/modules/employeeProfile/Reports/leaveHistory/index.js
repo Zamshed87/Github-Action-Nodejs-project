@@ -1,32 +1,28 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import { getWorkplaceDetails } from "common/api";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import Loading from "../../../../common/loading/Loading";
+import { toast } from "react-toastify";
+import FormikSelect from "../../../../common/FormikSelect";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
-import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { getPDFAction } from "../../../../utility/downloadFile";
-import { generateExcelAction } from "./excel/excelConvert";
-import {
-  getBuDetails,
-  getLeaveHistoryAction,
-  hasLeave,
-  leaveHistoryCol,
-} from "./helper";
-import { yearDDLAction } from "../../../../utility/yearDDL";
-import FormikSelect from "../../../../common/FormikSelect";
-import { customStyles } from "../../../../utility/selectCustomStyle";
-import { currentYear } from "../../../CompensationBenefits/reports/salaryReport/helper";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable, {
   paginationSize,
 } from "../../../../common/peopleDeskTable";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
-import { toast } from "react-toastify";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
+import { getPDFAction } from "../../../../utility/downloadFile";
+import { customStyles } from "../../../../utility/selectCustomStyle";
+import { yearDDLAction } from "../../../../utility/yearDDL";
+import { currentYear } from "../../../CompensationBenefits/reports/salaryReport/helper";
+import { generateExcelAction } from "./excel/excelConvert";
+import { getLeaveHistoryAction, hasLeave, leaveHistoryCol } from "./helper";
 const initData = {
   search: "",
   yearDDL: { label: currentYear(), value: currentYear() },
@@ -79,7 +75,7 @@ const EmLeaveHistory = () => {
 
   useEffect(() => {
     getData();
-    getBuDetails(buId, setBuDetails);
+    getWorkplaceDetails(wId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
@@ -171,9 +167,9 @@ const EmLeaveHistory = () => {
                                   const excelLanding = () => {
                                     generateExcelAction(
                                       "Leave History Report",
-                                      buName,
+                                      buDetails?.strWorkplace,
                                       res?.data,
-                                      buDetails?.strBusinessUnitAddress
+                                      buDetails?.strAddress
                                     );
                                   };
                                   excelLanding();

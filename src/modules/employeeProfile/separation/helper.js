@@ -332,24 +332,24 @@ export const separationApplicationLandingTableColumn = (
 export const getSeparationLandingById = async (payload, setter, setLoading) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.post(
-      "/Employee/EmployeeSeparationListFilter",
-      payload
+    const res = await axios.get(
+      `/Employee/EmployeeSeparationById?SeparationId=${payload}`
     );
-    setLoading && setLoading(false);
-    const modifyRes = res?.data?.map((itm) => {
+
+    const modifyRes = [res?.data]?.map((itm) => {
       return {
         ...itm,
         docArr:
           itm?.strDocumentId?.length > 0 ? itm?.strDocumentId?.split(",") : [],
         halfReason:
-          itm?.Reason?.length > 120
-            ? itm?.Reason.slice(0, 120)
-            : `${itm?.Reason.slice(0, 120)}...`,
-        fullReason: itm?.Reason,
+          itm?.strReason?.length > 120
+            ? itm?.strReason?.slice(0, 120)
+            : `${itm?.strReason?.slice(0, 120)}...`,
+        fullReason: itm?.strReason,
       };
     });
     setter(modifyRes[0]);
+    setLoading && setLoading(false);
   } catch (error) {
     setLoading && setLoading(false);
   }
