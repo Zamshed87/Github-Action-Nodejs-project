@@ -15,6 +15,7 @@ import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../../utility/customColor";
 
+import { getWorkplaceDetails } from "common/api";
 import MasterFilter from "../../../../common/MasterFilter";
 import PeopleDeskTable, {
   paginationSize,
@@ -23,7 +24,6 @@ import { createCommonExcelFile } from "../../../../utility/customExcel/generateE
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { todayDate } from "../../../../utility/todayDate";
-import { getBuDetails } from "../helper";
 import {
   column,
   dailyAttendenceDtoCol,
@@ -99,7 +99,7 @@ const MgmtDailyAttendance = () => {
   };
 
   useEffect(() => {
-    getBuDetails(buId, setBuDetails);
+    getWorkplaceDetails(wId, setBuDetails);
     getData({ current: 1, pageSize: paginationSize }, "", values?.date);
   }, [wgId]);
 
@@ -131,12 +131,16 @@ const MgmtDailyAttendance = () => {
         total: pages?.total,
       },
       searchText,
-      values?.date,
+      values?.date
     );
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages({ current: 1, total: pages?.total, pageSize: +event.target.value });
+    setPages({
+      current: 1,
+      total: pages?.total,
+      pageSize: +event.target.value,
+    });
     getData(
       {
         current: 1,
@@ -144,7 +148,7 @@ const MgmtDailyAttendance = () => {
         total: pages?.total,
       },
       searchText,
-      values?.date,
+      values?.date
     );
   };
 
@@ -235,10 +239,8 @@ const MgmtDailyAttendance = () => {
                                         titleWithDate: `Daily Attendance ${res?.attendanceDate} `,
                                         fromDate: "",
                                         toDate: "",
-                                        buAddress:
-                                          buDetails?.strBusinessUnitAddress,
-                                        businessUnit:
-                                          values?.businessUnit?.label,
+                                        buAddress: buDetails?.strAddress,
+                                        businessUnit: buDetails?.strWorkplace,
                                         tableHeader: column,
                                         getTableData: () =>
                                           getTableDataDailyAttendance(
@@ -261,8 +263,9 @@ const MgmtDailyAttendance = () => {
                                         extraInfo: {},
                                         tableHeadFontSize: 10,
                                         widthList: {
+                                          B: 30,
                                           C: 30,
-                                          D: 30,
+                                          D: 15,
                                           E: 25,
                                           F: 20,
                                           G: 25,
