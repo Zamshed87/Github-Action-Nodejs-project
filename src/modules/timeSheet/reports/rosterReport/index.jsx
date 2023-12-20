@@ -4,7 +4,7 @@ import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import { paginationSize } from "../../../../common/AntTable";
 import DefaultInput from "../../../../common/DefaultInput";
@@ -25,6 +25,7 @@ import {
 import { toast } from "react-toastify";
 import axios from "axios";
 import { getWorkplaceDetails, getWorkplaceGroupDetails } from "common/api";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const initialValues = {
   search: "",
@@ -47,7 +48,12 @@ const RosterReport = () => {
       permission = item;
     }
   });
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Roster Report";
+  }, []);
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
     current: 1,
@@ -127,7 +133,6 @@ const RosterReport = () => {
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
   }, [wId]);
-  console.log({ buDetails });
   return (
     <>
       {(loadingOnGetRosterReportInformation || loading) && <Loading />}

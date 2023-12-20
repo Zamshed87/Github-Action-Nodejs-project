@@ -3,7 +3,7 @@ import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import { paginationSize } from "../../../../common/AntTable";
@@ -29,6 +29,7 @@ import {
 } from "./helper";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
 import { getWorkplaceDetails } from "common/api";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const initialValues = {
   search: "",
@@ -40,6 +41,8 @@ const initialValues = {
 };
 const MonthlyAttendanceReport = () => {
   // redux
+  const dispatch = useDispatch();
+
   const {
     permissionList,
     profileData: { orgId, buId, buName, wgId, wId },
@@ -86,7 +89,11 @@ const MonthlyAttendanceReport = () => {
       setBusinessUnitDDL
     );
   }, [orgId, buId, employeeId]); */
-
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Monthly Attendance Report";
+  }, []);
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
   }, [orgId, buId]);

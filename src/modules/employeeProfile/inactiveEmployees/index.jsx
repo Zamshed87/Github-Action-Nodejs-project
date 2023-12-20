@@ -91,6 +91,7 @@ export default function ActiveInactiveEmployeeReport() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Inactive Employees";
   }, []);
 
   const saveHandler = (values) => {};

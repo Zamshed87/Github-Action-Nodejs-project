@@ -128,6 +128,7 @@ const SeparationReport = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Separation Report";
   }, []);
 
   useEffect(() => {

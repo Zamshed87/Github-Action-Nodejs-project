@@ -36,6 +36,7 @@ export default function Joining() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Joining";
   }, []);
 
   const [singleData, setSingleData] = useState({});

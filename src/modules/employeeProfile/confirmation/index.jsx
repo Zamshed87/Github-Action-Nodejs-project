@@ -110,6 +110,7 @@ function Confirmation() {
   // const openId = openModal ? "simple-popover" : undefined;
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Confirmation";
   }, [dispatch]);
 
   const handleClick = (event) => {

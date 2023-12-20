@@ -105,6 +105,7 @@ export default function EmployeeList() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Report-Employee List";
   }, [dispatch]);
 
   const getDataApiCall = async (
@@ -208,7 +209,11 @@ export default function EmployeeList() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages({ current: 1, total: pages?.total, pageSize: +event.target.value });
+    setPages({
+      current: 1,
+      total: pages?.total,
+      pageSize: +event.target.value,
+    });
     getData(
       {
         current: 1,
@@ -222,7 +227,7 @@ export default function EmployeeList() {
       checkedHeaderList
     );
   };
-  
+
   return (
     <>
       <Formik enableReinitialize={true} initialValues={initData}>
@@ -298,7 +303,8 @@ export default function EmployeeList() {
                                     tableHeader: columnForExcel,
                                     getTableData: () =>
                                       getTableDataEmployeeReports(
-                                        newData, Object.keys(columnForExcel)
+                                        newData,
+                                        Object.keys(columnForExcel)
                                       ),
                                     tableFooter: [],
                                     extraInfo: {},

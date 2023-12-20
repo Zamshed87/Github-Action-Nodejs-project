@@ -36,6 +36,7 @@ const MonthlyPunchReportDetails = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Monthly Punch Details Report";
   }, []);
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,

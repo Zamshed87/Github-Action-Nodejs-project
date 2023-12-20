@@ -36,6 +36,7 @@ export default function EmployeeJobCard() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Job Card";
   }, []);
   const { buId, orgId, employeeId, userName, wgId } = useSelector(
     (state) => state?.auth?.profileData,

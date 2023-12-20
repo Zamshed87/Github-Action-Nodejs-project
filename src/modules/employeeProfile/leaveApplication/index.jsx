@@ -73,6 +73,7 @@ function EmLeaveApplication(props) {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Leave Application";
   }, []);
   return (
     <>
