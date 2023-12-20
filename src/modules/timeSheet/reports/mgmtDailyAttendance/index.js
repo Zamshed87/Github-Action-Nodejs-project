@@ -15,6 +15,8 @@ import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../../utility/customColor";
 
+import { getWorkplaceDetails } from "common/api";
+import { getPDFAction } from "utility/downloadFile";
 import MasterFilter from "../../../../common/MasterFilter";
 import PeopleDeskTable, {
   paginationSize,
@@ -23,7 +25,6 @@ import { createCommonExcelFile } from "../../../../utility/customExcel/generateE
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { todayDate } from "../../../../utility/todayDate";
-import { getBuDetails } from "../helper";
 import {
   column,
   dailyAttendenceDtoCol,
@@ -49,7 +50,7 @@ const MgmtDailyAttendance = () => {
   // redux
   const dispatch = useDispatch();
 
-  const { buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -99,7 +100,7 @@ const MgmtDailyAttendance = () => {
   };
 
   useEffect(() => {
-    getBuDetails(buId, setBuDetails);
+    getWorkplaceDetails(wId, setBuDetails);
     getData({ current: 1, pageSize: paginationSize }, "", values?.date);
   }, [wgId]);
 
@@ -131,12 +132,16 @@ const MgmtDailyAttendance = () => {
         total: pages?.total,
       },
       searchText,
-      values?.date,
+      values?.date
     );
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages({ current: 1, total: pages?.total, pageSize: +event.target.value });
+    setPages({
+      current: 1,
+      total: pages?.total,
+      pageSize: +event.target.value,
+    });
     getData(
       {
         current: 1,
@@ -144,7 +149,7 @@ const MgmtDailyAttendance = () => {
         total: pages?.total,
       },
       searchText,
-      values?.date,
+      values?.date
     );
   };
 
@@ -235,10 +240,8 @@ const MgmtDailyAttendance = () => {
                                         titleWithDate: `Daily Attendance ${res?.attendanceDate} `,
                                         fromDate: "",
                                         toDate: "",
-                                        buAddress:
-                                          buDetails?.strBusinessUnitAddress,
-                                        businessUnit:
-                                          values?.businessUnit?.label,
+                                        buAddress: buDetails?.strAddress,
+                                        businessUnit: buDetails?.strWorkplace,
                                         tableHeader: column,
                                         getTableData: () =>
                                           getTableDataDailyAttendance(
@@ -261,8 +264,9 @@ const MgmtDailyAttendance = () => {
                                         extraInfo: {},
                                         tableHeadFontSize: 10,
                                         widthList: {
+                                          B: 30,
                                           C: 30,
-                                          D: 30,
+                                          D: 15,
                                           E: 25,
                                           F: 20,
                                           G: 25,
@@ -282,37 +286,30 @@ const MgmtDailyAttendance = () => {
                               </IconButton>
                             </Tooltip>
                           </li>
-                          <li className="pr-2 d-none">
+                          <li className="pr-2 ">
                             <Tooltip title="Print" arrow>
                               <IconButton
-                                disabled={
-                                  !values?.businessUnit || !values?.date
-                                }
                                 style={{ color: "#101828" }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  // getPDFAction(
-                                  //   `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${
-                                  //     values?.date
-                                  //   }${
-                                  //     values?.businessUnit?.value
-                                  //       ? `&IntBusinessUnitId=${values?.businessUnit?.value}`
-                                  //       : ""
-                                  //   }${
-                                  //     values?.workplaceGroup?.value
-                                  //       ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
-                                  //       : ""
-                                  //   }${
-                                  //     tableRowDto?.length > 0
-                                  //       ? `&EmployeeIdList=${null}`
-                                  //       : ""
-                                  //   }${
-                                  //     values?.workplace?.value
-                                  //       ? `&IntWorkplaceId=${values?.workplace?.value}`
-                                  //       : ""
-                                  //   }`,
-                                  //   setLoading
-                                  // );
+                                  const list = rowDto?.data?.map(
+                                    (item) => item?.employeeId
+                                  );
+                                  getPDFAction(
+                                    `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${
+                                      values?.date
+                                    }${
+                                      buId ? `&IntBusinessUnitId=${buId}` : ""
+                                    }${
+                                      wgId ? `&IntWorkplaceGroupId=${wgId}` : ""
+                                    }${
+                                      rowDto?.data?.length !==
+                                      rowDto?.totalCount
+                                        ? `&EmployeeIdList=${list}`
+                                        : ""
+                                    }${wId ? `&IntWorkplaceId=${wId}` : ""}`,
+                                    setLoading
+                                  );
                                 }}
                               >
                                 <LocalPrintshopIcon />

@@ -20,9 +20,12 @@ const getTableDataForExcel = (row) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
+      new Cell(item?.workplaceGroup || "N/A", "center", "text").getCell(),
+      new Cell(item?.workplace || "N/A", "center", "text").getCell(),
+      new Cell(item?.department || "N/A", "center", "text").getCell(),
+      new Cell(item?.section || "N/A", "center", "text").getCell(),
       new Cell(item?.employee || "N/A", "left", "text").getCell(),
       new Cell(item?.employeeCode || "N/A", "left", "text").getCell(),
-      new Cell(item?.department || "N/A", "center", "text").getCell(),
       new Cell(item?.designation || "N/A", "center", "text").getCell(),
       // eslint-disable-next-line
       new Cell(
@@ -114,6 +117,34 @@ const createExcelFile = (
               border: "all 000000 thin",
             },
             {
+              text: "Workplace Group",
+              fontSize: 9,
+              // cellRange: "A1:B1",
+              // merge: true,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Workplace",
+              fontSize: 9,
+              // cellRange: "A1:B1",
+              // merge: true,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Department",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Section",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
               text: "Employee Name",
               fontSize: 9,
               // cellRange: "A1:B1",
@@ -130,12 +161,6 @@ const createExcelFile = (
               border: "all 000000 thin",
             },
 
-            {
-              text: "Department",
-              fontSize: 9,
-              bold: true,
-              border: "all 000000 thin",
-            },
             {
               text: "Designation",
               fontSize: 9,

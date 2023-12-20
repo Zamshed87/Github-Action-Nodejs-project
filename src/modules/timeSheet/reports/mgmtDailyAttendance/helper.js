@@ -64,6 +64,20 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       width: 30,
     },
     {
+      title: "Workplace Group",
+      dataIndex: "workplaceGroup",
+      sort: false,
+      filter: false,
+      render: (record) => record?.workplaceGroup || "N/A",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplace",
+      sort: false,
+      filter: false,
+      render: (record) => record?.workplace || "N/A",
+    },
+    {
       title: "Employee Id",
       dataIndex: "employeeCode",
       sort: false,
@@ -92,6 +106,14 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       ),
       fieldType: "string",
     },
+
+    {
+      title: "Designation",
+      dataIndex: "designation",
+      sort: false,
+      filter: false,
+      render: (record) => record?.designation || "N/A",
+    },
     {
       title: "Department",
       dataIndex: "department",
@@ -101,19 +123,13 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
     },
     {
       title: "Section",
-      dataIndex: "strSectionName",
+      dataIndex: "section",
       sort: true,
       fieldType: "string",
       filter: false,
-      // render: (record) => record?.department || "N/A",
+      render: (record) => record?.section || "N/A",
     },
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      sort: false,
-      filter: false,
-      render: (record) => record?.designation || "N/A",
-    },
+
     {
       title: "Employment Type",
       dataIndex: "employmentType",
@@ -138,7 +154,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       ),
       sort: false,
       filter: false,
-      width:80
+      width: 80,
     },
     {
       title: "Out Time",
@@ -151,7 +167,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
 
       sort: false,
       filter: false,
-      width:80
+      width: 80,
     },
     {
       title: "Duration",
@@ -194,10 +210,13 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
 // excel columns
 export const column = {
   sl: "SL",
+  workplaceGroup: "Workplace Group",
+  workplace: "Workplace",
   employeeCode: "Code",
   employeeName: "Employee Name",
-  department: "Department",
   designation: "Designation",
+  department: "Department",
+  section: "Section",
   employmentType: "Employment Type",
   calendarName: "Calendar Name",
   inTime: "In Time",
