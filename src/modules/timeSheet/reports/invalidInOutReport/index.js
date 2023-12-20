@@ -1,26 +1,25 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
+import {
+  SearchOutlined,
+  SettingsBackupRestoreOutlined,
+} from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-import AntTable from "../../../../common/AntTable";
-import { paginationSize } from "../../../../common/AntTable";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import AntTable, { paginationSize } from "../../../../common/AntTable";
 import DefaultInput from "../../../../common/DefaultInput";
 import FormikSelect from "../../../../common/FormikSelect";
-import Loading from "../../../../common/loading/Loading";
 import NoResult from "../../../../common/NoResult";
+import ResetButton from "../../../../common/ResetButton";
+import { getPeopleDeskAllDDL } from "../../../../common/api";
+import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { dailyAttendenceDtoCol, getDailyAttendanceData } from "./helper";
-import ResetButton from "../../../../common/ResetButton";
-import {
-  SearchOutlined,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
 
 const initialValues = {
   businessUnit: "",
@@ -141,6 +140,7 @@ const MgmtInOutReport = () => {
   //set to module
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Invalid IN-OUT Report";
   }, [dispatch]);
 
   const handleTableChange = (pagination, newRowDto, srcText) => {

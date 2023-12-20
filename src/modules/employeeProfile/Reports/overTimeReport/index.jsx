@@ -41,6 +41,7 @@ export default function EmOverTimeReport() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Overtime Report";
   }, []);
   const [loading, setLoading] = useState(false);
   const [buDetails, setBuDetails] = useState({});

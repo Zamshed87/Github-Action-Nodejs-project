@@ -152,6 +152,7 @@ export default function MgtIOUApplication() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "IOU Application";
   }, []);
 
   useEffect(() => {

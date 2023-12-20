@@ -3,7 +3,7 @@ import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import { paginationSize } from "../../../../common/AntTable";
@@ -28,6 +28,8 @@ import {
   onGetMonthlyAttendanceReport,
 } from "./helper";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
+import { getWorkplaceDetails } from "common/api";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const initialValues = {
   search: "",
@@ -39,9 +41,11 @@ const initialValues = {
 };
 const MonthlyAttendanceReport = () => {
   // redux
+  const dispatch = useDispatch();
+
   const {
     permissionList,
-    profileData: { orgId, buId, buName, wgId },
+    profileData: { orgId, buId, buName, wgId, wId },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -85,9 +89,13 @@ const MonthlyAttendanceReport = () => {
       setBusinessUnitDDL
     );
   }, [orgId, buId, employeeId]); */
-
   useEffect(() => {
-    getBuDetails(buId, setBuDetails);
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Monthly Attendance Report";
+  }, []);
+  useEffect(() => {
+    getWorkplaceDetails(wId, setBuDetails);
   }, [orgId, buId]);
 
   //  formik
@@ -180,8 +188,8 @@ const MonthlyAttendanceReport = () => {
                             )} to ${dateFormatter(values?.toDate)}`,
                             fromDate: "",
                             toDate: "",
-                            buAddress: buDetails?.strBusinessUnitAddress,
-                            businessUnit: buName,
+                            buAddress: buDetails?.strAddress,
+                            businessUnit: buDetails?.strWorkplace,
                             tableHeader: column(
                               values?.fromDate,
                               values?.toDate
@@ -198,6 +206,7 @@ const MonthlyAttendanceReport = () => {
                             tableHeadFontSize: 10,
                             widthList: {
                               C: 30,
+                              B: 30,
                               D: 30,
                               E: 25,
                               F: 20,

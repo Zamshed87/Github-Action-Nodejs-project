@@ -24,6 +24,7 @@ import PopOverFilter from "./PopOverFilter";
 import "./attendanceReport.css";
 import { generateExcelAction } from "./excel/excelConvert";
 import { attendanceReportColumn, getAttendanceReport } from "./helper";
+import { getWorkplaceDetails } from "common/api";
 
 const todayDate = dateFormatterForInput(new Date());
 const initData = {
@@ -77,12 +78,13 @@ export default function AttendanceReport() {
     // eslint-disable-next-line
   }, [buId, orgId, wgId]);
   useEffect(() => {
-    getBuDetails(buId, setBuDetails, setTempLoading);
+    getWorkplaceDetails(wId, setBuDetails);
   }, [buId, orgId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Attendance Report";
   }, []);
 
   const handleClick = (event) => {
@@ -225,9 +227,9 @@ export default function AttendanceReport() {
                                       "Employees Attendance Report",
                                       "",
                                       "",
-                                      buName,
+                                      buDetails?.strWorkplace,
                                       res?.data?.data,
-                                      buDetails?.strBusinessUnitAddress,
+                                      buDetails?.strAddress,
                                       values?.fromDate,
                                       values?.toDate
                                     );

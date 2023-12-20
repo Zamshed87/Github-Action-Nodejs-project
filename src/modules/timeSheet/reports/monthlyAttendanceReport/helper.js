@@ -17,11 +17,7 @@ export const onGetMonthlyAttendanceReport = (
 ) => {
   let search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
   getMonthlyAttendanceInformation(
-    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
-      values?.fromDate
-    }&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=${
-      pages.current
-    }&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`,
+    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate}&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=${pages.current}&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`,
     (data) => {
       setPages({
         ...pages,
@@ -50,6 +46,34 @@ export const monthlyAttendanceReportColumns = (
       className: "text-center",
       width: 40,
       fixed: "left",
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroup",
+      sorter: true,
+      filter: true,
+      width: 180,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      // filter: true,
+      width: 180,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sorter: true,
+      // filter: true,
+      width: 180,
+    },
+    {
+      title: "Section",
+      dataIndex: "strSectionName",
+      sorter: true,
+      // filter: true,
+      width: 180,
     },
     {
       title: () => <span style={{ color: gray600 }}>Employee ID</span>,
@@ -86,13 +110,7 @@ export const monthlyAttendanceReportColumns = (
       filter: true,
       width: 180,
     },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sorter: true,
-      filter: true,
-      width: 180,
-    },
+
     ...(dateList?.length > 0 &&
       dateList.map((item) => ({
         title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
@@ -356,10 +374,13 @@ export const column = (fromDate, toDate) => {
     });
   return {
     sl: "SL",
+    strWorkplaceGroup: "Workplace Group",
+    strWorkplace: "Workplace",
+    strDepartment: "Department",
+    strSectionName: "Section",
     EmployeeCode: "Code",
     strEmployeeName: "Employee Name",
     strDesignation: "Designation",
-    strDepartment: "Department",
     ...tempObj,
   };
 };

@@ -101,12 +101,13 @@ const Homepage = () => {
     }
   };
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Overview"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "PeopleDesk";
   }, []);
 
   return (

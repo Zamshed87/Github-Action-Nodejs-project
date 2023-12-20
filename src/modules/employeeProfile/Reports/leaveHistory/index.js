@@ -77,6 +77,7 @@ const EmLeaveHistory = () => {
     getData();
     getWorkplaceDetails(wId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Leave History";
   }, [buId, wgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);

@@ -1,6 +1,6 @@
 import axios from "axios";
-import AvatarComponent from "../../../../common/AvatarComponent";
 import { toast } from "react-toastify";
+import AvatarComponent from "../../../../common/AvatarComponent";
 
 export const attendanceReportColumn = (page, paginationSize) => {
   return [
@@ -10,6 +10,24 @@ export const attendanceReportColumn = (page, paginationSize) => {
       sort: false,
       filter: false,
       className: "text-center",
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "workplaceGroup",
+      width: 150,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplace",
+      width: 150,
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
     },
     {
       title: "Employee Id",
@@ -40,15 +58,16 @@ export const attendanceReportColumn = (page, paginationSize) => {
       dataIndex: "designation",
     },
     {
-      title: "Department",
-      dataIndex: "department",
+      title: "Hr Position",
+      dataIndex: "hrPosition",
     },
+
     {
       title: "Employment Type",
       dataIndex: "employmentType",
     },
     {
-      title: "Days",
+      title: "Working Days",
       dataIndex: "workingDays",
     },
     {
@@ -72,13 +91,25 @@ export const attendanceReportColumn = (page, paginationSize) => {
       dataIndex: "casualLeave",
     },
     {
+      title: "Sick Leave",
+      dataIndex: "casualLeave",
+    },
+    {
+      title: "Earn Leave",
+      dataIndex: "casualLeave",
+    },
+    {
       title: "Medical Leave",
       dataIndex: "medicalLeave",
     },
     {
-      title: "Without Pay Leave",
-      dataIndex: "leaveWithoutPay",
+      title: "Special Leave",
+      dataIndex: "medicalLeave",
     },
+    // {
+    //   title: "Without Pay Leave",
+    //   dataIndex: "leaveWithoutPay",
+    // },
     {
       title: "Off Day",
       dataIndex: "weekend",

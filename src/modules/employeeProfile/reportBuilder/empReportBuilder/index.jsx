@@ -41,6 +41,7 @@ const EmployeeReportBuilder = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Employee Report Builder";
   }, []);
 
   // eslint-disable-next-line no-unused-vars

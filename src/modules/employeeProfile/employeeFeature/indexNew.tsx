@@ -109,6 +109,8 @@ function EmployeeFeatureNew() {
   useEffect(() => {
     landingApiCall();
     getBUDetails();
+    document.title = "Employee";
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
