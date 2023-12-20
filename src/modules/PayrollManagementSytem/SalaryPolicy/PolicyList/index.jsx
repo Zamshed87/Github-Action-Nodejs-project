@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AddOutlined } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import AntTable from "../../../../common/AntTable";
 import Loading from "../../../../common/loading/Loading";
@@ -11,6 +11,7 @@ import PrimaryButton from "../../../../common/PrimaryButton";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import "./styles.css";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const PolicyList = () => {
   const [searchString, setSearchString] = useState("");
@@ -33,7 +34,13 @@ const PolicyList = () => {
       ]);
     }, 500);
   };
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Payroll Policy";
+  }, []);
   // getting all policy from server
   useEffect(() => {
     getSalaryPolicyLandings(

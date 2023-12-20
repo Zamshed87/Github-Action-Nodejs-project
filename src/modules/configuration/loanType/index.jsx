@@ -70,6 +70,7 @@ function LoanTypeCreate() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Loan Type";
   }, []);
 
   useEffect(() => {

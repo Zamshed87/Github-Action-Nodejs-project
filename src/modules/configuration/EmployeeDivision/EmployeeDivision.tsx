@@ -3,8 +3,9 @@ import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { debounce } from "lodash";
 import React, { useEffect } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import CreateEmployeeDivision from "./Create/CreateEmployeeDivision";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 const EmployeeDivision: React.FC = () => {
   // Data From Store
   const { intAccountId, buId, wgId, wId } = useSelector(
@@ -17,6 +18,11 @@ const EmployeeDivision: React.FC = () => {
   // Api Actions
   const GetEmployeeDivision = useApiRequest([]);
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Employee Division";
+  }, []);
   // Landing Api
   const landingApi = (searchText?: any) => {
     GetEmployeeDivision?.action({

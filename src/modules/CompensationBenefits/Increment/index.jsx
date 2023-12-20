@@ -173,6 +173,8 @@ function IncrementLanding() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Increment";
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

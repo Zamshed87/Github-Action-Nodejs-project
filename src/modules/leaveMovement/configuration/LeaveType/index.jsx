@@ -2,7 +2,7 @@ import {
   AddOutlined,
   ModeEditOutlineOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -60,6 +60,7 @@ function LeaveTypeCreate() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Leave Type";
   }, []);
 
   useEffect(() => {

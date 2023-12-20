@@ -153,6 +153,7 @@ const ArearSalaryGenerateIndex = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Arear Salary Generate";
   }, [dispatch]);
 
   const arrearGenerateColumn = (page, paginationSize) => {

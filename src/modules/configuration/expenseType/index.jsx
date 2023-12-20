@@ -75,6 +75,7 @@ const ExpenseTypeCreate = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Expense Type";
   }, []);
 
   useEffect(() => {

@@ -87,6 +87,7 @@ export default function UserRoleExtentionLanding() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "User Role Extension";
   }, []);
 
   // // ascending & descending

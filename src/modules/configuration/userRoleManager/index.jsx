@@ -18,6 +18,7 @@ export default function UserRoleManager() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "User Role Manager";
   }, []);
 
   const tableData = [
