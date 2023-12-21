@@ -220,6 +220,7 @@ export default function LocationAndDeviceApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Location & Device Approval";
   }, []);
 
   return (
@@ -252,11 +253,7 @@ export default function LocationAndDeviceApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton
-                            title={
-                              "Device Approval"
-                            }
-                          />
+                          <BackButton title={"Device Approval"} />
                           <div className="table-card-head-right">
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox

@@ -220,6 +220,7 @@ export default function RemoteAttendanceApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Remote Attendance";
   }, []);
 
   return (

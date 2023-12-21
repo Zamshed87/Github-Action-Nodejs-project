@@ -171,7 +171,7 @@ export default function PfWithdrawApproval() {
         setLoading
       );
     };
-      let confirmObject = {
+    let confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -199,6 +199,7 @@ export default function PfWithdrawApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "PF Withdraw Approval";
   }, []);
 
   return (
@@ -358,21 +359,28 @@ export default function PfWithdrawApproval() {
                                         setLoading,
                                         page,
                                         paginationSize,
-                                        allData
+                                        allData,
                                       }
                                     )}
                                     setColumnsData={(dataRow) => {
-                                      if (dataRow?.length === allData?.listData?.length) {
+                                      if (
+                                        dataRow?.length ===
+                                        allData?.listData?.length
+                                      ) {
                                         let temp = dataRow?.map((item) => {
                                           return {
                                             ...item,
                                             selectCheckbox: false,
                                           };
                                         });
-                                        setApplicationListData({ listData: [...temp] });
+                                        setApplicationListData({
+                                          listData: [...temp],
+                                        });
                                         setAllData({ listData: [...temp] });
                                       } else {
-                                        setApplicationListData({ listData: [...dataRow] });
+                                        setApplicationListData({
+                                          listData: [...dataRow],
+                                        });
                                       }
                                     }}
                                     setPage={setPage}

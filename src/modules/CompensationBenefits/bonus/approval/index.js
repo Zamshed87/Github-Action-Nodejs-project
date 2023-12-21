@@ -5,7 +5,7 @@ import {
   Cancel,
   CheckCircle,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -15,9 +15,9 @@ import { useHistory } from "react-router-dom";
 import Chips from "../../../../common/Chips";
 import FormikInput from "../../../../common/FormikInput";
 import IConfirmModal from "../../../../common/IConfirmModal";
-import Loading from "../../../../common/loading/Loading";
 import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
+import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { failColor, successColor } from "../../../../utility/customColor";
@@ -25,7 +25,7 @@ import ResetButton from "./../../../../common/ResetButton";
 import {
   bonusApproveRejectRequest,
   filterData,
-  getBonusGenerateRequestReport
+  getBonusGenerateRequestReport,
 } from "./helper";
 
 const initData = {
@@ -117,6 +117,8 @@ const BonusApproval = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Bonus Approval";
   }, []);
 
   return (

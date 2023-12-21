@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Cancel, CheckCircle, } from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React from "react";
@@ -14,14 +14,20 @@ import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { failColor, successColor } from "../../../utility/customColor";
 import CardTable from "./components/CardTable";
-import { getAllSalaryCertificateListDataForApproval, salaryCertificateApproveReject } from "./helper";
+import {
+  getAllSalaryCertificateListDataForApproval,
+  salaryCertificateApproveReject,
+} from "./helper";
 
 const initData = {
   search: "",
 };
 
 const SalaryCertificateApproval = () => {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   const [loading, setLoading] = useState(false);
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
@@ -159,19 +165,30 @@ const SalaryCertificateApproval = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Salary Certificate Approval";
   }, []);
 
   return (
-   <>
-    <Formik
+    <>
+      <Formik
         enableReinitialize={true}
         initialValues={initData}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
-        }}>
-        {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid, dirty }) => (
+        }}
+      >
+        {({
+          handleSubmit,
+          resetForm,
+          values,
+          errors,
+          touched,
+          setFieldValue,
+          isValid,
+          dirty,
+        }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -183,14 +200,21 @@ const SalaryCertificateApproval = () => {
                         <div className="table-card-heading">
                           <BackButton title={"Salary Certificate Approval"} />
                           <div className="table-card-head-right">
-                            {applicationListData?.listData?.filter((item) => item?.selectCheckbox).length > 0 && (
+                            {applicationListData?.listData?.filter(
+                              (item) => item?.selectCheckbox
+                            ).length > 0 && (
                               <div className="d-flex actionIcon mr-3">
                                 <Tooltip title="Accept">
                                   <div
                                     className="muiIconHover success mr-2"
                                     onClick={() => {
-                                      demoPopup("approve", "isApproved", applicationData);
-                                    }}>
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
                                     <MuiIcon
                                       icon={
                                         <CheckCircle
@@ -207,8 +231,13 @@ const SalaryCertificateApproval = () => {
                                   <div
                                     className="muiIconHover  danger"
                                     onClick={() => {
-                                      demoPopup("reject", "isReject", applicationData);
-                                    }}>
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
                                     <MuiIcon
                                       icon={
                                         <Cancel
@@ -279,8 +308,9 @@ const SalaryCertificateApproval = () => {
                                   setApplicationListData,
                                   appliedStatus,
                                   setAllData,
-                                  allData
-                                }}></CardTable>
+                                  allData,
+                                }}
+                              ></CardTable>
                             </div>
                           </div>
                         ) : (
@@ -295,7 +325,7 @@ const SalaryCertificateApproval = () => {
           </>
         )}
       </Formik>
-   </>
+    </>
   );
 };
 

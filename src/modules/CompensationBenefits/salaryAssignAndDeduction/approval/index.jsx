@@ -274,6 +274,7 @@ export default function AllowanceNDeductionApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Allowance & Deduction Approval";
   }, []);
 
   const columns = (setFieldValue, page, paginationSize) => {

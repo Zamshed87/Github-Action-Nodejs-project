@@ -239,6 +239,7 @@ export default function MovementApplication() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Self-Movement Application";
   }, []);
 
   const demoPopup = (data, values) => {
