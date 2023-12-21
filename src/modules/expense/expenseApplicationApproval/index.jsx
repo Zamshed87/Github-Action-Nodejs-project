@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Cancel, CheckCircle,} from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import React from "react";
@@ -16,14 +16,20 @@ import { failColor, successColor } from "../../../utility/customColor";
 // import useDebounce from "../../../utility/customHooks/useDebounce";
 import { todayDate } from "../../../utility/todayDate";
 import CardTable from "./components/CardTable";
-import { expenseApproveReject, getAllExpenseListDataForApproval } from "./helper";
+import {
+  expenseApproveReject,
+  getAllExpenseListDataForApproval,
+} from "./helper";
 
 const initData = {
   search: "",
 };
 
 const ExpenseApplicationApproval = () => {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   const [loading, setLoading] = useState(false);
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
@@ -77,7 +83,7 @@ const ExpenseApplicationApproval = () => {
       setApplicationData(array);
     });
   }, [applicationListData]);
- // eslint-disable-next-line 
+  // eslint-disable-next-line
   const [appliedStatus, setAppliedStatus] = useState({
     value: 1,
     label: "Pending",
@@ -160,6 +166,7 @@ const ExpenseApplicationApproval = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Expense Approval";
   }, []);
 
   return (
@@ -171,8 +178,18 @@ const ExpenseApplicationApproval = () => {
           saveHandler(values, () => {
             resetForm(initData);
           });
-        }}>
-        {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid, dirty }) => (
+        }}
+      >
+        {({
+          handleSubmit,
+          resetForm,
+          values,
+          errors,
+          touched,
+          setFieldValue,
+          isValid,
+          dirty,
+        }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -184,14 +201,21 @@ const ExpenseApplicationApproval = () => {
                         <div className="table-card-heading">
                           <BackButton title={"Expense Approval"} />
                           <div className="table-card-head-right">
-                            {applicationListData?.listData?.filter((item) => item?.selectCheckbox).length > 0 && (
+                            {applicationListData?.listData?.filter(
+                              (item) => item?.selectCheckbox
+                            ).length > 0 && (
                               <div className="d-flex actionIcon mr-3">
                                 <Tooltip title="Accept">
                                   <div
                                     className="muiIconHover success mr-2"
                                     onClick={() => {
-                                      demoPopup("approve", "isApproved", applicationData);
-                                    }}>
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
                                     <MuiIcon
                                       icon={
                                         <CheckCircle
@@ -208,8 +232,13 @@ const ExpenseApplicationApproval = () => {
                                   <div
                                     className="muiIconHover  danger"
                                     onClick={() => {
-                                      demoPopup("reject", "isReject", applicationData);
-                                    }}>
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
                                     <MuiIcon
                                       icon={
                                         <Cancel
@@ -280,8 +309,9 @@ const ExpenseApplicationApproval = () => {
                                   setApplicationListData,
                                   appliedStatus,
                                   setAllData,
-                                  allData
-                                }}></CardTable>
+                                  allData,
+                                }}
+                              ></CardTable>
                             </div>
                           </div>
                         ) : (

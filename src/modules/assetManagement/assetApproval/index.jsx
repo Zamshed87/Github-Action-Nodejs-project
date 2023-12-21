@@ -1,7 +1,7 @@
 import {
   Cancel,
   CheckCircle,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -24,7 +24,7 @@ import {
   failColor,
   gray900,
   greenColor,
-  successColor
+  successColor,
 } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../utility/dateFormatter";
@@ -228,6 +228,7 @@ export default function AssetApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Asset Approval";
   }, [dispatch]);
 
   const getLandingTable = (setFieldValue, page, paginationSize) => {
