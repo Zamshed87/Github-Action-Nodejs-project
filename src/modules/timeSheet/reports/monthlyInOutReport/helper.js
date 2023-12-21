@@ -13,12 +13,13 @@ export const montlyInOutXlCol = (fromDate, toDate) => {
     });
   return {
     sl: "SL",
+
+    EmployeeCode: "Employee Id",
+    strEmployeeName: "Employee Name",
     strWorkplaceGroup: "Workplace Group",
     strWorkplace: "Workplace",
     strDepartment: "Department",
     strSectionName: "Section",
-    EmployeeCode: "Employee Id",
-    strEmployeeName: "Employee Name",
     strDesignation: "Designation",
     ...tempObj,
   };
