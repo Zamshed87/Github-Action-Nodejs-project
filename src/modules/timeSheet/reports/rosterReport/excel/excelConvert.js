@@ -20,12 +20,12 @@ const getTableDataForExcel = (row, dateList) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
+      new Cell(item?.EmployeeCode || "N/A", "left", "text").getCell(),
+      new Cell(item?.strEmployeeName || "N/A", "left", "text").getCell(),
       new Cell(item?.strWorkplaceGroup || "N/A", "left", "text").getCell(),
       new Cell(item?.strWorkplace || "N/A", "left", "text").getCell(),
       new Cell(item?.strDepartment || "N/A", "center", "text").getCell(),
       new Cell(item?.strSectionName || "N/A", "center", "text").getCell(),
-      new Cell(item?.EmployeeCode || "N/A", "left", "text").getCell(),
-      new Cell(item?.strEmployeeName || "N/A", "left", "text").getCell(),
       new Cell(item?.strDesignation || "N/A", "center", "text").getCell(),
       ...(dateList?.length > 0 &&
         dateList.map((nestedItem) =>
@@ -100,6 +100,18 @@ const createExcelFile = (
               border: "all 000000 thin",
             },
             {
+              text: "Employee Code",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
+              text: "Employee Name",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
               text: "Wokrplace Group",
               fontSize: 9,
               bold: true,
@@ -123,18 +135,7 @@ const createExcelFile = (
               bold: true,
               border: "all 000000 thin",
             },
-            {
-              text: "Employee Code",
-              fontSize: 9,
-              bold: true,
-              border: "all 000000 thin",
-            },
-            {
-              text: "Employee Name",
-              fontSize: 9,
-              bold: true,
-              border: "all 000000 thin",
-            },
+
             {
               text: "Designation",
               fontSize: 9,

@@ -8,7 +8,10 @@ import { paginationSize } from "../../../../common/AntTable";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import DefaultInput from "../../../../common/DefaultInput";
 import NoResult from "../../../../common/NoResult";
-import { getSearchEmployeeList } from "../../../../common/api";
+import {
+  getSearchEmployeeList,
+  getWorkplaceDetails,
+} from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import { gray600 } from "../../../../utility/customColor";
@@ -38,7 +41,7 @@ const EmployeesShift = () => {
   );
   const {
     permissionList,
-    profileData: { orgId, buId, employeeId, wgId, strDisplayName },
+    profileData: { orgId, buId, employeeId, wgId, wId, strDisplayName },
     keywords: { supervisor },
   } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -170,8 +173,8 @@ const EmployeesShift = () => {
   }, [orgId, buId, employeeId]);
 
   useEffect(() => {
-    getBuDetails(intBusinessUnitId, setBuDetails, setLoading);
-  }, [intBusinessUnitId]);
+    getWorkplaceDetails(wId, setBuDetails);
+  }, [wId]);
 
   return (
     <>
@@ -196,9 +199,9 @@ const EmployeesShift = () => {
                         "Employee Roster Report",
                         values?.fromDate,
                         values?.toDate,
-                        buName,
+                        buDetails?.strWorkplace,
                         rowDto,
-                        buDetails?.strBusinessUnitAddress,
+                        buDetails?.strAddress,
                         employeeInformation
                       );
                     };
@@ -350,6 +353,10 @@ const EmployeesShift = () => {
                   <p>
                     Department:{" "}
                     <strong>{employeeInformation?.[0]?.DepartmentName}</strong>{" "}
+                  </p>
+                  <p>
+                    Section:{" "}
+                    <strong>{employeeInformation?.[0]?.SectionName}</strong>{" "}
                   </p>
                 </div>
               </div>

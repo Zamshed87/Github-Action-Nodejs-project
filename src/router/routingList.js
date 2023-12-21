@@ -7,6 +7,9 @@ import { lazy } from "react";
 const MultiCalendarAssign = lazy(() =>
   import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
 );
+const JoineeAttendanceReport = lazy(() =>
+  import("modules/timeSheet/reports/joineeAttendanceReport")
+);
 const CreateEditLeavePolicy = lazy(() =>
   import(
     "../modules/leaveMovement/configuration/YearlyLeavePolicy/CreateEditLeavePolicy"
@@ -1481,6 +1484,10 @@ export const routingList = [
   {
     path: "/profile/reports/dailyAttendanceReport",
     component: MgmtDailyAttendance,
+  },
+  {
+    path: "/profile/reports/joineeAttendancereport",
+    component: JoineeAttendanceReport,
   },
   {
     path: "/profile/reports/invalidInOutAttendanceReport",
