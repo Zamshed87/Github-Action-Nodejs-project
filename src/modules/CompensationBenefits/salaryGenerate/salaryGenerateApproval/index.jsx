@@ -3,7 +3,7 @@ import {
   Cancel,
   CheckCircle,
   InfoOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -29,14 +29,14 @@ import {
   failColor,
   gray900,
   greenColor,
-  successColor
+  successColor,
 } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import { getMonthName } from "../../../../utility/monthUtility";
 import {
   getAllSalaryGenerateListDataForApproval,
-  salaryGenerateApproveReject
+  salaryGenerateApproveReject,
 } from "../helper";
 import FilterModal from "./component/FilterModal";
 import "./index.css";
@@ -303,8 +303,10 @@ export default function SalaryGenerateApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Salary Approval";
   }, []);
-  
+
   const getLandingTable = (setFieldValue, page, paginationSize) => {
     return [
       {

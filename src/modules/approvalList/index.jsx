@@ -49,7 +49,7 @@ export default function ApprovalList() {
     );
   }, [orgId, employeeId]);
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
   useEffect(() => {
     let arr = [];
     approvalPermissions.forEach((item) => {
@@ -210,6 +210,7 @@ export default function ApprovalList() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Approval";
   }, []);
 
   return (

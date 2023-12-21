@@ -95,8 +95,8 @@ export default function LeaveApproval() {
   const [filterData, setFilterData] = useState([]);
   const [viewModalRow, setViewModalRow] = useState(false);
   const [singleNoticeData, setSingleNoticeData] = useState("");
-  const [ApplicationId, setApplicationId] = useState(0)
-  const [allNoticeData , setAllNoticeData] = useState([])
+  const [ApplicationId, setApplicationId] = useState(0);
+  const [allNoticeData, setAllNoticeData] = useState([]);
   // filter
   const [empOrder, setEmpOrder] = useState("desc");
   const [designationOrder, setDesignationOrder] = useState("desc");
@@ -131,7 +131,6 @@ export default function LeaveApproval() {
     }
     setAllLeaveApplicatonData({ listData: modifyRowData });
   };
-
 
   useEffect(() => {
     const array = [];
@@ -188,7 +187,7 @@ export default function LeaveApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [employeeId, orgId, wgId,ApplicationId]);
+  }, [employeeId, orgId, wgId, ApplicationId]);
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);
@@ -364,6 +363,8 @@ export default function LeaveApproval() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Leave Approval";
   }, []);
 
   const getLandingTable = (setFieldValue, page, paginationSize) => {
@@ -430,7 +431,6 @@ export default function LeaveApproval() {
                   e.stopPropagation();
                   let leaveAppData = leaveApplicationData?.listData?.map(
                     (item) => {
-                      
                       if (
                         item?.leaveApplication?.intApplicationId ===
                         record?.leaveApplication?.intApplicationId
@@ -906,7 +906,10 @@ export default function LeaveApproval() {
                                       record?.leaveApplication?.intApplicationId
                                     }
                                     onRowClick={(record) => {
-                                      setApplicationId(record?.leaveApplication?.intApplicationId)
+                                      setApplicationId(
+                                        record?.leaveApplication
+                                          ?.intApplicationId
+                                      );
                                       setViewModalRow(true);
                                     }}
                                   />
@@ -926,8 +929,7 @@ export default function LeaveApproval() {
                       style={{
                         boxShadow: "0px 1px 4px 1px rgba(99, 115, 129, 0.3)",
                       }}
-                    >
-                    </div>
+                    ></div>
                   </div>
                 </div>
 

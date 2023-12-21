@@ -260,12 +260,16 @@ export default function SeparationApproval() {
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
-  let permission = useMemo(() => permissionList.find((item) => item?.menuReferenceId === 109), [permissionList]);
+  let permission = useMemo(
+    () => permissionList.find((item) => item?.menuReferenceId === 109),
+    [permissionList]
+  );
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Separation Approval";
   }, []);
 
   return (

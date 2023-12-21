@@ -366,6 +366,8 @@ export default function LoanApproval() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Loan Approval";
   }, []);
 
   const columns = (setFieldValue, page, paginationSize) => {
