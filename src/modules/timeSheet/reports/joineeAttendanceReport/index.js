@@ -309,7 +309,7 @@ const JoineeAttendanceReport = () => {
 
                   <div>
                     <ul className="d-flex flex-wrap">
-                      {rowDto?.data?.length > 0 && (
+                      {rowDto?.length > 0 && (
                         <>
                           <li className="pr-2">
                             <Tooltip title="Export CSV" arrow>
