@@ -321,7 +321,7 @@ const JoineeAttendanceReport = () => {
                                     `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=new_joinee_in_out_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromdate}&DteToDate=${values?.todate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&PageSize=10000000&IsPaginated=false&intYearId=${values?.yearId}&intMonthId=${values?.monthId}`,
                                     (res) => {
                                       console.log(res);
-                                      const newData = res?.data?.map(
+                                      const newData = res?.map(
                                         (item, index) => {
                                           return {
                                             ...item,
