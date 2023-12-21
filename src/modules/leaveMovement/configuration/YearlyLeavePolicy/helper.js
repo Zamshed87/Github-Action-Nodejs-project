@@ -176,7 +176,14 @@ export const getYearlyPolicyById = async (
       const temp = {
         ...res?.data,
         intWorkplaceList: newState1,
-
+        bu: {
+          value: res?.data?.intBusinessUnitId,
+          label: res?.data?.strBusinessUnitName,
+        },
+        wg: {
+          value: res?.data?.intWorkplaceGroupId,
+          label: res?.data?.strWorkplaceGroupName,
+        },
         intGender: res?.data?.genderListDTO?.map((itm) => {
           return {
             ...itm,
