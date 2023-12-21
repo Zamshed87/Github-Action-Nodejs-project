@@ -142,7 +142,7 @@ export default function MarketVistApproval() {
     label: "Pending",
   });
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
@@ -220,6 +220,7 @@ export default function MarketVistApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Market Visit Approval";
   }, []);
 
   return (
@@ -257,55 +258,55 @@ export default function MarketVistApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                                <div className="d-flex actionIcon mr-3">
-                                  <Tooltip title="Accept">
-                                    <div
-                                      className="muiIconHover success mr-2"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "approve",
-                                          "isApproved",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <CheckCircle
-                                            sx={{
-                                              color: successColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                  <Tooltip title="Reject">
-                                    <div
-                                      className="muiIconHover  danger"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "reject",
-                                          "isReject",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <Cancel
-                                            sx={{
-                                              color: failColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                </div>
-                              )}
+                              <div className="d-flex actionIcon mr-3">
+                                <Tooltip title="Accept">
+                                  <div
+                                    className="muiIconHover success mr-2"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <CheckCircle
+                                          sx={{
+                                            color: successColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                                <Tooltip title="Reject">
+                                  <div
+                                    className="muiIconHover  danger"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <Cancel
+                                          sx={{
+                                            color: failColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                              </div>
+                            )}
                             <ul className="d-flex flex-wrap">
                               {/* {isFilter && (
                                 <li>

@@ -305,6 +305,8 @@ export default function OvertimeApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Overtime Approval";
   }, []);
 
   const columns = (setFieldValue, page, paginationSize) => {

@@ -155,7 +155,6 @@ export default function TransferNPromotionApproval() {
     }
   };
   const demoPopup = (action, text, array) => {
-
     let newArray = [];
 
     if (array.length > 0) {
@@ -243,7 +242,6 @@ export default function TransferNPromotionApproval() {
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
-
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -258,6 +256,7 @@ export default function TransferNPromotionApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Transfer & Promotion Approval";
   }, []);
 
   const columns = (setFieldValue, page, paginationSize) => {
@@ -346,7 +345,9 @@ export default function TransferNPromotionApproval() {
                         };
                       } else return item;
                     });
-                  setApplicationListData({ listData: [...transferNPromotionData] });
+                  setApplicationListData({
+                    listData: [...transferNPromotionData],
+                  });
                   setFilterData({ listData: [...data] });
                 }}
               />
@@ -727,7 +728,6 @@ export default function TransferNPromotionApproval() {
     ];
   };
 
-  
   return (
     <>
       <Formik
@@ -883,7 +883,10 @@ export default function TransferNPromotionApproval() {
                                     //   setFilterData({ listData: dataRow });
                                     // }}
                                     setColumnsData={(dataRow) => {
-                                      if (dataRow?.length === applicationListData?.listData?.length) {
+                                      if (
+                                        dataRow?.length ===
+                                        applicationListData?.listData?.length
+                                      ) {
                                         let temp = dataRow?.map((item) => {
                                           return {
                                             ...item,
@@ -891,9 +894,13 @@ export default function TransferNPromotionApproval() {
                                           };
                                         });
                                         setFilterData({ listData: [...temp] });
-                                        setApplicationListData({ listData: [...temp] });
+                                        setApplicationListData({
+                                          listData: [...temp],
+                                        });
                                       } else {
-                                        setFilterData({ listData: [...dataRow] });
+                                        setFilterData({
+                                          listData: [...dataRow],
+                                        });
                                       }
                                     }}
                                     onRowClick={(item) => {

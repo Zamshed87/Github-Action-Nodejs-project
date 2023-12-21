@@ -1,17 +1,18 @@
 import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import AntTable from "../../../common/AntTable";
 import BackButton from "../../../common/BackButton";
+import Chips from "../../../common/Chips";
 import FormikCheckBox from "../../../common/FormikCheckbox";
 import IConfirmModal from "../../../common/IConfirmModal";
-import Loading from "../../../common/loading/Loading";
 import MuiIcon from "../../../common/MuiIcon";
 import NoResult from "../../../common/NoResult";
+import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
+import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import {
   failColor,
   gray900,
@@ -22,9 +23,6 @@ import {
   allLocationAssignApproveReject,
   getAllLocationAssignLanding,
 } from "./helper";
-import Chips from "../../../common/Chips";
-import AntTable from "../../../common/AntTable";
-import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 
 const MasterLocationRegistration = () => {
   const { employeeId, isOfficeAdmin, orgId, buId } = useSelector(
@@ -43,6 +41,7 @@ const MasterLocationRegistration = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Master Location Approval";
   }, []);
 
   const [rowDto, setRowDto] = useState([]);

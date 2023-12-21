@@ -251,6 +251,8 @@ export default function MovementApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Movement Approval";
   }, []);
 
   useEffect(() => {

@@ -1,9 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Cancel,
-  CheckCircle
-} from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -17,10 +14,7 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import { failColor, successColor } from "../../../../utility/customColor";
 import FilterModal from "./component/FilterModal";
 import StyledTable from "./component/StyledTable";
-import {
-  approveAttendance,
-  getAttendanceApprovalLanding
-} from "./helper";
+import { approveAttendance, getAttendanceApprovalLanding } from "./helper";
 import "./style.css";
 
 const initData = {
@@ -47,7 +41,7 @@ export default function AttendanceApproval() {
   const [gridData, setGridData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
   // eslint-disable-next-line
-   const [isFilter, setIsFilter] = useState(false);
+  const [isFilter, setIsFilter] = useState(false);
   const [filterLanding, setFilterLanding] = useState([]);
 
   const getLandingData = () => {
@@ -108,7 +102,7 @@ export default function AttendanceApproval() {
         }
       });
     }
-    
+
     let confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action} ?`,
@@ -152,6 +146,8 @@ export default function AttendanceApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Attendance Approval";
   }, []);
 
   return (
@@ -185,8 +181,9 @@ export default function AttendanceApproval() {
                         <div className="table-card-heading">
                           <BackButton title={"Attendance Approval"} />
                           <div className="table-card-head-right">
-                            {filterLanding?.filter((item) => item?.selectCheckbox)
-                              .length > 0 && (
+                            {filterLanding?.filter(
+                              (item) => item?.selectCheckbox
+                            ).length > 0 && (
                               <div className="d-flex actionIcon mr-3">
                                 <Tooltip title="Accept">
                                   <div

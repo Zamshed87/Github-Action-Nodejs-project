@@ -59,6 +59,7 @@ const UpdateExpenseApplication = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Expense Application";
   }, []);
 
   // const getData = (

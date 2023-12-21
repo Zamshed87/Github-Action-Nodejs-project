@@ -117,6 +117,7 @@ export default function TrainingScheduleApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Training Schedule Approval";
   }, []);
 
   const demoPopupForTable = (action, text, data) => {
