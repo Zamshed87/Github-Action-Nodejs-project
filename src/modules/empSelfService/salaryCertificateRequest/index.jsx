@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
 import {
-  AddOutlined, EditOutlined,
+  AddOutlined,
+  EditOutlined,
   InfoOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip, tooltipClasses } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -101,6 +102,7 @@ const SelfSalaryCertificateRequest = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Salary Certificate Requsition";
   }, []);
 
   const getData = (yearId = 0, monthId = 0) => {
@@ -115,7 +117,6 @@ const SelfSalaryCertificateRequest = () => {
   useEffect(() => {
     getData();
   }, [orgId, buId]);
-
 
   const empSalaryReportCol = (history) => {
     return [

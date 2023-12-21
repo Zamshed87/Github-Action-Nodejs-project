@@ -64,6 +64,7 @@ function LeaveApplication(props) {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Self-Leave Application";
   }, []);
 
   return (

@@ -13,6 +13,7 @@ function AboutMe() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "About Me";
   }, []);
 
   const { employeeId, buId, wgId, logWgId } = useSelector(
@@ -31,7 +32,13 @@ function AboutMe() {
   const getEmpData = () => {
     // getPeopleDeskAllLanding("EmployeeBasicById", orgId, buId, employeeId, setEmpBasic, null, setLoading);
     // getEmployeeProfileViewData(employeeId, setEmpBasic, setLoading, buId, wgId);
-    getEmployeeProfileViewData(employeeId, setEmpBasic, setLoading, buId, logWgId);
+    getEmployeeProfileViewData(
+      employeeId,
+      setEmpBasic,
+      setLoading,
+      buId,
+      logWgId
+    );
   };
 
   useEffect(() => {

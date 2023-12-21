@@ -75,6 +75,7 @@ function LeavePolicyAssign() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Leave Policy Assign";
   }, []);
 
   // landing data

@@ -90,6 +90,8 @@ const SelfSalaryPayslipReport = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "PaySlip";
   }, [dispatch]);
 
   const numTotal = (arr, property, intPayrollElementTypeId) => {
