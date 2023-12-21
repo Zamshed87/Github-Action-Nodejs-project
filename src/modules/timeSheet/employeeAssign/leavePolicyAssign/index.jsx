@@ -101,7 +101,7 @@ function LeavePolicyAssign() {
       initHeaderList,
       null,
       temp,
-      values?.year?.value,
+      state?.year,
       setCheckedList
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -110,7 +110,7 @@ function LeavePolicyAssign() {
   const { handleSubmit, values, setFieldValue } = useFormik({
     enableReinitialize: true,
     validationSchema,
-    initialValues: initData,
+    initialValues: { ...initData, year: state?.year },
 
     onSubmit: (values, { resetForm }) => {
       resetForm(initData);
@@ -224,7 +224,7 @@ function LeavePolicyAssign() {
                                   initHeaderList,
                                   null,
                                   state?.list,
-                                  values?.year?.value,
+                                  state?.year,
                                   setCheckedList
                                 );
                               };
@@ -259,7 +259,7 @@ function LeavePolicyAssign() {
                                     payload.push({
                                       intEmpId: item?.intEmpId,
                                       intPolicyId: item?.intPolicyId,
-                                      intYear: values?.year?.value,
+                                      intYear: state?.year,
                                     });
                                   }
                                 });
@@ -289,7 +289,7 @@ function LeavePolicyAssign() {
                                     initHeaderList,
                                     null,
                                     state?.list,
-                                    values?.year?.value,
+                                    state?.year,
                                     setCheckedList
                                   );
                                 };
@@ -348,7 +348,7 @@ function LeavePolicyAssign() {
                         isClearable={false}
                       />
                     </li> */}
-                    <li className="mr-3" style={{ width: "150px" }}>
+                    <li className="mr-3 d-none" style={{ width: "150px" }}>
                       <FormikSelect
                         name="year"
                         options={yearDDLAction(5, 10)}
@@ -597,7 +597,7 @@ function LeavePolicyAssign() {
                       filterNameUpdate,
                       [],
                       state?.list,
-                      values?.year?.value,
+                      state?.year,
                       setCheckedList
                     );
                   }}

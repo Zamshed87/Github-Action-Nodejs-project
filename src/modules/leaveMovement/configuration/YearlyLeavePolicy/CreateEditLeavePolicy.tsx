@@ -206,7 +206,7 @@ const CreateEditLeavePolicy = () => {
         if (data?.statusCode === 201) {
           history.push({
             pathname: `/administration/timeManagement/leavePolicyAssign`,
-            state: { list: data?.intPolicyIdList },
+            state: { list: data?.intPolicyIdList, year: payload?.intYear },
           });
         }
       },
@@ -325,7 +325,6 @@ const CreateEditLeavePolicy = () => {
                           form.setFieldsValue({
                             inPreviousLveTypeEnd: op,
                           });
-                          console.log(form.getFieldsValue());
                         }}
                         rules={[
                           {
@@ -464,6 +463,7 @@ const CreateEditLeavePolicy = () => {
                                 allowClear
                                 options={[...buDDL] || []}
                                 name="bu"
+                                disabled={params?.id}
                                 label="Business Unit"
                                 placeholder="Business Unit"
                                 onChange={(value, op: any) => {
@@ -646,15 +646,12 @@ const CreateEditLeavePolicy = () => {
                                       intWorkplaceList: undefined,
                                     });
                                 const temp = form.getFieldsValue();
-                                console.log(temp);
                                 isPolicyExist(
                                   temp,
                                   allPolicies,
                                   setExistingPolicies
                                 );
-                                console.log(
-                                  form.getFieldValue("intWorkplaceList")
-                                );
+
                                 value && getEmploymentType();
                                 value && getHRPosition();
                               }}
@@ -923,7 +920,6 @@ const CreateEditLeavePolicy = () => {
                                 form.setFieldsValue({
                                   intStartServiceLengthInYear: op,
                                 });
-                                console.log(form.getFieldsValue());
                               }}
                             />
                           </Col>
@@ -960,7 +956,6 @@ const CreateEditLeavePolicy = () => {
                                 form.setFieldsValue({
                                   intEndServiceLengthInYear: op,
                                 });
-                                console.log(form.getFieldsValue());
                               }}
                             />
                           </Col>
