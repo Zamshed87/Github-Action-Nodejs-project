@@ -164,7 +164,6 @@ export const column = (fromDate, toDate) => {
     });
   return {
     sl: "SL",
-
     EmployeeCode: "Code",
     strEmployeeName: "Employee Name",
     strDesignation: "Designation",
