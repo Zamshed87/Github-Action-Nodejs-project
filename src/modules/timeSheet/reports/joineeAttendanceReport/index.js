@@ -227,7 +227,7 @@ const JoineeAttendanceReport = () => {
                 {/* bu */}
                 <div className="col-lg-2">
                   <div className="input-field-main">
-                    <label>Joining-Month</label>
+                    <label>Attendance-Month</label>
                     <DefaultInput
                       classes="input-sm"
                       placeholder=" "
@@ -257,7 +257,7 @@ const JoineeAttendanceReport = () => {
                 </div>
                 <div className="col-lg-2">
                   <div className="input-field-main">
-                    <label>From Date</label>
+                    <label>Joining From Date</label>
                     <DefaultInput
                       classes="input-sm"
                       placeholder=""
@@ -275,7 +275,7 @@ const JoineeAttendanceReport = () => {
                 </div>
                 <div className="col-lg-2">
                   <div className="input-field-main">
-                    <label>To Date</label>
+                    <label>Joining To Date</label>
                     <DefaultInput
                       classes="input-sm"
                       placeholder=""
