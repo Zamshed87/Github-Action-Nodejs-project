@@ -239,7 +239,7 @@ const AbsentReport = () => {
                       style={{
                         color: gray500,
                         fontSize: "14px",
-                        margin: "12px 0px 10px 10px",
+                        margin: "7px 0px 10px 10px",
                       }}
                     >
                       Absent Report

@@ -162,7 +162,7 @@ const EarlyReport = () => {
       {(loading || apiLoading) && <Loading />}
       {permission?.isView ? (
         <div className="table-card">
-          <div className="table-card-heading mt-2 pt-1 d-none">
+          <div className="table-card-heading mt-2 pt-1 ">
             <div className="d-flex align-items-center">
               <h2 className="ml-1">Early In-Out Report</h2>
             </div>
@@ -170,7 +170,7 @@ const EarlyReport = () => {
               <ul className="d-flex flex-wrap"></ul>
             </div>
           </div>
-          <div className="table-card-body" style={{ marginTop: "2.5rem" }}>
+          <div className="table-card-body" style={{ marginTop: "12px" }}>
             <div className="card-style" style={{ margin: "14px 0px 12px 0px" }}>
               <div className="row">
                 {/* bu */}
@@ -211,7 +211,7 @@ const EarlyReport = () => {
                       style={{
                         color: gray500,
                         fontSize: "14px",
-                        margin: "12px 0px 10px 5px",
+                        margin: "7px 0px 10px 5px",
                       }}
                     >
                       Early In-Out Report
