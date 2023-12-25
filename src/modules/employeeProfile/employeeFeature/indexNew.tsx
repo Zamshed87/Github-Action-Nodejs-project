@@ -496,6 +496,11 @@ function EmployeeFeatureNew() {
               });
             }}
             scroll={{ x: 2000 }}
+            onRow={(record: any, rowIndex: any) => {
+              return {
+                onClick: () => {},
+              };
+            }}
           />
         </PCard>
       </PForm>
