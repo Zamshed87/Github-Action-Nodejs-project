@@ -417,6 +417,7 @@ function EmployeeFeatureNew() {
                           : item?.dteContactToDate || "",
                       })
                     );
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     createCommonExcelFile({
                       titleWithDate: `Employee List`,
@@ -496,20 +497,17 @@ function EmployeeFeatureNew() {
               });
             }}
             scroll={{ x: 2000 }}
-            onRow={(record) => {
-              return {
-                onClick: () => {
-                  return history.push({
-                    pathname: `/profile/employee/${record?.intEmployeeBasicInfoId}`,
-                    state: {
-                      buId: record?.intBusinessUnitId,
-                      wgId: record?.intWorkplaceGroupId,
-                    },
-                  });
-                },
-                className: "pointer",
-              };
-            }}
+            onRow={(record) => ({
+              onClick: () =>
+                history.push({
+                  pathname: `/profile/employee/${record?.intEmployeeBasicInfoId}`,
+                  state: {
+                    buId: record?.intBusinessUnitId,
+                    wgId: record?.intWorkplaceGroupId,
+                  },
+                }),
+              className: "pointer",
+            })}
           />
         </PCard>
       </PForm>
