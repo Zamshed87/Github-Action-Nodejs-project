@@ -10,6 +10,12 @@ const MultiCalendarAssign = lazy(() =>
 const JoineeAttendanceReport = lazy(() =>
   import("modules/timeSheet/reports/joineeAttendanceReport")
 );
+const EarlyReport = lazy(() =>
+  import("modules/timeSheet/reports/earlyInoutReport")
+);
+const AbsentReport = lazy(() =>
+  import("modules/timeSheet/reports/absentReport")
+);
 const CreateEditLeavePolicy = lazy(() =>
   import(
     "../modules/leaveMovement/configuration/YearlyLeavePolicy/CreateEditLeavePolicy"
@@ -1488,6 +1494,14 @@ export const routingList = [
   {
     path: "/profile/reports/joineeAttendancereport",
     component: JoineeAttendanceReport,
+  },
+  {
+    path: "/profile/reports/earlyOutReport",
+    component: EarlyReport,
+  },
+  {
+    path: "/profile/reports/absentReport",
+    component: AbsentReport,
   },
   {
     path: "/profile/reports/invalidInOutAttendanceReport",
