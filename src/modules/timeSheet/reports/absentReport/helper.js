@@ -19,7 +19,7 @@ export const getBuDetails = async (buId, setter, setLoading) => {
 };
 
 // daily attendance generate landing
-export const getDailyAttendanceData = async (
+export const getAbsentData = async (
   buId,
   fromdate,
   setter,

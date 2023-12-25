@@ -28,11 +28,8 @@ import { todayDate } from "../../../../utility/todayDate";
 import {
   absentDtoCol,
   column,
-  dailyAttendenceDtoCol,
-  getDailyAttendanceData,
+  getAbsentData,
   getTableDataDailyAttendance,
-  getTableDataSummaryHeadData,
-  subHeaderColumn,
 } from "./helper";
 
 const initialValues = {
@@ -87,7 +84,7 @@ const AbsentReport = () => {
     todate = todayDate(),
     isExcel = false
   ) => {
-    getDailyAttendanceData(
+    getAbsentData(
       buId,
       date,
       setRowDto,
@@ -111,7 +108,7 @@ const AbsentReport = () => {
       values?.date,
       values?.todate
     );
-  }, [wId]);
+  }, [wId, wgId, buId]);
 
   // formik
   const { setFieldValue, values, errors, touched, handleSubmit } = useFormik({

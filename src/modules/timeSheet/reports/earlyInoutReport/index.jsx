@@ -27,15 +27,12 @@ import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { todayDate } from "../../../../utility/todayDate";
 import {
   column,
-  dailyAttendenceDtoCol,
   earlyDtoCol,
-  getDailyAttendanceData,
   getEarlyInOutData,
   getTableDataDailyAttendance,
-  getTableDataSummaryHeadData,
+
   // subHeaderColumn,
 } from "./helper";
-import { convertTo12HourFormat } from "utility/timeFormatter";
 
 const initialValues = {
   businessUnit: "",
@@ -105,7 +102,7 @@ const EarlyReport = () => {
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
     getData({ current: 1, pageSize: paginationSize }, "", values?.date);
-  }, [wId]);
+  }, [wId, wgId, buId]);
 
   // formik
   const { setFieldValue, values, errors, touched, handleSubmit } = useFormik({
