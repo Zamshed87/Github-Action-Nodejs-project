@@ -153,7 +153,7 @@ export default function AddEditFormComponent({
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           if (
             values?.calenderType?.value === 2 &&
             !values?.startingCalender?.label
@@ -177,7 +177,6 @@ export default function AddEditFormComponent({
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             {loading && <Loading />}

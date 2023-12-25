@@ -80,10 +80,10 @@ export const columns = (
     },
     {
       title: "Employee Id",
-      dataIndex: "intEmpId",
+      dataIndex: "strEmployeeCode",
       sort: true,
       filter: false,
-      fieldType: "number",
+      fieldType: "string",
       width: 150,
     },
     {
