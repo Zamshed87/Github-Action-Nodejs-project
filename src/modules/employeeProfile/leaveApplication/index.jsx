@@ -91,7 +91,7 @@ function EmLeaveApplication(props) {
           },
         }}
         validationSchema={validationSchemaForLeaveApplication}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initDataForLeaveApplication);
           });
@@ -106,7 +106,6 @@ function EmLeaveApplication(props) {
           touched,
           setFieldValue,
           isValid,
-          setErrors,
         }) => (
           <>
             {loading && <Loading />}
@@ -288,7 +287,7 @@ function EmLeaveApplication(props) {
                           isEdit,
                           setIsEdit,
                           setSingleData,
-                          leaveTypeDDL,
+                          leaveTypeDDL: leaveBalanceData?.length > 0 ? leaveTypeDDL : [],
                           setLoading,
                           loading,
                           editPermission: permission?.isEdit,

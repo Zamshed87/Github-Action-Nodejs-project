@@ -62,6 +62,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
     }
     // eslint-disable-next-line
   }, [values?.fromDate, values?.toDate]);
+
   return (
     <>
       {loading && <Loading />}
@@ -256,7 +257,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
                   .then((data) => {
                     setImageFile(data?.[0]);
                   })
-                  .catch((error) => {
+                  .catch(() => {
                     setImageFile("");
                   });
               }
@@ -303,7 +304,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
           </button>
           {isEdit && (
             <button
-              onClick={(e) => {
+              onClick={() => {
                 setIsEdit(false);
                 resetForm(initData);
                 setSingleData("");
