@@ -239,11 +239,11 @@ function EmployeeFeatureNew() {
       filter: true,
       filterKey: "strLinemanagerList",
     },
-    {
-      title: "Pin Number",
-      dataIndex: "pinNo",
-      sorter: true,
-    },
+    // {
+    //   title: "Pin Number",
+    //   dataIndex: "pinNo",
+    //   sorter: true,
+    // },
     {
       title: "Contact No",
       dataIndex: "contactNo",
@@ -496,9 +496,18 @@ function EmployeeFeatureNew() {
               });
             }}
             scroll={{ x: 2000 }}
-            onRow={(record: any, rowIndex: any) => {
+            onRow={(record) => {
               return {
-                onClick: () => {},
+                onClick: () => {
+                  return history.push({
+                    pathname: `/profile/employee/${record?.intEmployeeBasicInfoId}`,
+                    state: {
+                      buId: record?.intBusinessUnitId,
+                      wgId: record?.intWorkplaceGroupId,
+                    },
+                  });
+                },
+                className: "pointer",
               };
             }}
           />
