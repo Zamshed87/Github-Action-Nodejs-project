@@ -1,14 +1,14 @@
-import { toast } from "react-toastify";
-import moment from "moment";
-import axios from "axios";
-import { dateFormatter } from "../../../../utility/dateFormatter";
-import RoasterInfo from "./component/RosterInfo";
 import { InfoOutlined } from "@mui/icons-material";
+import axios from "axios";
+import moment from "moment";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
+import { dateFormatter } from "../../../../utility/dateFormatter";
+import RoasterInfo from "./component/RosterInfo";
 
 export const getShiftInfo = async (id, setter) => {
   try {
@@ -122,6 +122,14 @@ export const columns = (
       sort: true,
       filter: true,
       filterDropDownList: headerList[`departmentList`],
+      fieldType: "string",
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`sectionList`],
       fieldType: "string",
     },
     {
@@ -313,6 +321,7 @@ export const initHeaderList = {
   areaNameList: [],
   territoryNameList: [],
   employmentTypeList: [],
+  sectionList: [],
 };
 export const statusDDL = [
   { value: 0, label: "All" },

@@ -41,7 +41,7 @@ const EmployeesShift = () => {
   );
   const {
     permissionList,
-    profileData: { orgId, buId, employeeId, wgId, wId, strDisplayName },
+    profileData: { orgId, buId, employeeId, wgId, wId, strDisplayName, wgName },
     keywords: { supervisor },
   } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -313,10 +313,7 @@ const EmployeesShift = () => {
                     <strong>{employeeInformation?.[0]?.EmployeeName}</strong>{" "}
                   </p>
                   <p>
-                    Workplace Group:{" "}
-                    <strong>
-                      {employeeInformation?.[0]?.EmploymentTypeName}
-                    </strong>{" "}
+                    Workplace Group: <strong>{wgName}</strong>{" "}
                   </p>
                 </div>
               </div>
