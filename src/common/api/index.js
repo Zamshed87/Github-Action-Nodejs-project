@@ -344,13 +344,14 @@ export const PeopleDeskSaasDDL = async (
   value,
   label,
   id,
-  wId
+  wId,
+  year
 ) => {
   try {
     const res = await axios.get(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&WorkplaceGroupId=${wgId}&BusinessUnitId=${busId}&intId=${
         id || 0
-      }&intWorkplaceId=${wId || 0}`
+      }&intWorkplaceId=${wId || 0}${year ? `&intYearId=${year}` : ""}`
     );
     if (res?.data) {
       const newDDL = res?.data?.map((itm) => {

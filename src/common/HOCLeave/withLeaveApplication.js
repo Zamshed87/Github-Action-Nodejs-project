@@ -199,7 +199,9 @@ const withLeaveApplication = (WrappedComponent) => {
         setLeaveTypeDDL,
         "LeaveTypeId",
         "LeaveType",
-        empId ? empId : employeeId
+        empId ? empId : employeeId,
+        0,
+        year
       );
       getEmployeeLeaveBalanceAndHistory(
         empId ? empId : employeeId,
