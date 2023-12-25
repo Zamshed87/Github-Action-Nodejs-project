@@ -168,7 +168,7 @@ const withLeaveApplication = (WrappedComponent) => {
             createLeaveApplication(payload, setLoading, callback);
           }
         },
-        noAlertFunc: () => {},
+        noAlertFunc: () => null,
       };
       IConfirmModal(confirmObject);
     };
