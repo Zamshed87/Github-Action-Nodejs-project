@@ -107,6 +107,8 @@ Axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+let isToastDisplayed = false;
 Axios.interceptors.response.use(
   async function (response: any) {
     if (isDevServer) return response;
@@ -157,7 +159,10 @@ Axios.interceptors.response.use(
         const dispatch: any = store.dispatch;
         dispatch(setIsExpiredTokenAction(true));
         dispatch(setLogoutAction());
-        toast.error("Session Expired, Please login again");
+        if (!isToastDisplayed) {
+          toast.error("Session Expired, Please login again");
+          isToastDisplayed = true;
+        }
       }
     }
     let decryptedData = error?.response?.data;

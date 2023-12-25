@@ -507,6 +507,7 @@ function EmployeeFeatureNew() {
                     },
                   });
                 },
+                className: "pointer",
               };
             }}
           />
