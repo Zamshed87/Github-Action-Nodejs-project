@@ -48,11 +48,11 @@ export type TDataTableProps = {
     record: any,
     rowIndex: any
   ) => {
-    onClick: (event: any) => any; // click row
-    onDoubleClick: (event: any) => any; // double click row
-    onContextMenu: (event: any) => any; // right button click row
-    onMouseEnter: (event: any) => any; // mouse enter row
-    onMouseLeave: (event: any) => any; // mouse leave row
+    onClick?: (event: any) => any; // click row
+    onDoubleClick?: (event: any) => any; // double click row
+    onContextMenu?: (event: any) => any; // right button click row
+    onMouseEnter?: (event: any) => any; // mouse enter row
+    onMouseLeave?: (event: any) => any; // mouse leave row
     className?: string; // className for this row
   };
   components?: any;
