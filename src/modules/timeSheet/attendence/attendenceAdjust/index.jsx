@@ -6,17 +6,18 @@ import {
   Unpublished,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import FilterModal from "./component/FilterModal";
 // import MasterFilter from "../../../../common/MasterFilter";
+import AntTable from "../../../../common/AntTable";
 import FilterBadgeComponent from "../../../../common/FilterBadgeComponent";
 import FormikSelectWithIcon from "../../../../common/FormikSelectWithIcon";
 import MasterFilter from "../../../../common/MasterFilter";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../../common/PopoverMasterFilter";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import IConfirmModal from "./../../../../common/IConfirmModal";
@@ -31,7 +32,6 @@ import {
   // filterData,
   manualAttendanceAction,
 } from "./helper";
-import AntTable from "../../../../common/AntTable";
 
 const initData = {
   search: "",
@@ -40,14 +40,15 @@ const initData = {
   attendedanceAdjustStatus: "",
   attendedanceStatus: "",
   allSelected: false,
-
-  // master filter
   workplace: "",
   department: "",
   employee: "",
   attendenceDate: "",
   attendenceStatus: "",
   employmentType: "",
+  inTime: "09:00",
+  outTime: "18:00",
+  strCalenderName: "",
   monthYear: `${new Date().getFullYear()}-${new Date().getMonth() + 1}`,
 };
 
@@ -55,6 +56,7 @@ export default function AttendenceAdjust() {
   const { userName, buId, employeeId, orgId, wgId, isOfficeAdmin } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
 
+  const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // row data
@@ -337,6 +339,10 @@ export default function AttendenceAdjust() {
                                   value={values?.attendedanceAdjustStatus}
                                   onChange={(valueOption) => {
                                     if (valueOption) {
+                                      if (valueOption?.value === 1) {
+                                        setOpenModal(true);
+                                        return;
+                                      }
                                       adjustStatushandler(
                                         values,
                                         setFieldValue,
@@ -498,6 +504,14 @@ export default function AttendenceAdjust() {
                   }}
                 />
               </PopOverMasterFilter>
+              {/* <PModal
+                title={"In Time/Out Time Setup For Present"}
+                show={openModal}
+                onClose={() => {
+                  setOpenModal(false);
+                }}
+                onCancel={() => {}}
+              /> */}
             </Form>
           </>
         )}
