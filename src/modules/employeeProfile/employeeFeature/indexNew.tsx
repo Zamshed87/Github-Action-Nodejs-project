@@ -239,11 +239,11 @@ function EmployeeFeatureNew() {
       filter: true,
       filterKey: "strLinemanagerList",
     },
-    {
-      title: "Pin Number",
-      dataIndex: "pinNo",
-      sorter: true,
-    },
+    // {
+    //   title: "Pin Number",
+    //   dataIndex: "pinNo",
+    //   sorter: true,
+    // },
     {
       title: "Contact No",
       dataIndex: "contactNo",
@@ -417,6 +417,7 @@ function EmployeeFeatureNew() {
                           : item?.dteContactToDate || "",
                       })
                     );
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     createCommonExcelFile({
                       titleWithDate: `Employee List`,
@@ -496,11 +497,17 @@ function EmployeeFeatureNew() {
               });
             }}
             scroll={{ x: 2000 }}
-            onRow={(record: any, rowIndex: any) => {
-              return {
-                onClick: () => {},
-              };
-            }}
+            onRow={(record) => ({
+              onClick: () =>
+                history.push({
+                  pathname: `/profile/employee/${record?.intEmployeeBasicInfoId}`,
+                  state: {
+                    buId: record?.intBusinessUnitId,
+                    wgId: record?.intWorkplaceGroupId,
+                  },
+                }),
+              className: "pointer",
+            })}
           />
         </PCard>
       </PForm>
