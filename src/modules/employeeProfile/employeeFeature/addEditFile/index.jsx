@@ -718,6 +718,8 @@ export default function AddEditForm({
             <PSelect
               options={empDepartmentDDL?.data || []}
               name="department"
+              showSearch
+              filterOption={true}
               label="Department"
               allowClear
               placeholder="Department"
@@ -734,6 +736,8 @@ export default function AddEditForm({
             <PSelect
               options={empSectionDDL.data || []}
               name="section"
+              showSearch
+              filterOption={true}
               label="Section"
               placeholder="Section"
               onChange={(value, op) => {
@@ -747,6 +751,8 @@ export default function AddEditForm({
           <Col md={12} sm={24}>
             <PSelect
               options={empDesignationDDL.data || []}
+              showSearch
+              filterOption={true}
               name="designation"
               label="Designation"
               placeholder="Designation"
@@ -763,6 +769,8 @@ export default function AddEditForm({
             <PSelect
               options={positionDDL?.data || []}
               name="hrPosition"
+              showSearch
+              filterOption={true}
               label="HR Position"
               placeholder="HR Position"
               onChange={(value, op) => {

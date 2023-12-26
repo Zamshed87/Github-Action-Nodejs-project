@@ -319,8 +319,8 @@ const CreateEditLeavePolicy = () => {
                       <PSelect
                         options={[{ value: 0, label: "None" }, ...leaveTypeDDL]}
                         name="inPreviousLveTypeEnd"
-                        label="Next Leave Type Availability After End"
-                        placeholder="Next Leave Type Availability After End"
+                        label="Previous Leave Type Availability After End"
+                        placeholder="Previous Leave Type Availability After End"
                         onChange={(value, op) => {
                           form.setFieldsValue({
                             inPreviousLveTypeEnd: op,
@@ -813,10 +813,10 @@ const CreateEditLeavePolicy = () => {
                       label="Active From Joining day In Day"
                       placeholder="Active From Joining day In Day"
                       rules={[
-                        {
-                          required: true,
-                          message: "Active From Joining day In Day is required",
-                        },
+                        // {
+                        //   required: true,
+                        //   message: "Active From Joining day In Day is required",
+                        // },
                         {
                           message:
                             "Active From Joining day In Day must be positive",
@@ -832,11 +832,11 @@ const CreateEditLeavePolicy = () => {
                       label="Active From Confirmation In Day"
                       placeholder="Active From Confirmation In Day"
                       rules={[
-                        {
-                          required: true,
-                          message:
-                            "Active From Confirmation In Day is required",
-                        },
+                        // {
+                        //   required: true,
+                        //   message:
+                        //     "Active From Confirmation In Day is required",
+                        // },
                         {
                           message:
                             "Active From Confirmation In Day must be positive",
@@ -1353,8 +1353,8 @@ const CreateEditLeavePolicy = () => {
                                   ...leaveTypeDDL,
                                 ]}
                                 name="intHalfdayPreviousLveTypeEnd"
-                                label="Next Half Day Leave Type Availability After End"
-                                placeholder="Next Half Day Leave Type Availability After End"
+                                label="Previous Half Day Leave Type Availability After End"
+                                placeholder="Previous Half Day Leave Type Availability After End"
                                 disabled={!isHalfDayLeave}
                                 onChange={(value, op) => {
                                   form.setFieldsValue({
