@@ -306,20 +306,22 @@ export default function JoiningReport() {
                   </ul>
                 </div>
               </div>
-              <PeopleDeskTable
-                columnData={joiningDtoCol(pages?.current, pages?.pageSize)}
-                pages={pages}
-                rowDto={rowDto?.data}
-                setRowDto={setRowDto}
-                handleChangePage={(e, newPage) =>
-                  handleChangePage(e, newPage, values?.search)
-                }
-                handleChangeRowsPerPage={(e) =>
-                  handleChangeRowsPerPage(e, values?.search)
-                }
-                uniqueKey="employeeCode"
-                isScrollAble={true}
-              />
+              {rowDto?.data?.length > 0 ? (
+                <PeopleDeskTable
+                  columnData={joiningDtoCol(pages?.current, pages?.pageSize)}
+                  pages={pages}
+                  rowDto={rowDto?.data}
+                  setRowDto={setRowDto}
+                  handleChangePage={(e, newPage) =>
+                    handleChangePage(e, newPage, values?.search)
+                  }
+                  handleChangeRowsPerPage={(e) =>
+                    handleChangeRowsPerPage(e, values?.search)
+                  }
+                  uniqueKey="employeeCode"
+                  isScrollAble={true}
+                />
+              ) : null}
             </div>
           ) : (
             <NotPermittedPage />

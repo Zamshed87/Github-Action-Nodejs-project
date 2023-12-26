@@ -319,8 +319,8 @@ const CreateEditLeavePolicy = () => {
                       <PSelect
                         options={[{ value: 0, label: "None" }, ...leaveTypeDDL]}
                         name="inPreviousLveTypeEnd"
-                        label="Next Leave Type Availability After End"
-                        placeholder="Next Leave Type Availability After End"
+                        label="Previous Leave Type Availability After End"
+                        placeholder="Previous Leave Type Availability After End"
                         onChange={(value, op) => {
                           form.setFieldsValue({
                             inPreviousLveTypeEnd: op,
@@ -1353,8 +1353,8 @@ const CreateEditLeavePolicy = () => {
                                   ...leaveTypeDDL,
                                 ]}
                                 name="intHalfdayPreviousLveTypeEnd"
-                                label="Next Half Day Leave Type Availability After End"
-                                placeholder="Next Half Day Leave Type Availability After End"
+                                label="Previous Half Day Leave Type Availability After End"
+                                placeholder="Previous Half Day Leave Type Availability After End"
                                 disabled={!isHalfDayLeave}
                                 onChange={(value, op) => {
                                   form.setFieldsValue({

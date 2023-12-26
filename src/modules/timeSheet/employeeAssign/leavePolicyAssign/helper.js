@@ -614,13 +614,14 @@ const leavePolicyAssign = async (payload, cb, setLandingLoading) => {
   }
 };
 
-export const demoPopup = (action, array, cb, setLandingLoading) => {
+export const demoPopup = (action, array, cb, setLandingLoading, history) => {
   let confirmObject = {
     closeOnClickOutside: false,
     message: `Do you want to ${action}? `,
     yesAlertFunc: () => {
       if (array.length) {
         leavePolicyAssign(array, cb, setLandingLoading);
+        history.push(`/administration/leaveandmovement/yearlyLeavePolicy`);
       }
     },
     noAlertFunc: () => {},
