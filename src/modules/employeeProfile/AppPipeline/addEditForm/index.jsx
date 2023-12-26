@@ -70,7 +70,7 @@ export default function AddEditFormComponent({
   const [singlePermission, setSinglePermission] = useState({});
   const [isEdit, setIsEdit] = useState(false);
 
-  const { orgId, buId, employeeId, wgId, wgName } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -174,8 +174,8 @@ export default function AddEditFormComponent({
       strRemarks: values?.remarks || "",
       intAccountId: orgId,
       intBusinessUnitId: buId,
-      intWorkplaceGroupId: 0,
-      intWorkplaceId: 0,
+      intWorkplaceGroupId: wgId,
+      intWorkplaceId: wId,
       // intWorkplaceGroupId: values?.orgName?.value || 0,
       // intWorkplaceId: values?.workplace?.value,
       // intTerritoryId: values?.territory?.value,
