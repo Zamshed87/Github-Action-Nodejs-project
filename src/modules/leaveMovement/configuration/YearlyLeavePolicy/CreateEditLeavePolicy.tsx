@@ -1732,12 +1732,36 @@ const CreateEditLeavePolicy = () => {
                               />
                             </Col>
                             <Col md={12} sm={24}>
-                              <PInput
+                              {/* <PInput
                                 label="Do you want assign right now?"
                                 type="checkbox"
                                 layout="horizontal"
                                 name="isGenerate"
-                              />
+                              /> */}
+                              <div
+                                style={{
+                                  marginBlock: "4px",
+                                  marginTop: "6px",
+                                  fontSize: "12px",
+                                  fontWeight: 700,
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "5px",
+                                  }}
+                                >
+                                  <PInput
+                                    label=""
+                                    type="checkbox"
+                                    layout="horizontal"
+                                    name="isGenerate"
+                                  />
+                                  <span>Do you want assign right now?</span>
+                                </div>
+                              </div>
                             </Col>
                           </>
                         );
