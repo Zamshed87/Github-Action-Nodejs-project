@@ -813,10 +813,10 @@ const CreateEditLeavePolicy = () => {
                       label="Active From Joining day In Day"
                       placeholder="Active From Joining day In Day"
                       rules={[
-                        {
-                          required: true,
-                          message: "Active From Joining day In Day is required",
-                        },
+                        // {
+                        //   required: true,
+                        //   message: "Active From Joining day In Day is required",
+                        // },
                         {
                           message:
                             "Active From Joining day In Day must be positive",
@@ -832,11 +832,11 @@ const CreateEditLeavePolicy = () => {
                       label="Active From Confirmation In Day"
                       placeholder="Active From Confirmation In Day"
                       rules={[
-                        {
-                          required: true,
-                          message:
-                            "Active From Confirmation In Day is required",
-                        },
+                        // {
+                        //   required: true,
+                        //   message:
+                        //     "Active From Confirmation In Day is required",
+                        // },
                         {
                           message:
                             "Active From Confirmation In Day must be positive",
