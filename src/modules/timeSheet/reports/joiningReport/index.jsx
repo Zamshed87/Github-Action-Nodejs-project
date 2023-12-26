@@ -23,6 +23,8 @@ import ResetButton from "./../../../../common/ResetButton";
 import { column, getJoiningData, getTableData, joiningDtoCol } from "./helper";
 import { getWorkplaceDetails } from "common/api";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
+import MasterFilter from "common/MasterFilter";
+import useDebounce from "utility/customHooks/useDebounce";
 
 const todayDate = dateFormatterForInput(new Date());
 const initData = {
@@ -161,7 +163,7 @@ export default function JoiningReport() {
                           setLoading && setLoading(true);
                           try {
                             const res = await axios.get(
-                              `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`
+                              `IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&PageNo=1&PageSize=10000`
                             );
                             if (res?.data) {
                               if (res?.data < 1) {
@@ -240,9 +242,9 @@ export default function JoiningReport() {
                     </div>
                   </Tooltip>
                 </div>
-                <div className="table-card-head-right d-none">
+                <div className="table-card-head-right ">
                   <ul>
-                    {(values?.search || values?.dateRange) && (
+                    {values?.search && (
                       <li>
                         <ResetButton
                           title="reset"
@@ -252,56 +254,34 @@ export default function JoiningReport() {
                             />
                           }
                           onClick={() => {
-                            setFieldValue("dateRange", "");
                             setFieldValue("search", "");
                           }}
                         />
                       </li>
                     )}
                     <li>
-                      <div
-                        className="d-flex align-items-end"
-                        style={{ paddingBottom: "7px" }}
-                      >
-                        <div className="mr-3 d-flex align-items-center">
-                          <label className="mr-2">From Date</label>
-                          {/* <FormikInput
-                            classes="input-sm"
-                            type="date"
-                            value={values?.fromDate}
-                            name="fromDate"
-                            onChange={(e) => {
-                              setFieldValue("fromDate", e.target.value);
-                            }}
-                            errors={errors}
-                            touched={touched}
-                          /> */}
-                        </div>
-                        <div className="mr-3 d-flex align-items-center">
-                          <label className="mr-2">To Date</label>
-                          {/* <FormikInput
-                            classes="input-sm"
-                            type="date"
-                            value={values?.toDate}
-                            name="toDate"
-                            min={values?.fromDate}
-                            onChange={(e) => {
-                              setFieldValue("toDate", e.target.value);
-                            }}
-                            errors={errors}
-                            touched={touched}
-                          /> */}
-                        </div>
-                        <div>
-                          <PrimaryButton
-                            type="submit"
-                            className="btn btn-default flex-center"
-                            label={"Apply"}
-                            onClick={() => {}}
-                            onSubmit={() => handleSubmit()}
-                          />
-                        </div>
-                      </div>
+                      <MasterFilter
+                        isHiddenFilter
+                        styles={{
+                          marginRight: "10px",
+                        }}
+                        inputWidth="200px"
+                        width="200px"
+                        value={values?.search}
+                        setValue={(value) => {
+                          setFieldValue("search", value);
+                          useDebounce(() => {
+                            getData(
+                              { current: 1, pageSize: paginationSize },
+                              value
+                            );
+                          }, 500);
+                        }}
+                        cancelHandler={() => {
+                          setFieldValue("search", "");
+                          getData({ current: 1, pageSize: paginationSize }, "");
+                        }}
+                      />
                     </li>
                   </ul>
                 </div>

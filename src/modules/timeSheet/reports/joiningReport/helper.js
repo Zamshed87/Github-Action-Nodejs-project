@@ -7,7 +7,7 @@ export const getJoiningData = async (
   buId,
   setter,
   setLoading,
-  srcTxt,
+  srcTxt = "",
   pageNo,
   pageSize,
   forExcel = false,
@@ -20,7 +20,7 @@ export const getJoiningData = async (
 
   try {
     const res = await axios.get(
-      `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`
+      `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&PageNo=${pageNo}&PageSize=${pageSize}&SearchText=${srcTxt}`
     );
 
     if (res?.data) {
