@@ -1,7 +1,6 @@
 import axios from "axios";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
-import { convertTo12HourFormat } from "../../../../utility/timeFormatter";
 
 export const getBuDetails = async (buId, setter, setLoading) => {
   try {
@@ -132,13 +131,10 @@ export const earlyDtoCol = (page, paginationSize) => {
     },
 
     {
-      title: "Calender Time",
+      title: "Calender Name",
+      dataIndex: "calenderName",
       sort: false,
       filter: false,
-      render: (record) =>
-        `${convertTo12HourFormat(record?.startTime)} - ${convertTo12HourFormat(
-          record?.endTime
-        )}` || "N/A",
       fieldType: "string",
     },
     {
@@ -168,7 +164,7 @@ export const column = {
   employeeCode: "Code",
   employeeName: "Employee Name",
   designation: "Designation",
-  calenderTime: "Calender Time",
+  calenderName: "Calender Name",
   outTime: "Out Time",
   earlyOut: "Early Out (min)",
 };

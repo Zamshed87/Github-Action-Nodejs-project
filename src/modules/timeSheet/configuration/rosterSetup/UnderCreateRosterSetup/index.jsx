@@ -30,7 +30,7 @@ export default function UnderCreateRosterSetup() {
   // const history = useHistory();
   const params = useParams();
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -103,12 +103,12 @@ export default function UnderCreateRosterSetup() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Calender&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Calender&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
       "CalenderId",
       "CalenderName",
       setCalendarDDL
     );
-  }, [orgId, buId, wgId]);
+  }, [orgId, buId, wgId, wId]);
   // for sorting the row
   const [calendarOrder, setCalendarOrder] = useState("desc");
   const commonSortByFilter = (filterType, property) => {

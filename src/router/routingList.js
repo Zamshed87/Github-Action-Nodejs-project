@@ -2,6 +2,7 @@ import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/C
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
+import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import { lazy } from "react";
 
 const MultiCalendarAssign = lazy(() =>
@@ -1490,6 +1491,10 @@ export const routingList = [
   {
     path: "/profile/reports/dailyAttendanceReport",
     component: MgmtDailyAttendance,
+  },
+  {
+    path: "/profile/reports/joiningReport",
+    component: JoiningReport,
   },
   {
     path: "/profile/reports/joineeAttendancereport",
