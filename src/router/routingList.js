@@ -2,6 +2,7 @@ import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/C
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
+import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import { lazy } from "react";
 
@@ -1843,8 +1844,12 @@ export const routingList = [
   { path: "/SelfService/dashboard", component: SelfDashboard },
   { path: "/SelfService/aboutMe", component: AboutMe },
   {
-    path: "/profile/timemanagement/attendenceadjust",
+    path: "/profile/timemanagement/attendenceadjustPrev",
     component: AttendenceAdjust,
+  },
+  {
+    path: "/profile/timemanagement/attendenceadjust",
+    component: AttendenceAdjustN,
   },
   {
     path: "/profile/timeManagement/attendanceAutoProcess",

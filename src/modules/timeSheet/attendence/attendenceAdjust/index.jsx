@@ -352,63 +352,62 @@ export default function AttendenceAdjust() {
                           </li>
                         )}
                         <li>
-                          {rowDto?.length > 0 &&
-                            rowDto?.filter((item) => item?.presentStatus)
-                              .length > 0 && (
-                              <div
-                                style={{
-                                  width: "300px",
-                                  marginRight: "15px",
-                                }}
-                              >
-                                <FormikSelectWithIcon
-                                  name="attendedanceAdjustStatus"
-                                  options={[
-                                    {
-                                      value: 1,
-                                      label: "Present",
-                                      code: "present",
-                                      icon: <CheckCircle />,
-                                    },
-                                    {
-                                      value: 2,
-                                      label: "Absent",
-                                      code: "absent",
-                                      icon: <Unpublished />,
-                                    },
-                                    {
-                                      value: 3,
-                                      label: "Late",
-                                      code: "late",
-                                      icon: <Info />,
-                                    },
-                                  ]}
-                                  value={values?.attendedanceAdjustStatus}
-                                  onChange={(valueOption) => {
-                                    setFieldValue(
-                                      "attendedanceAdjustStatus",
+                          {rowDto?.filter((item) => item?.presentStatus)
+                            .length > 0 && (
+                            <div
+                              style={{
+                                width: "300px",
+                                marginRight: "15px",
+                              }}
+                            >
+                              <FormikSelectWithIcon
+                                name="attendedanceAdjustStatus"
+                                options={[
+                                  {
+                                    value: 1,
+                                    label: "Present",
+                                    code: "present",
+                                    icon: <CheckCircle />,
+                                  },
+                                  {
+                                    value: 2,
+                                    label: "Absent",
+                                    code: "absent",
+                                    icon: <Unpublished />,
+                                  },
+                                  {
+                                    value: 3,
+                                    label: "Late",
+                                    code: "late",
+                                    icon: <Info />,
+                                  },
+                                ]}
+                                value={values?.attendedanceAdjustStatus}
+                                onChange={(valueOption) => {
+                                  setFieldValue(
+                                    "attendedanceAdjustStatus",
+                                    valueOption
+                                  );
+                                  if (valueOption) {
+                                    if (valueOption?.value === 1) {
+                                      setOpenModal(true);
+                                      return;
+                                    }
+                                    adjustStatushandler(
+                                      values,
+                                      setFieldValue,
                                       valueOption
                                     );
-                                    if (valueOption) {
-                                      if (valueOption?.value === 1) {
-                                        setOpenModal(true);
-                                        return;
-                                      }
-                                      adjustStatushandler(
-                                        values,
-                                        setFieldValue,
-                                        valueOption
-                                      );
-                                    }
-                                  }}
-                                  placeholder="Change Attendance"
-                                  styles={customStyles}
-                                  errors={errors}
-                                  touched={touched}
-                                  isDisabled={false}
-                                />
-                              </div>
-                            )}
+                                  }
+                                }}
+                                placeholder="Change Attendance"
+                                styles={customStyles}
+                                errors={errors}
+                                touched={touched}
+                                isDisabled={false}
+                              />
+                            </div>
+                          )}
                         </li>
                       </ul>
                       <ul>
