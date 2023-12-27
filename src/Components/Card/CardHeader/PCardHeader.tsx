@@ -26,6 +26,7 @@ type PCardHeaderType = {
     disabled?: boolean;
     icon?: React.ReactNode | "plus";
   }>;
+  children?: React.ReactNode;
 };
 export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
   const {
@@ -38,6 +39,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
     submitText,
     submitIcon,
     buttonList,
+    children,
   } = props;
 
   const isShowExportIcon = typeof exportIcon === "boolean" && exportIcon;
@@ -97,7 +99,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
               />
             ))
           : undefined}
-
+        {children}
         {/* Submit Button */}
         {submitText !== undefined ? (
           <PButton
