@@ -7,15 +7,15 @@ $primary_border_color: var(--primary-color);
 $primary_bg_color: var(--primary-color);
 $primary_text_color: var(--white);
 // Disabled
-$primary_disbaled_bg_color: rgb(121, 169, 218);
-$primary_disbaled_border_color: rgb(121, 169, 218);
-$primary_disbaled_color: rgb(255, 255, 255);
+$primary_disbaled_bg_color: #ececec;
+$primary_disbaled_border_color: #ECECEC;
+$primary_disbaled_color: rgb(51, 51, 51);
 // Secondary Button Variables
 $secondary_border_color: var(--gray300);
 $secondary_bg_color: var(--white);
 $secondary_text_color: var(--gray500);
 // Hover
-$secondary_border_color_dark:  var(--gray100);
+$secondary_border_color_dark: var(--gray100);
 // Disabled
 $secondary_disbaled_bg_color: rgb(121, 169, 218);
 $secondary_disbaled_border_color: rgb(121, 169, 218);

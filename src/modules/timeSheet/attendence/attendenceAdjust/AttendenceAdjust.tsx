@@ -8,14 +8,15 @@ import {
   PSelect,
 } from "Components";
 import PBadge from "Components/Badge";
+import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Modal, Row } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { EmpFilterType } from "./utils/utils";
+import { AttendanceType, EmpFilterType } from "./utils/utils";
 
-type TAttendenceAdjust = {};
+type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   // Data From Store
   const { orgId, buId, wgId, wId, employeeId } = useSelector(
@@ -24,22 +25,25 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   );
   // States
   const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
+
   // Form Instance
   const [form] = Form.useForm();
 
   // Api Actions
   const CommonEmployeeDDL = useApiRequest([]);
   const AttendanceAdjustmentFilter = useApiRequest([]);
+  const ManualAttendance = useApiRequest({});
 
   // Life Cycle Hooks
   useEffect(() => {
     const { empSearchType, date, employee } = form.getFieldsValue(true);
-    if (empSearchType && date && employee) getAttendanceFilterData();
+    empSearchType && date && employee && getAttendanceFilterData();
   }, [buId, wgId, wId]);
 
   const getAttendanceFilterData = () => {
     const { empSearchType, date, employee, attendanceStatus } =
       form.getFieldsValue(true);
+
     const payload = {
       employeeId: employee?.value || employeeId,
       workplaceGroupId: wgId,
@@ -98,6 +102,60 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         // console.error("Validate Failed:", info);
       });
   };
+
+  const submitHandler = async () => {
+    await form
+      .validateFields(["intime", "outtime"])
+      .then(() => {
+        const values = form.getFieldsValue(true);
+        const payload = selectedRow.map((item) => {
+          return {
+            id: item?.ManualAttendanceId || 0,
+            accountId: orgId,
+            attendanceSummaryId: item?.AutoId,
+            employeeId: item?.EmployeeId,
+            attendanceDate: item?.AttendanceDate,
+            inTime: values?.inTime || item?.StartTime,
+            outTime: values?.outTime || item?.EndTime,
+            status: item?.isPresent
+              ? "Present"
+              : item?.isLeave
+              ? "Leave"
+              : "Absent",
+            requestStatus: values?.attendanceAdujust?.label,
+            remarks: values?.strReason || "By HR",
+            isApproved: true,
+            isActive: true,
+            isManagement: true,
+            insertUserId: employeeId,
+            insertDateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+            workPlaceGroup: wgId,
+            businessUnitId: buId,
+          };
+        });
+
+        ManualAttendance?.action({
+          method: "post",
+          urlKey: "ManualAttendance",
+          payload,
+          toast: true,
+          onSuccess: () => {
+            form.setFieldsValue({
+              openModal: false,
+              attendanceAdujust: undefined,
+              intime: "",
+              outtime: "",
+            });
+            setSelectedRow([]);
+            getAttendanceFilterData();
+          },
+        });
+      })
+      .catch(() => {
+        // console.error("Validate Failed:", info);
+      });
+  };
+
   // Table Header
   const header: any = [
     {
@@ -134,8 +192,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Attendance Date",
       dataIndex: "AttendanceDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
+      render: (data: any) => moment(data).format("DD-MMM-YYYY"),
     },
     {
       title: "In-Time",
@@ -153,25 +210,25 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       title: "Actual Attendance",
       dataIndex: "actualAttendanceStatus",
       align: "center",
-      render: (data: any, record: any, index: number) => {
-        return (record?.isPresent && record?.isLate) || record?.isLate ? (
-          <PBadge type="warning" text="Late" />
-        ) : record?.isPresent ? (
-          <PBadge type="success" text="Present" />
-        ) : record?.isHoliday === true ? (
-          <PBadge type="secondary" text="Holiday" />
-        ) : record?.isOffday === true ? (
-          <PBadge type="dark" text="Offday" />
-        ) : record?.isLeave ? (
-          <PBadge type="light" text="Leave" />
-        ) : record?.isMovement ? (
-          <PBadge type="dark" text="Movement" />
-        ) : record?.isAbsent ? (
-          <PBadge type="danger" text="Absent" />
-        ) : (
-          ""
-        );
-      },
+      // render: (data: any, record: any, index: number) => {
+      //   return (record?.isPresent && record?.isLate) || record?.isLate ? (
+      //     <PBadge type="warning" text="Late" />
+      //   ) : record?.isPresent ? (
+      //     <PBadge type="success" text="Present" />
+      //   ) : record?.isHoliday === true ? (
+      //     <PBadge type="secondary" text="Holiday" />
+      //   ) : record?.isOffday === true ? (
+      //     <PBadge type="dark" text="Offday" />
+      //   ) : record?.isLeave ? (
+      //     <PBadge type="light" text="Leave" />
+      //   ) : record?.isMovement ? (
+      //     <PBadge type="dark" text="Movement" />
+      //   ) : record?.isAbsent ? (
+      //     <PBadge type="danger" text="Absent" />
+      //   ) : (
+      //     ""
+      //   );
+      // },
     },
     {
       title: "Request Attendance",
@@ -200,6 +257,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       sorter: false,
     },
   ];
+
   return (
     <PForm
       form={form}
@@ -209,11 +267,31 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       }}
     >
       <PCard>
-        <PCardHeader
-          title="Adjust Attendance"
-          onSearch={() => {}}
-          buttonList={[{ type: "primary", content: "Change Attendance" }]}
-        />
+        <PCardHeader title="Adjust Attendance">
+          <PSelect
+            options={AttendanceType}
+            name="attendanceAdujust"
+            placeholder="Change Attendance"
+            style={{ width: "200px" }}
+            onSelect={(value: any, op: any) => {
+              form.setFieldsValue({
+                attendanceAdujust: op,
+              });
+
+              value === 1 &&
+                form.setFieldsValue({
+                  openModal: true,
+                });
+
+              (value === 2 || value === 3) &&
+                Modal.confirm({
+                  title: "Are you sure to update attendance?",
+                  onOk: submitHandler,
+                });
+            }}
+            disabled={!selectedRow.length}
+          />
+        </PCardHeader>
         <Row gutter={[10, 2]} className="mb-3">
           <Col md={6} sm={12} xs={24}>
             <PSelect
@@ -223,6 +301,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               placeholder="Employee Search Type"
               onChange={() => {
                 form.resetFields(["date", "employee"]);
+                setSelectedRow([]);
                 AttendanceAdjustmentFilter?.reset();
               }}
               rules={[
@@ -253,6 +332,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       ]}
                       onChange={() => {
                         AttendanceAdjustmentFilter?.reset();
+                        setSelectedRow([]);
                       }}
                       format={"MMMM-YYYY"}
                     />
@@ -266,6 +346,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       loading={CommonEmployeeDDL?.loading}
                       onChange={(value, op) => {
                         AttendanceAdjustmentFilter?.reset();
+                        setSelectedRow([]);
                         form.setFieldsValue({
                           employee: op,
                         });
@@ -288,6 +369,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       placeholder="Select a date"
                       onChange={() => {
                         AttendanceAdjustmentFilter?.reset();
+                        setSelectedRow([]);
                       }}
                     />
                   </Col>
@@ -322,6 +404,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       ]}
                       onChange={() => {
                         AttendanceAdjustmentFilter?.reset();
+                        setSelectedRow([]);
                       }}
                     />
                   </Col>
@@ -346,12 +429,105 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           scroll={{ x: 1500 }}
           rowSelection={{
             type: "checkbox",
+            selectedRowKeys: selectedRow.map((item) => item?.key),
             onChange: (selectedRowKeys, selectedRows) => {
               setSelectedRow(selectedRows);
+            },
+            getCheckboxProps: (rec) => {
+              console.log(rec);
+              return {
+                disabled: rec?.ApplicationStatus === "Approved",
+              };
             },
           }}
         />
       </PCard>
+
+      {/* Confirmation Modal */}
+      <Form.Item shouldUpdate noStyle>
+        {() => {
+          const { openModal, attendanceAdujust } = form.getFieldsValue(true);
+          return (
+            <PModal
+              width={500}
+              open={openModal}
+              onCancel={() => {
+                form.setFieldsValue({
+                  openModal: false,
+                  attendanceAdujust: undefined,
+                  intime: "",
+                  outtime: "",
+                });
+              }}
+              title="Are you sure to update attendance?"
+              components={
+                <PForm form={form}>
+                  <>
+                    <div>
+                      <p>Request Status: {attendanceAdujust?.label}</p>
+                      <Row gutter={[10, 2]}>
+                        <Col span={12}>
+                          <PInput
+                            type="date"
+                            name="intime"
+                            picker="time"
+                            label="Select Intime"
+                            placeholder="Select Intime"
+                            format={"hh:mm A"}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please Select Intime",
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Col span={12}>
+                          <PInput
+                            type="date"
+                            name="outtime"
+                            picker="time"
+                            label="Select Outtime"
+                            placeholder="Select Outtime"
+                            format={"hh:mm A"}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please Select Outtime",
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Col span={24}>
+                          <PInput
+                            label="Reason"
+                            name={"reason"}
+                            type="text"
+                            placeholder="Write reason"
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                    <ModalFooter
+                      submitText="Yes"
+                      cancelText="No"
+                      onCancel={() => {
+                        form.setFieldsValue({
+                          openModal: false,
+                          attendanceAdujust: undefined,
+                          intime: "",
+                          outtime: "",
+                        });
+                      }}
+                      onSubmit={submitHandler}
+                    />
+                  </>
+                </PForm>
+              }
+            />
+          );
+        }}
+      </Form.Item>
     </PForm>
   );
 };
