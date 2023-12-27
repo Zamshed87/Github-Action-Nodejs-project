@@ -34,10 +34,10 @@ export const getAllSalaryPolicyDDL = async (accId, buId, setter) => {
   } catch (error) {}
 };
 
-export const getPayrollElementDDL = async (accId, setter) => {
+export const getPayrollElementDDL = async (accId, setter, wgId) => {
   try {
     const res = await axios.get(
-      `/Payroll/GetAllSalaryElementByAccountIdDDL?accountId=${accId}`
+      `/Payroll/GetAllSalaryElementByAccountIdDDL?accountId=${accId}&workplaceGroupId=${wgId}`
     );
     if (res?.data) {
       setter(res?.data);
