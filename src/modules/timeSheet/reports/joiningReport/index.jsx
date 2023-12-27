@@ -286,11 +286,11 @@ export default function JoiningReport() {
                   </ul>
                 </div>
               </div>
-              {rowDto?.data?.length > 0 ? (
+              {rowDto?.length > 0 ? (
                 <PeopleDeskTable
                   columnData={joiningDtoCol(pages?.current, pages?.pageSize)}
                   pages={pages}
-                  rowDto={rowDto?.data}
+                  rowDto={rowDto}
                   setRowDto={setRowDto}
                   handleChangePage={(e, newPage) =>
                     handleChangePage(e, newPage, values?.search)

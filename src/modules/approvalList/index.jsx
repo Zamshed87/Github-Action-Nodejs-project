@@ -250,36 +250,41 @@ export default function ApprovalList() {
                       <div className="table-card-styled">
                         <table className="table">
                           <tbody>
-                            {newTableData?.map((data, index) => (
-                              <tr
-                                className="hasEvent"
-                                onClick={() =>
-                                  history.push(`${data?.routeUrl}`)
-                                }
-                                key={index}
-                              >
-                                <td>
-                                  <div className="employeeInfo d-flex align-items-center approval-avatar">
-                                    <Avatar alt="Remy Sharp" src={data?.icon} />
-                                    <div className="table-title pl-3">
-                                      <p>{data?.menuName}</p>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className="action-td">
-                                  <div className="d-flex align-items-center justify-content-between">
-                                    <Tooltip title={"Pending"}>
-                                      <div>
-                                        <Chips
-                                          label={data?.totalCount}
-                                          classess="success p-2 rounded-5"
-                                        />
+                            {newTableData
+                              ?.filter((item) => item?.totalCount)
+                              .map((data, index) => (
+                                <tr
+                                  className="hasEvent"
+                                  onClick={() =>
+                                    history.push(`${data?.routeUrl}`)
+                                  }
+                                  key={index}
+                                >
+                                  <td>
+                                    <div className="employeeInfo d-flex align-items-center approval-avatar">
+                                      <Avatar
+                                        alt="Remy Sharp"
+                                        src={data?.icon}
+                                      />
+                                      <div className="table-title pl-3">
+                                        <p>{data?.menuName}</p>
                                       </div>
-                                    </Tooltip>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
+                                    </div>
+                                  </td>
+                                  <td className="action-td">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                      <Tooltip title={"Pending"}>
+                                        <div>
+                                          <Chips
+                                            label={data?.totalCount}
+                                            classess="success p-2 rounded-5"
+                                          />
+                                        </div>
+                                      </Tooltip>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>

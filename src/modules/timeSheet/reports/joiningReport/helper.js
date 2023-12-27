@@ -7,7 +7,7 @@ export const getJoiningData = async (
   buId,
   setter,
   setLoading,
-  srcTxt = "",
+  srcTxt = " ",
   pageNo,
   pageSize,
   forExcel = false,
@@ -20,15 +20,17 @@ export const getJoiningData = async (
 
   try {
     const res = await axios.get(
-      `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&PageNo=${pageNo}&PageSize=${pageSize}&SearchText=${srcTxt}`
+      `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&PageNo=${pageNo}&PageSize=${pageSize}&SearchText=${
+        srcTxt ? srcTxt : null
+      }}`
     );
 
     if (res?.data) {
       setter(res?.data);
       setPages({
-        current: res?.data?.currentPage,
-        pageSize: res?.data?.pageSize,
-        total: res?.data?.totalCount,
+        current: pageNo,
+        pageSize: pageSize,
+        total: res?.data[0]?.totalCount,
       });
       setLoading && setLoading(false);
     }
@@ -74,10 +76,10 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Department",
-      dataIndex: "department",
+      dataIndex: "strDepartment",
       sort: false,
       filter: false,
-      render: (record) => record?.department || "N/A",
+      render: (record) => record?.strDepartment || "N/A",
     },
     {
       title: "Section",
@@ -90,15 +92,15 @@ export const joiningDtoCol = (page, paginationSize) => {
 
     {
       title: "Employee Id",
-      dataIndex: "employeeCode",
+      dataIndex: "strEmployeeCode",
       sort: false,
       filter: false,
       width: 120,
-      render: (record) => record?.employeeCode || "N/A",
+      render: (record) => record?.strEmployeeCode || "N/A",
     },
     {
       title: "Employee",
-      dataIndex: "employeeName",
+      dataIndex: "strEmployeeName",
       sort: false,
       filter: false,
       render: (item) => (
@@ -107,11 +109,11 @@ export const joiningDtoCol = (page, paginationSize) => {
             <AvatarComponent
               classess=""
               letterCount={1}
-              label={item?.employeeName}
+              label={item?.strEmployeeName}
             />
           </div>
           <div className="ml-2">
-            <span>{item?.employeeName}</span>
+            <span>{item?.strEmployeeName}</span>
           </div>
         </div>
       ),
@@ -120,7 +122,7 @@ export const joiningDtoCol = (page, paginationSize) => {
 
     {
       title: "Designation",
-      dataIndex: "designation",
+      dataIndex: "strDesignation",
       sort: false,
       filter: false,
       render: (record) => record?.designation || "N/A",
@@ -136,7 +138,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Basic",
-      dataIndex: "basic",
+      dataIndex: "Basic",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -168,7 +170,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Gross Salary",
-      dataIndex: "grossSalary",
+      dataIndex: "numGrossSalary",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -216,7 +218,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Job Duration",
-      dataIndex: "duration",
+      dataIndex: "strServiceLength",
       sort: false,
       filter: false,
       //   render: (record) => dateFormatter(record?.joinDate) || "N/A",
