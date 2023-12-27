@@ -512,7 +512,7 @@ function LeavePolicyAssign() {
                       filterOrderList,
                       checkedHeaderList,
                       state?.list,
-                      values?.year?.value
+                      state?.year
                     )
                   }
                   handleChangeRowsPerPage={(e) =>
@@ -536,7 +536,7 @@ function LeavePolicyAssign() {
                       filterOrderList,
                       checkedHeaderList,
                       state?.list,
-                      values?.year?.value
+                      state?.year
                     )
                   }
                   filterOrderList={filterOrderList}
