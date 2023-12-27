@@ -187,6 +187,14 @@ function EmployeeFeatureNew() {
       filterSearch: true,
     },
     {
+      title: "Section",
+      dataIndex: "sectionName",
+      sorter: true,
+      filter: false,
+      // filterKey: "strDepartmentList",
+      // filterSearch: true,
+    },
+    {
       title: "Wing",
       dataIndex: "wingName",
       sorter: true,
