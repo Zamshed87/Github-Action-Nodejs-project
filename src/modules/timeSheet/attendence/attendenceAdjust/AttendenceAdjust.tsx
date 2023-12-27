@@ -6,11 +6,9 @@ import {
   PForm,
   PInput,
   PSelect,
-  TableButton,
 } from "Components";
 import PBadge from "Components/Badge";
 import { useApiRequest } from "Hooks";
-import { getSerial } from "Utils";
 import { Col, Form, Row } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
@@ -24,6 +22,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  // States
+  const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
   // Form Instance
   const [form] = Form.useForm();
 
@@ -94,7 +94,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       .then(() => {
         getAttendanceFilterData();
       })
-      .catch((info) => {
+      .catch(() => {
         // console.error("Validate Failed:", info);
       });
   };
@@ -212,7 +212,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         <PCardHeader
           title="Adjust Attendance"
           onSearch={() => {}}
-          buttonList={[{ type: "primary", content: "Assign" }]}
+          buttonList={[{ type: "primary", content: "Change Attendance" }]}
         />
         <Row gutter={[10, 2]} className="mb-3">
           <Col md={6} sm={12} xs={24}>
@@ -346,6 +346,9 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           scroll={{ x: 1500 }}
           rowSelection={{
             type: "checkbox",
+            onChange: (selectedRowKeys, selectedRows) => {
+              setSelectedRow(selectedRows);
+            },
           }}
         />
       </PCard>

@@ -23,6 +23,7 @@ type PCardHeaderType = {
     content: string;
     type: buttonType;
     onClick?: () => void;
+    disabled?: boolean;
     icon?: React.ReactNode | "plus";
   }>;
 };
@@ -92,6 +93,7 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
                 type={button.type}
                 onClick={button.onClick}
                 icon={button.icon === "plus" ? <PlusOutlined /> : button.icon}
+                disabled={button.disabled}
               />
             ))
           : undefined}
