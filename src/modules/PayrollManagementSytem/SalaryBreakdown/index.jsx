@@ -101,7 +101,7 @@ const SalaryBreakdown = () => {
     document.title = "Payroll Group";
   }, []);
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -118,8 +118,8 @@ const SalaryBreakdown = () => {
   // for initial
   useEffect(() => {
     getAllSalaryPolicyDDL(orgId, buId, setPayrollPolicyDDL);
-    getPayrollElementDDL(orgId, setPayrollElementDDL);
-  }, [orgId, buId, employeeId]);
+    getPayrollElementDDL(orgId, setPayrollElementDDL, wgId);
+  }, [orgId, buId, employeeId, wgId]);
 
   useEffect(() => {
     getAllAppliedSalaryBreakdownList(
@@ -509,6 +509,12 @@ const SalaryBreakdown = () => {
                             options={workplaceGroupDDL || []}
                             value={values?.payScale}
                             onChange={(valueOption) => {
+                              getPayrollElementDDL(
+                                orgId,
+                                setPayrollElementDDL,
+                                valueOption?.value
+                              );
+
                               setFieldValue("payScale", valueOption);
                             }}
                             styles={customStyles}
