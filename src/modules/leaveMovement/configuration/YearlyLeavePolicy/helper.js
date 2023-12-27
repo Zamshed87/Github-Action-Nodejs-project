@@ -42,11 +42,12 @@ export const getYearlyPolicyLanding = async (
         };
       });
       const groupedData = res?.data?.data.reduce((acc, item) => {
-        const { strWorkplaceName, ...rest } = item;
-        if (!acc[strWorkplaceName]) {
-          acc[strWorkplaceName] = [];
+        const { strWorkplaceName, strWorkplaceGroupName, ...rest } = item;
+        const key = `${strWorkplaceName}_[${strWorkplaceGroupName}]`;
+        if (!acc[key]) {
+          acc[key] = [];
         }
-        acc[strWorkplaceName].push(rest);
+        acc[key].push(rest);
         return acc;
       }, {});
 
