@@ -23,14 +23,14 @@ import PeopleDeskTable, {
 
 import FormikSelect from "../../../../common/FormikSelect";
 import { customStyles } from "../../../../utility/selectCustomStyle";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { yearDDLAction } from "utility/yearDDL";
 
 function LeavePolicyAssign() {
   // redux
   let permission = null;
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-
+  const history = useHistory();
   const { orgId, buId, wgId, wgName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -229,7 +229,8 @@ function LeavePolicyAssign() {
                                 "assign",
                                 empIDString,
                                 cb,
-                                setLandingLoading
+                                setLandingLoading,
+                                history
                               );
                             }}
                           >
@@ -294,7 +295,8 @@ function LeavePolicyAssign() {
                                   "assign",
                                   payload,
                                   cb,
-                                  setLandingLoading
+                                  setLandingLoading,
+                                  history
                                 );
                               }}
                             >

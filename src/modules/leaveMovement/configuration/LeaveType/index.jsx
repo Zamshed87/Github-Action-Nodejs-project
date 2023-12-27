@@ -122,23 +122,27 @@ function LeaveTypeCreate() {
       filter: true,
     },
     {
-      title: "Status",
+      title: "",
       dataIndex: "intLeaveTypeId",
-      render: (data) => (
-        <Tooltip title="Edit" arrow>
-          <button
-            className="iconButton"
-            onClick={(e) => {
-              if (!permission?.isEdit)
-                return toast.warn("You don't have permission");
-              e.stopPropagation();
-              setOpen(true);
-              setId(data);
-            }}
-          >
-            <ModeEditOutlineOutlined sx={{ fontSize: "20px" }} />
-          </button>
-        </Tooltip>
+      render: (data, record) => (
+        <div>
+          {record?.intAccountId > 0 ? (
+            <Tooltip title="Edit" arrow>
+              <button
+                className="iconButton"
+                onClick={(e) => {
+                  if (!permission?.isEdit)
+                    return toast.warn("You don't have permission");
+                  e.stopPropagation();
+                  setOpen(true);
+                  setId(data);
+                }}
+              >
+                <ModeEditOutlineOutlined sx={{ fontSize: "20px" }} />
+              </button>
+            </Tooltip>
+          ) : null}
+        </div>
       ),
       sorter: false,
       filter: false,
