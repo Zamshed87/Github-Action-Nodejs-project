@@ -28,4 +28,7 @@
   &.info {
     @include badgeColor(#026aa2, #e0f2fe);
   }
+  &.dark {
+    @include badgeColor(#fee4e2, #b42318);
+  }
 }
