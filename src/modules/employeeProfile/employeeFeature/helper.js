@@ -721,12 +721,21 @@ export const newEmpListColumn = (
 export const getTableDataEmployee = (row, keys, totalKey) => {
   const data = row?.map((item, index) => {
     return keys?.map((key) => {
-      return new Cell(item[key], "center", "text").getCell();
+      const cellValue = item[key];
+      const formattedValue =
+        typeof cellValue === "string" && !isNaN(cellValue)
+          ? parseFloat(cellValue)
+          : cellValue;
+
+      return new Cell(
+        formattedValue,
+        "center",
+        typeof formattedValue === "number" ? "amount" : "text"
+      ).getCell();
     });
   });
   return data;
 };
-
 // excel columns
 export const columnForHeadOffice = {
   sl: "SL",
@@ -735,9 +744,11 @@ export const columnForHeadOffice = {
   strReferenceId: "Reference Id",
   strDesignation: "Designation",
   strDepartment: "Department",
+  sectionName: "Section",
   strSupervisorName: "Supervisor",
   strLinemanager: "Line Manager",
   strEmploymentType: "Employment Type",
+  contactNo: "Contact No",
   JoiningDate: "Joining Date",
 };
 
