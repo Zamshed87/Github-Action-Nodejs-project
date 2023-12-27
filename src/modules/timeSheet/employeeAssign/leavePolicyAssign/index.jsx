@@ -125,7 +125,7 @@ function LeavePolicyAssign() {
                 <div style={{ paddingLeft: "6px" }}>
                   {checkedList.length > 0 ? (
                     <h6 className="count">
-                      Total {checkedList.length}{" "}
+                      Total {rowDto.length}{" "}
                       {`employee${checkedList.length > 1 ? "s" : ""}`} selected
                       from {pages?.total}
                     </h6>
