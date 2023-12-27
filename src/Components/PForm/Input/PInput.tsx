@@ -30,6 +30,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       layout,
       min,
       max,
+      format,
     } = property;
 
     const Components =
@@ -41,7 +42,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           suffixIcon={suffix}
           value={value}
           style={{ width: "100%" }}
-          format={"DD/MM/YYYY"}
+          format={format || "DD/MM/YYYY"}
           allowClear={allowClear}
           picker={picker as "date" | "week" | "month" | "year"}
         />

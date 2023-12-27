@@ -1,29 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { Formik, Form } from "formik";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import Loading from "./../../../../common/loading/Loading";
-import PrimaryButton from "../../../../common/PrimaryButton";
-import ViewModal from "../../../../common/ViewModal";
-import CalendarSetupModal from "./AddEditForm";
-import ResetButton from "./../../../../common/ResetButton";
-import FormikInput from "./../../../../common/FormikInput";
-import * as Yup from "yup";
 import {
   AddOutlined,
-  SettingsBackupRestoreOutlined,
   SearchOutlined,
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { getPeopleDeskAllLanding } from "../../../../common/api";
-import NoResult from "./../../../../common/NoResult";
+import { Form, Formik } from "formik";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
+import AntTable from "../../../../common/AntTable";
+import PrimaryButton from "../../../../common/PrimaryButton";
+import ViewModal from "../../../../common/ViewModal";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import { gray600 } from "../../../../utility/customColor";
 import { timeFormatter } from "../../../../utility/timeFormatter";
+import { getPeopleDeskAllLandingForCalender } from "../../helper";
+import FormikInput from "./../../../../common/FormikInput";
+import NoResult from "./../../../../common/NoResult";
+import ResetButton from "./../../../../common/ResetButton";
+import Loading from "./../../../../common/loading/Loading";
+import CalendarSetupModal from "./AddEditForm";
 import ViewCalendarSetup from "./ViewDetails";
 import "./calendarSetup.css";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import { toast } from "react-toastify";
-import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import AntTable, { paginationSize } from "../../../../common/AntTable";
-import { gray600 } from "../../../../utility/customColor";
-import { getPeopleDeskAllLandingForCalender } from "../../helper";
 
 const initData = {
   search: "",

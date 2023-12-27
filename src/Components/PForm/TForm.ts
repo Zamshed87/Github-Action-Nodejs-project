@@ -126,6 +126,7 @@ type BaseProps = FormItemProps & {
   layout?: "horizontal" | "vertical";
   min?: number;
   max?: number;
+  format?: string;
 };
 
 type InputTypeMapping = {
