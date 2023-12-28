@@ -28,4 +28,5 @@ export const apiList = {
   AttendanceAdjustmentFilterbyDate:
     "/Employee/AttendanceAdjustmentFilterbyDate",
   ManualAttendance: "/Employee/ManualAttendance",
+  EmployeeListForUserLandingPagination: "/Employee/EmployeeListForUserLandingPagination"
 };

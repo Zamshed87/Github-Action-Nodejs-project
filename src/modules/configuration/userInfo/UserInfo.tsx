@@ -1,22 +1,77 @@
-import { DataTable, PCard, PCardHeader, TableButton } from "Components";
-import PBadge from "Components/Badge";
+import {
+  Avatar,
+  DataTable,
+  PCard,
+  PCardHeader,
+  PForm,
+  TableButton,
+} from "Components";
 import { useApiRequest } from "Hooks";
-import { getSerial } from "Utils";
+import { Form } from "antd";
+import Chips from "common/Chips";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import moment from "moment";
-import React, { useEffect } from "react";
+import { debounce } from "lodash";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+
+const initData = {
+  search: "",
+  status: "",
+};
 
 type TUserInfo = {};
 const UserInfoN: React.FC<TUserInfo> = () => {
   // Data From Store
-  const { buId, wgId, wId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+
   const dispatch = useDispatch();
   // Api Actions
-  const apiKeyFromApiPath = useApiRequest({});
+  const history = useHistory();
+  // row Data
+  const [singleData, setSingleData] = useState("");
+
+  const [status, setStatus] = useState("");
+
+  // for create state
+  const [open, setOpen] = useState(false);
+
+  // for view state
+  const [viewModal, setViewModal] = useState(false);
+
+  // for create Modal
+  const handleOpen = () => {
+    setViewModal(false);
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setViewModal(false);
+    setOpen(false);
+  };
+
+  // for view Modal
+  // const handleViewOpen = () => setViewModal(true);
+  const handleViewClose = () => setViewModal(false);
+
+  // single Data
+  const [singelUser, setSingelUser] = useState("");
+
+  const [rowDto, getLanding, loadingLanding, setRowDto] = useAxiosGet();
+
+  const [form] = Form.useForm();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Users Info";
+  }, []);
+
+  // apis
+  const EmployeeListForUserLandingPagination = useApiRequest([]);
 
   // Landing Api
   type TLandingApi = {
@@ -29,41 +84,52 @@ const UserInfoN: React.FC<TUserInfo> = () => {
   };
   const landingApi = ({
     pagination = {},
-    filerList = [],
     searchText = "",
   }: TLandingApi = {}) => {
-    // apiKeyFromApiPath?.action({
-    //   urlKey: "apiKeyFromApiPath",
-    //   method: "POST",
-    //   payload: {
-    //     businessUnitId: buId,
-    //     workplaceGroupId: wgId,
-    //     workplaceId: wId,
-    //     isNotAssign: false,
-    //     pageNo: pagination?.current || 1,
-    //     pageSize: pagination?.pageSize || 25,
-    //     isPaginated: true,
-    //     isHeaderNeed: true,
-    //     searchTxt: searchText || "",
-    //     designationList: [],
-    //     departmentList: [],
-    //     supervisorNameList: [],
-    //     employmentTypeList: [],
-    //     wingNameList: [],
-    //     soleDepoNameList: [],
-    //     regionNameList: [],
-    //     areaNameList: [],
-    //     territoryNameList: [],
-    //   },
-    // });
+    EmployeeListForUserLandingPagination?.action({
+      urlKey: "EmployeeListForUserLandingPagination",
+      method: "GET",
+      params: {
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
+        isNotAssign: false,
+        pageNo: pagination?.current || 1,
+        pageSize: pagination?.pageSize || 25,
+        isPaginated: true,
+        isHeaderNeed: true,
+        searchTxt: searchText || "",
+        isUser: 0,
+        IsForXl: false,
+      },
+      onSuccess: (res) => {
+        res?.data?.map((item: any, index: number) => {
+          return {
+            ...item,
+            initialSerialNumber: index + 1,
+          };
+        });
+      },
+    });
   };
+  const searchFunc = debounce((value) => {
+    landingApi({ searchText: value });
+  }, 500);
 
+  const { permissionList } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
+
+  let permission: any = null;
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30) {
+      permission = item;
+    }
+  });
   // Life Cycle Hooks
   useEffect(() => {
     landingApi();
-
-    dispatch(setFirstLevelNameAction("Administration"));
-    document.title = "Users Info";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
@@ -71,60 +137,64 @@ const UserInfoN: React.FC<TUserInfo> = () => {
   const header: any = [
     {
       title: "SL",
-      render: (value: any, row: any, index: number) =>
-        getSerial({
-          currentPage: apiKeyFromApiPath?.data?.currentPage,
-          pageSize: apiKeyFromApiPath?.data?.pageSize,
-          index,
-        }),
-
+      render: (value: any, row: any, index: number) => index + 1,
       align: "center",
       width: 20,
+      fixed: "left",
+    },
+    {
+      title: "Employee Id",
+      dataIndex: "strEmployeeCode",
+      sorter: true,
+      // filter: true,
+      fieldType: "string",
     },
     {
       title: "Employee Name",
-      dataIndex: "employeeName",
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
+      dataIndex: "strEmployeeName",
+      render: (_: any, record: any) => (
+        <div className="d-flex align-items-center">
+          <Avatar title={record?.strEmployeeName} />
+          <span className="ml-2">{record?.strEmployeeName}</span>
+        </div>
+      ),
       sorter: true,
       filter: true,
-      filterKey: "departmentList",
+      fieldType: "string",
     },
     {
-      title: "Designation",
-      dataIndex: "designation",
+      title: "Type",
+      dataIndex: "strEmploymentType",
       sorter: true,
       filter: true,
-      filterKey: "designationList",
+      fieldType: "number",
     },
     {
-      title: "Supervisor",
-      dataIndex: "supervisorName",
-      width: "80px",
+      title: "User ID (Login)",
+      dataIndex: "strLoginId",
+      sorter: true,
+      // filter: true,
+      fieldType: "number",
     },
+
     {
-      title: "Generate Date",
-      dataIndex: "generateDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
-    },
-    {
-      title: "Joining Date",
-      dataIndex: "joiningDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
+      title: "Mobile No.",
+      dataIndex: "strPersonalMobile",
+      sorter: true,
+      // filter: true,
+      fieldType: "number",
     },
     {
       title: "Status",
-      dataIndex: "status",
-      align: "center",
-      render: (data: any, record: any, index: number) => (
-        // Write condition to check status
-        <PBadge type="primary" text="Active" />
+      dataIndex: "userStatus",
+      render: (_: any, record: any) => (
+        <Chips
+          label={record?.userStatus ? "Active" : "Inactive"}
+          classess={record?.userStatus ? "success" : "danger"}
+        />
       ),
-      width: "50px",
+      sorter: true,
+      // filter: true,
     },
     {
       title: "Action",
@@ -135,7 +205,13 @@ const UserInfoN: React.FC<TUserInfo> = () => {
             buttonsList={[
               {
                 type: "edit",
-                onClick: (e) => {},
+                onClick: (e) => {
+                  if (!permission?.isEdit)
+                    return toast.warn("You don't have permission");
+                  e.stopPropagation();
+                  setOpen(true);
+                  setSingelUser(record);
+                },
               },
               {
                 type: "delete",
@@ -152,39 +228,83 @@ const UserInfoN: React.FC<TUserInfo> = () => {
       width: "60px",
     },
   ];
-  console.log(apiKeyFromApiPath?.data);
   return (
     <>
-      <PCard>
-        <PCardHeader
-          title="Multi Calendar Assign"
-          onSearch={() => {}}
-          buttonList={[{ type: "primary", content: "Assign" }]}
-        />
+      <PForm
+        form={form}
+        onFinish={() => {
+          setOpen(true);
+        }}
+      >
+        <PCard>
+          <PCardHeader
+            title={`Total ${
+              EmployeeListForUserLandingPagination?.data?.totalCount || 0
+            } employees`}
+            onSearch={(e) => {
+              searchFunc(e?.target?.value);
+            }}
+            buttonList={[{ type: "primary", content: "Assign" }]}
+          />
 
-        <DataTable
-          header={header}
-          bordered
-          data={apiKeyFromApiPath?.data?.data || []}
-          filterData={
-            apiKeyFromApiPath?.data?.calendarAssignHeader // Filter Object From Api Response
-          }
-          pagination={{
-            current: apiKeyFromApiPath?.data?.currentPage, // Current Page From Api Response
-            pageSize: apiKeyFromApiPath?.data?.pageSize, // Page Size From Api Response
-            total: apiKeyFromApiPath?.data?.totalCount, // Total Count From Api Response
-          }}
-          loading={apiKeyFromApiPath?.loading}
-          scroll={{ x: 1000 }}
-          onChange={(pagination, filters, sorter, extra) => {
-            if (extra.action === "sort") return;
-            landingApi({
-              pagination,
-              filerList: filters,
-            });
-          }}
-        />
-      </PCard>
+          <DataTable
+            header={header}
+            bordered
+            data={EmployeeListForUserLandingPagination?.data?.data || []}
+            filterData={
+              EmployeeListForUserLandingPagination?.data?.calendarAssignHeader // Filter Object From Api Response
+            }
+            pagination={{
+              current: EmployeeListForUserLandingPagination?.data?.currentPage, // Current Page From Api Response
+              pageSize: EmployeeListForUserLandingPagination?.data?.pageSize, // Page Size From Api Response
+              total: EmployeeListForUserLandingPagination?.data?.totalCount, // Total Count From Api Response
+            }}
+            loading={EmployeeListForUserLandingPagination?.loading}
+            scroll={{ x: 1000 }}
+            onChange={(pagination, filters, sorter, extra) => {
+              if (extra.action === "sort") return;
+              landingApi({
+                pagination,
+                filerList: filters,
+              });
+            }}
+          />
+        </PCard>
+
+        {/* View Form Modal */}
+        {/* <ViewFormComponent
+          show={viewModal}
+          title={"User Details"}
+          onHide={handleViewClose}
+          size="lg"
+          backdrop="static"
+          singelUser={singelUser}
+          classes="default-modal"
+          handleOpen={handleOpen}
+          orgId={orgId}
+          buId={buId}
+          singleData={singleData}
+          setSingleData={setSingleData}
+        /> */}
+
+        {/* addEdit form Modal */}
+        {/* <AddEditFormComponent
+          show={open}
+          title={"Edit User"}
+          onHide={handleClose}
+          size="lg"
+          backdrop="static"
+          classes="default-modal"
+          orgId={orgId}
+          singelUser={singelUser}
+          buId={buId}
+          setRowDto={setRowDto}
+          singleData={singleData}
+          setSingleData={setSingleData}
+          getData={getData}
+          pages={pages}
+        /> */}
+      </PForm>
     </>
   );
 };
