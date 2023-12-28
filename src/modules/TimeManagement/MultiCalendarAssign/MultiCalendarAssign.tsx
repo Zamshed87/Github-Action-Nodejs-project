@@ -70,6 +70,7 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
         regionNameList: [],
         areaNameList: [],
         territoryNameList: [],
+        hrPositionList: [],
         sectionList: [],
       },
       onSuccess: (res) => {
