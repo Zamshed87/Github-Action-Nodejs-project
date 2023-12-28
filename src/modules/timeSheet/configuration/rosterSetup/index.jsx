@@ -66,7 +66,7 @@ export default function RosterSetup() {
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId]);
+  }, [orgId, buId, wgId]);
 
   // search
   const filterData = (keywords, allData, setRowDto) => {
