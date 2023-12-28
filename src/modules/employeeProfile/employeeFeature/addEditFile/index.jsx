@@ -502,6 +502,10 @@ export default function AddEditForm({
                   workplaceGroup: op,
                   workplace: undefined,
                   employeeType: undefined,
+                  department: undefined,
+                  section: undefined,
+                  designation: undefined,
+                  hrPosition: undefined,
                 });
                 if (value) {
                   getWorkplace();
@@ -523,6 +527,10 @@ export default function AddEditForm({
               onChange={(value, op) => {
                 form.setFieldsValue({
                   workplace: op,
+                  department: undefined,
+                  section: undefined,
+                  designation: undefined,
+                  hrPosition: undefined,
                 });
                 if (value) {
                   getEmployeDepartment();

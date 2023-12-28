@@ -441,7 +441,7 @@ function EmployeeFeatureNew() {
                         getTableDataEmployee(
                           newData,
                           wgId === 3
-                            ? Object.keys(columnForMarketing)
+                            ? Object.keys(columnForHeadOffice) //Object.keys(columnForMarketing)
                             : Object.keys(columnForHeadOffice)
                         ),
                       tableFooter: [],

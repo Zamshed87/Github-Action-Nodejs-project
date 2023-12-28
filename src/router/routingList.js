@@ -1125,6 +1125,9 @@ const GorForPrint = lazy(() =>
 const AttendanceReport = lazy(() =>
   import("../modules/timeSheet/reports/attendanceReport/index.jsx")
 );
+const AttendanceRawDataProcess = lazy(() =>
+  import("../modules/timeSheet/attendence/attendanceRawDataProcess/index.jsx")
+);
 const EmployeeList = lazy(() =>
   import("../modules/timeSheet/reports/employeeList/index.jsx")
 );
@@ -1284,6 +1287,10 @@ export const routingList = [
   {
     path: "/profile/reports/jobConfirmation",
     component: JobConfirmationReport,
+  },
+  {
+    path: "/profile/timeManagement/attendanceRawDataProcess",
+    component: AttendanceRawDataProcess,
   },
   {
     path: "/profile/reports/inactiveEmployees",
