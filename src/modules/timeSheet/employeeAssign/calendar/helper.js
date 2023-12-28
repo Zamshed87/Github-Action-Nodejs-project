@@ -133,6 +133,14 @@ export const columns = (
       fieldType: "string",
     },
     {
+      title: "Hr Position",
+      dataIndex: "hrPosition",
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`hrPositionList`],
+      fieldType: "string",
+    },
+    {
       title: "Designation",
       dataIndex: "designation",
       sort: true,
@@ -322,6 +330,7 @@ export const initHeaderList = {
   territoryNameList: [],
   employmentTypeList: [],
   sectionList: [],
+  hrPositionList: [],
 };
 export const statusDDL = [
   { value: 0, label: "All" },
