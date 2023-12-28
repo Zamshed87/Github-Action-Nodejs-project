@@ -1,10 +1,7 @@
+import { InfoOutlined } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { gray600, gray900, greenColor } from "../../../../utility/customColor";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
-import AvatarComponent from "../../../../common/AvatarComponent";
-import { InfoOutlined } from "@mui/icons-material";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 
 export const getShiftAssignFilter = async (
@@ -255,6 +252,14 @@ export const columns = (
       sort: true,
       filter: true,
       filterDropDownList: headerList[`departmentList`],
+      fieldType: "string",
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`sectionList`],
       fieldType: "string",
     },
     {
