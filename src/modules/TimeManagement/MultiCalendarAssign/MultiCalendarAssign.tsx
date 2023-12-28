@@ -70,6 +70,7 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
         regionNameList: [],
         areaNameList: [],
         territoryNameList: [],
+        sectionList: [],
       },
       onSuccess: (res) => {
         res.calendarAssignHeader.status = [
@@ -115,6 +116,13 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
       sorter: true,
       filter: true,
       filterKey: "departmentList",
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
+      sorter: true,
+      filter: true,
+      filterKey: "sectionList",
     },
     {
       title: "Designation",
