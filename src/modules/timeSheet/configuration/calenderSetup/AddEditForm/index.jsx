@@ -112,12 +112,12 @@ const CalendarSetupModal = ({
   // DDL
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=0&WorkplaceGroupId=0&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceId",
       "strWorkplace",
       setWorkPlaceDDL
     );
-  }, []);
+  }, [buId, wgId, employeeId]);
 
   // setter function
   const setter = (payload) => {
