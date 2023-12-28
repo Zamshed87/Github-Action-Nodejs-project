@@ -117,6 +117,7 @@ function ShiftManagement() {
     areaNameList: [],
     territoryNameList: [],
     employmentTypeList: [],
+    sectionList: [],
   };
   const [landingLoading, setLandingLoading] = useState(false);
   const [filterOrderList, setFilterOrderList] = useState([]);
