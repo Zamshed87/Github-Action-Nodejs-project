@@ -5,6 +5,7 @@ import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDiv
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
+import LateReport from "modules/timeSheet/reports/lateReport";
 import { lazy } from "react";
 
 const MultiCalendarAssign = lazy(() =>
@@ -1500,6 +1501,10 @@ export const routingList = [
   {
     path: "/profile/reports/dailyAttendanceReport",
     component: MgmtDailyAttendance,
+  },
+  {
+    path: "/profile/reports/lateReport",
+    component: LateReport,
   },
   {
     path: "/profile/reports/joiningReport",
