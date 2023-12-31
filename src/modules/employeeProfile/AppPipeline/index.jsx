@@ -45,7 +45,7 @@ const CommonAppPipeline = () => {
 
   const getData = (pagination, searchText = "") => {
     getRowDto(
-      `/ApprovalPipeline/ApprovalPipelineHeaderLanding?intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&workplaceId=${wId}&searchText=${searchText}&PageNo=${pagination?.current}&PageSize=${pagination?.pageSize}`,
+      `/ApprovalPipeline/ApprovalPipelineHeaderLanding?intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId}&searchText=${searchText}&PageNo=${pagination?.current}&PageSize=${pagination?.pageSize}`,
       (res) => {
         const modifiedData = res?.data?.map((item, index) => ({
           ...item,
@@ -93,7 +93,7 @@ const CommonAppPipeline = () => {
 
   useEffect(() => {
     getData(pages);
-  }, [buId, wgId]);
+  }, [buId, wgId, wId]);
 
   const dispatch = useDispatch();
   useEffect(() => {
