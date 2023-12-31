@@ -64,10 +64,10 @@ export default function AddEditFormComponent({
   isVisibleHeading = true,
   fullscreen,
   title,
-  setAllData,
   getData,
   pages,
 }) {
+  console.log(singelUser)
   const [loading, setLoading] = useState(false);
   const [userTypeDDL, setUserTypeDDL] = useState([]);
   const [isShowPassword, setIsShowPassword] = useState(false);

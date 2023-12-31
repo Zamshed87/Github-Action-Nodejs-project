@@ -16,16 +16,13 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-
-const initData = {
-  search: "",
-  status: "",
-};
+import AddEditFormComponent from "./addEditForm";
+import { PModal } from "Components/Modal";
 
 type TUserInfo = {};
 const UserInfoN: React.FC<TUserInfo> = () => {
   // Data From Store
-  const { orgId, buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -213,14 +210,6 @@ const UserInfoN: React.FC<TUserInfo> = () => {
                   setSingelUser(record);
                 },
               },
-              {
-                type: "delete",
-                onClick: (e) => {},
-              },
-              {
-                type: "view",
-                onClick: (e) => {},
-              },
             ]}
           />
         );
@@ -244,7 +233,19 @@ const UserInfoN: React.FC<TUserInfo> = () => {
             onSearch={(e) => {
               searchFunc(e?.target?.value);
             }}
-            buttonList={[{ type: "primary", content: "Assign" }]}
+            buttonList={[
+              {
+                type: "primary",
+                content: "+User",
+                onClick: () => {
+                  if (!permission?.isCreate)
+                    return toast.warn("You don't have permission");
+                  history.push(
+                    `/administration/roleManagement/usersInfo/create`
+                  );
+                },
+              },
+            ]}
           />
 
           <DataTable
@@ -288,23 +289,29 @@ const UserInfoN: React.FC<TUserInfo> = () => {
         /> */}
 
         {/* addEdit form Modal */}
-        {/* <AddEditFormComponent
-          show={open}
-          title={"Edit User"}
-          onHide={handleClose}
-          size="lg"
-          backdrop="static"
-          classes="default-modal"
-          orgId={orgId}
-          singelUser={singelUser}
-          buId={buId}
-          setRowDto={setRowDto}
-          singleData={singleData}
-          setSingleData={setSingleData}
-          getData={getData}
-          pages={pages}
-        /> */}
       </PForm>
+
+      <PModal
+        open={open}
+        title="Edit User"
+        width=""
+        onCancel={() => setOpen(false)}
+        maskClosable={false}
+        components={
+          <>
+            {/* @ts-ignore */}
+            <AddEditFormComponent
+                onHide={handleClose}
+                size="lg"
+                backdrop="static"
+                classes="default-modal"
+                singelUser={singelUser}
+                getData={landingApi}
+                pages={undefined}
+              />
+          </>
+        }
+      />
     </>
   );
 };
