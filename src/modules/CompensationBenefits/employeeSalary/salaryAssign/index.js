@@ -105,7 +105,8 @@ const SalaryAssign = () => {
       buId,
       0,
       0,
-      setPayrollElementDDL
+      setPayrollElementDDL,
+      wgId
     );
   }, [orgId, buId]);
 

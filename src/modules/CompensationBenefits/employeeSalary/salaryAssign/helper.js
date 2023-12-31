@@ -1,9 +1,9 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { getByIdSalaryAssignDDL, getSalaryAssignDDL } from "./salaryAssignCal";
 import AvatarComponent from "../../../../common/AvatarComponent";
-import { numberWithCommas } from "../../../../utility/numberWithCommas";
 import Chips from "../../../../common/Chips";
+import { numberWithCommas } from "../../../../utility/numberWithCommas";
+import { getByIdSalaryAssignDDL, getSalaryAssignDDL } from "./salaryAssignCal";
 
 export const reverseBasedOnBasicPercentage = (basicElement, payrollElement) => {
   let percentage = 0;
@@ -17,11 +17,12 @@ export const getBreakdownPolicyDDL = async (
   buId,
   employeeId,
   id,
-  setter
+  setter,
+  wgId
 ) => {
   try {
     const res = await axios.get(
-      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntEmployeeId=${employeeId}&IntAccountId=${accId}&IntBusinessUnitId=${buId}&IntSalaryBreakdownHeaderId=${id}`
+      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntEmployeeId=${employeeId}&IntAccountId=${accId}&IntBusinessUnitId=${buId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceGroupId=${wgId}`
     );
     if (res?.data) {
       const modifyData = res?.data?.map((itm) => {
@@ -51,7 +52,11 @@ export const getBreakdownListDDL = async (
     );
     if (res?.data) {
       try {
-        const resBasicAllowance = await axios.get(`/Payroll/GetGrossWiseBasicAmountNPercentage?BreakDownHeaderId=${id}&GrossAmount=${grossSalaryAmount || 0}`);
+        const resBasicAllowance = await axios.get(
+          `/Payroll/GetGrossWiseBasicAmountNPercentage?BreakDownHeaderId=${id}&GrossAmount=${
+            grossSalaryAmount || 0
+          }`
+        );
         if (resBasicAllowance?.data) {
           getSalaryAssignDDL(
             accId,
