@@ -70,10 +70,8 @@ export default function AddEditFormComponent({
   const [singlePermission, setSinglePermission] = useState({});
   const [isEdit, setIsEdit] = useState(false);
 
-  const { orgId, buId, employeeId, wgId, wId, wgName } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, wgId, wId, wgName, wName } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
   const { supervisor } = useSelector(
     (state) => state?.auth?.keywords,
     shallowEqual
@@ -174,8 +172,8 @@ export default function AddEditFormComponent({
       strRemarks: values?.remarks || "",
       intAccountId: orgId,
       intBusinessUnitId: buId,
-      intWorkplaceGroupId: wgId,
-      intWorkplaceId: wId,
+      intWorkplaceGroupId: values?.orgName?.value || wgId,
+      intWorkplaceId: values?.workplace?.value || wId,
       // intWorkplaceGroupId: values?.orgName?.value || 0,
       // intWorkplaceId: values?.workplace?.value,
       // intTerritoryId: values?.territory?.value,
@@ -299,7 +297,9 @@ export default function AddEditFormComponent({
       <Formik
         enableReinitialize={true}
         initialValues={
-          singleData?.intPipelineHeaderId ? singlePermission : initData
+          singleData?.intPipelineHeaderId
+            ? singlePermission
+            : { initData, orgName: { value: wgId, label: wgName }, workplace:{value:wId, label: wName} }
         }
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
@@ -390,7 +390,7 @@ export default function AddEditFormComponent({
                             />
                           </div> */}
                           {/* workPlaceGroup */}
-                          <div className="col-md-6 d-none">
+                          <div className="col-md-6">
                             <label className="mb-2">Workplace Group </label>
                             <FormikSelect
                               isDisabled={isEdit}
@@ -419,10 +419,9 @@ export default function AddEditFormComponent({
                             />
                           </div>
                           {/* workPlace */}
-                          <div className="col-md-6 d-none ">
+                          <div className="col-md-6">
                             <label className="mb-2">Workplace </label>
                             <FormikSelect
-                              // isDisabled={!values?.orgType}
                               isDisabled={isEdit}
                               classes="input-sm"
                               styles={customStyles}
@@ -445,7 +444,7 @@ export default function AddEditFormComponent({
                               errors={errors}
                               touched={touched}
                               placeholder=" "
-                              isClearable={false}
+                              isClearable={true}
                             />
                           </div>
 
