@@ -11,7 +11,6 @@ import PrimaryButton from "../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import AddEditFormComponent from "./addEditForm";
-import CardTable from "./components/CardTable";
 import "./style.css";
 import MasterFilter from "../../../common/MasterFilter";
 
@@ -27,7 +26,7 @@ const initData = {
 };
 
 const CommonAppPipeline = () => {
-  const { buId, employeeId, wgName, wgId } = useSelector(
+  const { buId, employeeId, wgName, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -46,7 +45,7 @@ const CommonAppPipeline = () => {
 
   const getData = (pagination, searchText = "") => {
     getRowDto(
-      `/ApprovalPipeline/ApprovalPipelineHeaderLanding?intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&searchText=${searchText}&PageNo=${pagination?.current}&PageSize=${pagination?.pageSize}`,
+      `/ApprovalPipeline/ApprovalPipelineHeaderLanding?intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&workplaceId=${wId}&searchText=${searchText}&PageNo=${pagination?.current}&PageSize=${pagination?.pageSize}`,
       (res) => {
         const modifiedData = res?.data?.map((item, index) => ({
           ...item,
