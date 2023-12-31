@@ -10,17 +10,17 @@ import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { todayDate } from "../../../../utility/todayDate";
 import { createUser } from "../helper";
-import { getPeopleDeskAllDDL } from "./../../../../common/api/index";
-import FormikInput from "./../../../../common/FormikInput";
-import FormikSelect from "./../../../../common/FormikSelect";
-import FormikToggle from "./../../../../common/FormikToggle";
-import Loading from "./../../../../common/loading/Loading";
+import { getPeopleDeskAllDDL } from "../../../../common/api/index";
+import FormikInput from "../../../../common/FormikInput";
+import FormikSelect from "../../../../common/FormikSelect";
+import FormikToggle from "../../../../common/FormikToggle";
+import Loading from "../../../../common/loading/Loading";
 import {
   blackColor40,
   gray900,
   greenColor,
-} from "./../../../../utility/customColor";
-import { customStyles } from "./../../../../utility/newSelectCustomStyle";
+} from "../../../../utility/customColor";
+import { customStyles } from "../../../../utility/newSelectCustomStyle";
 
 const initData = {
   loginUserId: "",
@@ -53,16 +53,11 @@ const validationSchema = Yup.object().shape({
     .typeError("User type is required"),
 });
 
-export default function AddEditFormComponent({
+export default function AddEditFormComponentN({
   singelUser,
   isCreate,
-  show,
   onHide,
-  size,
-  backdrop,
-  classes,
   isVisibleHeading = true,
-  fullscreen,
   title,
   getData,
   pages,

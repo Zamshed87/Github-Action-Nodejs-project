@@ -16,8 +16,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
-import AddEditFormComponent from "./addEditForm";
 import { PModal } from "Components/Modal";
+import AddEditFormComponentN from "./addEditForm";
 
 type TUserInfo = {};
 const UserInfoN: React.FC<TUserInfo> = () => {
@@ -143,7 +143,6 @@ const UserInfoN: React.FC<TUserInfo> = () => {
       title: "Employee Id",
       dataIndex: "strEmployeeCode",
       sorter: true,
-      // filter: true,
       fieldType: "string",
     },
     {
@@ -294,17 +293,12 @@ const UserInfoN: React.FC<TUserInfo> = () => {
       <PModal
         open={open}
         title="Edit User"
-        width=""
         onCancel={() => setOpen(false)}
         maskClosable={false}
         components={
           <>
-            {/* @ts-ignore */}
-            <AddEditFormComponent
+            <AddEditFormComponentN
                 onHide={handleClose}
-                size="lg"
-                backdrop="static"
-                classes="default-modal"
                 singelUser={singelUser}
                 getData={landingApi}
                 pages={undefined}
