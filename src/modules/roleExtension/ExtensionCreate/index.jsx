@@ -38,7 +38,7 @@ const initData = {
 const validationSchema = yup.object().shape({});
 
 const CreateRoleExtension = ({ setCreateOrUpdate }) => {
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData
   );
   const [loading, setLoading] = useState(false);
@@ -62,7 +62,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
     if (v?.length < 2) return [];
     return axios
       .get(
-        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&Search=${v}`
+        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
       )
       .then((res) => {
         return res?.data;
