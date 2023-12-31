@@ -142,7 +142,6 @@ export default function AddEditFormComponent({
             ? modifySingleData
             : {
                 ...initData,
-                businessUnit: { value: 0, label: "All" },
               }
         }
         validationSchema={validationSchema}
@@ -264,10 +263,11 @@ export default function AddEditFormComponent({
                               name="businessUnit"
                               options={
                                 [
-                                  {
-                                    value: 0,
-                                    label: "All",
-                                  },
+                                  // requirement from QA to remove all option 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+                                  // {
+                                  //   value: 0,
+                                  //   label: "All",
+                                  // },
                                   ...businessUnitDDL,
                                 ] || []
                               }
