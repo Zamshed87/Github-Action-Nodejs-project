@@ -28,8 +28,9 @@ import { todayDate } from "../../../../utility/todayDate";
 import {
   column,
   earlyDtoCol,
-  getEarlyInOutData,
+  getLateData,
   getTableDataDailyAttendance,
+  lateDtoCol,
 
   // subHeaderColumn,
 } from "./helper";
@@ -37,8 +38,6 @@ import {
 const initialValues = {
   businessUnit: "",
   date: todayDate(),
-  workplaceGroup: "",
-  workplace: "",
   search: "",
 };
 
@@ -46,7 +45,7 @@ const validationSchema = Yup.object().shape({
   date: Yup.date().required("Date is required").typeError("Date is required"),
 });
 
-const EarlyReport = () => {
+const LateReport = () => {
   // redux
   const dispatch = useDispatch();
 
@@ -73,7 +72,7 @@ const EarlyReport = () => {
   //  menu permission
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30380) {
+    if (item?.menuReferenceId === 30384) {
       permission = item;
     }
   });
@@ -84,7 +83,7 @@ const EarlyReport = () => {
     date = todayDate(),
     isExcel = false
   ) => {
-    getEarlyInOutData(
+    getLateData(
       buId,
       date,
       setRowDto,
@@ -118,7 +117,7 @@ const EarlyReport = () => {
   //set to module
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Early Out Report";
+    document.title = "Late Report";
   }, [dispatch]);
 
   const handleChangePage = (_, newPage, searchText) => {
@@ -161,7 +160,7 @@ const EarlyReport = () => {
         <div className="table-card">
           <div className="table-card-heading mt-2 pt-1 ">
             <div className="d-flex align-items-center">
-              <h2 className="ml-1">Early Out Report</h2>
+              <h2 className="ml-1">Late Report</h2>
             </div>
             <div className="table-header-right">
               <ul className="d-flex flex-wrap"></ul>
@@ -211,7 +210,7 @@ const EarlyReport = () => {
                         margin: "7px 0px 10px 5px",
                       }}
                     >
-                      Early Out Report
+                      Late Report
                     </h2>
                   </div>
 
@@ -226,7 +225,7 @@ const EarlyReport = () => {
                                 onClick={(e) => {
                                   // e.stopPropagation();
                                   getExcelData(
-                                    `/TimeSheetReport/GetEarlyOutReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&Date=${values?.date}&IsXls=true&PageNo=1&PageSize=10000`,
+                                    `/TimeSheetReport/GetLateReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&Date=${values?.date}&IsXls=true&PageNo=1&PageSize=10000`,
                                     (res) => {
                                       // console.log(res?.data);
                                       const newData = res?.data?.map(
@@ -234,15 +233,12 @@ const EarlyReport = () => {
                                           return {
                                             ...item,
                                             sl: index + 1,
-                                            calenderTime: `${
-                                              item?.startTime || ""
-                                            }-${item?.endTime || ""}`,
                                           };
                                         }
                                       );
 
                                       createCommonExcelFile({
-                                        titleWithDate: `Daily Early Out Report for ${values?.date} `,
+                                        titleWithDate: `Late Report for ${values?.date} `,
                                         fromDate: "",
                                         toDate: "",
                                         buAddress: buDetails?.strAddress,
@@ -254,17 +250,7 @@ const EarlyReport = () => {
                                             Object.keys(column),
                                             res?.data
                                           ),
-                                        // getSubTableData: () =>
-                                        //   getTableDataSummaryHeadData(res),
-                                        // subHeaderInfoArr: [
-                                        //   res?.data?.workplaceGroup
-                                        //     ? `Workplace Group-${res?.data?.workplaceGroup}`
-                                        //     : "",
-                                        //   res?.data?.workplace
-                                        //     ? `Workplace-${res?.data?.workplace}`
-                                        //     : "",
-                                        // ],
-                                        // subHeaderColumn,
+
                                         tableFooter: [
                                           "Total",
                                           "",
@@ -274,7 +260,7 @@ const EarlyReport = () => {
                                           "",
                                           "",
                                           "",
-                                          res?.totalEarlyOut,
+                                          res?.totalLate,
                                         ],
                                         extraInfo: {},
                                         tableHeadFontSize: 10,
@@ -399,13 +385,13 @@ const EarlyReport = () => {
                       className="ml-2"
                       fontSize={"12px"}
                     >
-                      {rowDto?.totalEarlyOut || 0}
+                      {rowDto?.totalLate || 0}
                     </Typography>
                   </div>
                 </div>
 
                 <PeopleDeskTable
-                  columnData={earlyDtoCol(pages?.current, pages?.pageSize)}
+                  columnData={lateDtoCol(pages?.current, pages?.pageSize)}
                   pages={pages}
                   rowDto={rowDto?.data}
                   setRowDto={setRowDto}
@@ -432,4 +418,4 @@ const EarlyReport = () => {
   );
 };
 
-export default EarlyReport;
+export default LateReport;
