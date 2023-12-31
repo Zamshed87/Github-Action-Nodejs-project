@@ -43,6 +43,8 @@ export default function JoiningReport() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const debounce = useDebounce();
+
   const getData = (
     pagination = { current: 1, pageSize: paginationSize },
     srcTxt = "",
@@ -120,16 +122,6 @@ export default function JoiningReport() {
       ""
     );
   };
-
-  //   const saveHandler = (values) => {
-
-  //   };
-
-  // const activity_day_total = (fieldName) => {
-  //   let total = 0;
-  //   rowDto?.data?.map((row) => (total += row[fieldName]));
-  //   return total;
-  // };
 
   //  permission
   let permission = null;
@@ -268,7 +260,7 @@ export default function JoiningReport() {
                         value={values?.search}
                         setValue={(value) => {
                           setFieldValue("search", value);
-                          useDebounce(() => {
+                          debounce(() => {
                             getData(
                               { current: 1, pageSize: paginationSize },
                               value

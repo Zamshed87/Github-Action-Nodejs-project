@@ -61,36 +61,6 @@ export const joiningDtoCol = (page, paginationSize, wName, wgName) => {
       //   width: 30,
     },
     {
-      title: "Workplace Group",
-      // dataIndex: "workplaceGroup",
-      sort: false,
-      filter: false,
-      render: () => wgName || "N/A",
-    },
-    {
-      title: "Workplace",
-      // dataIndex: "workplace",
-      sort: false,
-      filter: false,
-      render: () => wName || "N/A",
-    },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sort: false,
-      filter: false,
-      // render: (record) => record?.strDepartment || "N/A",
-    },
-    {
-      title: "Section",
-      dataIndex: "section",
-      sort: true,
-      fieldType: "string",
-      filter: false,
-      render: (record) => record?.section || "N/A",
-    },
-
-    {
       title: "Employee Id",
       dataIndex: "strEmployeeCode",
       sort: false,
@@ -118,6 +88,35 @@ export const joiningDtoCol = (page, paginationSize, wName, wgName) => {
         </div>
       ),
       fieldType: "string",
+    },
+    {
+      title: "Workplace Group",
+      // dataIndex: "workplaceGroup",
+      sort: false,
+      filter: false,
+      render: () => wgName || "N/A",
+    },
+    {
+      title: "Workplace",
+      // dataIndex: "workplace",
+      sort: false,
+      filter: false,
+      render: () => wName || "N/A",
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sort: false,
+      filter: false,
+      // render: (record) => record?.strDepartment || "N/A",
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
+      sort: true,
+      fieldType: "string",
+      filter: false,
+      render: (record) => record?.section || "N/A",
     },
 
     {
@@ -229,12 +228,13 @@ export const joiningDtoCol = (page, paginationSize, wName, wgName) => {
 // excel columns
 export const column = {
   sl: "SL",
+  strEmployeeCode: "Code",
+  strEmployeeName: "Employee Name",
   workplaceGroup: "Workplace Group",
   workplace: "workplace",
   strDepartment: "Department",
   section: "Section",
-  strEmployeeCode: "Code",
-  strEmployeeName: "Employee Name",
+
   strDesignation: "Designation",
   PayrollGroup: "Payroll Group",
   Basic: "Basic",
