@@ -130,6 +130,7 @@ export default function AddEditForm({
       method: "GET",
       params: {
         DDLType: "Calender",
+        IntWorkplaceId: wId,
         BusinessUnitId: buId,
         WorkplaceGroupId: wgId,
         intId: 0, // employeeId, Previously set 0
