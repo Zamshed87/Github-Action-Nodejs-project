@@ -109,6 +109,18 @@ export default function RosterSetup() {
         filter: true,
       },
       {
+        title: "WorkPlace GroupName",
+        dataIndex: "workplaceGroupName",
+        sorter: true,
+        filter: true,
+      },
+      {
+        title: "Workplace Name",
+        dataIndex: "workplaceName",
+        sorter: true,
+        filter: true,
+      },
+      {
         title: "Created By",
         dataIndex: "strCreatedBy",
         sorter: true,
