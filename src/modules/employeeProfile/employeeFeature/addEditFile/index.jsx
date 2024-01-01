@@ -125,14 +125,16 @@ export default function AddEditForm({
   }, 500);
 
   const getCalendarDDL = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
     calendarDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Calender",
-        IntWorkplaceId: wId,
+        IntWorkplaceId: workplace?.value || wId,
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
+        WorkplaceGroupId: workplaceGroup?.value || wgId,
         intId: 0, // employeeId, Previously set 0
       },
       onSuccess: (res) => {
@@ -539,6 +541,7 @@ export default function AddEditForm({
                   getEmployeeStatus();
                   getEmployeePosition();
                   getEmploymentType();
+                  getCalendarDDL();
                 }
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
