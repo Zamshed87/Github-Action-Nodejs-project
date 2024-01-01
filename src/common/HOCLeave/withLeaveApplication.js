@@ -80,7 +80,7 @@ const withLeaveApplication = (WrappedComponent) => {
         leavePolicyId: item?.intPolicyId,
         leaveApplicationId: item?.intApplicationId,
         leaveTypeId: item?.LeaveTypeId,
-        employeeId: employeeId,
+        employeeId: values?.employee ? values?.employee?.value : employeeId,
         accountId: orgId,
         businessUnitId: buId,
         applicationDate: item?.ApplicationDate,
