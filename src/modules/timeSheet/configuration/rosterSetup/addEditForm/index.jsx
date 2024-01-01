@@ -1,12 +1,15 @@
 import { Box } from "@mui/system";
 import { Form, Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import FormikInput from "../../../../../common/FormikInput";
 import Loading from "../../../../../common/loading/Loading";
 import { createTimeSheetAction } from "../../../helper";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
+import { getPeopleDeskAllDDL } from "common/api";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -20,13 +23,25 @@ const validationSchema = Yup.object({
 });
 
 const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wgName, wName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
   const [loading, setLoading] = useState(false);
+  const [organizationDDL, setOrganizationDDL] = useState([]);
+  const [workPlaceDDL, setWorkPlaceDDL] = useState([]);
+  const [loader, setLoader] = useState(false);
   const history = useHistory();
+
+  useEffect(() => {
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setOrganizationDDL
+    );
+  }, [buId]);
 
   const saveHandler = (values, cb) => {
     let payload = {
@@ -62,8 +77,8 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       daysOfWeekId: 0,
       remarks: "",
       rosterGroupName: values?.rosterGroupName,
-      workplaceId: 0,
-      workplaceGroupId: 0,
+      workplaceId: values?.workplace?.value || 0,
+      workplaceGroupId: values?.orgName?.value || 0,
       overtimeDate: "2022-05-08T09:13:19.700Z",
       overtimeHour: 0,
       reason: "",
@@ -80,7 +95,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       <Formik
         enableReinitialize={true}
         initialValues={{
-          rosterGroupName: rosterName || "",
+          rosterGroupName: rosterName || "",orgName: { value: wgId, label: wgName }, workplace:{value:wId, label: wName}
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -107,22 +122,80 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
             <Box sx={style} className="rosterSetupModal">
               <Form onSubmit={handleSubmit}>
                 {loading && <Loading />}
-                <div className="modalBody" style={{padding:"0px 12px"}}>
-                  <div>
-                    <label>Roster Name </label>
-                    <FormikInput
-                      classes="input-sm"
-                      value={values?.rosterGroupName}
-                      name="rosterGroupName"
-                      type="text"
-                      className="form-control"
-                      placeholder=""
-                      onChange={(e) => {
-                        setFieldValue("rosterGroupName", e.target.value);
-                      }}
-                      errors={errors}
-                      touched={touched}
-                    />
+                <div className="modalBody">
+                  <div className="row">
+                    {/* workPlaceGroup */}
+                    <div className="col-md-6">
+                      <label className="mb-2">Workplace Group </label>
+                      <FormikSelect
+                        // isDisabled={isEdit}
+                        classes="input-sm"
+                        styles={customStyles}
+                        name="orgName"
+                        options={organizationDDL || []}
+                        value={values?.orgName}
+                        onChange={(valueOption) => {
+                          setLoader(true);
+                          setFieldValue("orgName", valueOption);
+                          setFieldValue("workplace", "");
+
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption.value}&intId=${employeeId}`,
+                            "intWorkplaceId",
+                            "strWorkplace",
+                            setWorkPlaceDDL
+                          );
+                          setLoader(false);
+                        }}
+                        errors={errors}
+                        touched={touched}
+                        placeholder=" "
+                        isClearable={false}
+                      />
+                    </div>
+                    {/* workPlace */}
+                    <div className="col-md-6">
+                      <label className="mb-2">Workplace </label>
+                      <FormikSelect
+                        // isDisabled={isEdit}
+                        classes="input-sm"
+                        styles={customStyles}
+                        name="workplace"
+                        options={
+                          [
+                            {
+                              value: 0,
+                              label: "All",
+                            },
+                            ...workPlaceDDL,
+                          ] || []
+                        }
+                        value={values?.workplace || { value: -1, label: "" }}
+                        onChange={(valueOption) => {
+                          setFieldValue("workplace", valueOption);
+                        }}
+                        errors={errors}
+                        touched={touched}
+                        placeholder=" "
+                        isClearable={true}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label>Roster Name </label>
+                      <FormikInput
+                        classes="input-sm"
+                        value={values?.rosterGroupName}
+                        name="rosterGroupName"
+                        type="text"
+                        className="form-control"
+                        placeholder=""
+                        onChange={(e) => {
+                          setFieldValue("rosterGroupName", e.target.value);
+                        }}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="modal-footer form-modal-footer">
@@ -137,7 +210,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                     Cancel
                   </button>
                   <button
-                    style={{ height: "30px", width:"150px" }}
+                    style={{ height: "30px", width: "150px" }}
                     className="btn btn-green"
                     type="submit"
                   >
