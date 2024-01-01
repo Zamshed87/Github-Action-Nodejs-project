@@ -3,6 +3,7 @@ import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
+import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
@@ -868,9 +869,9 @@ const SupervisorIOUReportView = lazy(() =>
 const AppPipeline = lazy(() =>
   import("../modules/leaveMovement/configuration/AppPipeline/index.jsx")
 );
-const LeaveTypeCreate = lazy(() =>
-  import("../modules/leaveMovement/configuration/LeaveType/index.jsx")
-);
+// const LeaveTypeCreate = lazy(() =>
+//   import("../modules/leaveMovement/configuration/LeaveType/index.jsx")
+// );
 const MovementType = lazy(() =>
   import("../modules/leaveMovement/configuration/MovementType/index.jsx")
 );
