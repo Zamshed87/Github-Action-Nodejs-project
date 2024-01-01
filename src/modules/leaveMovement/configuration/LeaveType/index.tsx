@@ -24,6 +24,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import Chips from "common/Chips";
 
 function LeaveTypeCreate() {
   // hook
@@ -94,7 +95,7 @@ function LeaveTypeCreate() {
   const searchFunc = debounce((value) => {
     landingApiCall({ searchText: value });
   }, 500);
-
+  console.log({ landingApi });
   // Header
   const header = [
     {
@@ -121,6 +122,14 @@ function LeaveTypeCreate() {
       title: "Status",
       dataIndex: "statusValue",
       sorter: true,
+      render: (_: any, rec: any) => (
+        <>
+          <Chips
+            label={rec?.isActive ? "Active" : "Inactive"}
+            classess={`${rec?.isActive ? "success" : "danger"}`}
+          />
+        </>
+      ),
     },
 
     {
@@ -128,6 +137,7 @@ function LeaveTypeCreate() {
       align: "center",
       render: (_: any, rec: any) => (
         <>
+          {console.log({ rec })}
           {rec?.intAccountId > 0 ? (
             <TableButton
               buttonsList={[
@@ -175,7 +185,7 @@ function LeaveTypeCreate() {
           {/* Example Using Data Table Designed By Ant-Design v4 */}
           <DataTable
             bordered
-            data={landingApi?.data || []}
+            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
             loading={landingApi?.loading}
             header={header}
             // pagination={{
