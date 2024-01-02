@@ -3,6 +3,7 @@ import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
+import MovementType from "modules/leaveMovement/configuration/MovementType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
@@ -871,9 +872,9 @@ const AppPipeline = lazy(() =>
 // const LeaveTypeCreate = lazy(() =>
 //   import("../modules/leaveMovement/configuration/LeaveType/index.jsx")
 // );
-const MovementType = lazy(() =>
-  import("../modules/leaveMovement/configuration/MovementType/index.jsx")
-);
+// const MovementType = lazy(() =>
+//   import("../modules/leaveMovement/configuration/MovementType/index.jsx")
+// );
 const YearlyLeavePolicy = lazy(() =>
   import("../modules/leaveMovement/configuration/YearlyLeavePolicy/index.jsx")
 );
