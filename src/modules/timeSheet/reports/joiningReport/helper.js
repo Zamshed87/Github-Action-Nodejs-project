@@ -50,7 +50,7 @@ export const getTableData = (row, keys, summary) => {
 };
 
 // UI Table columns
-export const joiningDtoCol = (page, paginationSize) => {
+export const joiningDtoCol = (page, paginationSize, wName, wgName) => {
   return [
     {
       title: "SL",
@@ -60,36 +60,6 @@ export const joiningDtoCol = (page, paginationSize) => {
       className: "text-center",
       //   width: 30,
     },
-    {
-      title: "Workplace Group",
-      dataIndex: "workplaceGroup",
-      sort: false,
-      filter: false,
-      render: (record) => record?.workplaceGroup || "N/A",
-    },
-    {
-      title: "Workplace",
-      dataIndex: "workplace",
-      sort: false,
-      filter: false,
-      render: (record) => record?.workplace || "N/A",
-    },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sort: false,
-      filter: false,
-      render: (record) => record?.strDepartment || "N/A",
-    },
-    {
-      title: "Section",
-      dataIndex: "section",
-      sort: true,
-      fieldType: "string",
-      filter: false,
-      render: (record) => record?.section || "N/A",
-    },
-
     {
       title: "Employee Id",
       dataIndex: "strEmployeeCode",
@@ -119,18 +89,47 @@ export const joiningDtoCol = (page, paginationSize) => {
       ),
       fieldType: "string",
     },
+    {
+      title: "Workplace Group",
+      dataIndex: "strWorkPlaceGroup",
+      sort: false,
+      filter: false,
+      // render: () => wgName || "N/A",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkPlace",
+      sort: false,
+      filter: false,
+      // render: () => wName || "N/A",
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sort: false,
+      filter: false,
+      // render: (record) => record?.strDepartment || "N/A",
+    },
+    {
+      title: "Section",
+      dataIndex: "strSection",
+      sort: true,
+      fieldType: "string",
+      filter: false,
+      // render: (record) => record?.section || "N/A",
+    },
 
     {
       title: "Designation",
       dataIndex: "strDesignation",
       sort: false,
       filter: false,
-      render: (record) => record?.designation || "N/A",
+      // render: (record) => record?.designation || "N/A",
       fieldType: "string",
     },
     {
       title: "Payroll Group",
-      dataIndex: "payrollGroup",
+      dataIndex: "strPayrollGroup",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -146,7 +145,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "House Rent",
-      dataIndex: "houseRent",
+      dataIndex: "House",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -154,7 +153,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Medical",
-      dataIndex: "medical",
+      dataIndex: "Medical",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -162,7 +161,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Conveyance",
-      dataIndex: "conveyance",
+      dataIndex: "Conveyance",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -178,7 +177,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Overtime Category",
-      dataIndex: "overtimeCategory",
+      dataIndex: "OTCategory",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -186,7 +185,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Tiffin to Salary",
-      dataIndex: "tiffinToSalary",
+      dataIndex: "TiffintoSalary",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -194,7 +193,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Salary Category",
-      dataIndex: "salaryCategory",
+      dataIndex: "SalaryCategory",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -202,7 +201,7 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Payment Mode",
-      dataIndex: "paymentMode",
+      dataIndex: "PaymentMode",
       sort: false,
       filter: false,
       //   render: (record) => record?.designation || "N/A",
@@ -210,10 +209,10 @@ export const joiningDtoCol = (page, paginationSize) => {
     },
     {
       title: "Join Date",
-      dataIndex: "joinDate",
+      // dataIndex: "joinDate",?
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.joinDate) || "N/A",
+      render: (record) => dateFormatter(record?.dteJoiningDate) || "N/A",
       fieldType: "date",
     },
     {
@@ -229,23 +228,24 @@ export const joiningDtoCol = (page, paginationSize) => {
 // excel columns
 export const column = {
   sl: "SL",
-  workplaceGroup: "Workplace Group",
-  workplace: "workplace",
-  department: "Department",
-  section: "Section",
-  employeeCode: "Code",
-  employeeName: "Employee Name",
-  designation: "Designation",
-  PayrollGroup: "Payroll Group",
+  strEmployeeCode: "Code",
+  strEmployeeName: "Employee Name",
+  strWorkPlaceGroup: "Workplace Group",
+  strWorkPlace: "workplace",
+  strDepartment: "Department",
+  strSection: "Section",
+
+  strDesignation: "Designation",
+  strPayrollGroup: "Payroll Group",
   Basic: "Basic",
-  HouseRent: "House Rent",
+  House: "House Rent",
   Medical: "Medical",
   Conveyance: "Conveyance",
-  GrossSalary: "Gross Salary",
-  OvertimeCategory: "Overtime Category",
+  numGrossSalary: "Gross Salary",
+  OTCategory: "Overtime Category",
   TiffintoSalary: "Tiffin to Salary",
   SalaryCategory: "Salary Category ",
   PaymentMode: "PaymentMode",
-  JoinDate: "Join Date",
-  JobDuration: "Job Duration",
+  dteJoiningDate: "Join Date",
+  strServiceLength: "Job Duration",
 };

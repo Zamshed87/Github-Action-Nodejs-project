@@ -924,12 +924,12 @@ export default function LeaveApproval() {
                         </div>
                       </div>
                     </div>
-                    <div
+                    {/* <div
                       className="col-md-3 pr-0 h-100"
                       style={{
                         boxShadow: "0px 1px 4px 1px rgba(99, 115, 129, 0.3)",
                       }}
-                    ></div>
+                    ></div> */}
                   </div>
                 </div>
 

@@ -10,7 +10,10 @@ import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray600 } from "../../../../utility/customColor";
-import { dateFormatterForInput } from "../../../../utility/dateFormatter";
+import {
+  dateFormatter,
+  dateFormatterForInput,
+} from "../../../../utility/dateFormatter";
 import { getPDFAction } from "../../../../utility/downloadFile";
 
 import { getBuDetails } from "../helper";
@@ -36,10 +39,12 @@ const initData = {
 export default function JoiningReport() {
   // dispatch
   const dispatch = useDispatch();
-  const { buId, orgId, wgId, wId } = useSelector(
+  const { buId, orgId, wgId, wId, wName, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const debounce = useDebounce();
+
   const getData = (
     pagination = { current: 1, pageSize: paginationSize },
     srcTxt = "",
@@ -118,16 +123,6 @@ export default function JoiningReport() {
     );
   };
 
-  //   const saveHandler = (values) => {
-
-  //   };
-
-  // const activity_day_total = (fieldName) => {
-  //   let total = 0;
-  //   rowDto?.data?.map((row) => (total += row[fieldName]));
-  //   return total;
-  // };
-
   //  permission
   let permission = null;
   permissionList.forEach((item) => {
@@ -163,7 +158,7 @@ export default function JoiningReport() {
                           setLoading && setLoading(true);
                           try {
                             const res = await axios.get(
-                              `IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&PageNo=1&PageSize=10000`
+                              `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&PageNo=${1}&PageSize=${100000}`
                             );
                             if (res?.data) {
                               if (res?.data < 1) {
@@ -174,10 +169,15 @@ export default function JoiningReport() {
                                 return {
                                   ...item,
                                   sl: index + 1,
+                                  workplace: wName,
+                                  workplaceGroup: wgName,
+                                  dteJoiningDate: dateFormatter(
+                                    item?.dteJoiningDate
+                                  ),
                                 };
                               });
                               createCommonExcelFile({
-                                titleWithDate: `Joining Report ${values?.date} `,
+                                titleWithDate: `Joining Report  `,
                                 fromDate: "",
                                 toDate: "",
                                 buAddress: buDetails?.strAddress,
@@ -200,17 +200,7 @@ export default function JoiningReport() {
                                 //     : "",
                                 // ],
                                 // subHeaderColumn,
-                                tableFooter: [
-                                  "Total",
-                                  "",
-                                  "",
-                                  "",
-                                  "",
-                                  "",
-                                  "",
-                                  "",
-                                  res?.totalEarlyOut,
-                                ],
+                                tableFooter: [],
                                 extraInfo: {},
                                 tableHeadFontSize: 10,
                                 widthList: {
@@ -270,7 +260,7 @@ export default function JoiningReport() {
                         value={values?.search}
                         setValue={(value) => {
                           setFieldValue("search", value);
-                          useDebounce(() => {
+                          debounce(() => {
                             getData(
                               { current: 1, pageSize: paginationSize },
                               value
@@ -288,7 +278,12 @@ export default function JoiningReport() {
               </div>
               {rowDto?.length > 0 ? (
                 <PeopleDeskTable
-                  columnData={joiningDtoCol(pages?.current, pages?.pageSize)}
+                  columnData={joiningDtoCol(
+                    pages?.current,
+                    pages?.pageSize,
+                    wName,
+                    wgName
+                  )}
                   pages={pages}
                   rowDto={rowDto}
                   setRowDto={setRowDto}

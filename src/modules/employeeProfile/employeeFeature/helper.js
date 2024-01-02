@@ -47,6 +47,7 @@ export const createEditEmpAction = async (
 
   let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
   console.log("Come Here");
+  console.log("values", values);
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
@@ -110,6 +111,7 @@ export const createEditEmpAction = async (
           employeeId: 0,
           joiningDate: values?.joiningDate,
           generateStartDate: values?.generateDate,
+          generateEndDate: null,
           runningCalendarId:
             values?.calenderType?.value === 2
               ? values?.startingCalender?.value
@@ -723,7 +725,7 @@ export const getTableDataEmployee = (row, keys, totalKey) => {
     return keys?.map((key) => {
       const cellValue = item[key];
       const formattedValue =
-        typeof cellValue === "string" && !isNaN(cellValue)
+        typeof cellValue === "string" && cellValue !== "" && !isNaN(cellValue)
           ? parseFloat(cellValue)
           : cellValue;
 

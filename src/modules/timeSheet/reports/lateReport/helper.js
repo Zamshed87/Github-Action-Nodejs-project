@@ -1,27 +1,11 @@
 import axios from "axios";
-import { dateFormatter } from "utility/dateFormatter";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 
-export const getBuDetails = async (buId, setter, setLoading) => {
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-    setter([]);
-  }
-};
-
 // daily attendance generate landing
-export const getAbsentData = async (
+export const getLateData = async (
   buId,
-  fromdate,
+  date,
   setter,
   setLoading,
   srcTxt,
@@ -30,21 +14,20 @@ export const getAbsentData = async (
   forExcel = false,
   wgId,
   setPages,
-  wId,
-  todate
+  wId
 ) => {
   setLoading && setLoading(true);
 
   try {
     const res = await axios.get(
-      `/TimeSheetReport/GetAbsentReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&FromDate=${fromdate}&ToDate=${todate}&IsXls=false&PageNo=${pageNo}&PageSize=${pageSize}`
+      `/TimeSheetReport/GetLateReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&Date=${date}&IsXls=${forExcel}&PageNo=${pageNo}&PageSize=${pageSize}`
     );
 
     if (res?.data) {
       setter(res?.data);
       setPages({
-        current: pageNo,
-        pageSize: pageSize,
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
         total: res?.data?.totalCount,
       });
       setLoading && setLoading(false);
@@ -54,7 +37,7 @@ export const getAbsentData = async (
   }
 };
 // UI Table columns
-export const absentDtoCol = (page, paginationSize) => {
+export const lateDtoCol = (page, paginationSize) => {
   return [
     {
       title: "SL",
@@ -62,28 +45,43 @@ export const absentDtoCol = (page, paginationSize) => {
       sort: false,
       filter: false,
       className: "text-center",
-      width: 30,
+      //   width: 30,
     },
     {
-      title: "Workplace Group",
-      dataIndex: "workplaceGroup",
+      title: "Department",
+      dataIndex: "department",
       sort: false,
       filter: false,
-      render: (record) => record?.workplaceGroup || "N/A",
+      render: (record) => record?.department || "N/A",
     },
     {
-      title: "Workplace",
-      dataIndex: "workplace",
-      sort: false,
+      title: "Section",
+      dataIndex: "section",
+      sort: true,
+      fieldType: "string",
       filter: false,
-      render: (record) => record?.workplace || "N/A",
+      render: (record) => record?.section || "N/A",
     },
+    // {
+    //   title: "Workplace Group",
+    //   dataIndex: "workplaceGroup",
+    //   sort: false,
+    //   filter: false,
+    //   render: (record) => record?.workplaceGroup || "N/A",
+    // },
+    // {
+    //   title: "Workplace",
+    //   dataIndex: "workplace",
+    //   sort: false,
+    //   filter: false,
+    //   render: (record) => record?.workplace || "N/A",
+    // },
     {
       title: "Employee Id",
       dataIndex: "employeeCode",
       sort: false,
       filter: false,
-      width: 100,
+      width: 80,
       render: (record) => record?.employeeCode || "N/A",
     },
     {
@@ -114,44 +112,31 @@ export const absentDtoCol = (page, paginationSize) => {
       sort: false,
       filter: false,
       render: (record) => record?.designation || "N/A",
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sort: false,
-      filter: false,
-      render: (record) => record?.department || "N/A",
-    },
-    {
-      title: "Section",
-      dataIndex: "section",
-      sort: true,
       fieldType: "string",
-      filter: false,
-      render: (record) => record?.section || "N/A",
     },
 
     {
-      title: "Total Absent",
-      dataIndex: "totalAbsent",
+      title: "Calender Name",
+      dataIndex: "calenderName",
       sort: false,
       filter: false,
-      //   render: (record) => record?.employmentType || "N/A",
+      fieldType: "string",
     },
     {
-      title: "Last Present Date",
-      dataIndex: "lastPresentDate",
+      title: "In Time",
+      dataIndex: "intime",
       sort: false,
       filter: false,
-      render: (_, record) => dateFormatter(record?.lastPresentDate) || "N/A",
+      //   render: (record) => `${convertTo12HourFormat(record?.outTime)}` || "N/A",
     },
+
     {
-      title: "Mobile Number",
-      dataIndex: "mobileNumber",
+      title: "Late",
+      dataIndex: "late",
+      //   render: (record) => record?.earlyOut || "N/A",
       sort: false,
       filter: false,
-      width: 120,
-      //   render: (_, record) => dateFormatter(record?.lastPresentDate) || "N/A",
+      fieldType: "string",
     },
   ];
 };
@@ -159,29 +144,27 @@ export const absentDtoCol = (page, paginationSize) => {
 // excel columns
 export const column = {
   sl: "SL",
-  workplaceGroup: "Workplace Group",
-  workplace: "Workplace",
-  employeeCode: "Employee Id",
-  employeeName: "Employee Name",
-  designation: "Designation",
   department: "Department",
   section: "Section",
-  totalAbsent: "Total Absent",
-  lastPresentDate: "Last Present Date",
-  mobileNumber: "Mobile Number",
+  employeeCode: "Code",
+  employeeName: "Employee Name",
+  designation: "Designation",
+  calenderName: "Calender Name",
+  intime: "In Time",
+  late: "Late",
 };
 
-export const subHeaderColumn = {
-  totalEmployee: "Total Employee",
-  presentCount: "Present",
-  absentCount: "Absent",
-  lateCount: "Late",
-  leaveCount: "Leave",
-  movementCount: "Movement",
-  weekendCount: "Weekend",
-  holidayCount: "Holiday",
-  manualPresentCount: "Manual Present",
-};
+// export const subHeaderColumn = {
+//   totalEmployee: "Total Employee",
+//   presentCount: "Present",
+//   absentCount: "Absent",
+//   lateCount: "Late",
+//   leaveCount: "Leave",
+//   movementCount: "Movement",
+//   weekendCount: "Weekend",
+//   holidayCount: "Holiday",
+//   manualPresentCount: "Manual Present",
+// };
 
 // for excel
 export const getTableDataDailyAttendance = (row, keys, summary) => {

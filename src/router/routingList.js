@@ -2,9 +2,11 @@ import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/C
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
-import UserInfoN from "modules/configuration/userInfo/UserInfo";
+import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
+import MovementType from "modules/leaveMovement/configuration/MovementType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
+import LateReport from "modules/timeSheet/reports/lateReport";
 import { lazy } from "react";
 
 const MultiCalendarAssign = lazy(() =>
@@ -867,12 +869,12 @@ const SupervisorIOUReportView = lazy(() =>
 const AppPipeline = lazy(() =>
   import("../modules/leaveMovement/configuration/AppPipeline/index.jsx")
 );
-const LeaveTypeCreate = lazy(() =>
-  import("../modules/leaveMovement/configuration/LeaveType/index.jsx")
-);
-const MovementType = lazy(() =>
-  import("../modules/leaveMovement/configuration/MovementType/index.jsx")
-);
+// const LeaveTypeCreate = lazy(() =>
+//   import("../modules/leaveMovement/configuration/LeaveType/index.jsx")
+// );
+// const MovementType = lazy(() =>
+//   import("../modules/leaveMovement/configuration/MovementType/index.jsx")
+// );
 const YearlyLeavePolicy = lazy(() =>
   import("../modules/leaveMovement/configuration/YearlyLeavePolicy/index.jsx")
 );
@@ -1502,6 +1504,10 @@ export const routingList = [
     component: MgmtDailyAttendance,
   },
   {
+    path: "/profile/reports/lateReport",
+    component: LateReport,
+  },
+  {
     path: "/profile/reports/joiningReport",
     component: JoiningReport,
   },
@@ -1614,8 +1620,8 @@ export const routingList = [
     component: MasterLocationRegistration,
   },
   // <== Administration start
-  { path: "/administration/roleManagement/usersInfoPrev", component: UserInfo },
-  { path: "/administration/roleManagement/usersInfo", component: UserInfoN },
+  { path: "/administration/roleManagement/usersInfo", component: UserInfo },
+  // { path: "/administration/roleManagement/usersInfo", component: UserInfoN },
   {
     path: "/administration/roleManagement/usersInfo/create",
     component: CreateUser,
