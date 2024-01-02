@@ -28,6 +28,7 @@ export const apiList = {
   AttendanceAdjustmentFilterbyDate:
     "/Employee/AttendanceAdjustmentFilterbyDate",
   ManualAttendance: "/Employee/ManualAttendance",
+  EmployeeListForUserLandingPagination: "/Employee/EmployeeListForUserLandingPagination",
   GetAllLveLeaveType: "/SaasMasterData/GetAllLveLeaveType",
   GetAllLveLeaveTypeById: "/SaasMasterData/GetLveLeaveTypeById",
   SaveLveLeaveType: "/SaasMasterData/SaveLveLeaveType",
