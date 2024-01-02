@@ -68,7 +68,7 @@ function MovementType() {
 
   // Api Instance
   const landingApi = useApiRequest({});
-  const GetBusinessDetailsByBusinessUnitId = useApiRequest({});
+  const deleteMovement = useApiRequest({});
 
   type TLandingApi = {
     pagination?: {
@@ -178,10 +178,25 @@ function MovementType() {
                     return toast.warn("You don't have permission");
                     e.stopPropagation();
                   }
+                  const cb = () => {
+                    console.log("callback calling...");
 
-                  getDeleteLveMovementTypeById(rec?.intMovementTypeId, () => {
                     landingApiCall();
+                  };
+
+                  deleteMovement.action({
+                    urlKey: "DeleteLveMovementTypeById",
+                    method: "GET",
+                    params: {
+                      id: rec?.intMovementTypeId,
+                    },
+                    onSuccess: () => {
+                      cb();
+                    },
                   });
+                  //   getDeleteLveMovementTypeById(rec?.intMovementTypeId, () => {
+                  //     landingApiCall();
+                  //   });
                 },
               },
             ]}

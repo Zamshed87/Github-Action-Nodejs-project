@@ -55,16 +55,19 @@ export default function AddEditForm({
       getData();
     };
     let payload = {
-      intParentId: singleData?.intParentId || 0,
-      strLeaveType: values?.leaveType,
-      strLeaveTypeCode: values?.leaveTypeCode,
+      intMovementTypeId: singleData?.intMovementTypeId
+        ? singleData?.intMovementTypeId
+        : 0,
+      strMovementType: values?.strMovementType,
+      strMovementTypeCode: values?.strMovementTypeCode,
+      intQuotaHour: values?.intQuotaHour,
+      intQuotaFrequency: values?.intQuotaFrequency?.value,
+      isActive: true,
       intAccountId: orgId,
-      isActive: values?.isActive,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
-      intLeaveTypeId: singleData?.intLeaveTypeId || 0,
     };
 
     saveLeaveType.action({
