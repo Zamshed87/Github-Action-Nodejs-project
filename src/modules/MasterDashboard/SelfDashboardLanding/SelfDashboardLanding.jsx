@@ -69,7 +69,6 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   useEffect(() => {
     getData();
   }, []);
-
   return (
     <>
       <div className="employee-self-dashboard">
@@ -165,7 +164,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       paddingLeft: "8px",
                                     }}
                                   >
-                                    {item?.leaveType}
+                                    {item?.strLeaveType}
                                   </p>
                                 </td>
                                 <td style={{ borderTop: "1px solid #F2F4F7" }}>
@@ -175,7 +174,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       color: gray700,
                                     }}
                                   >
-                                    {item?.leaveTakenDays}
+                                    {item?.intTakenLveInDay}
                                   </p>
                                 </td>
                                 <td style={{ borderTop: "1px solid #F2F4F7" }}>
@@ -185,7 +184,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       color: gray700,
                                     }}
                                   >
-                                    {item?.remainingDays}
+                                    {item?.intBalanceLveInDay}
                                   </p>
                                 </td>
                               </tr>
