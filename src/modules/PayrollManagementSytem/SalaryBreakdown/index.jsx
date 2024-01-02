@@ -361,7 +361,7 @@ const SalaryBreakdown = () => {
         title: "",
         dataIndex: "",
         render: (data, item) => (
-          // can be edit only developement, if need to edit on live server, please discuss with backend and business team and remove isDevServer condition
+          // 🔥⚠⚠🔥 can be edit only developement, if need to edit on live server, please discuss with backend and business team and remove isDevServer condition
           isDevServer ?  <div className=" d-flex align-items-center justify-content-end "> 
             <Tooltip title="Edit" arrow>
               <button
