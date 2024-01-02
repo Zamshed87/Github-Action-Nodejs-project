@@ -723,7 +723,7 @@ export const getTableDataEmployee = (row, keys, totalKey) => {
     return keys?.map((key) => {
       const cellValue = item[key];
       const formattedValue =
-        typeof cellValue === "string" && !isNaN(cellValue)
+        typeof cellValue === "string" && cellValue !== "" && !isNaN(cellValue)
           ? parseFloat(cellValue)
           : cellValue;
 
