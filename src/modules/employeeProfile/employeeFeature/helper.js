@@ -47,6 +47,7 @@ export const createEditEmpAction = async (
 
   let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
   console.log("Come Here");
+  console.log("values", values);
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
@@ -110,6 +111,7 @@ export const createEditEmpAction = async (
           employeeId: 0,
           joiningDate: values?.joiningDate,
           generateStartDate: values?.generateDate,
+          generateEndDate: null,
           runningCalendarId:
             values?.calenderType?.value === 2
               ? values?.startingCalender?.value

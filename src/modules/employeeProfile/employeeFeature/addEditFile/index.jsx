@@ -997,11 +997,6 @@ export default function AddEditForm({
                               name="nextChangeDate"
                               label="Next Calendar Change"
                               placeholder={"Next Calendar Change"}
-                              onChange={(value, op) => {
-                                form.setFieldsValue({
-                                  nextChangeDate: op,
-                                });
-                              }}
                             />
                           </Col>
                         </>
