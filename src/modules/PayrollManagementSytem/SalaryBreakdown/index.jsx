@@ -1,7 +1,7 @@
 import { EditOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -38,6 +38,7 @@ import {
 } from "./helper";
 import "./styles.css";
 import { getPeopleDeskWithoutAllDDL } from "../../../common/api";
+import { isDevServer } from "App";
 
 const initData = {
   breakdownTitle: "",
@@ -360,11 +361,12 @@ const SalaryBreakdown = () => {
         title: "",
         dataIndex: "",
         render: (data, item) => (
-          <div className=" d-flex align-items-center justify-content-end ">
+          // 🔥⚠⚠🔥 can be edit only developement, if need to edit on live server, please discuss with backend and business team and remove isDevServer condition
+          isDevServer ?  <div className=" d-flex align-items-center justify-content-end "> 
             <Tooltip title="Edit" arrow>
               <button
                 type="button"
-                className="iconButton d-none"
+                className="iconButton"
                 onClick={(e) => {
                   e.stopPropagation();
                   scrollRef.current.scrollIntoView({
@@ -422,7 +424,7 @@ const SalaryBreakdown = () => {
                 <EditOutlined sx={{ fontSize: "20px" }} />
               </button>
             </Tooltip>
-          </div>
+          </div> : <></>
         ),
         sorter: false,
         filter: false,
@@ -439,7 +441,7 @@ const SalaryBreakdown = () => {
           : initData
       }
       validationSchema={validationSchema}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
+      onSubmit={(values, { resetForm }) => {
         saveHandler(values, () => {
           resetForm(initData);
         });
@@ -794,8 +796,6 @@ const SalaryBreakdown = () => {
                                       }}
                                       step="any"
                                       required
-                                      errors={errors}
-                                      touched={touched}
                                       // disabled={isEdit || state?.singleBreakdown?.intSalaryBreakdownHeaderId}
                                     />
                                   </div>
@@ -822,7 +822,7 @@ const SalaryBreakdown = () => {
                             state?.singleBreakdown
                               ?.intSalaryBreakdownHeaderId) && (
                             <button
-                              onClick={(e) => {
+                              onClick={() => {
                                 setIsEdit(false);
                                 resetForm(initData);
                                 setSingleData("");
