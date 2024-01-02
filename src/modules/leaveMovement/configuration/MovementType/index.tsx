@@ -266,7 +266,7 @@ function MovementType() {
 
       <PModal
         open={open}
-        title={id ? "Edit Leave Type" : "Create Leave Type"}
+        title={id ? "Edit Movement Type" : "Create Movement Type"}
         width=""
         onCancel={() => setOpen(false)}
         maskClosable={false}
@@ -276,8 +276,8 @@ function MovementType() {
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
               isEdit={id ? true : false}
-              pages={undefined}
               singleData={id}
+              setId={setId}
             />
           </>
         }
