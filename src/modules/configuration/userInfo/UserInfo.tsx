@@ -298,11 +298,11 @@ const UserInfoN: React.FC<TUserInfo> = () => {
         components={
           <>
             <AddEditFormComponentN
-                onHide={handleClose}
-                singelUser={singelUser}
-                getData={landingApi}
-                pages={undefined}
-              />
+              singelUser={singelUser}
+              isCreate={false}
+              onHide={handleClose}
+              getData={landingApi}
+            />
           </>
         }
       />
