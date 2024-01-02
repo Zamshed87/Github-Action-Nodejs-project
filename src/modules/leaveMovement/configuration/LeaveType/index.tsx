@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import Chips from "common/Chips";
+import AddEditForm from "./addEditForm";
 
 function LeaveTypeCreate() {
   // hook
@@ -36,7 +37,6 @@ function LeaveTypeCreate() {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
-
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
     shallowEqual
@@ -44,6 +44,7 @@ function LeaveTypeCreate() {
 
   // state
   const [open, setOpen] = useState(false);
+  const [id, setId] = useState("");
 
   // Form Instance
   const [form] = Form.useForm();
@@ -71,6 +72,7 @@ function LeaveTypeCreate() {
       method: "GET",
     });
   };
+  console.log({ id });
 
   useEffect(() => {
     landingApiCall();
@@ -95,7 +97,7 @@ function LeaveTypeCreate() {
   const searchFunc = debounce((value) => {
     landingApiCall({ searchText: value });
   }, 500);
-  console.log({ landingApi });
+
   // Header
   const header = [
     {
@@ -137,20 +139,18 @@ function LeaveTypeCreate() {
       align: "center",
       render: (_: any, rec: any) => (
         <>
-          {console.log({ rec })}
           {rec?.intAccountId > 0 ? (
             <TableButton
               buttonsList={[
                 {
                   type: "edit",
-                  onClick: () => {
-                    history.push({
-                      pathname: `/profile/employee/${rec?.intEmployeeBasicInfoId}`,
-                      state: {
-                        buId: rec?.intBusinessUnitId,
-                        wgId: rec?.intWorkplaceGroupId,
-                      },
-                    });
+                  onClick: (e: any) => {
+                    if (!employeeFeature?.isEdit) {
+                      return toast.warn("You don't have permission");
+                      e.stopPropagation();
+                    }
+                    setOpen(true);
+                    setId(rec);
                   },
                 },
               ]}
@@ -219,9 +219,9 @@ function LeaveTypeCreate() {
         </PCard>
       </PForm>
 
-      {/* <PModal
+      <PModal
         open={open}
-        title="Create New Employee"
+        title={id ? "Edit Leave Type" : "Create Leave Type"}
         width=""
         onCancel={() => setOpen(false)}
         maskClosable={false}
@@ -230,13 +230,13 @@ function LeaveTypeCreate() {
             <AddEditForm
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
-              isEdit={false}
+              isEdit={id ? true : false}
               pages={undefined}
-              singleData={undefined}
+              singleData={id}
             />
           </>
         }
-      /> */}
+      />
     </>
   ) : (
     <NotPermittedPage />

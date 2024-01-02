@@ -1,243 +1,518 @@
-import { Close } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
-import { Form, Formik } from "formik";
+import { ModalFooter } from "Components/Modal";
+import { PForm, PInput, PSelect } from "Components/PForm";
+import { useApiRequest } from "Hooks";
+import { Col, Divider, Form, Row } from "antd";
+import { debounce } from "lodash";
 import { useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
-import { shallowEqual, useSelector } from "react-redux";
-import * as Yup from "yup";
-import { getAllGlobalLeaveType } from "../../../../../common/api";
-import FormikInput from "../../../../../common/FormikInput";
-import FormikToggle from "../../../../../common/FormikToggle";
-import Loading from "../../../../../common/loading/Loading";
-import { blackColor40, greenColor } from "../../../../../utility/customColor";
-import { todayDate } from "../../../../../utility/todayDate";
-import { createLeaveType, getLeaveTypeById } from "../helper";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+// import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
+// import { createEditEmpAction, userExistValidation } from "../helper";
+// import { submitHandler } from "./helper";
 
-const initData = {
-  leaveType: "",
-  leaveTypeCode: "",
-  isActive: true,
-};
-const validationSchema = Yup.object().shape({
-  leaveType: Yup.string().required("Leave Type is required"),
-  leaveTypeCode: Yup.string().required("Leave Type Code is required"),
-});
-
-export default function AddEditFormComponent({
-  id,
-  show,
-  onHide,
-  size,
-  backdrop,
-  classes,
-  isVisibleHeading = true,
-  fullscreen,
-  title,
-  setId,
+export default function AddEditForm({
+  setIsAddEditForm,
+  getData,
+  // empBasic,
+  isEdit,
   singleData,
-  setSingleData,
-  setRowDto,
-  setAllData,
+  pages,
 }) {
+  const dispatch = useDispatch();
+  // const debounce = useDebounce();
+
+  const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
+
   const [loading, setLoading] = useState(false);
 
-  const [modifySingleData, setModifySingleData] = useState("");
+  // states
 
-  const { employeeId, orgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
 
-  useEffect(() => {
-    if (singleData) {
-      const newRowData = {
-        leaveType: singleData?.strLeaveType,
-        leaveTypeCode: singleData?.strLeaveTypeCode,
-        isActive: singleData?.isActive,
-      };
-      setModifySingleData(newRowData);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleData]);
+  // Pages Start From Here code from above will be removed soon
 
-  useEffect(() => {
-    if (id) {
-      getLeaveTypeById(setSingleData, id, setLoading);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  // Form Instance
+  const [form] = Form.useForm();
 
-  const saveHandler = (values, cb) => {
-    let payload = {
-      intParentId: singleData?.intParentId || 0,
-      strLeaveType: values?.leaveType,
-      strLeaveTypeCode: values?.leaveTypeCode,
-      intAccountId: orgId,
-      isActive: values?.isActive,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: employeeId,
-      dteUpdatedAt: todayDate(),
-      intUpdatedBy: employeeId,
-    };
+  // Api Instance
+  const supervisorDDL = useApiRequest([]);
+  const dottedSupervisorDDL = useApiRequest([]);
+  const lineManagerDDL = useApiRequest([]);
+  const calendarDDL = useApiRequest([]);
+  const rosterGroupDDL = useApiRequest([]);
+  const calendarByRosterGroupDDL = useApiRequest([]);
+  const religionDDL = useApiRequest([]);
+  const genderDDL = useApiRequest([]);
+  const employmentTypeDDL = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const empSectionDDL = useApiRequest([]);
+  const workplaceGroup = useApiRequest([]);
+  const workplaceDDL = useApiRequest([]);
+  const empDesignationDDL = useApiRequest([]);
+  const employeeStatusDDL = useApiRequest([]);
+  const positionDDL = useApiRequest([]);
+  const userTypeDDL = useApiRequest([]);
+  const generateEmpCode = useApiRequest([]);
 
-    const callback = () => {
-      cb();
-      onHide();
-      getAllGlobalLeaveType(setRowDto, setAllData, setLoading, orgId);
-    };
+  // Api Functions
+  const getSuperVisorDDL = debounce((value) => {
+    if (value?.length < 2) return supervisorDDL?.reset();
+    const { workplaceGroup } = form.getFieldsValue(true);
+    supervisorDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        intId: employeeId,
+        workplaceGroupId: workplaceGroup?.value,
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
 
-    if (id) {
-      createLeaveType({ ...payload, intLeaveTypeId: id }, setLoading, callback);
-    } else {
-      createLeaveType({ ...payload, intLeaveTypeId: 0 }, setLoading, callback);
-    }
+  const getDottedSuperVisorDDL = debounce((value) => {
+    if (value?.length < 2) return dottedSupervisorDDL?.reset();
+
+    dottedSupervisorDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        intId: employeeId,
+        workplaceGroupId: wgId,
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getLineManagerDDL = debounce((value) => {
+    if (value?.length < 2) return lineManagerDDL?.reset();
+
+    lineManagerDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeBasicInfoForEmpMgmt",
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        intId: employeeId,
+        workplaceGroupId: wgId,
+        searchTxt: value || "",
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeOnlyName;
+          res[i].value = item?.EmployeeId;
+        });
+      },
+    });
+  }, 500);
+
+  const getCalendarDDL = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    calendarDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Calender",
+        IntWorkplaceId: workplace?.value || wId,
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value || wgId,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.CalenderName;
+          res[i].value = item?.CalenderId;
+        });
+      },
+    });
   };
+
+  const getRosterGroupDDL = () => {
+    rosterGroupDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "RosterGroup",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.RosterGroupName;
+          res[i].value = item?.RosterGroupId;
+        });
+      },
+    });
+  };
+
+  // const userValidation = debounce(userExistValidation, 500); // delay time
+
+  const getCalendarByRosterDDL = () => {
+    const { calender } = form.getFieldsValue(true);
+    calendarByRosterGroupDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "CalenderByRosterGroup",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: calender?.value, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.CalenderName;
+          res[i].value = item?.CalenderId;
+        });
+      },
+    });
+  };
+
+  const getWorkplace = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    workplaceDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Workplace",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  };
+
+  const getReligion = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    religionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Religion",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.ReligionName;
+          res[i].value = item?.ReligionId;
+        });
+      },
+    });
+  };
+
+  const getEmploymentType = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    employmentTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmploymentType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmploymentType;
+          res[i].value = item?.Id;
+        });
+      },
+    });
+  };
+
+  const getUserTypeDDL = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    userTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "UserType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strUserType;
+          res[i].value = item?.intUserTypeId;
+        });
+      },
+    });
+  };
+
+  // workplace wise
+  const getEmployeDepartment = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDepartmentDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDepartment",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.DepartmentName;
+          res[i].value = item?.DepartmentId;
+        });
+      },
+    });
+  };
+
+  // section wise ddl
+  const getEmployeeSection = () => {
+    const { department } = form.getFieldsValue(true);
+    empSectionDDL?.action({
+      urlKey: "SectionDDL",
+      method: "GET",
+      params: {
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        DepartmentId: department?.value || 0,
+        WorkplaceId: wId,
+      },
+      // onSuccess: (res) => {
+      //   console.log("res", res);
+      //   res.forEach((item, i) => {
+      //     res[i].label = item?.label;
+      //     res[i].value = item?.value;
+      //   });
+      // },
+    });
+  };
+
+  const getEmployeDesignation = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDesignationDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDesignation",
+        AccountId: intAccountId,
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.DesignationName;
+          res[i].value = item?.DesignationId;
+        });
+      },
+    });
+  };
+  const getEmployeeStatus = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    employeeStatusDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmployeeStatus",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.EmployeeStatus;
+          res[i].value = item?.EmployeeStatusId;
+        });
+      },
+    });
+  };
+
+  const getEmployeePosition = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+  };
+
+  const commonConfigurationDDL = () => {
+    workplaceGroup?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "WorkplaceGroup",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId, // This should be removed
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplaceGroup;
+          res[i].value = item?.intWorkplaceGroupId;
+        });
+      },
+    });
+
+    genderDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Gender",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.GenderName;
+          res[i].value = item?.GenderId;
+        });
+      },
+    });
+  };
+
+  const autoGenerateEmployeeCode = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    generateEmpCode?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "AutoEmployeeCode",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        form.setFieldsValue({ employeeCode: res[0]?.value });
+      },
+    });
+  };
+
+  useEffect(() => {
+    commonConfigurationDDL();
+  }, [orgId, buId, wgId, employeeId]);
+
+  useEffect(() => {
+    if (singleData?.empId) {
+      form.setFieldsValue(singleData);
+      getWorkplace();
+      getReligion();
+      getEmploymentType();
+      getUserTypeDDL();
+      getEmployeDepartment();
+      getEmployeDesignation();
+      getEmployeeStatus();
+      getEmployeePosition();
+      getEmployeeSection();
+    }
+  }, [orgId, buId, singleData, employeeId]);
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={id ? modifySingleData : initData}
-        validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            if (id) {
-              resetForm(modifySingleData);
-            } else {
-              resetForm(initData);
-            }
-            setId("");
-          });
+      <PForm
+        form={form}
+        onFinish={() => {
+          const values = form.getFieldsValue(true);
+          // submitHandler({
+          //   values,
+          //   getData,
+          //   // empBasic,
+          //   resetForm: form.resetFields,
+          //   pages,
+          //   setIsAddEditForm,
+          //   employeeId,
+          //   dispatch,
+          //   // updateUerAndEmpNameAction,
+          //   isUserCheckMsg,
+          //   createEditEmpAction,
+          //   isEdit,
+          //   orgId,
+          //   buId,
+          //   intUrlId,
+          //   setLoading,
+          // });
+        }}
+        initialValues={{}}
+        onValuesChange={(changedFields, allFields) => {
+          if (allFields?.workplaceGroup && changedFields?.workplaceGroup) {
+            setTimeout(autoGenerateEmployeeCode, 500);
+          }
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
-          <>
-            {loading && <Loading />}
-            <div className="viewModal">
-              <Modal
-                show={show}
-                onHide={onHide}
-                size={size}
-                backdrop={backdrop}
-                aria-labelledby="example-modal-sizes-title-xl"
-                className={classes}
-                fullscreen={fullscreen && fullscreen}
-              >
-                <Form>
-                  {isVisibleHeading && (
-                    <Modal.Header className="bg-custom">
-                      <div className="d-flex w-100 justify-content-between align-items-center">
-                        <Modal.Title className="text-center">
-                          {title}
-                        </Modal.Title>
-                        <div>
-                          <IconButton onClick={() => onHide()}>
-                            <Close />
-                          </IconButton>
-                        </div>
-                      </div>
-                    </Modal.Header>
-                  )}
-
-                  <Modal.Body id="example-modal-sizes-title-xl">
-                    <div className="businessUnitModal">
-                      <div className="modalBody pt-0 px-0">
-                        <div className="row mx-0">
-                          <div className="col-6">
-                            <label>Leave Type</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.leaveType}
-                              name="leaveType"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("leaveType", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>Leave Type Code</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.leaveTypeCode}
-                              name="leaveTypeCode"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("leaveTypeCode", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          {id && (
-                            <div className="col-12">
-                              <div className="input-main position-group-select mt-2">
-                                <h6 className="title-item-name">
-                                  Leave Type Activation
-                                </h6>
-                                <p className="subtitle-p">
-                                  Activation toggle indicates to the particular
-                                  Leave Type status (Active/Inactive)
-                                </p>
-                                <FormikToggle
-                                  name="isActive"
-                                  color={
-                                    values?.isActive ? greenColor : blackColor40
-                                  }
-                                  checked={values?.isActive}
-                                  onChange={(e) => {
-                                    setFieldValue("isActive", e.target.checked);
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Modal.Body>
-                  <Modal.Footer className="form-modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-cancel"
-                      sx={{
-                        marginRight: "10px",
-                      }}
-                      onClick={() => {
-                        onHide();
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="btn btn-green btn-green-disable"
-                      style={{ width: "auto" }}
-                      type="submit"
-                      onSubmit={() => handleSubmit()}
-                    >
-                      Save
-                    </button>
-                  </Modal.Footer>
-                </Form>
-              </Modal>
-            </div>
-          </>
-        )}
-      </Formik>
+        <Row gutter={[10, 2]}>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="leaveType"
+              label="Leave Type"
+              placeholder="Leave Type"
+              rules={[{ required: true, message: "Leave Type is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="leaveTypeCode"
+              label="Leave Type Code"
+              placeholder="Leave Type Code"
+              rules={[
+                { required: true, message: "Leave Type Code is required" },
+              ]}
+            />
+          </Col>
+        </Row>
+        <ModalFooter
+          onCancel={() => {
+            setIsAddEditForm(false);
+          }}
+          submitAction="submit"
+          loading={loading}
+        />
+      </PForm>
     </>
   );
 }
