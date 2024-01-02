@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Switch } from "antd";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { todayDate } from "utility/todayDate";
 // import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
 // import { createEditEmpAction, userExistValidation } from "../helper";
 // import { submitHandler } from "./helper";
@@ -21,6 +22,8 @@ export default function AddEditForm({
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
+  const getSingleData = useApiRequest({});
+  const saveLeaveType = useApiRequest({});
 
   const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
@@ -37,10 +40,54 @@ export default function AddEditForm({
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (singleData?.empId) {
-      form.setFieldsValue(singleData);
+    if (singleData?.intLeaveTypeId) {
+      // getLeaveTypeById(setSingleData, id, setLoading);
+      getSingleData.action({
+        urlKey: "GetAllLveLeaveTypeById",
+        method: "GET",
+        params: {
+          id: singleData?.intLeaveTypeId,
+        },
+        onSuccess: (res) => {
+          form.setFieldsValue({
+            leaveType: res?.strLeaveType,
+            leaveTypeCode: res?.strLeaveTypeCode,
+            isActive: res?.isActive,
+          });
+        },
+      });
     }
-  }, [orgId, buId, singleData, employeeId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [singleData?.intLeaveTypeId]);
+  const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
+    const cb = () => {
+      console.log("callback calling...");
+      resetForm();
+      setIsAddEditForm(false);
+      getData();
+    };
+    let payload = {
+      intParentId: singleData?.intParentId || 0,
+      strLeaveType: values?.leaveType,
+      strLeaveTypeCode: values?.leaveTypeCode,
+      intAccountId: orgId,
+      isActive: values?.isActive,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      dteUpdatedAt: todayDate(),
+      intUpdatedBy: employeeId,
+      intLeaveTypeId: singleData?.intLeaveTypeId || 0,
+    };
+
+    saveLeaveType.action({
+      urlKey: "SaveLveLeaveType",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
+      },
+    });
+  };
 
   return (
     <>
@@ -48,27 +95,15 @@ export default function AddEditForm({
         form={form}
         onFinish={() => {
           const values = form.getFieldsValue(true);
-          // submitHandler({
-          //   values,
-          //   getData,
-          //   // empBasic,
-          //   resetForm: form.resetFields,
-          //   pages,
-          //   setIsAddEditForm,
-          //   employeeId,
-          //   dispatch,
-          //   // updateUerAndEmpNameAction,
-          //   isUserCheckMsg,
-          //   createEditEmpAction,
-          //   isEdit,
-          //   orgId,
-          //   buId,
-          //   intUrlId,
-          //   setLoading,
-          // });
+          submitHandler({
+            values,
+            getData,
+            resetForm: form.resetFields,
+            setIsAddEditForm,
+            isEdit,
+          });
         }}
         initialValues={{}}
-        onValuesChange={(changedFields, allFields) => {}}
       >
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24}>
