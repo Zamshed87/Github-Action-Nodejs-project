@@ -92,6 +92,18 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           min={min}
           max={max}
         />
+      ) : type === "password" ? (
+        <Input.Password
+          placeholder={placeholder}
+          onChange={onChange as (e: any) => void}
+          onPressEnter={onPressEnter}
+          defaultValue={defaultValue}
+          disabled={disabled}
+          prefix={prefix}
+          suffix={suffix}
+          allowClear={allowClear}
+          value={value}
+        />
       ) : (
         <Input
           placeholder={placeholder}
