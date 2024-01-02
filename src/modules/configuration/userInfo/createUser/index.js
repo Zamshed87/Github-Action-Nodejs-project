@@ -1,24 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Add } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import BackButton from "../../../../common/BackButton";
 import FavButton from "../../../../common/FavButton";
-import Loading from "../../../../common/loading/Loading";
 import NoResult from "../../../../common/NoResult";
+import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray900 } from "../../../../utility/customColor";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
-import AddEditFormComponent from "../addEditForm/index";
 import "../styles.css";
-import { Add } from "@mui/icons-material";
 // import AntTable from "../../../../common/AntTable";
+import { PModal } from "Components/Modal";
 import MasterFilter from "../../../../common/MasterFilter";
 import PeopleDeskTable, {
   paginationSize,
 } from "../../../../common/peopleDeskTable";
+import AddEditFormComponentN from "../addEditForm";
 
 const initData = {
   search: "",
@@ -366,7 +367,7 @@ function CreateUser() {
               )}
 
               {/* addEdit form Modal */}
-              <AddEditFormComponent
+              {/* <AddEditFormComponent
                 show={open}
                 title={"Create User"}
                 onHide={handleClose}
@@ -384,6 +385,22 @@ function CreateUser() {
                 getData={getData}
                 setFieldValue={setFieldValue}
                 pages={pages}
+              /> */}
+              <PModal
+                open={open}
+                title="Edit User"
+                onCancel={() => setOpen(false)}
+                maskClosable={false}
+                components={
+                  <>
+                    <AddEditFormComponentN
+                      singelUser={singelUser}
+                      isCreate={false}
+                      onHide={handleClose}
+                      getData={getData}
+                    />
+                  </>
+                }
               />
             </Form>
           </>
