@@ -29,7 +29,7 @@ import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
 export const origin = window.location.origin;
 export const prodUrl = "https://devapp.peopledesk.io";
 
-const isDevServer =
+export const isDevServer =
   origin.includes("dev") || process.env.NODE_ENV === "development";
 
 export const APIUrl =

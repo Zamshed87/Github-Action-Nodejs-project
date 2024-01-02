@@ -133,7 +133,7 @@ export const columns = (
       fieldType: "string",
     },
     {
-      title: "Hr Position",
+      title: "HR Position",
       dataIndex: "hrPosition",
       sort: true,
       filter: true,
