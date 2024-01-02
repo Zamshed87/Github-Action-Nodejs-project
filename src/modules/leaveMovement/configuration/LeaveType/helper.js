@@ -2,17 +2,17 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 // search
-export const filterData = (keywords, allData, setRowDto) => {
+export const filterData = (keywords, landingApi) => {
   try {
     const regex = new RegExp(keywords?.toLowerCase());
-    let newDta = allData?.filter(
+    let newDta = landingApi?.data?.filter(
       (item) =>
         regex.test(item?.strLeaveType?.toLowerCase()) ||
         regex.test(item?.strLeaveTypeCode?.toLowerCase())
     );
-    setRowDto(newDta);
+    landingApi({ ...landingApi, data: newDta });
   } catch {
-    setRowDto([]);
+    landingApi.data({});
   }
 };
 

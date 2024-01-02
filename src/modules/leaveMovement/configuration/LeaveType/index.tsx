@@ -70,9 +70,15 @@ function LeaveTypeCreate() {
     landingApi.action({
       urlKey: "GetAllLveLeaveType",
       method: "GET",
+      params: {
+        BusinessUnitId: buId,
+        WorkGroupId: wgId,
+        SearchText: searchText,
+        PageNo: pagination?.current,
+        PageSize: pagination?.pageSize,
+      },
     });
   };
-  console.log({ id });
 
   useEffect(() => {
     landingApiCall();
@@ -139,23 +145,23 @@ function LeaveTypeCreate() {
       align: "center",
       render: (_: any, rec: any) => (
         <>
-          {/* {rec?.intAccountId > 0 ? ( */}
-          <TableButton
-            buttonsList={[
-              {
-                type: "edit",
-                onClick: (e: any) => {
-                  if (!employeeFeature?.isEdit) {
-                    return toast.warn("You don't have permission");
-                    e.stopPropagation();
-                  }
-                  setOpen(true);
-                  setId(rec);
+          {rec?.intAccountId > 0 ? (
+            <TableButton
+              buttonsList={[
+                {
+                  type: "edit",
+                  onClick: (e: any) => {
+                    if (!employeeFeature?.isEdit) {
+                      return toast.warn("You don't have permission");
+                      e.stopPropagation();
+                    }
+                    setOpen(true);
+                    setId(rec);
+                  },
                 },
-              },
-            ]}
-          />
-          {/* ) : null} */}
+              ]}
+            />
+          ) : null}
         </>
       ),
     },
@@ -173,9 +179,9 @@ function LeaveTypeCreate() {
           <PCardHeader
             // exportIcon={true}
             // title={`Total ${landingApi?.data?.totalCount || 0} employees`}
-            onSearch={(e) => {
-              searchFunc(e?.target?.value);
-            }}
+            // onSearch={(e) => {
+            //   searchFunc(e?.target?.value);
+            // }}
             submitText="Leave Type"
             submitIcon={<AddOutlined />}
             buttonList={[]}
