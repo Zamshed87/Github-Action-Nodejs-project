@@ -15,7 +15,6 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { PModal } from "Components/Modal";
 import AddEditFormComponentN from "./addEditForm";
 
