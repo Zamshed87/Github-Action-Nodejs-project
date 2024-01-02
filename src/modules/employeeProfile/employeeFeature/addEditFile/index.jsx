@@ -125,13 +125,14 @@ export default function AddEditForm({
   }, 500);
 
   const getCalendarDDL = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
     calendarDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Calender",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
+        WorkplaceGroupId: workplaceGroup?.value,
         intId: 0, // employeeId, Previously set 0
       },
       onSuccess: (res) => {
@@ -144,13 +145,14 @@ export default function AddEditForm({
   };
 
   const getRosterGroupDDL = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
     rosterGroupDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "RosterGroup",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
+        WorkplaceGroupId: workplaceGroup?.value,
         intId: 0, // employeeId, Previously set 0
       },
       onSuccess: (res) => {
@@ -841,7 +843,6 @@ export default function AddEditForm({
                       ]}
                     />
                   </Col>
-                  {/*  Need Searchable */}
                   <Col md={12} sm={24}>
                     <PSelect
                       options={dottedSupervisorDDL?.data || []}
@@ -916,33 +917,37 @@ export default function AddEditForm({
                   placeholder="Generate Date"
                 />
               </Col>
-              <Col md={12} sm={24}>
-                <PSelect
-                  options={[
-                    {
-                      value: 1,
-                      label: "Calendar",
-                    },
-                    { value: 2, label: "Roster" },
-                  ]}
-                  type="date"
-                  name="calenderType"
-                  label="Calendar Type"
-                  placeholder="Calendar Type"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      calenderType: op,
-                    });
-
-                    value === 1 ? getCalendarDDL() : getRosterGroupDDL();
-                  }}
-                />
-              </Col>
               <Form.Item shouldUpdate noStyle>
                 {() => {
-                  const { calenderType } = form.getFieldsValue();
+                  const { workplaceGroup, calenderType } =
+                    form.getFieldsValue(true);
                   return (
                     <>
+                      <Col md={12} sm={24}>
+                        <PSelect
+                          options={[
+                            {
+                              value: 1,
+                              label: "Calendar",
+                            },
+                            { value: 2, label: "Roster" },
+                          ]}
+                          type="date"
+                          name="calenderType"
+                          label="Calendar Type"
+                          placeholder="Calendar Type"
+                          disabled={!workplaceGroup}
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              calenderType: op,
+                            });
+
+                            value === 1
+                              ? getCalendarDDL()
+                              : getRosterGroupDDL();
+                          }}
+                        />
+                      </Col>
                       <Col md={12} sm={24}>
                         <PSelect
                           options={
@@ -961,6 +966,7 @@ export default function AddEditForm({
                               ? `Roster Name`
                               : `Calendar Name`
                           }
+                          disabled={!workplaceGroup}
                           onChange={(value, op) => {
                             form.setFieldsValue({
                               calender: op,
@@ -980,6 +986,7 @@ export default function AddEditForm({
                               name="startingCalender"
                               label="Starting Calendar"
                               placeholder={"Starting Calendar"}
+                              disabled={!workplaceGroup}
                               onChange={(value, op) => {
                                 form.setFieldsValue({
                                   startingCalender: op,
@@ -993,6 +1000,7 @@ export default function AddEditForm({
                               name="nextChangeDate"
                               label="Next Calendar Change"
                               placeholder={"Next Calendar Change"}
+                              disabled={!workplaceGroup}
                               onChange={(value, op) => {
                                 form.setFieldsValue({
                                   nextChangeDate: op,
