@@ -27,7 +27,7 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 
-function LeaveTypeCreate() {
+function BusinessUnit() {
   // hook
   const dispatch = useDispatch();
   const history = useHistory();
@@ -233,13 +233,13 @@ function LeaveTypeCreate() {
         maskClosable={false}
         components={
           <>
-            <AddEditForm
+            {/* <AddEditForm
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
               isEdit={id ? true : false}
               pages={undefined}
               singleData={id}
-            />
+            /> */}
           </>
         }
       />
@@ -249,4 +249,4 @@ function LeaveTypeCreate() {
   );
 }
 
-export default LeaveTypeCreate;
+export default BusinessUnit;
