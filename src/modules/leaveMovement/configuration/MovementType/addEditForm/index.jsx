@@ -1,267 +1,164 @@
-import { Close } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
-import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
-import { shallowEqual, useSelector } from "react-redux";
-import * as Yup from "yup";
-import FormikInput from "../../../../../common/FormikInput";
-import FormikSelect from "../../../../../common/FormikSelect";
-import { customStyles } from "../../../../../utility/selectCustomStyle";
-import { todayDate } from "../../../../../utility/todayDate";
-import { saveMovementType, quotaFrequencyDDL } from "../helper";
+import { ModalFooter } from "Components/Modal";
+import { PForm, PInput, PSelect } from "Components/PForm";
+import { useApiRequest } from "Hooks";
+import { Col, Divider, Form, Row } from "antd";
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
+import { Switch } from "antd";
 
-const initData = {
-  movementTypeName: "",
-  movementTypeCode: "",
-  quotaHour: "",
-  quotaFrequency: "",
-};
-const validationSchema = Yup.object().shape({
-  movementTypeName: Yup.string().required("Movement type is required"),
-  movementTypeCode: Yup.string().required("Movement type code is required"),
-  quotaHour: Yup.number()
-    .min(0, "Min value 0")
-    .required("Quota hour is required"),
-  quotaFrequency: Yup.object()
-    .shape({
-      label: Yup.string().required("Quota frequency is required"),
-      value: Yup.string().required("Quota frequency is required"),
-    })
-    .typeError("Quota frequency is required"),
-});
-export default function AddEditFormComponent({
-  id,
-  show,
-  onHide,
-  size,
-  backdrop,
-  classes,
-  isVisibleHeading = true,
-  fullscreen,
-  title,
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { todayDate } from "utility/todayDate";
+import { quotaFrequencyDDL } from "../helper";
+// import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
+// import { createEditEmpAction, userExistValidation } from "../helper";
+// import { submitHandler } from "./helper";
+
+export default function AddEditForm({
+  setIsAddEditForm,
   getData,
-  setOpenModal,
+  // empBasic,
+  isEdit,
   singleData,
-  setSingleData,
+  pages,
 }) {
-  const { employeeId, orgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const dispatch = useDispatch();
+  // const debounce = useDebounce();
+  const getSingleData = useApiRequest({});
+  const saveLeaveType = useApiRequest({});
 
-  const [modifySingleData, setModifySingleData] = useState("");
+  const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
+
+  const [loading, setLoading] = useState(false);
+
+  // states
+
+  const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
+
+  // Pages Start From Here code from above will be removed soon
+
+  // Form Instance
+  const [form] = Form.useForm();
 
   useEffect(() => {
-    if (singleData?.intMovementTypeId) {
-      setModifySingleData({
-        movementTypeName: singleData?.strMovementType,
-        movementTypeCode: singleData?.strMovementTypeCode,
-        quotaHour: singleData?.intQuotaHour,
-        quotaFrequency: quotaFrequencyDDL?.filter(
-          (item) => item?.value === singleData?.intQuotaFrequency
-        )[0],
-      });
+    if (singleData) {
+      // getLeaveTypeById(setSingleData, id, setLoading);
+      form.setFieldsValue({ ...singleData });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [singleData]);
+  const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
+    const cb = () => {
+      console.log("callback calling...");
+      resetForm();
+      setIsAddEditForm(false);
+      getData();
+    };
+    let payload = {
+      intMovementTypeId: singleData?.intMovementTypeId
+        ? singleData?.intMovementTypeId
+        : 0,
+      strMovementType: values?.strMovementType,
+      strMovementTypeCode: values?.strMovementTypeCode,
+      intQuotaHour: values?.intQuotaHour,
+      intQuotaFrequency: values?.intQuotaFrequency?.value,
+      isActive: true,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
+      dteUpdatedAt: todayDate(),
+      intUpdatedBy: employeeId,
+    };
 
-  const saveHandler = (values, cb) => {
-    saveMovementType(
-      {
-        intMovementTypeId: singleData?.intMovementTypeId
-          ? singleData?.intMovementTypeId
-          : 0,
-        strMovementType: values?.movementTypeName,
-        strMovementTypeCode: values?.movementTypeCode,
-        intQuotaHour: values?.quotaHour,
-        intQuotaFrequency: values?.quotaFrequency?.value,
-        isActive: true,
-        intAccountId: orgId,
-        dteCreatedAt: todayDate(),
-        intCreatedBy: employeeId,
-        dteUpdatedAt: todayDate(),
-        intUpdatedBy: employeeId,
+    saveLeaveType.action({
+      urlKey: "SaveLveMovementType",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
       },
-      cb
-    );
+    });
   };
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={
-          singleData?.intMovementTypeId ? modifySingleData : initData
-        }
-        validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            getData();
-            resetForm(initData);
-            setOpenModal(false);
-            setSingleData("");
+      <PForm
+        form={form}
+        onFinish={() => {
+          const values = form.getFieldsValue(true);
+          submitHandler({
+            values,
+            getData,
+            resetForm: form.resetFields,
+            setIsAddEditForm,
+            isEdit,
           });
         }}
+        initialValues={{}}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-          setValues,
-        }) => (
-          <>
-            <div className="viewModal">
-              <Modal
-                show={show}
-                onHide={onHide}
-                size={size}
-                backdrop={backdrop}
-                aria-labelledby="example-modal-sizes-title-xl"
-                className={classes}
-                fullscreen={fullscreen && fullscreen}
-              >
-                <Form>
-                  {isVisibleHeading && (
-                    <Modal.Header className="bg-custom">
-                      <div className="d-flex w-100 justify-content-between align-items-center">
-                        <Modal.Title className="text-center">
-                          {title}
-                        </Modal.Title>
-                        <div>
-                          <IconButton
-                            onClick={() => {
-                              setSingleData("");
-                              onHide();
-                            }}
-                          >
-                            <Close />
-                          </IconButton>
-                        </div>
-                      </div>
-                    </Modal.Header>
-                  )}
-
-                  <Modal.Body id="example-modal-sizes-title-xl">
-                    <div className="pipeLineModal">
-                      <div className="modalBody px-0 pt-0">
-                        <div className="row mx-0">
-                          <div className="col-6">
-                            <div className="input-field-main">
-                              <label htmlFor="">Movement Type Name</label>
-                              <FormikInput
-                                classes="input-sm"
-                                value={values?.movementTypeName}
-                                name="movementTypeName"
-                                type="text"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "movementTypeName",
-                                    e.target.value
-                                  );
-                                }}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-6">
-                            <div className="input-field-main">
-                              <label htmlFor="">Movement Type Code</label>
-                              <FormikInput
-                                classes="input-sm"
-                                value={values?.movementTypeCode}
-                                name="movementTypeCode"
-                                type="text"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue(
-                                    "movementTypeCode",
-                                    e.target.value
-                                  );
-                                }}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="row mx-0">
-                          <div className="col-6">
-                            <div className="input-field-main">
-                              <label htmlFor="">Quota Hour</label>
-                              <FormikInput
-                                classes="input-sm"
-                                value={values?.quotaHour}
-                                name="quotaHour"
-                                type="number"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue("quotaHour", e.target.value);
-                                }}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-6">
-                            <div className="input-field-main">
-                              <label htmlFor="">Quota Frequency</label>
-                              <FormikSelect
-                                classes="input-sm"
-                                styles={customStyles}
-                                menuPosition="fixed"
-                                name="quotaFrequency"
-                                options={quotaFrequencyDDL}
-                                value={values?.quotaFrequency}
-                                onChange={(valueOption) => {
-                                  setFieldValue("quotaFrequency", valueOption);
-                                }}
-                                errors={errors}
-                                touched={touched}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Modal.Body>
-                  <Modal.Footer className="form-modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-cancel"
-                      style={{
-                        marginRight: "15px",
-                      }}
-                      sx={{
-                        marginRight: "10px",
-                      }}
-                      onClick={() => {
-                        resetForm(initData);
-                        onHide();
-                        setSingleData("");
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="btn btn-green"
-                      type="submit"
-                      onSubmit={() => handleSubmit()}
-                    >
-                      Save
-                    </button>
-                  </Modal.Footer>
-                </Form>
-              </Modal>
-            </div>
-          </>
-        )}
-      </Formik>
+        <Row gutter={[10, 2]}>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strMovementType"
+              label="Movement Type Name"
+              placeholder="Movement Type Name"
+              rules={[
+                { required: true, message: "Movement Type Name is required" },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strMovementTypeCode"
+              label="Movement Type Code"
+              placeholder="Movement Type Code"
+              rules={[
+                { required: true, message: "Movement Type Code is required" },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="number"
+              name="intQuotaHour"
+              label="Quota Hour"
+              placeholder="Quota Hour"
+              rules={[
+                { required: true, message: "Quota Hour is required" },
+                {
+                  message: "Quota Hour must be positive",
+                  pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
+                },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={quotaFrequencyDDL || []}
+              name="intQuotaFrequency"
+              label="Quota Frequency"
+              placeholder="Quota Frequency"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  intQuotaFrequency: op,
+                });
+              }}
+              rules={[
+                { required: true, message: "Quota Frequency is required" },
+              ]}
+            />
+          </Col>
+        </Row>
+        <ModalFooter
+          onCancel={() => {
+            setIsAddEditForm(false);
+          }}
+          submitAction="submit"
+          loading={loading}
+        />
+      </PForm>
     </>
   );
 }
