@@ -276,8 +276,8 @@ function MovementType() {
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
               isEdit={id ? true : false}
-              pages={undefined}
               singleData={id}
+              setId={setId}
             />
           </>
         }

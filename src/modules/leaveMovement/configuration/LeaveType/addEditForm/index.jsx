@@ -18,7 +18,7 @@ export default function AddEditForm({
   // empBasic,
   isEdit,
   singleData,
-  pages,
+  setId,
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
@@ -144,6 +144,7 @@ export default function AddEditForm({
         <ModalFooter
           onCancel={() => {
             setIsAddEditForm(false);
+            setId({});
           }}
           submitAction="submit"
           loading={loading}
