@@ -37,7 +37,7 @@ export const getAbsentData = async (
 
   try {
     const res = await axios.get(
-      `/TimeSheetReport/GetAbsentReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&FromDate=${fromdate}&ToDate=${todate}&IsXls=true&PageNo=${pageNo}&PageSize=${pageSize}`
+      `/TimeSheetReport/GetAbsentReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&FromDate=${fromdate}&ToDate=${todate}&IsXls=false&PageNo=${pageNo}&PageSize=${pageSize}`
     );
 
     if (res?.data) {
