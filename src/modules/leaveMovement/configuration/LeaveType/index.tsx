@@ -139,23 +139,23 @@ function LeaveTypeCreate() {
       align: "center",
       render: (_: any, rec: any) => (
         <>
-          {rec?.intAccountId > 0 ? (
-            <TableButton
-              buttonsList={[
-                {
-                  type: "edit",
-                  onClick: (e: any) => {
-                    if (!employeeFeature?.isEdit) {
-                      return toast.warn("You don't have permission");
-                      e.stopPropagation();
-                    }
-                    setOpen(true);
-                    setId(rec);
-                  },
+          {/* {rec?.intAccountId > 0 ? ( */}
+          <TableButton
+            buttonsList={[
+              {
+                type: "edit",
+                onClick: (e: any) => {
+                  if (!employeeFeature?.isEdit) {
+                    return toast.warn("You don't have permission");
+                    e.stopPropagation();
+                  }
+                  setOpen(true);
+                  setId(rec);
                 },
-              ]}
-            />
-          ) : null}
+              },
+            ]}
+          />
+          {/* ) : null} */}
         </>
       ),
     },
