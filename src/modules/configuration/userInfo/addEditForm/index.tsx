@@ -1,16 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import * as Yup from "yup";
 import { todayDate } from "../../../../utility/todayDate";
 import { Row, Col, Form } from "antd";
 import { createUser } from "../helper";
 import { getPeopleDeskAllDDL } from "../../../../common/api/index";
-import { PForm, PInput, PRadio } from "Components";
+import { PForm, PInput, PSelect } from "Components";
 import { ModalFooter } from "Components/Modal";
 import { Avatar } from "@mui/material";
-import FormikToggle from "common/FormikToggle";
-import { blackColor40, greenColor } from "utility/customColor";
 
 type AddEditFormComponentNType = {
   singelUser: any;
@@ -29,7 +26,6 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
   const [loading, setLoading] = useState(false);
   const [userTypeDDL, setUserTypeDDL] = useState([]);
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const [modifySingleData, setModifySingleData] = useState<any>("");
 
   const { employeeId, orgId, buId, intUrlId, wgId } = useSelector(
     (state: any) => state?.auth?.profileData,
@@ -45,8 +41,8 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    if (!isCreate) {
-      const newRowData = {
+    if (singelUser) {
+      form.setFieldsValue({
         loginUserId: singelUser?.strLoginId || "",
         password: singelUser?.strPassword || "",
         email: singelUser?.strOfficeMail || "",
@@ -57,8 +53,7 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
           label: singelUser?.strUserType || "",
         },
         isActive: singelUser?.userStatus || false,
-      };
-      setModifySingleData(newRowData);
+      });
     }
   }, [singelUser]);
 
@@ -87,7 +82,10 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
       intOfficeMail: email,
       strContactNo: phone,
     };
-    createUser(payload, setLoading);
+    createUser(payload, setLoading, () => {
+      getData();
+      onHide(true)
+    });
   };
 
   return (
@@ -124,7 +122,7 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
         </Col>
         <Col md={12} sm={24}>
           <PInput
-            type={isShowPassword ? "text" : "password"}
+            type="password"
             name="password"
             label="Password"
             placeholder="Write Password"
@@ -157,8 +155,9 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
             return (
               <>
                 <Col md={12} sm={24}>
-                  <PInput
-                    type="text"
+                  <PSelect
+                    allowClear
+                    options={userTypeDDL || []}
                     name="userType"
                     label="User Type"
                     placeholder="Write userType"
@@ -167,27 +166,23 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
                     ]}
                   />
                 </Col>
-                !isCreate && (
-                <>
-                  <div className="col-6">
-                    <div className="input-main position-group-select mt-2">
-                      <h6 className="title-item-name">User Activation</h6>
+
+                {!isCreate && (
+                  <>
+                    <div className="col-6">
+                      <Col md={12} sm={24} style={{ marginTop: "20px" }}>
+                        <PInput
+                          label="Is Active"
+                          type="checkbox"
+                          name="isActive"
+                          layout="horizontal"
+                        />
+                      </Col>
                     </div>
-                    <PRadio/>
-                    {/* <FormikToggle
-                      name="isActive"
-                      color={values?.isActive ? greenColor : blackColor40}
-                      checked={values?.isActive}
-                      onChange={(e) => {
-                        setFieldValue("isActive", e.target.checked);
-                      }}
-                    /> */}
-                  </div>
-                </>
+                  </>
+                )}
               </>
             );
-
-
           }}
         </Form.Item>
       </Row>

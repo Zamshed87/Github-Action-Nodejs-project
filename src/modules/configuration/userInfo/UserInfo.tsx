@@ -31,9 +31,6 @@ const UserInfoN: React.FC<TUserInfo> = () => {
   // Api Actions
   const history = useHistory();
   // row Data
-  const [singleData, setSingleData] = useState("");
-
-  const [status, setStatus] = useState("");
 
   // for create state
   const [open, setOpen] = useState(false);
@@ -41,24 +38,15 @@ const UserInfoN: React.FC<TUserInfo> = () => {
   // for view state
   const [viewModal, setViewModal] = useState(false);
 
-  // for create Modal
-  const handleOpen = () => {
-    setViewModal(false);
-    setOpen(true);
-  };
   const handleClose = () => {
     setViewModal(false);
     setOpen(false);
   };
 
-  // for view Modal
-  // const handleViewOpen = () => setViewModal(true);
-  const handleViewClose = () => setViewModal(false);
 
   // single Data
   const [singelUser, setSingelUser] = useState("");
 
-  const [rowDto, getLanding, loadingLanding, setRowDto] = useAxiosGet();
 
   const [form] = Form.useForm();
   useEffect(() => {
@@ -289,7 +277,6 @@ const UserInfoN: React.FC<TUserInfo> = () => {
 
         {/* addEdit form Modal */}
       </PForm>
-
       <PModal
         open={open}
         title="Edit User"
