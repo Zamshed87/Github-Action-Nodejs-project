@@ -282,6 +282,7 @@ const SalaryBreakdown = () => {
       intSalaryPolicyId: values?.payrollPolicy?.value,
       intHrPositonId: 0,
       intWorkplaceGroupId: values?.payScale?.value,
+      intWorkplaceId: values?.workplace?.value,
       isPerday: values?.isPerdaySalary || false,
       isDefault: values?.isDefaultBreakdown || false,
       isActive: true,
