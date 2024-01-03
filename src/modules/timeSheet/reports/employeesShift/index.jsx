@@ -202,7 +202,8 @@ const EmployeesShift = () => {
                         buDetails?.strWorkplace,
                         rowDto,
                         buDetails?.strAddress,
-                        employeeInformation
+                        employeeInformation,
+                        wgName
                       );
                     };
                     excelLanding();
