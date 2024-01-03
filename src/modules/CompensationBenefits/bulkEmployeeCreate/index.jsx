@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -16,8 +16,9 @@ import { formatMoney } from "../../../utility/formatMoney";
 import ErrorEmployeeModal from "./ErrorEmployeeModal";
 import {
   processBulkUploadEmployeeAction,
-  saveBulkUploadEmployeeAction
+  saveBulkUploadEmployeeAction,
 } from "./helper";
+import { isDevServer } from "App";
 
 const initData = {
   files: "",
@@ -25,7 +26,6 @@ const initData = {
   workplaceGroup: "",
   workplace: "",
 };
-
 
 export default function BulkEmployeeTaxAssign() {
   // hooks
@@ -52,7 +52,7 @@ export default function BulkEmployeeTaxAssign() {
     shallowEqual
   );
 
-  const saveHandler = (values) => {
+  const saveHandler = () => {
     const emptyCheck = data?.some((item) => item?.strEmployeeCode === "");
 
     const duplicateCheck = data.map((item) => item?.strEmployeeCode);
@@ -61,12 +61,12 @@ export default function BulkEmployeeTaxAssign() {
       return duplicateCheck.indexOf(item) !== idx;
     });
 
-    const modifyData = data?.map(itm => {
+    const modifyData = data?.map((itm) => {
       return {
         strEmployeeCode: itm?.strEmployeeCode,
         numTaxAmount: itm?.numTaxAmount,
-      }
-    })
+      };
+    });
 
     const callBack = () => {
       history.push("/compensationAndBenefits/incometaxmgmt/taxassign");
@@ -78,11 +78,7 @@ export default function BulkEmployeeTaxAssign() {
         "Invalid upload, please check your file or follow employee code which must be unique and not empty"
       );
     } else {
-      saveBulkUploadEmployeeAction(
-        setLoading,
-        modifyData,
-        callBack
-      );
+      saveBulkUploadEmployeeAction(setLoading, modifyData, callBack);
     }
   };
 
@@ -97,7 +93,10 @@ export default function BulkEmployeeTaxAssign() {
 
   const processData = async (file) => {
     try {
-      const processData = await excelFileToArray(file, "Bulk Tax Assign Upload");
+      const processData = await excelFileToArray(
+        file,
+        "Bulk Tax Assign Upload"
+      );
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadEmployeeAction(
         processData,
@@ -116,7 +115,7 @@ export default function BulkEmployeeTaxAssign() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -126,10 +125,6 @@ export default function BulkEmployeeTaxAssign() {
           handleSubmit,
           resetForm,
           values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -154,9 +149,10 @@ export default function BulkEmployeeTaxAssign() {
                           label="Download Demo"
                           onClick={() => {
                             downloadFile(
-                              `${process.env.NODE_ENV === "development"
-                                ? "/document/downloadfile?id=80738"
-                                : "/document/downloadfile?id=61403"
+                              `${
+                                isDevServer
+                                  ? "/document/downloadfile?id=18"
+                                  : "/document/downloadfile?id=18"
                               }`,
                               "Bulk Tax Assign Upload",
                               "xlsx",
@@ -181,7 +177,6 @@ export default function BulkEmployeeTaxAssign() {
 
                     {/* tax landing */}
                     <div>
-
                       {data.length > 0 ? (
                         <div className="table-card-body mt-3">
                           <ScrollableTable
@@ -212,7 +207,10 @@ export default function BulkEmployeeTaxAssign() {
                                   <div className="text-right">Gross Salary</div>
                                 </th>
                                 <th>
-                                  <div className="text-right" style={{ width: "140px" }}>
+                                  <div
+                                    className="text-right"
+                                    style={{ width: "140px" }}
+                                  >
                                     Tax Amount
                                   </div>
                                 </th>
@@ -269,7 +267,11 @@ export default function BulkEmployeeTaxAssign() {
                           </ScrollableTable>
                         </div>
                       ) : (
-                        <>{!loading && <NoResult title="No Data Found" para="" />}</>
+                        <>
+                          {!loading && (
+                            <NoResult title="No Data Found" para="" />
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
