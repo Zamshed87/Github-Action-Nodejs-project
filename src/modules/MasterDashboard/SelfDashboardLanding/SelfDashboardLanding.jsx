@@ -24,6 +24,7 @@ import EmployeeSelfDashboardHeader from "../../employeeProfile/dashboard/compone
 import EmployeeSelfManagerList from "../../employeeProfile/dashboard/components/EmployeeSelfManagerList";
 import { getPolicyOnEmployeeInbox } from "../../policyUpload/helper";
 import NoticeBoard from "./Noticeboard";
+import Loading from "common/loading/Loading";
 
 const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   const { orgId, employeeId, buId } = useSelector(
@@ -36,8 +37,6 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   const [policyLanding, setPolicyLanding] = useState([]);
   const [show, setShow] = useState(false);
   const [singleNoticeData, setSingleNoticeData] = useState("");
-  const [filterIndex, setFilterIndex] = useState(0);
-  const [filterData, setFilterData] = useState([]);
   const [rowDto, setRowDto] = useState([]);
   const [loadingForBirth, setLoadingForBirth] = useState(false);
 
@@ -57,10 +56,10 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
     [employeeDashboard]
   );
 
-  const tabName = [
-    { name: "BirthDay", noLeftRadius: false, noRadius: false },
-    { name: "Work Anniversary", noLeftRadius: false, noRadius: true },
-  ];
+  // const tabName = [
+  //   { name: "BirthDay", noLeftRadius: false, noRadius: false },
+  //   { name: "Work Anniversary", noLeftRadius: false, noRadius: true },
+  // ];
 
   const getData = () => {
     getBirthAnniversary(setRowDto, setLoadingForBirth);
@@ -69,9 +68,9 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   useEffect(() => {
     getData();
   }, []);
-
   return (
     <>
+    { loadingForBirth && <Loading />}
       <div className="employee-self-dashboard">
         <div className="row mx-0 w-100">
           <EmployeeSelfDashboardHeader
@@ -165,7 +164,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       paddingLeft: "8px",
                                     }}
                                   >
-                                    {item?.leaveType}
+                                    {item?.strLeaveType}
                                   </p>
                                 </td>
                                 <td style={{ borderTop: "1px solid #F2F4F7" }}>
@@ -175,7 +174,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       color: gray700,
                                     }}
                                   >
-                                    {item?.leaveTakenDays}
+                                    {item?.intTakenLveInDay}
                                   </p>
                                 </td>
                                 <td style={{ borderTop: "1px solid #F2F4F7" }}>
@@ -185,7 +184,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                       color: gray700,
                                     }}
                                   >
-                                    {item?.remainingDays}
+                                    {item?.intBalanceLveInDay}
                                   </p>
                                 </td>
                               </tr>
