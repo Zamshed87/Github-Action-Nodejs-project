@@ -17,6 +17,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import AddEditFormComponentN from "./addEditForm";
+import { PlusOutlined } from "@ant-design/icons";
 
 type TUserInfo = {};
 const UserInfoN: React.FC<TUserInfo> = () => {
@@ -42,10 +43,8 @@ const UserInfoN: React.FC<TUserInfo> = () => {
     setOpen(false);
   };
 
-
   // single Data
   const [singelUser, setSingelUser] = useState("");
-
 
   const [form] = Form.useForm();
   useEffect(() => {
@@ -208,7 +207,9 @@ const UserInfoN: React.FC<TUserInfo> = () => {
       <PForm
         form={form}
         onFinish={() => {
-          setOpen(true);
+          if (!permission?.isCreate)
+            return toast.warn("You don't have permission");
+          history.push(`/administration/roleManagement/usersInfo/create`);
         }}
       >
         <PCard>
@@ -219,19 +220,8 @@ const UserInfoN: React.FC<TUserInfo> = () => {
             onSearch={(e) => {
               searchFunc(e?.target?.value);
             }}
-            buttonList={[
-              {
-                type: "primary",
-                content: "+User",
-                onClick: () => {
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  history.push(
-                    `/administration/roleManagement/usersInfo/create`
-                  );
-                },
-              },
-            ]}
+            submitText="Create"
+            submitIcon=<PlusOutlined />
           />
 
           <DataTable

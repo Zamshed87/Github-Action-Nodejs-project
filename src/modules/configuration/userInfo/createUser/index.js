@@ -39,7 +39,7 @@ function CreateUser() {
     setOpen(false);
   };
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -63,7 +63,7 @@ function CreateUser() {
 
   const getData = (pagination, search = "") => {
     getRowDto(
-      `/Employee/EmployeeListForUserLandingPagination?businessUnitId=${buId}&workplaceGroupId=${wgId}&isUser=2&PageNo=${
+      `/Employee/EmployeeListForUserLandingPagination?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&isUser=2&PageNo=${
         pagination?.current
       }&PageSize=${pagination?.pageSize}&IsForXl=false&searchTxt=${
         search || ""

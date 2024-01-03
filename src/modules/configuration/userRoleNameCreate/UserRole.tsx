@@ -1,37 +1,41 @@
-import { DataTable, PCard, PCardHeader, TableButton } from "Components";
-import PBadge from "Components/Badge";
+import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
+import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { getSerial } from "Utils";
-import moment from "moment";
+import { Form } from "antd";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import AddEditForm from "./addEditForm/indexN.jsx";
+import { PlusOutlined } from "@ant-design/icons";
+import Chips from "common/Chips.jsx";
 
-type TUserRole = {
-
-};
+type TUserRole = {};
 const UserRoleN: React.FC<TUserRole> = () => {
   // Data From Store
-  const { buId, wgId, wId, orgId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  // Form Instance
+  const [form] = Form.useForm();
 
-  // hooks
-  const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
-  const [singleData, setSingleData] = useState("");
-  const [id, setId] = useState("");
-  const [status, setStatus] = useState("");
-  const [loading, setLoading] = useState(false);
-  // for create state
+  // state
   const [open, setOpen] = useState(false);
+  const [id, setId] = useState("");
+  const { permissionList } = useSelector(
+    (state: any) => state?.auth,
+    shallowEqual
+  );
 
-  // for view state
-  const [viewModal, setViewModal] = useState(false);
-
+  let permission: any = null;
+  permissionList.forEach((item: any) => {
+    if (item?.menuReferenceId === 30297) {
+      permission = item;
+    }
+  });
 
   // Api Actions
-  const GetAllUserRole = useApiRequest({});
+  const GetAllUserRole = useApiRequest([]);
 
   // Landing Api
   type TLandingApi = {
@@ -50,6 +54,7 @@ const UserRoleN: React.FC<TUserRole> = () => {
     GetAllUserRole?.action({
       urlKey: "GetAllUserRole",
       method: "GET",
+      payload:''
     });
   };
 
@@ -57,66 +62,35 @@ const UserRoleN: React.FC<TUserRole> = () => {
   useEffect(() => {
     landingApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId, wId]);
+  }, [buId, wgId, wId, id]);
 
   // Table Header
   const header: any = [
     {
       title: "SL",
-      render: (value: any, row: any, index: number) =>
-        getSerial({
-          currentPage: GetAllUserRole?.data?.currentPage,
-          pageSize: GetAllUserRole?.data?.pageSize,
-          index,
-        }),
+      render: (value: any, row: any, index: number) => index + 1,
 
       align: "center",
       width: 20,
     },
     {
-      title: "Employee Name",
-      dataIndex: "employeeName",
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
+      title: "User Role Name",
+      dataIndex: "strRoleName",
       sorter: true,
       filter: true,
-      filterKey: "departmentList",
-    },
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      sorter: true,
-      filter: true,
-      filterKey: "designationList",
-    },
-    {
-      title: "Supervisor",
-      dataIndex: "supervisorName",
-      width: "80px",
-    },
-    {
-      title: "Generate Date",
-      dataIndex: "generateDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
-    },
-    {
-      title: "Joining Date",
-      dataIndex: "joiningDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
     },
     {
       title: "Status",
-      dataIndex: "status",
-      align: "center",
-      render: (data: any, record: any, index: number) => (
-        // Write condition to check status
-        <PBadge type="primary" text="Active" />
+      dataIndex: "isActive",
+      sorter: true,
+      render: (_: any, rec: any) => (
+        <>
+          <Chips
+            label={rec?.isActive ? "Active" : "Inactive"}
+            classess={`${rec?.isActive ? "success" : "danger"}`}
+          />
+        </>
       ),
-      width: "50px",
     },
     {
       title: "Action",
@@ -127,15 +101,13 @@ const UserRoleN: React.FC<TUserRole> = () => {
             buttonsList={[
               {
                 type: "edit",
-                onClick: (e) => {},
-              },
-              {
-                type: "delete",
-                onClick: (e) => {},
-              },
-              {
-                type: "view",
-                onClick: (e) => {},
+                onClick: (e) => {
+                  if (!permission?.isEdit)
+                    return toast.warn("You don't have permission");
+                  e.stopPropagation();
+                  setOpen(true);
+                  setId(record?.intRoleId);
+                },
               },
             ]}
           />
@@ -144,39 +116,51 @@ const UserRoleN: React.FC<TUserRole> = () => {
       width: "60px",
     },
   ];
-  console.log(GetAllUserRole?.data);
   return (
     <>
-      <PCard>
-        <PCardHeader
-          title="Multi Calendar Assign"
-          onSearch={() => {}}
-          buttonList={[{ type: "primary", content: "Assign" }]}
-        />
+      <PForm
+        form={form}
+        onFinish={() => {
+          if (!permission?.isCreate)
+            return toast.warn("You don't have permission");
+          setOpen(true);
+          setId("");
+        }}
+      >
+        <PCard>
+          <PCardHeader
+            onSearch={() => {}}
+            submitText="User Role"
+            submitIcon=<PlusOutlined />
+          />
 
-        <DataTable
-          header={header}
-          bordered
-          data={GetAllUserRole?.data?.data || []}
-          filterData={
-            GetAllUserRole?.data?.calendarAssignHeader // Filter Object From Api Response
-          }
-          pagination={{
-            current: GetAllUserRole?.data?.currentPage,  // Current Page From Api Response
-            pageSize: GetAllUserRole?.data?.pageSize, // Page Size From Api Response
-            total: GetAllUserRole?.data?.totalCount, // Total Count From Api Response
-          }}
-          loading={GetAllUserRole?.loading}
-          scroll={{ x: 1000 }}
-          onChange={(pagination, filters, sorter, extra) => {
-            if (extra.action === "sort") return;
-            landingApi({
-              pagination,
-              filerList: filters,
-            });
-          }}
-        />
-      </PCard>
+          <DataTable
+            header={header}
+            bordered
+            data={GetAllUserRole?.data || []}
+            loading={GetAllUserRole?.loading}
+            scroll={{ x: 1000 }}
+          />
+        </PCard>
+      </PForm>
+      <PModal
+        open={open}
+        title={id ? "Edit User Role" : "Create User Role"}
+        width=""
+        onCancel={() => setOpen(false)}
+        maskClosable={false}
+        components={
+          <>
+            <AddEditForm
+              getData={landingApi}
+              setIsAddEditForm={setOpen}
+              isEdit={id ? true : false}
+              id={id}
+              setId={setId}
+            />
+          </>
+        }
+      />
     </>
   );
 };
