@@ -3,6 +3,7 @@ import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
+import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
@@ -1647,8 +1648,12 @@ export const routingList = [
   },
   //Bank branch end
   {
-    path: "/administration/roleManagement/userRole",
+    path: "/administration/roleManagement/userRolePrev",
     component: UserRole,
+  },
+  {
+    path: "/administration/roleManagement/userRole",
+    component: UserRoleN,
   },
   {
     path: "/administration/roleManagement/userRoleManager",
