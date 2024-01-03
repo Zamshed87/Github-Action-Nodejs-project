@@ -1,12 +1,13 @@
+import { isDevServer } from "App";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import BackButton from "../../../common/BackButton";
+import PrimaryButton from "../../../common/PrimaryButton";
 import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import PrimaryButton from "../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { downloadFile } from "../../../utility/downloadFile";
@@ -74,7 +75,7 @@ const OvertimeBulkEntry = () => {
     }
   };
 
-  const saveHandler = (values) => {
+  const saveHandler = () => {
     const callBack = () => {
       setData([]);
     };
@@ -123,8 +124,8 @@ const OvertimeBulkEntry = () => {
                   onClick={() => {
                     downloadFile(
                       `${
-                        process.env.NODE_ENV === "development"
-                          ? "/document/downloadfile?id=44"
+                        isDevServer
+                          ? "/document/downloadfile?id=20"
                           : "/document/downloadfile?id=20"
                       }`,
                       "Overtime Bulk Upload",
@@ -176,7 +177,7 @@ const OvertimeBulkEntry = () => {
                   </thead>
                   <tbody>
                     {data.map((item, index) => (
-                      <tr>
+                      <tr key={item?.employeeCode}>
                         <td>
                           <div className="content tableBody-title">
                             {index + 1}

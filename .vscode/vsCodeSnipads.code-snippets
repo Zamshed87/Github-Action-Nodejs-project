@@ -176,7 +176,7 @@
       "    <>",
       "      <PCard>",
       "        <PCardHeader",
-      "          title=\"Multi Calendar Assign\"",
+      "          title=\"Page Title\"",
       "          onSearch={() => {}}",
       "          buttonList={[{ type: \"primary\", content: \"Assign\" }]}",
       "        />",

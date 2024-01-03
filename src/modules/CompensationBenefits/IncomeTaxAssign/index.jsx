@@ -159,7 +159,7 @@ export default function IncomeTaxAssign() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
 
@@ -185,7 +185,6 @@ export default function IncomeTaxAssign() {
     <>
       {loading && <Loading />}
       <form onSubmit={handleSubmit}>
-        {console.log("values", values)}
         {permission?.isCreate ? (
           <div className="table-card">
             <div className="table-card-heading">
