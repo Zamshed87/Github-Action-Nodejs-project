@@ -551,9 +551,9 @@ const UserGroup = lazy(() =>
 const CreateUser = lazy(() =>
   import("../modules/configuration/userInfo/createUser/index.js")
 );
-const UserInfo = lazy(() =>
-  import("../modules/configuration/userInfo/index.jsx")
-);
+// const UserInfo = lazy(() =>
+//   import("../modules/configuration/userInfo/index.jsx")
+// );
 const FeatureAssignToRole = lazy(() =>
   import(
     "../modules/configuration/userRoleManager/featureAssignToRole/index.jsx"

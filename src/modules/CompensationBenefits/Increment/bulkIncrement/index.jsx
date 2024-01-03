@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -12,8 +12,9 @@ import { downloadFile } from "../../../../utility/downloadFile";
 import { excelFileToArray } from "../../../../utility/excelFileToJSON";
 import {
   processBulkUploadIncrementAction,
-  saveBulkUploadIncrementAction
+  saveBulkUploadIncrementAction,
 } from "./helper";
+import { isDevServer } from "App";
 
 const initData = {
   files: "",
@@ -34,7 +35,7 @@ export default function BulkIncrementEntry() {
     shallowEqual
   );
 
-  const saveHandler = (values) => {
+  const saveHandler = () => {
     const callBack = () => {
       history.push("/compensationAndBenefits/increment");
       setData([]);
@@ -75,20 +76,14 @@ export default function BulkIncrementEntry() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
         {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
+          handleSubmit
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -111,9 +106,9 @@ export default function BulkIncrementEntry() {
                           onClick={() => {
                             downloadFile(
                               `${
-                                process.env.NODE_ENV === "development"
-                                  ? "/document/downloadfile?id=80771"
-                                  : "/document/downloadfile?id=61686"
+                                isDevServer
+                                  ? "/document/downloadfile?id=19"
+                                  : "/document/downloadfile?id=19"
                               }`,
                               "Increment Bulk Upload",
                               "xlsx",
@@ -166,7 +161,7 @@ export default function BulkIncrementEntry() {
                             </thead>
                             <tbody>
                               {data.map((item, index) => (
-                                <tr>
+                                <tr key={item?.intEmployeeId}>
                                   <td>
                                     <div className="content tableBody-title">
                                       {index + 1}
