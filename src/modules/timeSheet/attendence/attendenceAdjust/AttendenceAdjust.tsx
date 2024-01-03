@@ -394,6 +394,10 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           label: "Absent",
                         },
                         {
+                          label: "Late",
+                          value: "Late",
+                        },
+                        {
                           value: "Leave",
                           label: "Leave",
                         },
