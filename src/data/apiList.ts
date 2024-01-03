@@ -28,6 +28,8 @@ export const apiList = {
   AttendanceAdjustmentFilterbyDate:
     "/Employee/AttendanceAdjustmentFilterbyDate",
   ManualAttendance: "/Employee/ManualAttendance",
+  EmployeeListForUserLandingPagination:
+    "/Employee/EmployeeListForUserLandingPagination",
   GetAllLveLeaveType: "/SaasMasterData/GetAllLveLeaveType",
   GetAllLveLeaveTypeById: "/SaasMasterData/GetLveLeaveTypeById",
   SaveLveLeaveType: "/SaasMasterData/SaveLveLeaveType",
@@ -35,4 +37,7 @@ export const apiList = {
   SaveLveMovementType: "/SaasMasterData/SaveLveMovementType",
   DeleteLveMovementTypeById: "/SaasMasterData/DeleteLveMovementTypeById",
   GetAllBusinessUnit: "/SaasMasterData/GetAllBusinessUnit",
+  GetAllUserRole: "/SaasMasterData/GetAllUserRole",
+  SaveUserRole: "/SaasMasterData/SaveUserRole",
+  GetUserRoleById: "/SaasMasterData/GetUserRoleById",
 };

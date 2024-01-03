@@ -64,10 +64,10 @@ export default function AddEditFormComponent({
   isVisibleHeading = true,
   fullscreen,
   title,
-  setAllData,
   getData,
   pages,
 }) {
+  console.log(singelUser);
   const [loading, setLoading] = useState(false);
   const [userTypeDDL, setUserTypeDDL] = useState([]);
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -158,76 +158,90 @@ export default function AddEditFormComponent({
           isValid,
         }) => (
           <>
-            <div className="viewModal">
-              <Modal
-                show={show}
-                onHide={onHide}
-                size={size}
-                backdrop={backdrop}
-                aria-labelledby="example-modal-sizes-title-xl"
-                className={classes}
-                fullscreen={fullscreen && fullscreen}
-              >
-                <Form>
-                  {isVisibleHeading && (
-                    <Modal.Header className="bg-custom">
-                      {loading && <Loading />}
-                      <div className="d-flex w-100 justify-content-between align-items-center">
-                        <Modal.Title className="text-center">
-                          {title}
-                        </Modal.Title>
-                        <div>
-                          <IconButton
-                            onClick={() => {
-                              if (!isCreate) {
-                                resetForm(modifySingleData);
-                              } else {
-                                resetForm(initData);
-                              }
-                              onHide();
-                            }}
-                          >
-                            <Close sx={{ color: gray900 }} />
-                          </IconButton>
-                        </div>
-                      </div>
-                    </Modal.Header>
-                  )}
+            <Form>
+              {isVisibleHeading && (
+                <Modal.Header className="bg-custom">
+                  {loading && <Loading />}
+                  <div className="d-flex w-100 justify-content-between align-items-center">
+                    <Modal.Title className="text-center">{title}</Modal.Title>
+                    <div>
+                      <IconButton
+                        onClick={() => {
+                          if (!isCreate) {
+                            resetForm(modifySingleData);
+                          } else {
+                            resetForm(initData);
+                          }
+                          onHide();
+                        }}
+                      >
+                        <Close sx={{ color: gray900 }} />
+                      </IconButton>
+                    </div>
+                  </div>
+                </Modal.Header>
+              )}
 
-                  <Modal.Body id="example-modal-sizes-title-xl">
-                    <div className="businessUnitModal">
-                      <div style={{ padding: "0px 12px" }}>
-                        <div className="d-flex align-items-center modal-body-title">
-                          <div className="py-1 px-0">
-                            <Avatar
-                              alt={"avatar"}
-                              src={""}
-                              sx={{
-                                backgroundColor: "#5BABEF",
-                                width: "40px",
-                                height: "40px",
-                                mr: 0,
-                              }}
-                            />
-                          </div>
-                          <div className="pl-2">
-                            <h6 className="title-item-name">
-                              {singelUser?.strEmployeeName} [
-                              {singelUser?.strEmployeeCode}]
-                            </h6>
-                            <p className="subtitle-p">
-                              {singelUser?.strEmploymentType}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-6">
-                            <label>Login User ID</label>
+              <Modal.Body id="example-modal-sizes-title-xl">
+                <div className="businessUnitModal">
+                  <div style={{ padding: "0px 12px" }}>
+                    <div className="d-flex align-items-center modal-body-title">
+                      <div className="py-1 px-0">
+                        <Avatar
+                          alt={"avatar"}
+                          src={""}
+                          sx={{
+                            backgroundColor: "#5BABEF",
+                            width: "40px",
+                            height: "40px",
+                            mr: 0,
+                          }}
+                        />
+                      </div>
+                      <div className="pl-2">
+                        <h6 className="title-item-name">
+                          {singelUser?.strEmployeeName} [
+                          {singelUser?.strEmployeeCode}]
+                        </h6>
+                        <p className="subtitle-p">
+                          {singelUser?.strEmploymentType}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-6">
+                        <label>Login User ID</label>
+                        <FormikInput
+                          classes="input-sm"
+                          value={values?.loginUserId}
+                          name="loginUserId"
+                          type="text"
+                          className="form-control"
+                          placeholder=""
+                          onChange={(e) => {
+                            if (e.target.value.includes(" ")) {
+                              e.target.value = e.target.value.replace(
+                                /\s/g,
+                                ""
+                              );
+                              setFieldValue("loginUserId", e.target.value);
+                            }
+                            setFieldValue("loginUserId", e.target.value);
+                          }}
+                          // disabled={true}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-6">
+                        <div className="input-field-password-main">
+                          <label>Password</label>
+                          <div className="input-password">
                             <FormikInput
                               classes="input-sm"
-                              value={values?.loginUserId}
-                              name="loginUserId"
-                              type="text"
+                              value={values?.password}
+                              name="password"
+                              type={isShowPassword ? "text" : "password"}
                               className="form-control"
                               placeholder=""
                               onChange={(e) => {
@@ -236,162 +250,134 @@ export default function AddEditFormComponent({
                                     /\s/g,
                                     ""
                                   );
-                                  setFieldValue("loginUserId", e.target.value);
+                                  setFieldValue("password", e.target.value);
                                 }
-                                setFieldValue("loginUserId", e.target.value);
+                                setFieldValue("password", e.target.value);
                               }}
-                              // disabled={true}
                               errors={errors}
                               touched={touched}
                             />
-                          </div>
-                          <div className="col-6">
-                            <div className="input-field-password-main">
-                              <label>Password</label>
-                              <div className="input-password">
-                                <FormikInput
-                                  classes="input-sm"
-                                  value={values?.password}
-                                  name="password"
-                                  type={isShowPassword ? "text" : "password"}
-                                  className="form-control"
-                                  placeholder=""
-                                  onChange={(e) => {
-                                    if (e.target.value.includes(" ")) {
-                                      e.target.value = e.target.value.replace(
-                                        /\s/g,
-                                        ""
-                                      );
-                                      setFieldValue("password", e.target.value);
-                                    }
-                                    setFieldValue("password", e.target.value);
-                                  }}
-                                  errors={errors}
-                                  touched={touched}
-                                />
-                                {values?.password && (
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      setIsShowPassword(!isShowPassword)
-                                    }
-                                    className="btn-showPassword"
-                                  >
-                                    {isShowPassword ? (
-                                      <VisibilityOutlinedIcon
-                                        sx={{ color: gray900 }}
-                                      />
-                                    ) : (
-                                      <VisibilityOffOutlinedIcon
-                                        sx={{ color: gray900 }}
-                                      />
-                                    )}
-                                  </button>
+                            {values?.password && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setIsShowPassword(!isShowPassword)
+                                }
+                                className="btn-showPassword"
+                              >
+                                {isShowPassword ? (
+                                  <VisibilityOutlinedIcon
+                                    sx={{ color: gray900 }}
+                                  />
+                                ) : (
+                                  <VisibilityOffOutlinedIcon
+                                    sx={{ color: gray900 }}
+                                  />
                                 )}
-                              </div>
-                            </div>
+                              </button>
+                            )}
                           </div>
-                          <div className="col-6">
-                            <label>Office Email</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.email}
-                              name="email"
-                              type="email"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("email", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>Contact No.</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.phone}
-                              name="phone"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("phone", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>User Type</label>
-                            <FormikSelect
-                              name="userType"
-                              menuPosition="fixed"
-                              options={userTypeDDL || []}
-                              value={values?.userType}
-                              onChange={(valueOption) => {
-                                setFieldValue("userType", valueOption);
-                              }}
-                              placeholder=" "
-                              styles={customStyles}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-
-                          {!isCreate && (
-                            <>
-                              <div className="col-6">
-                                <div className="input-main position-group-select mt-2">
-                                  <h6 className="title-item-name">
-                                    User Activation
-                                  </h6>
-                                </div>
-                                <FormikToggle
-                                  name="isActive"
-                                  color={
-                                    values?.isActive ? greenColor : blackColor40
-                                  }
-                                  checked={values?.isActive}
-                                  onChange={(e) => {
-                                    setFieldValue("isActive", e.target.checked);
-                                  }}
-                                />
-                              </div>
-                            </>
-                          )}
                         </div>
                       </div>
+                      <div className="col-6">
+                        <label>Office Email</label>
+                        <FormikInput
+                          classes="input-sm"
+                          value={values?.email}
+                          name="email"
+                          type="email"
+                          className="form-control"
+                          placeholder=""
+                          onChange={(e) => {
+                            setFieldValue("email", e.target.value);
+                          }}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-6">
+                        <label>Contact No.</label>
+                        <FormikInput
+                          classes="input-sm"
+                          value={values?.phone}
+                          name="phone"
+                          type="text"
+                          className="form-control"
+                          placeholder=""
+                          onChange={(e) => {
+                            setFieldValue("phone", e.target.value);
+                          }}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                      <div className="col-6">
+                        <label>User Type</label>
+                        <FormikSelect
+                          name="userType"
+                          menuPosition="fixed"
+                          options={userTypeDDL || []}
+                          value={values?.userType}
+                          onChange={(valueOption) => {
+                            setFieldValue("userType", valueOption);
+                          }}
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+
+                      {!isCreate && (
+                        <>
+                          <div className="col-6">
+                            <div className="input-main position-group-select mt-2">
+                              <h6 className="title-item-name">
+                                User Activation
+                              </h6>
+                            </div>
+                            <FormikToggle
+                              name="isActive"
+                              color={
+                                values?.isActive ? greenColor : blackColor40
+                              }
+                              checked={values?.isActive}
+                              onChange={(e) => {
+                                setFieldValue("isActive", e.target.checked);
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
                     </div>
-                  </Modal.Body>
-                  <Modal.Footer className="form-modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-cancel"
-                      style={{ fontSize: "14px" }}
-                      onClick={() => {
-                        if (!isCreate) {
-                          resetForm(modifySingleData);
-                        } else {
-                          resetForm(initData);
-                        }
-                        onHide();
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="btn btn-green"
-                      type="submit"
-                      onSubmit={() => handleSubmit()}
-                    >
-                      Save
-                    </button>
-                  </Modal.Footer>
-                </Form>
-              </Modal>
-            </div>
+                  </div>
+                </div>
+              </Modal.Body>
+              <Modal.Footer className="form-modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-cancel"
+                  style={{ fontSize: "14px" }}
+                  onClick={() => {
+                    if (!isCreate) {
+                      resetForm(modifySingleData);
+                    } else {
+                      resetForm(initData);
+                    }
+                    onHide();
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-green"
+                  type="submit"
+                  onSubmit={() => handleSubmit()}
+                >
+                  Save
+                </button>
+              </Modal.Footer>
+            </Form>
           </>
         )}
       </Formik>

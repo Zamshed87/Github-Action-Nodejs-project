@@ -3,6 +3,8 @@ import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BusinessUnit from "modules/configuration/busisnessUnit";
+import UserInfoN from "modules/configuration/userInfo/UserInfo";
+import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
@@ -551,9 +553,9 @@ const UserGroup = lazy(() =>
 const CreateUser = lazy(() =>
   import("../modules/configuration/userInfo/createUser/index.js")
 );
-const UserInfo = lazy(() =>
-  import("../modules/configuration/userInfo/index.jsx")
-);
+// const UserInfo = lazy(() =>
+//   import("../modules/configuration/userInfo/index.jsx")
+// );
 const FeatureAssignToRole = lazy(() =>
   import(
     "../modules/configuration/userRoleManager/featureAssignToRole/index.jsx"
@@ -1621,8 +1623,8 @@ export const routingList = [
     component: MasterLocationRegistration,
   },
   // <== Administration start
-  { path: "/administration/roleManagement/usersInfo", component: UserInfo },
-  // { path: "/administration/roleManagement/usersInfo", component: UserInfoN },
+  // { path: "/administration/roleManagement/usersInfo", component: UserInfo },
+  { path: "/administration/roleManagement/usersInfo", component: UserInfoN },
   {
     path: "/administration/roleManagement/usersInfo/create",
     component: CreateUser,
@@ -1647,8 +1649,12 @@ export const routingList = [
   },
   //Bank branch end
   {
-    path: "/administration/roleManagement/userRole",
+    path: "/administration/roleManagement/userRolePrev",
     component: UserRole,
+  },
+  {
+    path: "/administration/roleManagement/userRole",
+    component: UserRoleN,
   },
   {
     path: "/administration/roleManagement/userRoleManager",

@@ -85,6 +85,11 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         font-size: inherit;
         line-height: inherit;
       }
+      // Autofill
+      // &:-webkit-autofill,
+      // &:-internal-autofill-selected {
+      //   background-color: red !important;
+      // }
       &:hover {
         @include inputHover;
       }
@@ -144,6 +149,16 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
           border: none !important;
           outline: none !important;
           box-shadow: none !important;
+        }
+      }
+      &.ant-input-password {
+        padding: 0;
+        padding-right: 5px;
+        .ant-input {
+          padding: 4px 11px;
+          padding-right: 2px;
+          border-top-right-radius: 0 !important;
+          border-bottom-right-radius: 0 !important;
         }
       }
     }
