@@ -86,7 +86,6 @@ export default function AddEditForm({
   // submit
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
     const cb = () => {
-      console.log("callback calling...");
       resetForm();
       setIsAddEditForm(false);
       getData();
@@ -127,7 +126,6 @@ export default function AddEditForm({
   useEffect(() => {
     if (singleData?.intBusinessUnitId) {
       // getLeaveTypeById(setSingleData, id, setLoading);
-      console.log("calling");
       getSingleData.action({
         urlKey: "GetBusinessUnitById",
         method: "GET",
@@ -136,7 +134,7 @@ export default function AddEditForm({
         },
         onSuccess: (res) => {
           // console.log({ res });
-
+          form.resetFields();
           form.setFieldsValue({
             strDistrict: res?.intDistrictId
               ? { value: res?.intDistrictId, label: res?.strDistrict }
@@ -158,9 +156,7 @@ export default function AddEditForm({
         },
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleData]);
-  console.log({ singleData });
+  }, [singleData, getCurrencyDDL?.data, getDistrictDDL?.data]);
   return (
     <>
       <PForm
@@ -256,7 +252,13 @@ export default function AddEditForm({
               name="strEmail"
               label="Email"
               placeholder="Email"
-              // rules={[{ required: true, message: "Email is required" }]}
+              rules={[
+                {
+                  required: false,
+                  type: "email",
+                  message: "provide a valid email address",
+                },
+              ]}
             />
           </Col>
 
@@ -345,7 +347,10 @@ export default function AddEditForm({
                   alignItems: "center",
                 }}
               >
-                <div className="input-main position-group-select mt-4">
+                <div
+                  className="input-main position-group-select "
+                  style={{ margin: "3rem 0 0 0.7rem" }}
+                >
                   <h6 className="title-item-name">Business Unit Activation</h6>
                   <p className="subtitle-p">
                     Activation toggle indicates to the particular Business Unit
