@@ -131,7 +131,7 @@ export const lateDtoCol = (page, paginationSize) => {
     },
 
     {
-      title: "Late",
+      title: "Late (mins)",
       dataIndex: "late",
       //   render: (record) => record?.earlyOut || "N/A",
       sort: false,
@@ -146,12 +146,12 @@ export const column = {
   sl: "SL",
   department: "Department",
   section: "Section",
-  employeeCode: "Code",
+  employeeCode: "Employee Id",
   employeeName: "Employee Name",
   designation: "Designation",
   calenderName: "Calender Name",
   intime: "In Time",
-  late: "Late",
+  late: "Late (mins)",
 };
 
 // export const subHeaderColumn = {
