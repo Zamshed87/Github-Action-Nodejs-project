@@ -26,7 +26,6 @@ import { APIUrl } from "App";
 function BusinessUnit() {
   // hook
   const dispatch = useDispatch();
-  const history = useHistory();
 
   // redux
   const { buId, wgId, wgName, wId, orgId } = useSelector(
@@ -47,7 +46,6 @@ function BusinessUnit() {
 
   // Api Instance
   const landingApi = useApiRequest({});
-  const GetBusinessDetailsByBusinessUnitId = useApiRequest({});
 
   type TLandingApi = {
     pagination?: {
@@ -267,7 +265,6 @@ function BusinessUnit() {
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
               isEdit={id ? true : false}
-              pages={undefined}
               singleData={id}
               setId={setId}
             />
