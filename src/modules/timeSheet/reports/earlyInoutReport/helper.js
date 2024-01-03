@@ -161,7 +161,7 @@ export const column = {
   sl: "SL",
   department: "Department",
   section: "Section",
-  employeeCode: "Code",
+  employeeCode: "Employee Id",
   employeeName: "Employee Name",
   designation: "Designation",
   calenderName: "Calender Name",

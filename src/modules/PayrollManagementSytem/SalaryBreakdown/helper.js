@@ -34,10 +34,15 @@ export const getAllSalaryPolicyDDL = async (accId, buId, setter) => {
   } catch (error) {}
 };
 
-export const getPayrollElementDDL = async (accId, setter, wgId) => {
+export const getPayrollElementDDL = async (
+  accId,
+  setter,
+  wgId,
+  workplaceId
+) => {
   try {
     const res = await axios.get(
-      `/Payroll/GetAllSalaryElementByAccountIdDDL?accountId=${accId}&workplaceGroupId=${wgId}`
+      `/Payroll/GetAllSalaryElementByAccountIdDDL?accountId=${accId}&workplaceGroupId=${wgId}&workplaceId=${workplaceId}`
     );
     if (res?.data) {
       setter(res?.data);
@@ -103,4 +108,27 @@ export const getAllAppliedSalaryBreakdownList = async (
   } catch (error) {
     setLoading && setLoading(false);
   }
+};
+
+export const getWorkplaceDDL = async (
+  buId,
+  workplaceGroupId,
+  employeeId,
+  setter
+) => {
+  try {
+    const res = await axios.get(
+      `PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${workplaceGroupId}&intId=${employeeId}`
+    );
+    if (res?.status === 200) {
+      const data = res?.data?.map((itm) => {
+        return {
+          ...itm,
+          value: itm?.intWorkplaceId,
+          label: itm?.strWorkplace,
+        };
+      });
+      setter(data);
+    }
+  } catch (error) {}
 };

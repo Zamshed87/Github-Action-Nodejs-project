@@ -34,6 +34,7 @@ import {
   getAllAppliedSalaryBreakdownList,
   getAllSalaryPolicyDDL,
   getPayrollElementDDL,
+  getWorkplaceDDL,
   salaryBreakdownCreateNApply,
 } from "./helper";
 import "./styles.css";
@@ -92,6 +93,7 @@ const SalaryBreakdown = () => {
   const [payrollElementDDL, setPayrollElementDDL] = useState([]);
   // const [hrPositionDDL, setHrPositionDDL] = useState([]);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplace, setWorkplace] = useState([]);
 
   // gross form
   const [dynamicForm, setDynamicForm] = useState([]);
@@ -102,7 +104,7 @@ const SalaryBreakdown = () => {
     document.title = "Payroll Group";
   }, []);
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -119,15 +121,16 @@ const SalaryBreakdown = () => {
   // for initial
   useEffect(() => {
     getAllSalaryPolicyDDL(orgId, buId, setPayrollPolicyDDL);
-    getPayrollElementDDL(orgId, setPayrollElementDDL, wgId);
+
+    // getPayrollElementDDL(orgId, setPayrollElementDDL, wgId);
   }, [orgId, buId, employeeId, wgId]);
 
   useEffect(() => {
     getAllAppliedSalaryBreakdownList(
       orgId,
       buId,
-      0,
-      0,
+      wgId,
+      wId,
       0,
       0,
       0,
@@ -135,7 +138,7 @@ const SalaryBreakdown = () => {
       setRowDto,
       setLoading
     );
-  }, [orgId, buId, employeeId]);
+  }, [orgId, buId, wgId, wId, employeeId]);
 
   useEffect(() => {
     getPeopleDeskWithoutAllDDL(
@@ -257,8 +260,8 @@ const SalaryBreakdown = () => {
       getAllAppliedSalaryBreakdownList(
         orgId,
         buId,
-        0,
-        0,
+        wgId,
+        wId,
         0,
         0,
         0,
@@ -279,6 +282,7 @@ const SalaryBreakdown = () => {
       intSalaryPolicyId: values?.payrollPolicy?.value,
       intHrPositonId: 0,
       intWorkplaceGroupId: values?.payScale?.value,
+      intWorkplaceId: values?.workplace?.value,
       isPerday: values?.isPerdaySalary || false,
       isDefault: values?.isDefaultBreakdown || false,
       isActive: true,
@@ -360,72 +364,75 @@ const SalaryBreakdown = () => {
       {
         title: "",
         dataIndex: "",
-        render: (data, item) => (
+        render: (data, item) =>
           // 🔥⚠⚠🔥 can be edit only developement, if need to edit on live server, please discuss with backend and business team and remove isDevServer condition
-          isDevServer ?  <div className=" d-flex align-items-center justify-content-end "> 
-            <Tooltip title="Edit" arrow>
-              <button
-                type="button"
-                className="iconButton"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  scrollRef.current.scrollIntoView({
-                    behavior: "smooth",
-                  });
-                  if (!item?.isPerday) {
-                    payrollGroupElementList(
-                      orgId,
-                      item?.intSalaryBreakdownHeaderId,
-                      setDynamicForm
-                    );
-                  }
-                  setSingleData(item);
-                  setIsEdit(true);
-                  setValues({
-                    ...values,
-                    breakdownTitle: item?.strSalaryBreakdownTitle,
-                    payrollPolicy: {
-                      value: item?.intSalaryPolicyId,
-                      label: item?.strSalaryPolicy,
-                    },
-                    businessUnit: {
-                      value: item?.intBusinessUnitId,
-                      label: item?.strBusinessUnit,
-                    },
-                    workplaceGroup: {
-                      value: item?.intWorkplaceGroupId,
-                      label: item?.strWorkplaceGroup,
-                    },
-                    workplace: {
-                      value: item?.intWorkplaceId,
-                      label: item?.strWorkplace,
-                    },
-                    department: {
-                      value: item?.intDepartmentId,
-                      label: item?.strDepartment,
-                    },
-                    designation: {
-                      value: item?.intDesignationId,
-                      label: item?.strDesignation,
-                    },
-                    employeeType: {
-                      value: item?.intEmploymentTypeId,
-                      label: item?.strEmploymentType,
-                    },
-                    payScale: {
-                      value: item?.intWorkplaceGroupId,
-                      label: item?.workplaceGroup,
-                    },
-                    isPerdaySalary: item?.isPerday,
-                    isDefaultBreakdown: item?.isDefault,
-                  });
-                }}
-              >
-                <EditOutlined sx={{ fontSize: "20px" }} />
-              </button>
-            </Tooltip>
-          </div> : <></>
-        ),
+          isDevServer ? (
+            <div className=" d-flex align-items-center justify-content-end ">
+              <Tooltip title="Edit" arrow>
+                <button
+                  type="button"
+                  className="iconButton"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    scrollRef.current.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                    if (!item?.isPerday) {
+                      payrollGroupElementList(
+                        orgId,
+                        item?.intSalaryBreakdownHeaderId,
+                        setDynamicForm
+                      );
+                    }
+                    setSingleData(item);
+                    setIsEdit(true);
+                    setValues({
+                      ...values,
+                      breakdownTitle: item?.strSalaryBreakdownTitle,
+                      payrollPolicy: {
+                        value: item?.intSalaryPolicyId,
+                        label: item?.strSalaryPolicy,
+                      },
+                      businessUnit: {
+                        value: item?.intBusinessUnitId,
+                        label: item?.strBusinessUnit,
+                      },
+                      workplaceGroup: {
+                        value: item?.intWorkplaceGroupId,
+                        label: item?.strWorkplaceGroup,
+                      },
+                      workplace: {
+                        value: item?.intWorkplaceId,
+                        label: item?.strWorkplace,
+                      },
+                      department: {
+                        value: item?.intDepartmentId,
+                        label: item?.strDepartment,
+                      },
+                      designation: {
+                        value: item?.intDesignationId,
+                        label: item?.strDesignation,
+                      },
+                      employeeType: {
+                        value: item?.intEmploymentTypeId,
+                        label: item?.strEmploymentType,
+                      },
+                      payScale: {
+                        value: item?.intWorkplaceGroupId,
+                        label: item?.workplaceGroup,
+                      },
+                      isPerdaySalary: item?.isPerday,
+                      isDefaultBreakdown: item?.isDefault,
+                    });
+                  }}
+                >
+                  <EditOutlined sx={{ fontSize: "20px" }} />
+                </button>
+              </Tooltip>
+            </div>
+          ) : (
+            <></>
+          ),
         sorter: false,
         filter: false,
       },
@@ -511,13 +518,15 @@ const SalaryBreakdown = () => {
                             options={workplaceGroupDDL || []}
                             value={values?.payScale}
                             onChange={(valueOption) => {
-                              getPayrollElementDDL(
-                                orgId,
-                                setPayrollElementDDL,
-                                valueOption?.value
-                              );
-
                               setFieldValue("payScale", valueOption);
+                              setFieldValue("workplace", "");
+
+                              getWorkplaceDDL(
+                                buId,
+                                valueOption?.value,
+                                employeeId,
+                                setWorkplace
+                              );
                             }}
                             styles={customStyles}
                             placeholder=""
@@ -527,7 +536,33 @@ const SalaryBreakdown = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-lg-2">
+                      <div className="col-lg-3">
+                        <div className="input-field-main">
+                          <label>Workplace</label>
+                          <FormikSelect
+                            menuPosition="fixed"
+                            name="workplace"
+                            options={workplace || []}
+                            value={values?.workplace}
+                            onChange={(valueOption) => {
+                              setFieldValue("workplace", valueOption);
+                              console.log(valueOption);
+                              getPayrollElementDDL(
+                                orgId,
+                                setPayrollElementDDL,
+                                values?.payScale?.value,
+                                valueOption?.value
+                              );
+                            }}
+                            styles={customStyles}
+                            placeholder=""
+                            errors={errors}
+                            touched={touched}
+                            isClearable={false}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-3">
                         <div style={{ margin: "10px 0 0" }}>
                           <FormikCheckBox
                             height="15px"

@@ -43,7 +43,8 @@ const createExcelFile = (
   businessUnit,
   rowDto,
   buAddress,
-  employeeInformation
+  employeeInformation,
+  wgName
 ) => {
   const excel = {
     name: `${comapanyNameHeader} ${moment().format("ll")}`,
@@ -155,7 +156,7 @@ const createExcelFile = (
               border: "all 000000 thin",
             },
             {
-              text: employeeInformation?.[0]?.EmploymentTypeName,
+              text: wgName,
               fontSize: 9,
               border: "all 000000 thin",
             },
@@ -260,7 +261,8 @@ export const generateExcelAction = (
   businessUnit,
   rowDto,
   buAddress,
-  employeeInformation
+  employeeInformation,
+  wgName
 ) => {
   createExcelFile(
     title,
@@ -269,6 +271,7 @@ export const generateExcelAction = (
     businessUnit,
     rowDto,
     buAddress,
-    employeeInformation
+    employeeInformation,
+    wgName
   );
 };

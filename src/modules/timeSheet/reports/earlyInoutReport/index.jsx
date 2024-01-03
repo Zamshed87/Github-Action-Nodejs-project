@@ -399,7 +399,7 @@ const EarlyReport = () => {
                       className="ml-2"
                       fontSize={"12px"}
                     >
-                      {rowDto?.totalEarlyOut || 0}
+                      {rowDto?.totalEarlyOut || 0} (mins)
                     </Typography>
                   </div>
                 </div>
