@@ -2,6 +2,7 @@ import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/C
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
+import BusinessUnit from "modules/configuration/busisnessUnit";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
@@ -463,9 +464,9 @@ const Sliders = lazy(() =>
 const BankBranch = lazy(() =>
   import("../modules/configuration/bankBranch/index.jsx")
 );
-const BusinessUnit = lazy(() =>
-  import("../modules/configuration/busisnessUnit/index.jsx")
-);
+// const BusinessUnit = lazy(() =>
+//   import("../modules/configuration/busisnessUnit/index.jsx")
+// );
 const DashboardComponent = lazy(() =>
   import("../modules/configuration/dashboardComponent/index.jsx")
 );

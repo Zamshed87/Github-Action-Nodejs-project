@@ -1,12 +1,7 @@
 import { AddOutlined } from "@mui/icons-material";
-import {
-  Avatar,
-  DataTable,
-  PCard,
-  PCardHeader,
-  PForm,
-  TableButton,
-} from "Components";
+import DemoImg from "../../../assets/images/demo.png";
+
+import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { Form, message } from "antd";
@@ -26,6 +21,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
+import { APIUrl } from "App";
 
 function BusinessUnit() {
   // hook
@@ -33,7 +29,7 @@ function BusinessUnit() {
   const history = useHistory();
 
   // redux
-  const { buId, wgId, wgName, wId, buName } = useSelector(
+  const { buId, wgId, wgName, wId, orgId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -68,21 +64,17 @@ function BusinessUnit() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetAllLveLeaveType",
+      urlKey: "GetAllBusinessUnit",
       method: "GET",
       params: {
-        BusinessUnitId: buId,
-        WorkGroupId: wgId,
-        SearchText: searchText,
-        PageNo: pagination?.current,
-        PageSize: pagination?.pageSize,
+        accountId: orgId,
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Leave Type";
+    document.title = "Business-Unit";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -90,7 +82,7 @@ function BusinessUnit() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 35) {
+    if (item?.menuReferenceId === 48) {
       employeeFeature = item;
     }
   });
@@ -114,21 +106,59 @@ function BusinessUnit() {
       align: "center",
     },
     {
-      title: "Leave Type Name",
-      dataIndex: "strLeaveType",
+      title: "Business Unit",
+      dataIndex: "strBusinessUnit",
       sorter: true,
+      render: (_: any, rec: any) => {
+        return (
+          <div className="d-flex align-items-center">
+            {rec?.strLogoUrlId ? (
+              <img
+                src={`${APIUrl}/Document/DownloadFile?id=${rec?.strLogoUrlId}`}
+                alt="icon"
+                style={{
+                  width: "15px",
+                  height: "15px",
+                  borderRadius: "50%",
+                  objectFit: "contain",
+                }}
+              />
+            ) : (
+              <img
+                src={DemoImg}
+                alt="icon"
+                style={{
+                  width: "15px",
+                  height: "15px",
+                  borderRadius: "50%",
+                  objectFit: "contain",
+                }}
+              />
+            )}
+            <span className="">{rec?.strBusinessUnit}</span>
+          </div>
+        );
+      },
       //   fixed: "left",
     },
     {
-      title: "Code",
-      dataIndex: "strLeaveTypeCode",
+      title: "Address",
+      dataIndex: "strAddress",
+      sorter: true,
+      width: 100,
+
+      //   fixed: "left",
+    },
+    {
+      title: "Website",
+      dataIndex: "strWebsiteUrl",
       sorter: true,
       //   fixed: "left",
     },
 
     {
       title: "Status",
-      dataIndex: "statusValue",
+      dataIndex: "isActive",
       sorter: true,
       render: (_: any, rec: any) => (
         <>
@@ -182,7 +212,7 @@ function BusinessUnit() {
             // onSearch={(e) => {
             //   searchFunc(e?.target?.value);
             // }}
-            submitText="Leave Type"
+            submitText="Business Unit"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -227,19 +257,20 @@ function BusinessUnit() {
 
       <PModal
         open={open}
-        title={id ? "Edit Leave Type" : "Create Leave Type"}
+        title={id ? "Edit Business Unit" : "Create Business Unit"}
         width=""
         onCancel={() => setOpen(false)}
         maskClosable={false}
         components={
           <>
-            {/* <AddEditForm
+            <AddEditForm
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
               isEdit={id ? true : false}
               pages={undefined}
               singleData={id}
-            /> */}
+              setId={setId}
+            />
           </>
         }
       />

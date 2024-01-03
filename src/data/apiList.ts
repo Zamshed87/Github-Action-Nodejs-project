@@ -34,4 +34,5 @@ export const apiList = {
   GetAllLveMovementType: "/SaasMasterData/GetAllLveMovementType",
   SaveLveMovementType: "/SaasMasterData/SaveLveMovementType",
   DeleteLveMovementTypeById: "/SaasMasterData/DeleteLveMovementTypeById",
+  GetAllBusinessUnit: "/SaasMasterData/GetAllBusinessUnit",
 };
