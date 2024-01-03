@@ -3,18 +3,35 @@ import PBadge from "Components/Badge";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 
-type TUserRole = {};
+type TUserRole = {
+
+};
 const UserRoleN: React.FC<TUserRole> = () => {
   // Data From Store
-  const { buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId, orgId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+
+  // hooks
+  const [rowDto, setRowDto] = useState([]);
+  const [allData, setAllData] = useState([]);
+  const [singleData, setSingleData] = useState("");
+  const [id, setId] = useState("");
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  // for create state
+  const [open, setOpen] = useState(false);
+
+  // for view state
+  const [viewModal, setViewModal] = useState(false);
+
+
   // Api Actions
-  const apiKeyFromApiPath = useApiRequest({});
+  const GetAllUserRole = useApiRequest({});
 
   // Landing Api
   type TLandingApi = {
@@ -30,30 +47,10 @@ const UserRoleN: React.FC<TUserRole> = () => {
     filerList = [],
     searchText = "",
   }: TLandingApi = {}) => {
-    // apiKeyFromApiPath?.action({
-    //   urlKey: "apiKeyFromApiPath",
-    //   method: "POST",
-    //   payload: {
-    //     businessUnitId: buId,
-    //     workplaceGroupId: wgId,
-    //     workplaceId: wId,
-    //     isNotAssign: false,
-    //     pageNo: pagination?.current || 1,
-    //     pageSize: pagination?.pageSize || 25,
-    //     isPaginated: true,
-    //     isHeaderNeed: true,
-    //     searchTxt: searchText || "",
-    //     designationList: [],
-    //     departmentList: [],
-    //     supervisorNameList: [],
-    //     employmentTypeList: [],
-    //     wingNameList: [],
-    //     soleDepoNameList: [],
-    //     regionNameList: [],
-    //     areaNameList: [],
-    //     territoryNameList: [],
-    //   },
-    // });
+    GetAllUserRole?.action({
+      urlKey: "GetAllUserRole",
+      method: "GET",
+    });
   };
 
   // Life Cycle Hooks
@@ -68,8 +65,8 @@ const UserRoleN: React.FC<TUserRole> = () => {
       title: "SL",
       render: (value: any, row: any, index: number) =>
         getSerial({
-          currentPage: apiKeyFromApiPath?.data?.currentPage,
-          pageSize: apiKeyFromApiPath?.data?.pageSize,
+          currentPage: GetAllUserRole?.data?.currentPage,
+          pageSize: GetAllUserRole?.data?.pageSize,
           index,
         }),
 
@@ -147,7 +144,7 @@ const UserRoleN: React.FC<TUserRole> = () => {
       width: "60px",
     },
   ];
-  console.log(apiKeyFromApiPath?.data);
+  console.log(GetAllUserRole?.data);
   return (
     <>
       <PCard>
@@ -160,16 +157,16 @@ const UserRoleN: React.FC<TUserRole> = () => {
         <DataTable
           header={header}
           bordered
-          data={apiKeyFromApiPath?.data?.data || []}
+          data={GetAllUserRole?.data?.data || []}
           filterData={
-            apiKeyFromApiPath?.data?.calendarAssignHeader // Filter Object From Api Response
+            GetAllUserRole?.data?.calendarAssignHeader // Filter Object From Api Response
           }
           pagination={{
-            current: apiKeyFromApiPath?.data?.currentPage,  // Current Page From Api Response
-            pageSize: apiKeyFromApiPath?.data?.pageSize, // Page Size From Api Response
-            total: apiKeyFromApiPath?.data?.totalCount, // Total Count From Api Response
+            current: GetAllUserRole?.data?.currentPage,  // Current Page From Api Response
+            pageSize: GetAllUserRole?.data?.pageSize, // Page Size From Api Response
+            total: GetAllUserRole?.data?.totalCount, // Total Count From Api Response
           }}
-          loading={apiKeyFromApiPath?.loading}
+          loading={GetAllUserRole?.loading}
           scroll={{ x: 1000 }}
           onChange={(pagination, filters, sorter, extra) => {
             if (extra.action === "sort") return;
