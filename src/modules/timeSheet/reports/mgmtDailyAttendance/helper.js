@@ -212,7 +212,7 @@ export const column = {
   sl: "SL",
   workplaceGroup: "Workplace Group",
   workplace: "Workplace",
-  employeeCode: "Code",
+  employeeCode: "Employee Id",
   employeeName: "Employee Name",
   designation: "Designation",
   department: "Department",
