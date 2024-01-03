@@ -127,7 +127,7 @@ export default function AddEditForm({
             />
           </Col>
           {isEdit && (
-            <div className="col-12" style={{ marginLeft: "-0.5rem" }}>
+            <Col md={12} style={{ marginLeft: ".3rem" }}>
               <div className="input-main position-group-select mt-4">
                 <h6 className="title-item-name">Leave Type Activation</h6>
                 <p className="subtitle-p">
@@ -138,7 +138,7 @@ export default function AddEditForm({
                   <Switch />
                 </Form.Item>
               </div>
-            </div>
+            </Col>
           )}
         </Row>
         <ModalFooter

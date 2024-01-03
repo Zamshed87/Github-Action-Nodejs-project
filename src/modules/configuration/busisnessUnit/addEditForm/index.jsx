@@ -1,543 +1,386 @@
-import {
-  AttachmentOutlined,
-  Close,
-  FileUpload,
-  VisibilityOutlined
-} from "@mui/icons-material";
-import { IconButton } from "@mui/material";
-import { Form, Formik } from "formik";
+import { ModalFooter } from "Components/Modal";
+import { PForm, PInput, PSelect } from "Components/PForm";
+import { useApiRequest } from "Hooks";
+import { Col, Divider, Form, Row } from "antd";
+import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
-import { Modal } from "react-bootstrap";
+import { Switch } from "antd";
+import { ImAttachment } from "react-icons/im";
+
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import * as Yup from "yup";
-import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
-import { todayDate } from "../../../../utility/todayDate";
-import { getControlPanelAllLanding } from "../../helper";
-import { getPeopleDeskAllDDL } from "./../../../../common/api/index";
-import FormikInput from "./../../../../common/FormikInput";
-import FormikSelect from "./../../../../common/FormikSelect";
-import FormikToggle from "./../../../../common/FormikToggle";
-import Loading from "./../../../../common/loading/Loading";
-import { blackColor80, greenColor } from "./../../../../utility/customColor";
-import { customStyles } from "./../../../../utility/newSelectCustomStyle";
-import {
-  attachment_action,
-  createBusinessUnit,
-  getBusinessUnitById
-} from "./../helper";
+import { todayDate } from "utility/todayDate";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import FileUploadComponents from "utility/Upload/FileUploadComponents";
+// import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
+// import { createEditEmpAction, userExistValidation } from "../helper";
+// import { submitHandler } from "./helper";
 
-const initData = {
-  businessUnit: "",
-  code: "",
-  address: "",
-  district: " ",
-  baseCurrency: "",
-  websiteUrl: "",
-  email: "",
-  isActive: true,
-};
-const validationSchema = Yup.object().shape({
-  businessUnit: Yup.string().required("Business Unit is required"),
-  code: Yup.string().required("Code is required"),
-  address: Yup.string().required("Address is required"),
-  email: Yup.string().email("Enter a valid email address"),
-  district: Yup.object()
-    .shape({
-      label: Yup.string().required("District is required"),
-      value: Yup.string().required("District is required"),
-    })
-    .typeError("District is required"),
-});
-
-export default function AddEditFormComponent({
-  propsObj,
-  fullscreen,
-  isVisibleHeading,
+export default function AddEditForm({
+  setIsAddEditForm,
+  getData,
+  // empBasic,
+  isEdit,
+  singleData,
+  setId,
 }) {
-  const {
-    show,
-    title,
-    onHide,
-    size,
-    backdrop,
-    classes,
-    setRowDto,
-    // setAllData,
-    businessUnitId,
-    setBusinessUnitId,
-    imageFile,
-    setImageFile,
-    // rowFileId,
-    setRowFileId,
-  } = propsObj;
+  const dispatch = useDispatch();
+  // const debounce = useDebounce();
+  const getCurrencyDDL = useApiRequest({});
+  const getDistrictDDL = useApiRequest({});
+  const getSingleData = useApiRequest({});
+  const saveBU = useApiRequest({});
+
+  const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
+
   const [loading, setLoading] = useState(false);
 
-  // image
-  const inputFile = useRef(null);
+  // states
+  const [isOpen, setIsOpen] = useState(false);
+  const [attachmentList, setAttachmentList] = useState([]);
 
-  const [currencyDDL, setCurrencyDDL] = useState([]);
-  const [districtDDL, setDistrictDDL] = useState([]);
-  const [modifySingleData, setModifySingleData] = useState("");
-  const [singleData, setSingleData] = useState("");
-
-  const { employeeId, orgId, buId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-
+  // ddls
   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Currency&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
-      "CurrencyId",
-      "CurrencyName",
-      setCurrencyDDL
-    );
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=District&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
-      "DistrictId",
-      "DistrictName",
-      setDistrictDDL
-    );
+    getCurrencyDDL.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        id: singleData?.intBusinessUnitId,
+        DDLType: "Currency",
+        WorkplaceGroupId: wgId,
+        BusinessUnitId: buId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.CurrencyName;
+          res[i].value = item?.CurrencyId;
+        });
+      },
+    });
+    getDistrictDDL.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        id: singleData?.intBusinessUnitId,
+        DDLType: "District",
+        WorkplaceGroupId: wgId,
+        BusinessUnitId: buId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.DistrictName;
+          res[i].value = item?.DistrictId;
+        });
+      },
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, wgId]);
-  useEffect(() => {
-    if (businessUnitId) {
-      getBusinessUnitById({
-        businessUnitId,
-        setter: setSingleData,
-        setLoading,
-      });
-    }
-  }, [businessUnitId]);
-  useEffect(() => {
-    if (singleData?.intBusinessUnitId) {
-      const newRowData = {
-        businessUnit: singleData?.strBusinessUnit,
-        code: singleData?.strShortCode,
-        address: singleData?.strAddress,
-        baseCurrency: {
-          value: singleData?.BaseCurrencyId || 0,
-          label: singleData?.strCurrency || " ",
-          CurrencyCode: singleData?.BaseCurrencyCode || " ",
-        },
-        district: {
-          value: singleData?.intDistrictId || 0,
-          label: singleData?.strDistrict || " ",
-        },
-        websiteUrl: singleData?.strWebsiteUrl,
-        email: singleData?.strEmail || "",
-        isActive: singleData?.isActive,
-      };
-      setModifySingleData(newRowData);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleData]);
-  const saveHandler = (values, cb) => {
+  // Pages Start From Here code from above will be removed soon
+
+  // Form Instance
+  const [form] = Form.useForm();
+
+  // submit
+  const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
+    const cb = () => {
+      resetForm();
+      setIsAddEditForm(false);
+      getData();
+    };
     let payload = {
-      strBusinessUnit: values?.businessUnit,
-      strShortCode: values?.code,
-      strAddress: values?.address,
-      strLogoUrlId: imageFile ? imageFile : singleData?.LogoURL,
-      intDistrictId: values?.district?.value || 0,
-      strDistrict: values?.district?.label || " ",
+      intBusinessUnitId: singleData?.intBusinessUnitId
+        ? singleData?.intBusinessUnitId
+        : 0,
+      strBusinessUnit: values?.strBusinessUnit,
+      strShortCode: values?.strShortCode,
+      strAddress: values?.strAddress,
+      strLogoUrlId:
+        attachmentList[0]?.response.length > 0
+          ? attachmentList[0]?.response[0]?.globalFileUrlId
+          : singleData?.LogoURL,
+      intDistrictId: values?.strDistrict?.value || 0,
+      strDistrict: values?.strDistrict?.label || " ",
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: singleData?.intBusinessUnitId ? 0 : employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: singleData?.intBusinessUnitId ? employeeId : 0,
       isActive: values?.isActive,
-      strEmail: values.email,
-      strWebsiteUrl: values.websiteUrl || " ",
-      strCurrency: values.baseCurrency?.label || " ",
+      strEmail: values?.strEmail,
+      strWebsiteUrl: values.strWebsiteUrl || " ",
+      strCurrency: values?.strCurrency?.label || " ",
     };
-    const callback = () => {
-      cb();
-      setImageFile("");
-      setRowFileId("");
-      onHide();
-      getControlPanelAllLanding({
-        apiUrl: `/SaasMasterData/GetAllBusinessUnit?accountId=${orgId}`,
-        setLoading,
-        setter: setRowDto,
+
+    saveBU.action({
+      urlKey: "SaveBusinessUnit",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
+      },
+    });
+  };
+  useEffect(() => {
+    if (singleData?.intBusinessUnitId) {
+      // getLeaveTypeById(setSingleData, id, setLoading);
+      getSingleData.action({
+        urlKey: "GetBusinessUnitById",
+        method: "GET",
+        params: {
+          Id: singleData?.intBusinessUnitId,
+        },
+        onSuccess: (res) => {
+          // console.log({ res });
+          form.resetFields();
+          form.setFieldsValue({
+            strDistrict: res?.intDistrictId
+              ? { value: res?.intDistrictId, label: res?.strDistrict }
+              : undefined,
+            strCurrency: res?.strCurrency
+              ? getCurrencyDDL?.data?.find(
+                  (itm) => itm?.label === res?.strCurrency
+                )
+              : undefined,
+            strBusinessUnit: res?.strBusinessUnit
+              ? res?.strBusinessUnit
+              : undefined,
+            strShortCode: res?.strShortCode ? res?.strShortCode : undefined,
+            strWebsiteUrl: res?.strWebsiteUrl ? res?.strWebsiteUrl : undefined,
+            strEmail: res?.strEmail ? res?.strEmail : undefined,
+            strAddress: res?.strAddress ? res?.strAddress : undefined,
+            isActive: res?.isActive ? res?.isActive : false,
+          });
+        },
       });
-    };
-
-    if (businessUnitId) {
-      createBusinessUnit(
-        { ...payload, intBusinessUnitId: singleData?.intBusinessUnitId },
-        setLoading,
-        callback
-      );
-    } else {
-      createBusinessUnit(
-        { ...payload, intBusinessUnitId: 0 },
-        setLoading,
-        callback
-      );
     }
-  };
-
-  const onButtonClick = () => {
-    inputFile.current.click();
-  };
-
-  const dispatch = useDispatch();
-
+  }, [singleData, getCurrencyDDL?.data, getDistrictDDL?.data]);
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={businessUnitId ? modifySingleData : initData}
-        validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            if (businessUnitId) {
-              resetForm(modifySingleData);
-            } else {
-              resetForm(initData);
-            }
-            setSingleData("");
-            setBusinessUnitId(null);
+      <PForm
+        form={form}
+        onFinish={() => {
+          const values = form.getFieldsValue(true);
+          submitHandler({
+            values,
+            getData,
+            resetForm: form.resetFields,
+            setIsAddEditForm,
+            isEdit,
           });
         }}
+        initialValues={{}}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
-          <>
-            {loading && <Loading />}
-            <div className="viewModal">
-              <Modal
-                show={show}
-                onHide={onHide}
-                size={size}
-                backdrop={backdrop}
-                aria-labelledby="example-modal-sizes-title-xl"
-                className={classes}
-                fullscreen={fullscreen && fullscreen}
-              >
-                <Form>
-                  {isVisibleHeading && (
-                    <Modal.Header className="bg-custom">
-                      <div className="d-flex w-100 justify-content-between align-items-center">
-                        <Modal.Title className="text-center">
-                          {title}
-                        </Modal.Title>
-                        <div>
-                          <IconButton
-                            onClick={() => {
-                              if (businessUnitId) {
-                                resetForm(modifySingleData);
-                              } else {
-                                resetForm(initData);
-                              }
-                              onHide();
-                              setImageFile("");
-                              setSingleData("");
-                              setBusinessUnitId(null);
-                            }}
-                          >
-                            <Close />
-                          </IconButton>
-                        </div>
-                      </div>
-                    </Modal.Header>
-                  )}
+        <Row gutter={[10, 2]}>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strBusinessUnit"
+              label="Business Unit"
+              placeholder="Business Unit"
+              rules={[{ required: true, message: "Business Unit is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strShortCode"
+              label="Code"
+              placeholder="Code"
+              rules={[{ required: true, message: "Code is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strAddress"
+              label="Address"
+              placeholder="Address"
+              rules={[{ required: true, message: "Address is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={
+                getDistrictDDL?.data?.length > 0 ? getDistrictDDL?.data : []
+              }
+              name="strDistrict"
+              label="District"
+              showSearch
+              filterOption={true}
+              placeholder="District"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  strDistrict: op,
+                });
+              }}
+              rules={[{ required: true, message: "District is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={
+                getCurrencyDDL?.data?.length > 0 ? getCurrencyDDL?.data : []
+              }
+              name="strCurrency"
+              label="Base Currency"
+              showSearch
+              filterOption={true}
+              placeholder="Base Currency"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  strCurrency: op,
+                });
+              }}
+              rules={[{ required: true, message: "Base Currency is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strWebsiteUrl"
+              label="Website URL"
+              placeholder="Website URL"
+              // rules={[{ required: true, message: "Website URL is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strEmail"
+              label="Email"
+              placeholder="Email"
+              rules={[
+                {
+                  required: false,
+                  type: "email",
+                  message: "provide a valid email address",
+                },
+              ]}
+            />
+          </Col>
 
-                  <Modal.Body id="example-modal-sizes-title-xl">
-                    <div className="businessUnitModal">
-                      <div className="modalBody pt-0 px-0">
-                        <div className="row mx-0">
-                          <div className="col-6">
-                            <label>Business Unit </label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.businessUnit}
-                              name="businessUnit"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("businessUnit", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>Code</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.code}
-                              name="code"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("code", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>Address </label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.address}
-                              name="address"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("address", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>District </label>
-                            <FormikSelect
-                              name="district"
-                              options={districtDDL || []}
-                              value={values?.district}
-                              onChange={(valueOption) => {
-                                setFieldValue("district", valueOption);
-                              }}
-                              placeholder=" "
-                              styles={customStyles}
-                              errors={errors}
-                              touched={touched}
-                              menuPosition="fixed"
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>Base Currency</label>
-                            <FormikSelect
-                              name="baseCurrency"
-                              options={currencyDDL || []}
-                              value={values?.baseCurrency}
-                              onChange={(valueOption) => {
-                                setFieldValue("baseCurrency", valueOption);
-                              }}
-                              placeholder=" "
-                              styles={customStyles}
-                              errors={errors}
-                              touched={touched}
-                              menuPosition="fixed"
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>Website URL</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.websiteUrl}
-                              name="websiteUrl"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("websiteUrl", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>Email</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.email}
-                              name="email"
-                              type="email"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("email", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-
-                          <div className="col-6 mt-3">
-                            <div className="input-main position-group-select">
-                              {imageFile ? (
-                                <>
-                                  <label className="lebel-bold mr-2">
-                                    Upload Image
-                                  </label>
-                                  <VisibilityOutlined
-                                    sx={{
-                                      color: "rgba(0, 0, 0, 0.6)",
-                                      fontSize: "16px",
-                                      cursor: "pointer",
-                                    }}
-                                    onClick={() => {
-                                      dispatch(
-                                        getDownlloadFileView_Action(imageFile)
-                                      );
-                                    }}
-                                  />
-                                </>
-                              ) : ''}
-                            </div>
-                            <div
-                              className={imageFile ? " mt-0 " : "mt-3"}
-                              onClick={onButtonClick}
-                              style={{ cursor: "pointer" }}
-                            // style={{ cursor: "pointer", position: "relative" }}
-                            >
-                              <input
-                                onChange={(e) => {
-                                  if (e.target.files?.[0]) {
-                                    attachment_action(
-                                      orgId,
-                                      "account",
-                                      1,
-                                      buId,
-                                      employeeId,
-                                      e.target.files,
-                                      setLoading
-                                    )
-                                      .then((data) => {
-                                        setImageFile(
-                                          data?.[0]?.globalFileUrlId
-                                        );
-                                      })
-                                      .catch((error) => {
-                                        setImageFile("");
-                                      });
-                                  }
-                                }}
-                                type="file"
-                                id="file"
-                                ref={inputFile}
-                                style={{ display: "none" }}
-                              />
-                              <div style={{ fontSize: "14px" }}>
-                                {!imageFile ? (
-                                  <>
-                                    <FileUpload
-                                      sx={{
-                                        marginRight: "5px",
-                                        fontSize: "18px",
-                                      }}
-                                    />{" "}
-                                    Click to upload
-                                  </>
-                                ) : ""}
-                              </div>
-                              {imageFile ? (
-                                <div
-                                  className="d-flex align-items-center"
-                                  onClick={() => {
-                                    // dispatch(getDownlloadFileView_Action(imageFile?.globalFileUrlId));
-                                  }}
-                                >
-                                  <AttachmentOutlined
-                                    sx={{
-                                      marginRight: "5px",
-                                      color: "#0072E5",
-                                    }}
-                                  />
-                                  <div
-                                    style={{
-                                      fontSize: "12px",
-                                      fontWeight: "500",
-                                      color: "#0072E5",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    {imageFile?.fileName || "Attachment"}
-                                  </div>
-                                </div>
-                              ) : ""}
-                            </div>
-                          </div>
-
-                          {businessUnitId ? (
-                            <div className="col-12">
-                              <div className="input-main position-group-select mt-2 d-flex justify-content-between align-items-between">
-                                <div>
-                                  <h6 className="title-item-name">
-                                    Business Unit Activation
-                                  </h6>
-                                  <p className="subtitle-p">
-                                    Activation toggle indicates to the
-                                    particular Business Unit status
-                                    (Active/Inactive)
-                                  </p>
-                                </div>
-                                <div className="pt-2">
-                                  <FormikToggle
-                                    name="isActive"
-                                    color={
-                                      values?.isActive
-                                        ? greenColor
-                                        : blackColor80
-                                    }
-                                    checked={values?.isActive}
-                                    onChange={(e) => {
-                                      setFieldValue(
-                                        "isActive",
-                                        e.target.checked
-                                      );
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          ) : ""}
-                        </div>
-                      </div>
+          <Col md={12} style={{ marginTop: "1.4rem" }}>
+            <div className="input-main position-group-select">
+              {singleData?.strLogoUrlId ? (
+                <>
+                  <FileUploadComponents
+                    propsObj={{
+                      isOpen,
+                      setIsOpen,
+                      destroyOnClose: false,
+                      attachmentList,
+                      setAttachmentList,
+                      accountId: orgId,
+                      tableReferrence: "account",
+                      documentTypeId: 1,
+                      userId: employeeId,
+                      buId,
+                      maxCount: 1,
+                    }}
+                  />
+                  {attachmentList?.length === 0 && singleData?.strLogoUrlId ? (
+                    <div
+                      style={{
+                        color: "rgb(0, 114, 229)",
+                        cursor: "pointer",
+                        marginTop: "0.5rem",
+                      }}
+                      onClick={() => {
+                        dispatch(
+                          getDownlloadFileView_Action(singleData?.strLogoUrlId)
+                        );
+                      }}
+                    >
+                      <ImAttachment /> Attachment
                     </div>
-                  </Modal.Body>
-                  <Modal.Footer className="form-modal-footer">
-                    <div className="master-filter-btn-group">
-                      <button
-                        type="button"
-                        className="btn btn-cancel"
-                        style={{
-                          marginRight: "15px",
-                        }}
-                        onClick={() => {
-                          if (setSingleData) {
-                            resetForm(modifySingleData);
-                          } else {
-                            resetForm(initData);
-                          }
-                          setImageFile("");
-                          onHide();
-                          setSingleData("");
-                          setBusinessUnitId(null);
-                        }}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        className="btn btn-green btn-green-disable"
-                        style={{ width: "auto" }}
-                        type="submit"
-                        onSubmit={() => handleSubmit()}
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </Modal.Footer>
-                </Form>
-              </Modal>
+                  ) : null}
+                </>
+              ) : (
+                ""
+              )}
             </div>
-          </>
-        )}
-      </Formik>
+            <div
+              // onClick={onButtonClick}
+              style={{ cursor: "pointer" }}
+              // style={{ cursor: "pointer", position: "relative" }}
+            >
+              <div style={{ fontSize: "" }}>
+                {!singleData?.strLogoUrlId ? (
+                  <>
+                    <FileUploadComponents
+                      propsObj={{
+                        isOpen,
+                        setIsOpen,
+                        destroyOnClose: false,
+                        attachmentList,
+                        setAttachmentList,
+                        accountId: orgId,
+                        tableReferrence: "account",
+                        documentTypeId: 1,
+                        userId: employeeId,
+                        buId,
+                        maxCount: 1,
+                      }}
+                    />
+                  </>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+          </Col>
+          {isEdit && (
+            <Col
+              md={12}
+              style={{
+                marginLeft: "-0.5rem",
+              }}
+            >
+              <div
+                className=""
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  className="input-main position-group-select "
+                  style={{ margin: "3rem 0 0 0.7rem" }}
+                >
+                  <h6 className="title-item-name">Business Unit Activation</h6>
+                  <p className="subtitle-p">
+                    Activation toggle indicates to the particular Business Unit
+                    status (Active/Inactive)
+                  </p>
+                </div>
+                <div
+                  style={{
+                    margin: "2.7rem -25rem -1.5rem -15rem",
+                    padding: "5rem -2rem 0 -15rem",
+                  }}
+                >
+                  <Form.Item name="isActive" valuePropName="checked">
+                    <Switch />
+                  </Form.Item>
+                </div>
+              </div>
+            </Col>
+          )}
+        </Row>
+        <ModalFooter
+          onCancel={() => {
+            setId("");
+
+            setIsAddEditForm(false);
+          }}
+          submitAction="submit"
+          loading={loading}
+        />
+      </PForm>
     </>
   );
 }
