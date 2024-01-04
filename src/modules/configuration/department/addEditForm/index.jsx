@@ -16,7 +16,6 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
-  const dispatch = useDispatch();
   // const debounce = useDebounce();
   const getBUnitDDL = useApiRequest({});
   const saveDepartment = useApiRequest({});
