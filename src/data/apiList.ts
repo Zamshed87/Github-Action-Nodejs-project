@@ -48,4 +48,6 @@ export const apiList = {
   SaveBusinessUnit: "/SaasMasterData/SaveBusinessUnit",
   GetAllEmpDepartment: "/Employee/GetAllEmpDepartment",
   SaveEmpDepartment: "/Employee/SaveEmpDepartment",
+  GetSectionDataLanding: "/SaasMasterData/GetSectionDataLanding",
+  CreateSection: "/SaasMasterData/CreateSection",
 };

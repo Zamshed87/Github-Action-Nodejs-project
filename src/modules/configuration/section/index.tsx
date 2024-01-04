@@ -15,7 +15,7 @@ import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 import ViewFormComponent from "./viewForm";
 
-function Department() {
+function Section() {
   // hook
   const dispatch = useDispatch();
 
@@ -55,19 +55,18 @@ function Department() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetAllEmpDepartment",
+      urlKey: "GetSectionDataLanding",
       method: "GET",
       params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceId: wId,
+        AccountId: orgId,
+        WorkplaceId: wId,
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Department";
+    document.title = "Section";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -99,23 +98,14 @@ function Department() {
       align: "center",
     },
     {
-      title: "Department",
-      dataIndex: "strDepartment",
+      title: "Section",
+      dataIndex: "sectionName",
       sorter: true,
-      render: (_: any, rec: any) => {
-        return (
-          <div className="d-flex align-items-center">
-            <span className="">
-              {rec?.strDepartment} [ {rec?.strDepartmentCode}]
-            </span>
-          </div>
-        );
-      },
       //   fixed: "left",
     },
     {
-      title: "Business Unit",
-      dataIndex: "strBusinessUnit",
+      title: "Department",
+      dataIndex: "departmentName",
       sorter: true,
       width: 100,
 
@@ -170,7 +160,7 @@ function Department() {
       >
         <PCard>
           <PCardHeader
-            submitText="Department"
+            submitText="Section"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -192,7 +182,6 @@ function Department() {
                 searchText: search,
               });
             }}
-            // scroll={{ x: 2000 }}
             onRow={(record) => ({
               onClick: () => {
                 setView(true);
@@ -206,9 +195,12 @@ function Department() {
 
       <PModal
         open={open}
-        title={id ? "Edit Department" : "Create Department"}
+        title={id ? "Edit Section" : "Create Section"}
         width=""
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setId("");
+          setOpen(false);
+        }}
         maskClosable={false}
         components={
           <>
@@ -224,7 +216,7 @@ function Department() {
       />
       <PModal
         open={view}
-        title={"Department Details"}
+        title={"Section Details"}
         width=""
         onCancel={() => {
           setId("");
@@ -243,4 +235,4 @@ function Department() {
   );
 }
 
-export default Department;
+export default Section;
