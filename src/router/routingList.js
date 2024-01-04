@@ -5,6 +5,7 @@ import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/Payrol
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
+import Section from "modules/configuration/section";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
@@ -488,9 +489,9 @@ const DashboardCompPermissionDetails = lazy(() =>
 // const Department = lazy(() =>
 //   import("../modules/configuration/department/index.jsx")
 // );
-const Section = lazy(() =>
-  import("../modules/configuration/section/index.jsx")
-);
+// const Section = lazy(() =>
+//   import("../modules/configuration/section/index.jsx")
+// );
 const DocumentType = lazy(() =>
   import("../modules/configuration/documentType/index.jsx")
 );
