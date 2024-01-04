@@ -36,6 +36,7 @@ export const apiList = {
   GetAllLveMovementType: "/SaasMasterData/GetAllLveMovementType",
   SaveLveMovementType: "/SaasMasterData/SaveLveMovementType",
   DeleteLveMovementTypeById: "/SaasMasterData/DeleteLveMovementTypeById",
+  GetAllBusinessUnit: "/SaasMasterData/GetAllBusinessUnit",
   GetAllUserRole: "/SaasMasterData/GetAllUserRole",
   SaveUserRole: "/SaasMasterData/SaveUserRole",
   GetUserRoleById: "/SaasMasterData/GetUserRoleById",
@@ -43,4 +44,8 @@ export const apiList = {
   IsSalaryElementById: "/Payroll/IsSalaryElementById",
   DeletePayrollElementTypeById: "/Payroll/DeletePayrollElementTypeById",
   SavePayrollElementType: "/Payroll/SavePayrollElementType",
+  GetBusinessUnitById: "/SaasMasterData/GetBusinessUnitById",
+  SaveBusinessUnit: "/SaasMasterData/SaveBusinessUnit",
+  GetAllEmpDepartment: "/Employee/GetAllEmpDepartment",
+  SaveEmpDepartment: "/Employee/SaveEmpDepartment",
 };

@@ -385,7 +385,7 @@ const LateReport = () => {
                       className="ml-2"
                       fontSize={"12px"}
                     >
-                      {rowDto?.totalLate || 0}
+                      {rowDto?.totalLate || 0} (mins)
                     </Typography>
                   </div>
                 </div>

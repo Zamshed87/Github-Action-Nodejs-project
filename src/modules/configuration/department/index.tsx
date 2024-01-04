@@ -1,24 +1,12 @@
 import { AddOutlined } from "@mui/icons-material";
-import {
-  Avatar,
-  DataTable,
-  PCard,
-  PCardHeader,
-  PForm,
-  TableButton,
-} from "Components";
+import DemoImg from "../../../assets/images/demo.png";
+
+import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form, message } from "antd";
-import axios from "axios";
-import { debounce } from "lodash";
+import { Form } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-// import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-// import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-// import { dateFormatter } from "../../../utility/dateFormatter";
-// import AddEditForm from "./addEditFile";
 
 // import "./styles.css";
 import { toast } from "react-toastify";
@@ -26,14 +14,15 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
+import ViewFormComponent from "./viewForm";
+import { set } from "lodash";
 
-function LeaveTypeCreate() {
+function Department() {
   // hook
   const dispatch = useDispatch();
-  const history = useHistory();
 
   // redux
-  const { buId, wgId, wgName, wId, buName } = useSelector(
+  const { buId, wgId, wgName, wId, orgId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -44,6 +33,7 @@ function LeaveTypeCreate() {
 
   // state
   const [open, setOpen] = useState(false);
+  const [view, setView] = useState(false);
   const [id, setId] = useState("");
 
   // Form Instance
@@ -51,7 +41,6 @@ function LeaveTypeCreate() {
 
   // Api Instance
   const landingApi = useApiRequest({});
-  const GetBusinessDetailsByBusinessUnitId = useApiRequest({});
 
   type TLandingApi = {
     pagination?: {
@@ -68,21 +57,19 @@ function LeaveTypeCreate() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetAllLveLeaveType",
+      urlKey: "GetAllEmpDepartment",
       method: "GET",
       params: {
-        BusinessUnitId: buId,
-        WorkGroupId: wgId,
-        SearchText: searchText,
-        PageNo: pagination?.current,
-        PageSize: pagination?.pageSize,
+        accountId: orgId,
+        businessUnitId: buId,
+        workplaceId: wId,
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Leave Type";
+    document.title = "Department";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -90,7 +77,7 @@ function LeaveTypeCreate() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 35) {
+    if (item?.menuReferenceId === 48) {
       employeeFeature = item;
     }
   });
@@ -114,21 +101,31 @@ function LeaveTypeCreate() {
       align: "center",
     },
     {
-      title: "Leave Type Name",
-      dataIndex: "strLeaveType",
+      title: "Department",
+      dataIndex: "strDepartment",
       sorter: true,
+      render: (_: any, rec: any) => {
+        return (
+          <div className="d-flex align-items-center">
+            <span className="">
+              {rec?.strDepartment} [ {rec?.strDepartmentCode}]
+            </span>
+          </div>
+        );
+      },
       //   fixed: "left",
     },
     {
-      title: "Code",
-      dataIndex: "strLeaveTypeCode",
+      title: "Business Unit",
+      dataIndex: "strBusinessUnit",
       sorter: true,
+      width: 100,
+
       //   fixed: "left",
     },
-
     {
       title: "Status",
-      dataIndex: "statusValue",
+      dataIndex: "isActive",
       sorter: true,
       render: (_: any, rec: any) => (
         <>
@@ -145,23 +142,21 @@ function LeaveTypeCreate() {
       align: "center",
       render: (_: any, rec: any) => (
         <>
-          {rec?.intAccountId > 0 ? (
-            <TableButton
-              buttonsList={[
-                {
-                  type: "edit",
-                  onClick: (e: any) => {
-                    if (!employeeFeature?.isEdit) {
-                      return toast.warn("You don't have permission");
-                      e.stopPropagation();
-                    }
-                    setOpen(true);
-                    setId(rec);
-                  },
+          <TableButton
+            buttonsList={[
+              {
+                type: "edit",
+                onClick: (e: any) => {
+                  if (!employeeFeature?.isEdit) {
+                    return toast.warn("You don't have permission");
+                    e.stopPropagation();
+                  }
+                  setOpen(true);
+                  setId(rec);
                 },
-              ]}
-            />
-          ) : null}
+              },
+            ]}
+          />
         </>
       ),
     },
@@ -182,7 +177,7 @@ function LeaveTypeCreate() {
             // onSearch={(e) => {
             //   searchFunc(e?.target?.value);
             // }}
-            submitText="Leave Type"
+            submitText="Department"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -210,24 +205,20 @@ function LeaveTypeCreate() {
               });
             }}
             // scroll={{ x: 2000 }}
-            // onRow={(record) => ({
-            //   onClick: () =>
-            //     history.push({
-            //       pathname: `/profile/employee/${record?.intEmployeeBasicInfoId}`,
-            //       state: {
-            //         buId: record?.intBusinessUnitId,
-            //         wgId: record?.intWorkplaceGroupId,
-            //       },
-            //     }),
-            //   className: "pointer",
-            // })}
+            onRow={(record) => ({
+              onClick: () => {
+                setView(true);
+                setId(record);
+              },
+              className: "pointer",
+            })}
           />
         </PCard>
       </PForm>
 
       <PModal
         open={open}
-        title={id ? "Edit Leave Type" : "Create Leave Type"}
+        title={id ? "Edit Department" : "Create Department"}
         width=""
         onCancel={() => setOpen(false)}
         maskClosable={false}
@@ -243,10 +234,31 @@ function LeaveTypeCreate() {
           </>
         }
       />
+      <PModal
+        open={view}
+        title={"Department Details"}
+        width=""
+        onCancel={() => {
+          setId("");
+          setView(false);
+        }}
+        maskClosable={true}
+        components={
+          <>
+            <ViewFormComponent
+              getData={landingApiCall}
+              setIsAddEditForm={setView}
+              // isEdit={id ? true : false}
+              singleData={id}
+              setId={setId}
+            />
+          </>
+        }
+      />
     </>
   ) : (
     <NotPermittedPage />
   );
 }
 
-export default LeaveTypeCreate;
+export default Department;
