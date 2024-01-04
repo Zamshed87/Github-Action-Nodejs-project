@@ -120,7 +120,11 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       );
 
     return (
-      <div className={`PeopleDeskInputWrapper ${layout ? layout : ""}`}>
+      <div
+        className={`PeopleDeskInputWrapper ${
+          type === "checkbox" ? "checkbox" : ""
+        } ${layout ? layout : ""}`}
+      >
         <Form.Item
           label={label}
           name={name}
@@ -128,6 +132,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           valuePropName={type === "checkbox" ? "checked" : valuePropName}
           hasFeedback={hasFeedback}
           style={{ marginBottom: 0 }}
+          className={disabled ? "peopledesk_input_disabled" : ""}
         >
           {Components}
         </Form.Item>

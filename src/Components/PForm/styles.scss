@@ -186,6 +186,13 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
       }
     }
   }
+  &.checkbox {
+    .peopledesk_input_disabled {
+      .ant-form-item-label {
+        opacity: 0.5;
+      }
+    }
+  }
 }
 
 // Date Picker Z-Index

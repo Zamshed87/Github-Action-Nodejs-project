@@ -28,14 +28,24 @@ export const apiList = {
   AttendanceAdjustmentFilterbyDate:
     "/Employee/AttendanceAdjustmentFilterbyDate",
   ManualAttendance: "/Employee/ManualAttendance",
-  EmployeeListForUserLandingPagination: "/Employee/EmployeeListForUserLandingPagination",
+  EmployeeListForUserLandingPagination:
+    "/Employee/EmployeeListForUserLandingPagination",
   GetAllLveLeaveType: "/SaasMasterData/GetAllLveLeaveType",
   GetAllLveLeaveTypeById: "/SaasMasterData/GetLveLeaveTypeById",
   SaveLveLeaveType: "/SaasMasterData/SaveLveLeaveType",
   GetAllLveMovementType: "/SaasMasterData/GetAllLveMovementType",
   SaveLveMovementType: "/SaasMasterData/SaveLveMovementType",
   DeleteLveMovementTypeById: "/SaasMasterData/DeleteLveMovementTypeById",
+  GetAllBusinessUnit: "/SaasMasterData/GetAllBusinessUnit",
   GetAllUserRole: "/SaasMasterData/GetAllUserRole",
-  SaveUserRole:  "/SaasMasterData/SaveUserRole",
-  GetUserRoleById: "/SaasMasterData/GetUserRoleById"
+  SaveUserRole: "/SaasMasterData/SaveUserRole",
+  GetUserRoleById: "/SaasMasterData/GetUserRoleById",
+  GetAllPayrollElementType: "/Payroll/GetAllPayrollElementType",
+  IsSalaryElementById: "/Payroll/IsSalaryElementById",
+  DeletePayrollElementTypeById: "/Payroll/DeletePayrollElementTypeById",
+  SavePayrollElementType: "/Payroll/SavePayrollElementType",
+  GetBusinessUnitById: "/SaasMasterData/GetBusinessUnitById",
+  SaveBusinessUnit: "/SaasMasterData/SaveBusinessUnit",
+  GetAllEmpDepartment: "/Employee/GetAllEmpDepartment",
+  SaveEmpDepartment: "/Employee/SaveEmpDepartment",
 };

@@ -123,3 +123,80 @@ export const depertmentDtoCol = () => {
     },
   ];
 };
+// useEffect(() => {
+//   getPeopleDeskAllDDL(
+//     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+//     "intBusinessUnitId",
+//     "strBusinessUnit",
+//     setBusinessUnitDDL
+//   );
+//   getPeopleDeskAllDDL(
+//     `/Employee/GetAllEmpDepartment?accountId=${orgId}&businessUnitId=${buId}&workplaceId=${wId}`,
+//     "intDepartmentId",
+//     "strDepartment",
+//     setSectionDepartmentDDL
+//   );
+// }, [orgId, buId, employeeId, wgId]);
+
+// useEffect(() => {
+//   if (singleData?.strDepartment) {
+//     const newRowData = {
+//       department: singleData?.strDepartment,
+//       code: singleData?.strDepartmentCode,
+//       sectionDepartment: {
+//         value: singleData?.intParentDepId,
+//         label: singleData?.strParentDepName,
+//       },
+//       businessUnit: {
+//         value: singleData?.intBusinessUnitId,
+//         label: singleData?.strBusinessUnit,
+//       },
+//       isActive: singleData?.isActive || false,
+//     };
+//     setModifySingleData(newRowData);
+//   }
+// }, [singleData]);
+
+// const saveHandler = (values, cb) => {
+//   let payload = {
+//     strDepartment: values?.department || "",
+//     strDepartmentCode: values?.code,
+//     isActive: values?.isActive,
+//     isDeleted: true,
+//     intParentDepId: values?.sectionDepartment?.value,
+//     strParentDepName: values?.sectionDepartment?.label,
+//     intBusinessUnitId: values?.businessUnit?.value || 0,
+//     intAccountId: orgId,
+//     dteCreatedAt: todayDate(),
+//     intCreatedBy: employeeId,
+//     dteUpdatedAt: todayDate(),
+//     intUpdatedBy: employeeId,
+//     intWorkplaceId: wId,
+//   };
+
+//   const callback = () => {
+//     cb();
+//     onHide();
+
+//     // For landing page data
+//     getAllEmpDepartment(orgId, buId, setRowDto, setAllData, setLoading, wId);
+//   };
+
+//   if (singleData?.strDepartment) {
+//     createDepartment(
+//       {
+//         ...payload,
+//         actionTypeId: 2,
+//         intDepartmentId: singleData?.intDepartmentId,
+//       },
+//       setLoading,
+//       callback
+//     );
+//   } else {
+//     createDepartment(
+//       { ...payload, actionTypeId: 1, intDepartmentId: 0 },
+//       setLoading,
+//       callback
+//     );
+//   }
+// };

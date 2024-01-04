@@ -1,7 +1,10 @@
 import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/CreateBonusSetup";
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
+import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/PayrollElement";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
+import BusinessUnit from "modules/configuration/busisnessUnit";
+import Department from "modules/configuration/department";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
@@ -465,9 +468,9 @@ const Sliders = lazy(() =>
 const BankBranch = lazy(() =>
   import("../modules/configuration/bankBranch/index.jsx")
 );
-const BusinessUnit = lazy(() =>
-  import("../modules/configuration/busisnessUnit/index.jsx")
-);
+// const BusinessUnit = lazy(() =>
+//   import("../modules/configuration/busisnessUnit/index.jsx")
+// );
 const DashboardComponent = lazy(() =>
   import("../modules/configuration/dashboardComponent/index.jsx")
 );
@@ -482,9 +485,9 @@ const DashboardComponentPermission = lazy(() =>
 const DashboardCompPermissionDetails = lazy(() =>
   import("../modules/configuration/dashboardComponentPermission/singleView.jsx")
 );
-const Department = lazy(() =>
-  import("../modules/configuration/department/index.jsx")
-);
+// const Department = lazy(() =>
+//   import("../modules/configuration/department/index.jsx")
+// );
 const Section = lazy(() =>
   import("../modules/configuration/section/index.jsx")
 );
@@ -2507,10 +2510,13 @@ export const routingList = [
     path: "/profile/rewardsanddisciplinary/rewardandpunishment/create",
     component: RewardsAndPunishmentAdd,
   },
-
+  {
+    path: "/administration/payrollConfiguration/payrollElement/prev",
+    component: PayrollElementCreate,
+  },
   {
     path: "/administration/payrollConfiguration/payrollElement",
-    component: PayrollElementCreate,
+    component: PayrollElement,
   },
   {
     path: "/administration/payrollConfiguration/salaryBreakdown",
