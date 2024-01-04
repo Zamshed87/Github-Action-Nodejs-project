@@ -30,6 +30,7 @@ const PayrollElement: React.FC<TPayrollElement> = () => {
   // Life Cycle Hooks
   useEffect(() => {
     landingApi();
+    document.title = "Payroll Element";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
@@ -78,6 +79,8 @@ const PayrollElement: React.FC<TPayrollElement> = () => {
       },
     });
   };
+
+  // menu permission check
   let payrollElement: any = null;
   permissionList.forEach((item: any) => {
     if (item?.menuReferenceId === 30259) {
