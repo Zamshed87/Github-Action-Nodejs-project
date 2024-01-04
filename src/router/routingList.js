@@ -953,7 +953,7 @@ const OvertimePolicy = lazy(() =>
   import("../modules/PayrollManagementSytem/OvertimePolicy/index.js")
 );
 const PayrollElementCreate = lazy(() =>
-  import("../modules/PayrollManagementSytem/PayrollElement/index.jsx")
+  import("../modules/PayrollManagementSytem/PayrollElement/Previous/index.jsx")
 );
 const PfGratuityPolicyForm = lazy(() =>
   import(
