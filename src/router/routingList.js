@@ -1,6 +1,7 @@
 import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/CreateBonusSetup";
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
+import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/PayrollElement";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
@@ -2507,10 +2508,13 @@ export const routingList = [
     path: "/profile/rewardsanddisciplinary/rewardandpunishment/create",
     component: RewardsAndPunishmentAdd,
   },
-
+  {
+    path: "/administration/payrollConfiguration/payrollElement/prev",
+    component: PayrollElementCreate,
+  },
   {
     path: "/administration/payrollConfiguration/payrollElement",
-    component: PayrollElementCreate,
+    component: PayrollElement,
   },
   {
     path: "/administration/payrollConfiguration/salaryBreakdown",

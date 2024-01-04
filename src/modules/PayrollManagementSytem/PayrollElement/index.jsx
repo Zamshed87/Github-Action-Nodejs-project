@@ -43,7 +43,7 @@ const PayrollElementCreate = () => {
     setEditPermission,
   ] = useAxiosGet();
   const [permissionDisabled, setPermissionDisabled] = useState(false);
-
+  console.log(editPermission);
   const { orgId, buId, employeeId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual

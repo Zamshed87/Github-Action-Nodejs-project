@@ -28,7 +28,8 @@ export const apiList = {
   AttendanceAdjustmentFilterbyDate:
     "/Employee/AttendanceAdjustmentFilterbyDate",
   ManualAttendance: "/Employee/ManualAttendance",
-  EmployeeListForUserLandingPagination: "/Employee/EmployeeListForUserLandingPagination",
+  EmployeeListForUserLandingPagination:
+    "/Employee/EmployeeListForUserLandingPagination",
   GetAllLveLeaveType: "/SaasMasterData/GetAllLveLeaveType",
   GetAllLveLeaveTypeById: "/SaasMasterData/GetLveLeaveTypeById",
   SaveLveLeaveType: "/SaasMasterData/SaveLveLeaveType",
@@ -36,6 +37,10 @@ export const apiList = {
   SaveLveMovementType: "/SaasMasterData/SaveLveMovementType",
   DeleteLveMovementTypeById: "/SaasMasterData/DeleteLveMovementTypeById",
   GetAllUserRole: "/SaasMasterData/GetAllUserRole",
-  SaveUserRole:  "/SaasMasterData/SaveUserRole",
-  GetUserRoleById: "/SaasMasterData/GetUserRoleById"
+  SaveUserRole: "/SaasMasterData/SaveUserRole",
+  GetUserRoleById: "/SaasMasterData/GetUserRoleById",
+  GetAllPayrollElementType: "/Payroll/GetAllPayrollElementType",
+  IsSalaryElementById: "/Payroll/IsSalaryElementById",
+  DeletePayrollElementTypeById: "/Payroll/DeletePayrollElementTypeById",
+  SavePayrollElementType: "/Payroll/SavePayrollElementType",
 };

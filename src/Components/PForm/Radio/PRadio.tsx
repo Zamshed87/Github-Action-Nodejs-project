@@ -4,7 +4,7 @@ export type RadioType = "radio" | "group";
 
 export type RadioProperty = {
   type?: RadioType;
-  options?: { label: string; value: number }[];
+  options?: { label: string; value: number | string }[];
   onChange?: (e: any) => void;
   value?: any;
   defaultValue?: any;
@@ -61,6 +61,7 @@ export const PRadio = (property: RadioProperty) => {
         valuePropName={valuePropName}
         hasFeedback={hasFeedback}
         style={{ marginBottom: 0 }}
+        className={disabled ? "people_desk_radio_disabled" : ""}
       >
         {radioComponent}
       </Form.Item>
