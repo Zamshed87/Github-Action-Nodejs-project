@@ -4,7 +4,6 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import { useEffect, useState } from "react";
 import { Switch } from "antd";
-import { ImAttachment } from "react-icons/im";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
@@ -22,7 +21,7 @@ export default function AddEditForm({
   const getBUnitDDL = useApiRequest({});
   const saveDepartment = useApiRequest({});
 
-  const { orgId, buId, employeeId, wgId, wId, intAccountId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -30,8 +29,6 @@ export default function AddEditForm({
   const [loading, setLoading] = useState(false);
 
   // states
-  const [isOpen, setIsOpen] = useState(false);
-  const [attachmentList, setAttachmentList] = useState([]);
 
   // ddls
   useEffect(() => {
@@ -96,7 +93,6 @@ export default function AddEditForm({
       },
     });
   };
-  console.log({ singleData });
   useEffect(() => {
     if (singleData?.intDepartmentId) {
       form.setFieldsValue({

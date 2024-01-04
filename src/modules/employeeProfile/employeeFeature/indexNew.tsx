@@ -16,7 +16,6 @@ import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { toast } from "react-toastify";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
@@ -24,9 +23,11 @@ import { dateFormatter } from "../../../utility/dateFormatter";
 import AddEditForm from "./addEditFile";
 import {
   columnForHeadOffice,
-  getTableDataEmployee
+  columnForMarketing,
+  getTableDataEmployee,
 } from "./helper";
 import "./styles.css";
+import { toast } from "react-toastify";
 
 function EmployeeFeatureNew() {
   // hook
@@ -184,14 +185,6 @@ function EmployeeFeatureNew() {
       filter: true,
       filterKey: "strDepartmentList",
       filterSearch: true,
-    },
-    {
-      title: "Section",
-      dataIndex: "sectionName",
-      sorter: true,
-      filter: false,
-      // filterKey: "strDepartmentList",
-      // filterSearch: true,
     },
     {
       title: "Wing",
@@ -435,12 +428,12 @@ function EmployeeFeatureNew() {
                           ?.strBusinessUnitAddress,
                       businessUnit: buName,
                       tableHeader:
-                        wgId === 3 ? columnForHeadOffice : columnForHeadOffice,
+                        wgId === 3 ? columnForMarketing : columnForHeadOffice,
                       getTableData: () =>
                         getTableDataEmployee(
                           newData,
                           wgId === 3
-                            ? Object.keys(columnForHeadOffice) //Object.keys(columnForMarketing)
+                            ? Object.keys(columnForMarketing)
                             : Object.keys(columnForHeadOffice)
                         ),
                       tableFooter: [],

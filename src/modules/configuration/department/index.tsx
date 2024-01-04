@@ -4,16 +4,9 @@ import DemoImg from "../../../assets/images/demo.png";
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form, message } from "antd";
-import axios from "axios";
-import { debounce } from "lodash";
+import { Form } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-// import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-// import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-// import { dateFormatter } from "../../../utility/dateFormatter";
-// import AddEditForm from "./addEditFile";
 
 // import "./styles.css";
 import { toast } from "react-toastify";
@@ -21,7 +14,8 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
-import { APIUrl } from "App";
+import ViewFormComponent from "./viewForm";
+import { set } from "lodash";
 
 function Department() {
   // hook
@@ -39,6 +33,7 @@ function Department() {
 
   // state
   const [open, setOpen] = useState(false);
+  const [view, setView] = useState(false);
   const [id, setId] = useState("");
 
   // Form Instance
@@ -210,17 +205,13 @@ function Department() {
               });
             }}
             // scroll={{ x: 2000 }}
-            // onRow={(record) => ({
-            //   onClick: () =>
-            //     history.push({
-            //       pathname: `/profile/employee/${record?.intEmployeeBasicInfoId}`,
-            //       state: {
-            //         buId: record?.intBusinessUnitId,
-            //         wgId: record?.intWorkplaceGroupId,
-            //       },
-            //     }),
-            //   className: "pointer",
-            // })}
+            onRow={(record) => ({
+              onClick: () => {
+                setView(true);
+                setId(record);
+              },
+              className: "pointer",
+            })}
           />
         </PCard>
       </PForm>
@@ -237,6 +228,27 @@ function Department() {
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
               isEdit={id ? true : false}
+              singleData={id}
+              setId={setId}
+            />
+          </>
+        }
+      />
+      <PModal
+        open={view}
+        title={"Department Details"}
+        width=""
+        onCancel={() => {
+          setId("");
+          setView(false);
+        }}
+        maskClosable={true}
+        components={
+          <>
+            <ViewFormComponent
+              getData={landingApiCall}
+              setIsAddEditForm={setView}
+              // isEdit={id ? true : false}
               singleData={id}
               setId={setId}
             />
