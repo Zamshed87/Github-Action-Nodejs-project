@@ -15,7 +15,7 @@ import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 import ViewFormComponent from "./viewForm";
 
-function Section() {
+function HRPosition() {
   // hook
   const dispatch = useDispatch();
 
@@ -55,18 +55,19 @@ function Section() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetSectionDataLanding",
+      urlKey: "GetAllPosition",
       method: "GET",
       params: {
-        AccountId: orgId,
-        WorkplaceId: wId,
+        accountId: orgId,
+        workplaceId: wId,
+        businessUnitId: buId,
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Section";
+    document.title = "HR-Position";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -74,7 +75,7 @@ function Section() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 30378) {
+    if (item?.menuReferenceId === 51) {
       employeeFeature = item;
     }
   });
@@ -98,19 +99,12 @@ function Section() {
       align: "center",
     },
     {
-      title: "Section",
-      dataIndex: "sectionName",
+      title: "HR Position",
+      dataIndex: "strPosition",
       sorter: true,
       //   fixed: "left",
     },
-    {
-      title: "Department",
-      dataIndex: "departmentName",
-      sorter: true,
-      width: 100,
 
-      //   fixed: "left",
-    },
     {
       title: "Status",
       dataIndex: "isActive",
@@ -160,7 +154,7 @@ function Section() {
       >
         <PCard>
           <PCardHeader
-            submitText="Section"
+            submitText="HR Position"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -195,7 +189,7 @@ function Section() {
 
       <PModal
         open={open}
-        title={id ? "Edit Section" : "Create Section"}
+        title={id ? "Edit HR Position" : "Create HR Position"}
         width=""
         onCancel={() => {
           setId("");
@@ -216,18 +210,14 @@ function Section() {
       />
       <PModal
         open={view}
-        title={"Section Details"}
+        title={"HR Position Details"}
         width=""
         onCancel={() => {
           setId("");
           setView(false);
         }}
         maskClosable={true}
-        components={
-          <>
-            <ViewFormComponent singleData={id} />
-          </>
-        }
+        components={<>{<ViewFormComponent singleData={id} />}</>}
       />
     </>
   ) : (
@@ -235,4 +225,4 @@ function Section() {
   );
 }
 
-export default Section;
+export default HRPosition;
