@@ -23,7 +23,7 @@ import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 import { APIUrl } from "App";
 
-function BusinessUnit() {
+function Department() {
   // hook
   const dispatch = useDispatch();
 
@@ -62,17 +62,19 @@ function BusinessUnit() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetAllBusinessUnit",
+      urlKey: "GetAllEmpDepartment",
       method: "GET",
       params: {
         accountId: orgId,
+        businessUnitId: buId,
+        workplaceId: wId,
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Business-Unit";
+    document.title = "Department";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -104,56 +106,28 @@ function BusinessUnit() {
       align: "center",
     },
     {
-      title: "Business Unit",
-      dataIndex: "strBusinessUnit",
+      title: "Department",
+      dataIndex: "strDepartment",
       sorter: true,
       render: (_: any, rec: any) => {
         return (
           <div className="d-flex align-items-center">
-            {rec?.strLogoUrlId ? (
-              <img
-                src={`${APIUrl}/Document/DownloadFile?id=${rec?.strLogoUrlId}`}
-                alt="icon"
-                style={{
-                  width: "15px",
-                  height: "15px",
-                  borderRadius: "50%",
-                  objectFit: "contain",
-                }}
-              />
-            ) : (
-              <img
-                src={DemoImg}
-                alt="icon"
-                style={{
-                  width: "15px",
-                  height: "15px",
-                  borderRadius: "50%",
-                  objectFit: "contain",
-                }}
-              />
-            )}
-            <span className="">{rec?.strBusinessUnit}</span>
+            <span className="">
+              {rec?.strDepartment} [ {rec?.strDepartmentCode}]
+            </span>
           </div>
         );
       },
       //   fixed: "left",
     },
     {
-      title: "Address",
-      dataIndex: "strAddress",
+      title: "Business Unit",
+      dataIndex: "strBusinessUnit",
       sorter: true,
       width: 100,
 
       //   fixed: "left",
     },
-    {
-      title: "Website",
-      dataIndex: "strWebsiteUrl",
-      sorter: true,
-      //   fixed: "left",
-    },
-
     {
       title: "Status",
       dataIndex: "isActive",
@@ -208,7 +182,7 @@ function BusinessUnit() {
             // onSearch={(e) => {
             //   searchFunc(e?.target?.value);
             // }}
-            submitText="Business Unit"
+            submitText="Department"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -253,7 +227,7 @@ function BusinessUnit() {
 
       <PModal
         open={open}
-        title={id ? "Edit Business Unit" : "Create Business Unit"}
+        title={id ? "Edit Department" : "Create Department"}
         width=""
         onCancel={() => setOpen(false)}
         maskClosable={false}
@@ -275,4 +249,4 @@ function BusinessUnit() {
   );
 }
 
-export default BusinessUnit;
+export default Department;

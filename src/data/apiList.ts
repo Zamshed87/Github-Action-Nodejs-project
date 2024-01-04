@@ -42,4 +42,6 @@ export const apiList = {
   GetUserRoleById: "/SaasMasterData/GetUserRoleById",
   GetBusinessUnitById: "/SaasMasterData/GetBusinessUnitById",
   SaveBusinessUnit: "/SaasMasterData/SaveBusinessUnit",
+  GetAllEmpDepartment: "/Employee/GetAllEmpDepartment",
+  SaveEmpDepartment: "/Employee/SaveEmpDepartment",
 };

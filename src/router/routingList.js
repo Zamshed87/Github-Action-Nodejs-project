@@ -3,6 +3,7 @@ import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BusinessUnit from "modules/configuration/busisnessUnit";
+import Department from "modules/configuration/department";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
@@ -483,9 +484,9 @@ const DashboardComponentPermission = lazy(() =>
 const DashboardCompPermissionDetails = lazy(() =>
   import("../modules/configuration/dashboardComponentPermission/singleView.jsx")
 );
-const Department = lazy(() =>
-  import("../modules/configuration/department/index.jsx")
-);
+// const Department = lazy(() =>
+//   import("../modules/configuration/department/index.jsx")
+// );
 const Section = lazy(() =>
   import("../modules/configuration/section/index.jsx")
 );
