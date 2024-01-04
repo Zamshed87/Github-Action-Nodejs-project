@@ -1,9 +1,8 @@
 import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Col, Divider, Form, Row } from "antd";
-import { debounce } from "lodash";
-import { useEffect, useRef, useState } from "react";
+import { Col, Form, Row } from "antd";
+import { useEffect, useState } from "react";
 import { Switch } from "antd";
 import { ImAttachment } from "react-icons/im";
 
@@ -11,9 +10,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
-// import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
-// import { createEditEmpAction, userExistValidation } from "../helper";
-// import { submitHandler } from "./helper";
 
 export default function AddEditForm({
   setIsAddEditForm,
