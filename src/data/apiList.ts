@@ -60,4 +60,6 @@ export const apiList = {
   GetAllWorkplaceGroup: "/SaasMasterData/GetAllWorkplaceGroup",
   GetAllGlobalDocumentType: "/SaasMasterData/GetAllGlobalDocumentType",
   SaveGlobalDocumentType: "/SaasMasterData/SaveGlobalDocumentType",
+  GetAllEmploymentType: "/SaasMasterData/GetAllEmploymentType",
+  SaveEmploymentType: "/SaasMasterData/SaveEmploymentType",
 };
