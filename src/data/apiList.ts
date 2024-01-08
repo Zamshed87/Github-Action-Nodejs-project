@@ -54,4 +54,8 @@ export const apiList = {
   SavePosition: "/SaasMasterData/SavePosition",
   GetAllDesignation: "/SaasMasterData/GetAllDesignation",
   SaveDesignation: "/SaasMasterData/SaveDesignation",
+  GetAllWorkplace: "/SaasMasterData/GetAllWorkplace",
+  SaveWorkplaceGroup: "/SaasMasterData/SaveWorkplaceGroup",
+  SaveWorkplace: "/SaasMasterData/SaveWorkplace",
+  GetAllWorkplaceGroup: "/SaasMasterData/GetAllWorkplaceGroup",
 };
