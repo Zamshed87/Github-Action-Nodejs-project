@@ -11,6 +11,7 @@ import EmploymentTypeCreate from "modules/configuration/employmentType";
 import HRPosition from "modules/configuration/hrPosition";
 import LoanTypeCreate from "modules/configuration/loanType";
 import Section from "modules/configuration/section";
+import SeparationType from "modules/configuration/separationType";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import Workplace from "modules/configuration/workplace";
@@ -550,9 +551,9 @@ const Religion = lazy(() =>
 const SBUUnit = lazy(() =>
   import("../modules/configuration/sbuUnit/index.jsx")
 );
-const SeparationType = lazy(() =>
-  import("../modules/configuration/separationType/index.jsx")
-);
+// const SeparationType = lazy(() =>
+//   import("../modules/configuration/separationType/index.jsx")
+// );
 const TaxChallanConfigLanding = lazy(() =>
   import("../modules/configuration/taxChallanConfig/index.jsx")
 );
