@@ -85,7 +85,7 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
               { required: true, message: "Please Enter Element Name" },
               { min: 3, message: "Element Name must be at least 3 characters" },
             ]}
-            disabled
+            disabled={rowData}
           />
         </Col>
         <Form.Item noStyle shouldUpdate>

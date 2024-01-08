@@ -6,18 +6,18 @@ import React, { useEffect, useState, useRef } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import AntTable from "../../../common/AntTable";
-import DefaultInput from "../../../common/DefaultInput";
-import FormikCheckBox from "../../../common/FormikCheckbox";
-import FormikRadio from "../../../common/FormikRadio";
-import IConfirmModal from "../../../common/IConfirmModal";
-import Loading from "../../../common/loading/Loading";
-import NoResult from "../../../common/NoResult";
-import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500, gray900, greenColor } from "../../../utility/customColor";
-import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
-import { todayDate } from "../../../utility/todayDate";
+import AntTable from "../../../../common/AntTable";
+import DefaultInput from "../../../../common/DefaultInput";
+import FormikCheckBox from "../../../../common/FormikCheckbox";
+import FormikRadio from "../../../../common/FormikRadio";
+import IConfirmModal from "../../../../common/IConfirmModal";
+import Loading from "../../../../common/loading/Loading";
+import NoResult from "../../../../common/NoResult";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import { gray500, gray900, greenColor } from "../../../../utility/customColor";
+import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import { todayDate } from "../../../../utility/todayDate";
 import {
   deletePayrollElementTypeById,
   getAllPayrollElementType,

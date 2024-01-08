@@ -15,7 +15,7 @@ import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 import ViewFormComponent from "./viewForm";
 
-function Department() {
+function HRPosition() {
   // hook
   const dispatch = useDispatch();
 
@@ -55,19 +55,19 @@ function Department() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetAllEmpDepartment",
+      urlKey: "GetAllPosition",
       method: "GET",
       params: {
         accountId: orgId,
-        businessUnitId: buId,
         workplaceId: wId,
+        businessUnitId: buId,
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Department";
+    document.title = "HR-Position";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -75,7 +75,7 @@ function Department() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 48) {
+    if (item?.menuReferenceId === 51) {
       employeeFeature = item;
     }
   });
@@ -99,28 +99,12 @@ function Department() {
       align: "center",
     },
     {
-      title: "Department",
-      dataIndex: "strDepartment",
+      title: "HR Position",
+      dataIndex: "strPosition",
       sorter: true,
-      render: (_: any, rec: any) => {
-        return (
-          <div className="d-flex align-items-center">
-            <span className="">
-              {rec?.strDepartment} [ {rec?.strDepartmentCode}]
-            </span>
-          </div>
-        );
-      },
       //   fixed: "left",
     },
-    {
-      title: "Business Unit",
-      dataIndex: "strBusinessUnit",
-      sorter: true,
-      width: 100,
 
-      //   fixed: "left",
-    },
     {
       title: "Status",
       dataIndex: "isActive",
@@ -170,7 +154,7 @@ function Department() {
       >
         <PCard>
           <PCardHeader
-            submitText="Department"
+            submitText="HR Position"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -192,7 +176,6 @@ function Department() {
                 searchText: search,
               });
             }}
-            // scroll={{ x: 2000 }}
             onRow={(record) => ({
               onClick: () => {
                 setView(true);
@@ -206,9 +189,12 @@ function Department() {
 
       <PModal
         open={open}
-        title={id ? "Edit Department" : "Create Department"}
+        title={id ? "Edit HR Position" : "Create HR Position"}
         width=""
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setId("");
+          setOpen(false);
+        }}
         maskClosable={false}
         components={
           <>
@@ -224,18 +210,14 @@ function Department() {
       />
       <PModal
         open={view}
-        title={"Department Details"}
+        title={"HR Position Details"}
         width=""
         onCancel={() => {
           setId("");
           setView(false);
         }}
         maskClosable={true}
-        components={
-          <>
-            <ViewFormComponent singleData={id} />
-          </>
-        }
+        components={<>{<ViewFormComponent singleData={id} />}</>}
       />
     </>
   ) : (
@@ -243,4 +225,4 @@ function Department() {
   );
 }
 
-export default Department;
+export default HRPosition;

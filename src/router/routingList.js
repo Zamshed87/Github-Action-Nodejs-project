@@ -5,6 +5,8 @@ import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/Payrol
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
+import HRPosition from "modules/configuration/hrPosition";
+import Section from "modules/configuration/section";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
@@ -488,9 +490,9 @@ const DashboardCompPermissionDetails = lazy(() =>
 // const Department = lazy(() =>
 //   import("../modules/configuration/department/index.jsx")
 // );
-const Section = lazy(() =>
-  import("../modules/configuration/section/index.jsx")
-);
+// const Section = lazy(() =>
+//   import("../modules/configuration/section/index.jsx")
+// );
 const DocumentType = lazy(() =>
   import("../modules/configuration/documentType/index.jsx")
 );
@@ -503,9 +505,9 @@ const ExpenseTypeCreate = lazy(() =>
 const FeatureGroup = lazy(() =>
   import("../modules/configuration/featureGroup/index.jsx")
 );
-const HRPosition = lazy(() =>
-  import("../modules/configuration/hrPosition/index.jsx")
-);
+// const HRPosition = lazy(() =>
+//   import("../modules/configuration/hrPosition/index.jsx")
+// );
 const LoanTypeCreate = lazy(() =>
   import("../modules/configuration/loanType/index.jsx")
 );
@@ -953,7 +955,7 @@ const OvertimePolicy = lazy(() =>
   import("../modules/PayrollManagementSytem/OvertimePolicy/index.js")
 );
 const PayrollElementCreate = lazy(() =>
-  import("../modules/PayrollManagementSytem/PayrollElement/index.jsx")
+  import("../modules/PayrollManagementSytem/PayrollElement/Previous/index.jsx")
 );
 const PfGratuityPolicyForm = lazy(() =>
   import(
