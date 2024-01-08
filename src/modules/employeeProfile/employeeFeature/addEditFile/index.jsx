@@ -438,6 +438,7 @@ export default function AddEditForm({
   }, [orgId, buId, wgId, employeeId]);
 
   useEffect(() => {
+    console.log(singleData)
     if (singleData?.empId) {
       form.setFieldsValue(singleData);
       getWorkplace();
@@ -449,6 +450,9 @@ export default function AddEditForm({
       getEmployeeStatus();
       getEmployeePosition();
       getEmployeeSection();
+      // new requirment 
+      singleData.calenderType?.value === 1 ? getCalendarDDL() : getRosterGroupDDL();
+      singleData.calenderType?.value === 2 && getCalendarByRosterDDL();
     }
   }, [orgId, buId, singleData, employeeId]);
 
