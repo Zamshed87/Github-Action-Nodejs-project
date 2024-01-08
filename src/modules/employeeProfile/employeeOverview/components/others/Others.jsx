@@ -7,6 +7,7 @@ import VehicleInfo from "./vehicleInfo";
 
 import "./others.css";
 import Remarks from "./Remarks";
+import SalaryType from "./salaryType";
 
 function Others({ index, tabIndex, empId, buId, wgId }) {
   const { isOfficeAdmin, isSuperuser } = useSelector(
@@ -26,6 +27,7 @@ function Others({ index, tabIndex, empId, buId, wgId }) {
             {(isOfficeAdmin || isSuperuser) && (
               <Remarks empId={empId} wgId={wgId} buId={buId} />
             )}
+            <SalaryType empId={empId} wgId={wgId} buId={buId} />
           </div>
         </div>
       </>
