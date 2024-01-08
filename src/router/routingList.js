@@ -5,6 +5,7 @@ import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/Payrol
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
+import HRPosition from "modules/configuration/hrPosition";
 import Section from "modules/configuration/section";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
@@ -504,9 +505,9 @@ const ExpenseTypeCreate = lazy(() =>
 const FeatureGroup = lazy(() =>
   import("../modules/configuration/featureGroup/index.jsx")
 );
-const HRPosition = lazy(() =>
-  import("../modules/configuration/hrPosition/index.jsx")
-);
+// const HRPosition = lazy(() =>
+//   import("../modules/configuration/hrPosition/index.jsx")
+// );
 const LoanTypeCreate = lazy(() =>
   import("../modules/configuration/loanType/index.jsx")
 );
