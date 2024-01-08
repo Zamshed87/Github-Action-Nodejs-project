@@ -9,6 +9,7 @@ import Designation from "modules/configuration/designation";
 import DocumentType from "modules/configuration/documentType";
 import EmploymentTypeCreate from "modules/configuration/employmentType";
 import HRPosition from "modules/configuration/hrPosition";
+import LoanTypeCreate from "modules/configuration/loanType";
 import Section from "modules/configuration/section";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
@@ -512,9 +513,9 @@ const FeatureGroup = lazy(() =>
 // const HRPosition = lazy(() =>
 //   import("../modules/configuration/hrPosition/index.jsx")
 // );
-const LoanTypeCreate = lazy(() =>
-  import("../modules/configuration/loanType/index.jsx")
-);
+// const LoanTypeCreate = lazy(() =>
+//   import("../modules/configuration/loanType/index.jsx")
+// );
 const ManagementDashboardPermissionCreate = lazy(() =>
   import(
     "../modules/configuration/managementDashboardPermission/addEditForm.jsx"
