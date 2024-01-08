@@ -5,6 +5,7 @@ import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/Payrol
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
+import Designation from "modules/configuration/designation";
 import HRPosition from "modules/configuration/hrPosition";
 import Section from "modules/configuration/section";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
@@ -1238,9 +1239,9 @@ const TMProjectTaskBoard = lazy(() =>
 const TMDashboard = lazy(() =>
   import("../saas/taskManagement/tmDashboard/index.jsx")
 );
-const Designation = lazy(() =>
-  import("./../modules/configuration/designation/index")
-);
+// const Designation = lazy(() =>
+//   import("./../modules/configuration/designation/index")
+// );
 const SelfViewSeparationForm = lazy(() =>
   import(
     "./../modules/employeeProfile/separation/selfApplication/viewForm/index"

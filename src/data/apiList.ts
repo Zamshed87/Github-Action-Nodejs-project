@@ -52,4 +52,6 @@ export const apiList = {
   CreateSection: "/SaasMasterData/CreateSection",
   GetAllPosition: "/SaasMasterData/GetAllPosition",
   SavePosition: "/SaasMasterData/SavePosition",
+  GetAllDesignation: "/SaasMasterData/GetAllDesignation",
+  SaveDesignation: "/SaasMasterData/SaveDesignation",
 };
