@@ -17,6 +17,7 @@ import SeparationType from "modules/configuration/separationType";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import Workplace from "modules/configuration/workplace";
+import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
@@ -600,9 +601,9 @@ const GoForPrint = lazy(() =>
 const PrintPreview = lazy(() =>
   import("../modules/employeeProfile/aboutMe/GoForPrint/PrintPreview.jsx")
 );
-const CommonAppPipeline = lazy(() =>
-  import("../modules/employeeProfile/AppPipeline/index.jsx")
-);
+// const CommonAppPipeline = lazy(() =>
+//   import("../modules/employeeProfile/AppPipeline/index.jsx")
+// );
 const EmAttendenceAdjust = lazy(() =>
   import("../modules/employeeProfile/attendenceAdjust/index.jsx")
 );

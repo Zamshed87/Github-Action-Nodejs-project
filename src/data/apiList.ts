@@ -69,4 +69,6 @@ export const apiList = {
   GetAllEmpExpenseType: "/SaasMasterData/GetAllEmpExpenseType",
   SaveEmpExpenseType: "/SaasMasterData/SaveEmpExpenseType",
   GetAllReligion: "/MasterData/GetAllReligion",
+  ApprovalPipeline: "/ApprovalPipeline/ApprovalPipelineHeaderLanding",
+  ApprovalPipelineDDL: "/ApprovalPipeline/ApprovalPipelineDDL",
 };
