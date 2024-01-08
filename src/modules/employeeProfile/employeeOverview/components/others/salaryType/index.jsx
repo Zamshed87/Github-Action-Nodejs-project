@@ -225,8 +225,8 @@ function SalaryType({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                         <FormikSelect
                           name="salaryType"
                           options={[
-                            { value: 1, label: "daily" },
-                            { value: 2, label: "hourly" },
+                            { value: 1, label: "Daily" },
+                            { value: 2, label: "Hourly" },
                           ]}
                           value={values?.salaryType}
                           label=""
