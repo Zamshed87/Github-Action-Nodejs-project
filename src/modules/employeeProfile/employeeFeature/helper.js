@@ -44,10 +44,7 @@ export const createEditEmpAction = async (
   isEdit
 ) => {
   let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
-
   let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
-  console.log("Come Here");
-  console.log("values", values);
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
