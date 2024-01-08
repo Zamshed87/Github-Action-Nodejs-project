@@ -5,10 +5,12 @@ import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/Payrol
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
+import Designation from "modules/configuration/designation";
 import HRPosition from "modules/configuration/hrPosition";
 import Section from "modules/configuration/section";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
+import Workplace from "modules/configuration/workplace";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
@@ -582,9 +584,9 @@ const UserRole = lazy(() =>
 const WorklineConfig = lazy(() =>
   import("../modules/configuration/worklineConfig/index.jsx")
 );
-const Workplace = lazy(() =>
-  import("../modules/configuration/workplace/index.jsx")
-);
+// const Workplace = lazy(() =>
+//   import("../modules/configuration/workplace/index.jsx")
+// );
 const AboutMe = lazy(() => import("../modules/employeeProfile/aboutMe"));
 const GoForPrint = lazy(() =>
   import("../modules/employeeProfile/aboutMe/GoForPrint/GoForPrint.jsx")
@@ -1238,9 +1240,9 @@ const TMProjectTaskBoard = lazy(() =>
 const TMDashboard = lazy(() =>
   import("../saas/taskManagement/tmDashboard/index.jsx")
 );
-const Designation = lazy(() =>
-  import("./../modules/configuration/designation/index")
-);
+// const Designation = lazy(() =>
+//   import("./../modules/configuration/designation/index")
+// );
 const SelfViewSeparationForm = lazy(() =>
   import(
     "./../modules/employeeProfile/separation/selfApplication/viewForm/index"
