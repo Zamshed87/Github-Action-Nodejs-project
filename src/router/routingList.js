@@ -8,6 +8,7 @@ import Department from "modules/configuration/department";
 import Designation from "modules/configuration/designation";
 import DocumentType from "modules/configuration/documentType";
 import EmploymentTypeCreate from "modules/configuration/employmentType";
+import ExpenseTypeCreate from "modules/configuration/expenseType";
 import HRPosition from "modules/configuration/hrPosition";
 import LoanTypeCreate from "modules/configuration/loanType";
 import Section from "modules/configuration/section";
@@ -505,9 +506,9 @@ const DashboardCompPermissionDetails = lazy(() =>
 // const EmploymentTypeCreate = lazy(() =>
 //   import("../modules/configuration/employmentType/index.jsx")
 // );
-const ExpenseTypeCreate = lazy(() =>
-  import("../modules/configuration/expenseType/index.jsx")
-);
+// const ExpenseTypeCreate = lazy(() =>
+//   import("../modules/configuration/expenseType/index.jsx")
+// );
 const FeatureGroup = lazy(() =>
   import("../modules/configuration/featureGroup/index.jsx")
 );

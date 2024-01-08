@@ -66,4 +66,6 @@ export const apiList = {
   SaveEmpLoanType: "/SaasMasterData/SaveEmpLoanType",
   GetAllSeparationType: "/SaasMasterData/GetAllSeparationType",
   SaveSeparationType: "/SaasMasterData/SaveSeparationType",
+  GetAllEmpExpenseType: "/SaasMasterData/GetAllEmpExpenseType",
+  SaveEmpExpenseType: "/SaasMasterData/SaveEmpExpenseType",
 };
