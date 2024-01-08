@@ -68,4 +68,5 @@ export const apiList = {
   SaveSeparationType: "/SaasMasterData/SaveSeparationType",
   GetAllEmpExpenseType: "/SaasMasterData/GetAllEmpExpenseType",
   SaveEmpExpenseType: "/SaasMasterData/SaveEmpExpenseType",
+  GetAllReligion: "/MasterData/GetAllReligion",
 };
