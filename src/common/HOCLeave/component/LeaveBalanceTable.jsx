@@ -45,7 +45,9 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false }) => {
                     {item?.intCarryAllocatedLveInDay}
                   </td>
                   <td className="text-center">
-                    {moment(item?.intExpireyDate).format("DD MMM, YYYY")}
+                    {item?.intExpireyDate
+                      ? moment(item?.intExpireyDate).format("DD MMM, YYYY")
+                      : "N/A"}
                   </td>
                 </tr>
               ))}
