@@ -8,8 +8,6 @@ import { FaBriefcase } from "react-icons/fa";
 
 import { MdOutlineDns } from "react-icons/md";
 
-/* <FaBriefcase /> */
-
 export default function ViewFormComponent({ singleData }) {
   return (
     <>
