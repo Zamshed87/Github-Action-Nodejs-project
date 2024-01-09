@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import { todayDate } from "utility/todayDate";
 import { IconButton, Tooltip, Alert } from "@mui/material";
 import { DeleteOutline } from "@mui/icons-material";
+import { labelChangeByOrgId } from "utility/strLabelChange";
+import { DataTable, TableButton } from "Components";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -22,8 +24,10 @@ export default function AddEditForm({
   const dispatch = useDispatch();
   // const debounce = useDebounce();
   const [tableData, setTableData] = useState([]);
+  const [deletedRow, setDeletedRow] = useState([]);
 
   const savePipeline = useApiRequest({});
+  const getPipelineDetails = useApiRequest({});
   const getWgDDL = useApiRequest({});
   const getWDDL = useApiRequest({});
   const getPipelineDDL = useApiRequest({});
@@ -48,7 +52,7 @@ export default function AddEditForm({
         ];
     }
   };
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, wName, wgName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -144,42 +148,77 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
+    if (!tableData?.length)
+      return toast.warn(
+        `Please add at least one approver to save ${values?.pipelineName?.label} pipeline`
+      );
     let payload = {
-      intDesignationId: singleData?.intDesignationId
-        ? singleData?.intDesignationId
-        : 0,
-      strDesignation: values?.strDesignation,
-      strDesignationCode: values?.strDesignationCode,
-      intPositionId: 0,
-      isActive: values?.isActive || true,
-      isDeleted: values?.isDeleted,
-      intBusinessUnitIdList: buId,
-      intUserRoleIdList: [],
-      intAccountId: orgId,
+      isActive: true,
       dteCreatedAt: todayDate(),
+      intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
-      intPayscaleGradeId: values?.payscaleGrade?.value,
-      intWorkplaceId: wId,
-      intRankingId: 0,
+      intUpdatedBy: employeeId,
+      intPipelineHeaderId: singleData?.intPipelineHeaderId || 0,
+      strPipelineName: values?.pipelineName?.label,
+      strApplicationType: values?.pipelineName?.value,
+      strRemarks: values?.remarks || "",
+      intAccountId: orgId,
       intBusinessUnitId: buId,
+      intWorkplaceGroupId: values?.orgName?.value || wgId,
+      intWorkplaceId: values?.workplace?.value || wId,
+      isValidate: true,
+      approvalPipelineRowViewModelList: [...tableData, ...deletedRow],
     };
-    // savePipeline.action({
-    //   urlKey: "SaveDesignation",
-    //   method: "POST",
-    //   payload: payload,
-    //   onSuccess: () => {
-    //     cb();
-    //   },
-    // });
+    savePipeline.action({
+      urlKey: "ApprovalPipelineCreateNUpdate",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
+      },
+    });
   };
 
   useEffect(() => {
-    if (singleData?.intDesignationId) {
+    if (singleData) {
       form.setFieldsValue({
         ...singleData,
-        payscaleGrade: {
-          value: singleData?.intPayscaleGradeId,
-          label: singleData?.strPayscaleGradeName,
+        pipelineName: {
+          value: singleData?.strApplicationType,
+          label: singleData?.strPipelineName,
+        },
+      });
+    }
+    if (singleData?.intPipelineHeaderId) {
+      getPipelineDetails.action({
+        urlKey: "ApprovalPipelineHeaderDetailsById",
+        method: "GET",
+        params: {
+          // id: singleData?.intBusinessUnitId,
+          headerId: singleData?.intPipelineHeaderId,
+          intWorkplaceGroupId: wgId,
+          BusinessUnitId: buId,
+          intBusinessUnitId: buId,
+        },
+        onSuccess: (data) => {
+          const newdata = data?.globalPipelineRowList?.map((item) => ({
+            approver: item?.globalPipelineRow?.isSupervisor
+              ? supervisor || labelChangeByOrgId(orgId, "Supervisor")
+              : item?.globalPipelineRow?.isLineManager
+              ? labelChangeByOrgId(orgId, "Line Manager")
+              : "User Group",
+            userGroup: item?.userGroupHeader?.strUserGroup || "",
+            intPipelineRowId: item?.globalPipelineRow?.intPipelineRowId,
+            intPipelineHeaderId: item?.globalPipelineRow?.intPipelineHeaderId,
+            isSupervisor: item?.globalPipelineRow?.isSupervisor,
+            isLineManager: item?.globalPipelineRow?.isLineManager,
+            intUserGroupHeaderId: item?.globalPipelineRow?.intUserGroupHeaderId,
+            intShortOrder: item?.globalPipelineRow?.intShortOrder,
+            isCreate: false,
+            isDelete: false,
+            strStatusTitle: item?.globalPipelineRow?.strStatusTitle,
+          }));
+          setTableData(newdata);
         },
       });
     }
@@ -188,6 +227,63 @@ export default function AddEditForm({
     const filterArr = tableData.filter((itm, idx) => idx !== payload);
     setTableData(filterArr);
   };
+  // Header
+  const header = [
+    {
+      title: "SL",
+      render: (_, rec, index) => index + 1,
+      align: "center",
+      width: 50,
+    },
+    {
+      title: "Approver",
+      dataIndex: "approver",
+      sorter: true,
+    },
+    {
+      title: "Sequence Order",
+      dataIndex: "intShortOrder",
+      sorter: true,
+    },
+    {
+      title: "Status Title",
+      dataIndex: "strStatusTitle",
+      sorter: true,
+    },
+    {
+      title: "User Group",
+      dataIndex: "userGroup",
+      sorter: true,
+    },
+
+    {
+      width: 50,
+      align: "center",
+      render: (_, rec, index) => (
+        <>
+          <TableButton
+            buttonsList={[
+              {
+                type: "delete",
+                onClick: (e) => {
+                  e.stopPropagation();
+                  // store deleted data,we have to send it to back end for edit
+                  const data = [...deletedRow];
+                  data.push({
+                    ...rec,
+                    isCreate: false,
+                    isDelete: true,
+                  });
+                  setDeletedRow(data);
+                  remover(index);
+                },
+              },
+            ]}
+          />
+        </>
+      ),
+    },
+  ];
   return (
     <>
       <PForm
@@ -202,7 +298,10 @@ export default function AddEditForm({
             isEdit,
           });
         }}
-        initialValues={{}}
+        initialValues={{
+          orgName: { value: wgId, label: wgName },
+          workplace: { value: wId, label: wName },
+        }}
       >
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24}>
@@ -417,15 +516,45 @@ export default function AddEditForm({
                             "Please fill up the User Group field"
                           );
                         }
-                        setTableData((prev) => [
-                          ...prev,
-                          {
-                            approver: approver,
-                            sequence: sequence,
-                            strTitle: strTitle,
-                            userGroup: userGroup,
-                          },
-                        ]);
+                        let exists = tableData.filter(
+                          (item) =>
+                            item?.approver === approver?.label &&
+                            approver?.label !== "User Group"
+                        );
+
+                        let sequenceExists = tableData.filter(
+                          (item) => item?.intShortOrder === sequence?.value
+                        );
+
+                        let userGroupExists = tableData.filter(
+                          (item) =>
+                            item?.intUserGroupHeaderId === userGroup?.value
+                        );
+
+                        if (exists?.length > 0)
+                          return toast.warn("Already exists approver");
+                        if (sequenceExists?.length > 0)
+                          return toast.warn("Already exists sequence");
+                        if (userGroupExists?.length > 0)
+                          return toast.warn("Already exists user group");
+
+                        const data = [...tableData];
+                        const obj = {
+                          approver: approver?.label,
+                          userGroup: userGroup?.label || "",
+                          intPipelineRowId: 0,
+                          intPipelineHeaderId: 0,
+                          isSupervisor: approver?.value === 1,
+                          isLineManager: approver?.value === 2,
+                          intUserGroupHeaderId: userGroup?.value || 0,
+                          intShortOrder: sequence?.value,
+                          isCreate: true,
+                          isDelete: false,
+                          strStatusTitle: strTitle,
+                        };
+                        data.push(obj);
+
+                        setTableData(data);
                         form.setFieldsValue({
                           sequence: undefined,
                           approver: undefined,
@@ -441,90 +570,97 @@ export default function AddEditForm({
               );
             }}
           </Form.Item>
-          <Col md={24} sm={24}>
+          <Col md={24} sm={24} style={{ marginTop: "1rem" }}>
             {tableData?.length > 0 && (
-              <div
-                className="table-card-body pt-3 "
-                style={{ marginLeft: "-1em" }}
-              >
-                <div
-                  className=" table-card-styled tableOne"
-                  style={{ padding: "0px 12px" }}
-                >
-                  <table className="table align-middle">
-                    <thead style={{ color: "#212529" }}>
-                      <tr>
-                        <th>
-                          <div className="d-flex align-items-center">
-                            Approver
-                          </div>
-                        </th>
-                        <th>
-                          <div className="d-flex align-items-center">
-                            Sequence Order
-                          </div>
-                        </th>
-                        <th>
-                          <div className="d-flex align-items-center">
-                            Status Title
-                          </div>
-                        </th>
-                        <th>
-                          <div className="d-flex align-items-center">
-                            User Group
-                          </div>
-                        </th>
-                        <th>
-                          <div className="d-flex align-items-center justify-content-end">
-                            Action
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tableData?.length > 0 && (
-                        <>
-                          {tableData.map((item, index) => {
-                            return (
-                              <tr key={index}>
-                                <td>{item?.approver?.label}</td>
-                                <td>{item?.sequence.label}</td>
-                                <td>{item?.strTitle}</td>
-                                <td>{item?.userGroup?.label || "N/A"}</td>
-                                <td>
-                                  <div className="d-flex align-items-end justify-content-end">
-                                    <IconButton
-                                      type="button"
-                                      style={{
-                                        height: "25px",
-                                        width: "25px",
-                                      }}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        remover(index);
-                                        // deleteRow(item?.intWorkplaceId);
-                                      }}
-                                    >
-                                      <Tooltip title="Delete">
-                                        <DeleteOutline
-                                          sx={{
-                                            height: "25px",
-                                            width: "25px",
-                                          }}
-                                        />
-                                      </Tooltip>
-                                    </IconButton>
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <DataTable
+                bordered
+                data={tableData?.length > 0 ? tableData : []}
+                // loading={landingApi?.loading}
+                header={header}
+              />
+              // <div
+              //   className="table-card-body pt-3 "
+              //   style={{ marginLeft: "-1em" }}
+              // >
+              //   <div
+              //     className=" table-card-styled tableOne"
+              //     style={{ padding: "0px 12px" }}
+              //   >
+              //     {/* <table className="table align-middle">
+              //       <thead style={{ color: "#212529" }}>
+              //         <tr>
+              //           <th>
+              //             <div className="d-flex align-items-center">
+              //               Approver
+              //             </div>
+              //           </th>
+              //           <th>
+              //             <div className="d-flex align-items-center">
+              //               Sequence Order
+              //             </div>
+              //           </th>
+              //           <th>
+              //             <div className="d-flex align-items-center">
+              //               Status Title
+              //             </div>
+              //           </th>
+              //           <th>
+              //             <div className="d-flex align-items-center">
+              //               User Group
+              //             </div>
+              //           </th>
+              //           <th>
+              //             <div className="d-flex align-items-center justify-content-end">
+              //               Action
+              //             </div>
+              //           </th>
+              //         </tr>
+              //       </thead>
+              //       <tbody>
+              //         {tableData?.length > 0 && (
+              //           // <>
+              //           //   {tableData.map((item, index) => {
+              //           //     return (
+              //           //       <tr key={index}>
+              //           //         <td>{item?.approver}</td>
+              //           //         <td>{item?.intShortOrder}</td>
+              //           //         <td>{item?.strStatusTitle}</td>
+              //           //         <td>{item?.userGroup || "N/A"}</td>
+              //           //         <td>
+              //           //           <div className="d-flex align-items-end justify-content-end">
+              //           //             <IconButton
+              //           //               type="button"
+              //           //               style={{
+              //           //                 height: "25px",
+              //           //                 width: "25px",
+              //           //               }}
+              //           //               onClick={(e) => {
+              //           //                 e.stopPropagation();
+              //           //                 remover(index);
+              //           //                 // deleteRow(item?.intWorkplaceId);
+              //           //               }}
+              //           //             >
+              //           //               <Tooltip title="Delete">
+              //           //                 <DeleteOutline
+              //           //                   sx={{
+              //           //                     height: "25px",
+              //           //                     width: "25px",
+              //           //                   }}
+              //           //                 />
+              //           //               </Tooltip>
+              //           //             </IconButton>
+              //           //           </div>
+              //           //         </td>
+              //           //       </tr>
+              //           //     );
+              //           //   })}
+              //           // </>
+
+              //         )}
+              //       </tbody>
+              //     </table> */}
+              //   </div>
+              // </div>
             )}
           </Col>
         </Row>

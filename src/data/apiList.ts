@@ -71,4 +71,8 @@ export const apiList = {
   GetAllReligion: "/MasterData/GetAllReligion",
   ApprovalPipeline: "/ApprovalPipeline/ApprovalPipelineHeaderLanding",
   ApprovalPipelineDDL: "/ApprovalPipeline/ApprovalPipelineDDL",
+  ApprovalPipelineCreateNUpdate:
+    "/ApprovalPipeline/ApprovalPipelineCreateNUpdate",
+  ApprovalPipelineHeaderDetailsById:
+    "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
 };
