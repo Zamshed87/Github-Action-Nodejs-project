@@ -40,7 +40,7 @@ export const getAbsentData = async (
       `/TimeSheetReport/GetAbsentReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&FromDate=${fromdate}&ToDate=${todate}&IsXls=false&PageNo=${pageNo}&PageSize=${pageSize}`
     );
 
-    if (res?.data?.data > 0) {
+    if (res?.data) {
       setter(res?.data);
       setPages({
         current: pageNo,
