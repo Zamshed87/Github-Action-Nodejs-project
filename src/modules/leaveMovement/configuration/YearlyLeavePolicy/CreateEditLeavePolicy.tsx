@@ -210,6 +210,11 @@ const CreateEditLeavePolicy = () => {
           });
         }
       },
+      onError: (error) => {
+        toast.error(error?.message || "Something went wrong", {
+          toastId: "savePolicyError",
+        });
+      },
     });
   };
 
@@ -352,7 +357,13 @@ const CreateEditLeavePolicy = () => {
                                 placeholder="Allocated Leave in Day"
                                 rules={[
                                   {
-                                    required: true,
+                                    required: !(
+                                      isDependOnServiceLength ||
+                                      intLeaveType?.label ===
+                                        "Earn Leave/Annual Leave" ||
+                                      intLeaveType?.label ===
+                                        "Compensatory Leave"
+                                    ),
                                     message:
                                       " Allocated Leave in Day is required",
                                   },
@@ -384,12 +395,7 @@ const CreateEditLeavePolicy = () => {
                         placeholder="Max Leave Available from Self"
                         rules={[
                           {
-                            required: true,
-                            message:
-                              " Max Leave Available from Self is required",
-                          },
-                          {
-                            message: " Max Leave Available must be positive",
+                            message: "Max Leave Available must be positive",
                             pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
                           },
                         ]}
@@ -402,11 +408,6 @@ const CreateEditLeavePolicy = () => {
                         label="Max Leave Application In Month"
                         placeholder="Max Leave Application In Month"
                         rules={[
-                          {
-                            required: true,
-                            message:
-                              " Max Leave Application In Month is required",
-                          },
                           {
                             message: " Max Leave Application must be positive",
                             pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
@@ -421,11 +422,6 @@ const CreateEditLeavePolicy = () => {
                         label="Max Leave Application In Year"
                         placeholder="Max Leave Application In Year"
                         rules={[
-                          {
-                            required: true,
-                            message:
-                              " Max Leave Application In Year is required",
-                          },
                           {
                             message: "Max Leave Application must be positive",
                             pattern: new RegExp(/^[+]?([.]\d+|\d+([.]\d+)?)$/),
@@ -1145,7 +1141,7 @@ const CreateEditLeavePolicy = () => {
                                 size="small"
                                 rules={[
                                   {
-                                    required: true,
+                                    required: isConpensatoryLveExpire,
                                     message:
                                       "Conpensatory Leave Expire In Days is required",
                                   },

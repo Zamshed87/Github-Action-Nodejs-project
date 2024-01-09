@@ -5,10 +5,19 @@ import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/Payrol
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
+import Designation from "modules/configuration/designation";
+import DocumentType from "modules/configuration/documentType";
+import EmploymentTypeCreate from "modules/configuration/employmentType";
+import ExpenseTypeCreate from "modules/configuration/expenseType";
 import HRPosition from "modules/configuration/hrPosition";
+import LoanTypeCreate from "modules/configuration/loanType";
+import Religion from "modules/configuration/religion";
 import Section from "modules/configuration/section";
+import SeparationType from "modules/configuration/separationType";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
+import Workplace from "modules/configuration/workplace";
+import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
@@ -493,24 +502,24 @@ const DashboardCompPermissionDetails = lazy(() =>
 // const Section = lazy(() =>
 //   import("../modules/configuration/section/index.jsx")
 // );
-const DocumentType = lazy(() =>
-  import("../modules/configuration/documentType/index.jsx")
-);
-const EmploymentTypeCreate = lazy(() =>
-  import("../modules/configuration/employmentType/index.jsx")
-);
-const ExpenseTypeCreate = lazy(() =>
-  import("../modules/configuration/expenseType/index.jsx")
-);
+// const DocumentType = lazy(() =>
+//   import("../modules/configuration/documentType/index.jsx")
+// );
+// const EmploymentTypeCreate = lazy(() =>
+//   import("../modules/configuration/employmentType/index.jsx")
+// );
+// const ExpenseTypeCreate = lazy(() =>
+//   import("../modules/configuration/expenseType/index.jsx")
+// );
 const FeatureGroup = lazy(() =>
   import("../modules/configuration/featureGroup/index.jsx")
 );
 // const HRPosition = lazy(() =>
 //   import("../modules/configuration/hrPosition/index.jsx")
 // );
-const LoanTypeCreate = lazy(() =>
-  import("../modules/configuration/loanType/index.jsx")
-);
+// const LoanTypeCreate = lazy(() =>
+//   import("../modules/configuration/loanType/index.jsx")
+// );
 const ManagementDashboardPermissionCreate = lazy(() =>
   import(
     "../modules/configuration/managementDashboardPermission/addEditForm.jsx"
@@ -539,15 +548,15 @@ const OrgBankDetailsLanding = lazy(() =>
 const PayScaleGrade = lazy(() =>
   import("../modules/configuration/payScaleGrade/index.jsx")
 );
-const Religion = lazy(() =>
-  import("../modules/configuration/religion/index.jsx")
-);
+// const Religion = lazy(() =>
+//   import("../modules/configuration/religion/index.jsx")
+// );
 const SBUUnit = lazy(() =>
   import("../modules/configuration/sbuUnit/index.jsx")
 );
-const SeparationType = lazy(() =>
-  import("../modules/configuration/separationType/index.jsx")
-);
+// const SeparationType = lazy(() =>
+//   import("../modules/configuration/separationType/index.jsx")
+// );
 const TaxChallanConfigLanding = lazy(() =>
   import("../modules/configuration/taxChallanConfig/index.jsx")
 );
@@ -582,9 +591,9 @@ const UserRole = lazy(() =>
 const WorklineConfig = lazy(() =>
   import("../modules/configuration/worklineConfig/index.jsx")
 );
-const Workplace = lazy(() =>
-  import("../modules/configuration/workplace/index.jsx")
-);
+// const Workplace = lazy(() =>
+//   import("../modules/configuration/workplace/index.jsx")
+// );
 const AboutMe = lazy(() => import("../modules/employeeProfile/aboutMe"));
 const GoForPrint = lazy(() =>
   import("../modules/employeeProfile/aboutMe/GoForPrint/GoForPrint.jsx")
@@ -592,9 +601,9 @@ const GoForPrint = lazy(() =>
 const PrintPreview = lazy(() =>
   import("../modules/employeeProfile/aboutMe/GoForPrint/PrintPreview.jsx")
 );
-const CommonAppPipeline = lazy(() =>
-  import("../modules/employeeProfile/AppPipeline/index.jsx")
-);
+// const CommonAppPipeline = lazy(() =>
+//   import("../modules/employeeProfile/AppPipeline/index.jsx")
+// );
 const EmAttendenceAdjust = lazy(() =>
   import("../modules/employeeProfile/attendenceAdjust/index.jsx")
 );
@@ -1238,9 +1247,9 @@ const TMProjectTaskBoard = lazy(() =>
 const TMDashboard = lazy(() =>
   import("../saas/taskManagement/tmDashboard/index.jsx")
 );
-const Designation = lazy(() =>
-  import("./../modules/configuration/designation/index")
-);
+// const Designation = lazy(() =>
+//   import("./../modules/configuration/designation/index")
+// );
 const SelfViewSeparationForm = lazy(() =>
   import(
     "./../modules/employeeProfile/separation/selfApplication/viewForm/index"

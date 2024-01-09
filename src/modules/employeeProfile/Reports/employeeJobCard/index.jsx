@@ -133,6 +133,10 @@ export default function EmployeeJobCard() {
         dataIndex: "WorkingHours",
       },
       {
+        title: "Over Time",
+        dataIndex: "numOverTime",
+      },
+      {
         title: "Calendar Name",
         dataIndex: "CalendarName",
       },
