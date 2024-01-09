@@ -914,7 +914,7 @@ export default function AddEditForm({
               );
             }}
           </Form.Item>
-          {
+          {/* {
             !isEdit && <Col md={12} sm={24}>
             <PInput
               type="date"
@@ -923,17 +923,19 @@ export default function AddEditForm({
               placeholder="Generate Date"
             />
           </Col>
-          }
+          } */}
+          {/*  - // new requirment calender field will be editable @8-01-2024 🔥🔥 - */}
           {true ? (
             <>
-              {/* <Col md={12} sm={24}>
+              <Col md={12} sm={24}>
                 <PInput
                   type="date"
                   name="generateDate"
                   label="Generate Date"
                   placeholder="Generate Date"
+                  // disabled={isEdit}
                 />
-              </Col> */}
+              </Col>
               <Form.Item shouldUpdate noStyle>
                 {() => {
                   const { workplaceGroup, calenderType } =
