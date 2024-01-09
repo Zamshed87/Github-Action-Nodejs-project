@@ -646,14 +646,19 @@ function AboutMeDetails() {
               generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
               calenderType: [{value: 1, label: "Calendar"},
                              { value: 2, label: "Roster" }].find(itm => itm.label === empBasic?.employeeProfileLandingView?.strCalenderType)  || undefined,
-              calender: {
+              calender: empBasic?.employeeProfileLandingView?.strCalenderType === "Roster" ?
+              {
+                value: empBasic?.employeeProfileLandingView?.intRosterGroupId,
+                label: empBasic?.employeeProfileLandingView?.strRosterGroupName,
+              } :
+              {
                   value: empBasic?.employeeProfileLandingView?.intCalenderId,
                   label: empBasic?.employeeProfileLandingView?.strCalenderName,
-                } || undefined,
-              startingCalender:  {
+                } ,
+              startingCalender: empBasic?.employeeProfileLandingView?.strCalenderType === "Roster" ?  {
                 value: empBasic?.employeeProfileLandingView?.intCalenderId,
                 label: empBasic?.employeeProfileLandingView?.strCalenderName,
-              } || undefined,
+              } : undefined,
               nextChangeDate: moment(empBasic?.employeeProfileLandingView?.dteNextChangeDate) || undefined,
 
               // calender assigne
