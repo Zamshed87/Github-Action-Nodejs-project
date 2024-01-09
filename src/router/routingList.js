@@ -11,6 +11,7 @@ import EmploymentTypeCreate from "modules/configuration/employmentType";
 import ExpenseTypeCreate from "modules/configuration/expenseType";
 import HRPosition from "modules/configuration/hrPosition";
 import LoanTypeCreate from "modules/configuration/loanType";
+import OrgBankDetailsLanding from "modules/configuration/orgBankDetails";
 import Religion from "modules/configuration/religion";
 import Section from "modules/configuration/section";
 import SeparationType from "modules/configuration/separationType";
@@ -542,9 +543,9 @@ const NotificationConfig = lazy(() =>
 const NotificationDetails = lazy(() =>
   import("../modules/configuration/NotificationConfig/singleView.jsx")
 );
-const OrgBankDetailsLanding = lazy(() =>
-  import("../modules/configuration/orgBankDetails/index.jsx")
-);
+// const OrgBankDetailsLanding = lazy(() =>
+//   import("../modules/configuration/orgBankDetails/index.jsx")
+// );
 const PayScaleGrade = lazy(() =>
   import("../modules/configuration/payScaleGrade/index.jsx")
 );
