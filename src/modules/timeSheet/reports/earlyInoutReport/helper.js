@@ -1,4 +1,5 @@
 import axios from "axios";
+import { timeFormatter } from "utility/timeFormatter";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 
@@ -140,6 +141,7 @@ export const earlyDtoCol = (page, paginationSize) => {
     {
       title: "Out Time",
       dataIndex: "outTime",
+      render: (record) => timeFormatter(record?.outTime) || "N/A",
       sort: false,
       filter: false,
       //   render: (record) => `${convertTo12HourFormat(record?.outTime)}` || "N/A",
