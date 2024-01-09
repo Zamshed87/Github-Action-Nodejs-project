@@ -88,7 +88,7 @@ function AboutMeDetails() {
                 <div>
                   {isOfficeAdmin && (
                     <Button
-                      onClick={(e) => {
+                      onClick={() => {
                         history.push(
                           `/profile/employee/go-for-print/${empId}`,
                           {
@@ -131,7 +131,7 @@ function AboutMeDetails() {
                 empBasic?.employeeProfileLandingView?.intEmployeeImageUrlId
               }
               empId={empId}
-              editBtnHandler={(e) => {
+              editBtnHandler={() => {
                 setIsAddEditForm(true);
               }}
               isOfficeAdmin={isOfficeAdmin}
@@ -642,6 +642,19 @@ function AboutMeDetails() {
                   }
                 : undefined,
               isActive: empBasic?.employeeProfileLandingView?.userStatus,
+              // new requirment calender field will be editable 8-01-2024 🔥🔥
+              generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
+              calenderType: [{value: 1, label: "Calendar"},
+                             { value: 2, label: "Roster" }].find(itm => itm.label === empBasic?.employeeProfileLandingView?.strCalenderType)  || undefined,
+              calender: {
+                  value: empBasic?.employeeProfileLandingView?.intCalenderId,
+                  label: empBasic?.employeeProfileLandingView?.strCalenderName,
+                } || undefined,
+              startingCalender:  {
+                value: empBasic?.employeeProfileLandingView?.intCalenderId,
+                label: empBasic?.employeeProfileLandingView?.strCalenderName,
+              } || undefined,
+              nextChangeDate: moment(empBasic?.employeeProfileLandingView?.dteNextChangeDate) || undefined,
 
               // calender assigne
             }}

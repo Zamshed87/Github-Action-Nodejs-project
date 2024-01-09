@@ -438,6 +438,7 @@ export default function AddEditForm({
   }, [orgId, buId, wgId, employeeId]);
 
   useEffect(() => {
+    console.log(singleData)
     if (singleData?.empId) {
       form.setFieldsValue(singleData);
       getWorkplace();
@@ -449,6 +450,9 @@ export default function AddEditForm({
       getEmployeeStatus();
       getEmployeePosition();
       getEmployeeSection();
+      // new requirment 
+      singleData.calenderType?.value === 1 ? getCalendarDDL() : getRosterGroupDDL();
+      singleData.calenderType?.value === 2 && getCalendarByRosterDDL();
     }
   }, [orgId, buId, singleData, employeeId]);
 
@@ -910,17 +914,26 @@ export default function AddEditForm({
               );
             }}
           </Form.Item>
-
-          {!isEdit ? (
+          {
+            !isEdit && <Col md={12} sm={24}>
+            <PInput
+              type="date"
+              name="generateDate"
+              label="Generate Date"
+              placeholder="Generate Date"
+            />
+          </Col>
+          }
+          {true ? (
             <>
-              <Col md={12} sm={24}>
+              {/* <Col md={12} sm={24}>
                 <PInput
                   type="date"
                   name="generateDate"
                   label="Generate Date"
                   placeholder="Generate Date"
                 />
-              </Col>
+              </Col> */}
               <Form.Item shouldUpdate noStyle>
                 {() => {
                   const { workplaceGroup, calenderType } =
@@ -943,6 +956,7 @@ export default function AddEditForm({
                           disabled={!workplaceGroup}
                           onChange={(value, op) => {
                             form.setFieldsValue({
+                              calender: null,
                               calenderType: op,
                             });
 

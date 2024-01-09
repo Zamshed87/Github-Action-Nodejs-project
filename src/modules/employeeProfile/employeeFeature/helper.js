@@ -44,10 +44,7 @@ export const createEditEmpAction = async (
   isEdit
 ) => {
   let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
-
   let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
-  console.log("Come Here");
-  console.log("values", values);
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
@@ -102,28 +99,34 @@ export const createEditEmpAction = async (
       strPersonalMobile: values?.phone || "",
       strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
-      calendarAssignViewModel: null,
+      calendarAssignViewModel: {
+        employeeId: 0,
+        joiningDate: values?.joiningDate,
+        generateStartDate: values?.generateDate,
+        generateEndDate: null,
+        runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
+        calendarType: values?.calenderType?.label,
+        nextChangeDate: values?.nextChangeDate || null,
+        rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
+        isAutoGenerate: false,
+      } || null,
     };
-    if (!isEdit) {
-      payload = {
-        ...payload,
-        calendarAssignViewModel: {
-          employeeId: 0,
-          joiningDate: values?.joiningDate,
-          generateStartDate: values?.generateDate,
-          generateEndDate: null,
-          runningCalendarId:
-            values?.calenderType?.value === 2
-              ? values?.startingCalender?.value
-              : values?.calender?.value,
-          calendarType: values?.calenderType?.label,
-          nextChangeDate: values?.nextChangeDate || null,
-          rosterGroupId:
-            values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-          isAutoGenerate: false,
-        },
-      };
-    }
+    // if (!isEdit) {
+    //   payload = {
+    //     ...payload,
+    //     calendarAssignViewModel: {
+    //       employeeId: 0,
+    //       joiningDate: values?.joiningDate,
+    //       generateStartDate: values?.generateDate,
+    //       generateEndDate: null,
+    //       runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
+    //       calendarType: values?.calenderType?.label,
+    //       nextChangeDate: values?.nextChangeDate || null,
+    //       rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
+    //       isAutoGenerate: false,
+    //     },
+    //   };
+    // }
     if (values?.isUsersection === true) {
       payload = {
         ...payload,
