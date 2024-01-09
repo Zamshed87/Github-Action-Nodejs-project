@@ -71,6 +71,9 @@ export const apiList = {
   GetAllReligion: "/MasterData/GetAllReligion",
   ApprovalPipeline: "/ApprovalPipeline/ApprovalPipelineHeaderLanding",
   ApprovalPipelineDDL: "/ApprovalPipeline/ApprovalPipelineDDL",
+  BankBranchDDL: "/Employee/BankBranchDDL",
+  AccountBankDetailsCRUD: "/SaasMasterData/AccountBankDetailsCRUD",
+  AccountBankDetailsLanding: "/SaasMasterData/AccountBankDetailsLanding",
   ApprovalPipelineCreateNUpdate:
     "/ApprovalPipeline/ApprovalPipelineCreateNUpdate",
   ApprovalPipelineHeaderDetailsById:
