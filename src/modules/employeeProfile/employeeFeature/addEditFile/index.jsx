@@ -438,7 +438,6 @@ export default function AddEditForm({
   }, [orgId, buId, wgId, employeeId]);
 
   useEffect(() => {
-    console.log(singleData)
     if (singleData?.empId) {
       form.setFieldsValue(singleData);
       getWorkplace();
@@ -925,7 +924,7 @@ export default function AddEditForm({
           </Col>
           } */}
           {/*  - // new requirment calender field will be editable @8-01-2024 🔥🔥 - */}
-          {true ? (
+          {!isEdit ? (
             <>
               <Col md={12} sm={24}>
                 <PInput
