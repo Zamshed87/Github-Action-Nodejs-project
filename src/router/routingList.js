@@ -3,6 +3,7 @@ import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/PayrollElement";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
+import BankBranch from "modules/configuration/bankBranch";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
 import Designation from "modules/configuration/designation";
@@ -478,9 +479,9 @@ const SelectionModule = lazy(() =>
 const Sliders = lazy(() =>
   import("../modules/componentModule/slidersModule/index.jsx")
 );
-const BankBranch = lazy(() =>
-  import("../modules/configuration/bankBranch/index.jsx")
-);
+// const BankBranch = lazy(() =>
+//   import("../modules/configuration/bankBranch/index.jsx")
+// );
 // const BusinessUnit = lazy(() =>
 //   import("../modules/configuration/busisnessUnit/index.jsx")
 // );
