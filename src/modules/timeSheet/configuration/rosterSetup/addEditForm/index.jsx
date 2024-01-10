@@ -41,6 +41,12 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       "strWorkplaceGroup",
       setOrganizationDDL
     );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkPlaceDDL
+    );
   }, [buId]);
 
   const saveHandler = (values, cb) => {
@@ -95,7 +101,9 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       <Formik
         enableReinitialize={true}
         initialValues={{
-          rosterGroupName: rosterName || "",orgName: { value: wgId, label: wgName }, workplace:{value:wId, label: wName}
+          rosterGroupName: rosterName || "",
+          orgName: { value: wgId, label: wgName },
+          workplace: { value: wId, label: wName },
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -103,9 +111,11 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
             resetForm({ rosterGroupName: "" });
             setIsRosterSetup(false);
             // getData && getData();
-            history.push(
-              `/administration/timeManagement/rosterSetup/${autoId}/${autoName}`
-            );
+            if (values?.workplace?.label !== "All") {
+              history.push(
+                `/administration/timeManagement/rosterSetup/${autoId}/${autoName}`
+              );
+            }
           });
         }}
       >
@@ -209,13 +219,23 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                   >
                     Cancel
                   </button>
-                  <button
-                    style={{ height: "30px", width: "150px" }}
-                    className="btn btn-green"
-                    type="submit"
-                  >
-                    Save & Continue
-                  </button>
+                  {values?.workplace?.label === "All" ? (
+                    <button
+                      style={{ height: "30px", width: "150px" }}
+                      className="btn btn-green"
+                      type="submit"
+                    >
+                      Save
+                    </button>
+                  ) : (
+                    <button
+                      style={{ height: "30px", width: "150px" }}
+                      className="btn btn-green"
+                      type="submit"
+                    >
+                      Save & Continue
+                    </button>
+                  )}
                 </div>
               </Form>
             </Box>
