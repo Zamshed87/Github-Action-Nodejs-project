@@ -15,6 +15,7 @@ import OrgBankDetailsLanding from "modules/configuration/orgBankDetails";
 import Religion from "modules/configuration/religion";
 import Section from "modules/configuration/section";
 import SeparationType from "modules/configuration/separationType";
+import TaxChallanConfigLanding from "modules/configuration/taxChallanConfig";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import Workplace from "modules/configuration/workplace";
@@ -558,9 +559,9 @@ const SBUUnit = lazy(() =>
 // const SeparationType = lazy(() =>
 //   import("../modules/configuration/separationType/index.jsx")
 // );
-const TaxChallanConfigLanding = lazy(() =>
-  import("../modules/configuration/taxChallanConfig/index.jsx")
-);
+// const TaxChallanConfigLanding = lazy(() =>
+//   import("../modules/configuration/taxChallanConfig/index.jsx")
+// );
 const UserGroup = lazy(() =>
   import("../modules/configuration/userGroup/index.jsx")
 );
