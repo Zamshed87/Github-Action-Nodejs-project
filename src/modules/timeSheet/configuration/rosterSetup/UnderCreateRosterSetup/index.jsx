@@ -34,7 +34,6 @@ export default function UnderCreateRosterSetup() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
   const [loading, setLoading] = useState(false);
   const [calendarDDL, setCalendarDDL] = useState([]);
 
@@ -56,6 +55,13 @@ export default function UnderCreateRosterSetup() {
       businessUnitId: buId,
       timeSheetRosterJsons: [...rowDto],
     };
+    // if(params?.id){
+    //   let payload = {
+    //     partType: "Roster",
+    //     businessUnitId: buId,
+    //     timeSheetRosterJsons: [...rowDto],
+
+    //   };
 
     createTimeSheetAction(payload, setLoading, cb);
   };
@@ -64,6 +70,7 @@ export default function UnderCreateRosterSetup() {
     if (rowDto?.[0]?.rosterId)
       return toast.warn("Please clear data , then add again");
     let payload = {
+      // =======
       calenderName: values?.calendarName?.label,
       rosterGroupId: +params?.id,
       calendarId: +values?.calendarName?.value,
@@ -72,7 +79,23 @@ export default function UnderCreateRosterSetup() {
       nextCalendarName: values?.nextCalendar?.label,
       IntCreatedBy: employeeId,
     };
-    setRowDto([...rowDto, payload]);
+
+    if (params?.id) {
+      let temp = rowDto?.map((item) => {
+        return {
+          calenderName: item?.calendarName || values?.calendarName?.label,
+          rosterGroupId: item?.rosterGroupId,
+          calendarId: +item?.calendarId,
+          noOfDaysChange: item?.noOfDaysChange,
+          nextCalenderId: +item?.nextCalenderId,
+          nextCalendarName: item?.nextCalendarName,
+          IntCreatedBy: item?.insertByUserId || employeeId,
+        };
+      });
+      setRowDto([...temp, payload]);
+    } else {
+      setRowDto([...rowDto, payload]);
+    }
   };
 
   const filterCalenderListFunc = (values) => {
@@ -93,7 +116,8 @@ export default function UnderCreateRosterSetup() {
       null,
       null,
       null,
-      wgId
+      wgId,
+      wId
     );
   };
 
@@ -224,6 +248,7 @@ export default function UnderCreateRosterSetup() {
                                 value={values?.noOfChangeDays}
                                 name="noOfChangeDays"
                                 type="number"
+                                min={0}
                                 className="form-control"
                                 onChange={(e) => {
                                   setFieldValue(
