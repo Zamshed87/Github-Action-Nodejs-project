@@ -148,6 +148,7 @@ function DocumentType() {
       >
         <PCard>
           <PCardHeader
+            title="Document Type"
             submitText="Document Type"
             submitIcon={<AddOutlined />}
             buttonList={[]}

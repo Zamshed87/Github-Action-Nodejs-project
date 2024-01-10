@@ -170,6 +170,7 @@ function Department() {
       >
         <PCard>
           <PCardHeader
+            title="Department"
             submitText="Department"
             submitIcon={<AddOutlined />}
             buttonList={[]}

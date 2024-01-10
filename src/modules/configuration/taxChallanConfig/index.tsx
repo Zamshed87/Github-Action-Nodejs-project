@@ -182,6 +182,7 @@ function TaxChallanConfigLanding() {
       >
         <PCard>
           <PCardHeader
+            title="Tax Challan Config"
             submitText="Tax Challan Config"
             submitIcon={<AddOutlined />}
             buttonList={[]}

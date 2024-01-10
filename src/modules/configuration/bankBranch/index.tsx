@@ -182,6 +182,7 @@ function BankBranch() {
       >
         <PCard>
           <PCardHeader
+            title="Bank Branch"
             onSearch={(e) => {
               searchFunc(e?.target?.value);
             }}

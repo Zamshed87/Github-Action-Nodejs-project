@@ -152,6 +152,7 @@ function LoanTypeCreate() {
       >
         <PCard>
           <PCardHeader
+            title="Loan Type"
             submitText="Loan Type"
             submitIcon={<AddOutlined />}
             buttonList={[]}
