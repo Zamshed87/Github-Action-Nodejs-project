@@ -203,6 +203,7 @@ function BusinessUnit() {
       >
         <PCard>
           <PCardHeader
+            title="Business Unit"
             // exportIcon={true}
             // title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             // onSearch={(e) => {

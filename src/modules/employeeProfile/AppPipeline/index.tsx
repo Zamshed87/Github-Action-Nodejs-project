@@ -170,6 +170,7 @@ function CommonAppPipeline() {
       >
         <PCard>
           <PCardHeader
+            title="Common Approval Pipeline"
             // onSearch={(e) => {
             //   searchFunc(e?.target?.value);
             // }}

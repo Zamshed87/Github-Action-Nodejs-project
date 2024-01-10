@@ -153,6 +153,7 @@ function Designation() {
       >
         <PCard>
           <PCardHeader
+            title="Designation"
             submitText="Designation"
             submitIcon={<AddOutlined />}
             buttonList={[]}

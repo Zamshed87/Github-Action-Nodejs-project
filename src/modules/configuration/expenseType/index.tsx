@@ -152,6 +152,7 @@ function ExpenseTypeCreate() {
       >
         <PCard>
           <PCardHeader
+            title="Expense Type"
             submitText="Expense Type"
             submitIcon={<AddOutlined />}
             buttonList={[]}
