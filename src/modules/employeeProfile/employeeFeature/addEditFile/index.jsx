@@ -294,7 +294,7 @@ export default function AddEditForm({
 
   // section wise ddl
   const getEmployeeSection = () => {
-    const { department } = form.getFieldsValue(true);
+    const { department , workplace } = form.getFieldsValue(true);
     empSectionDDL?.action({
       urlKey: "SectionDDL",
       method: "GET",
@@ -302,7 +302,7 @@ export default function AddEditForm({
         AccountId: intAccountId,
         BusinessUnitId: buId,
         DepartmentId: department?.value || 0,
-        WorkplaceId: wId,
+        WorkplaceId: workplace?.value
       },
       // onSuccess: (res) => {
       //   console.log("res", res);
