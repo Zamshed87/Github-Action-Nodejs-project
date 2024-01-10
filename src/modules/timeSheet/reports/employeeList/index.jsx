@@ -248,31 +248,37 @@ export default function EmployeeList() {
                             setLoading(true);
                             const excelLanding = async () => {
                               try {
-                                // const res = await axios.post(
-                                //   `/Employee/EmployeeReportWithFilter`,
-                                //   {
-                                //     businessUnitId: buId,
-                                //     workplaceGroupId: wgId,
-                                //     workplaceId: 0,
-                                //     pageNo: 0,
-                                //     pageSize: 0,
-                                //     isPaginated: false,
-                                //     isHeaderNeed: false,
-                                //     searchTxt: values?.searchString,
-                                //     strDesignationList: [],
-                                //     strDepartmentList: [],
-                                //     strSupervisorNameList: [],
-                                //     strLinemanagerList: [],
-                                //     strEmploymentTypeList: [],
-                                //     wingNameList: [],
-                                //     soleDepoNameList: [],
-                                //     regionNameList: [],
-                                //     areaNameList: [],
-                                //     territoryNameList: [],
-                                //   }
-                                // );
-                                if (resEmpLanding?.length > 0) {
-                                  const newData = resEmpLanding?.map(
+                                const res = await axios.post(
+                                  `/Employee/EmployeeReportWithFilter`,
+                                  {
+                                    businessUnitId: 1,
+                                    workplaceGroupId: 4,
+                                    workplaceId: 11,
+                                    pageNo: 1,
+                                    pageSize: 1000000,
+                                    isPaginated: false,
+                                    isHeaderNeed: true,
+                                    searchTxt: "",
+                                    strDesignationList: [],
+                                    strDepartmentList: [],
+                                    strSupervisorNameList: [],
+                                    strEmploymentTypeList: [],
+                                    strLinemanagerList: [],
+                                    wingNameList: [],
+                                    soleDepoNameList: [],
+                                    regionNameList: [],
+                                    areaNameList: [],
+                                    territoryNameList: [],
+                                    strWorkplaceGroupList: [],
+                                    strWorkplaceList: [],
+                                    strDivisionList: [],
+                                    strSectionList: [],
+                                    strHrPositionList: [],
+                                    strDottedSupervisorNameList: [],
+                                  }
+                                );
+                                if (res?.data?.data?.length > 0) {
+                                  const newData = res?.data?.data?.map(
                                     (item, index) => {
                                       return {
                                         ...item,

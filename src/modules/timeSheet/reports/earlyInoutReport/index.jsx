@@ -33,6 +33,7 @@ import {
 
   // subHeaderColumn,
 } from "./helper";
+import { timeFormatter } from "utility/timeFormatter";
 
 const initialValues = {
   businessUnit: "",
@@ -234,6 +235,9 @@ const EarlyReport = () => {
                                           return {
                                             ...item,
                                             sl: index + 1,
+                                            outTime: timeFormatter(
+                                              item?.outTime
+                                            ),
                                             calenderTime: `${
                                               item?.startTime || ""
                                             }-${item?.endTime || ""}`,

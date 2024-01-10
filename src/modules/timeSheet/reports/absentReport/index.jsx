@@ -159,7 +159,7 @@ const AbsentReport = () => {
       values?.date
     );
   };
-
+  console.log({ loading, apiLoading });
   return (
     <form onSubmit={handleSubmit}>
       {(loading || apiLoading) && <Loading />}
