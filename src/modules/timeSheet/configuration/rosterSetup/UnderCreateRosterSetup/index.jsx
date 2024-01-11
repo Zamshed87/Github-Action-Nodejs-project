@@ -2,6 +2,8 @@
 import { Edit } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import { shallowEqual, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
@@ -27,7 +29,7 @@ const initData = {
 };
 
 export default function UnderCreateRosterSetup() {
-  // const history = useHistory();
+  const history = useHistory();
   const params = useParams();
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
@@ -209,6 +211,7 @@ export default function UnderCreateRosterSetup() {
           saveHandler(values, () => {
             // don't reset form, not use ful for the purpose
             // resetForm(initData);
+            history.push(`/administration/timeManagement/rosterSetup`);
           });
         }}
       >
