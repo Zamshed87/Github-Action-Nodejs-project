@@ -69,4 +69,18 @@ export const apiList = {
   GetAllEmpExpenseType: "/SaasMasterData/GetAllEmpExpenseType",
   SaveEmpExpenseType: "/SaasMasterData/SaveEmpExpenseType",
   GetAllReligion: "/MasterData/GetAllReligion",
+  ApprovalPipeline: "/ApprovalPipeline/ApprovalPipelineHeaderLanding",
+  ApprovalPipelineDDL: "/ApprovalPipeline/ApprovalPipelineDDL",
+  BankBranchDDL: "/Employee/BankBranchDDL",
+  AccountBankDetailsCRUD: "/SaasMasterData/AccountBankDetailsCRUD",
+  AccountBankDetailsLanding: "/SaasMasterData/AccountBankDetailsLanding",
+  GetAllBankWallet: "/MasterData/GetAllBankWallet",
+  SaveTaxChallanConfig: "/SaasMasterData/SaveTaxChallanConfig",
+  CreateBankBranch: "/Employee/CreateBankBranch",
+  GetAllTaxchallanConfig: "/SaasMasterData/GetAllTaxchallanConfig",
+  BankBranchLanding: "/SaasMasterData/BankBranchLanding",
+  ApprovalPipelineCreateNUpdate:
+    "/ApprovalPipeline/ApprovalPipelineCreateNUpdate",
+  ApprovalPipelineHeaderDetailsById:
+    "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
 };

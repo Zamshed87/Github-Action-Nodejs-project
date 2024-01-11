@@ -158,6 +158,7 @@ function SeparationType() {
       >
         <PCard>
           <PCardHeader
+            title="Separation Type"
             submitText="Separation Type"
             submitIcon={<AddOutlined />}
             buttonList={[]}

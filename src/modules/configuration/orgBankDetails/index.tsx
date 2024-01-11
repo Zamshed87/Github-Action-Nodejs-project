@@ -15,7 +15,7 @@ import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 import ViewFormComponent from "./viewForm";
 
-function Department() {
+function OrgBankDetailsLanding() {
   // hook
   const dispatch = useDispatch();
 
@@ -55,27 +55,25 @@ function Department() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetAllEmpDepartment",
+      urlKey: "AccountBankDetailsLanding",
       method: "GET",
       params: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workplaceId: wId,
+        IntAccountId: orgId,
+        IntBusinessUnitId: buId,
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Department";
-
+    document.title = "Org Bank Details";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 48) {
+    if (item?.menuReferenceId === 30293) {
       employeeFeature = item;
     }
   });
@@ -99,28 +97,32 @@ function Department() {
       align: "center",
     },
     {
-      title: "Department",
-      dataIndex: "strDepartment",
+      title: "Account Name",
+      dataIndex: "strAccountName",
       sorter: true,
-      render: (_: any, rec: any) => {
-        return (
-          <div className="d-flex align-items-center">
-            <span className="">
-              {rec?.strDepartment} [ {rec?.strDepartmentCode}]
-            </span>
-          </div>
-        );
-      },
-      //   fixed: "left",
+      filter: true,
     },
     {
-      title: "Business Unit",
-      dataIndex: "strBusinessUnit",
-      sorter: true,
-      width: 100,
-
-      //   fixed: "left",
+      title: "Bank Name",
+      dataIndex: "strBankWalletName",
     },
+    {
+      title: "Branch Name",
+      dataIndex: "strBranchName",
+    },
+    {
+      title: "Account No",
+      dataIndex: "strAccountNo",
+    },
+    {
+      title: "Routing No",
+      dataIndex: "strRoutingNo",
+    },
+    {
+      title: "District",
+      dataIndex: "strDistrict",
+    },
+
     {
       title: "Status",
       dataIndex: "isActive",
@@ -170,8 +172,8 @@ function Department() {
       >
         <PCard>
           <PCardHeader
-            title="Department"
-            submitText="Department"
+            title="Org Bank Details"
+            submitText="Org Bank Details"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -207,9 +209,16 @@ function Department() {
 
       <PModal
         open={open}
-        title={id ? "Edit Department" : "Create Department"}
+        title={
+          id
+            ? "Edit Organization Bank Details"
+            : "Create Organization Bank Details"
+        }
         width=""
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setId("");
+          setOpen(false);
+        }}
         maskClosable={false}
         components={
           <>
@@ -225,7 +234,7 @@ function Department() {
       />
       <PModal
         open={view}
-        title={"Department Details"}
+        title={"Organization Bank Details"}
         width=""
         onCancel={() => {
           setId("");
@@ -244,4 +253,4 @@ function Department() {
   );
 }
 
-export default Department;
+export default OrgBankDetailsLanding;

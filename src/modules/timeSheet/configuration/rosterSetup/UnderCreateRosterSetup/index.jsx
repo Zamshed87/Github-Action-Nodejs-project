@@ -2,6 +2,8 @@
 import { Edit } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import { shallowEqual, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
@@ -27,14 +29,13 @@ const initData = {
 };
 
 export default function UnderCreateRosterSetup() {
-  // const history = useHistory();
+  const history = useHistory();
   const params = useParams();
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
   const [loading, setLoading] = useState(false);
   const [calendarDDL, setCalendarDDL] = useState([]);
 
@@ -50,20 +51,42 @@ export default function UnderCreateRosterSetup() {
 
     // firstRowCalId and lastRowNextCalId should be equal
     if (firstRowCalId !== lastRowNextCalId) return toast.warn("Invalid circle");
-
+    let temp = rowDto?.map((item) => {
+      return {
+        calenderName: item?.calendarName || item?.calenderName,
+        rosterGroupId: item?.rosterGroupId,
+        calendarId: +item?.calendarId,
+        noOfDaysChange: item?.noOfDaysChange,
+        nextCalenderId: +item?.nextCalenderId,
+        nextCalendarName: item?.nextCalendarName,
+        IntCreatedBy: item?.insertByUserId || employeeId,
+      };
+    });
     let payload = {
       partType: "Roster",
       businessUnitId: buId,
-      timeSheetRosterJsons: [...rowDto],
+      timeSheetRosterJsons: [...temp],
     };
+    // if(params?.id){
+    //   let payload = {
+    //     partType: "Roster",
+    //     businessUnitId: buId,
+    //     timeSheetRosterJsons: [...rowDto],
+
+    //   };
 
     createTimeSheetAction(payload, setLoading, cb);
   };
   const setter = (values) => {
     // rosterGroup id means edit, user must clear all row data for editing
-    if (rowDto?.[0]?.rosterId)
+    if (rowDto?.[0]?.rosterId) {
       return toast.warn("Please clear data , then add again");
+    }
+    if (values?.noOfChangeDays < 0) {
+      return toast.warn("No. of change days must be positive");
+    }
     let payload = {
+      // =======
       calenderName: values?.calendarName?.label,
       rosterGroupId: +params?.id,
       calendarId: +values?.calendarName?.value,
@@ -72,7 +95,29 @@ export default function UnderCreateRosterSetup() {
       nextCalendarName: values?.nextCalendar?.label,
       IntCreatedBy: employeeId,
     };
+
+    // if (params?.id) {
+    //   console.log({ params });
+    //   let temp = rowDto?.map((item) => {
+    //     return {
+    //       calenderName: item?.calendarName || values?.calendarName?.label,
+    //       rosterGroupId: item?.rosterGroupId,
+    //       calendarId: +item?.calendarId,
+    //       noOfDaysChange: item?.noOfDaysChange
+    //         ? item?.noOfDaysChange
+    //         : values?.noOfChangeDays,
+    //       nextCalenderId: +item?.nextCalenderId,
+    //       nextCalendarName: item?.nextCalendarName,
+    //       IntCreatedBy: item?.insertByUserId
+    //         ? item?.insertByUserId
+    //         : employeeId,
+    //     };
+    //   });
+    //   console.log({ temp });
+    //   setRowDto([...temp, payload]);
+    // } else {
     setRowDto([...rowDto, payload]);
+    // }
   };
 
   const filterCalenderListFunc = (values) => {
@@ -93,7 +138,8 @@ export default function UnderCreateRosterSetup() {
       null,
       null,
       null,
-      wgId
+      wgId,
+      wId
     );
   };
 
@@ -130,7 +176,6 @@ export default function UnderCreateRosterSetup() {
   //   if(item?.menuReferenceId === 42){
   //     permission = item;
   //   }
-  // })
 
   return (
     <>
@@ -138,9 +183,35 @@ export default function UnderCreateRosterSetup() {
         enableReinitialize={true}
         initialValues={initData}
         onSubmit={(values, { setSubmitting, resetForm }) => {
+          // // let temp = rowDto?.map((item) => {
+          // //   return {
+          // //     calenderName: item?.calendarName || item?.calenderName,
+          // //     rosterGroupId: item?.rosterGroupId,
+          // //     calendarId: +item?.calendarId,
+          // //     noOfDaysChange: item?.noOfDaysChange,
+          // //     nextCalenderId: +item?.nextCalenderId,
+          // //     nextCalendarName: item?.nextCalendarName,
+          // //     IntCreatedBy: item?.insertByUserId || employeeId,
+          // //   };
+          // // });
+          // setRowDto((prev) => {
+          //   return prev?.map((item) => {
+          //     return {
+          //       calenderName: item?.calendarName || item?.calenderName,
+          //       rosterGroupId: item?.rosterGroupId,
+          //       calendarId: +item?.calendarId,
+          //       noOfDaysChange: item?.noOfDaysChange,
+          //       nextCalenderId: +item?.nextCalenderId,
+          //       nextCalendarName: item?.nextCalendarName,
+          //       IntCreatedBy: item?.insertByUserId || employeeId,
+          //     };
+          //   });
+          // });
+
           saveHandler(values, () => {
             // don't reset form, not use ful for the purpose
             // resetForm(initData);
+            history.push(`/administration/timeManagement/rosterSetup`);
           });
         }}
       >
@@ -224,6 +295,7 @@ export default function UnderCreateRosterSetup() {
                                 value={values?.noOfChangeDays}
                                 name="noOfChangeDays"
                                 type="number"
+                                min={0}
                                 className="form-control"
                                 onChange={(e) => {
                                   setFieldValue(

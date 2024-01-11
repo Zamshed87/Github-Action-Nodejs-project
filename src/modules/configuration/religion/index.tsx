@@ -123,6 +123,7 @@ function Religion() {
       >
         <PCard>
           <PCardHeader
+            title="Religion"
             // submitText="Employment Type"
             // submitIcon={<AddOutlined />}
             buttonList={[]}

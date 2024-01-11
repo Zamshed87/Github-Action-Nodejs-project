@@ -12,10 +12,11 @@ import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import Chips from "common/Chips";
+// import AddEditForm from "./addEditForm";
+import { debounce } from "lodash";
 import AddEditForm from "./addEditForm";
-import ViewFormComponent from "./viewForm";
 
-function Department() {
+function BankBranch() {
   // hook
   const dispatch = useDispatch();
 
@@ -55,19 +56,20 @@ function Department() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetAllEmpDepartment",
+      urlKey: "BankBranchLanding",
       method: "GET",
       params: {
+        // bankId: bankId ,
         accountId: orgId,
-        businessUnitId: buId,
-        workplaceId: wId,
+        bankBranchId: 0,
+        search: searchText,
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Department";
+    document.title = "Bank Branch";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -75,7 +77,7 @@ function Department() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 48) {
+    if (item?.menuReferenceId === 196) {
       employeeFeature = item;
     }
   });
@@ -85,9 +87,9 @@ function Department() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const searchFunc = debounce((value) => {
-  //   landingApiCall({ searchText: value });
-  // }, 500);
+  const searchFunc = debounce((value) => {
+    landingApiCall({ searchText: value });
+  }, 500);
 
   // Header
   const header = [
@@ -98,29 +100,39 @@ function Department() {
       width: 25,
       align: "center",
     },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sorter: true,
-      render: (_: any, rec: any) => {
-        return (
-          <div className="d-flex align-items-center">
-            <span className="">
-              {rec?.strDepartment} [ {rec?.strDepartmentCode}]
-            </span>
-          </div>
-        );
-      },
-      //   fixed: "left",
-    },
-    {
-      title: "Business Unit",
-      dataIndex: "strBusinessUnit",
-      sorter: true,
-      width: 100,
 
-      //   fixed: "left",
+    {
+      title: "Bank Name",
+      dataIndex: "strBankName",
+      width: 150,
     },
+    {
+      title: "Bank Code",
+      dataIndex: "strBankCode",
+    },
+    {
+      title: "Branch Name",
+      dataIndex: "strBankBranchName",
+      width: 150,
+    },
+    {
+      title: "Branch Code",
+      dataIndex: "strBankBranchCode",
+    },
+    {
+      title: "District",
+      dataIndex: "strDistrict",
+      width: 150,
+    },
+    {
+      title: "Bank Address",
+      dataIndex: "strBankBranchAddress",
+    },
+    {
+      title: "Routing No",
+      dataIndex: "strRoutingNo",
+    },
+
     {
       title: "Status",
       dataIndex: "isActive",
@@ -159,7 +171,7 @@ function Department() {
       ),
     },
   ];
-  // console.log(landingApi?.data);
+  console.log(landingApi);
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -170,8 +182,11 @@ function Department() {
       >
         <PCard>
           <PCardHeader
-            title="Department"
-            submitText="Department"
+            title="Bank Branch"
+            onSearch={(e) => {
+              searchFunc(e?.target?.value);
+            }}
+            submitText="Bank Branch"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -180,7 +195,11 @@ function Department() {
           {/* Example Using Data Table Designed By Ant-Design v4 */}
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.data?.length > 0
+                ? landingApi?.data?.data?.slice(0, 50)
+                : []
+            }
             loading={landingApi?.loading}
             header={header}
             onChange={(pagination, filters, sorter, extra) => {
@@ -207,9 +226,12 @@ function Department() {
 
       <PModal
         open={open}
-        title={id ? "Edit Department" : "Create Department"}
+        title={id ? "Edit Bank Branch" : "Create Bank Branch"}
         width=""
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setId("");
+          setOpen(false);
+        }}
         maskClosable={false}
         components={
           <>
@@ -223,25 +245,10 @@ function Department() {
           </>
         }
       />
-      <PModal
-        open={view}
-        title={"Department Details"}
-        width=""
-        onCancel={() => {
-          setId("");
-          setView(false);
-        }}
-        maskClosable={true}
-        components={
-          <>
-            <ViewFormComponent singleData={id} />
-          </>
-        }
-      />
     </>
   ) : (
     <NotPermittedPage />
   );
 }
 
-export default Department;
+export default BankBranch;

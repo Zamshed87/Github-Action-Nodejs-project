@@ -152,6 +152,7 @@ function EmploymentTypeCreate() {
       >
         <PCard>
           <PCardHeader
+            title="Employment Type"
             submitText="Employment Type"
             submitIcon={<AddOutlined />}
             buttonList={[]}

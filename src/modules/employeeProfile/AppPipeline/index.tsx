@@ -6,6 +6,7 @@ import { useApiRequest } from "Hooks";
 import { Form } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { debounce } from "lodash";
 
 // import "./styles.css";
 import { toast } from "react-toastify";
@@ -13,9 +14,10 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
-import ViewFormComponent from "./viewForm";
+import { getSerial } from "Utils";
+import { dateFormatter } from "utility/dateFormatter";
 
-function Department() {
+function CommonAppPipeline() {
   // hook
   const dispatch = useDispatch();
 
@@ -55,19 +57,23 @@ function Department() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetAllEmpDepartment",
+      urlKey: "ApprovalPipeline",
       method: "GET",
       params: {
         accountId: orgId,
-        businessUnitId: buId,
-        workplaceId: wId,
+        intWorkplaceId: wId,
+        intWorkplaceGroupId: wgId,
+        intBusinessUnitId: buId,
+        searchText: searchText || "",
+        PageSize: pagination?.pageSize || 25,
+        PageNo: pagination?.current || 1,
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Department";
+    document.title = "Common Approval Pipeline";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -75,7 +81,7 @@ function Department() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 48) {
+    if (item?.menuReferenceId === 129) {
       employeeFeature = item;
     }
   });
@@ -85,56 +91,50 @@ function Department() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const searchFunc = debounce((value) => {
-  //   landingApiCall({ searchText: value });
-  // }, 500);
+  const searchFunc = debounce((value) => {
+    landingApiCall({ searchText: value });
+  }, 500);
 
   // Header
   const header = [
     {
       title: "SL",
-      render: (_: any, rec: any, index: number) => index + 1,
-      //   fixed: "left",
+      render: (_: any, rec: any, index: number) =>
+        getSerial({
+          currentPage: landingApi?.data?.currentPage,
+          pageSize: landingApi?.data?.pageSize,
+          index,
+        }),
+      fixed: "left",
       width: 25,
       align: "center",
     },
     {
-      title: "Department",
-      dataIndex: "strDepartment",
+      title: "Pipeline Name",
+      dataIndex: "strPipelineName",
       sorter: true,
-      render: (_: any, rec: any) => {
-        return (
-          <div className="d-flex align-items-center">
-            <span className="">
-              {rec?.strDepartment} [ {rec?.strDepartmentCode}]
-            </span>
-          </div>
-        );
-      },
-      //   fixed: "left",
     },
     {
-      title: "Business Unit",
-      dataIndex: "strBusinessUnit",
+      title: "Remarks",
+      dataIndex: "strRemarks",
       sorter: true,
-      width: 100,
-
-      //   fixed: "left",
     },
     {
-      title: "Status",
-      dataIndex: "isActive",
+      title: "Date",
+      dataIndex: "dteCreatedAt",
+      render: (_: any, rec: any) => dateFormatter(rec?.dteCreatedAt),
       sorter: true,
-      render: (_: any, rec: any) => (
-        <>
-          <Chips
-            label={rec?.isActive ? "Active" : "Inactive"}
-            classess={`${rec?.isActive ? "success" : "danger"}`}
-          />
-        </>
-      ),
     },
-
+    {
+      title: "Workplace Group",
+      dataIndex: "workplcaeGroup",
+      sorter: true,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplcae",
+      sorter: true,
+    },
     {
       width: 50,
       align: "center",
@@ -170,8 +170,11 @@ function Department() {
       >
         <PCard>
           <PCardHeader
-            title="Department"
-            submitText="Department"
+            title="Common Approval Pipeline"
+            // onSearch={(e) => {
+            //   searchFunc(e?.target?.value);
+            // }}
+            submitText="Approval Pipeline"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -180,7 +183,9 @@ function Department() {
           {/* Example Using Data Table Designed By Ant-Design v4 */}
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.data?.length > 0 ? landingApi?.data?.data : []
+            }
             loading={landingApi?.loading}
             header={header}
             onChange={(pagination, filters, sorter, extra) => {
@@ -207,9 +212,12 @@ function Department() {
 
       <PModal
         open={open}
-        title={id ? "Edit Department" : "Create Department"}
+        title={id ? "Edit Approval Pipeline" : "Create Approval Pipeline"}
         width=""
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setId("");
+          setOpen(false);
+        }}
         maskClosable={false}
         components={
           <>
@@ -223,25 +231,10 @@ function Department() {
           </>
         }
       />
-      <PModal
-        open={view}
-        title={"Department Details"}
-        width=""
-        onCancel={() => {
-          setId("");
-          setView(false);
-        }}
-        maskClosable={true}
-        components={
-          <>
-            <ViewFormComponent singleData={id} />
-          </>
-        }
-      />
     </>
   ) : (
     <NotPermittedPage />
   );
 }
 
-export default Department;
+export default CommonAppPipeline;

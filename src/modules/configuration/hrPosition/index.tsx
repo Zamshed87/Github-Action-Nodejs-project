@@ -154,6 +154,7 @@ function HRPosition() {
       >
         <PCard>
           <PCardHeader
+            title="HR Position"
             submitText="HR Position"
             submitIcon={<AddOutlined />}
             buttonList={[]}

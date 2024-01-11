@@ -3,6 +3,7 @@ import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/PayrollElement";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
+import BankBranch from "modules/configuration/bankBranch";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
 import Designation from "modules/configuration/designation";
@@ -11,12 +12,15 @@ import EmploymentTypeCreate from "modules/configuration/employmentType";
 import ExpenseTypeCreate from "modules/configuration/expenseType";
 import HRPosition from "modules/configuration/hrPosition";
 import LoanTypeCreate from "modules/configuration/loanType";
+import OrgBankDetailsLanding from "modules/configuration/orgBankDetails";
 import Religion from "modules/configuration/religion";
 import Section from "modules/configuration/section";
 import SeparationType from "modules/configuration/separationType";
+import TaxChallanConfigLanding from "modules/configuration/taxChallanConfig";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import Workplace from "modules/configuration/workplace";
+import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
@@ -475,9 +479,9 @@ const SelectionModule = lazy(() =>
 const Sliders = lazy(() =>
   import("../modules/componentModule/slidersModule/index.jsx")
 );
-const BankBranch = lazy(() =>
-  import("../modules/configuration/bankBranch/index.jsx")
-);
+// const BankBranch = lazy(() =>
+//   import("../modules/configuration/bankBranch/index.jsx")
+// );
 // const BusinessUnit = lazy(() =>
 //   import("../modules/configuration/busisnessUnit/index.jsx")
 // );
@@ -541,9 +545,9 @@ const NotificationConfig = lazy(() =>
 const NotificationDetails = lazy(() =>
   import("../modules/configuration/NotificationConfig/singleView.jsx")
 );
-const OrgBankDetailsLanding = lazy(() =>
-  import("../modules/configuration/orgBankDetails/index.jsx")
-);
+// const OrgBankDetailsLanding = lazy(() =>
+//   import("../modules/configuration/orgBankDetails/index.jsx")
+// );
 const PayScaleGrade = lazy(() =>
   import("../modules/configuration/payScaleGrade/index.jsx")
 );
@@ -556,9 +560,9 @@ const SBUUnit = lazy(() =>
 // const SeparationType = lazy(() =>
 //   import("../modules/configuration/separationType/index.jsx")
 // );
-const TaxChallanConfigLanding = lazy(() =>
-  import("../modules/configuration/taxChallanConfig/index.jsx")
-);
+// const TaxChallanConfigLanding = lazy(() =>
+//   import("../modules/configuration/taxChallanConfig/index.jsx")
+// );
 const UserGroup = lazy(() =>
   import("../modules/configuration/userGroup/index.jsx")
 );
@@ -600,9 +604,9 @@ const GoForPrint = lazy(() =>
 const PrintPreview = lazy(() =>
   import("../modules/employeeProfile/aboutMe/GoForPrint/PrintPreview.jsx")
 );
-const CommonAppPipeline = lazy(() =>
-  import("../modules/employeeProfile/AppPipeline/index.jsx")
-);
+// const CommonAppPipeline = lazy(() =>
+//   import("../modules/employeeProfile/AppPipeline/index.jsx")
+// );
 const EmAttendenceAdjust = lazy(() =>
   import("../modules/employeeProfile/attendenceAdjust/index.jsx")
 );
