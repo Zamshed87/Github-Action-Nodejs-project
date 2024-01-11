@@ -20,6 +20,14 @@ const style = {
 
 const validationSchema = Yup.object({
   rosterGroupName: Yup.string().required("Roster name is required"),
+  orgName: Yup.object({
+    label: Yup.string().required("Workplace Group is required"),
+    value: Yup.string().required("Workplace Group is required"),
+  }),
+  workplace: Yup.object({
+    label: Yup.string().required("Workplace  is required"),
+    value: Yup.string().required("Workplace  is required"),
+  }).typeError("Workplace is required"),
 });
 
 const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
@@ -115,6 +123,8 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
               history.push(
                 `/administration/timeManagement/rosterSetup/${autoId}/${autoName}`
               );
+            } else {
+              getData();
             }
           });
         }}
