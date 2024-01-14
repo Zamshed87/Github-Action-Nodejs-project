@@ -8,16 +8,16 @@ import AvatarComponent from "../../../common/AvatarComponent";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../utility/dateFormatter";
 
-const getYearMonth2 = (value) => {
-  let splitMonth = value?.split("-");
-  let year2 = splitMonth?.[0];
-  let month2 = splitMonth?.[1];
-  return { year2, month2 };
-};
+// const getYearMonth2 = (value) => {
+//   let splitMonth = value?.split("-");
+//   let year2 = splitMonth?.[0];
+//   let month2 = splitMonth?.[1];
+//   return { year2, month2 };
+// };
 
-function getDaysInMonth2(year2, month2) {
-  return new Date(year2, month2, 0).getDate();
-}
+// function getDaysInMonth2(year2, month2) {
+//   return new Date(year2, month2, 0).getDate();
+// }
 
 export const getBuDetails = async (buId, setter, setLoading) => {
   setLoading && setLoading(true);
@@ -43,8 +43,8 @@ export const createEditEmpAction = async (
   cb,
   isEdit
 ) => {
-  let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
-  let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
+  // let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
+  // let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
