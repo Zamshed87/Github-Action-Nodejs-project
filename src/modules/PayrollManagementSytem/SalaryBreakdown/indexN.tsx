@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { payrollGroupElementList } from "./calculation";
+import { isDevServer } from "App";
 
 type TindexN = {};
 const SalaryBreakdownN: React.FC<TindexN> = () => {
@@ -110,10 +111,12 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
               {
                 type: "edit",
                 onClick: () => {
-                  history.push({
-                    pathname: `/administration/payrollConfiguration/salaryBreakdown/edit/id:${item?.intSalaryBreakdownHeaderId}`,
-                    state: item,
-                  });
+                  if (isDevServer) {
+                    history.push({
+                      pathname: `/administration/payrollConfiguration/salaryBreakdown/edit/id:${item?.intSalaryBreakdownHeaderId}`,
+                      state: item,
+                    });
+                  }
                 },
               },
               {
