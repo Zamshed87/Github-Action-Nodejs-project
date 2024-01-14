@@ -142,7 +142,7 @@ function EmployeeFeatureNew() {
           index,
         }),
       fixed: "left",
-      width: 25,
+      width: 15,
       align: "center",
     },
     {
@@ -150,6 +150,7 @@ function EmployeeFeatureNew() {
       dataIndex: "strEmployeeCode",
       sorter: true,
       fixed: "left",
+      width: 30,
     },
     {
       title: "Employee Name",
@@ -164,11 +165,13 @@ function EmployeeFeatureNew() {
       },
       sorter: true,
       fixed: "left",
+      width: 80,
     },
     {
       title: "Reference Id",
       dataIndex: "strReferenceId",
       sorter: true,
+      width: 30,
     },
     {
       title: "Designation",
@@ -177,6 +180,7 @@ function EmployeeFeatureNew() {
       filter: true,
       filterKey: "strDesignationList",
       filterSearch: true,
+      width: 50,
     },
     {
       title: "Department",
@@ -185,45 +189,7 @@ function EmployeeFeatureNew() {
       filter: true,
       filterKey: "strDepartmentList",
       filterSearch: true,
-    },
-    {
-      title: "Wing",
-      dataIndex: "wingName",
-      sorter: true,
-      filter: true,
-      filterKey: "wingNameList",
-
-      hidden: wgName === "Marketing" ? false : true,
-    },
-    {
-      title: "Sole Depo",
-      dataIndex: "soleDepoName",
-      sorter: true,
-      filter: true,
-      filterKey: "soleDepoNameList",
-      hidden: wgName === "Marketing" ? false : true,
-    },
-    {
-      title: "Region",
-      dataIndex: "regionName",
-      sorter: true,
-      filter: true,
-      filterKey: "regionNameList",
-      hidden: wgName === "Marketing" ? false : true,
-    },
-    {
-      title: "Area",
-      dataIndex: "areaName",
-      sorter: true,
-      filter: true,
-      filterKey: "areaNameList",
-      hidden: wgName === "Marketing" ? false : true,
-    },
-    {
-      title: "Territory",
-      dataIndex: "territoryName",
-      sorter: true,
-      hidden: wgName === "Marketing" ? false : true,
+      width: 50,
     },
     {
       title: "Supervisor",
@@ -231,6 +197,7 @@ function EmployeeFeatureNew() {
       sorter: true,
       filter: true,
       filterKey: "strSupervisorNameList",
+      width: 60,
     },
     {
       title: "Line Manager",
@@ -238,6 +205,7 @@ function EmployeeFeatureNew() {
       sorter: true,
       filter: true,
       filterKey: "strLinemanagerList",
+      width: 60,
     },
     // {
     //   title: "Pin Number",
@@ -248,6 +216,7 @@ function EmployeeFeatureNew() {
       title: "Contact No",
       dataIndex: "contactNo",
       sorter: true,
+      width: 50,
     },
     {
       title: "Type",
@@ -255,6 +224,7 @@ function EmployeeFeatureNew() {
       sorter: true,
       filter: true,
       filterKey: "strEmploymentTypeList",
+      width: 25,
     },
     {
       title: "Joining Date",
@@ -262,9 +232,10 @@ function EmployeeFeatureNew() {
       render: (_: any, rec: any) => dateFormatter(rec?.dteJoiningDate),
       sorter: true,
       dataType: "date",
+      width: 30,
     },
     {
-      width: 50,
+      width: 20,
       align: "center",
       render: (_: any, rec: any) => (
         <TableButton
@@ -480,7 +451,7 @@ function EmployeeFeatureNew() {
             bordered
             data={landingApi?.data?.data || []}
             loading={landingApi?.loading}
-            header={header?.filter((item) => !item?.hidden)}
+            header={header}
             pagination={{
               pageSize: landingApi?.data?.pageSize,
               total: landingApi?.data?.totalCount,
