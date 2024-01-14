@@ -148,7 +148,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                     <div className="col-md-6">
                       <label className="mb-2">Workplace Group </label>
                       <FormikSelect
-                        // isDisabled={isEdit}
+                        isDisabled={id}
                         classes="input-sm"
                         styles={customStyles}
                         name="orgName"
@@ -178,7 +178,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                     <div className="col-md-6">
                       <label className="mb-2">Workplace </label>
                       <FormikSelect
-                        // isDisabled={isEdit}
+                        isDisabled={id}
                         classes="input-sm"
                         styles={customStyles}
                         name="workplace"
