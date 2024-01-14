@@ -32,7 +32,7 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
       form.setFieldsValue({
         elementName: rowData?.strPayrollElementName,
         isBasic: rowData?.isBasicSalary,
-        isPrimarySalaryElement: rowData?.isPrimarySalary,
+        isSalaryElement: rowData?.isPrimarySalary,
         elementType: rowData?.isAddition ? "addition" : "deduction",
         isTaxable: rowData?.isTaxable,
       });
@@ -41,7 +41,9 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
 
   //   Functions
   const onFinish = () => {
+    
     const values = form.getFieldsValue(true);
+    console.log("values",values)
     const payload = {
       intPayrollElementTypeId: rowData?.intPayrollElementTypeId || 0,
       intAccountId: orgId,
@@ -50,9 +52,9 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
       strPayrollElementName: values?.elementName,
       strCode: " ",
       isBasicSalary: values?.isBasic || false,
-      isPrimarySalary: values?.isPrimarySalaryElement || false,
-      isAddition: values?.additionDeduction === "addition" ? true : false,
-      isDeduction: values?.additionDeduction === "deduction" ? true : false,
+      isPrimarySalary: values?.isSalaryElement || false,
+      isAddition: values?.elementType === "addition" ? true : false,
+      isDeduction: values?.elementType === "deduction" ? true : false,
       isTaxable: values?.isTaxable || false,
       isActive: true,
       dteCreatedAt: moment().format("YYYY-MM-DD"),
