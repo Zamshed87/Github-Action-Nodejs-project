@@ -15,6 +15,7 @@ import ExpenseTypeCreate from "modules/configuration/expenseType";
 import HRPosition from "modules/configuration/hrPosition";
 import LoanTypeCreate from "modules/configuration/loanType";
 import OrgBankDetailsLanding from "modules/configuration/orgBankDetails";
+import OrgInfoId from "modules/configuration/orgInfoForId";
 import Religion from "modules/configuration/religion";
 import Section from "modules/configuration/section";
 import SeparationType from "modules/configuration/separationType";
@@ -1477,6 +1478,10 @@ export const routingList = [
   {
     path: "/profile/cafeteriaManagement/detailsReport",
     component: FoodDetailsReport,
+  },
+  {
+    path: "/administration/configuration/orgInfoForId",
+    component: OrgInfoId,
   },
   //PF Management start for selfService
   {
