@@ -294,7 +294,7 @@ export default function AddEditForm({
 
   // section wise ddl
   const getEmployeeSection = () => {
-    const { department , workplace } = form.getFieldsValue(true);
+    const { department, workplace } = form.getFieldsValue(true);
     empSectionDDL?.action({
       urlKey: "SectionDDL",
       method: "GET",
@@ -302,7 +302,7 @@ export default function AddEditForm({
         AccountId: intAccountId,
         BusinessUnitId: buId,
         DepartmentId: department?.value || 0,
-        WorkplaceId: workplace?.value
+        WorkplaceId: workplace?.value,
       },
       // onSuccess: (res) => {
       //   console.log("res", res);
@@ -449,8 +449,10 @@ export default function AddEditForm({
       getEmployeeStatus();
       getEmployeePosition();
       getEmployeeSection();
-      // new requirment 
-      singleData.calenderType?.value === 1 ? getCalendarDDL() : getRosterGroupDDL();
+      // new requirment
+      singleData.calenderType?.value === 1
+        ? getCalendarDDL()
+        : getRosterGroupDDL();
       singleData.calenderType?.value === 2 && getCalendarByRosterDDL();
     }
   }, [orgId, buId, singleData, employeeId]);
@@ -1043,7 +1045,8 @@ export default function AddEditForm({
           {/* User Create */}
           <Form.Item noStyle shouldUpdate>
             {() => {
-              const { isUsersection } = form.getFieldsValue();
+              const { isUsersection, employeeCode } = form.getFieldsValue();
+
               return !isEdit ? (
                 <>
                   <Col md={12} sm={24} style={{ marginTop: "20px" }}>
@@ -1052,6 +1055,14 @@ export default function AddEditForm({
                       type="checkbox"
                       name="isUsersection"
                       layout="horizontal"
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          form.setFieldsValue({
+                            loginUserId: employeeCode,
+                            password: "123456",
+                          });
+                        }
+                      }}
                     />
                   </Col>
                   {isUsersection ? (
