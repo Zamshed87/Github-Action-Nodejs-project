@@ -417,6 +417,8 @@ function AboutMeDetails() {
             singleData={{
               empId:
                 empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
+              strReferenceId:
+                empBasic?.employeeProfileLandingView?.strReferenceId,
               fullName: empBasic?.employeeProfileLandingView?.strEmployeeName,
               employeeCode:
                 empBasic?.employeeProfileLandingView?.strEmployeeCode ||
