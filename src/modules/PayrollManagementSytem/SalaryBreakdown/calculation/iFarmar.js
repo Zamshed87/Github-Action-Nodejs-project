@@ -143,7 +143,7 @@ export const iFarmerCalculation = (
     ...payload,
     intSalaryBreakdownHeaderId:
       singleData?.intSalaryBreakdownHeaderId ||
-      state?.singleBreakdown?.intSalaryBreakdownHeaderId ||
+      state?.intSalaryBreakdownHeaderId ||
       dynamicForm[0]?.intSalaryBreakdownHeaderId ||
       0,
     strDependOn: values?.dependsOn?.label,
