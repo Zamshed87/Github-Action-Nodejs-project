@@ -99,34 +99,24 @@ export const createEditEmpAction = async (
       strPersonalMobile: values?.phone || "",
       strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
-      calendarAssignViewModel: {
-        employeeId: 0,
-        joiningDate: values?.joiningDate,
-        generateStartDate: values?.generateDate,
-        generateEndDate: null,
-        runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
-        calendarType: values?.calenderType?.label,
-        nextChangeDate: values?.nextChangeDate || null,
-        rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-        isAutoGenerate: false,
-      } || null,
+      calendarAssignViewModel:  null,
     };
-    // if (!isEdit) {
-    //   payload = {
-    //     ...payload,
-    //     calendarAssignViewModel: {
-    //       employeeId: 0,
-    //       joiningDate: values?.joiningDate,
-    //       generateStartDate: values?.generateDate,
-    //       generateEndDate: null,
-    //       runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
-    //       calendarType: values?.calenderType?.label,
-    //       nextChangeDate: values?.nextChangeDate || null,
-    //       rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-    //       isAutoGenerate: false,
-    //     },
-    //   };
-    // }
+    if (!isEdit) {
+      payload = {
+        ...payload,
+        calendarAssignViewModel: {
+          employeeId: 0,
+          joiningDate: values?.joiningDate,
+          generateStartDate: values?.generateDate,
+          generateEndDate: null,
+          runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
+          calendarType: values?.calenderType?.label,
+          nextChangeDate: values?.nextChangeDate || null,
+          rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
+          isAutoGenerate: false,
+        },
+      };
+    }
     if (values?.isUsersection === true) {
       payload = {
         ...payload,
