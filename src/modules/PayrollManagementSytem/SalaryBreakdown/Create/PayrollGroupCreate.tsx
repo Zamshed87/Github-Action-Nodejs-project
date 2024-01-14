@@ -72,7 +72,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   // Life Cycle Hooks
 
-
   // for initial
   useEffect(() => {
     getAllSalaryPolicyDDL(orgId, buId, setPayrollPolicyDDL);
@@ -279,7 +278,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
         return defaultSetter(values, dynamicForm, payload, setDynamicForm);
     }
   };
-console.log("dynamicForm",dynamicForm)
+  console.log("dynamicForm", dynamicForm);
   return (
     <>
       <PForm
@@ -358,10 +357,17 @@ console.log("dynamicForm",dynamicForm)
                   name="workplace"
                   placeholder="Workplace Name"
                   options={workplace || []}
-                  onChange={(value, option) => {
+                  onSelect={(value, option) => {
                     form.setFieldsValue({
                       workplace: option,
                     });
+                    const { payScale } = form.getFieldsValue(true);
+                    getPayrollElementDDL(
+                      orgId,
+                      setPayrollElementDDL,
+                      payScale?.value,
+                      value
+                    );
                   }}
                   rules={[
                     {
@@ -432,7 +438,6 @@ console.log("dynamicForm",dynamicForm)
                       {dependsOn?.value === 1 && (
                         <Col md={6} sm={12} className="mt-3">
                           <PInput
-                          
                             type="checkbox"
                             label="Is Flat Salary?"
                             name="isFlat"
@@ -472,12 +477,6 @@ console.log("dynamicForm",dynamicForm)
                               form.setFieldsValue({
                                 basedOn: option,
                               });
-                              getPayrollElementDDL(
-                                orgId,
-                                setPayrollElementDDL,
-                                payScale?.value,
-                                value
-                              );
                             }}
                           />
                         </Col>
@@ -532,10 +531,9 @@ console.log("dynamicForm",dynamicForm)
                   return (
                     <>
                       {!isPerdaySalary &&
-                     
                         dynamicForm?.map((itm: any, index: number) => {
-                          console.log("item",itm);
-                          console.log(itm?.[itm?.levelVariable])
+                          console.log("item", itm);
+                          console.log(itm?.[itm?.levelVariable]);
                           return (
                             <>
                               <div className="d-flex align-items-center">
