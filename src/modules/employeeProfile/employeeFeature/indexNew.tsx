@@ -142,7 +142,7 @@ function EmployeeFeatureNew() {
           index,
         }),
       fixed: "left",
-      width: 25,
+      width: 15,
       align: "center",
     },
     {
