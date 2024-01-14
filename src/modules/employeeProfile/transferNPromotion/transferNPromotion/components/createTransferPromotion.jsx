@@ -160,7 +160,7 @@ function CreateTransferPromotion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -269,6 +269,7 @@ function CreateTransferPromotion() {
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [departmentDDL, setDepartmentDDL] = useState([]);
   const [designationDDL, setDesignationDDL] = useState([]);
+  const [sectionDDL, setSectionDDL] = useState([]);
   // const [supNLineManagerDDL, setSupNLineManagerDDL] = useState([]);
   const [userRoleDDL, setUserRoleDDL] = useState([]);
   const [organizationDDL, setOrganizationDDL] = useState([]);
@@ -331,22 +332,21 @@ function CreateTransferPromotion() {
         "DepartmentName",
         setDepartmentDDL
       );
+      // getPeopleDeskWithoutAllDDL(
+      //   `/SaasMasterData/SectionDDL?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${values?.workplace?.value || 0}&DepartmentId=${valueOption?.value}`,
+      //   "value",
+      //   "label",
+      //   setSectionDDL
+      // );
       getPeopleDeskAllDDL(
         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&BusinessUnitId=${
           state?.singleData?.intBusinessUnitId
-        }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
+        }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}&intWorkplaceId=${wId || 0}`,
         "DesignationId",
         "DesignationName",
         setDesignationDDL
       );
-      // getPeopleDeskAllDDL(
-      //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${
-      //     state?.singleData?.intBusinessUnitId
-      //   }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
-      //   "EmployeeId",
-      //   "EmployeeName",
-      //   setSupNLineManagerDDL
-      // );
+
       getPeopleDeskAllDDL(
         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${
           state?.singleData?.intBusinessUnitId
@@ -395,7 +395,7 @@ function CreateTransferPromotion() {
       setFileId(state?.singleData?.intAttachementId);
     }
   }, [id, state, employeeId, orgId, buId, wgId]);
-
+console.log("state",state)
   // image
   const inputFile = useRef(null);
   const onButtonClick = () => {
@@ -573,40 +573,7 @@ function CreateTransferPromotion() {
                     />
                   )}
                 </div>
-                {/* <FormikSelect
-                  menuPosition="fixed"
-                  name="employee"
-                  options={employeeDDL || []}
-                  value={values?.employee}
-                  onChange={(valueOption) => {
-                    setValues((prev) => ({
-                      ...prev,
-                      employee: valueOption,
-                    }));
-                    setRowDto([]);
-                    setHistoryData([]);
-                    getEmployeeProfileViewData(
-                      valueOption?.value,
-                      setEmpBasic,
-                      setLoading,
-                      buId,
-                      wgId
-                    );
-                    getTransferAndPromotionHistoryById(
-                      orgId,
-                      valueOption?.value,
-                      setHistoryData,
-                      setLoading,
-                      buId,
-                      wgId
-                    );
-                  }}
-                  styles={customStyles}
-                  errors={errors}
-                  placeholder=""
-                  touched={touched}
-                  isDisabled={values?.employee}
-                /> */}
+               
                 <AsyncFormikSelect
                   selectedValue={values?.employee}
                   isSearchIcon={true}
@@ -791,37 +758,17 @@ function CreateTransferPromotion() {
                         "label",
                         0
                       );
-                      getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${
-                          valueOption?.value
-                        }&WorkplaceGroupId=${
-                          values?.workplaceGroup?.value || wgId
-                        }`,
-                        "DepartmentId",
-                        "DepartmentName",
-                        setDepartmentDDL
-                      );
+                      
                       getPeopleDeskAllDDL(
                         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&BusinessUnitId=${
                           valueOption?.value
                         }&WorkplaceGroupId=${
                           values?.workplaceGroup?.value || wgId
-                        }`,
+                        }&intWorkplaceId=${wId || 0}`,
                         "DesignationId",
                         "DesignationName",
                         setDesignationDDL
                       );
-                      // getPeopleDeskAllDDL(
-                      //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&BusinessUnitId=${
-                      //     valueOption?.value
-                      //   }&WorkplaceGroupId=${
-                      //     values?.workplaceGroup?.value || wgId
-                      //   }`,
-                      //   "EmployeeId",
-                      //   "EmployeeName",
-                      //   setSupNLineManagerDDL
-                      // );
-
                       // wing DDL
                       if (
                         valueOption?.value &&
@@ -931,6 +878,16 @@ function CreateTransferPromotion() {
                         supervisor: "",
                         lineManager: "",
                       }));
+                      getPeopleDeskAllDDL(
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${
+                          valueOption?.value
+                        }&WorkplaceGroupId=${
+                          values?.workplaceGroup?.value || wgId
+                        }&intWorkplaceId=${valueOption?.value || 0}`,
+                        "DepartmentId",
+                        "DepartmentName",
+                        setDepartmentDDL
+                      );
                     }}
                     placeholder=""
                     styles={customStyles}
@@ -1120,12 +1077,41 @@ function CreateTransferPromotion() {
                         supervisor: "",
                         lineManager: "",
                       }));
+                      getPeopleDeskWithoutAllDDL(
+                        `/SaasMasterData/SectionDDL?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${values?.workplace?.value || 0}&DepartmentId=${valueOption?.value}`,
+                        "value",
+                        "label",
+                        setSectionDDL
+                      );
                     }}
                     placeholder=""
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
                     isDisabled={!values?.businessUnit}
+                    isClearable={false}
+                  />
+                </div>
+              </div>
+
+              <div className="col-md-3">
+                <div className="input-field-main">
+                  <label>Section</label>
+                  <FormikSelect
+                    name="section"
+                    placeholder=""
+                    value={values?.section}
+                    options={sectionDDL || []}
+                    onChange={(valueOption) => {
+                      setValues((prev) => ({
+                        ...prev,
+                        section: valueOption,
+                      }));
+                    }}
+                    styles={customStyles}
+                    errors={errors}
+                    touched={touched}
+                    isDisabled={!values?.department}
                     isClearable={false}
                   />
                 </div>

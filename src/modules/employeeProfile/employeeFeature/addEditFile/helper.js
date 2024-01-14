@@ -326,8 +326,7 @@ export const submitHandler = ({
   setLoading,
 }) => {
   const cb = () => {
-    console.log('callback calling...')
-    resetForm();
+    !isEdit && resetForm();
     setIsAddEditForm(false);
     getData({ current: 1, pageSize: pages?.pageSize }, "false");
     if (values?.empId === employeeId) {

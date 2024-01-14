@@ -74,7 +74,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       fromDate: null,
       toDate: null,
       totalDays: 0,
-      calenderCode: "",
+      calenderCode: "", 
       calendarName: "",
       startTime: "00:00:00",
       extendedStartTime: "00:00:00",
@@ -148,7 +148,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                     <div className="col-md-6">
                       <label className="mb-2">Workplace Group </label>
                       <FormikSelect
-                        // isDisabled={isEdit}
+                        isDisabled={id}
                         classes="input-sm"
                         styles={customStyles}
                         name="orgName"
@@ -171,13 +171,14 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                         touched={touched}
                         placeholder=" "
                         isClearable={false}
+                        menuPosition="fixed"
                       />
                     </div>
                     {/* workPlace */}
                     <div className="col-md-6">
                       <label className="mb-2">Workplace </label>
                       <FormikSelect
-                        // isDisabled={isEdit}
+                        isDisabled={id}
                         classes="input-sm"
                         styles={customStyles}
                         name="workplace"
@@ -198,6 +199,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                         touched={touched}
                         placeholder=" "
                         isClearable={true}
+                        menuPosition="fixed"
                       />
                     </div>
                     <div className="col-md-6">

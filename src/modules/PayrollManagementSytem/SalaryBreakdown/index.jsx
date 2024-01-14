@@ -163,10 +163,6 @@ const SalaryBreakdown = () => {
           value: state?.singleBreakdown?.intSalaryPolicyId,
           label: state?.singleBreakdown?.strSalaryPolicy,
         },
-        // dependsOn: {
-        //   value: state?.singleBreakdown?.strDependOn === "Gross" ? 1 : 2,
-        //   label: state?.singleBreakdown?.strDependOn,
-        // },
         businessUnit: {
           value: state?.singleBreakdown?.intBusinessUnitId,
           label: state?.singleBreakdown?.strBusinessUnit,
@@ -248,6 +244,7 @@ const SalaryBreakdown = () => {
   const rowDtoHandler = (name, index, value) => {
     const data = [...dynamicForm];
     data[index][name] = value;
+    console.log("data",data)
     setDynamicForm(data);
   };
 
@@ -348,12 +345,6 @@ const SalaryBreakdown = () => {
         sorter: true,
         filter: false,
       },
-      // {
-      //   title: "Depends On",
-      //   dataIndex: "strDependOn",
-      //   sorter: true,
-      //   filter: false,
-      // },
       {
         title: "Is Default",
         dataIndex: "isDefault",
@@ -562,6 +553,7 @@ const SalaryBreakdown = () => {
                           />
                         </div>
                       </div>
+
                       <div className="col-lg-3">
                         <div style={{ margin: "10px 0 0" }}>
                           <FormikCheckBox
@@ -597,7 +589,6 @@ const SalaryBreakdown = () => {
                               ]}
                               value={values?.dependsOn}
                               onChange={(valueOption) => {
-                                // setDynamicForm([]);
                                 setFieldValue("basedOn", "");
                                 setFieldValue("payrollElement", "");
                                 setFieldValue("dependsOn", valueOption);
@@ -686,22 +677,12 @@ const SalaryBreakdown = () => {
                                   marginTop: "10px",
                                 }}
                                 onClick={() => {
-                                  // setIsFreeze(true);
                                   setter(values);
                                 }}
                                 disabled={
                                   !values?.payrollElement ||
                                   !values?.basedOn ||
                                   !values?.dependsOn
-                                  // isEdit ||
-                                  // state?.singleBreakdown?.intSalaryBreakdownHeaderId
-                                  // // !values?.businessUnit ||
-                                  // !values?.workplaceGroup ||
-                                  // !values?.workplace ||
-                                  // !values?.department ||
-                                  // !values?.designation ||
-                                  // !values?.employeeType ||
-                                  // !values?.payrollElement
                                 }
                               >
                                 Add
@@ -776,6 +757,7 @@ const SalaryBreakdown = () => {
                       {!values?.isPerdaySalary &&
                         dynamicForm?.length > 0 &&
                         dynamicForm?.map((itm, index) => {
+                          
                           return (
                             <div className="col-lg-3" key={index}>
                               <div className="input-field-main">
@@ -831,7 +813,6 @@ const SalaryBreakdown = () => {
                                       }}
                                       step="any"
                                       required
-                                      // disabled={isEdit || state?.singleBreakdown?.intSalaryBreakdownHeaderId}
                                     />
                                   </div>
                                 </div>

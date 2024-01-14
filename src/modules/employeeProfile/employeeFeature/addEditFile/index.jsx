@@ -498,6 +498,7 @@ export default function AddEditForm({
               label="Full Name"
               placeholder="Full Name"
               rules={[{ required: true, message: "Full Name is required" }]}
+              disabled={isEdit}
             />
           </Col>
 
@@ -526,6 +527,7 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Workplace Group is required" },
               ]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -552,6 +554,7 @@ export default function AddEditForm({
                 }
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -568,6 +571,7 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Employment Type is required" },
               ]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -577,8 +581,21 @@ export default function AddEditForm({
               label="Employee ID"
               placeholder="Employee ID"
               rules={[{ required: true, message: "Employee ID is required" }]}
+              disabled={isEdit}
             />
           </Col>
+          {
+            isEdit && <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strReferenceId"
+              label="Reference ID"
+              placeholder="Reference ID"
+              // rules={[{ required: true, message: "Employee ID is required" }]}
+              disabled={isEdit}
+            />
+          </Col>
+          }
           <Col md={12} sm={24}>
             <PSelect
               options={religionDDL?.data || []}
@@ -591,6 +608,7 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Religion is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -605,6 +623,7 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Gender is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -614,6 +633,7 @@ export default function AddEditForm({
               label="Date of Birth"
               placeholder="Date of Birth"
               rules={[{ required: true, message: "Date of Birth is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -623,6 +643,7 @@ export default function AddEditForm({
               label="Joining Date"
               placeholder="Joining Date"
               rules={[{ required: true, message: "Joining Date is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Form.Item shouldUpdate noStyle>

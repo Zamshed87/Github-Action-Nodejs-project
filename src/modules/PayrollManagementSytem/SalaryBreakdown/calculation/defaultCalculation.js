@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { salaryBreakdownCreateNApply } from "../helper";
-import { isUniq } from "./../../../../utility/uniqChecker";
 import { todayDate } from "./../../../../utility/todayDate";
+import { isUniq } from "./../../../../utility/uniqChecker";
 
 export const defaultSetter = (values, dynamicForm, payload, setDynamicForm) => {
   // basic element check
@@ -172,7 +172,7 @@ export const defaultCalculation = (
     ...payload,
     intSalaryBreakdownHeaderId:
       singleData?.intSalaryBreakdownHeaderId ||
-      state?.singleBreakdown?.intSalaryBreakdownHeaderId ||
+      state?.intSalaryBreakdownHeaderId ||
       dynamicForm[0]?.intSalaryBreakdownHeaderId ||
       0,
     strDependOn: "",

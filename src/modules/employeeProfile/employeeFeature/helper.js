@@ -2,22 +2,22 @@ import { EditOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Avatar } from "Components";
 import axios from "axios";
+import moment from "moment";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../utility/dateFormatter";
-import { todayDate } from "./../../../utility/todayDate";
 
-const getYearMonth2 = (value) => {
-  let splitMonth = value?.split("-");
-  let year2 = splitMonth?.[0];
-  let month2 = splitMonth?.[1];
-  return { year2, month2 };
-};
+// const getYearMonth2 = (value) => {
+//   let splitMonth = value?.split("-");
+//   let year2 = splitMonth?.[0];
+//   let month2 = splitMonth?.[1];
+//   return { year2, month2 };
+// };
 
-function getDaysInMonth2(year2, month2) {
-  return new Date(year2, month2, 0).getDate();
-}
+// function getDaysInMonth2(year2, month2) {
+//   return new Date(year2, month2, 0).getDate();
+// }
 
 export const getBuDetails = async (buId, setter, setLoading) => {
   setLoading && setLoading(true);
@@ -43,8 +43,8 @@ export const createEditEmpAction = async (
   cb,
   isEdit
 ) => {
-  let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
-  let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
+  // let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
+  // let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
@@ -60,15 +60,15 @@ export const createEditEmpAction = async (
       IntSectionId: values?.section?.value || 0,
       intDepartmentId: values?.department?.value,
       intDesignationId: values?.designation?.value,
-      dteDateOfBirth: values?.dateofBirth,
-      dteJoiningDate: values?.joiningDate,
-      dteInternCloseDate: values?.dteInternCloseDate
-        ? values?.dteInternCloseDate + "-" + lastDaysInternCloseDate
+      dteDateOfBirth: moment(values?.dateOfBirth).format("YYYY-MM-DD"),
+      dteJoiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
+      dteInternCloseDate: values?.dteInternCloseDate & values?.lastDaysInternCloseDate
+        ?  moment(values?.dteInternCloseDate).format("YYYY-MM-DD") + "-" +   moment(values?.lastDaysInternCloseDate).format("YYYY-MM-DD") 
         : null,
-      dteProbationaryCloseDate: values?.dteProbationaryCloseDate || null,
-      dteConfirmationDate: values?.dteConfirmationDate || null,
-      dteContactFromDate: values?.contractualFromDate || null,
-      dteContactToDate: values?.contractualToDate || null,
+      dteProbationaryCloseDate: values?.dteProbationaryCloseDate ? moment(values?.dteProbationaryCloseDate).format("YYYY-MM-DD") : null,
+      dteConfirmationDate: values?.dteConfirmationDate ?  moment(values?.dteConfirmationDate).format("YYYY-MM-DD") : null,
+      dteContactFromDate: values?.contractualFromDate ?  moment(values?.contractualFromDate).format("YYYY-MM-DD") : null,
+      dteContactToDate: values?.contractualToDate ?  moment(values?.contractualToDate).format("YYYY-MM-DD") : null,
       intSupervisorId: values?.supervisor?.value,
       intLineManagerId: values?.lineManager?.value,
       intDottedSupervisorId: values?.dottedSupervisor?.value,
@@ -85,7 +85,7 @@ export const createEditEmpAction = async (
       // areaId: values?.area?.value || 0,
       // territoryId: values?.territory?.value || 0,
       intBusinessUnitId: buId,
-      dteCreatedAt: todayDate(),
+      dteCreatedAt: moment().format("YYYY-MM-DD"),
       intEmploymentTypeId: values?.employeeType?.value,
       strEmploymentType: values?.employeeType?.label,
       intEmployeeStatusId: values?.employeeStatus?.value || 1,
@@ -99,34 +99,24 @@ export const createEditEmpAction = async (
       strPersonalMobile: values?.phone || "",
       strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
-      calendarAssignViewModel: {
-        employeeId: 0,
-        joiningDate: values?.joiningDate,
-        generateStartDate: values?.generateDate,
-        generateEndDate: null,
-        runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
-        calendarType: values?.calenderType?.label,
-        nextChangeDate: values?.nextChangeDate || null,
-        rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-        isAutoGenerate: false,
-      } || null,
+      calendarAssignViewModel:  null,
     };
-    // if (!isEdit) {
-    //   payload = {
-    //     ...payload,
-    //     calendarAssignViewModel: {
-    //       employeeId: 0,
-    //       joiningDate: values?.joiningDate,
-    //       generateStartDate: values?.generateDate,
-    //       generateEndDate: null,
-    //       runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
-    //       calendarType: values?.calenderType?.label,
-    //       nextChangeDate: values?.nextChangeDate || null,
-    //       rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-    //       isAutoGenerate: false,
-    //     },
-    //   };
-    // }
+    if (!isEdit) {
+      payload = {
+        ...payload,
+        calendarAssignViewModel: {
+          employeeId: 0,
+          joiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
+          generateStartDate: moment(values?.generateDate).format("YYYY-MM-DD"),
+          generateEndDate: null,
+          runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
+          calendarType: values?.calenderType?.label,
+          nextChangeDate: values?.nextChangeDate ? moment(values?.nextChangeDate).format("YYYY-MM-DD") : null,
+          rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
+          isAutoGenerate: false,
+        },
+      };
+    }
     if (values?.isUsersection === true) {
       payload = {
         ...payload,
@@ -147,7 +137,7 @@ export const createEditEmpAction = async (
           intCountryId: 0,
           intOfficeMail: values?.email,
           strContactNo: values?.phone || "",
-          dteCreatedAt: todayDate(),
+          dteCreatedAt: moment().format("YYYY-MM-DD"),
         },
       };
     }
