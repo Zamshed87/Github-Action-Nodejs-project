@@ -301,7 +301,7 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Break Start Time</label>
+                      <label>Lunch Start Time</label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.breakStartTime}
@@ -317,7 +317,7 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Break End Time</label>
+                      <label>Lunch End Time</label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.breakEndTime}
