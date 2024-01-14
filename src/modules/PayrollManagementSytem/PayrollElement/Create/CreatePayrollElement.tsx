@@ -43,7 +43,6 @@ const CreatePayrollElement: React.FC<CreatePayrollElementType> = ({
   const onFinish = () => {
     
     const values = form.getFieldsValue(true);
-    console.log("values",values)
     const payload = {
       intPayrollElementTypeId: rowData?.intPayrollElementTypeId || 0,
       intAccountId: orgId,
