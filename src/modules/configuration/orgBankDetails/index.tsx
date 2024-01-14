@@ -172,6 +172,7 @@ function OrgBankDetailsLanding() {
       >
         <PCard>
           <PCardHeader
+            title="Org Bank Details"
             submitText="Org Bank Details"
             submitIcon={<AddOutlined />}
             buttonList={[]}

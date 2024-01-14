@@ -5,6 +5,7 @@ import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/Payrol
 import PayrollGroupCreate from "modules/PayrollManagementSytem/SalaryBreakdown/Create/PayrollGroupCreate";
 import SalaryBreakdownN from "modules/PayrollManagementSytem/SalaryBreakdown/indexN";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
+import BankBranch from "modules/configuration/bankBranch";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
 import Designation from "modules/configuration/designation";
@@ -17,6 +18,7 @@ import OrgBankDetailsLanding from "modules/configuration/orgBankDetails";
 import Religion from "modules/configuration/religion";
 import Section from "modules/configuration/section";
 import SeparationType from "modules/configuration/separationType";
+import TaxChallanConfigLanding from "modules/configuration/taxChallanConfig";
 import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import Workplace from "modules/configuration/workplace";
@@ -479,9 +481,9 @@ const SelectionModule = lazy(() =>
 const Sliders = lazy(() =>
   import("../modules/componentModule/slidersModule/index.jsx")
 );
-const BankBranch = lazy(() =>
-  import("../modules/configuration/bankBranch/index.jsx")
-);
+// const BankBranch = lazy(() =>
+//   import("../modules/configuration/bankBranch/index.jsx")
+// );
 // const BusinessUnit = lazy(() =>
 //   import("../modules/configuration/busisnessUnit/index.jsx")
 // );
@@ -560,9 +562,9 @@ const SBUUnit = lazy(() =>
 // const SeparationType = lazy(() =>
 //   import("../modules/configuration/separationType/index.jsx")
 // );
-const TaxChallanConfigLanding = lazy(() =>
-  import("../modules/configuration/taxChallanConfig/index.jsx")
-);
+// const TaxChallanConfigLanding = lazy(() =>
+//   import("../modules/configuration/taxChallanConfig/index.jsx")
+// );
 const UserGroup = lazy(() =>
   import("../modules/configuration/userGroup/index.jsx")
 );

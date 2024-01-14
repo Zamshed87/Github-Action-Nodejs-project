@@ -20,6 +20,14 @@ const style = {
 
 const validationSchema = Yup.object({
   rosterGroupName: Yup.string().required("Roster name is required"),
+  orgName: Yup.object({
+    label: Yup.string().required("Workplace Group is required"),
+    value: Yup.string().required("Workplace Group is required"),
+  }),
+  workplace: Yup.object({
+    label: Yup.string().required("Workplace  is required"),
+    value: Yup.string().required("Workplace  is required"),
+  }).typeError("Workplace is required"),
 });
 
 const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
@@ -41,6 +49,12 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       "strWorkplaceGroup",
       setOrganizationDDL
     );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkPlaceDDL
+    );
   }, [buId]);
 
   const saveHandler = (values, cb) => {
@@ -60,7 +74,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       fromDate: null,
       toDate: null,
       totalDays: 0,
-      calenderCode: "",
+      calenderCode: "", 
       calendarName: "",
       startTime: "00:00:00",
       extendedStartTime: "00:00:00",
@@ -95,7 +109,9 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       <Formik
         enableReinitialize={true}
         initialValues={{
-          rosterGroupName: rosterName || "",orgName: { value: wgId, label: wgName }, workplace:{value:wId, label: wName}
+          rosterGroupName: rosterName || "",
+          orgName: { value: wgId, label: wgName },
+          workplace: { value: wId, label: wName },
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -103,9 +119,13 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
             resetForm({ rosterGroupName: "" });
             setIsRosterSetup(false);
             // getData && getData();
-            history.push(
-              `/administration/timeManagement/rosterSetup/${autoId}/${autoName}`
-            );
+            if (values?.workplace?.label !== "All") {
+              history.push(
+                `/administration/timeManagement/rosterSetup/${autoId}/${autoName}`
+              );
+            } else {
+              getData();
+            }
           });
         }}
       >
@@ -151,6 +171,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                         touched={touched}
                         placeholder=" "
                         isClearable={false}
+                        menuPosition="fixed"
                       />
                     </div>
                     {/* workPlace */}
@@ -178,6 +199,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                         touched={touched}
                         placeholder=" "
                         isClearable={true}
+                        menuPosition="fixed"
                       />
                     </div>
                     <div className="col-md-6">
@@ -209,13 +231,23 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                   >
                     Cancel
                   </button>
-                  <button
-                    style={{ height: "30px", width: "150px" }}
-                    className="btn btn-green"
-                    type="submit"
-                  >
-                    Save & Continue
-                  </button>
+                  {values?.workplace?.label === "All" ? (
+                    <button
+                      style={{ height: "30px", width: "150px" }}
+                      className="btn btn-green"
+                      type="submit"
+                    >
+                      Save
+                    </button>
+                  ) : (
+                    <button
+                      style={{ height: "30px", width: "150px" }}
+                      className="btn btn-green"
+                      type="submit"
+                    >
+                      Save & Continue
+                    </button>
+                  )}
                 </div>
               </Form>
             </Box>

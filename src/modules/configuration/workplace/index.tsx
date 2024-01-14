@@ -176,6 +176,7 @@ function Workplace() {
       >
         <PCard>
           <PCardHeader
+            title="Workplace"
             submitText="Workplace"
             submitIcon={<AddOutlined />}
             buttonList={[]}

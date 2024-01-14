@@ -294,7 +294,7 @@ export default function AddEditForm({
 
   // section wise ddl
   const getEmployeeSection = () => {
-    const { department } = form.getFieldsValue(true);
+    const { department , workplace } = form.getFieldsValue(true);
     empSectionDDL?.action({
       urlKey: "SectionDDL",
       method: "GET",
@@ -302,7 +302,7 @@ export default function AddEditForm({
         AccountId: intAccountId,
         BusinessUnitId: buId,
         DepartmentId: department?.value || 0,
-        WorkplaceId: wId,
+        WorkplaceId: workplace?.value
       },
       // onSuccess: (res) => {
       //   console.log("res", res);
@@ -438,7 +438,6 @@ export default function AddEditForm({
   }, [orgId, buId, wgId, employeeId]);
 
   useEffect(() => {
-    console.log(singleData)
     if (singleData?.empId) {
       form.setFieldsValue(singleData);
       getWorkplace();
@@ -497,6 +496,7 @@ export default function AddEditForm({
               label="Full Name"
               placeholder="Full Name"
               rules={[{ required: true, message: "Full Name is required" }]}
+              disabled={isEdit}
             />
           </Col>
 
@@ -525,6 +525,7 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Workplace Group is required" },
               ]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -551,6 +552,7 @@ export default function AddEditForm({
                 }
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -567,6 +569,7 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Employment Type is required" },
               ]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -576,8 +579,21 @@ export default function AddEditForm({
               label="Employee ID"
               placeholder="Employee ID"
               rules={[{ required: true, message: "Employee ID is required" }]}
+              disabled={isEdit}
             />
           </Col>
+          {
+            isEdit && <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strReferenceId"
+              label="Reference ID"
+              placeholder="Reference ID"
+              // rules={[{ required: true, message: "Employee ID is required" }]}
+              disabled={isEdit}
+            />
+          </Col>
+          }
           <Col md={12} sm={24}>
             <PSelect
               options={religionDDL?.data || []}
@@ -590,6 +606,7 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Religion is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -604,6 +621,7 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Gender is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -613,6 +631,7 @@ export default function AddEditForm({
               label="Date of Birth"
               placeholder="Date of Birth"
               rules={[{ required: true, message: "Date of Birth is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -622,6 +641,7 @@ export default function AddEditForm({
               label="Joining Date"
               placeholder="Joining Date"
               rules={[{ required: true, message: "Joining Date is required" }]}
+              disabled={isEdit}
             />
           </Col>
           <Form.Item shouldUpdate noStyle>
@@ -925,7 +945,7 @@ export default function AddEditForm({
           </Col>
           } */}
           {/*  - // new requirment calender field will be editable @8-01-2024 🔥🔥 - */}
-          {true ? (
+          {!isEdit ? (
             <>
               <Col md={12} sm={24}>
                 <PInput

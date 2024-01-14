@@ -36,7 +36,7 @@ export default function RosterSetup() {
   const [rowDto, setRowDto] = useState([]);
   const [allData, setAllData] = useState([]);
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -59,14 +59,15 @@ export default function RosterSetup() {
       setLoading,
       null,
       null,
-      wgId
+      wgId,
+      wId
     );
   };
 
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId, wgId]);
+  }, [orgId, buId, wgId, wId]);
 
   // search
   const filterData = (keywords, allData, setRowDto) => {

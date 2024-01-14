@@ -12,10 +12,11 @@ import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import Chips from "common/Chips";
-import AddEditForm from "./addEditForm";
-import ViewFormComponent from "./viewForm";
+// import AddEditForm from "./addEditForm";
+import { dateFormatter } from "utility/dateFormatter";
+import AddEditForm from "./TaxChallanConfigCreate";
 
-function Department() {
+function TaxChallanConfigLanding() {
   // hook
   const dispatch = useDispatch();
 
@@ -55,19 +56,28 @@ function Department() {
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
-      urlKey: "GetAllEmpDepartment",
+      urlKey: "GetAllTaxchallanConfig",
       method: "GET",
       params: {
-        accountId: orgId,
-        businessUnitId: buId,
+        intAccountId: orgId,
         workplaceId: wId,
+      },
+      onSuccess: (res: any) => {
+        res.forEach((item: any, i: any) => {
+          res[i].yearRange =
+            item?.dteFiscalFromDate && item?.dteFiscalToDate
+              ? `${dateFormatter(item?.dteFiscalFromDate)}-${dateFormatter(
+                  item?.dteFiscalToDate
+                )}`
+              : "N/A";
+        });
       },
     });
   };
 
   useEffect(() => {
     landingApiCall();
-    document.title = "Department";
+    document.title = "Tax Challan Config";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -75,7 +85,7 @@ function Department() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 48) {
+    if (item?.menuReferenceId === 30335) {
       employeeFeature = item;
     }
   });
@@ -99,41 +109,43 @@ function Department() {
       align: "center",
     },
     {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sorter: true,
-      render: (_: any, rec: any) => {
-        return (
-          <div className="d-flex align-items-center">
-            <span className="">
-              {rec?.strDepartment} [ {rec?.strDepartmentCode}]
-            </span>
-          </div>
-        );
-      },
-      //   fixed: "left",
+      title: "Fiscal Year",
+      dataIndex: "strFiscalYearDateRange",
     },
     {
-      title: "Business Unit",
-      dataIndex: "strBusinessUnit",
-      sorter: true,
-      width: 100,
+      title: "Circle",
+      dataIndex: "strCircle",
+    },
+    {
+      title: "Zone",
+      dataIndex: "strZone",
+    },
+    {
+      title: "Challan Number",
+      dataIndex: "strChallanNo",
+    },
+    {
+      title: "Challan Date",
+      render: (_: any, record: any) =>
+        record?.dteChallanDate ? dateFormatter(record?.dteChallanDate) : "N/A",
+    },
+    {
+      title: "Bank Name",
+      dataIndex: "strBankName",
+    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "isActive",
 
-      //   fixed: "left",
-    },
-    {
-      title: "Status",
-      dataIndex: "isActive",
-      sorter: true,
-      render: (_: any, rec: any) => (
-        <>
-          <Chips
-            label={rec?.isActive ? "Active" : "Inactive"}
-            classess={`${rec?.isActive ? "success" : "danger"}`}
-          />
-        </>
-      ),
-    },
+    //   render: (_: any, rec: any) => (
+    //     <>
+    //       <Chips
+    //         label={rec?.isActive ? "Active" : "Inactive"}
+    //         classess={`${rec?.isActive ? "success" : "danger"}`}
+    //       />
+    //     </>
+    //   ),
+    // },
 
     {
       width: 50,
@@ -170,8 +182,8 @@ function Department() {
       >
         <PCard>
           <PCardHeader
-            title="Department"
-            submitText="Department"
+            title="Tax Challan Config"
+            submitText="Tax Challan Config"
             submitIcon={<AddOutlined />}
             buttonList={[]}
             onExport={() => {}}
@@ -207,9 +219,12 @@ function Department() {
 
       <PModal
         open={open}
-        title={id ? "Edit Department" : "Create Department"}
+        title={id ? "Edit Tax Challan Config" : "Create Tax Challan Config"}
         width=""
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setId("");
+          setOpen(false);
+        }}
         maskClosable={false}
         components={
           <>
@@ -223,25 +238,10 @@ function Department() {
           </>
         }
       />
-      <PModal
-        open={view}
-        title={"Department Details"}
-        width=""
-        onCancel={() => {
-          setId("");
-          setView(false);
-        }}
-        maskClosable={true}
-        components={
-          <>
-            <ViewFormComponent singleData={id} />
-          </>
-        }
-      />
     </>
   ) : (
     <NotPermittedPage />
   );
 }
 
-export default Department;
+export default TaxChallanConfigLanding;

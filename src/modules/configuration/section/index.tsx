@@ -160,6 +160,7 @@ function Section() {
       >
         <PCard>
           <PCardHeader
+            title="Section"
             submitText="Section"
             submitIcon={<AddOutlined />}
             buttonList={[]}

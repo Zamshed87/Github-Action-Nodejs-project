@@ -74,6 +74,11 @@ export const apiList = {
   BankBranchDDL: "/Employee/BankBranchDDL",
   AccountBankDetailsCRUD: "/SaasMasterData/AccountBankDetailsCRUD",
   AccountBankDetailsLanding: "/SaasMasterData/AccountBankDetailsLanding",
+  GetAllBankWallet: "/MasterData/GetAllBankWallet",
+  SaveTaxChallanConfig: "/SaasMasterData/SaveTaxChallanConfig",
+  CreateBankBranch: "/Employee/CreateBankBranch",
+  GetAllTaxchallanConfig: "/SaasMasterData/GetAllTaxchallanConfig",
+  BankBranchLanding: "/SaasMasterData/BankBranchLanding",
   ApprovalPipelineCreateNUpdate:
     "/ApprovalPipeline/ApprovalPipelineCreateNUpdate",
   ApprovalPipelineHeaderDetailsById:
