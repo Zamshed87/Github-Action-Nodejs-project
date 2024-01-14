@@ -62,13 +62,13 @@ export const createEditEmpAction = async (
       intDesignationId: values?.designation?.value,
       dteDateOfBirth: moment(values?.dateOfBirth).format("YYYY-MM-DD"),
       dteJoiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
-      dteInternCloseDate: values?.dteInternCloseDate
+      dteInternCloseDate: values?.dteInternCloseDate & values?.lastDaysInternCloseDate
         ?  moment(values?.dteInternCloseDate).format("YYYY-MM-DD") + "-" +   moment(values?.lastDaysInternCloseDate).format("YYYY-MM-DD") 
         : null,
-      dteProbationaryCloseDate:  moment(values?.dteProbationaryCloseDate).format("YYYY-MM-DD") || null,
-      dteConfirmationDate:  moment(values?.dteConfirmationDate).format("YYYY-MM-DD") || null,
-      dteContactFromDate: moment(values?.contractualFromDate).format("YYYY-MM-DD") || null,
-      dteContactToDate: moment(values?.contractualToDate).format("YYYY-MM-DD") || null,
+      dteProbationaryCloseDate: values?.dteProbationaryCloseDate ? moment(values?.dteProbationaryCloseDate).format("YYYY-MM-DD") : null,
+      dteConfirmationDate: values?.dteConfirmationDate ?  moment(values?.dteConfirmationDate).format("YYYY-MM-DD") : null,
+      dteContactFromDate: values?.contractualFromDate ?  moment(values?.contractualFromDate).format("YYYY-MM-DD") : null,
+      dteContactToDate: values?.contractualToDate ?  moment(values?.contractualToDate).format("YYYY-MM-DD") : null,
       intSupervisorId: values?.supervisor?.value,
       intLineManagerId: values?.lineManager?.value,
       intDottedSupervisorId: values?.dottedSupervisor?.value,
@@ -111,7 +111,7 @@ export const createEditEmpAction = async (
           generateEndDate: null,
           runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
           calendarType: values?.calenderType?.label,
-          nextChangeDate: moment(values?.nextChangeDate).format("YYYY-MM-DD") || null,
+          nextChangeDate: values?.nextChangeDate ? moment(values?.nextChangeDate).format("YYYY-MM-DD") : null,
           rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
           isAutoGenerate: false,
         },
