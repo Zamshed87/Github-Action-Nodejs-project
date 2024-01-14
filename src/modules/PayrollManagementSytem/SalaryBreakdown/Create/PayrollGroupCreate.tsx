@@ -88,6 +88,23 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
     );
   }, [orgId, buId, employeeId]);
 
+  useEffect(() => {
+    if (state?.intSalaryBreakdownHeaderId) {
+      getWorkplaceDDL(
+        buId,
+        state?.intWorkplaceGroupId || 0,
+        employeeId,
+        setWorkplace
+      );
+      getPayrollElementDDL(
+        orgId,
+        setPayrollElementDDL,
+        state?.intWorkplaceGroupId || 0,
+        state?.intWorkplaceId || 0
+      );
+    }
+  }, [orgId, buId, employeeId]);
+
   const getEmploymentTypeDDL = () => {
     const { workplace } = form.getFieldsValue(true);
     EmploymentTypeDDL?.action({
@@ -278,7 +295,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
         return defaultSetter(values, dynamicForm, payload, setDynamicForm);
     }
   };
-  console.log("dynamicForm", dynamicForm);
   return (
     <>
       <PForm
