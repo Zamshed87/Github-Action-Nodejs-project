@@ -2,6 +2,8 @@ import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/C
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
 import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/PayrollElement";
+import PayrollGroupCreate from "modules/PayrollManagementSytem/SalaryBreakdown/Create/PayrollGroupCreate";
+import SalaryBreakdownN from "modules/PayrollManagementSytem/SalaryBreakdown/indexN";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BusinessUnit from "modules/configuration/busisnessUnit";
 import Department from "modules/configuration/department";
@@ -2530,9 +2532,21 @@ export const routingList = [
     path: "/administration/payrollConfiguration/payrollElement",
     component: PayrollElement,
   },
+  // {
+  //   path: "/administration/payrollConfiguration/salaryBreakdown",
+  //   component: SalaryBreakdown,
+  // },
   {
     path: "/administration/payrollConfiguration/salaryBreakdown",
-    component: SalaryBreakdown,
+    component: SalaryBreakdownN,
+  },
+  {
+    path: "/administration/payrollConfiguration/salaryBreakdown/create",
+    component: PayrollGroupCreate,
+  },
+  {
+    path: "/administration/payrollConfiguration/salaryBreakdown/edit/:id",
+    component: PayrollGroupCreate,
   },
   {
     path: "/administration/payrollConfiguration/salaryBreakdown/:id",
