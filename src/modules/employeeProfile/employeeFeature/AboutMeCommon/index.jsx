@@ -417,6 +417,8 @@ function AboutMeDetails() {
             singleData={{
               empId:
                 empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
+              strReferenceId:
+                empBasic?.employeeProfileLandingView?.strReferenceId,
               fullName: empBasic?.employeeProfileLandingView?.strEmployeeName,
               employeeCode:
                 empBasic?.employeeProfileLandingView?.strEmployeeCode ||
@@ -642,24 +644,24 @@ function AboutMeDetails() {
                   }
                 : undefined,
               isActive: empBasic?.employeeProfileLandingView?.userStatus,
-              // new requirment calender field will be editable 8-01-2024 🔥🔥
-              generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
-              calenderType: [{value: 1, label: "Calendar"},
-                             { value: 2, label: "Roster" }].find(itm => itm.label === empBasic?.employeeProfileLandingView?.strCalenderType)  || undefined,
-              calender: empBasic?.employeeProfileLandingView?.strCalenderType === "Roster" ?
-              {
-                value: empBasic?.employeeProfileLandingView?.intRosterGroupId,
-                label: empBasic?.employeeProfileLandingView?.strRosterGroupName,
-              } :
-              {
-                  value: empBasic?.employeeProfileLandingView?.intCalenderId,
-                  label: empBasic?.employeeProfileLandingView?.strCalenderName,
-                } ,
-              startingCalender: empBasic?.employeeProfileLandingView?.strCalenderType === "Roster" ?  {
-                value: empBasic?.employeeProfileLandingView?.intCalenderId,
-                label: empBasic?.employeeProfileLandingView?.strCalenderName,
-              } : undefined,
-              nextChangeDate: moment(empBasic?.employeeProfileLandingView?.dteNextChangeDate) || undefined,
+              // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo 
+              // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
+              // calenderType: [{value: 1, label: "Calendar"},
+              //                { value: 2, label: "Roster" }].find(itm => itm.label === empBasic?.employeeProfileLandingView?.strCalenderType)  || undefined,
+              // calender: empBasic?.employeeProfileLandingView?.strCalenderType === "Roster" ?
+              // {
+              //   value: empBasic?.employeeProfileLandingView?.intRosterGroupId,
+              //   label: empBasic?.employeeProfileLandingView?.strRosterGroupName,
+              // } :
+              // {
+              //     value: empBasic?.employeeProfileLandingView?.intCalenderId,
+              //     label: empBasic?.employeeProfileLandingView?.strCalenderName,
+              //   } ,
+              // startingCalender: empBasic?.employeeProfileLandingView?.strCalenderType === "Roster" ?  {
+              //   value: empBasic?.employeeProfileLandingView?.intCalenderId,
+              //   label: empBasic?.employeeProfileLandingView?.strCalenderName,
+              // } : undefined,
+              // nextChangeDate: moment(empBasic?.employeeProfileLandingView?.dteNextChangeDate) || undefined,
 
               // calender assigne
             }}
