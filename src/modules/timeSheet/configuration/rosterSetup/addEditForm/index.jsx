@@ -74,7 +74,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       fromDate: null,
       toDate: null,
       totalDays: 0,
-      calenderCode: "",
+      calenderCode: "", 
       calendarName: "",
       startTime: "00:00:00",
       extendedStartTime: "00:00:00",
@@ -171,6 +171,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                         touched={touched}
                         placeholder=" "
                         isClearable={false}
+                        menuPosition="fixed"
                       />
                     </div>
                     {/* workPlace */}
@@ -198,6 +199,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                         touched={touched}
                         placeholder=" "
                         isClearable={true}
+                        menuPosition="fixed"
                       />
                     </div>
                     <div className="col-md-6">

@@ -83,4 +83,5 @@ export const apiList = {
     "/ApprovalPipeline/ApprovalPipelineCreateNUpdate",
   ApprovalPipelineHeaderDetailsById:
     "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
+    GetAllSalaryBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLanding"
 };

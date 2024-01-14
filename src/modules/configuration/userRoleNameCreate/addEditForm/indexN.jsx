@@ -7,6 +7,7 @@ import { Switch } from "antd";
 
 import { shallowEqual, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
+import { toast } from "react-toastify";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -53,7 +54,6 @@ export default function AddEditForm({
       // resetForm();
       setIsAddEditForm(false);
       getData();
-      console.log("calling...");
     };
     let payload = {
       intRoleId: id || 0,
@@ -70,7 +70,8 @@ export default function AddEditForm({
       urlKey: "SaveUserRole",
       method: "POST",
       payload: payload,
-      onSuccess: () => {
+      onSuccess: (data) => {
+        toast.success(data?.message)
         cb();
       },
     });
