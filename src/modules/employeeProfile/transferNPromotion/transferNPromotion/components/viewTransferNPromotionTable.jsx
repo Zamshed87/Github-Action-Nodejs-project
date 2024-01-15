@@ -92,7 +92,7 @@ const ViewTransferTable = ({ transferNpromotion }) => {
               backgroundColor: "rgba(247, 220, 92, 1)",
             }}
           >
-            Dept & Designation
+            Dept, Section & Designation
           </td>
           <td
             style={{
@@ -120,7 +120,7 @@ const ViewTransferTable = ({ transferNpromotion }) => {
               backgroundColor: "rgba(129, 225, 255, 1)",
             }}
           >
-            Dept & Designation
+            Dept, Section & Designation
           </td>
         </tr>
       </thead>
@@ -191,6 +191,7 @@ const ViewTransferTable = ({ transferNpromotion }) => {
               }}
             >
               <div>{transferNpromotion?.departmentNameFrom}</div>
+              <div>{transferNpromotion?.sectionNameFrom || "N/A"}</div>
               <div>{transferNpromotion?.designationNameFrom}</div>
             </div>
           </td>
@@ -252,6 +253,7 @@ const ViewTransferTable = ({ transferNpromotion }) => {
               className=""
             >
               <div>{transferNpromotion?.departmentName}</div>
+              <div>{transferNpromotion?.strSectionName || "N/A"}</div>
               <div>{transferNpromotion?.designationName}</div>
             </div>
           </td>

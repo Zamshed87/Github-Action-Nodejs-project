@@ -471,7 +471,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                 {() => {
                   const {
                     isPerdaySalary,
-                    payScale,
                     payrollElement,
                     basedOn,
                     dependsOn,
