@@ -185,7 +185,7 @@ export const authSlice = createSlice({
       if (found) {
         found.totalClicked = found?.totalClicked + 1;
       } else {
-        newClickedMenu.push({ ...payload, totalClicked: 1 });
+        newClickedMenu.unshift({ ...payload, totalClicked: 1 });
       }
       state.mostClickedMenuList = newClickedMenu;
     },
