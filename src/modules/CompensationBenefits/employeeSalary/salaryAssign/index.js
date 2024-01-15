@@ -116,6 +116,7 @@ const SalaryAssign = () => {
   const noDefaultPayrollElement = payrollElementDDL?.filter(
     (itm) => itm?.isDefault === false
   );
+
   const finalPayrollElement = [
     ...defaultPayrollElement,
     ...noDefaultPayrollElement,
