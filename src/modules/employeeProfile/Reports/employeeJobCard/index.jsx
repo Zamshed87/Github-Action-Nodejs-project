@@ -114,15 +114,15 @@ export default function EmployeeJobCard() {
       },
       {
         title: "Late Min",
-        dataIndex: "lateMin",
+        dataIndex: "LateMin",
       },
       {
         title: "Break Start",
-        dataIndex: "BreakStartTime",
+        dataIndex: "breakStartTime",
       },
       {
         title: "Break End",
-        dataIndex: "BreakEndTime",
+        dataIndex: "breakEndTime",
       },
       {
         title: "Early Out",
