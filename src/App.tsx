@@ -176,10 +176,8 @@ Axios.interceptors.response.use(
 );
 
 function App() {
-  const { isAuth, isLoggedInWithOtp, isOtpAuth } = useSelector(
-    (state: any) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { isAuth, isLoggedInWithOtp, isOtpAuth, mostClickedMenuList } =
+    useSelector((state: any) => state?.auth?.profileData, shallowEqual);
 
   const { tokenData } = useSelector((state: any) => state?.auth, shallowEqual);
 
@@ -191,6 +189,18 @@ function App() {
     if (appVersion !== PackageJson.version) {
       localStorage.setItem("appVersion", PackageJson.version);
       window.location.reload();
+    }
+  }, []);
+
+  useEffect(() => {
+    let menuList = localStorage.getItem("mostClickedMenuList") || [];
+    // console.log({menuList})
+    if (!menuList.length && mostClickedMenuList) {
+      menuList = mostClickedMenuList;
+      localStorage.setItem(
+        "mostClickedMenuList",
+        JSON.stringify(mostClickedMenuList)
+      );
     }
   }, []);
 
