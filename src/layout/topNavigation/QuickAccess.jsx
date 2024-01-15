@@ -12,7 +12,7 @@ const QuickAccess = () => {
     shallowEqual
   );
   const sortedMenuList = useMemo(() => {
-    const menuList = mostClickedMenuList ?? []; // Check for null or undefined and provide an empty array as a fallback
+    const menuList = mostClickedMenuList ?? []; // Check for null or undefined
     const sortedArray = menuList
       .slice()
       .sort((a, b) => b.totalClicked - a.totalClicked);
