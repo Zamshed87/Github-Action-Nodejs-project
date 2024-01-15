@@ -68,7 +68,6 @@ export default function SideMenu() {
                                 <div
                                   className="d-flex align-items-center justify-content-around"
                                   onClick={() => {
-                                    console.log({ secondLevel });
                                     setSelectedSecondLevelMenu(
                                       secondLevel?.label ===
                                         selectedSecondLevelMenu
