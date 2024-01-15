@@ -433,7 +433,6 @@ export default function EmMovementApplication() {
     ];
   };
 
-  console.log(othersEmployee, "otemp");
 
   return (
     <>
