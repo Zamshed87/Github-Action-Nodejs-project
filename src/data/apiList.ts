@@ -77,11 +77,14 @@ export const apiList = {
   GetAllBankWallet: "/MasterData/GetAllBankWallet",
   SaveTaxChallanConfig: "/SaasMasterData/SaveTaxChallanConfig",
   CreateBankBranch: "/Employee/CreateBankBranch",
+  GetEmpIdCardExternalInfo: "/SaasMasterData/GetEmpIdCardExternalInfo",
+  CreateOrUpdateEmpIdCardExternalInfo:
+    "SaasMasterData/CreateOrUpdateEmpIdCardExternalInfo",
   GetAllTaxchallanConfig: "/SaasMasterData/GetAllTaxchallanConfig",
   BankBranchLanding: "/SaasMasterData/BankBranchLanding",
   ApprovalPipelineCreateNUpdate:
     "/ApprovalPipeline/ApprovalPipelineCreateNUpdate",
   ApprovalPipelineHeaderDetailsById:
     "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
-    GetAllSalaryBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLanding"
+  GetAllSalaryBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLanding",
 };
