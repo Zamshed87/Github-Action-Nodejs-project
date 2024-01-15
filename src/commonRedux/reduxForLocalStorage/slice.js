@@ -56,7 +56,7 @@ export const localStorageSlice = createSlice({
       const { payload } = action;
       state.compensationBenefits = payload;
     },
-    clearCompensationBenefits: (state, action) => {
+    clearCompensationBenefits: (state) => {
       state.compensationBenefits = "";
     },
     setPyrGrossWiseBasic: (state, action) => {
