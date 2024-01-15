@@ -68,7 +68,6 @@ const initialValues = {
   orgType: "",
   orgName: "",
   remarks: "",
-
   wing: "",
   soleDepo: "",
   region: "",
@@ -191,6 +190,10 @@ function CreateTransferPromotion() {
       value: state?.singleData?.intDepartmentId,
       label: state?.singleData?.departmentName,
     },
+    section: {
+      value: state?.singleData?.intSectionId,
+      label: state?.singleData?.strSectionName,
+    },
     designation: {
       value: state?.singleData?.intDepartmentId,
       label: state?.singleData?.departmentName,
@@ -310,7 +313,7 @@ function CreateTransferPromotion() {
         wgId
       );
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${state?.singleData?.intBusinessUnitId}&intId=${employeeId}&WorkplaceGroupId=0`,
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup_All&BusinessUnitId=${state?.singleData?.intBusinessUnitId}&intId=${employeeId}&WorkplaceGroupId=0`,
         "intWorkplaceGroupId",
         "strWorkplaceGroup",
         setWorkplaceGroupDDL
@@ -325,12 +328,20 @@ function CreateTransferPromotion() {
         0
       );
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
           state?.singleData?.intBusinessUnitId
         }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}`,
         "DepartmentId",
         "DepartmentName",
         setDepartmentDDL
+      );
+      getPeopleDeskWithoutAllDDL(
+        `/SaasMasterData/SectionDDL?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${
+          values?.workplace?.value || 0
+        }&DepartmentId=${state?.singleData?.intDepartmentId}`,
+        "value",
+        "label",
+        setSectionDDL
       );
       // getPeopleDeskWithoutAllDDL(
       //   `/SaasMasterData/SectionDDL?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${values?.workplace?.value || 0}&DepartmentId=${valueOption?.value}`,
@@ -339,16 +350,18 @@ function CreateTransferPromotion() {
       //   setSectionDDL
       // );
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&BusinessUnitId=${
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
           state?.singleData?.intBusinessUnitId
-        }&WorkplaceGroupId=${state?.singleData?.intWorkplaceGroupId || wgId}&intWorkplaceId=${wId || 0}`,
+        }&WorkplaceGroupId=${
+          state?.singleData?.intWorkplaceGroupId || wgId
+        }&intWorkplaceId=${wId || 0}`,
         "DesignationId",
         "DesignationName",
         setDesignationDDL
       );
 
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${
           state?.singleData?.intBusinessUnitId
         }&WorkplaceGroupId=${
           state?.singleData?.intWorkplaceGroupId || wgId
@@ -395,7 +408,6 @@ function CreateTransferPromotion() {
       setFileId(state?.singleData?.intAttachementId);
     }
   }, [id, state, employeeId, orgId, buId, wgId]);
-console.log("state",state)
   // image
   const inputFile = useRef(null);
   const onButtonClick = () => {
@@ -484,6 +496,8 @@ console.log("state",state)
       intDesignationId: values?.designation?.value,
       intSupervisorId: values?.supervisor?.value,
       intLineManagerId: values?.lineManager?.value,
+      intSectionId: values?.section?.value,
+      strSectionName: values?.section?.label,
       intDottedSupervisorId: 0,
       intWingId: values?.wing?.value || 0,
       intSoldDepoId: values?.soleDepo?.value || 0,
@@ -573,7 +587,7 @@ console.log("state",state)
                     />
                   )}
                 </div>
-               
+
                 <AsyncFormikSelect
                   selectedValue={values?.employee}
                   isSearchIcon={true}
@@ -744,7 +758,7 @@ console.log("state",state)
                     value={values?.businessUnit}
                     onChange={(valueOption) => {
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup_All&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
                         "intWorkplaceGroupId",
                         "strWorkplaceGroup",
                         setWorkplaceGroupDDL
@@ -758,9 +772,9 @@ console.log("state",state)
                         "label",
                         0
                       );
-                      
+
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&BusinessUnitId=${
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
                           valueOption?.value
                         }&WorkplaceGroupId=${
                           values?.workplaceGroup?.value || wgId
@@ -834,7 +848,7 @@ console.log("state",state)
                         territory: "",
                       }));
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
                         "intWorkplaceId",
                         "strWorkplace",
                         setWorkplaceDDL
@@ -879,7 +893,7 @@ console.log("state",state)
                         lineManager: "",
                       }));
                       getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${
+                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
                           valueOption?.value
                         }&WorkplaceGroupId=${
                           values?.workplaceGroup?.value || wgId
@@ -1078,7 +1092,9 @@ console.log("state",state)
                         lineManager: "",
                       }));
                       getPeopleDeskWithoutAllDDL(
-                        `/SaasMasterData/SectionDDL?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${values?.workplace?.value || 0}&DepartmentId=${valueOption?.value}`,
+                        `/SaasMasterData/SectionDDL?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${
+                          values?.workplace?.value || 0
+                        }&DepartmentId=${valueOption?.value}`,
                         "value",
                         "label",
                         setSectionDDL

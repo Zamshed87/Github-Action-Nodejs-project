@@ -88,7 +88,7 @@ export default function TransferAndPromotion() {
     total: 0,
   });
 
-  const getData = (pagination, fromDate, toDate) => {
+  const getData = (fromDate, toDate) => {
     getAllTransferAndPromotionLanding(
       buId,
       wgId,
@@ -97,8 +97,8 @@ export default function TransferAndPromotion() {
       toDate ? toDate : getDateOfYear("last"),
       setRowDto,
       setLoading,
-      pagination?.current,
-      pagination?.pageSize,
+      1,
+      paginationSize,
       setPages,
       "",
       wId
@@ -412,8 +412,7 @@ export default function TransferAndPromotion() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group, Wing, Sole Depo,
-                                    Region, Area, Territory
+                                    B.Unit, Workplace Group
                                   </div>
                                 </td>
                                 <td
@@ -422,7 +421,7 @@ export default function TransferAndPromotion() {
                                     width: "200px",
                                   }}
                                 >
-                                  Dept & Designation
+                                  Dept, Section & Designation
                                 </td>
                                 <td
                                   style={{
@@ -431,8 +430,7 @@ export default function TransferAndPromotion() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group, Wing, Sole Depo,
-                                    Region, Area, Territory
+                                    B.Unit, Workplace Group
                                   </div>
                                 </td>
                                 <td
@@ -441,7 +439,7 @@ export default function TransferAndPromotion() {
                                     width: "200px",
                                   }}
                                 >
-                                  Dept & Designation
+                                  Dept, Section & Designation
                                 </td>
                               </tr>
                             </thead>
