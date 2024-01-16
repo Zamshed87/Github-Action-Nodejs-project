@@ -45,6 +45,7 @@ export const createEditEmpAction = async (
 ) => {
   // let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
   // let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
+  // console.log("values?.dateofBirth", values?.dateofBirth)
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
@@ -60,7 +61,7 @@ export const createEditEmpAction = async (
       IntSectionId: values?.section?.value || 0,
       intDepartmentId: values?.department?.value,
       intDesignationId: values?.designation?.value,
-      dteDateOfBirth: moment(values?.dateOfBirth).format("YYYY-MM-DD"),
+      dteDateOfBirth: moment(values?.dateofBirth).format("YYYY-MM-DD"),
       dteJoiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
       dteInternCloseDate: values?.dteInternCloseDate & values?.lastDaysInternCloseDate
         ?  moment(values?.dteInternCloseDate).format("YYYY-MM-DD") + "-" +   moment(values?.lastDaysInternCloseDate).format("YYYY-MM-DD") 
@@ -142,6 +143,7 @@ export const createEditEmpAction = async (
       };
     }
     setLoading(true);
+    // console.log({payload})
     let res = await axios.post(
       `/Employee/CreateNUpdateEmployeeBasicInfo`,
       payload
@@ -150,7 +152,7 @@ export const createEditEmpAction = async (
     cb && cb();
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
-    console.log("Come Here 3");
+    // console.log("Come Here 3");
     setLoading(false);
     toast.warn(error?.response?.data?.message, { toastId: 1 });
   }
