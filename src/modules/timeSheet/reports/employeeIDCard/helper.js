@@ -1,17 +1,17 @@
+import axios from "axios";
 import { toast } from "react-toastify";
 import { dateFormatter } from "../../../../utility/dateFormatter";
-import axios from "axios";
 
 export const employeeIdCardLandingColumns = (
-    pages,
-    permission,
-    rowDto,
-    setRowDto,
-    checkedList,
-    setCheckedList,
-    headerList,
-    wgName,
-    downloadEmpIdCardZipFile
+  pages,
+  permission,
+  rowDto,
+  setRowDto,
+  checkedList,
+  setCheckedList,
+  headerList,
+  wgName,
+  downloadEmpIdCardZipFile
 ) =>
   [
     {
@@ -61,29 +61,49 @@ export const employeeIdCardLandingColumns = (
       fieldType: "string",
     },
     {
-      title: "Supervisor",
-      dataIndex: "supervisor",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`supervisorList`],
+      title: "Nid",
+      dataIndex: "nid",
       fieldType: "string",
     },
     {
-      title: "Employment Type",
-      dataIndex: "employmentType",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`employmentTypeList`],
+      title: "Personal Mobile Number",
+      dataIndex: "personalMobileNumber",
       fieldType: "string",
     },
     {
-      title: "Line Manager",
-      dataIndex: "linemanager",
-      sort: true,
-      filter: true,
-      filterDropDownList: headerList[`linemanagerList`],
+      title: "Official Email",
+      dataIndex: "officialEmail",
       fieldType: "string",
     },
+    {
+      title: "Blood Group",
+      dataIndex: "bloodGroup",
+      fieldType: "string",
+    },
+    // {
+    //   title: "Supervisor",
+    //   dataIndex: "supervisor",
+    //   sort: true,
+    //   filter: true,
+    //   filterDropDownList: headerList[`supervisorList`],
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Employment Type",
+    //   dataIndex: "employmentType",
+    //   sort: true,
+    //   filter: true,
+    //   filterDropDownList: headerList[`employmentTypeList`],
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Line Manager",
+    //   dataIndex: "linemanager",
+    //   sort: true,
+    //   filter: true,
+    //   filterDropDownList: headerList[`linemanagerList`],
+    //   fieldType: "string",
+    // },
     {
       title: "Joining Date",
       dataIndex: "joiningDate",
@@ -113,7 +133,7 @@ export const employeeIdCardLandingColumns = (
                     return toast.warn("You don't have permission");
                   // setSingleData([record]);
                   // setCreateModal(true);
-                  downloadEmpIdCardZipFile(false, record)
+                  downloadEmpIdCardZipFile(false, record);
                 }}
                 disabled={checkedList.length > 1}
               >
@@ -126,29 +146,34 @@ export const employeeIdCardLandingColumns = (
     },
   ].filter((item) => item.hidden !== true);
 
+export const downloadEmployeeCardFile = (
+  url,
+  data,
+  fileName,
+  extension,
+  setLoading
+) => {
+  setLoading && setLoading(true);
+  axios({
+    url: url,
+    method: "POST",
+    responseType: "blob", // important
+    data: data,
+  })
+    .then((response) => {
+      const urlTwo = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = urlTwo;
+      //   const fileExtension = imageView?.type.split('/')[1];
+      link.setAttribute("download", fileName);
+      link.setAttribute("download", `${fileName}.${extension}`);
+      document.body.appendChild(link);
+      console.log({ response, link });
 
-  export const downloadEmployeeCardFile = (url, data, fileName, extension, setLoading) => {
-    setLoading && setLoading(true);
-    axios({
-      url: url,
-      method: "POST",
-      responseType: "blob", // important
-      data: data
+      setLoading && setLoading(false);
+      link.click();
     })
-      .then((response) => {
-        const urlTwo = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = urlTwo;
-        //   const fileExtension = imageView?.type.split('/')[1];
-        link.setAttribute("download", fileName);
-        link.setAttribute("download", `${fileName}.${extension}`);
-        document.body.appendChild(link);
-        console.log({response, link})
-
-        setLoading && setLoading(false);
-        link.click();
-      })
-      .catch((err) => {
-        setLoading && setLoading(false);
-      });
-  };
+    .catch((err) => {
+      setLoading && setLoading(false);
+    });
+};
