@@ -4,6 +4,7 @@ import AvatarComponent from "../../../../../common/AvatarComponent";
 import { toast } from "react-toastify";
 import { numberWithCommas } from "../../../../../utility/numberWithCommas";
 import { getBreakdownListDDL, getByIdBreakdownListDDL } from "../helper";
+import { shallowEqual, useSelector } from "react-redux";
 
 const CardTable = ({ propsObj }) => {
   const {
@@ -12,15 +13,18 @@ const CardTable = ({ propsObj }) => {
     setSideDrawer,
     permission,
     defaultPayrollElement,
-    orgId,
     setBreakDownList,
     setSingleData,
     setLoading,
-    wgId,
     setIsBulk,
     setStep,
-    setSelectedEmployee
+    setSelectedEmployee,
   } = propsObj;
+
+  const { orgId, wgId, wId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   return (
     <>
@@ -49,7 +53,8 @@ const CardTable = ({ propsObj }) => {
                   data?.intSalaryBreakdownHeaderId,
                   setBreakDownList,
                   data?.numNetGrossSalary,
-                  setLoading
+                  setLoading,
+                  wId
                 );
               }
             } else {

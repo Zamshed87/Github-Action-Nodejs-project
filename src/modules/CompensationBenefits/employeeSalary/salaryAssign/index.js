@@ -106,7 +106,8 @@ const SalaryAssign = () => {
       0,
       0,
       setPayrollElementDDL,
-      wgId
+      wgId,
+      wId
     );
   }, [orgId, buId]);
 
@@ -771,7 +772,8 @@ const SalaryAssign = () => {
                         data?.intSalaryBreakdownHeaderId,
                         setBreakDownList,
                         data?.numNetGrossSalary,
-                        setLoading
+                        setLoading,
+                        wId
                       );
                     }
                   } else {

@@ -18,11 +18,12 @@ export const getBreakdownPolicyDDL = async (
   employeeId,
   id,
   setter,
-  wgId
+  wgId,
+  wId
 ) => {
   try {
     const res = await axios.get(
-      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntEmployeeId=${employeeId}&IntAccountId=${accId}&IntBusinessUnitId=${buId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceGroupId=${wgId}`
+      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntEmployeeId=${employeeId}&IntAccountId=${accId}&IntBusinessUnitId=${buId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`
     );
     if (res?.data) {
       const modifyData = res?.data?.map((itm) => {
@@ -162,12 +163,13 @@ export const getByIdBreakdownListDDL = async (
   id,
   setter,
   grossSalaryAmount,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntEmployeeId=${employeeId}&IntSalaryBreakdownHeaderId=${id}`
+      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntEmployeeId=${employeeId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceId=${wId || 0}`
     );
     if (res?.data) {
       try {

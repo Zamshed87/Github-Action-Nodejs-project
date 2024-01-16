@@ -444,7 +444,9 @@ const DefaultSalary = ({ propsObj }) => {
                             singleData[0]?.EmployeeId || 0,
                             values?.payrollElement?.value,
                             setBreakDownList,
-                            +e.target.value
+                            +e.target.value,
+                            "",
+                            wId
                           );
                         } else {
                           getBreakdownListDDL(
@@ -762,7 +764,9 @@ const DefaultSalary = ({ propsObj }) => {
                                 singleData[0]?.EmployeeId || 0,
                                 singleData[0]?.intSalaryBreakdownHeaderId,
                                 setBreakDownList,
-                                singleData[0]?.numNetGrossSalary
+                                singleData[0]?.numNetGrossSalary,
+                                "",
+                                wId
                               );
                             }
                             // else {
