@@ -83,6 +83,7 @@ const DefaultSalary = ({ propsObj }) => {
       })
       .catch((err) => []);
   };
+  console.log({breakDownList})
   return (
     <>
       {loading && <Loading />}
@@ -564,8 +565,8 @@ const DefaultSalary = ({ propsObj }) => {
                                         }
                                       }}
                                       required
-                                      errors={errors}
-                                      touched={touched}
+                                      // errors={errors}
+                                      // touched={touched}
                                       disabled={
                                         itm?.strBasedOn === "Percentage"
                                       }

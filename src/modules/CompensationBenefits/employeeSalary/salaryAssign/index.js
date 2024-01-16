@@ -765,6 +765,7 @@ const SalaryAssign = () => {
                   setSalaryInfoId(data?.EmployeeId);
                   if (data?.intSalaryBreakdownHeaderId) {
                     if (data?.Status === "Assigned") {
+                      console.log({data})
                       getByIdBreakdownListDDL(
                         "ASSIGNED_BREAKDOWN_ELEMENT_BY_EMPLOYEE_ID",
                         orgId,
