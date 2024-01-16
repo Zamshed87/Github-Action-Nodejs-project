@@ -343,12 +343,7 @@ function CreateTransferPromotion() {
         "label",
         setSectionDDL
       );
-      // getPeopleDeskWithoutAllDDL(
-      //   `/SaasMasterData/SectionDDL?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${values?.workplace?.value || 0}&DepartmentId=${valueOption?.value}`,
-      //   "value",
-      //   "label",
-      //   setSectionDDL
-      // );
+
       getPeopleDeskAllDDL(
         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
           state?.singleData?.intBusinessUnitId
@@ -1104,7 +1099,7 @@ function CreateTransferPromotion() {
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
-                    isDisabled={!values?.businessUnit}
+                    isDisabled={!values?.workplace}
                     isClearable={false}
                   />
                 </div>
@@ -1163,22 +1158,6 @@ function CreateTransferPromotion() {
               <div className="col-md-3">
                 <div className="input-field-main">
                   <label>Supervisor</label>
-                  {/* <FormikSelect
-                    name="supervisor"
-                    placeholder=""
-                    options={supNLineManagerDDL || []}
-                    value={values?.supervisor}
-                    onChange={(valueOption) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        supervisor: valueOption,
-                      }));
-                    }}
-                    styles={customStyles}
-                    errors={errors}
-                    touched={touched}
-                    isDisabled={!values?.businessUnit}
-                  /> */}
                   <AsyncFormikSelect
                     selectedValue={values?.supervisor}
                     isSearchIcon={true}
@@ -1189,30 +1168,14 @@ function CreateTransferPromotion() {
                       }));
                     }}
                     placeholder="Search (min 3 letter)"
-                    loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
-                    isDisabled={!values?.businessUnit}
+                    loadOptions={(v) => getSearchEmployeeList(buId, values?.workplaceGroup?.value || 0, v)}
+                    isDisabled={!values?.workplaceGroup}
                   />
                 </div>
               </div>
               <div className="col-md-3">
                 <div className="input-field-main">
                   <label>Line Manager</label>
-                  {/* <FormikSelect
-                    name="lineManager"
-                    placeholder=""
-                    options={supNLineManagerDDL || []}
-                    value={values?.lineManager}
-                    onChange={(valueOption) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        lineManager: valueOption,
-                      }));
-                    }}
-                    styles={customStyles}
-                    errors={errors}
-                    touched={touched}
-                    isDisabled={!values?.businessUnit}
-                  /> */}
                   <AsyncFormikSelect
                     selectedValue={values?.lineManager}
                     isSearchIcon={true}
@@ -1223,8 +1186,8 @@ function CreateTransferPromotion() {
                       }));
                     }}
                     placeholder="Search (min 3 letter)"
-                    loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
-                    isDisabled={!values?.businessUnit}
+                    loadOptions={(v) => getSearchEmployeeList(buId, values?.workplaceGroup?.value || 0, v)}
+                    isDisabled={!values?.workplaceGroup}
                   />
                 </div>
               </div>
