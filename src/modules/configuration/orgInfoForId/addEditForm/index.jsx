@@ -156,6 +156,7 @@ export default function AddEditForm({
                 <>
                   <FileUploadComponents
                     propsObj={{
+                      title: "Upload Logo",
                       isOpen,
                       setIsOpen,
                       destroyOnClose: false,
@@ -203,6 +204,7 @@ export default function AddEditForm({
                   <>
                     <FileUploadComponents
                       propsObj={{
+                        title: "Upload Logo",
                         isOpen,
                         setIsOpen,
                         destroyOnClose: false,
@@ -232,6 +234,7 @@ export default function AddEditForm({
                 <>
                   <FileUploadComponents
                     propsObj={{
+                      title: "Upload Signature",
                       isOpen2,
                       setIsOpen2,
                       destroyOnClose: false,
@@ -279,6 +282,7 @@ export default function AddEditForm({
                   <>
                     <FileUploadComponents
                       propsObj={{
+                        title: "Upload Signature",
                         isOpen2,
                         setIsOpen2,
                         destroyOnClose: false,

@@ -176,8 +176,8 @@ export const setHeaderListDataDynamically = ({
   }
 
   setPages?.({
-    current: response?.currentPage,
-    pageSize: response?.pageSize,
-    total: response?.totalCount,
+    current: response?.currentPage || response?.CurrentPage,
+    pageSize: response?.pageSize || response?.PageSize,
+    total: response?.totalCount || response?.TotalCount,
   });
 };

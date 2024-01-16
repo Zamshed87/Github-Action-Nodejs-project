@@ -23,5 +23,6 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/EmpBonusReportPdf",
   "/PdfAndExcelReport/GetRDLCSalaryReport",
   "/PdfAndExcelReport/GetRDLCSalaryReportExcell",
-  "/PdfAndExcelReport/GetSalaryLandingData"
+  "/PdfAndExcelReport/GetSalaryLandingData",
+  "/PdfAndExcelReport/IdCardPdf",
 ];
