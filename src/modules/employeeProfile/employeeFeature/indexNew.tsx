@@ -83,12 +83,12 @@ function EmployeeFeatureNew() {
       strSupervisorNameList: filerList?.strSupervisorName || [],
       strEmploymentTypeList: filerList?.strEmploymentType || [],
       strLinemanagerList: filerList?.strLinemanager || [],
+      strSectionList: filerList?.sectionName || [],
       wingNameList: [],
       soleDepoNameList: [],
       regionNameList: [],
       areaNameList: [],
-      territoryNameList: [],
-      strSectionList: [],
+      territoryNameList: [], 
     };
     landingApi.action({
       urlKey: "EmployeeProfileLandingPaginationWithMasterFilter",
