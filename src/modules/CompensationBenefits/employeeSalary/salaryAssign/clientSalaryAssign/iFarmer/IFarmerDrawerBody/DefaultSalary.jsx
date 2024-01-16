@@ -23,7 +23,8 @@ const DefaultSalary = ({ propsObj }) => {
     setFieldValue,
     values,
     errors,
-    touched
+    touched,
+    wId
   } = propsObj;
 
   return (
@@ -451,7 +452,9 @@ const DefaultSalary = ({ propsObj }) => {
                         singleData[0]?.EmployeeId || 0,
                         singleData[0]?.intSalaryBreakdownHeaderId,
                         setBreakDownList,
-                        singleData[0]?.numNetGrossSalary
+                        singleData[0]?.numNetGrossSalary,
+                        "",
+                        wId
                       );
                     }
                     // else {

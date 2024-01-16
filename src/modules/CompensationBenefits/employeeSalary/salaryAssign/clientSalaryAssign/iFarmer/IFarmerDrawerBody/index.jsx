@@ -37,7 +37,8 @@ const IFarmerDrawerBody = ({
   setFieldValue,
   values,
   errors,
-  touched
+  touched,
+  wId
 }) => {
   const [loading, setLoading] = useState(false);
   const [isHoldSalary, setIsHoldSalary] = useState(false);
@@ -255,7 +256,8 @@ const IFarmerDrawerBody = ({
                 setFieldValue,
                 values,
                 errors,
-                touched
+                touched,
+                wId
               }}
             ></DefaultSalary>
           </div>
