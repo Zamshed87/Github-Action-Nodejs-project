@@ -53,7 +53,7 @@ export default function UnderCreateHolidaySetup() {
   const [holidayId, setHolidayId] = useState("");
   const [holidaySingleData, setHolidaySingleData] = useState("");
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -65,7 +65,11 @@ export default function UnderCreateHolidaySetup() {
         orgId,
         buId,
         params?.id,
-        setSingleData
+        setSingleData,
+        null,
+        null,
+        wId,
+
       );
     }
   }, [orgId, buId, params?.id]);
@@ -79,7 +83,8 @@ export default function UnderCreateHolidaySetup() {
         params?.id,
         setHolidayList,
         setAllHolidayList,
-        setLoading
+        setLoading,
+        wId
       );
     }
   }, [orgId, buId, params?.id]);
