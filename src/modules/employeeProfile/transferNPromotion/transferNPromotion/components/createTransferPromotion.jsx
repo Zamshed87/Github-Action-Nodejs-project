@@ -803,6 +803,7 @@ function CreateTransferPromotion() {
                         designation: "",
                         supervisor: "",
                         lineManager: "",
+                        section: "",
 
                         wing: "",
                         soleDepo: "",
@@ -835,6 +836,7 @@ function CreateTransferPromotion() {
                         designation: "",
                         supervisor: "",
                         lineManager: "",
+                        section: "",
 
                         wing: "",
                         soleDepo: "",
@@ -886,6 +888,7 @@ function CreateTransferPromotion() {
                         designation: "",
                         supervisor: "",
                         lineManager: "",
+                        section: "",
                       }));
                       getPeopleDeskAllDDL(
                         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
@@ -1085,6 +1088,7 @@ function CreateTransferPromotion() {
                         designation: "",
                         supervisor: "",
                         lineManager: "",
+                        section: "",
                       }));
                       getPeopleDeskWithoutAllDDL(
                         `/SaasMasterData/SectionDDL?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${
@@ -1168,7 +1172,13 @@ function CreateTransferPromotion() {
                       }));
                     }}
                     placeholder="Search (min 3 letter)"
-                    loadOptions={(v) => getSearchEmployeeList(buId, values?.workplaceGroup?.value || 0, v)}
+                    loadOptions={(v) =>
+                      getSearchEmployeeList(
+                        buId,
+                        values?.workplaceGroup?.value || 0,
+                        v
+                      )
+                    }
                     isDisabled={!values?.workplaceGroup}
                   />
                 </div>
@@ -1186,7 +1196,13 @@ function CreateTransferPromotion() {
                       }));
                     }}
                     placeholder="Search (min 3 letter)"
-                    loadOptions={(v) => getSearchEmployeeList(buId, values?.workplaceGroup?.value || 0, v)}
+                    loadOptions={(v) =>
+                      getSearchEmployeeList(
+                        buId,
+                        values?.workplaceGroup?.value || 0,
+                        v
+                      )
+                    }
                     isDisabled={!values?.workplaceGroup}
                   />
                 </div>
