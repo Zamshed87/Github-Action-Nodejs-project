@@ -44,12 +44,13 @@ export const getBreakdownListDDL = async (
   id,
   grossSalaryAmount,
   setter,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntSalaryBreakdownHeaderId=${id}`
+      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceId=${wId || 0}`
     );
     if (res?.data) {
       try {
