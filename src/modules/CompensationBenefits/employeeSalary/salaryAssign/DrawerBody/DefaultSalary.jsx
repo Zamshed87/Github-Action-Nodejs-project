@@ -44,7 +44,9 @@ const DefaultSalary = ({ propsObj }) => {
     touched,
   } = propsObj;
 
+  console.log("finalPayrollElement",finalPayrollElement)
   const payrollGroupDDL = (positionId) => {
+    console.log(finalPayrollElement)
     return finalPayrollElement.filter(
       (itm) => itm?.intHrPositonId === positionId
     );
