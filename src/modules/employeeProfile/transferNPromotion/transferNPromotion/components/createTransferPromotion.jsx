@@ -195,8 +195,8 @@ function CreateTransferPromotion() {
       label: state?.singleData?.strSectionName,
     },
     designation: {
-      value: state?.singleData?.intDepartmentId,
-      label: state?.singleData?.departmentName,
+      value: state?.singleData?.intDesignationId,
+      label: state?.singleData?.designationName,
     },
     wing: {
       value: state?.singleData?.intWingId,
@@ -804,7 +804,6 @@ function CreateTransferPromotion() {
                         supervisor: "",
                         lineManager: "",
                         section: "",
-
                         wing: "",
                         soleDepo: "",
                         region: "",
