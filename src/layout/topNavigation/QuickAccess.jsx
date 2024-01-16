@@ -1,25 +1,24 @@
 import PushPinIcon from "@mui/icons-material/PushPin";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import { styled, Tooltip, tooltipClasses } from "@mui/material";
+import { LightTooltip } from "common/LightTooltip";
+import { useMemo } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-
-const LightTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: "#fff !important",
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#fff",
-    color: "rgba(0, 0, 0, 0.87)",
-    boxShadow:
-      "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
-    fontSize: 11,
-  },
-}));
 
 const QuickAccess = () => {
   let history = useHistory();
+  const { mostClickedMenuList } = useSelector(
+    (state) => state?.auth,
+    shallowEqual
+  );
+  const sortedMenuList = useMemo(() => {
+    const menuList = mostClickedMenuList ?? []; // Check for null or undefined
+    const sortedArray = menuList
+      .slice()
+      .sort((a, b) => b.totalClicked - a.totalClicked);
+    return sortedArray.slice(0, 10);
+  }, [mostClickedMenuList]);
+
   return (
     <>
       <div className="d-flex justify-content-center align-items-center">
@@ -27,7 +26,7 @@ const QuickAccess = () => {
         <LightTooltip
           title={
             <div style={{ cursor: "pointer" }}>
-              <div
+              {/* <div
                 className="p-2"
                 onClick={() =>
                   history.push("/SelfService/leaveAndMovement/leaveApplication")
@@ -45,7 +44,18 @@ const QuickAccess = () => {
               >
                 <PushPinIcon style={{ fontSize: "12px" }} /> Movement
                 Application
-              </div>
+              </div> */}
+              {sortedMenuList.map((element) => {
+                return (
+                  <div
+                    key={element.id}
+                    className="p-2"
+                    onClick={() => history.push(element.to)}
+                  >
+                    <PushPinIcon style={{ fontSize: "12px" }} /> {element.label}
+                  </div>
+                );
+              })}
               {/* <div className="p-2">
                 <PushPinIcon style={{ fontSize: "12px" }} /> Food Corner
               </div> */}

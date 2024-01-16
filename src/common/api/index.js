@@ -550,7 +550,6 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
   return axios
     .get(
       `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
-      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoForEmpMgmt&AccountId=${intAccountId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}&SearchTxt=${v}`
     )
     .then((res) => {
       const modifiedData = res?.data?.map((item) => {

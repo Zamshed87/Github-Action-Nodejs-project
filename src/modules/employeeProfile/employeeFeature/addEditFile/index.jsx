@@ -633,7 +633,7 @@ export default function AddEditForm({
               label="Date of Birth"
               placeholder="Date of Birth"
               rules={[{ required: true, message: "Date of Birth is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -643,7 +643,7 @@ export default function AddEditForm({
               label="Joining Date"
               placeholder="Joining Date"
               rules={[{ required: true, message: "Joining Date is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
             />
           </Col>
           <Form.Item shouldUpdate noStyle>

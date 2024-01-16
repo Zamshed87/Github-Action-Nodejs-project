@@ -78,7 +78,7 @@ export const setLoginAction =
                 history.push("/verifypin");
                 dispatch(slice.setLogin(obj));
               })
-              .catch((error) => {
+              .catch(() => {
                 setLoading(false);
                 toast.error("Login failed, please try again");
               });
@@ -116,6 +116,7 @@ export const setLogoutAction = () => (dispatch) => {
     100
   );
   dispatch(slice.setLogout());
+  dispatch(slice.clearMoseClickedMenuList());
   dispatch(clearCompensationBenefitsLSAction());
   dispatch(setDataAction("empManegmentData", "current", 1));
   dispatch(setDataAction("empManegmentData", "pageSize", 100));
@@ -145,7 +146,7 @@ export const getBuDDLAction = (accId, buId, employeeId) => (dispatch) => {
     .then((res) => {
       dispatch(slice.setBuDDL(res?.data));
     })
-    .catch((error) => {
+    .catch(() => {
       dispatch(slice.setBuDDL([]));
     });
 };
@@ -156,7 +157,7 @@ export const getWGDDLAction = (buId, wgId, employeeId) => (dispatch) => {
     .then((res) => {
       dispatch(slice.setWGDDL(res?.data));
     })
-    .catch((error) => {
+    .catch(() => {
       dispatch(slice.setWGDDL([]));
     });
 };
@@ -167,7 +168,7 @@ export const getWDDLAction = (buId, wgId, employeeId) => (dispatch) => {
     .then((res) => {
       dispatch(slice.setWDDL(res?.data));
     })
-    .catch((error) => {
+    .catch(() => {
       dispatch(slice.setWDDL([]));
     });
 };
@@ -180,7 +181,7 @@ export const getMenuListAction = (employeeId, setLoading) => (dispatch) => {
       setLoading(false);
       dispatch(slice.setMenuList(res?.data));
     })
-    .catch((error) => {
+    .catch(() => {
       setLoading(false);
       dispatch(slice.setMenuList([]));
     });
@@ -195,7 +196,7 @@ export const getKeywordsAction =
         setLoading(false);
         dispatch(slice.setKeywords(res?.data));
       })
-      .catch((error) => {
+      .catch(() => {
         setLoading(false);
         dispatch(slice.setKeywords({}));
       });
@@ -209,7 +210,7 @@ export const getPermissionListAction = (userId, setLoading) => (dispatch) => {
       setLoading && setLoading(false);
       dispatch(slice.setPermissionList(res?.data));
     })
-    .catch((error) => {
+    .catch(() => {
       setLoading && setLoading(false);
       dispatch(slice.setPermissionList([]));
     });
@@ -247,4 +248,8 @@ export const setIsExpiredTokenAction = (payload) => (dispatch) => {
 // refresh token store
 export const refreshTokenAction = (payload) => (dispatch) => {
   dispatch(slice.setLogin(payload));
+};
+
+export const handleMostClickedMenuListAction = (payload) => (dispatch) => {
+  dispatch(slice.updateMostClickedMenuList(payload));
 };

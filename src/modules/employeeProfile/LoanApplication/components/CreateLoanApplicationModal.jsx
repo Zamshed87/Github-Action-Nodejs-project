@@ -82,7 +82,6 @@ const CreateLoanApplicationModal = ({
   setSingleData,
 }) => {
   const [loanType, setLoanType] = useState([]);
-  // const [fileId, setFileId] = useState("");
   const [loading, setLoading] = useState(false);
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -275,6 +274,8 @@ const CreateLoanApplicationModal = ({
                             totalAmountwithInterest
                           );
                         }
+                        setFieldValue("amountPerInstallment", "");
+                        setFieldValue("installmentNumber", "");
                       }}
                       max={100}
                       min={0}
@@ -331,7 +332,7 @@ const CreateLoanApplicationModal = ({
                       type="number"
                       onChange={(e) => {
                         const amountPI =
-                          (values?.loanAmount || 0) / e.target.value;
+                          (values?.totalwithinterest || 0) / e.target.value;
                         setFieldValue(
                           "amountPerInstallment",
                           Math.ceil(amountPI)

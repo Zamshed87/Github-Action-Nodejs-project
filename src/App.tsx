@@ -176,10 +176,8 @@ Axios.interceptors.response.use(
 );
 
 function App() {
-  const { isAuth, isLoggedInWithOtp, isOtpAuth } = useSelector(
-    (state: any) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { isAuth, isLoggedInWithOtp, isOtpAuth } =
+    useSelector((state: any) => state?.auth?.profileData, shallowEqual);
 
   const { tokenData } = useSelector((state: any) => state?.auth, shallowEqual);
 
@@ -193,6 +191,7 @@ function App() {
       window.location.reload();
     }
   }, []);
+
 
   const componentRender = (isOpen: boolean) => {
     if (isOpen) return "";

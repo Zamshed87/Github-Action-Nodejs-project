@@ -22,6 +22,7 @@ import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/
 import Loading from "./../../common/loading/Loading";
 import { getApprovalDashboardLanding } from "./helper";
 import "./index.css";
+import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
 
 const initData = {
   search: "",
@@ -49,7 +50,6 @@ export default function ApprovalList() {
     );
   }, [orgId, employeeId]);
 
-  const saveHandler = (values) => {};
   useEffect(() => {
     let arr = [];
     approvalPermissions.forEach((item) => {
@@ -218,20 +218,12 @@ export default function ApprovalList() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={() => {
+          // console.log(values);
         }}
       >
         {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
+          handleSubmit
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -255,9 +247,17 @@ export default function ApprovalList() {
                               .map((data, index) => (
                                 <tr
                                   className="hasEvent"
-                                  onClick={() =>
-                                    history.push(`${data?.routeUrl}`)
-                                  }
+                                  onClick={() => {
+                                    dispatch(
+                                      handleMostClickedMenuListAction({
+                                        id: data?.id,
+                                        label: data?.menuName,
+                                        to: data?.routeUrl,
+                                      })
+                                    );
+
+                                    history.push(`${data?.routeUrl}`);
+                                  }}
                                   key={index}
                                 >
                                   <td>
