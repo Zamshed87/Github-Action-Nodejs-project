@@ -88,6 +88,7 @@ function EmployeeFeatureNew() {
       regionNameList: [],
       areaNameList: [],
       territoryNameList: [],
+      strSectionList: [],
     };
     landingApi.action({
       urlKey: "EmployeeProfileLandingPaginationWithMasterFilter",
@@ -192,6 +193,15 @@ function EmployeeFeatureNew() {
       width: 50,
     },
     {
+      title: "Section",
+      dataIndex: "sectionName",
+      sorter: true,
+      filter: true,
+      filterKey: "strSectionList",
+      filterSearch: true,
+      width: 50,
+    },
+    {
       title: "Supervisor",
       dataIndex: "strSupervisorName",
       sorter: true,
@@ -207,11 +217,6 @@ function EmployeeFeatureNew() {
       filterKey: "strLinemanagerList",
       width: 60,
     },
-    // {
-    //   title: "Pin Number",
-    //   dataIndex: "pinNo",
-    //   sorter: true,
-    // },
     {
       title: "Contact No",
       dataIndex: "contactNo",
@@ -257,7 +262,6 @@ function EmployeeFeatureNew() {
       ),
     },
   ];
-  // console.log(landingApi?.data);
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -311,6 +315,7 @@ function EmployeeFeatureNew() {
                     regionNameList: [],
                     areaNameList: [],
                     territoryNameList: [],
+                    strSectionList: [],
                   };
                   const res = await axios.post(
                     `/Employee/EmployeeProfileLandingPaginationWithMasterFilter`,
