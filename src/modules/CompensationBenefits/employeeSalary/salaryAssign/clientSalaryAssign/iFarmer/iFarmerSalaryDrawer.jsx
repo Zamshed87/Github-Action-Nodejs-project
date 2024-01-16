@@ -39,7 +39,7 @@ export default function IFarmerSalaryDrawer(props) {
     setOpenIncrement
   } = props;
 
-  const { buId } = useSelector(
+  const { buId, wId} = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -343,7 +343,9 @@ export default function IFarmerSalaryDrawer(props) {
                     orgId,
                     defaultPayrollElement[0]?.value,
                     0,
-                    setBreakDownList
+                    setBreakDownList,
+                    "",
+                    wId
                   );
                 } else {
                   setBreakDownList([]);

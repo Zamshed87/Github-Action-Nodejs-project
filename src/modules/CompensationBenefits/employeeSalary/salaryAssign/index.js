@@ -783,7 +783,9 @@ const SalaryAssign = () => {
                         orgId,
                         defaultPayrollElement[0]?.value,
                         0,
-                        setBreakDownList
+                        setBreakDownList,
+                        "",
+                        wId
                       );
                     }
                   }
