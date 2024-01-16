@@ -15,16 +15,14 @@ import {
 } from "../../../../common/peopleDeskTable/helper";
 import axios from "axios";
 import { toast } from "react-toastify";
-import {
-  employeeIdCardLandingColumns,
-} from "./helper";
+import { employeeIdCardLandingColumns } from "./helper";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import { downloadFile } from "../../../../utility/downloadFile";
 
 const EmployeeIdCardLanding = () => {
   const {
     permissionList,
-    profileData: { buId, wgName, wgId, wId },
+    profileData: { buId, wgName, wgId, wId, orgId },
   } = useSelector((state) => state?.auth, shallowEqual);
   // const [anchorEl, setAnchorEl] = React.useState(null);
   const [rowDto, setRowDto] = useState([]);
@@ -39,9 +37,9 @@ const EmployeeIdCardLanding = () => {
   const initHeaderList = {
     departmentList: [],
     designationList: [],
-    supervisorList: [],
-    linemanagerList: [],
-    employmentTypeList: [],
+    // supervisorList: [],
+    // linemanagerList: [],
+    // employmentTypeList: [],
   };
   const [landingLoading, setLandingLoading] = useState(false);
   const [filterOrderList, setFilterOrderList] = useState([]);
@@ -55,8 +53,7 @@ const EmployeeIdCardLanding = () => {
 
   const { values, setFieldValue } = useFormik({
     initialValues: {},
-    onSubmit: (values) => {
-    },
+    onSubmit: (values) => {},
   });
 
   // landing api call
@@ -70,7 +67,7 @@ const EmployeeIdCardLanding = () => {
     isAssigned = null
   ) => {
     const payload = {
-      businessUnitId: buId,
+      accountId: orgId,
       workplaceGroupId: wgId,
       workplaceId: wId,
       pageNo: pagination.current,
@@ -82,11 +79,11 @@ const EmployeeIdCardLanding = () => {
 
     setLandingLoading(true);
     try {
-      const res = await axios.post(`/Employee/EmployeeInfoLandingForIdPrint`, {
+      const res = await axios.post(`/Employee/GetIdCardDetailsLanding`, {
         ...payload,
         ...modifiedPayload,
       });
-      if (res?.data?.data) {
+      if (res?.data?.Data) {
         setLandingLoading(false);
         setHeaderListDataDynamically({
           currentFilterSelection,
@@ -103,8 +100,8 @@ const EmployeeIdCardLanding = () => {
           setPages,
         });
 
-        setEmpIDString(res?.data?.employeeIdList);
-        const modifiedData = res?.data?.data?.map((item, index) => ({
+        setEmpIDString(res?.data?.EmployeeIdList);
+        const modifiedData = res?.data?.Data?.map((item, index) => ({
           ...item,
           initialSerialNumber: index + 1,
           isSelected: checkedList?.find(
@@ -153,7 +150,7 @@ const EmployeeIdCardLanding = () => {
   };
 
   let permission = useMemo(
-    () => permissionList.find((item) => item?.menuReferenceId === 30350),
+    () => permissionList.find((item) => item?.menuReferenceId === 30386),
     [permissionList]
   );
 
@@ -164,7 +161,9 @@ const EmployeeIdCardLanding = () => {
     } else if (isAll) {
       payload = empIDString;
     } else {
-      const modifyFilterRowDto = checkedList.filter((itm) => itm.isSelected === true);
+      const modifyFilterRowDto = checkedList.filter(
+        (itm) => itm.isSelected === true
+      );
       const empIdList = modifyFilterRowDto.map((data) => {
         return data?.employeeId;
       });
@@ -177,7 +176,7 @@ const EmployeeIdCardLanding = () => {
         : `Download Selected Employees Card?`,
       yesAlertFunc: () => {
         downloadFile(
-          `/PdfAndExcelReport/EmployeeIDCardPDF?EmployeeIds=${payload}`,
+          `/PdfAndExcelReport/IdCardPdf?EmployeeId=${payload}`,
           "Employee ID Cards",
           "pdf",
           setIsLoading
@@ -231,7 +230,9 @@ const EmployeeIdCardLanding = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Employee ID Card";
   }, []);
+  console.log(rowDto, "rowDto");
   return (
     <>
       {(isLoading || landingLoading) && <Loading />}
@@ -400,7 +401,7 @@ const EmployeeIdCardLanding = () => {
               }
               filterOrderList={filterOrderList}
               setFilterOrderList={setFilterOrderList}
-              uniqueKey="employeeCode"
+              uniqueKey="employeeId"
               getFilteredData={(
                 currentFilterSelection,
                 updatedFilterData,

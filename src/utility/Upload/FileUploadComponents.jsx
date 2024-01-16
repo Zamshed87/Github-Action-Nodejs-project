@@ -8,6 +8,7 @@ import { UploadOutlined } from "@ant-design/icons";
 
 const FileUploadComponents = ({ propsObj }) => {
   const {
+    title = "",
     setAttachmentList,
     attachmentList,
     listType,
@@ -34,8 +35,7 @@ const FileUploadComponents = ({ propsObj }) => {
     };
   } else {
     apiAction = {
-      customRequest: (res) => {
-      },
+      customRequest: (res) => {},
     };
   }
   const props = {
@@ -46,15 +46,14 @@ const FileUploadComponents = ({ propsObj }) => {
       "image/png, image/jpeg, image/jpg, application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 
     onChange(info) {
-
-      if(!makeApiReq){
-        const update = info.fileList?.map(item => ({
+      if (!makeApiReq) {
+        const update = info.fileList?.map((item) => ({
           ...item,
-          status: "done"
-        }))
+          status: "done",
+        }));
         setAttachmentList(update);
       }
-      if(makeApiReq){
+      if (makeApiReq) {
         if (info.file.status === "uploading") {
           setAttachmentList(info.fileList);
         } else if (info.file.status === "done") {
@@ -64,7 +63,6 @@ const FileUploadComponents = ({ propsObj }) => {
           toast.error(`${info.file.name} file upload failed.`);
         }
       }
-
     },
 
     onRemove: (removedItem) => {
@@ -93,7 +91,7 @@ const FileUploadComponents = ({ propsObj }) => {
         style={{ color: "green", border: "green 1px solid" }}
         icon={<UploadOutlined />}
       >
-        Upload Attachment
+        {title ? title : "Upload Attachment"}
       </Button>
     </Upload>
   );

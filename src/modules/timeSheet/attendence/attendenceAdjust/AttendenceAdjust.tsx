@@ -190,6 +190,13 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       filterKey: "designationList",
     },
     {
+      title: "Section",
+      dataIndex: "strSectionName",
+      sorter: true,
+      filter: true,
+      // filterKey: "sectionList",
+    },
+    {
       title: "Attendance Date",
       dataIndex: "AttendanceDate",
       render: (data: any) => moment(data).format("DD-MMM-YYYY"),
