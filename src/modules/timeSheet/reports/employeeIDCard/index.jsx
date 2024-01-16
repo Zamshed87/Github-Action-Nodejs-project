@@ -232,7 +232,6 @@ const EmployeeIdCardLanding = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Employee ID Card";
   }, []);
-  console.log(rowDto, "rowDto");
   return (
     <>
       {(isLoading || landingLoading) && <Loading />}
