@@ -139,7 +139,10 @@ export default function UnderCreateHolidaySetup() {
           orgId,
           buId,
           params?.id,
-          setSingleData
+          setSingleData,
+          undefined,
+          undefined,
+          wId
         );
         getHolidaySetupLanding(
           "HolidayByHolidayGroupId",
@@ -148,7 +151,8 @@ export default function UnderCreateHolidaySetup() {
           params?.id,
           setHolidayList,
           setAllHolidayList,
-          setLoading
+          setLoading,
+          wId
         );
         getHolidaySetupLanding(
           "HolidayGroup",
@@ -157,7 +161,8 @@ export default function UnderCreateHolidaySetup() {
           "",
           setRowDto,
           setAllData,
-          setLoading
+          setLoading,
+          wId
         );
         setHolidaySingleData("");
         setHolidayId("");
@@ -171,7 +176,10 @@ export default function UnderCreateHolidaySetup() {
           orgId,
           buId,
           params?.id,
-          setSingleData
+          setSingleData,
+          undefined,
+          undefined,
+          wId
         );
         getHolidaySetupLanding(
           "HolidayByHolidayGroupId",
@@ -180,7 +188,8 @@ export default function UnderCreateHolidaySetup() {
           params?.id,
           setHolidayList,
           setAllHolidayList,
-          setLoading
+          setLoading,
+          wId
         );
         getHolidaySetupLanding(
           "HolidayGroup",
@@ -189,7 +198,8 @@ export default function UnderCreateHolidaySetup() {
           "",
           setRowDto,
           setAllData,
-          setLoading
+          setLoading,
+          wId
         );
       };
       createTimeSheetAction(payload, setLoading, callback);
@@ -250,14 +260,19 @@ export default function UnderCreateHolidaySetup() {
             buId,
             "",
             setRowDto,
-            setAllData
+            setAllData,
+            setLoading,
+            wId
           );
           getHolidaySetupLanding(
             "HolidayGroupById",
             orgId,
             buId,
             params?.id,
-            setSingleData
+            setSingleData,
+            undefined,
+            setLoading,
+            wId
           );
           getHolidaySetupLanding(
             "HolidayByHolidayGroupId",
@@ -266,7 +281,8 @@ export default function UnderCreateHolidaySetup() {
             params?.id,
             setHolidayList,
             setAllHolidayList,
-            setLoading
+            setLoading,
+            wId
           );
           getHolidaySetupLanding(
             "HolidayGroup",
@@ -275,7 +291,8 @@ export default function UnderCreateHolidaySetup() {
             "",
             setRowDto,
             setAllData,
-            setLoading
+            setLoading,
+            wId
           );
         };
         createTimeSheetAction(payload, setLoading, callback);
@@ -574,7 +591,10 @@ export default function UnderCreateHolidaySetup() {
                                                   orgId,
                                                   buId,
                                                   item?.HolidayId,
-                                                  setHolidaySingleData
+                                                  setHolidaySingleData,
+                                                  undefined,
+                                                  setLoading,
+                                                  wId
                                                 );
                                                 setHolidayId(item?.HolidayId);
                                               }}
