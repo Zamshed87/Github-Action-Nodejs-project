@@ -16,14 +16,15 @@ export const confirmationEmpAction = async (
   cb
 ) => {
   try {
-    if (!values?.pinNo) {
-      return toast.warning("PIN No. is reqired.");
-    }
+    // requirement from fosu 🔥🔥
+    // if (!values?.pinNo) {
+    //   return toast.warning("PIN No. is reqired.");
+    // }
     let payload = {
       employeeId: singleData?.employeeId,
       designationId: singleData?.designationId,
       confirmationDate: values?.confirmDate,
-      pinNo: values?.pinNo,
+      // pinNo: values?.pinNo,
     };
     setLoading(true);
     let res = await axios.post(`/Employee/ConfirmationEmployee`, payload);
