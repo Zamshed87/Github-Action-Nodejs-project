@@ -456,7 +456,8 @@ const DefaultSalary = ({ propsObj }) => {
                             values?.payrollElement?.value,
                             +e.target.value,
                             setBreakDownList,
-                            setLoading
+                            setLoading,
+                            wId
                           );
                         }
                         setFieldValue("totalGrossSalary", e.target.value);
