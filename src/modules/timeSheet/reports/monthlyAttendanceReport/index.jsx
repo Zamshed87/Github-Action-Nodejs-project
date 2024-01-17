@@ -18,7 +18,6 @@ import {
   monthFirstDate,
 } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
-import { getBuDetails } from "../helper";
 import axios from "axios";
 
 import {
@@ -45,7 +44,7 @@ const MonthlyAttendanceReport = () => {
 
   const {
     permissionList,
-    profileData: { orgId, buId, buName, wgId, wId },
+    profileData: { orgId, buId, wgId, wId },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
