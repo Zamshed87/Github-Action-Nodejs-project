@@ -232,7 +232,9 @@ const SalaryAssign = () => {
   } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
-    onSubmit: (values) => {},
+    onSubmit: () => {
+      //
+    },
   });
 
   const [resEmpLanding, getEmployeeLanding, loadingLanding, setEmpLanding] =
@@ -250,7 +252,7 @@ const SalaryAssign = () => {
   };
 
   const handleChangeRowsPerPages = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getLanding(searchText, values?.salaryStatus?.value, {
@@ -765,7 +767,6 @@ const SalaryAssign = () => {
                   setSalaryInfoId(data?.EmployeeId);
                   if (data?.intSalaryBreakdownHeaderId) {
                     if (data?.Status === "Assigned") {
-                      console.log({data})
                       getByIdBreakdownListDDL(
                         "ASSIGNED_BREAKDOWN_ELEMENT_BY_EMPLOYEE_ID",
                         orgId,

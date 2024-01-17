@@ -50,7 +50,7 @@ const DefaultSalary = ({ propsObj }) => {
     );
   };
 
-  const loadEmployeeList = (v, pages) => {
+  const loadEmployeeList = (v) => {
     if (v?.length < 2) return [];
 
     const payload = {
@@ -79,9 +79,10 @@ const DefaultSalary = ({ propsObj }) => {
         });
         return modifiedData;
       })
-      .catch((err) => []);
+      .catch(() => {
+        //
+      });
   };
-  console.log({breakDownList})
   return (
     <>
       {loading && <Loading />}
