@@ -135,7 +135,7 @@ export default function MonthlyInOutReport() {
     //   "strBusinessUnit",
     //   setBusinessUnitDDL
     // );
-    setFieldValue('workplace', '')
+    setFieldValue("workplace", "");
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceId",
@@ -620,9 +620,10 @@ export default function MonthlyInOutReport() {
                         data={values?.search ? tableRowDto : rowDto}
                         columnsData={rosterReportDtoCol(
                           pages?.current,
-                          pages?.paginationSize,
+                          pages?.pageSize,
                           columnList
                         )}
+                        y={1000}
                         setColumnsData={(newRow) => setTableRowDto(newRow)}
                         handleTableChange={({ pagination, newRowDto }) =>
                           handleTableChange(
