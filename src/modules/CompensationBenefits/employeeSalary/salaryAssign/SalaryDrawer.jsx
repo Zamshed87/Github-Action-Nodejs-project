@@ -488,7 +488,9 @@ export default function SalaryDrawer(props) {
                       orgId,
                       defaultPayrollElement[0]?.value,
                       0,
-                      setBreakDownList
+                      setBreakDownList,
+                      "",
+                      wId
                     );
                   } else {
                     setBreakDownList([]);
