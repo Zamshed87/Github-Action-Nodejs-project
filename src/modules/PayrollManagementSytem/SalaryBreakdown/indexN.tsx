@@ -103,20 +103,18 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
     {
       title: "Action",
       align: "center",
-      render: (data: any, item: any, index: number) => {
-        console.log("item", item);
+      render: (data: any, item: any) => {
         return (
           <TableButton
             buttonsList={[
               {
                 type: "edit",
+                isActive: isDevServer,
                 onClick: () => {
-                  if (isDevServer) {
                     history.push({
                       pathname: `/administration/payrollConfiguration/salaryBreakdown/edit/id:${item?.intSalaryBreakdownHeaderId}`,
                       state: item,
                     });
-                  }
                 },
               },
               {
@@ -135,7 +133,7 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
       width: "60px",
     },
   ];
-  console.log(GetAllSalaryBreakdownLanding?.data);
+
   return (
     <>
       <PForm
