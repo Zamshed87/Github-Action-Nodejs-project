@@ -95,6 +95,7 @@ export type buttonList = {
   type: buttonType;
   onClick?: (e: any) => any;
   prompt?: string;
+  hide?: boolean;
 };
 export type TableButtonType = {
   buttonsList: buttonList[];
