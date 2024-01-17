@@ -47,7 +47,7 @@ const validationSchema = Yup.object({
   designation: Yup.object()
     .shape({
       label: Yup.string().required("Designation is required"),
-      value: Yup.string().required("Designation is required"),
+      value: Yup.number().required("Designation is required"),
     })
     .typeError("Designation is required"),
   confirmDate: Yup.string().required("Confirmation  Date is required"),
@@ -502,6 +502,7 @@ function Confirmation() {
                             errors={errors}
                             touched={touched}
                             isDisabled={isEdit && true}
+                            isClearable={false}
                           />
                         </div>
                       </div>
