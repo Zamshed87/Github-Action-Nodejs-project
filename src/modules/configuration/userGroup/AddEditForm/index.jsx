@@ -57,7 +57,7 @@ const AddEditFormComponent = ({
   const [loading, setLoading] = useState(false);
   const [deleteRowData, setDeleteRowData] = useState([]);
 
-  const { orgId, employeeId, buId, wgId } = useSelector(
+  const { orgId, employeeId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -66,7 +66,7 @@ const AddEditFormComponent = ({
     if (v?.length < 2) return [];
     return axios
       .get(
-        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&Search=${v}`
+        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
       )
       .then((res) => {
         return res?.data;

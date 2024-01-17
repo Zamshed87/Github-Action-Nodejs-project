@@ -574,8 +574,8 @@
   table
   thead
   tr:first-child
-  th:nth-child(2){
-    left: 45px !important;
+  th:nth-child(2) {
+  left: 45px !important;
   /* background-color: red !important; */
   min-width: 165px !important;
   z-index: 999999 !important;
@@ -586,7 +586,7 @@
   thead
   tr:first-child
   th:nth-child(3) {
-    left: 210px !important;
+  left: 210px !important;
   /* background-color: red !important; */
   min-width: 165px !important;
   z-index: 999999 !important;
@@ -607,8 +607,8 @@
   table
   tbody
   tr
-  td:nth-child(2){
-    left: 45px !important;
+  td:nth-child(2) {
+  left: 45px !important;
   /* background-color: red !important; */
   min-width: 165px !important;
   z-index: 999999 !important;
@@ -619,9 +619,12 @@
   tbody
   tr
   td:nth-child(3) {
-    left: 210px !important;
+  left: 210px !important;
   /* background-color: red !important; */
   min-width: 165px !important;
   z-index: 999999 !important;
+}
+.leavePolicy-landing {
+  overflow: hidden !important;
 }
 /* emp report landing css end-------------   */
