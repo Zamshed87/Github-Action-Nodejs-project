@@ -104,12 +104,12 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
       title: "Action",
       align: "center",
       render: (data: any, item: any, index: number) => {
-        console.log("item", item);
         return (
           <TableButton
             buttonsList={[
               {
                 type: "edit",
+                hide: !isDevServer,
                 onClick: () => {
                   if (isDevServer) {
                     history.push({
@@ -135,7 +135,7 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
       width: "60px",
     },
   ];
-  console.log(GetAllSalaryBreakdownLanding?.data);
+
   return (
     <>
       <PForm

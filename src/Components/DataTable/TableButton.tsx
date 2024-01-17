@@ -33,7 +33,7 @@ export const TableButton: React.FC<TableButtonType> = (property) => {
       style={parentStyle ? parentStyle : undefined}
       onClick={(e: any) => e.stopPropagation()}
     >
-      {buttonsList?.map((button: buttonList, index: number) => {
+      {buttonsList?.filter(btn => !btn.hide)?.map((button: buttonList, index: number) => {
         // Checking isActive is not false
         return (button?.isActive === undefined || button?.isActive) &&
           button.type ? (
