@@ -103,20 +103,18 @@ const SalaryBreakdownN: React.FC<TindexN> = () => {
     {
       title: "Action",
       align: "center",
-      render: (data: any, item: any, index: number) => {
+      render: (data: any, item: any) => {
         return (
           <TableButton
             buttonsList={[
               {
                 type: "edit",
-                hide: !isDevServer,
+                isActive: isDevServer,
                 onClick: () => {
-                  if (isDevServer) {
                     history.push({
                       pathname: `/administration/payrollConfiguration/salaryBreakdown/edit/id:${item?.intSalaryBreakdownHeaderId}`,
                       state: item,
                     });
-                  }
                 },
               },
               {
