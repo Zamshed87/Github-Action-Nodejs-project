@@ -1,4 +1,4 @@
-import AvatarComponent from "../../../../common/AvatarComponent";
+import AvatarComponent from "common/AvatarComponent";
 import { gray600 } from "../../../../utility/customColor";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import { getChipStyle } from "../../../employeeProfile/dashboard/components/EmployeeSelfCalendar";
@@ -48,34 +48,6 @@ export const monthlyAttendanceReportColumns = (
       fixed: "left",
     },
     {
-      title: "Workplace Group",
-      dataIndex: "strWorkplaceGroup",
-      sorter: true,
-      filter: true,
-      width: 180,
-    },
-    {
-      title: "Workplace",
-      dataIndex: "strWorkplace",
-      sorter: true,
-      // filter: true,
-      width: 180,
-    },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sorter: true,
-      // filter: true,
-      width: 180,
-    },
-    {
-      title: "Section",
-      dataIndex: "strSectionName",
-      sorter: true,
-      // filter: true,
-      width: 180,
-    },
-    {
       title: () => <span style={{ color: gray600 }}>Employee ID</span>,
       dataIndex: "EmployeeCode",
       sorter: true,
@@ -108,8 +80,38 @@ export const monthlyAttendanceReportColumns = (
       dataIndex: "strDesignation",
       sorter: true,
       filter: true,
+      fixed: "left",
       width: 180,
     },
+    {
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroup",
+      sorter: true,
+      filter: true,
+      width: 180,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      // filter: true,
+      width: 180,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sorter: true,
+      // filter: true,
+      width: 180,
+    },
+    {
+      title: "Section",
+      dataIndex: "strSectionName",
+      sorter: true,
+      // filter: true,
+      width: 180,
+    },
+  
 
     ...(dateList?.length > 0 &&
       dateList.map((item) => ({

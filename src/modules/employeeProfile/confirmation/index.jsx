@@ -40,7 +40,7 @@ const initData = {
   filterFromDate: monthFirstDate(),
   filterToDate: todayDate(),
   confirmDate: getTodayDateAndTime(),
-  pinNo: "",
+  // pinNo: "",
 };
 
 const validationSchema = Yup.object({
@@ -524,7 +524,9 @@ function Confirmation() {
                           />
                         </div>
                       </div>
-                      <div className="col-4">
+                      {/* // requirement from fosu 🔥🔥 */}
+
+                      <div className="col-4 d-none">
                         <div className="input-field-main">
                           <label>PIN No.</label>
                           <FormikInput
@@ -555,7 +557,7 @@ function Confirmation() {
                           setSingleData(false);
                           setIsEdit(false);
                           setFieldValue("confirmDate", "");
-                          setFieldValue("pinNo", "");
+                          // setFieldValue("pinNo", "");
                         }}
                         style={{
                           marginRight: "10px",
