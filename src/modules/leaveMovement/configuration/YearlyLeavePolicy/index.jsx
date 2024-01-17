@@ -34,7 +34,7 @@ const YearlyLeavePolicy = () => {
   const history = useHistory();
   const [pages, setPages] = useState({
     currentPage: 1,
-    pageSize: 25,
+    pageSize: 100,
     totalCount: 0,
   });
   const [, setYear] = useState(null);
@@ -214,7 +214,6 @@ const YearlyLeavePolicy = () => {
                           fontWeight: "600",
                         }}
                       >
-                        {console.log({ values })}
                         Year {values?.year ? values?.year.label : currentYear}
                       </h5>
                       {Object.entries(allPolicy).length > 0 ? (
@@ -222,7 +221,7 @@ const YearlyLeavePolicy = () => {
                           <ScrollableTable
                             classes="salary-process-table"
                             secondClasses="table-card-styled tableOne scroll-table-height"
-                            customClass="salary-details-custom"
+                            customClass="salary-details-custom leavePolicy-landing"
                           >
                             <thead>
                               <tr>
