@@ -22,7 +22,7 @@ export const confirmationEmpAction = async (
     // }
     let payload = {
       employeeId: singleData?.employeeId,
-      designationId: singleData?.designationId,
+      // designationId: singleData?.designationId,
       confirmationDate: values?.confirmDate,
       // pinNo: values?.pinNo,
     };
