@@ -282,13 +282,27 @@ const SalaryAssign = () => {
       pageSize: paginationSize,
       total: 0,
     });
-    getLanding("", "NotAssigned", {
-      current: 1,
-      pageSize: paginationSize,
-      total: 0,
-    });
+    getLanding(
+      "",
+      values?.salaryStatus?.value ? values?.salaryStatus?.value : "NotAssigned",
+      {
+        current: 1,
+        pageSize: paginationSize,
+        total: 0,
+      }
+    );
     setStatus(values?.salaryStatus?.value);
   }, [buId, wgId, wId]);
+
+  // const [updateCount, setUpdateCount] = useState(0);
+
+  // useEffect(() => {
+  //   // This effect runs every time yourState changes
+  //   // console.log({ resEmpLanding });
+  //   setUpdateCount((prevCount) => prevCount + 1);
+  // }, [resEmpLanding]);
+  // console.log({ updateCount });
+
   return (
     <>
       <form onSubmit={handleSubmit}>
