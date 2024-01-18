@@ -142,7 +142,7 @@ export default function SalaryDrawer(props) {
           : "",
       },
       validationSchema: DefaultSalaryValidationSchema,
-      onSubmit: (values, { setSubmitting, resetForm }) => {
+      onSubmit: (values) => {
         saveHandler(values, () => {
           // resetForm(defaultSalaryInitData);
         });
@@ -336,7 +336,7 @@ export default function SalaryDrawer(props) {
         return toast.warning("Total gross salary must be equal net salary !!!");
       }
 
-      const modifyBreakdownList = breakDownList?.map((itm, index) => {
+      const modifyBreakdownList = breakDownList?.map((itm) => {
         let name = itm?.levelVariable;
         return {
           intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
@@ -450,32 +450,32 @@ export default function SalaryDrawer(props) {
               className="d-flex justify-content-center align-items-center"
             >
               <IconButton
-                onClick={(e) => {
-                  getEmployeeSalaryInfo(
-                    setAllData,
-                    setRowDto,
-                    {
-                      partType: "SalaryAssignLanding",
-                      businessUnitId: buId,
-                      workplaceGroupId: wgId || 0,
-                      departmentId: 0,
-                      workplaceId: wId || 0,
-                      designationId: 0,
-                      supervisorId: 0,
-                      employeeId: 0,
-                      strStatus: "NotAssigned",
-                      strSearchTxt: "",
-                      pageNo: pages?.current,
-                      pageSize: pages?.pageSize,
-                      isPaginated: true,
-                    },
-                    "NotAssigned",
-                    setLoading,
-                    "",
-                    pages,
-                    setPages
-                  );
-                  // cbLanding?.();
+                onClick={() => {
+                  // getEmployeeSalaryInfo(
+                  //   setAllData,
+                  //   setRowDto,
+                  //   {
+                  //     partType: "SalaryAssignLanding",
+                  //     businessUnitId: buId,
+                  //     workplaceGroupId: wgId || 0,
+                  //     departmentId: 0,
+                  //     workplaceId: wId || 0,
+                  //     designationId: 0,
+                  //     supervisorId: 0,
+                  //     employeeId: 0,
+                  //     strStatus: "NotAssigned",
+                  //     strSearchTxt: "",
+                  //     pageNo: pages?.current,
+                  //     pageSize: pages?.pageSize,
+                  //     isPaginated: true,
+                  //   },
+                  //   "NotAssigned",
+                  //   setLoading,
+                  //   "",
+                  //   pages,
+                  //   setPages
+                  // );
+                  cbLanding?.();
                   setIsOpen(false);
                   setIsBulk(false);
                   setStep("");
