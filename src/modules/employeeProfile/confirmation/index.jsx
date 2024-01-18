@@ -44,12 +44,12 @@ const initData = {
 };
 
 const validationSchema = Yup.object({
-  designation: Yup.object()
-    .shape({
-      label: Yup.string().required("Designation is required"),
-      value: Yup.string().required("Designation is required"),
-    })
-    .typeError("Designation is required"),
+  // designation: Yup.object()
+  //   .shape({
+  //     label: Yup.string().required("Designation is required"),
+  //     value: Yup.number().required("Designation is required"),
+  //   })
+  //   .typeError("Designation is required"),
   confirmDate: Yup.string().required("Confirmation  Date is required"),
 });
 function Confirmation() {
@@ -485,8 +485,9 @@ function Confirmation() {
                     className="body-employeeProfile-master-filter"
                     style={{ height: "250px" }}
                   >
-                    <div className="row content-input-field">
-                      <div className="col-6">
+                    {/* confirmation by fosu and maruf vai 🔥🔥 */}
+                    <div className="row content-input-field ">
+                      <div className="col-6 d-none">
                         <div className="input-field-main">
                           <label>Designation</label>
                           <FormikSelect
@@ -502,6 +503,7 @@ function Confirmation() {
                             errors={errors}
                             touched={touched}
                             isDisabled={isEdit && true}
+                            isClearable={false}
                           />
                         </div>
                       </div>
