@@ -1,7 +1,7 @@
 import axios from "axios";
 import AvatarComponent from "../../../common/AvatarComponent";
-import { dateFormatter } from "../../../utility/dateFormatter";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
+import { dateFormatter } from "../../../utility/dateFormatter";
 export const getBuDetails = async (buId, setter, setLoading) => {
   try {
     const res = await axios.get(
@@ -30,7 +30,8 @@ export const getJobConfirmationInfo = async (
   WorkplaceGroupId,
   srcTxt,
   pages,
-  setPages
+  setPages,
+  wId
 ) => {
   setLoading && setLoading(true);
 
@@ -40,7 +41,7 @@ export const getJobConfirmationInfo = async (
 
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&WorkplaceGroupId=${WorkplaceGroupId}&PageNo=${pages.current}&PageSize=${pages.pageSize}${intId}${status}&MonthId=${MonthId}&YearId=${YearId}${search}`
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&WorkplaceGroupId=${WorkplaceGroupId}&PageNo=${pages.current}&PageSize=${pages.pageSize}${intId}${status}&MonthId=${MonthId}&YearId=${YearId}&WorkplaceId=${wId}${search}`
     );
     if (res?.data) {
       setter && setter(res?.data);
