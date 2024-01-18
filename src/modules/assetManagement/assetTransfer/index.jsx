@@ -2,7 +2,7 @@
 
 import {
   AddOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
@@ -25,7 +25,7 @@ import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
 import {
   assetTransferTableColumn,
   filterAssetTransferLanding,
-  onGetAssetTransferLanding
+  onGetAssetTransferLanding,
 } from "./helper";
 
 const initData = {
@@ -49,8 +49,9 @@ const AssetTransferLanding = () => {
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
   const [, deleteAssetTransfer, deleteAssetTransferLoading] = useAxiosPost({});
-  const [AssetTransferLanding, getAssetTransferLanding, loading] =
-    useAxiosGet([]);
+  const [AssetTransferLanding, getAssetTransferLanding, loading] = useAxiosGet(
+    []
+  );
 
   const { values, setFieldValue } = useFormik({
     initialValues: initData,
@@ -60,7 +61,7 @@ const AssetTransferLanding = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30349) {
+    if (item?.menuReferenceId === 30394) {
       permission = item;
     }
   });
