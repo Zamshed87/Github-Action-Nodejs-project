@@ -232,7 +232,9 @@ const SalaryAssign = () => {
   } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
-    onSubmit: (values) => {},
+    onSubmit: () => {
+      //
+    },
   });
 
   const [resEmpLanding, getEmployeeLanding, loadingLanding, setEmpLanding] =
@@ -250,7 +252,7 @@ const SalaryAssign = () => {
   };
 
   const handleChangeRowsPerPages = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getLanding(searchText, values?.salaryStatus?.value, {

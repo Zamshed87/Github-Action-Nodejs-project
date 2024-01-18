@@ -50,7 +50,7 @@ const DefaultSalary = ({ propsObj }) => {
     );
   };
 
-  const loadEmployeeList = (v, pages) => {
+  const loadEmployeeList = (v) => {
     if (v?.length < 2) return [];
 
     const payload = {
@@ -79,7 +79,9 @@ const DefaultSalary = ({ propsObj }) => {
         });
         return modifiedData;
       })
-      .catch((err) => []);
+      .catch(() => {
+        //
+      });
   };
   return (
     <>
@@ -563,8 +565,8 @@ const DefaultSalary = ({ propsObj }) => {
                                         }
                                       }}
                                       required
-                                      errors={errors}
-                                      touched={touched}
+                                      // errors={errors}
+                                      // touched={touched}
                                       disabled={
                                         itm?.strBasedOn === "Percentage"
                                       }
