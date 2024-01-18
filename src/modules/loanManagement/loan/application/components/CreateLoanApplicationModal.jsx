@@ -71,7 +71,7 @@ const CreateLoanApplicationModal = ({
   const [employeeDDL, setEmployeeDDL] = useState([]);
   const [loanType, setLoanType] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { orgId, buId, employeeId, strDisplayName, wgId } = useSelector(
+  const { orgId, buId, employeeId, strDisplayName, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -100,7 +100,9 @@ const CreateLoanApplicationModal = ({
       buId,
       setEmployeeDDL,
       "EmployeeId",
-      "EmployeeName"
+      "EmployeeName",
+      null,
+      wId
     );
     PeopleDeskSaasDDL(
       "LoanType",
@@ -108,7 +110,9 @@ const CreateLoanApplicationModal = ({
       buId,
       setLoanType,
       "LoanTypeId",
-      "LoanType"
+      "LoanType",
+      0, 
+      wId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
