@@ -221,7 +221,7 @@ const YearlyLeavePolicy = () => {
                           <ScrollableTable
                             classes="salary-process-table"
                             secondClasses="table-card-styled tableOne scroll-table-height"
-                            customClass="salary-details-custom leavePolicy-landing"
+                            customClass="salary-details-custom "
                           >
                             <thead>
                               <tr>
