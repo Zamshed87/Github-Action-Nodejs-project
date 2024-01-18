@@ -106,7 +106,7 @@ export default function RequisitionAssign() {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30348) {
+    if (item?.menuReferenceId === 30393) {
       permission = item;
     }
   });
