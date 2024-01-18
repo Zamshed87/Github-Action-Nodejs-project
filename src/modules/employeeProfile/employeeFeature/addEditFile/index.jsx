@@ -8,6 +8,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
 import { createEditEmpAction, userExistValidation } from "../helper";
 import { submitHandler } from "./helper";
+import { todayDate } from "utility/todayDate";
+import moment from "moment";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -483,7 +485,9 @@ export default function AddEditForm({
             setLoading,
           });
         }}
-        initialValues={{}}
+        initialValues={{
+          generateDate: moment(todayDate()),
+        }}
         onValuesChange={(changedFields, allFields) => {
           if (allFields?.workplaceGroup && changedFields?.workplaceGroup) {
             setTimeout(autoGenerateEmployeeCode, 500);
@@ -584,18 +588,18 @@ export default function AddEditForm({
               disabled={isEdit}
             />
           </Col>
-          {
-            isEdit && <Col md={12} sm={24}>
-            <PInput
-              type="text"
-              name="strReferenceId"
-              label="Reference ID"
-              placeholder="Reference ID"
-              // rules={[{ required: true, message: "Employee ID is required" }]}
-              disabled={isEdit}
-            />
-          </Col>
-          }
+          {isEdit && (
+            <Col md={12} sm={24}>
+              <PInput
+                type="text"
+                name="strReferenceId"
+                label="Reference ID"
+                placeholder="Reference ID"
+                // rules={[{ required: true, message: "Employee ID is required" }]}
+                disabled={isEdit}
+              />
+            </Col>
+          )}
           <Col md={12} sm={24}>
             <PSelect
               options={religionDDL?.data || []}
@@ -1054,15 +1058,16 @@ export default function AddEditForm({
           ) : undefined}
 
           {/* Hold Salary */}
-          <Col md={12} sm={24} style={{ marginTop: "20px" }}>
-            <PInput
-              label="Salary Hold"
-              type="checkbox"
-              name="isSalaryHold"
-              layout="horizontal"
-            />
-          </Col>
-
+          {isEdit ? (
+            <Col md={12} sm={24} style={{ marginTop: "20px" }}>
+              <PInput
+                label="Salary Hold"
+                type="checkbox"
+                name="isSalaryHold"
+                layout="horizontal"
+              />
+            </Col>
+          ) : null}
           {/* User Create */}
           <Form.Item noStyle shouldUpdate>
             {() => {
