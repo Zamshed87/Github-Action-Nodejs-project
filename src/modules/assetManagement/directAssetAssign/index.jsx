@@ -60,7 +60,7 @@ const DirectAssetAssignLanding = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30347) {
+    if (item?.menuReferenceId === 30392) {
       permission = item;
     }
   });
