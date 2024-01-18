@@ -294,14 +294,14 @@ const SalaryAssign = () => {
     setStatus(values?.salaryStatus?.value);
   }, [buId, wgId, wId]);
 
-  const [updateCount, setUpdateCount] = useState(0);
+  // const [updateCount, setUpdateCount] = useState(0);
 
-  useEffect(() => {
-    // This effect runs every time yourState changes
-    console.log({ resEmpLanding });
-    setUpdateCount((prevCount) => prevCount + 1);
-  }, [resEmpLanding]);
-  console.log({ updateCount });
+  // useEffect(() => {
+  //   // This effect runs every time yourState changes
+  //   // console.log({ resEmpLanding });
+  //   setUpdateCount((prevCount) => prevCount + 1);
+  // }, [resEmpLanding]);
+  // console.log({ updateCount });
 
   return (
     <>
