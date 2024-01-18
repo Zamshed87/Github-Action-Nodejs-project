@@ -116,7 +116,7 @@ const HolidayException = () => {
         businessUnitId: buId,
         workplaceGroupId: wgId,
         isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
-        workplaceId: 0,
+        workplaceId: wId || 0,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -245,7 +245,7 @@ const HolidayException = () => {
     getData(pages);
     // setChecked([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wgId]);
+  }, [wgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
