@@ -45,7 +45,7 @@ const ExternalTrainingCreate = () => {
   const params = useParams();
   const dispatch = useDispatch();
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -111,12 +111,12 @@ const ExternalTrainingCreate = () => {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
       "DepartmentId",
       "DepartmentName",
       setDepartmentDDL
     );
-  }, [employeeId]);
+  }, [employeeId, wgId, wId]);
 
   return (
     <>
