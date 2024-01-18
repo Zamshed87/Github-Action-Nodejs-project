@@ -75,7 +75,7 @@ function Department() {
   // menu permission
   let employeeFeature: any = null;
   permissionList.forEach((item: any) => {
-    if (item?.menuReferenceId === 48) {
+    if (item?.menuReferenceId === 50) {
       employeeFeature = item;
     }
   });
