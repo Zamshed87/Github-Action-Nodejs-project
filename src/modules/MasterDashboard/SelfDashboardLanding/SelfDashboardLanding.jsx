@@ -70,7 +70,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   }, []);
   return (
     <>
-    { loadingForBirth && <Loading />}
+      {/* {loadingForBirth && <Loading />} */}
       <div className="employee-self-dashboard">
         <div className="row mx-0 w-100">
           <EmployeeSelfDashboardHeader
