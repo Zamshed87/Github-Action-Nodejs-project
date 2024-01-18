@@ -1,7 +1,7 @@
 import { PCard, PCardHeader, PForm, PInput, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import {
   bounusDependsOnList,
@@ -142,7 +142,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       // },
     });
   };
-
+  const [open, setOpen] = useState(false);
   return (
     <>
       <PForm
@@ -207,6 +207,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                   fontWeight: "bold",
                   marginTop: "23px",
                   cursor: "pointer",
+                }}
+                onClick={() => {
+                  setOpen(true);
                 }}
               />
             </Col>
@@ -447,7 +450,13 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
           </Row>
         </PCard>
       </PForm>
-      <PModal open={false} onCancel={() => {}} components={<CreateBouns />} />
+      <PModal
+        open={open}
+        onCancel={() => {
+          setOpen(false);
+        }}
+        components={<CreateBouns />}
+      />
     </>
   );
 };
