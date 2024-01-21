@@ -255,8 +255,8 @@ export default function EmployeeList() {
                                   `/Employee/EmployeeReportWithFilter`,
                                   {
                                     businessUnitId: 1,
-                                    workplaceGroupId: 4,
-                                    workplaceId: 11,
+                                    workplaceGroupId: wgId,
+                                    workplaceId: wId,
                                     pageNo: 1,
                                     pageSize: 1000000,
                                     isPaginated: false,
