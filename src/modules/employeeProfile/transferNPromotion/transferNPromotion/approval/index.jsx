@@ -909,6 +909,10 @@ export default function TransferNPromotionApproval() {
                                         {
                                           employeeId: item?.intEmployeeId,
                                           approval: true,
+                                          businessUnitId:
+                                            item?.intBusinessUnitId,
+                                          workplaceGroupId:
+                                            item?.intWorkplaceGroupId,
                                         }
                                       );
                                       setSingleData(item);
