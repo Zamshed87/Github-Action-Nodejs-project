@@ -766,6 +766,7 @@ export const columnForHeadOffice = {
   strEmploymentType: "Employment Type",
   contactNo: "Contact No",
   JoiningDate: "Joining Date",
+  strEmployeeStatus: "Status",
 };
 
 export const columnForMarketing = {
