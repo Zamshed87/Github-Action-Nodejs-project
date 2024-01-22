@@ -64,7 +64,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       // width: 30,
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "workplaceGroup",
       sort: false,
       filter: false,
@@ -72,7 +72,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       render: (record) => record?.workplaceGroup || "N/A",
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "workplace",
       sort: false,
       filter: false,

@@ -91,7 +91,7 @@ export const empReportListColumns = (
       fixed: "left",
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "strWorkplaceGroup",
       sorter: true,
       filter: true,
@@ -100,7 +100,7 @@ export const empReportListColumns = (
       fixed: "left",
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "strWorkplace",
       sorter: true,
       filter: true,
@@ -117,7 +117,6 @@ export const empReportListColumns = (
       filterDropDownList: headerList[`strDivisionList`],
       fieldType: "string",
       fixed: "left",
-
     },
 
     {
