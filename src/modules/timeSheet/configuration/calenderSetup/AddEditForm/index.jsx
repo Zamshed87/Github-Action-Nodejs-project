@@ -11,7 +11,7 @@ import {
 } from "../../../../../common/api";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import FormikInput from "../../../../../common/FormikInput";
-import { greenColor } from "../../../../../utility/customColor";
+import { gray900, greenColor } from "../../../../../utility/customColor";
 import { createTimeSheetActionForCalender } from "../../../helper";
 import {
   getTimeSheetCalenderById,
@@ -21,7 +21,7 @@ import FormikSelect from "../../../../../common/FormikSelect";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { isUniq } from "../../../../../utility/uniqChecker";
 import { IconButton, Tooltip } from "@mui/material";
-import { DeleteOutline } from "@mui/icons-material";
+import { DeleteOutline, InfoOutlined } from "@mui/icons-material";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -269,7 +269,23 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Extended Start Time </label>
+                    <label>
+                        Extended Start Time
+                        <small>
+                          <span>
+                            {" "}
+                            <InfoOutlined
+                              sx={{
+                                color: gray900,
+                                fontSize: "12px",
+                                marginLeft: "5px",
+                              }}
+                            />{" "}
+                            Late punishment policy will be applicable after
+                            crossing this time limit.
+                          </span>
+                        </small>
+                      </label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.allowedStartTime}
@@ -285,7 +301,25 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Last Start Time </label>
+                    <label>
+                        Last Start Time
+                        <small>
+                          {" "}
+                          <span>
+                            {" "}
+                            {" "}
+                            <InfoOutlined
+                              sx={{
+                                color: gray900,
+                                fontSize: "12px",
+                                marginLeft: "5px",
+                              }}
+                            />{" "}
+                            Absent punishment policy will be applicable after
+                            crossing this time limit.
+                          </span>
+                        </small>
+                      </label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.lastStartTime}
