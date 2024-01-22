@@ -10,7 +10,7 @@ import {
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
-import { Form, message } from "antd";
+import { Form, Tag, message } from "antd";
 import axios from "axios";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
@@ -78,17 +78,24 @@ function EmployeeFeatureNew() {
       isPaginated: true,
       isHeaderNeed: true,
       searchTxt: searchText || "",
+      salartType: "",
+      hrPosition: 0,
       strDepartmentList: filerList?.strDepartment || [],
+      strWorkplaceGroupList: filerList?.strWorkplaceGroup || [],
+      strWorkplaceList: filerList?.strWorkplace || [],
+      strDivisionList: filerList?.strDivision || [],
       strDesignationList: filerList?.strDesignation || [],
       strSupervisorNameList: filerList?.strSupervisorName || [],
       strEmploymentTypeList: filerList?.strEmploymentType || [],
       strLinemanagerList: filerList?.strLinemanager || [],
       strSectionList: filerList?.sectionName || [],
+      strHrPositionList: filerList?.sectionName || [],
+      strDottedSupervisorNameList: filerList?.strDottedSupervisorName || [],
       wingNameList: [],
       soleDepoNameList: [],
       regionNameList: [],
       areaNameList: [],
-      territoryNameList: [], 
+      territoryNameList: [],
     };
     landingApi.action({
       urlKey: "EmployeeProfileLandingPaginationWithMasterFilter",
@@ -113,7 +120,7 @@ function EmployeeFeatureNew() {
     document.title = "Employee";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId, wId]);
+  }, []);
 
   // menu permission
   let employeeFeature: any = null;
@@ -146,13 +153,28 @@ function EmployeeFeatureNew() {
       width: 15,
       align: "center",
     },
+
     {
-      title: "Employee ID",
-      dataIndex: "strEmployeeCode",
+      title: "Work. Group/Location",
+      dataIndex: "strWorkplaceGroup",
       sorter: true,
+      filter: true,
+      filterKey: "strWorkplaceGroupList",
+      filterSearch: true,
+      width: 70,
       fixed: "left",
-      width: 30,
     },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      filter: true,
+      filterKey: "strWorkplaceList",
+      filterSearch: true,
+      width: 50,
+      fixed: "left",
+    },
+
     {
       title: "Employee Name",
       dataIndex: "strEmployeeName",
@@ -166,13 +188,20 @@ function EmployeeFeatureNew() {
       },
       sorter: true,
       fixed: "left",
-      width: 80,
+      width: 50,
+    },
+    {
+      title: "Employee ID",
+      dataIndex: "strEmployeeCode",
+      sorter: true,
+      fixed: "left",
+      width: 40,
     },
     {
       title: "Reference Id",
       dataIndex: "strReferenceId",
       sorter: true,
-      width: 30,
+      width: 35,
     },
     {
       title: "Designation",
@@ -221,7 +250,7 @@ function EmployeeFeatureNew() {
       title: "Contact No",
       dataIndex: "contactNo",
       sorter: true,
-      width: 50,
+      width: 30,
     },
     {
       title: "Type",
@@ -237,7 +266,29 @@ function EmployeeFeatureNew() {
       render: (_: any, rec: any) => dateFormatter(rec?.dteJoiningDate),
       sorter: true,
       dataType: "date",
-      width: 30,
+      width: 35,
+    },
+    {
+      title: "Status",
+      dataIndex: "strEmployeeStatus",
+      render: (_: any, rec: any) => {
+        return (
+          <div>
+            {rec?.strEmployeeStatus === "Active" ? (
+              <Tag color="green">{rec?.strEmployeeStatus}</Tag>
+            ) : rec?.strEmployeeStatus === "Inactive" ? (
+              <Tag color="red">{rec?.strEmployeeStatus}</Tag>
+            ) : rec?.strEmployeeStatus === "Salary Hold" ? (
+              <Tag color="orange">{rec?.strEmployeeStatus}</Tag>
+            ) : (
+              <Tag color="gold">{rec?.strEmployeeStatus}</Tag>
+            )}
+          </div>
+        );
+      },
+      sorter: true,
+      dataType: "date",
+      width: 35,
     },
     {
       width: 20,
@@ -316,6 +367,8 @@ function EmployeeFeatureNew() {
                     areaNameList: [],
                     territoryNameList: [],
                     strSectionList: [],
+                    strWorkplaceList: [],
+                    strWorkplaceGroupList: [],
                   };
                   const res = await axios.post(
                     `/Employee/EmployeeProfileLandingPaginationWithMasterFilter`,
@@ -409,7 +462,7 @@ function EmployeeFeatureNew() {
                         getTableDataEmployee(
                           newData,
                           wgId === 3
-                            ? Object.keys(columnForMarketing)
+                            ? Object.keys(columnForHeadOffice)
                             : Object.keys(columnForHeadOffice)
                         ),
                       tableFooter: [],
