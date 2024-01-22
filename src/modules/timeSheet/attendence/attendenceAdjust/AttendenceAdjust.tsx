@@ -497,13 +497,13 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                             type="date"
                             name="outtime"
                             picker="time"
-                            label="Select Outtime"
-                            placeholder="Select Outtime"
+                            label="Select Out-Time"
+                            placeholder="Select Out-Time"
                             format={"hh:mm A"}
                             rules={[
                               {
                                 required: true,
-                                message: "Please Select Outtime",
+                                message: "Please Select Out-Time",
                               },
                             ]}
                           />
