@@ -457,7 +457,7 @@ function EmployeeFeatureNew() {
                           ?.strBusinessUnitAddress,
                       businessUnit: buName,
                       tableHeader:
-                        wgId === 3 ? columnForMarketing : columnForHeadOffice,
+                        wgId === 3 ? columnForHeadOffice : columnForHeadOffice,
                       getTableData: () =>
                         getTableDataEmployee(
                           newData,
