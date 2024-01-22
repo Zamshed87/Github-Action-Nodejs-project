@@ -217,11 +217,11 @@ const YearlyLeavePolicy = () => {
                         Year {values?.year ? values?.year.label : currentYear}
                       </h5>
                       {Object.entries(allPolicy).length > 0 ? (
-                        <div className="table-card-styled tableOne">
+                        <div className="">
                           <ScrollableTable
                             classes="salary-process-table"
                             secondClasses="table-card-styled tableOne scroll-table-height"
-                            customClass="salary-details-custom "
+                            customClass="salary-details-custom leavPolicy-landing"
                           >
                             <thead>
                               <tr>
