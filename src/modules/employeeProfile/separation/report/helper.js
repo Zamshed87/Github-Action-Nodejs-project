@@ -31,7 +31,7 @@ export const empSeparationCol = (page, paginationSize) => {
       width: 60,
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "strWorkplaceGroupName",
       sort: true,
       filter: false,
@@ -39,7 +39,7 @@ export const empSeparationCol = (page, paginationSize) => {
       width: 200,
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "strWorkplaceName",
       sort: true,
       filter: false,

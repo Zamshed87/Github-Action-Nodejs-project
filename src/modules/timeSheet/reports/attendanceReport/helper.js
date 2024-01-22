@@ -37,12 +37,12 @@ export const attendanceReportColumn = (page, paginationSize) => {
       fieldType: "string",
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "workplaceGroup",
       width: 150,
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "workplace",
       width: 150,
     },

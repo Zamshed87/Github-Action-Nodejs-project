@@ -84,14 +84,14 @@ export const monthlyAttendanceReportColumns = (
       width: 180,
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "strWorkplaceGroup",
       sorter: true,
-      filter: true,
+      // filter: true,
       width: 180,
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "strWorkplace",
       sorter: true,
       // filter: true,
@@ -111,7 +111,6 @@ export const monthlyAttendanceReportColumns = (
       // filter: true,
       width: 180,
     },
-  
 
     ...(dateList?.length > 0 &&
       dateList.map((item) => ({
