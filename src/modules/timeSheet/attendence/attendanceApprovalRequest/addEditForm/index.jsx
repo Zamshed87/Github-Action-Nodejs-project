@@ -84,8 +84,8 @@ export default function AddEditFormComponent({
             attendanceSummaryId: item?.AttendanceSummaryId,
             employeeId: employeeId,
             attendanceDate: item?.dteAttendanceDate,
-            inTime: values?.inTime || "",
-            outTime: values?.outTime || "",
+            inTime: values?.inputFieldType?.value == 1 ? values?.inTime : "",
+            outTime: values?.inputFieldType?.value == 1 ? values?.outTime : "",
             currentStatus:
               item?.isPresent === true
                 ? "Present"
@@ -132,8 +132,8 @@ export default function AddEditFormComponent({
           attendanceSummaryId: singleRowData?.AttendanceSummaryId,
           employeeId: employeeId,
           attendanceDate: singleRowData?.dteAttendanceDate,
-          inTime: values?.inTime || "",
-          outTime: values?.outTime || "",
+          inTime: values?.inputFieldType?.value == 1 ? values?.inTime : "",
+          outTime: values?.inputFieldType?.value == 1 ? values?.outTime : "",
           currentStatus: status,
           requestStatus: values?.inputFieldType?.label,
           remarks: values?.code,
@@ -257,23 +257,6 @@ export default function AddEditFormComponent({
                               touched={touched}
                             />
                           </div>
-                          <div className="col-12">
-                            <label>Remarks</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.code}
-                              name="code"
-                              type="text"
-                              className="form-control"
-                              placeholder=" "
-                              onChange={(e) => {
-                                setFieldValue("code", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-
                           {values?.inputFieldType?.value == 1 && (
                             <>
                               <div className="col-6">
@@ -326,6 +309,22 @@ export default function AddEditFormComponent({
                               </div>
                             </>
                           )}
+                          <div className="col-12">
+                            <label>Remarks</label>
+                            <FormikInput
+                              classes="input-sm"
+                              value={values?.code}
+                              name="code"
+                              type="text"
+                              className="form-control"
+                              placeholder=" "
+                              onChange={(e) => {
+                                setFieldValue("code", e.target.value);
+                              }}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
                         </div>
                         <div className="col-12"></div>
                       </div>

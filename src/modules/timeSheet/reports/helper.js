@@ -281,7 +281,7 @@ export const rosterReportDtoCol = (page, paginationSize, columnList) => {
     },
     {
       title: "Workplace",
-      dataIndex: "strWorkplace ",
+      dataIndex: "strWorkplace",
       sorter: false,
       filter: false,
       width: 180,
