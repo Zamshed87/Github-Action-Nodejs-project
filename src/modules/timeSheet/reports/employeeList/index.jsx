@@ -28,6 +28,7 @@ import {
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
 import { toast } from "react-toastify";
+import { getWorkplaceDetails } from "common/api";
 
 const initData = {
   searchString: "",
@@ -99,7 +100,7 @@ export default function EmployeeList() {
     setHeaderList({});
     setEmpLanding([]);
     getData(pages);
-    getBuDetails(buId, setBuDetails, setLoading);
+    // getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
@@ -227,7 +228,9 @@ export default function EmployeeList() {
       checkedHeaderList
     );
   };
-
+  useEffect(() => {
+    getWorkplaceDetails(wId, setBuDetails);
+  }, [wId]);
   return (
     <>
       <Formik enableReinitialize={true} initialValues={initData}>
@@ -252,8 +255,8 @@ export default function EmployeeList() {
                                   `/Employee/EmployeeReportWithFilter`,
                                   {
                                     businessUnitId: 1,
-                                    workplaceGroupId: 4,
-                                    workplaceId: 11,
+                                    workplaceGroupId: wgId,
+                                    workplaceId: wId,
                                     pageNo: 1,
                                     pageSize: 1000000,
                                     isPaginated: false,
@@ -303,9 +306,8 @@ export default function EmployeeList() {
                                     )}`,
                                     fromDate: "",
                                     toDate: "",
-                                    buAddress:
-                                      buDetails?.strBusinessUnitAddress,
-                                    businessUnit: buName,
+                                    buAddress: buDetails?.strAddress,
+                                    businessUnit: buDetails?.strWorkplace,
                                     tableHeader: columnForExcel,
                                     getTableData: () =>
                                       getTableDataEmployeeReports(

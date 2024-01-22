@@ -1270,9 +1270,9 @@ const SeparationApproval = lazy(() =>
 const BonusSetupLanding = lazy(() =>
   import("./../modules/PayrollManagementSytem/BonusSetup/index")
 );
-const SalaryBreakdown = lazy(() =>
-  import("./../modules/PayrollManagementSytem/SalaryBreakdown/index.jsx")
-);
+// const SalaryBreakdown = lazy(() =>
+//   import("./../modules/PayrollManagementSytem/SalaryBreakdown/index.jsx")
+// );
 const DailyAttendenceReport = lazy(() =>
   import("./../modules/timeSheet/reports/dailyAttendance/Landing/index")
 );

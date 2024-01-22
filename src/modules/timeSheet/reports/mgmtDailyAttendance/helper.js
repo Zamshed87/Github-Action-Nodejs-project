@@ -53,7 +53,7 @@ export const getDailyAttendanceData = async (
   }
 };
 // UI Table columns
-export const dailyAttendenceDtoCol = (page, paginationSize) => {
+export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
   return [
     {
       title: "SL",
@@ -61,13 +61,14 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       sort: false,
       filter: false,
       className: "text-center",
-      width: 30,
+      // width: 30,
     },
     {
       title: "Workplace Group",
       dataIndex: "workplaceGroup",
       sort: false,
       filter: false,
+      width: 200,
       render: (record) => record?.workplaceGroup || "N/A",
     },
     {
@@ -75,6 +76,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       dataIndex: "workplace",
       sort: false,
       filter: false,
+      width: 200,
       render: (record) => record?.workplace || "N/A",
     },
     {
@@ -111,14 +113,17 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       title: "Designation",
       dataIndex: "designation",
       sort: false,
-      filter: false,
+      filter: true,
+      filterDropDownList: headerList[`designationList`],
+
       render: (record) => record?.designation || "N/A",
     },
     {
       title: "Department",
       dataIndex: "department",
       sort: false,
-      filter: false,
+      filter: true,
+      filterDropDownList: headerList[`departmentList`],
       render: (record) => record?.department || "N/A",
     },
     {
@@ -139,9 +144,11 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
     },
     {
       title: "Calendar Name",
-      dataIndex: "calendarName",
+      dataIndex: "calender",
       sort: false,
-      filter: false,
+      filter: true,
+      filterDropDownList: headerList[`calenderList`],
+
       // render: (_, record) => record?.employmentType || "N/A",
     },
     {
@@ -218,7 +225,7 @@ export const column = {
   department: "Department",
   section: "Section",
   employmentType: "Employment Type",
-  calendarName: "Calendar Name",
+  calendar: "Calendar Name",
   inTime: "In Time",
   outTime: "Out Time",
   dutyHours: "Duration",

@@ -371,7 +371,7 @@ export default function IOUApproval() {
                 }}
               />
             </div>
-            <div>Code</div>
+            <div>Employee ID</div>
           </div>
         ),
         dataIndex: "employeeCode",
