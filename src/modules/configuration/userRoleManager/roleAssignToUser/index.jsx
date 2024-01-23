@@ -27,7 +27,7 @@ export default function RoleAssignToUser() {
   const [singleData, setSingleData] = useState([]);
   const [userNameForEdit, setUserNameForEdit] = useState([]);
 
-  const { employeeId, orgId, buId, wgId } = useSelector(
+  const { employeeId, orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -95,7 +95,7 @@ export default function RoleAssignToUser() {
     if (v?.length < 3) return [];
     return await axios
       .get(
-        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&Search=${v}`
+        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
       )
       .then((res) => {
         return res?.data;

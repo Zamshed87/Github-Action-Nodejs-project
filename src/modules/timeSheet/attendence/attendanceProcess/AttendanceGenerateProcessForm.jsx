@@ -23,7 +23,7 @@ import moment from "moment";
 const AttendanceGenerateProcessForm = () => {
   const [lastDateOfMonth, setLastDateMonth] = React.useState("");
   const [, generateAttendanceProcessAPI, loadingProcess] = useAxiosPost();
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -46,7 +46,7 @@ const AttendanceGenerateProcessForm = () => {
     if (isAllExist) return [];
     return axios
       .get(
-        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&Search=${v}`
+        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
       )
       .then((res) => {
         // add all at the position 0

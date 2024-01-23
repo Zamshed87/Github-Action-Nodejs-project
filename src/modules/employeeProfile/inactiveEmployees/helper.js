@@ -145,14 +145,14 @@ export const inactiveEmpColumns = (
       width: 50,
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "strWorkplaceGroup",
       sort: false,
       filter: false,
       width: 200,
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "strWorkplace",
       sort: false,
       filter: false,

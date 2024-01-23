@@ -110,13 +110,13 @@ export default function RosterSetup() {
         filter: true,
       },
       {
-        title: "WorkPlace GroupName",
+        title: "Work. Group/Location",
         dataIndex: "workplaceGroupName",
         sorter: true,
         filter: true,
       },
       {
-        title: "Workplace Name",
+        title: "Workplace/Concern",
         dataIndex: "workplaceName",
         sorter: true,
         filter: true,

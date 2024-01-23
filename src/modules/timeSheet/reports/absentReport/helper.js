@@ -65,14 +65,14 @@ export const absentDtoCol = (page, paginationSize) => {
       width: 30,
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "workplaceGroup",
       sort: false,
       filter: false,
       render: (record) => record?.workplaceGroup || "N/A",
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "workplace",
       sort: false,
       filter: false,

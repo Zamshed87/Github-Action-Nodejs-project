@@ -55,13 +55,14 @@ export default function SupervisorIOUReportCreate() {
     isSupNLMORManagement,
     wgId,
     intWorkplaceId,
+    wId,
   } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const loadUserList = (v) => {
     if (v?.length < 2) return [];
     return axios
       .get(
-        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&Search=${v}`
+        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
       )
       .then((res) => {
         return res?.data;

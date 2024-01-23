@@ -126,12 +126,12 @@ function CommonAppPipeline() {
       sorter: true,
     },
     {
-      title: "Workplace Group",
+      title: "Workp. Group/Location",
       dataIndex: "workplcaeGroup",
       sorter: true,
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "workplcae",
       sorter: true,
     },

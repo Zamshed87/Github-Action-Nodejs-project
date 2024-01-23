@@ -161,14 +161,14 @@ const EmMovementHistory = () => {
         width: 60,
       },
       {
-        title: "Workplace Group",
+        title: "Work. Group/Location",
         dataIndex: "workplaceGroupName",
         sort: true,
         filter: false,
         fieldType: "string",
       },
       {
-        title: "Workplace",
+        title: "Workplace/Concern",
         dataIndex: "workplaceName",
         sort: true,
         filter: false,
