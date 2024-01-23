@@ -1,17 +1,13 @@
-import { AddOutlined } from "@mui/icons-material";
-
-import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
+import { DataTable, PCard, PCardHeader, PForm } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form } from "antd";
+import { Form, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 // import "./styles.css";
-import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import Chips from "common/Chips";
 import ViewFormComponent from "./viewForm";
 
 function Religion() {
@@ -104,10 +100,9 @@ function Religion() {
       sorter: true,
       render: (_: any, rec: any) => (
         <>
-          <Chips
-            label={rec?.isActive ? "Active" : "Inactive"}
-            classess={`${rec?.isActive ? "success" : "danger"}`}
-          />
+          <Tag color={`${rec?.isActive ? "green" : "red"}`}>
+            {rec?.isActive ? "Active" : "Inactive"}
+          </Tag>
         </>
       ),
     },
