@@ -38,7 +38,7 @@ export const generateFilterBySrc = (
   dataSource: { [key: string]: any }
 ) => {
   const filterList = dataSource[dataIndex];
-  return filterList.map((data: any) => ({
+  return (filterList || []).map((data: any) => ({
     text: data.label,
     value: data.value,
   }));
