@@ -251,7 +251,7 @@ function EmployeeFeatureNew() {
       title: "Contact No",
       dataIndex: "contactNo",
       sorter: true,
-      width: 30,
+      width: 33,
     },
     {
       title: "Type",
@@ -259,7 +259,7 @@ function EmployeeFeatureNew() {
       sorter: true,
       filter: true,
       filterKey: "strEmploymentTypeList",
-      width: 25,
+      width: 28,
     },
     {
       title: "Joining Date",
