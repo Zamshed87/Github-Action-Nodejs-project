@@ -109,7 +109,7 @@ const SalaryAssign = () => {
       wgId,
       wId
     );
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
 
   const defaultPayrollElement = payrollElementDDL?.filter(
     (itm) => itm?.isDefault === true
