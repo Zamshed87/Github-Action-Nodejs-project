@@ -226,6 +226,15 @@ export default function SalaryDrawer(props) {
     if (!values?.payrollElement) {
       return toast.warning("Payroll Element is required!!!");
     }
+    let grossCal =
+      parseInt(values?.bankPay) +
+      parseInt(values?.netPay) +
+      parseInt(values?.digitalPay);
+    if (+values?.totalGrossSalary !== grossCal) {
+      return toast.warning(
+        "Gross Distribution must be equal to Gross Salary!!!"
+      );
+    }
 
     // for perday salary
     if (values?.payrollElement?.isPerday && !values?.perDaySalary) {
