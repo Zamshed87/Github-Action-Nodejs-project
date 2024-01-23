@@ -36,7 +36,7 @@ export default function FeatureAssignToUser() {
   const [moduleNameDDL, setModuleNameDDL] = useState([]);
   const [featureDDL, setFeatureDDL] = useState([]);
 
-  const { employeeId, buId, wgId } = useSelector(
+  const { employeeId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -67,7 +67,7 @@ export default function FeatureAssignToUser() {
     if (v?.length < 3) return [];
     return await axios
       .get(
-        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&Search=${v}`
+        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
       )
       .then((res) => {
         return res?.data;

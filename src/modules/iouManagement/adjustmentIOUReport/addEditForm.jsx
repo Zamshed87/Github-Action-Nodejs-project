@@ -43,7 +43,7 @@ export default function MgtIOUApplicationCreate() {
 
   const [loading, setLoading] = useState(false);
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -74,7 +74,7 @@ export default function MgtIOUApplicationCreate() {
     if (v?.length < 2) return [];
     return axios
       .get(
-        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&Search=${v}`
+        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
       )
       .then((res) => {
         return res?.data;

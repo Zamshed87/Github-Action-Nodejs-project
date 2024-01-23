@@ -58,6 +58,7 @@ export default function SelfApplicationSeparationForm() {
     strDisplayName,
     isSupNLMORManagement,
     wgId,
+    wId,
   } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const [loading, setLoading] = useState(false);
@@ -128,7 +129,7 @@ export default function SelfApplicationSeparationForm() {
     if (v?.length < 2) return [];
     return axios
       .get(
-        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&Search=${v}`
+        `/Auth/GetUserList?businessUnitId=${buId}&workplaceGroupId=${wgId}&workplaceId=${wId}&Search=${v}`
       )
       .then((res) => {
         return res?.data;
