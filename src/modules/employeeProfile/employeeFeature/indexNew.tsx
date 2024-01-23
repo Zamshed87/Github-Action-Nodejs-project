@@ -91,6 +91,7 @@ function EmployeeFeatureNew() {
       strSectionList: filerList?.sectionName || [],
       strHrPositionList: filerList?.sectionName || [],
       strDottedSupervisorNameList: filerList?.strDottedSupervisorName || [],
+      strEmployeeStatusList: filerList?.strEmployeeStatus || [],
       wingNameList: [],
       soleDepoNameList: [],
       regionNameList: [],
@@ -287,7 +288,9 @@ function EmployeeFeatureNew() {
         );
       },
       sorter: true,
-      dataType: "date",
+      filter: true,
+      filterKey: "strEmployeeStatusList",
+
       width: 35,
     },
     {
@@ -369,6 +372,7 @@ function EmployeeFeatureNew() {
                     strSectionList: [],
                     strWorkplaceList: [],
                     strWorkplaceGroupList: [],
+                    strEmployeeStatusList: [],
                   };
                   const res = await axios.post(
                     `/Employee/EmployeeProfileLandingPaginationWithMasterFilter`,
