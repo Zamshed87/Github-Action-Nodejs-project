@@ -83,11 +83,10 @@ const DefaultSalary = ({ propsObj }) => {
         //
       });
   };
-
   const [paymentDetails, setPaymentDetails] = useState({
-    bankPay: 0,
-    digitalPay: 0,
-    netPay: 0,
+    bankPay: (values?.bankPay * 100) / values?.totalGrossSalary || 0,
+    digitalPay: (values?.digitalPay * 100) / values?.totalGrossSalary || 0,
+    netPay: (values?.netPay * 100) / values?.totalGrossSalary || 0,
   });
   return (
     <>
@@ -622,9 +621,12 @@ const DefaultSalary = ({ propsObj }) => {
                         >
                           {true
                             ? `Bank (${
-                                paymentDetails?.bankPay === 0
+                                values?.bankPay === 0
                                   ? 0
-                                  : paymentDetails?.bankPay?.toFixed(6)
+                                  : (
+                                      (values?.bankPay * 100) /
+                                      values?.totalGrossSalary
+                                    )?.toFixed(6)
                               }%) Pay`
                             : null}
                         </h2>
@@ -638,14 +640,6 @@ const DefaultSalary = ({ propsObj }) => {
                           className="form-control"
                           onChange={(e) => {
                             setFieldValue("bankPay", e.target.value);
-                            setPaymentDetails((prev) => {
-                              return {
-                                ...prev,
-                                bankPay:
-                                  (e.target.value * 100) /
-                                  values?.totalGrossSalary,
-                              };
-                            });
                           }}
                           errors={errors}
                           touched={touched}
@@ -672,9 +666,12 @@ const DefaultSalary = ({ propsObj }) => {
                         >
                           {true
                             ? `Net (${
-                                paymentDetails?.netPay === 0
+                                values?.netPay === 0
                                   ? 0
-                                  : paymentDetails?.netPay?.toFixed(6)
+                                  : (
+                                      (values?.netPay * 100) /
+                                      values?.totalGrossSalary
+                                    )?.toFixed(6)
                               }%) Pay`
                             : null}
                         </h2>
@@ -688,14 +685,6 @@ const DefaultSalary = ({ propsObj }) => {
                           className="form-control"
                           onChange={(e) => {
                             setFieldValue("netPay", e.target.value);
-                            setPaymentDetails((prev) => {
-                              return {
-                                ...prev,
-                                netPay:
-                                  (e.target.value * 100) /
-                                  values?.totalGrossSalary,
-                              };
-                            });
                           }}
                           errors={errors}
                           touched={touched}
@@ -722,9 +711,12 @@ const DefaultSalary = ({ propsObj }) => {
                         >
                           {true
                             ? `Digital (${
-                                paymentDetails?.digitalPay === 0
+                                values?.digitalPay === 0
                                   ? 0
-                                  : paymentDetails?.digitalPay?.toFixed(6)
+                                  : (
+                                      (values?.digitalPay * 100) /
+                                      values?.totalGrossSalary
+                                    )?.toFixed(6)
                               }%) Pay`
                             : null}
                         </h2>
@@ -738,14 +730,14 @@ const DefaultSalary = ({ propsObj }) => {
                           className="form-control"
                           onChange={(e) => {
                             setFieldValue("digitalPay", e.target.value);
-                            setPaymentDetails((prev) => {
-                              return {
-                                ...prev,
-                                digitalPay:
-                                  (e.target.value * 100) /
-                                  values?.totalGrossSalary,
-                              };
-                            });
+                            // setPaymentDetails((prev) => {
+                            //   return {
+                            //     ...prev,
+                            //     digitalPay:
+                            //       (e.target.value * 100) /
+                            //       values?.totalGrossSalary,
+                            //   };
+                            // });
                           }}
                           errors={errors}
                           touched={touched}

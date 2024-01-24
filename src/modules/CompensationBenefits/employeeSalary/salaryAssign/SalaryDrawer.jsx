@@ -140,6 +140,9 @@ export default function SalaryDrawer(props) {
         finalGrossSalary: singleData[0]?.numGrossSalary
           ? singleData[0]?.numGrossSalary
           : "",
+        bankPay: singleData[0]?.BankPayInAmount || 0,
+        digitalPay: singleData[0]?.DigitalPayInAmount || 0,
+        netPay: singleData[0]?.CashPayInAmount || 0,
       },
       validationSchema: DefaultSalaryValidationSchema,
       onSubmit: (values) => {
@@ -226,10 +229,8 @@ export default function SalaryDrawer(props) {
     if (!values?.payrollElement) {
       return toast.warning("Payroll Element is required!!!");
     }
-    let grossCal =
-      parseInt(values?.bankPay) +
-      parseInt(values?.netPay) +
-      parseInt(values?.digitalPay);
+    let grossCal = +values?.bankPay + +values?.netPay + +values?.digitalPay;
+
     if (+values?.totalGrossSalary !== grossCal) {
       return toast.warning(
         "Bank Pay, Net Pay and Digital pay must be equal to Gross Salary!!!"
