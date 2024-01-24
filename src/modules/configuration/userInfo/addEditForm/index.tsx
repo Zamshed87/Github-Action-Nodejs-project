@@ -164,6 +164,11 @@ const AddEditFormComponentN: React.FC<AddEditFormComponentNType> = ({
                     rules={[
                       { required: false, message: "UserType is required" },
                     ]}
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        userType: op,
+                      });
+                    }}
                   />
                 </Col>
 
