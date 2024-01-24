@@ -498,6 +498,16 @@ export default function AddEditForm({
           <Col md={12} sm={24}>
             <PInput
               type="text"
+              name="employeeCode"
+              label="Employee ID"
+              placeholder="Employee ID"
+              rules={[{ required: true, message: "Employee ID is required" }]}
+              disabled={isEdit}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
               name="fullName"
               label="Full Name"
               placeholder="Full Name"
@@ -578,16 +588,7 @@ export default function AddEditForm({
               disabled={isEdit}
             />
           </Col>
-          <Col md={12} sm={24}>
-            <PInput
-              type="text"
-              name="employeeCode"
-              label="Employee ID"
-              placeholder="Employee ID"
-              rules={[{ required: true, message: "Employee ID is required" }]}
-              disabled={isEdit}
-            />
-          </Col>
+
           {isEdit && (
             <Col md={12} sm={24}>
               <PInput
@@ -857,7 +858,7 @@ export default function AddEditForm({
                       placeholder={`${
                         workplaceGroup?.value
                           ? "Search minimum 2 character"
-                          : "Select Workplace Group fast"
+                          : "Select Workplace Group first"
                       }`}
                       disabled={!workplaceGroup?.value}
                       onChange={(value, op) => {
@@ -885,7 +886,7 @@ export default function AddEditForm({
                       placeholder={`${
                         workplaceGroup?.value
                           ? "Search minimum 2 character"
-                          : "Select Workplace Group fast"
+                          : "Select Workplace Group first"
                       }`}
                       disabled={!workplaceGroup?.value}
                       onChange={(value, op) => {
@@ -916,7 +917,7 @@ export default function AddEditForm({
                       placeholder={`${
                         workplaceGroup?.value
                           ? "Search minimum 2 character"
-                          : "Select Workplace Group fast"
+                          : "Select Workplace Group first"
                       }`}
                       disabled={!workplaceGroup?.value}
                       onChange={(value, op) => {
@@ -1058,7 +1059,7 @@ export default function AddEditForm({
           ) : undefined}
 
           {/* Hold Salary */}
-          {isEdit ? (
+          {/* {isEdit ? (
             <Col md={12} sm={24} style={{ marginTop: "20px" }}>
               <PInput
                 label="Salary Hold"
@@ -1067,7 +1068,7 @@ export default function AddEditForm({
                 layout="horizontal"
               />
             </Col>
-          ) : null}
+          ) : null} */}
           {/* User Create */}
           <Form.Item noStyle shouldUpdate>
             {() => {
@@ -1173,13 +1174,13 @@ export default function AddEditForm({
                 </>
               ) : (
                 <Col md={12} sm={24} style={{ marginTop: "20px" }}>
-                  <PInput
+                  {/* <PInput
                     Label="Is Active"
                     name="isActive"
                     type="checkbox"
                     label="Is Active"
                     layout="horizontal"
-                  />
+                  /> */}
                 </Col>
               );
             }}
