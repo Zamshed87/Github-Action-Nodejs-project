@@ -140,7 +140,8 @@ export default function SalaryDrawer(props) {
         finalGrossSalary: singleData[0]?.numGrossSalary
           ? singleData[0]?.numGrossSalary
           : "",
-        bankPay: singleData[0]?.BankPayInAmount || 0,
+        bankPay:
+          singleData[0]?.BankPayInAmount || singleData[0]?.numGrossSalary,
         digitalPay: singleData[0]?.DigitalPayInAmount || 0,
         netPay: singleData[0]?.CashPayInAmount || 0,
       },
@@ -233,7 +234,7 @@ export default function SalaryDrawer(props) {
 
     if (+values?.totalGrossSalary !== grossCal) {
       return toast.warning(
-        "Bank Pay, Net Pay and Digital pay must be equal to Gross Salary!!!"
+        "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
       );
     }
 
