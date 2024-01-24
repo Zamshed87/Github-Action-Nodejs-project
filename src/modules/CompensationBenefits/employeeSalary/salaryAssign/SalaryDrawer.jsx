@@ -232,7 +232,7 @@ export default function SalaryDrawer(props) {
       parseInt(values?.digitalPay);
     if (+values?.totalGrossSalary !== grossCal) {
       return toast.warning(
-        "Gross Distribution must be equal to Gross Salary!!!"
+        "Bank Pay, Net Pay and Digital pay must be equal to Gross Salary!!!"
       );
     }
 
@@ -370,6 +370,19 @@ export default function SalaryDrawer(props) {
           numBasicORGross: basicSalaryList[0]?.numAmount,
           numGrossAmount: finalTotalAmount,
           breakdownElements: modifyBreakdownList,
+          numCashPayInPercent: +(
+            (+values?.netPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+          numBankPayInPercent: +(
+            (+values?.bankPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+
+          numDigitalPayInPercent: +(
+            (+values?.digitalPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
         };
 
         createEmployeeSalaryAssign(payload, setLoading, callback);
@@ -383,6 +396,19 @@ export default function SalaryDrawer(props) {
           numBasicORGross: basicSalaryList[0]?.numAmount,
           numGrossAmount: finalTotalAmount,
           breakdownElements: modifyBreakdownList || [],
+          numCashPayInPercent: +(
+            (+values?.netPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+          numBankPayInPercent: +(
+            (+values?.bankPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+
+          numDigitalPayInPercent: +(
+            (+values?.digitalPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
         };
 
         createEmployeeSalaryAssign(payload, setLoading, callback);
