@@ -41,6 +41,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
   // state
   const [open, setOpen] = useState(false);
   const [selectedRows, setsSelectedRows] = useState<any>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
 
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
@@ -263,9 +264,11 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
               type: "checkbox",
               onChange: (selectedRowKeys, selectedRows) => {
                 setsSelectedRows(selectedRows);
+                setSelectedRowKeys(selectedRowKeys);
               },
               getCheckboxProps: (record) => ({
                 disabled: record?.status === "Done",
+                checked: selectedRowKeys?.includes(record?.intPfLedgerId),
               }),
             }}
             bordered
@@ -295,6 +298,8 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
         open={open}
         onCancel={() => {
           setOpen(false);
+          setsSelectedRows([]);
+          setSelectedRowKeys([]);
         }}
         components={
           <CreateInvestment
@@ -302,6 +307,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
             data={selectedRows}
             landingApi={landingApi}
             setsSelectedRows={setsSelectedRows}
+            setSelectedRowKeys={setSelectedRowKeys}
           />
         }
       />

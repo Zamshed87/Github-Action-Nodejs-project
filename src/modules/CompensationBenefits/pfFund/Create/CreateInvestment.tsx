@@ -12,12 +12,14 @@ type TAddEditForm = {
   data: any;
   landingApi: () => void;
   setsSelectedRows: any;
+  setSelectedRowKeys: any;
 };
 const CreateInvestment: React.FC<TAddEditForm> = ({
   setOpen,
   data,
   landingApi,
   setsSelectedRows,
+  setSelectedRowKeys,
 }) => {
   // Data From Store
   const { buId, wgId, wId, orgId } = useSelector(
@@ -97,6 +99,7 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
             setOpen(false);
             landingApi();
             setsSelectedRows([]);
+            setSelectedRowKeys([]);
           },
         });
       }}
@@ -205,6 +208,7 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
         onCancel={() => {
           setOpen(false);
           setsSelectedRows([]);
+          setSelectedRowKeys([]);
         }}
         loading={createInvestmentApi?.loading}
       />
