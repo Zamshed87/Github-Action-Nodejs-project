@@ -145,6 +145,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
                       "25",
                       "100",
                       "500",
+                      "1000",
                     ],
                     total: pagination.total,
                     defaultCurrent: pagination.defaultCurrent || 1,
