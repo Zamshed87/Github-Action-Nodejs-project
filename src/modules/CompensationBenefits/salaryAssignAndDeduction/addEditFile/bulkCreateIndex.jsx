@@ -312,7 +312,6 @@ function BulkAddEditForm() {
   };
 
   const saveAllHandler = (values) => {
-    let remainingError = false;
     const errorMessages = {
       fromMonth: "From month is required",
       salaryType: "Salary Type is required",
@@ -320,17 +319,16 @@ function BulkAddEditForm() {
       amountDimension: "Amount Dimension is required",
       amount: "Amount is required",
     };
-
-    const validateAndToast = (values) => {
-      for (const fieldName in errorMessages) {
-        if (!values?.[fieldName]) {
-          remainingError = true;
-          toast.warn(errorMessages[fieldName]);
-        }
+      // throw error 🔥
+    const remainingError = Object.keys(errorMessages).some((fieldName) => {
+      if (!values?.[fieldName]) {
+        toast.warn(errorMessages[fieldName]);
+        return true; 
       }
-    };
-    // throw error 🔥
-    validateAndToast(values);
+      return false;
+    });
+
+
     if (!remainingError) {
       saveHandler(
         values,
