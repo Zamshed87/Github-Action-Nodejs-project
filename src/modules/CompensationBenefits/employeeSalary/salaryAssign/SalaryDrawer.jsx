@@ -152,7 +152,6 @@ export default function SalaryDrawer(props) {
         });
       },
     });
-
   const netGross = () => {
     let amount = 0;
     amount = breakDownList
@@ -232,7 +231,18 @@ export default function SalaryDrawer(props) {
     }
     let grossCal = +values?.bankPay + +values?.netPay + +values?.digitalPay;
 
-    if (+values?.totalGrossSalary !== grossCal) {
+    if (
+      !values?.payrollElement?.isPerday &&
+      +values?.totalGrossSalary !== grossCal
+    ) {
+      return toast.warning(
+        "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
+      );
+    }
+    if (
+      values?.payrollElement?.isPerday &&
+      +values?.perDaySalary !== grossCal
+    ) {
       return toast.warning(
         "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
       );
@@ -328,6 +338,19 @@ export default function SalaryDrawer(props) {
         numBasicORGross: 0,
         numNetGrossSalary: 0,
         numGrossAmount: +values?.finalGrossSalary,
+        numCashPayInPercent: +(
+          (+values?.netPay * 100) /
+          +values?.perDaySalary
+        ).toFixed(6),
+        numBankPayInPercent: +(
+          (+values?.bankPay * 100) /
+          +values?.perDaySalary
+        ).toFixed(6),
+
+        numDigitalPayInPercent: +(
+          (+values?.digitalPay * 100) /
+          +values?.perDaySalary
+        ).toFixed(6),
       };
       createEmployeeSalaryAssign(payload, setLoading, callback);
     } else {
