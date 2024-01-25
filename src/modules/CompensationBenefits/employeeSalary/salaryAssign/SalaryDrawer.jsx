@@ -152,7 +152,6 @@ export default function SalaryDrawer(props) {
         });
       },
     });
-
   const netGross = () => {
     let amount = 0;
     amount = breakDownList
