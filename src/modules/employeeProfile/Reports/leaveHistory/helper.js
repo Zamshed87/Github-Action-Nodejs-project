@@ -66,13 +66,13 @@ export const leaveHistoryCol = (page, paginationSize) => {
       width: 50,
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "workplaceGroup",
       sorter: false,
       filter: false,
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "workplace",
       sorter: false,
       filter: false,

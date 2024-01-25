@@ -179,7 +179,7 @@ export const offDayAssignDtoCol = (
       fieldType: "string",
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "workplaceGroupName",
       sort: true,
       fieldType: "string",

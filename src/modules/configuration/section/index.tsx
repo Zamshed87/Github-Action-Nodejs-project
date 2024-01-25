@@ -3,7 +3,7 @@ import { AddOutlined } from "@mui/icons-material";
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form } from "antd";
+import { Form, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
@@ -11,7 +11,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 import ViewFormComponent from "./viewForm";
 
@@ -94,39 +93,43 @@ function Section() {
       title: "SL",
       render: (_: any, rec: any, index: number) => index + 1,
       //   fixed: "left",
-      width: 25,
-      align: "center",
+      width: 5,
+      // align: "center",
     },
     {
       title: "Section",
       dataIndex: "sectionName",
       sorter: true,
+      width: 20,
+      align: "center",
       //   fixed: "left",
     },
     {
       title: "Department",
       dataIndex: "departmentName",
       sorter: true,
-      width: 100,
+      width: 30,
+      align: "center",
 
       //   fixed: "left",
     },
     {
       title: "Status",
       dataIndex: "isActive",
+      align: "center",
+      width: 10,
       sorter: true,
       render: (_: any, rec: any) => (
         <>
-          <Chips
-            label={rec?.isActive ? "Active" : "Inactive"}
-            classess={`${rec?.isActive ? "success" : "danger"}`}
-          />
+          <Tag color={`${rec?.isActive ? "green" : "red"}`}>
+            {rec?.isActive ? "Active" : "Inactive"}
+          </Tag>
         </>
       ),
     },
 
     {
-      width: 50,
+      width: 20,
       align: "center",
       render: (_: any, rec: any) => (
         <>

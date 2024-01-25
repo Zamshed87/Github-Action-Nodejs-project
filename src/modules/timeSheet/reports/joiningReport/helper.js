@@ -90,14 +90,14 @@ export const joiningDtoCol = (page, paginationSize, wName, wgName) => {
       fieldType: "string",
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "strWorkPlaceGroup",
       sort: false,
       filter: false,
       // render: () => wgName || "N/A",
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "strWorkPlace",
       sort: false,
       filter: false,

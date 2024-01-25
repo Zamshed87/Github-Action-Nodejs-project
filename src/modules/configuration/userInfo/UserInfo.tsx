@@ -221,7 +221,7 @@ const UserInfoN: React.FC<TUserInfo> = () => {
               searchFunc(e?.target?.value);
             }}
             submitText="Create"
-            submitIcon=<PlusOutlined />
+            submitIcon={<PlusOutlined />}
           />
 
           <DataTable

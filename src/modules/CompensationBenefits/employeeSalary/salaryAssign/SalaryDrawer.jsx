@@ -140,6 +140,10 @@ export default function SalaryDrawer(props) {
         finalGrossSalary: singleData[0]?.numGrossSalary
           ? singleData[0]?.numGrossSalary
           : "",
+        bankPay:
+          singleData[0]?.BankPayInAmount || singleData[0]?.numGrossSalary,
+        digitalPay: singleData[0]?.DigitalPayInAmount || 0,
+        netPay: singleData[0]?.CashPayInAmount || 0,
       },
       validationSchema: DefaultSalaryValidationSchema,
       onSubmit: (values) => {
@@ -225,6 +229,13 @@ export default function SalaryDrawer(props) {
   const saveHandler = (values, cb) => {
     if (!values?.payrollElement) {
       return toast.warning("Payroll Element is required!!!");
+    }
+    let grossCal = +values?.bankPay + +values?.netPay + +values?.digitalPay;
+
+    if (+values?.totalGrossSalary !== grossCal) {
+      return toast.warning(
+        "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
+      );
     }
 
     // for perday salary
@@ -361,6 +372,19 @@ export default function SalaryDrawer(props) {
           numBasicORGross: basicSalaryList[0]?.numAmount,
           numGrossAmount: finalTotalAmount,
           breakdownElements: modifyBreakdownList,
+          numCashPayInPercent: +(
+            (+values?.netPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+          numBankPayInPercent: +(
+            (+values?.bankPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+
+          numDigitalPayInPercent: +(
+            (+values?.digitalPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
         };
 
         createEmployeeSalaryAssign(payload, setLoading, callback);
@@ -374,6 +398,19 @@ export default function SalaryDrawer(props) {
           numBasicORGross: basicSalaryList[0]?.numAmount,
           numGrossAmount: finalTotalAmount,
           breakdownElements: modifyBreakdownList || [],
+          numCashPayInPercent: +(
+            (+values?.netPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+          numBankPayInPercent: +(
+            (+values?.bankPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+
+          numDigitalPayInPercent: +(
+            (+values?.digitalPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
         };
 
         createEmployeeSalaryAssign(payload, setLoading, callback);

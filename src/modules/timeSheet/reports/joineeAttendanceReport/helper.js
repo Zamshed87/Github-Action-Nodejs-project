@@ -89,14 +89,14 @@ export const joineeAttendanceReportColumns = (
       width: 200,
     },
     {
-      title: "Workplace Group",
+      title: "Work. Group/Location",
       dataIndex: "strWorkplaceGroup",
       sorter: true,
       filter: false,
       width: 180,
     },
     {
-      title: "Workplace",
+      title: "Workplace/Concern",
       dataIndex: "strWorkplace",
       sorter: true,
       // filter: true,

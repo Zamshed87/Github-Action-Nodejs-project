@@ -63,13 +63,24 @@ export const createEditEmpAction = async (
       intDesignationId: values?.designation?.value,
       dteDateOfBirth: moment(values?.dateofBirth).format("YYYY-MM-DD"),
       dteJoiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
-      dteInternCloseDate: values?.dteInternCloseDate & values?.lastDaysInternCloseDate
-        ?  moment(values?.dteInternCloseDate).format("YYYY-MM-DD") + "-" +   moment(values?.lastDaysInternCloseDate).format("YYYY-MM-DD") 
+      dteInternCloseDate:
+        values?.dteInternCloseDate & values?.lastDaysInternCloseDate
+          ? moment(values?.dteInternCloseDate).format("YYYY-MM-DD") +
+            "-" +
+            moment(values?.lastDaysInternCloseDate).format("YYYY-MM-DD")
+          : null,
+      dteProbationaryCloseDate: values?.dteProbationaryCloseDate
+        ? moment(values?.dteProbationaryCloseDate).format("YYYY-MM-DD")
         : null,
-      dteProbationaryCloseDate: values?.dteProbationaryCloseDate ? moment(values?.dteProbationaryCloseDate).format("YYYY-MM-DD") : null,
-      dteConfirmationDate: values?.dteConfirmationDate ?  moment(values?.dteConfirmationDate).format("YYYY-MM-DD") : null,
-      dteContactFromDate: values?.contractualFromDate ?  moment(values?.contractualFromDate).format("YYYY-MM-DD") : null,
-      dteContactToDate: values?.contractualToDate ?  moment(values?.contractualToDate).format("YYYY-MM-DD") : null,
+      dteConfirmationDate: values?.dteConfirmationDate
+        ? moment(values?.dteConfirmationDate).format("YYYY-MM-DD")
+        : null,
+      dteContactFromDate: values?.contractualFromDate
+        ? moment(values?.contractualFromDate).format("YYYY-MM-DD")
+        : null,
+      dteContactToDate: values?.contractualToDate
+        ? moment(values?.contractualToDate).format("YYYY-MM-DD")
+        : null,
       intSupervisorId: values?.supervisor?.value,
       intLineManagerId: values?.lineManager?.value,
       intDottedSupervisorId: values?.dottedSupervisor?.value,
@@ -100,7 +111,7 @@ export const createEditEmpAction = async (
       strPersonalMobile: values?.phone || "",
       strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
-      calendarAssignViewModel:  null,
+      calendarAssignViewModel: null,
     };
     if (!isEdit) {
       payload = {
@@ -110,10 +121,16 @@ export const createEditEmpAction = async (
           joiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
           generateStartDate: moment(values?.generateDate).format("YYYY-MM-DD"),
           generateEndDate: null,
-          runningCalendarId: values?.calenderType?.value === 2 ? values?.startingCalender?.value : values?.calender?.value,
+          runningCalendarId:
+            values?.calenderType?.value === 2
+              ? values?.startingCalender?.value
+              : values?.calender?.value,
           calendarType: values?.calenderType?.label,
-          nextChangeDate: values?.nextChangeDate ? moment(values?.nextChangeDate).format("YYYY-MM-DD") : null,
-          rosterGroupId: values?.calenderType?.value === 2 ? values?.calender?.value : 0,
+          nextChangeDate: values?.nextChangeDate
+            ? moment(values?.nextChangeDate).format("YYYY-MM-DD")
+            : null,
+          rosterGroupId:
+            values?.calenderType?.value === 2 ? values?.calender?.value : 0,
           isAutoGenerate: false,
         },
       };
@@ -736,8 +753,10 @@ export const getTableDataEmployee = (row, keys, totalKey) => {
 // excel columns
 export const columnForHeadOffice = {
   sl: "SL",
-  strEmployeeCode: "Employee Id",
+  strWorkplaceGroup: "Work. Group/Location",
+  strWorkplace: "Workplace/Concern",
   strEmployeeName: "Employee Name",
+  strEmployeeCode: "Employee Id",
   strReferenceId: "Reference Id",
   strDesignation: "Designation",
   strDepartment: "Department",
@@ -747,6 +766,7 @@ export const columnForHeadOffice = {
   strEmploymentType: "Employment Type",
   contactNo: "Contact No",
   JoiningDate: "Joining Date",
+  strEmployeeStatus: "Status",
 };
 
 export const columnForMarketing = {

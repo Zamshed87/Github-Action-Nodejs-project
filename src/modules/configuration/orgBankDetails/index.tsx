@@ -3,7 +3,7 @@ import { AddOutlined } from "@mui/icons-material";
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form } from "antd";
+import { Form, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
@@ -129,10 +129,9 @@ function OrgBankDetailsLanding() {
       sorter: true,
       render: (_: any, rec: any) => (
         <>
-          <Chips
-            label={rec?.isActive ? "Active" : "Inactive"}
-            classess={`${rec?.isActive ? "success" : "danger"}`}
-          />
+          <Tag color={`${rec?.isActive ? "green" : "red"}`}>
+            {rec?.isActive ? "Active" : "Inactive"}
+          </Tag>
         </>
       ),
     },

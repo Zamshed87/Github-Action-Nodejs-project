@@ -481,15 +481,15 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                             type="date"
                             name="intime"
                             picker="time"
-                            label="Select Intime"
+                            label="Select In time"
                             placeholder="Select Intime"
                             format={"hh:mm A"}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please Select Intime",
-                              },
-                            ]}
+                            // rules={[
+                            //   {
+                            //     required: true,
+                            //     message: "Please Select Intime",
+                            //   },
+                            // ]}
                           />
                         </Col>
                         <Col span={12}>
@@ -497,15 +497,15 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                             type="date"
                             name="outtime"
                             picker="time"
-                            label="Select Outtime"
-                            placeholder="Select Outtime"
+                            label="Select Out-Time"
+                            placeholder="Select Out-Time"
                             format={"hh:mm A"}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please Select Outtime",
-                              },
-                            ]}
+                            // rules={[
+                            //   {
+                            //     required: true,
+                            //     message: "Please Select Out-Time",
+                            //   },
+                            // ]}
                           />
                         </Col>
                         <Col span={24}>
