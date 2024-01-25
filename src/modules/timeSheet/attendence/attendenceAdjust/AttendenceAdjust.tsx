@@ -481,15 +481,15 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                             type="date"
                             name="intime"
                             picker="time"
-                            label="Select Intime"
+                            label="Select In time"
                             placeholder="Select Intime"
                             format={"hh:mm A"}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please Select Intime",
-                              },
-                            ]}
+                            // rules={[
+                            //   {
+                            //     required: true,
+                            //     message: "Please Select Intime",
+                            //   },
+                            // ]}
                           />
                         </Col>
                         <Col span={12}>
@@ -500,12 +500,12 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                             label="Select Out-Time"
                             placeholder="Select Out-Time"
                             format={"hh:mm A"}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please Select Out-Time",
-                              },
-                            ]}
+                            // rules={[
+                            //   {
+                            //     required: true,
+                            //     message: "Please Select Out-Time",
+                            //   },
+                            // ]}
                           />
                         </Col>
                         <Col span={24}>
