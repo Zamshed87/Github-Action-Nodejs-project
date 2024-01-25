@@ -391,9 +391,161 @@ const DefaultSalary = ({ propsObj }) => {
                       onChange={(e) => {
                         setFieldValue("finalGrossSalary", e.target.value);
                         setFieldValue("perDaySalary", e.target.value);
+                        setFieldValue("bankPay", e.target.value);
                       }}
                       errors={errors}
                       touched={touched}
+                    />
+                  </div>
+                </div>
+
+                <div
+                  className="row mb-less"
+                  style={{ alignItems: "center", marginBottom: "12px" }}
+                >
+                  <div className="col-12">
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        borderBottom: `1px solid ${gray200}`,
+                      }}
+                    ></div>
+                  </div>
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      {true
+                        ? `Bank (${
+                            values?.bankPay === 0
+                              ? 0
+                              : (
+                                  (values?.bankPay * 100) /
+                                  values?.perDaySalary
+                                )?.toFixed(6)
+                          }%) Pay`
+                        : null}
+                    </h2>
+                  </div>
+                  <div className="col-lg-5">
+                    <DefaultInput
+                      classes="input-sm"
+                      value={values?.bankPay}
+                      name="bankPay"
+                      type="number"
+                      className="form-control"
+                      onChange={(e) => {
+                        setFieldValue("bankPay", e.target.value);
+                      }}
+                      errors={errors}
+                      touched={touched}
+                      // disabled={true}
+                    />
+                  </div>
+                </div>
+
+                {/* digital pay */}
+                <div
+                  className="row mb-less"
+                  style={{ alignItems: "center", marginBottom: "12px" }}
+                >
+                  <div className="col-12"></div>
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      {true
+                        ? `Digital/MFS (${
+                            values?.digitalPay === 0
+                              ? 0
+                              : (
+                                  (values?.digitalPay * 100) /
+                                  values?.perDaySalary
+                                )?.toFixed(6)
+                          }%) Pay`
+                        : null}
+                    </h2>
+                  </div>
+                  <div className="col-lg-5">
+                    <DefaultInput
+                      classes="input-sm"
+                      value={values?.digitalPay}
+                      name="digitalPay"
+                      type="number"
+                      className="form-control"
+                      onChange={(e) => {
+                        const bank = +values?.perDaySalary - +e.target.value;
+                        setFieldValue("digitalPay", e.target.value);
+                        setFieldValue("bankPay", bank);
+                      }}
+                      errors={errors}
+                      touched={touched}
+                      // disabled={true}
+                    />
+                  </div>
+                </div>
+                {/* net */}
+                <div
+                  className="row mb-less"
+                  style={{ alignItems: "center", marginBottom: "12px" }}
+                >
+                  <div className="col-12"></div>
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      {true
+                        ? `Cash (${
+                            values?.netPay === 0
+                              ? 0
+                              : (
+                                  (values?.netPay * 100) /
+                                  values?.perDaySalary
+                                )?.toFixed(6)
+                          }%) Pay`
+                        : null}
+                    </h2>
+                  </div>
+                  <div className="col-lg-5">
+                    <DefaultInput
+                      classes="input-sm"
+                      value={values?.netPay}
+                      name="netPay"
+                      type="number"
+                      className="form-control"
+                      onChange={(e) => {
+                        const bank =
+                          +values?.perDaySalary -
+                          +e.target.value -
+                          +values?.digitalPay;
+
+                        setFieldValue("bankPay", bank);
+                        setFieldValue("netPay", e.target.value);
+                      }}
+                      errors={errors}
+                      touched={touched}
+                      // disabled={true}
                     />
                   </div>
                 </div>
@@ -897,6 +1049,45 @@ const DefaultSalary = ({ propsObj }) => {
                   </div>
                 </div>
               </>
+            )}
+          </>
+        ) : values?.perDaySalary ? (
+          <>
+            {values?.perDaySalary > 0 && (
+              <div className="row">
+                <div className="col-12">
+                  <div className="d-flex align-items-center justify-content-end">
+                    {+values?.perDaySalary !==
+                    +values?.bankPay + +values?.netPay + +values?.digitalPay ? (
+                      <span
+                        style={{
+                          color: "red",
+                          fontSize: "10px",
+                          marginRight: "3rem",
+                        }}
+                      >
+                        {" "}
+                        {
+                          "Bank Pay, Cash Pay and Digital pay must be equal to Per Day Salary Salary!!!"
+                        }
+                      </span>
+                    ) : null}
+
+                    <button
+                      disabled={
+                        +values?.perDaySalary !==
+                        +values?.bankPay + +values?.netPay + +values?.digitalPay
+                          ? true
+                          : false
+                      }
+                      type="submit"
+                      className="btn btn-green btn-green-disable"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
           </>
         ) : (
