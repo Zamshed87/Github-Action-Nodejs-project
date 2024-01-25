@@ -687,15 +687,10 @@ const DefaultSalary = ({ propsObj }) => {
                           type="number"
                           className="form-control"
                           onChange={(e) => {
+                            const bank =
+                              +values?.totalGrossSalary - +e.target.value;
                             setFieldValue("digitalPay", e.target.value);
-                            // setPaymentDetails((prev) => {
-                            //   return {
-                            //     ...prev,
-                            //     digitalPay:
-                            //       (e.target.value * 100) /
-                            //       values?.totalGrossSalary,
-                            //   };
-                            // });
+                            setFieldValue("bankPay", bank);
                           }}
                           errors={errors}
                           touched={touched}
@@ -739,6 +734,12 @@ const DefaultSalary = ({ propsObj }) => {
                           type="number"
                           className="form-control"
                           onChange={(e) => {
+                            const bank =
+                              +values?.totalGrossSalary -
+                              +e.target.value -
+                              +values?.digitalPay;
+
+                            setFieldValue("bankPay", bank);
                             setFieldValue("netPay", e.target.value);
                           }}
                           errors={errors}
@@ -910,7 +911,7 @@ const DefaultSalary = ({ propsObj }) => {
                         style={{
                           color: "red",
                           fontSize: "10px",
-                          marginRight: "1rem",
+                          marginRight: "3rem",
                         }}
                       >
                         {" "}
