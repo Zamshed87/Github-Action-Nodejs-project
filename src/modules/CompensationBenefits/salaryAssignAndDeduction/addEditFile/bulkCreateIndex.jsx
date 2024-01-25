@@ -1050,6 +1050,7 @@ function BulkAddEditForm() {
                         loading={loadingBulkAssign}
                         header={bulkAssignEmpListTableColumn(pages)}
                         pagination={{
+                          current: pages?.current,
                           pageSize: pages?.pageSize,
                           total: pages?.total,
                         }}
