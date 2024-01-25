@@ -220,6 +220,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 name="businessUnit"
                 placeholder="Business Unit"
                 allowClear={true}
+                showSearch={true}
                 rules={[
                   { required: true, message: "Business Unit Is Required" },
                 ]}
@@ -240,6 +241,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 name="type"
                 placeholder="Type"
                 allowClear={true}
+                showSearch={true}
                 // rules={[{ required: true, message: "Type Is Required" }]}
                 options={typeDDLApi?.data}
                 label="Type"

@@ -120,6 +120,7 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
             rules={[{ required: true, message: "Bank Is Required" }]}
             options={bankDDLApi?.data}
             label="Bank"
+            showSearch={true}
             onChange={(value: any, option: any) => {
               form.setFieldsValue({
                 bank: option,
@@ -148,6 +149,7 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
             name="branch"
             placeholder="Branch"
             allowClear={true}
+            showSearch={true}
             rules={[{ required: true, message: "Branch Is Required" }]}
             options={bankBranchDDLApi?.data}
             label="Branch"
@@ -204,6 +206,7 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
           setOpen(false);
           setsSelectedRows([]);
         }}
+        loading={createInvestmentApi?.loading}
       />
     </PForm>
   );
