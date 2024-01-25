@@ -41,7 +41,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
   // state
   const [open, setOpen] = useState(false);
   const [selectedRows, setsSelectedRows] = useState<any>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
+  const [checkedRowKeys, setCheckRowKeys] = useState<any>([]);
 
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
@@ -125,8 +125,8 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
       width: 20,
     },
     {
-      title: "PF Code",
-      dataIndex: "intPfLedgerCode",
+      title: "Reff. No",
+      dataIndex: "code",
       sorter: true,
     },
     {
@@ -142,6 +142,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
     {
       title: "Contribution Amount",
       dataIndex: "numAmount",
+      className: "text-right",
     },
     {
       title: "Invst. Status",
@@ -158,13 +159,9 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
     },
     {
       title: "Invst. Date",
-      dataIndex: "investDate",
-      // render: (data: any, record: any, index: number) =>
-      //   moment(data).format("DD-MMM-YYYY"),
-    },
-    {
-      title: "Invst. Reff No",
-      dataIndex: "invstmentRefferenceNo",
+      dataIndex: "investmentDate",
+      render: (data: any, record: any, index: number) =>
+        data ? moment(data).format("DD-MMM-YYYY") : "",
     },
     {
       title: "Action",
@@ -264,11 +261,11 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
               type: "checkbox",
               onChange: (selectedRowKeys, selectedRows) => {
                 setsSelectedRows(selectedRows);
-                setSelectedRowKeys(selectedRowKeys);
+                setCheckRowKeys(selectedRowKeys);
               },
               getCheckboxProps: (record) => ({
-                disabled: record?.status === "Done",
-                checked: selectedRowKeys?.includes(record?.intPfLedgerId),
+                disabled: record?.status === "Done" || record?.status === "",
+                checked: checkedRowKeys.includes(record?.intPfLedgerId),
               }),
             }}
             bordered
@@ -297,9 +294,9 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
         title="Create Investment"
         open={open}
         onCancel={() => {
-          setOpen(false);
           setsSelectedRows([]);
-          setSelectedRowKeys([]);
+          setCheckRowKeys([]);
+          setOpen(false);
         }}
         components={
           <CreateInvestment
@@ -307,7 +304,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
             data={selectedRows}
             landingApi={landingApi}
             setsSelectedRows={setsSelectedRows}
-            setSelectedRowKeys={setSelectedRowKeys}
+            setCheckRowKeys={setCheckRowKeys}
           />
         }
       />

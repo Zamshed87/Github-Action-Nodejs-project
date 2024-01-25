@@ -12,14 +12,14 @@ type TAddEditForm = {
   data: any;
   landingApi: () => void;
   setsSelectedRows: any;
-  setSelectedRowKeys: any;
+  setCheckRowKeys: any;
 };
 const CreateInvestment: React.FC<TAddEditForm> = ({
   setOpen,
   data,
   landingApi,
   setsSelectedRows,
-  setSelectedRowKeys,
+  setCheckRowKeys,
 }) => {
   // Data From Store
   const { buId, wgId, wId, orgId } = useSelector(
@@ -65,6 +65,7 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
       form={form}
       initialValues={{
         invstDate: moment(),
+        maturityMonth: moment(),
         amount: totalAmount,
       }}
       onFinish={() => {
@@ -87,7 +88,8 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
               isActive: true,
               isComplete: true,
               numRate: values?.rate,
-              intMaturityMonth: values?.maturityMonth,
+              intMaturityMonth: moment(values?.maturityMonth).format("YYYY-MM-DD"),
+              code: values?.investReffNo,
             },
             refernceDTO: data?.map((item: any) => ({
               intReferenceId: item?.intPfLedgerId,
@@ -99,7 +101,7 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
             setOpen(false);
             landingApi();
             setsSelectedRows([]);
-            setSelectedRowKeys([]);
+            setCheckRowKeys([]);
           },
         });
       }}
@@ -174,17 +176,6 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
         </Col>
         <Col md={8} sm={24}>
           <PInput
-            type="number"
-            name="maturityMonth"
-            placeholder="Maturity Date (Month)"
-            label="Maturity Date (Month)"
-            rules={[
-              { required: true, message: "Maturity Date (Month) Is Required" },
-            ]}
-          />
-        </Col>
-        <Col md={8} sm={24}>
-          <PInput
             type="date"
             name="invstDate"
             placeholder="Invst. Date"
@@ -195,11 +186,23 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
         </Col>
         <Col md={8} sm={24}>
           <PInput
+            type="date"
+            name="maturityMonth"
+            placeholder="Maturity Date"
+            label="Maturity Date"
+            allowClear={true}
+            rules={[
+              { required: true, message: "Maturity Date Is Required" },
+            ]}
+          />
+        </Col>
+        <Col md={8} sm={24}>
+          <PInput
             type="text"
-            name="invstReffNo"
-            placeholder="Invst. Reff No"
-            label="Invst. Reff No"
-            rules={[{ required: true, message: "Invst. Reff Bo Is Required" }]}
+            name="investReffNo"
+            placeholder="Reff. No"
+            label="Reff. No"
+            rules={[{ required: true, message: "Reff. Bo Is Required" }]}
           />
         </Col>
       </Row>
@@ -208,7 +211,7 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
         onCancel={() => {
           setOpen(false);
           setsSelectedRows([]);
-          setSelectedRowKeys([]);
+          setCheckRowKeys([]);
         }}
         loading={createInvestmentApi?.loading}
       />
