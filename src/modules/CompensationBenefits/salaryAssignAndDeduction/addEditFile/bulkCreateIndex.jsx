@@ -9,10 +9,11 @@ import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
-import { gray600 } from "../../../../utility/customColor";
+import { gray600, success500 } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { createEditAllowanceAndDeduction } from "../helper";
 import {
+  bulkAssignEmpListTableColumn,
   empListColumn,
   initData,
   validationSchema,
@@ -27,6 +28,11 @@ import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
+import { getPeopleDeskAllDDL } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "../../../../utility/selectCustomStyle";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
+import { DataTable } from "Components";
 
 const initHeaderList = {
   strDepartmentList: [],
@@ -41,13 +47,20 @@ const initHeaderList = {
   territoryNameList: [],
 };
 
+const addAllFieldToDDL = (field, arr) => {
+  const isAll = (field || []).some((item) => item?.value === 0);
+  if (isAll) return [];
+  else if (arr.length > 1) return [{ label: "All", value: 0 }, ...arr];
+  else return arr;
+};
+
 function BulkAddEditForm() {
   const location = useLocation();
   const scrollRef = useRef();
   const { isCreate, isView } = location?.state?.state;
 
   //redux data
-  const { orgId, buId, employeeId, wgId,wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -196,9 +209,9 @@ function BulkAddEditForm() {
     );
   };
 
-  const saveHandler = (values, cb) => {
+  const saveHandler = (values, cb, isAll = false) => {
     if (!values?.isAutoRenew && !values?.toMonth) {
-      return toast.warn("To data must be selected");
+      return toast.warn("To Month must be selected");
     }
     var months = [
       "January",
@@ -215,18 +228,29 @@ function BulkAddEditForm() {
       "December",
     ];
 
-    let modifyEmployeeIdListId = [];
-    checkedList.map(
-      (item) =>
-        item?.isSelected &&
-        modifyEmployeeIdListId?.push({
-          intEmployeeId: item?.intEmployeeBasicInfoId,
-        })
-    );
+    // let modifyEmployeeIdListId = [];
+    // checkedList.map(
+    //   (item) =>
+    //     item?.isSelected &&
+    //     modifyEmployeeIdListId?.push({
+    //       intEmployeeId: item?.intEmployeeBasicInfoId,
+    //     })
+    // );
 
-    if (!checkedList?.some((itm) => itm.isSelected === true)) {
-      return toast.warn("Please select at least one employee");
+    // if (!checkedList?.some((itm) => itm.isSelected === true)) {
+    //   return toast.warn("Please select at least one employee");
+    // }
+    let empListString = "";
+    if (isAll) {
+      empListString = selectedRow
+        ?.map((item) => item?.intEmployeeBasicInfoId)
+        .join(",");
+    } else {
+      empListString = selectedRow
+        ?.map((item) => item?.intEmployeeBasicInfoId)
+        .join(",");
     }
+    console.log(empListString);
 
     const payload = [
       {
@@ -251,10 +275,73 @@ function BulkAddEditForm() {
         intToYear: +values?.toMonth?.split("-")[0] || null,
         intToMonth: +values?.toMonth?.split("-")[1] || null,
         strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
-        employeeIdList: modifyEmployeeIdListId,
+        // employeeIdList: modifyEmployeeIdListId, 🔥
+
+        // new requirement added 🔥 25-01-24
+        // strEntryType: "string",
+        // intSalaryAdditionAndDeductionId: 0,
+        // intAccountId: 0,
+        // intBusinessUnitId: 0,
+        intWorkplaceGroupId: wgId,
+        intWorkplaceId: wId,
+        // intEmployeeId: 0,
+        // isAutoRenew: true,
+        // intYear: 0,
+        // intMonth: 0,
+        // strMonth: "string",
+        // isAddition: true,
+        // strAdditionNDeduction: "string",
+        // intAdditionNDeductionTypeId: 0,
+        // intAmountWillBeId: 0,
+        // strAmountWillBe: "string",
+        // numAmount: 0,
+        intAllowanceDuration: values?.intAllowanceDuration?.value,
+        numMaxLimit: values?.maxAmount,
+        intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
+        // isActive: true,
+        // isReject: true,
+        // intActionBy: 0,
+        // intToYear: 0,
+        // intToMonth: 0,
+        // strToMonth: "string",
+        strEmployeeIdList: empListString,
       },
     ];
-    createEditAllowanceAndDeduction(payload, setLoading, cb);
+    console.log({payload})
+    // createEditAllowanceAndDeduction(payload, setLoading, cb);
+  };
+
+  const saveAllHandler = (values) => {
+    let remainingError = false;
+    const errorMessages = {
+      fromMonth: "From month is required",
+      salaryType: "Salary Type is required",
+      allowanceAndDeduction: "Allowance/Deduction type is required",
+      amountDimension: "Amount Dimension is required",
+      amount: "Amount is required",
+    };
+
+    const validateAndToast = (values) => {
+      for (const fieldName in errorMessages) {
+        if (!values?.[fieldName]) {
+          remainingError = true;
+          toast.warn(errorMessages[fieldName]);
+        }
+      }
+    };
+    // throw error 🔥
+    validateAndToast(values);
+    if (!remainingError) {
+      saveHandler(
+        values,
+        getLandingBulkAssignEmpListHandler(
+          values,
+          { current: 1, pageSize: paginationSize },
+          ""
+        ),
+        true
+      );
+    }
   };
 
   useEffect(() => {
@@ -264,6 +351,106 @@ function BulkAddEditForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId]);
 
+  const [departmentDDL, setDepartmentDDL] = useState([]);
+  const [designationDDL, setDesignationDDL] = useState([]);
+  const [empTypeDDL, setEmpTypeDDL] = useState([]);
+  const [hrTypeDDL, setHRTypeDDL] = useState([]);
+  const [
+    bulkAssignEmpList,
+    getBulkAssignEmpList,
+    loadingBulkAssign,
+    setBulkAssignEmpList,
+  ] = useAxiosPost([]);
+  const [selectedRow, setSelectedRow] = useState([]);
+  const formikRef = useRef();
+
+  useEffect(() => {
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
+      "DepartmentId",
+      "DepartmentName",
+      setDepartmentDDL
+    );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
+      "Id",
+      "EmploymentType",
+      setEmpTypeDDL
+    );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
+      "PositionId",
+      "PositionName",
+      setHRTypeDDL
+    );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
+      "DesignationId",
+      "DesignationName",
+      setDesignationDDL
+    );
+    setSelectedRow([]);
+    setBulkAssignEmpList([]);
+    setPages({
+      current: 1,
+      pageSize: paginationSize,
+      total: 0,
+    });
+    formikRef?.current?.setValues((prev) => ({
+      ...prev,
+      empType: [],
+      department: [],
+      hrPosition: [],
+      designation: [],
+      intAllowanceDuration: "",
+      intAllowanceAttendenceStatus: "",
+      maxAmount: "",
+    }));
+  }, [wgId, buId, employeeId, wId, orgId]);
+
+  console.log({ departmentDDL });
+
+  const getLandingBulkAssignEmpListHandler = (values, pages, searchString) => {
+    setBulkAssignEmpList([]);
+    setSelectedRow([]);
+    const checkingAll = (ddlList) => {
+      const isAll = (ddlList || []).some((item) => item?.value === 0);
+      if (isAll) {
+        return [];
+      } else {
+        return (ddlList || []).map((item) => item.value);
+      }
+    };
+    const payload = {
+      accountId: orgId,
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      workplaceId: wId,
+      employmentTypeId: checkingAll(values?.empType), // (values?.empType || []).map((item) => item.value),
+      hrPositionId: checkingAll(values?.hrPosition),
+      departmentId: checkingAll(values?.department),
+      designationId: checkingAll(values?.designation),
+      isPaginated: true,
+      searchTxt: searchString || "",
+      currentPage: pages?.current,
+      pageSize: pages?.pageSize,
+    };
+    getBulkAssignEmpList(
+      `/Employee/EmployeeProfileLandingPaginationMaster`,
+      payload,
+      (res) => {
+        setBulkAssignEmpList(res?.data || []);
+        setPages({
+          current: res?.currentPage,
+          pageSize: res?.pageSize,
+          total: res?.totalCount,
+        });
+      }
+    );
+  };
+
+  console.log({ selectedRow });
+
   return (
     <>
       <Formik
@@ -272,11 +459,11 @@ function BulkAddEditForm() {
           ...initData,
         }}
         validationSchema={
-          resEmpLanding.filter((itm) => itm.isSelected === true)?.length
+          bulkAssignEmpList.filter((itm) => itm.isSelected === true)?.length
             ? validationSchema2
             : validationSchema
         }
-        onSubmit={(values, { setSubmitting, resetForm, setFieldValue }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm();
             getData(
@@ -290,15 +477,9 @@ function BulkAddEditForm() {
             setCheckedList([]);
           });
         }}
+        innerRef={formikRef}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form
               onSubmit={handleSubmit}
@@ -315,20 +496,291 @@ function BulkAddEditForm() {
                         <li>
                           <button
                             type="submit"
-                            className="btn btn-green btn-green-disable"
-                            disabled={checkedList?.length === 0}
+                            className="btn btn-green btn-green-disable mr-3"
+                            disabled={!selectedRow.length > 0}
                             style={{ width: "auto" }}
-                            onClick={() => {}}
                           >
-                            Save
+                            Save {selectedRow.length}
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            type="button"
+                            className="btn btn-green btn-green-disable"
+                            disabled={!bulkAssignEmpList?.length > 0}
+                            style={{ width: "auto" }}
+                            onClick={() => saveAllHandler(values)}
+                          >
+                            Save All {pages?.total}
                           </button>
                         </li>
                       </ul>
                     )}
                   </div>
+                  <div className="row card-style pt-3 mb-3">
+                    <div className="col-lg-4">
+                      <div>
+                        <label>Employeement Type</label>
+                        <FormikSelect
+                          placeholder=" "
+                          classes="input-sm"
+                          styles={{
+                            ...customStyles,
+                            control: (provided) => ({
+                              ...provided,
+                              minHeight: "auto",
+                              height:
+                                values?.empType?.length > 1 ? "auto" : "30px",
+                              borderRadius: "4px",
+                              boxShadow: `${success500}!important`,
+                              ":hover": {
+                                borderColor: `${gray600}!important`,
+                              },
+                              ":focus": {
+                                borderColor: `${gray600}!important`,
+                              },
+                            }),
+                            valueContainer: (provided) => ({
+                              ...provided,
+                              height:
+                                values?.empType?.length > 1 ? "auto" : "30px",
+                              padding: "0 6px",
+                            }),
+                            multiValue: (styles) => {
+                              return {
+                                ...styles,
+                                position: "relative",
+                                top: "-1px",
+                              };
+                            },
+                            multiValueLabel: (styles) => ({
+                              ...styles,
+                              padding: "0",
+                            }),
+                          }}
+                          name="empType"
+                          options={addAllFieldToDDL(
+                            values?.empType,
+                            empTypeDDL
+                          )}
+                          value={values?.empType || { label: "All", value: 0 }}
+                          onChange={(valueOption) => {
+                            setFieldValue("empType", valueOption);
+                          }}
+                          isMulti
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-4">
+                      <div>
+                        <label>HR Position</label>
+                        <FormikSelect
+                          placeholder=" "
+                          classes="input-sm"
+                          styles={{
+                            ...customStyles,
+                            control: (provided) => ({
+                              ...provided,
+                              minHeight: "auto",
+                              height:
+                                values?.hrPosition?.length > 1
+                                  ? "auto"
+                                  : "30px",
+                              borderRadius: "4px",
+                              boxShadow: `${success500}!important`,
+                              ":hover": {
+                                borderColor: `${gray600}!important`,
+                              },
+                              ":focus": {
+                                borderColor: `${gray600}!important`,
+                              },
+                            }),
+                            valueContainer: (provided) => ({
+                              ...provided,
+                              height:
+                                values?.hrPosition?.length > 1
+                                  ? "auto"
+                                  : "30px",
+                              padding: "0 6px",
+                            }),
+                            multiValue: (styles) => {
+                              return {
+                                ...styles,
+                                position: "relative",
+                                top: "-1px",
+                              };
+                            },
+                            multiValueLabel: (styles) => ({
+                              ...styles,
+                              padding: "0",
+                            }),
+                          }}
+                          name="hrPosition"
+                          options={addAllFieldToDDL(
+                            values?.hrPosition,
+                            hrTypeDDL
+                          )}
+                          value={
+                            values?.hrPosition || { label: "All", value: 0 }
+                          }
+                          onChange={(valueOption) => {
+                            setFieldValue("hrPosition", valueOption);
+                          }}
+                          isMulti
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-4">
+                      <div>
+                        <label>Department</label>
+                        <FormikSelect
+                          placeholder=" "
+                          classes="input-sm"
+                          styles={{
+                            ...customStyles,
+                            control: (provided) => ({
+                              ...provided,
+                              minHeight: "auto",
+                              height:
+                                values?.department?.length > 1
+                                  ? "auto"
+                                  : "30px",
+                              borderRadius: "4px",
+                              boxShadow: `${success500}!important`,
+                              ":hover": {
+                                borderColor: `${gray600}!important`,
+                              },
+                              ":focus": {
+                                borderColor: `${gray600}!important`,
+                              },
+                            }),
+                            valueContainer: (provided) => ({
+                              ...provided,
+                              height:
+                                values?.department?.length > 1
+                                  ? "auto"
+                                  : "30px",
+                              padding: "0 6px",
+                            }),
+                            multiValue: (styles) => {
+                              return {
+                                ...styles,
+                                position: "relative",
+                                top: "-1px",
+                              };
+                            },
+                            multiValueLabel: (styles) => ({
+                              ...styles,
+                              padding: "0",
+                            }),
+                          }}
+                          name="department"
+                          options={addAllFieldToDDL(
+                            values?.department,
+                            departmentDDL
+                          )}
+                          value={
+                            values?.department || { label: "All", value: 0 }
+                          }
+                          onChange={(valueOption) => {
+                            setFieldValue("department", valueOption);
+                          }}
+                          isMulti
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-4">
+                      <div>
+                        <label>Designation</label>
+                        <FormikSelect
+                          placeholder=" "
+                          classes="input-sm"
+                          styles={{
+                            ...customStyles,
+                            control: (provided) => ({
+                              ...provided,
+                              minHeight: "auto",
+                              height:
+                                values?.designation?.length > 1
+                                  ? "auto"
+                                  : "30px",
+                              borderRadius: "4px",
+                              boxShadow: `${success500}!important`,
+                              ":hover": {
+                                borderColor: `${gray600}!important`,
+                              },
+                              ":focus": {
+                                borderColor: `${gray600}!important`,
+                              },
+                            }),
+                            valueContainer: (provided) => ({
+                              ...provided,
+                              height:
+                                values?.designation?.length > 1
+                                  ? "auto"
+                                  : "30px",
+                              padding: "0 6px",
+                            }),
+                            multiValue: (styles) => {
+                              return {
+                                ...styles,
+                                position: "relative",
+                                top: "-1px",
+                              };
+                            },
+                            multiValueLabel: (styles) => ({
+                              ...styles,
+                              padding: "0",
+                            }),
+                          }}
+                          name="designation"
+                          options={addAllFieldToDDL(
+                            values?.designation,
+                            designationDDL
+                          )}
+                          value={
+                            values?.designation || { label: "All", value: 0 }
+                          }
+                          onChange={(valueOption) => {
+                            setFieldValue("designation", valueOption);
+                          }}
+                          isMulti
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        marginTop: "23px",
+                      }}
+                      className="col-md-6"
+                    >
+                      <button
+                        type="button"
+                        className="btn btn-green btn-green-disable"
+                        style={{ width: "auto" }}
+                        label="Show"
+                        onClick={() => {
+                          getLandingBulkAssignEmpListHandler(values, pages);
+                        }}
+                      >
+                        Show
+                      </button>
+                    </div>
+                  </div>
 
                   <div
-                    className="pt-1"
+                    // className="pt-1"
+                    className={`pt-1 ${
+                      bulkAssignEmpList?.length > 0 ? "" : "d-none"
+                    }`}
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
@@ -352,8 +804,12 @@ function BulkAddEditForm() {
                       </>
                     )}
                   </div>
-                  {loading && <Loading />}
-                  <div className="table-card-styled pt-2 pb-3" ref={scrollRef}>
+                  {(loading || loadingBulkAssign) && <Loading />}
+                  {/* 🔥 display none class added for new table - start 🔥  */}
+                  <div
+                    className="table-card-styled pt-2 pb-3 d-none"
+                    ref={scrollRef}
+                  >
                     <div
                       className="d-flex justify-content-between align-items-center px-0 mx-0"
                       style={{ marginBottom: "8px" }}
@@ -497,6 +953,132 @@ function BulkAddEditForm() {
                       />
                     ) : (
                       <NoResult />
+                    )}
+                  </div>
+                  {/* 🔥 display none class added for new table - end 🔥  */}
+
+                  <div className="table-card-styled pt-2 pb-3">
+                    <div
+                      className="d-flex justify-content-between align-items-center px-0 mx-0"
+                      style={{ marginBottom: "8px" }}
+                    >
+                      <p
+                        style={{
+                          color: gray600,
+                          fontSize: "14px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Employee List{" "}
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            paddingLeft: "8px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          ({selectedRow.length} employee selected)
+                        </span>
+                      </p>
+                      <div className="d-flex">
+                        {selectedRow?.length ? (
+                          <ResetButton
+                            classes="btn-filter-reset px-2"
+                            title="Reset"
+                            icon={
+                              <RefreshIcon
+                                sx={{
+                                  marginRight: "4px",
+                                  fontSize: "12px",
+                                }}
+                              />
+                            }
+                            onClick={() => {
+                              setFieldValue("searchString", "");
+                              setCheckedList([]);
+                              setSelectedRow([]);
+                              getLandingBulkAssignEmpListHandler(
+                                values,
+                                { current: 1, pageSize: paginationSize },
+                                ""
+                              );
+                            }}
+                            styles={{ height: "auto", fontSize: "12px" }}
+                          />
+                        ) : (
+                          <></>
+                        )}
+
+                        <MasterFilter
+                          inputWidth="250px"
+                          width="250px"
+                          isHiddenFilter
+                          value={values?.searchString}
+                          setValue={(value) => {
+                            setFieldValue("searchString", value);
+                            debounce(() => {
+                              getLandingBulkAssignEmpListHandler(
+                                values,
+                                { current: 1, pageSize: paginationSize },
+                                values?.searchString
+                              );
+                            }, 500);
+                          }}
+                          cancelHandler={(e) => {
+                            setFieldValue("searchString", "");
+                            getLandingBulkAssignEmpListHandler(
+                              values,
+                              { current: 1, pageSize: paginationSize },
+                              ""
+                            );
+                          }}
+                          handleClick={(e) => {
+                            setFieldValue("searchString", "");
+                            getLandingBulkAssignEmpListHandler(
+                              values,
+                              { current: 1, pageSize: paginationSize },
+                              ""
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                    {bulkAssignEmpList?.length > 0 ? (
+                      <DataTable
+                        bordered
+                        data={bulkAssignEmpList || []}
+                        loading={loadingBulkAssign}
+                        header={bulkAssignEmpListTableColumn(pages)}
+                        pagination={{
+                          pageSize: pages?.pageSize,
+                          total: pages?.total,
+                        }}
+                        onChange={(pagination, filters, sorter, extra) => {
+                          // Return if sort function is called
+                          if (extra.action === "sort") return;
+                          if (extra.action === "filter") return;
+                          getLandingBulkAssignEmpListHandler(
+                            values,
+                            pagination,
+                            values?.searchString
+                          );
+                        }}
+                        rowSelection={{
+                          type: "checkbox",
+                          selectedRowKeys: selectedRow.map((item) => item?.key),
+                          onChange: (selectedRowKeys, selectedRows) => {
+                            setSelectedRow(selectedRows);
+                          },
+                          getCheckboxProps: (rec) => {
+                            // console.log({ rec });
+                            // return {
+                            //   disabled: rec?.ApplicationStatus === "Approved",
+                            // };
+                          },
+                        }}
+                      />
+                    ) : (
+                      <></>
                     )}
                   </div>
                 </div>
