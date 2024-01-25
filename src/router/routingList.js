@@ -16,6 +16,7 @@ import HRPosition from "modules/configuration/hrPosition";
 import LoanTypeCreate from "modules/configuration/loanType";
 import OrgBankDetailsLanding from "modules/configuration/orgBankDetails";
 import OrgInfoId from "modules/configuration/orgInfoForId";
+import PFRegisterTypeLanding from "modules/configuration/pfRegisterType";
 import Religion from "modules/configuration/religion";
 import Section from "modules/configuration/section";
 import SeparationType from "modules/configuration/separationType";
@@ -324,6 +325,9 @@ const PfWithdrawApproval = lazy(() =>
 );
 const PFCompLanding = lazy(() =>
   import("../modules/CompensationBenefits/PfWithdraw/index.jsx")
+);
+const PfFundLanding = lazy(() =>
+  import("../modules/CompensationBenefits/pfFund/index.tsx")
 );
 const CashDisbursementRegister = lazy(() =>
   import(
@@ -1893,6 +1897,10 @@ export const routingList = [
     path: "/administration/configuration/employeeDivision",
     component: EmployeeDivision,
   },
+  {
+    path: "/administration/configuration/PFRegisterType",
+    component: PFRegisterTypeLanding,
+  },
   { path: "/SelfService/dashboard", component: SelfDashboard },
   { path: "/SelfService/aboutMe", component: AboutMe },
   {
@@ -2314,6 +2322,13 @@ export const routingList = [
     path: "/compensationAndBenefits/pfandgratuity/pfInvestment",
     component: PfInvestmentLanding,
   },
+  // PF Fund for Compensation & benefit start
+  {
+    path: "/compensationAndBenefits/pfandgratuity/PFFund",
+    component: PfFundLanding,
+  },
+  // PF Fund for Compensation & benefit End
+
   // PF Withdraw for Compensation & benefit start
   {
     path: "/compensationAndBenefits/pfandgratuity/pfWithdraw",
