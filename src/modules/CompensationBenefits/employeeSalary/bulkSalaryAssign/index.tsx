@@ -1,3 +1,4 @@
+import { AddOutlined } from "@mui/icons-material";
 import {
   DataTable,
   PButton,
@@ -43,6 +44,12 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
   // Api Actions
   const CommonEmployeeDDL = useApiRequest([]);
   const AttendanceAdjustmentFilter = useApiRequest([]);
+  const employmentTypeDDL = useApiRequest([]);
+  const empDepartmentDDL = useApiRequest([]);
+  const positionDDL = useApiRequest([]);
+  const empDesignationDDL = useApiRequest([]);
+  const payrollGroupDDL = useApiRequest([]);
+
   const ManualAttendance = useApiRequest({});
   const dispatch = useDispatch();
 
@@ -108,7 +115,108 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
       },
     });
   };
+  const getEmploymentType = () => {
+    employmentTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmploymentType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.EmploymentType;
+          res[i].value = item?.Id;
+        });
+      },
+    });
+  };
+  // workplace wise
+  const getEmployeDepartment = () => {
+    empDepartmentDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDepartment",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.DepartmentName;
+          res[i].value = item?.DepartmentId;
+        });
+      },
+    });
+  };
+  const getEmployeDesignation = () => {
+    empDesignationDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDesignation",
+        AccountId: orgId,
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.DesignationName;
+          res[i].value = item?.DesignationId;
+        });
+      },
+    });
+  };
+  const getEmployeePosition = () => {
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+  };
+  //   export const getBreakdownPolicyDDL = async (
 
+  const getPayrollGroupDDL = () => {
+    payrollGroupDDL?.action({
+      urlKey: "BreakdownNPolicyForSalaryAssign",
+      method: "GET",
+      params: {
+        StrReportType: "BREAKDOWN DDL",
+        IntEmployeeId: employeeId,
+        IntAccountId: orgId,
+        IntSalaryBreakdownHeaderId: 0,
+        IntBusinessUnitId: buId,
+        IntWorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strSalaryBreakdownTitle;
+          res[i].value = item?.intSalaryBreakdownHeaderId;
+        });
+      },
+    });
+  };
   const viewHandler = async () => {
     await form
       .validateFields()
@@ -286,6 +394,13 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
       sorter: false,
     },
   ];
+  useEffect(() => {
+    getEmploymentType();
+    getEmployeDepartment();
+    getEmployeDesignation();
+    getEmployeePosition();
+    getPayrollGroupDDL();
+  }, [wgId, buId, wId]);
 
   return employeeFeature?.isView ? (
     <PForm
@@ -296,32 +411,129 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
       }}
     >
       <PCard>
-        <PCardHeader title="Bulk Salary Assign">
-          <PSelect
-            options={AttendanceType}
-            name="attendanceAdujust"
-            placeholder="Change Attendance"
-            style={{ width: "200px" }}
-            onSelect={(value: any, op: any) => {
-              form.setFieldsValue({
-                attendanceAdujust: op,
-              });
-
-              value === 1 &&
-                form.setFieldsValue({
-                  openModal: true,
-                });
-
-              (value === 2 || value === 3) &&
-                Modal.confirm({
-                  title: "Are you sure to update attendance?",
-                  onOk: submitHandler,
-                });
-            }}
-            disabled={!selectedRow.length}
-          />
-        </PCardHeader>
+        <PCardHeader
+          title="Bulk Salary Assign"
+          buttonList={[
+            {
+              type: "primary",
+              content: "Save",
+              onClick: () => {
+                console.log("first");
+              },
+              disabled: true,
+              //   icon: <AddOutlined />,
+            },
+            {
+              type: "primary-outline",
+              content: "Cancel",
+              onClick: () => {
+                console.log("first");
+              },
+              disabled: true,
+              //   icon: <AddOutlined />,
+            },
+          ]}
+        ></PCardHeader>
         <Row gutter={[10, 2]} className="mb-3">
+          <Col md={6} sm={12} xs={24}>
+            <PSelect
+              options={payrollGroupDDL?.data || []}
+              name="payrollGroup"
+              label="Payroll Group"
+              placeholder="Payroll Group"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  payrollGroup: op,
+                });
+              }}
+              rules={[{ required: true, message: "Payroll Group is required" }]}
+            />
+          </Col>
+          <Col md={6} sm={12} xs={24}>
+            <PSelect
+              options={employmentTypeDDL?.data || []}
+              name="employeeType"
+              label="Employment Type"
+              placeholder="Employment Type"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  employeeType: op,
+                });
+              }}
+              //   rules={[
+              //     { required: true, message: "Employment Type is required" },
+              //   ]}
+            />
+          </Col>
+          <Col md={6} sm={12} xs={24}>
+            <PSelect
+              options={empDepartmentDDL?.data || []}
+              name="department"
+              showSearch
+              filterOption={true}
+              label="Department"
+              allowClear
+              placeholder="Department"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  department: op,
+                });
+              }}
+              //   rules={[{ required: true, message: "Department is required" }]}
+            />
+          </Col>
+          <Col md={6} sm={12} xs={24}>
+            <PSelect
+              options={empDesignationDDL.data || []}
+              showSearch
+              filterOption={true}
+              name="designation"
+              label="Designation"
+              placeholder="Designation"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  designation: op,
+                });
+              }}
+              //   rules={[{ required: true, message: "Designation is required" }]}
+            />
+          </Col>
+          <Col md={6} sm={12} xs={24}>
+            <PSelect
+              options={positionDDL?.data || []}
+              name="hrPosition"
+              showSearch
+              filterOption={true}
+              label="HR Position"
+              placeholder="HR Position"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  hrPosition: op,
+                });
+              }}
+              //   rules={[{ required: true, message: "HR Position is required" }]}
+            />
+          </Col>
+          <Col md={6} sm={12} xs={24}>
+            <PInput
+              type="date"
+              name="joiningDateFrom"
+              label="Joining Date From"
+              placeholder="Joining Date From"
+              //   rules={[{ required: true, message: "Joining Date is required" }]}
+              // disabled={isEdit}
+            />
+          </Col>
+          <Col md={6} sm={12} xs={24}>
+            <PInput
+              type="date"
+              name="joiningDateTo"
+              label="Joining Date To"
+              placeholder="Joining Date To"
+              //   rules={[{ required: true, message: "Joining Date is required" }]}
+              // disabled={isEdit}
+            />
+          </Col>
           <Col md={6} sm={12} xs={24}>
             <PSelect
               options={EmpFilterType}
