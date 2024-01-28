@@ -2,20 +2,21 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import AntTable from "../../../../common/AntTable";
+import AvatarComponent from "../../../../common/AvatarComponent";
+import BackButton from "../../../../common/BackButton";
+import DefaultInput from "../../../../common/DefaultInput";
+import FormikCheckBox from "../../../../common/FormikCheckbox";
+import FormikSelect from "../../../../common/FormikSelect";
+import NoResult from "../../../../common/NoResult";
 import {
   getPeopleDeskAllDDL,
   getPeopleDeskWithoutAllDDL,
 } from "../../../../common/api";
-import AvatarComponent from "../../../../common/AvatarComponent";
-import DefaultInput from "../../../../common/DefaultInput";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
-import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
-import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import { useLocation, useParams } from "react-router-dom";
-import BackButton from "../../../../common/BackButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray900, greenColor } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
@@ -29,7 +30,6 @@ import {
   getSalaryGenerateRequestRowId,
 } from "../helper";
 import { lastDayOfMonth } from "./../../../../utility/dateFormatter";
-import { toast } from "react-toastify";
 import {
   salaryGenerateInitialValues,
   salaryGenerateValidationSchema,
@@ -232,7 +232,8 @@ const SalaryGenerateCreate = () => {
           values?.toDate,
           setRowDto,
           setAllData,
-          setLoading
+          setLoading,
+          wId
         );
         resetForm(salaryGenerateInitialValues);
         setIsEdit(true);
@@ -870,6 +871,7 @@ const SalaryGenerateCreate = () => {
                               setRowDto,
                               setAllData,
                               setLoading,
+                              wId,
                               values?.wing?.value,
                               values?.soleDepo?.value,
                               values?.region?.value,
@@ -937,6 +939,7 @@ const SalaryGenerateCreate = () => {
                               setRowDto,
                               setAllData,
                               setLoading,
+                              wId,
                               values?.wing?.value,
                               values?.soleDepo?.value,
                               values?.region?.value,
