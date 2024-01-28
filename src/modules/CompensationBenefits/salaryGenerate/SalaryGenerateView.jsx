@@ -411,9 +411,13 @@ const SalaryGenerateView = () => {
                               totalAttendence
                             );
                           } else {
-                            if (!resDetailsReport?.length > 0) {
-                              return toast.warn("No Data Found");
-                            }
+                            // if (!resDetailsReport?.length > 0) {
+                            //   console.log("checking..")
+                            //   return toast.warn("No Data Found");
+                            // }
+                            if (detailsData?.length <= 0) {
+                              return toast.warn("No Data Found"); 
+                            } 
                          /*    createSalaryDetailsReportExcelHandeler({
                               monthYear: moment(values?.monthYear).format(
                                 "MMMM-YYYY"
@@ -488,8 +492,11 @@ const SalaryGenerateView = () => {
                             }&isDownload=false`,
                             setLoading
                           ); */
+                          console.log({detailsData})
                           if (detailsData?.length <= 0) {
-                            return toast.warn("No Data Found");
+                            console.log({detailsData})
+
+                            return toast.warn("No Data Found"); 
                           } else {
                           getPDFAction(
                             `/PdfAndExcelReport/GetRDLCSalaryReport?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
