@@ -40,7 +40,7 @@ const HeaderTableForm = ({
 
       <div className="col-lg-3">
         <div className="input-field-main">
-          <label>From Month</label>
+          <label>From Month <span className="text-danger fs-3">*</span></label>
           <FormikInput
             classes="input-sm"
             value={values?.fromMonth}
@@ -74,7 +74,7 @@ const HeaderTableForm = ({
         </div>
       </div>
       <div className="col-lg-3">
-        <label>Salary Type</label>
+        <label>Salary Type <span className="text-danger fs-3">*</span></label>
         <FormikSelect
           classes="input-sm"
           styles={customStyles}
@@ -110,7 +110,7 @@ const HeaderTableForm = ({
         />
       </div>
       <div className="col-lg-3">
-        <label>Select Allowance/Deduction</label>
+        <label>Select Allowance/Deduction <span className="text-danger fs-3">*</span></label>
         <FormikSelect
           classes="input-sm"
           styles={customStyles}
@@ -127,7 +127,7 @@ const HeaderTableForm = ({
         />
       </div>
       <div className="col-lg-3">
-        <label>Select Amount Dimension</label>
+        <label>Select Amount Dimension <span className="text-danger fs-3">*</span></label>
         <FormikSelect
           classes="input-sm"
           placeholder={" "}
@@ -163,11 +163,28 @@ const HeaderTableForm = ({
       </div>
       <div className="col-lg-3">
         <label>
+          Max Amount{" "}
+        </label>
+        <FormikInput
+          classes="input-sm"
+          value={values?.maxAmount}
+          placeholder={" "}
+          name="maxAmount"
+          type="number"
+          min={0}
+          className="form-control"
+          onChange={(e) => setFieldValue("maxAmount", e.target.value)}
+          errors={errors}
+          touched={touched}
+        />
+      </div>
+      <div className="col-lg-3">
+        <label>
           Enter Amount{" "}
           {(values?.amountDimension?.value === 1 ||
             values?.amountDimension?.value === 2) && <span>(%)</span>}
           {(values?.amountDimension?.value === 3 ||
-            values?.amountDimension?.value === 4) && <span>(BDT)</span>}
+            values?.amountDimension?.value === 4) && <span>(BDT)</span>} <span className="text-danger fs-3">*</span>
         </label>
         <FormikInput
           classes="input-sm"
@@ -219,23 +236,7 @@ const HeaderTableForm = ({
           touched={touched}
         />
       </div>
-      <div className="col-lg-3">
-        <label>
-          Max Amount{" "}
-        </label>
-        <FormikInput
-          classes="input-sm"
-          value={values?.maxAmount}
-          placeholder={" "}
-          name="maxAmount"
-          type="number"
-          min={0}
-          className="form-control"
-          onChange={(e) => setFieldValue("maxAmount", e.target.value)}
-          errors={errors}
-          touched={touched}
-        />
-      </div>
+  
       <div className="col-lg-3">
         <label>AllowanceAttendenceStatus</label>
         <FormikSelect
