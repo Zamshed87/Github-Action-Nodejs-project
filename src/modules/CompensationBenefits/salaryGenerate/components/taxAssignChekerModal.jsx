@@ -92,7 +92,8 @@ export default function TaxAssignCheckerModal({
           values?.toDate,
           setRowDto,
           setAllData,
-          setLoading
+          setLoading,
+          wId
         );
         getSalaryGenerateRequestLandingById(
           "SalaryGenerateRequestById",
@@ -106,7 +107,8 @@ export default function TaxAssignCheckerModal({
           values?.toDate,
           setRowDto,
           setAllData,
-          setLoading
+          setLoading,
+          wId
         );
         resetForm(initialValues);
         setIsEdit(true);

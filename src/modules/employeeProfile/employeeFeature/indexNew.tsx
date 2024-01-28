@@ -23,7 +23,6 @@ import { dateFormatter } from "../../../utility/dateFormatter";
 import AddEditForm from "./addEditFile";
 import {
   columnForHeadOffice,
-  columnForMarketing,
   getTableDataEmployee,
 } from "./helper";
 import "./styles.css";

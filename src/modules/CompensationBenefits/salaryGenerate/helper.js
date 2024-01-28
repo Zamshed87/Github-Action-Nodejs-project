@@ -1,14 +1,14 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Cell } from "../../../utility/customExcel/createExcelHelper";
+import { createCommonExcelFile } from "../../../utility/customExcel/generateExcelAction";
 import {
   dateFormatter,
   dateFormatterForInput,
 } from "../../../utility/dateFormatter";
 import { currentMonth } from "../../../utility/monthUtility";
-import { numberWithCommas } from "../../../utility/numberWithCommas";
-import { createCommonExcelFile } from "../../../utility/customExcel/generateExcelAction";
-import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { withDecimal } from "../../../utility/numberToWord";
+import { numberWithCommas } from "../../../utility/numberWithCommas";
 
 // salary generate request
 export const createSalaryGenerateRequest = async (payload, setLoading, cb) => {
@@ -186,6 +186,7 @@ export const getSalaryGenerateRequestLandingById = async (
   setter,
   setAllData,
   setLoading,
+  wId,
   wing = 0,
   soleDepo = 0,
   region = 0,
@@ -210,7 +211,7 @@ export const getSalaryGenerateRequestLandingById = async (
 
   try {
     const res = await axios.get(
-      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${salaryRequestIdParams}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId || 0}${salaryRequestIdParams}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
     );
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
@@ -227,7 +228,7 @@ export const getSalaryGenerateRequestLandingById = async (
         try {
           setLoading && setLoading(false);
           const secondRes = await axios.get(
-            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId || 0}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
           );
 
           if (secondRes?.data) {
