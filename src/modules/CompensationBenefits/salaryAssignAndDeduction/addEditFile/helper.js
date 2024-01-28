@@ -1,3 +1,5 @@
+import { Avatar } from "Components";
+import { getSerial } from "Utils";
 import * as Yup from "yup";
 
 export const initData = {
@@ -9,6 +11,13 @@ export const initData = {
   allowanceAndDeduction: "",
   amountDimension: "",
   amount: "",
+  empType: [],
+  department: [],
+  hrPosition: [],
+  designation: [],
+  intAllowanceDuration: "",
+  intAllowanceAttendenceStatus: "",
+  maxAmount: ""
 };
 
 export const validationSchema = Yup.object().shape({
@@ -112,5 +121,57 @@ export const empListColumn = (page, paginationSize, headerList) => {
     //     );
     //   },
     // },
+  ];
+};
+
+export const bulkAssignEmpListTableColumn = (pages) => {
+  return [
+    {
+      title: "SL",
+      render: (_, rec, index) =>
+        getSerial({
+          currentPage: pages?.current,
+          pageSize: pages?.pageSize,
+          index,
+        }),
+      width: 15,
+      align: "center",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "strEmployeeName",
+      render: (_, rec) => {
+        return (
+          <div className="d-flex align-items-center">
+            <Avatar title={rec?.strEmployeeName} />
+            <span className="ml-2">{rec?.strEmployeeName}</span>
+          </div>
+        );
+      },
+      sorter: true,
+      width: 50,
+      filter: true,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sorter: true,
+      width: 50,
+      filter: true,
+    },
+    {
+      title: "Designation",
+      dataIndex: "strDesignation",
+      sorter: true,
+      width: 50,
+      filter: true,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      width: 50,
+      filter: true,
+    },
   ];
 };
