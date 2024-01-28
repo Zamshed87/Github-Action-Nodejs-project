@@ -18,7 +18,7 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import CreateInvestment from "./Create/CreateInvestment";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { toast } from "react-toastify";
+import PFFundModalView from "./view/PFFundModalView";
 
 type TPfFundLanding = {};
 const PfFundLanding: React.FC<TPfFundLanding> = () => {
@@ -40,8 +40,10 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
 
   // state
   const [open, setOpen] = useState(false);
+  const [viewModal, setViewModal] = useState(false);
   const [selectedRows, setsSelectedRows] = useState<any>([]);
   const [checkedRowKeys, setCheckRowKeys] = useState<any>([]);
+  const [data, setData] = useState<any>({});
 
   const { permissionList } = useSelector(
     (state: any) => state?.auth,
@@ -150,7 +152,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
       align: "center",
       render: (data: any, record: any, index: number) =>
         // Write condition to check status
-        record?.status === "Pending" ? (
+        record?.status === "Incomplete" ? (
           <PBadge type="warning" text={record?.status} />
         ) : (
           <PBadge type="success" text={record?.status} />
@@ -172,19 +174,34 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
             buttonsList={[
               {
                 type: "view",
-                onClick: () => {},
+                onClick: () => {
+                  setViewModal(true);
+                  setData(record);
+                },
               },
               {
                 type: "plus",
                 onClick: () => {
-                  if (record.status === "Done")
-                    return toast.warn("Already done in investment", {
-                      toastId: record?.status,
-                    });
                   setsSelectedRows([record]);
                   setOpen(true);
                 },
                 prompt: "Investment",
+                isActive:
+                  record?.status === "Complete" ||
+                  record?.status === "" ||
+                  record?.intTypeId === 1
+                    ? false
+                    : true,
+              },
+              {
+                type: "reload",
+                onClick: () => {},
+                prompt: "Refund",
+              },
+              {
+                type: "dollar",
+                onClick: () => {},
+                prompt: "Earning",
               },
             ]}
           />
@@ -259,20 +276,18 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
             header={header}
             rowSelection={{
               type: "checkbox",
+              selectedRowKeys: checkedRowKeys,
               onChange: (selectedRowKeys, selectedRows) => {
                 setsSelectedRows(selectedRows);
                 setCheckRowKeys(selectedRowKeys);
               },
               getCheckboxProps: (record) => ({
-                disabled: record?.status === "Done" || record?.status === "",
-                checked: checkedRowKeys.includes(record?.intPfLedgerId),
+                disabled:
+                  record?.status === "Complete" || record?.status === "",
               }),
             }}
             bordered
             data={pfLandingApi?.data?.data || []}
-            filterData={
-              pfLandingApi?.data?.calendarAssignHeader // Filter Object From Api Response
-            }
             pagination={{
               current: pfLandingApi?.data?.currentPage, // Current Page From Api Response
               pageSize: pfLandingApi?.data?.pageSize, // Page Size From Api Response
@@ -307,6 +322,22 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
             setCheckRowKeys={setCheckRowKeys}
           />
         }
+      />
+      <PModal
+        title={"PF Fund View"}
+        open={viewModal}
+        onCancel={() => {
+          setViewModal(false);
+          setData({});
+        }}
+        components={
+          <PFFundModalView
+            singleData={data}
+            setViewModal={setViewModal}
+            setData={setData}
+          />
+        }
+        width={1000}
       />
     </>
   ) : (

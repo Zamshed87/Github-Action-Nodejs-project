@@ -21,7 +21,7 @@ function calculateTotalAmount(data: DataItem[]): number {
   let totalAmount = 0;
 
   for (const item of data) {
-    if (item?.status === "Pending") {
+    if (item?.status === "Incomplete") {
       totalAmount += item?.numAmount || 0;
     }
   }
