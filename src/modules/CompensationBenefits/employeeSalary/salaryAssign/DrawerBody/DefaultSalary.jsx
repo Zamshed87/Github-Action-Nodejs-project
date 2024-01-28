@@ -83,11 +83,6 @@ const DefaultSalary = ({ propsObj }) => {
         //
       });
   };
-  const [paymentDetails, setPaymentDetails] = useState({
-    bankPay: (values?.bankPay * 100) / values?.totalGrossSalary || 0,
-    digitalPay: (values?.digitalPay * 100) / values?.totalGrossSalary || 0,
-    netPay: (values?.netPay * 100) / values?.totalGrossSalary || 0,
-  });
   return (
     <>
       {loading && <Loading />}
@@ -392,6 +387,8 @@ const DefaultSalary = ({ propsObj }) => {
                         setFieldValue("finalGrossSalary", e.target.value);
                         setFieldValue("perDaySalary", e.target.value);
                         setFieldValue("bankPay", e.target.value);
+                        setFieldValue("digitalPay", 0);
+                        setFieldValue("netPay", 0);
                       }}
                       errors={errors}
                       touched={touched}
@@ -618,6 +615,8 @@ const DefaultSalary = ({ propsObj }) => {
                         }
                         setFieldValue("totalGrossSalary", e.target.value);
                         setFieldValue("bankPay", e.target.value);
+                        setFieldValue("digitalPay", 0);
+                        setFieldValue("netPay", 0);
                       }}
                       errors={errors}
                       touched={touched}
@@ -1051,9 +1050,9 @@ const DefaultSalary = ({ propsObj }) => {
               </>
             )}
           </>
-        ) : values?.perDaySalary ? (
+        ) : values?.payrollElement?.isPerday ? (
           <>
-            {values?.perDaySalary > 0 && (
+            {values?.payrollElement?.isPerday > 0 && (
               <div className="row">
                 <div className="col-12">
                   <div className="d-flex align-items-center justify-content-end">

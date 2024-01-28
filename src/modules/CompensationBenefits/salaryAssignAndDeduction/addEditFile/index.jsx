@@ -47,6 +47,9 @@ const initData = {
   allowanceAndDeduction: "",
   amountDimension: "",
   amount: "",
+  intAllowanceDuration: "",
+  intAllowanceAttendenceStatus: "",
+  maxAmount: ""
 };
 
 const validationSchema = Yup.object({
@@ -236,7 +239,7 @@ function AddEditForm() {
         getAdditionAndDeductionById()
       );
     }
-    const obj = [
+    const obj = 
       {
         strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
         intSalaryAdditionAndDeductionId: singleData
@@ -262,41 +265,43 @@ function AddEditForm() {
         intToYear: +values?.toMonth?.split("-")[0] || null,
         intToMonth: +values?.toMonth?.split("-")[1] || null,
         strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
-      },
-    ];
+
+        // new requirement 🔥
+        intAllowanceDuration: values?.intAllowanceDuration?.value,
+        numMaxLimit: +values?.maxAmount,
+        intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
+      };
     createEditAllowanceAndDeduction(obj, setLoading, cb);
   };
 
   const demoPopup = (values) => {
-    const payload = [
-      {
-        strEntryType:
-          isView && !isEdit && "DeleteEmpSalaryAdditionNDeductionById",
-        intSalaryAdditionAndDeductionId: values
-          ? values?.intSalaryAdditionAndDeductionId
-          : 0,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
-        intWorkplaceGroupId: wgId,
-        intEmployeeId: values?.intEmployeeId,
-        isAutoRenew: values?.isAutoRenew,
-        intYear: values?.intYear,
-        intMonth: values?.intMonth,
-        strMonth: values?.strMonth,
-        isAddition: values?.isAddition,
-        strAdditionNDeduction: values?.strAdditionNDeduction,
-        intAdditionNDeductionTypeId: values?.intAdditionNDeductionTypeId,
-        intAmountWillBeId: values?.intAmountWillBeId,
-        strAmountWillBe: values?.strAmountWillBe,
-        numAmount: values?.numAmount,
-        isActive: true,
-        isReject: false,
-        intActionBy: employeeId,
-        intToYear: values?.intToYear,
-        intToMonth: values?.intToMonth,
-        strToMonth: values?.strToMonth,
-      },
-    ];
+    const payload = {
+      strEntryType:
+        isView && !isEdit && "DeleteEmpSalaryAdditionNDeductionById",
+      intSalaryAdditionAndDeductionId: values
+        ? values?.intSalaryAdditionAndDeductionId
+        : 0,
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: wgId,
+      intEmployeeId: values?.intEmployeeId,
+      isAutoRenew: values?.isAutoRenew,
+      intYear: values?.intYear,
+      intMonth: values?.intMonth,
+      strMonth: values?.strMonth,
+      isAddition: values?.isAddition,
+      strAdditionNDeduction: values?.strAdditionNDeduction,
+      intAdditionNDeductionTypeId: values?.intAdditionNDeductionTypeId,
+      intAmountWillBeId: values?.intAmountWillBeId,
+      strAmountWillBe: values?.strAmountWillBe,
+      numAmount: values?.numAmount,
+      isActive: true,
+      isReject: false,
+      intActionBy: employeeId,
+      intToYear: values?.intToYear,
+      intToMonth: values?.intToMonth,
+      strToMonth: values?.strToMonth,
+    };
 
     const callback = () => {
       getAdditionAndDeductionById();
@@ -338,7 +343,7 @@ function AddEditForm() {
         validationSchema={
           rowDto?.length ? validationSchema2 : !isView && validationSchema
         }
-        onSubmit={(values, { setSubmitting, resetForm, setFieldValue }) => {
+        onSubmit={(values, { setFieldValue }) => {
           saveHandler(values, () => {
             setFieldValue("allowanceAndDeduction", "");
             setFieldValue("amountDimension", "");
@@ -354,8 +359,6 @@ function AddEditForm() {
           errors,
           touched,
           setFieldValue,
-          isValid,
-          dirty,
         }) => (
           <>
             <Form
@@ -697,6 +700,110 @@ function AddEditForm() {
                               />
                             </div>
                           </div>
+                          <div className="col-lg-3">
+                            <label>Allowance Duration</label>
+                            <FormikSelect
+                              classes="input-sm"
+                              styles={customStyles}
+                              placeholder={" "}
+                              name="intAllowanceDuration"
+                              options={
+                                [
+                                  {
+                                    value: 1,
+                                    label: "Perday",
+                                  },
+                                  {
+                                    value: 2,
+                                    label: "Per Month",
+                                  },
+                                ] || []
+
+                                /* 
+                                  🔥 from backend -- 
+                                  public enum AllowanceDuration
+                                  {
+                                      [Description ("Perday") ]
+                                      PERDAY = 1,
+                                      [Description("Per Month")]
+                                      PER_MONTH = 2
+                                  }
+                                  */
+                              }
+                              value={values?.intAllowanceDuration}
+                              onChange={(valueOption) => {
+                                setFieldValue(
+                                  "intAllowanceDuration",
+                                  valueOption
+                                );
+                              }}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                          <div className="col-lg-3">
+                            <label>Max Amount </label>
+                            <FormikInput
+                              classes="input-sm"
+                              value={values?.maxAmount}
+                              placeholder={" "}
+                              name="maxAmount"
+                              type="number"
+                              min={0}
+                              className="form-control"
+                              onChange={(e) =>
+                                setFieldValue("maxAmount", e.target.value)
+                              }
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                          <div className="col-lg-3">
+                            <label>AllowanceAttendenceStatus</label>
+                            <FormikSelect
+                              classes="input-sm"
+                              styles={customStyles}
+                              placeholder={" "}
+                              name="intAllowanceAttendenceStatus"
+                              options={
+                                [
+                                  {
+                                    value: 1,
+                                    label: "Default",
+                                  },
+                                  {
+                                    value: 2,
+                                    label: "Based On InTime",
+                                  },
+                                  {
+                                    value: 3,
+                                    label: "Based On Attendence",
+                                  },
+                                ] || []
+                                /* 
+                                🔥 from backend -- 
+                                  public enum AllowanceAttendenceStatus
+                                  {
+                                  [Description("Default")] 
+                                  DEFAULT = 1,  //Default value is for all.No restiction
+                                  [Description("Based On InTime")]
+                                  BASED_ON_INTIME = 2, //Will be implemented on only attendence intime
+                                  [Description("Based On Attendence")]
+                                  BASED_ON_ATTENDENCE = 3  
+                                  }
+                                */
+                              }
+                              value={values?.intAllowanceAttendenceStatus}
+                              onChange={(valueOption) => {
+                                setFieldValue(
+                                  "intAllowanceAttendenceStatus",
+                                  valueOption
+                                );
+                              }}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
                           <div
                             style={{
                               marginTop: "22px",
@@ -938,6 +1045,31 @@ function AddEditForm() {
                                                       item?.strAmountWillBe,
                                                   },
                                                   amount: item?.numAmount,
+                                                  intAllowanceDuration: [
+                                                    {
+                                                      value: 1,
+                                                      label: "Perday",
+                                                    },
+                                                    {
+                                                      value: 2,
+                                                      label: "Per Month",
+                                                    },
+                                                  ].find(el => el.value === item?.intAllowanceDuration ) || "",
+                                                  maxAmount: item?.intMaxLimit,
+                                                  intAllowanceAttendenceStatus: [
+                                                    {
+                                                      value: 1,
+                                                      label: "Default",
+                                                    },
+                                                    {
+                                                      value: 2,
+                                                      label: "Based On InTime",
+                                                    },
+                                                    {
+                                                      value: 3,
+                                                      label: "Based On Attendence",
+                                                    },
+                                                  ].find(el => el.value === item?.intAllowanceAttendenceStatus) || "",
                                                 });
                                                 !isFromOpen &&
                                                   setIsFormOpen(!isFromOpen);
