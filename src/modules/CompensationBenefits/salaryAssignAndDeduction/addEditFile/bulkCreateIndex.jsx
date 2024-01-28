@@ -388,7 +388,10 @@ function BulkAddEditForm() {
       department: [],
       hrPosition: [],
       designation: [],
-      intAllowanceDuration: "",
+      intAllowanceDuration: {
+        value: 2,
+        label: "Per Month",
+      },
       intAllowanceAttendenceStatus: "",
       maxAmount: "",
     }));
@@ -398,7 +401,7 @@ function BulkAddEditForm() {
       formikRef?.current?.values,
       { current: 1, pageSize: paginationSize },
       ""
-    )
+    );
   }, [wgId, buId, employeeId, wId, orgId]);
 
   const getLandingBulkAssignEmpListHandler = (values, pages, searchString) => {
