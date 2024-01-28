@@ -49,7 +49,7 @@ export const ModalFooter: React.FC<modalFooterType> = ({
   const submitButtonText =
     typeof submitText === "string" ? submitText : "Submit";
 
-  const hideCancelButton = submitText === false;
+  const hideCancelButton = cancelText === false;
   const cancelButtonText =
     typeof cancelText === "string" ? cancelText : "Cancel";
   return (
