@@ -213,6 +213,14 @@ function BulkAddEditForm() {
     if (!values?.isAutoRenew && !values?.toMonth) {
       return toast.warn("To Month must be selected");
     }
+    if(values?.intAllowanceDuration?.value === 1){
+     if(!values?.intAllowanceAttendenceStatus){
+      return toast.warn("Allowance Attendence Status Required");
+     }
+     if(!values?.maxAmount){
+      return toast.warn("Max Amount Required");
+     }
+    }
     var months = [
       "January",
       "February",
