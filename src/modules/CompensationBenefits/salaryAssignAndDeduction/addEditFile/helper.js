@@ -15,9 +15,12 @@ export const initData = {
   department: [],
   hrPosition: [],
   designation: [],
-  intAllowanceDuration: "",
+  intAllowanceDuration: {
+    value: 2,
+    label: "Per Month",
+  },
   intAllowanceAttendenceStatus: "",
-  maxAmount: ""
+  maxAmount: "",
 };
 
 export const validationSchema = Yup.object().shape({
