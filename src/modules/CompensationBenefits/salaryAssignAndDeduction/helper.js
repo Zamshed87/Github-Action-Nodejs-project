@@ -138,14 +138,12 @@ export const getSalaryAdditionAndDeductionById = async (
   setLoading
 ) => {
   setLoading && setLoading(true);
-  const payload = [
-    {
+  const payload = {
       strEntryType: "GetEmpSalaryAdditionNDeductionByEmployeeId",
       intBusinessUnitId: buId,
       intWorkplaceGroupId: wgId,
       intEmployeeId: empId,
-    },
-  ];
+    };
   try {
     const res = await axios.post(`/Employee/SalaryAdditonNDeduction`, payload);
     if (res?.data) {
