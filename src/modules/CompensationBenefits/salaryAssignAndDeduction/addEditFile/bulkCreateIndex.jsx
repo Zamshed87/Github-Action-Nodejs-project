@@ -1,17 +1,31 @@
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { DataTable } from "Components";
+import axios from "axios";
+import FormikSelect from "common/FormikSelect";
+import { getPeopleDeskAllDDL } from "common/api";
 import { Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 import BackButton from "../../../../common/BackButton";
-import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "../../../../common/peopleDeskTable/helper";
 import { gray600, success500 } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
+import { customStyles } from "../../../../utility/selectCustomStyle";
 import { createEditAllowanceAndDeduction } from "../helper";
+import HeaderTableForm from "./headerTableForm";
 import {
   bulkAssignEmpListTableColumn,
   empListColumn,
@@ -19,20 +33,6 @@ import {
   validationSchema,
   validationSchema2,
 } from "./helper";
-import HeaderTableForm from "./headerTableForm";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../../common/peopleDeskTable";
-import axios from "axios";
-import {
-  createPayloadStructure,
-  setHeaderListDataDynamically,
-} from "../../../../common/peopleDeskTable/helper";
-import { getPeopleDeskAllDDL } from "common/api";
-import FormikSelect from "common/FormikSelect";
-import { customStyles } from "../../../../utility/selectCustomStyle";
-import useAxiosPost from "utility/customHooks/useAxiosPost";
-import { DataTable } from "Components";
 
 const initHeaderList = {
   strDepartmentList: [],
@@ -192,7 +192,7 @@ function BulkAddEditForm() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -242,73 +242,68 @@ function BulkAddEditForm() {
     // }
     let empListString = "";
     if (isAll) {
-      empListString = selectedRow
-        ?.map((item) => item?.intEmployeeBasicInfoId)
-        .join(",");
+      empListString = bulkEmpString;
     } else {
       empListString = selectedRow
         ?.map((item) => item?.intEmployeeBasicInfoId)
         .join(",");
     }
-    console.log(empListString);
 
-    const payload = [
-      {
-        strEntryType: "BulkUpload",
-        intSalaryAdditionAndDeductionId: 0,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
-        intEmployeeId: values?.employee?.value || null,
-        isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
-        intYear: +values?.fromMonth?.split("-")[0] || null,
-        intMonth: +values?.fromMonth?.split("-")[1] || null,
-        strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
-        isAddition: values?.salaryType?.value === 1 ? true : false,
-        strAdditionNDeduction: values?.allowanceAndDeduction?.label,
-        intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
-        intAmountWillBeId: values?.amountDimension?.value,
-        strAmountWillBe: values?.amountDimension?.label,
-        numAmount: +values?.amount,
-        isActive: true,
-        isReject: false,
-        intActionBy: employeeId,
-        intToYear: +values?.toMonth?.split("-")[0] || null,
-        intToMonth: +values?.toMonth?.split("-")[1] || null,
-        strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
-        // employeeIdList: modifyEmployeeIdListId, 🔥
+    const payload = {
+      strEntryType: "BulkUpload",
+      intSalaryAdditionAndDeductionId: 0,
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intEmployeeId: values?.employee?.value || null,
+      isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
+      intYear: +values?.fromMonth?.split("-")[0] || null,
+      intMonth: +values?.fromMonth?.split("-")[1] || null,
+      strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
+      isAddition: values?.salaryType?.value === 1 ? true : false,
+      strAdditionNDeduction: values?.allowanceAndDeduction?.label,
+      intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
+      intAmountWillBeId: values?.amountDimension?.value,
+      strAmountWillBe: values?.amountDimension?.label,
+      numAmount: +values?.amount,
+      isActive: true,
+      isReject: false,
+      intActionBy: employeeId,
+      intToYear: +values?.toMonth?.split("-")[0] || null,
+      intToMonth: +values?.toMonth?.split("-")[1] || null,
+      strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
+      // employeeIdList: modifyEmployeeIdListId, 🔥
 
-        // new requirement added 🔥 25-01-24
-        // strEntryType: "string",
-        // intSalaryAdditionAndDeductionId: 0,
-        // intAccountId: 0,
-        // intBusinessUnitId: 0,
-        intWorkplaceGroupId: wgId,
-        intWorkplaceId: wId,
-        // intEmployeeId: 0,
-        // isAutoRenew: true,
-        // intYear: 0,
-        // intMonth: 0,
-        // strMonth: "string",
-        // isAddition: true,
-        // strAdditionNDeduction: "string",
-        // intAdditionNDeductionTypeId: 0,
-        // intAmountWillBeId: 0,
-        // strAmountWillBe: "string",
-        // numAmount: 0,
-        intAllowanceDuration: values?.intAllowanceDuration?.value,
-        numMaxLimit: values?.maxAmount,
-        intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
-        // isActive: true,
-        // isReject: true,
-        // intActionBy: 0,
-        // intToYear: 0,
-        // intToMonth: 0,
-        // strToMonth: "string",
-        strEmployeeIdList: empListString,
-      },
-    ];
-    console.log({payload})
-    // createEditAllowanceAndDeduction(payload, setLoading, cb);
+      // new requirement added 🔥 25-01-24
+      // strEntryType: "string",
+      // intSalaryAdditionAndDeductionId: 0,
+      // intAccountId: 0,
+      // intBusinessUnitId: 0,
+      intWorkplaceGroupId: wgId,
+      intWorkplaceId: wId,
+      // intEmployeeId: 0,
+      // isAutoRenew: true,
+      // intYear: 0,
+      // intMonth: 0,
+      // strMonth: "string",
+      // isAddition: true,
+      // strAdditionNDeduction: "string",
+      // intAdditionNDeductionTypeId: 0,
+      // intAmountWillBeId: 0,
+      // strAmountWillBe: "string",
+      // numAmount: 0,
+      intAllowanceDuration: values?.intAllowanceDuration?.value,
+      numMaxLimit: +values?.maxAmount,
+      intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
+      // isActive: true,
+      // isReject: true,
+      // intActionBy: 0,
+      // intToYear: 0,
+      // intToMonth: 0,
+      // strToMonth: "string",
+      strEmployeeIdList: empListString,
+    };
+
+    createEditAllowanceAndDeduction(payload, setLoading, cb);
   };
 
   const saveAllHandler = (values) => {
@@ -319,15 +314,14 @@ function BulkAddEditForm() {
       amountDimension: "Amount Dimension is required",
       amount: "Amount is required",
     };
-      // throw error 🔥
+    // throw error 🔥
     const remainingError = Object.keys(errorMessages).some((fieldName) => {
       if (!values?.[fieldName]) {
         toast.warn(errorMessages[fieldName]);
-        return true; 
+        return true;
       }
       return false;
     });
-
 
     if (!remainingError) {
       saveHandler(
@@ -342,13 +336,6 @@ function BulkAddEditForm() {
     }
   };
 
-  useEffect(() => {
-    setHeaderList({});
-    setEmpLanding([]);
-    getData(pages);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId]);
-
   const [departmentDDL, setDepartmentDDL] = useState([]);
   const [designationDDL, setDesignationDDL] = useState([]);
   const [empTypeDDL, setEmpTypeDDL] = useState([]);
@@ -359,6 +346,7 @@ function BulkAddEditForm() {
     loadingBulkAssign,
     setBulkAssignEmpList,
   ] = useAxiosPost([]);
+  const [bulkEmpString, setBulkEmpString] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
   const formikRef = useRef();
 
@@ -404,9 +392,14 @@ function BulkAddEditForm() {
       intAllowanceAttendenceStatus: "",
       maxAmount: "",
     }));
+    setHeaderList({});
+    setEmpLanding([]);
+    getLandingBulkAssignEmpListHandler(
+      formikRef?.current?.values,
+      { current: 1, pageSize: paginationSize },
+      ""
+    )
   }, [wgId, buId, employeeId, wId, orgId]);
-
-  console.log({ departmentDDL });
 
   const getLandingBulkAssignEmpListHandler = (values, pages, searchString) => {
     setBulkAssignEmpList([]);
@@ -438,6 +431,7 @@ function BulkAddEditForm() {
       payload,
       (res) => {
         setBulkAssignEmpList(res?.data || []);
+        setBulkEmpString(res?.strEmployeeIdList);
         setPages({
           current: res?.currentPage,
           pageSize: res?.pageSize,
@@ -446,8 +440,6 @@ function BulkAddEditForm() {
       }
     );
   };
-
-  console.log({ selectedRow });
 
   return (
     <>
@@ -464,15 +456,20 @@ function BulkAddEditForm() {
         onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm();
-            getData(
+            // getData(
+            //   { current: 1, pageSize: paginationSize },
+            //   "",
+            //   [],
+            //   -1,
+            //   filterOrderList,
+            //   checkedHeaderList
+            // );
+            getLandingBulkAssignEmpListHandler(
+              values,
               { current: 1, pageSize: paginationSize },
-              "",
-              [],
-              -1,
-              filterOrderList,
-              checkedHeaderList
-            );
-            setCheckedList([]);
+              ""
+            ),
+              setCheckedList([]);
           });
         }}
         innerRef={formikRef}
@@ -1022,7 +1019,7 @@ function BulkAddEditForm() {
                               );
                             }, 500);
                           }}
-                          cancelHandler={(e) => {
+                          cancelHandler={() => {
                             setFieldValue("searchString", "");
                             getLandingBulkAssignEmpListHandler(
                               values,
@@ -1030,7 +1027,7 @@ function BulkAddEditForm() {
                               ""
                             );
                           }}
-                          handleClick={(e) => {
+                          handleClick={() => {
                             setFieldValue("searchString", "");
                             getLandingBulkAssignEmpListHandler(
                               values,
@@ -1068,7 +1065,7 @@ function BulkAddEditForm() {
                           onChange: (selectedRowKeys, selectedRows) => {
                             setSelectedRow(selectedRows);
                           },
-                          getCheckboxProps: (rec) => {
+                          getCheckboxProps: () => {
                             // console.log({ rec });
                             // return {
                             //   disabled: rec?.ApplicationStatus === "Approved",
