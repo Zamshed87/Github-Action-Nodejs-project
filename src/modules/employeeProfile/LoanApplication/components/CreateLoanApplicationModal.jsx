@@ -9,6 +9,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import {
+  getPeopleDeskAllDDL,
   getSearchEmployeeList,
   PeopleDeskSaasDDL,
 } from "../../../../common/api";
@@ -23,6 +24,7 @@ import { attachment_action } from "../../../policyUpload/helper";
 import "../application.css";
 import { loanCrudAction } from "../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+import { gray600, success500 } from "utility/customColor";
 
 const validationSchema = Yup.object().shape({
   description: Yup.string().required("Description is required"),
@@ -83,11 +85,21 @@ const CreateLoanApplicationModal = ({
 }) => {
   const [loanType, setLoanType] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [employeeDDL, setEmployeeDDL] = useState([]);
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    getPeopleDeskAllDDL(
+      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      "intEmployeeBasicInfoId",
+      "strEmployeeName",
+      setEmployeeDDL
+    );
+  }, [employeeId, wgId]);
 
   const saveHandler = (values, cb) => {
     // approveLoanAmount approveInstallmentNumber approveAmountPerInstallment
@@ -306,8 +318,9 @@ const CreateLoanApplicationModal = ({
                   </div>
                   <div className="col-6">
                     <label>Guarantor Employee</label>
-                    <AsyncFormikSelect
+                    {/* <AsyncFormikSelect
                       name="guarantor"
+                      isMulti
                       selectedValue={values?.guarantor}
                       isSearchIcon={true}
                       handleChange={(valueOption) => {
@@ -321,8 +334,74 @@ const CreateLoanApplicationModal = ({
                       }}
                       placeholder="Search (min 3 letter)"
                       loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+                    /> */}
+                    <FormikSelect
+                    name="guarantor"
+                    isClearable={false}
+                    options={employeeDDL || []}
+                    value={values?.guarantor}
+                    onChange={(valueOption) => {
+                      setFieldValue("guarantor", valueOption);
+                    }}
+                      styles={{
+                        ...customStyles,
+                        control: (provided, state) => ({
+                          ...provided,
+                          minHeight: "auto",
+                          height:
+                            values?.guarantor?.length > 1 ? "auto" : "auto",
+                          borderRadius: "4px",
+                          boxShadow: `${success500}!important`,
+                          ":hover": {
+                            borderColor: `${gray600}!important`,
+                          },
+                          ":focus": {
+                            borderColor: `${gray600}!important`,
+                          },
+                        }),
+                        valueContainer: (provided, state) => ({
+                          ...provided,
+                          height:
+                            values?.guarantor?.length > 1 ? "auto" : "auto",
+                          padding: "0 6px",
+                        }),
+                        multiValue: (styles) => {
+                          return {
+                            ...styles,
+                            position: "relative",
+                            top: "-1px",
+                          };
+                        },
+                        multiValueLabel: (styles) => ({
+                          ...styles,
+                          padding: "0",
+                        }),
+                      }}
+                      isMulti
+                      errors={errors}
+                      placeholder="Search (min 3 letter)"
+                      touched={touched}
                     />
                   </div>
+
+                  <div className="col-6">
+                    <label>Closing Date</label>
+                    <FormikInput
+                      classes="input-sm"
+                      value={values?.loanClosingDate}
+                      name="loanClosingDate"
+                      type="date"
+                      onChange={(e) => {
+                        setFieldValue("loanClosingDate", e.target.value);
+                      }}
+                      min={!singleData && todayDate()}
+                      className="form-control"
+                      placeholder=""
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+
                   <div className="col-6">
                     <label>Installment Number</label>
                     <FormikInput

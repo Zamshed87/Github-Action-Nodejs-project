@@ -243,6 +243,22 @@ export const loanRequestLandingTableColumns = (
       width: 150,
     },
     {
+      title: "Effective Date",
+      dataIndex: "effectiveDate",
+      render: (_, rec) => dateFormatter(rec?.effectiveDate),
+      sorter: true,
+      dataType: "date",
+      width: 150,
+    },
+    {
+      title: "Closing Date",
+      dataIndex: "closingDate",
+      render: (_, rec) => dateFormatter(rec?.closingDate),
+      sorter: true,
+      dataType: "date",
+      width: 150,
+    },
+    {
       title: () => <span style={{ color: gray600 }}>Approve Installments</span>,
       dataIndex: "approveNumberOfInstallment",
       width: 200,
@@ -399,6 +415,9 @@ export const loanCrudAction = async (
     toast.warn("Interest can't be greater than 100");
     return;
   }
+  const id = values?.guarantor?.map(item => item?.value)
+  const guarantorId = id.join(',')
+  console.log("guarantorId",guarantorId)
   try {
     setLoading?.(true);
     let payload = {
@@ -412,7 +431,7 @@ export const loanCrudAction = async (
       employeeId: values?.employee?.value || 0,
       loanTypeId: values?.loanType?.value || 0,
       intInterest: +values?.interest || 0,
-      intGurrantor: +values?.guarantor?.value || 0,
+      intGurrantorId: guarantorId || 0,
       loanAmount: +values?.loanAmount || 0,
       numberOfInstallment: +values?.installmentNumber || 0,
       numberOfInstallmentAmount: +values?.amountPerInstallment || 0,
@@ -427,6 +446,7 @@ export const loanCrudAction = async (
       approveNumberOfInstallment: 0,
       createdBy: employeeId,
       effectiveDate: values?.effectiveDate || todayDate(),
+      dteLoanClosingDate: values?.loanClosingDate || todayDate(),
       rejectBy: "",
       referenceNo: "",
       isActive: !isDelete,
