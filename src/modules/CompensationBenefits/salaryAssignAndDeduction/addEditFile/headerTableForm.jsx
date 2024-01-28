@@ -74,7 +74,7 @@ const HeaderTableForm = ({
         </div>
       </div>
       <div className="col-lg-3">
-        <label>Select Type</label>
+        <label>Salary Type</label>
         <FormikSelect
           classes="input-sm"
           styles={customStyles}
@@ -177,6 +177,104 @@ const HeaderTableForm = ({
           type="number"
           className="form-control"
           onChange={(e) => setFieldValue("amount", e.target.value)}
+          errors={errors}
+          touched={touched}
+        />
+      </div>
+      <div className="col-lg-3">
+        <label>Allowance Duration</label>
+        <FormikSelect
+          classes="input-sm"
+          styles={customStyles}
+          placeholder={" "}
+          name="intAllowanceDuration"
+          options={
+            [
+              {
+                value: 1,
+                label: "Perday",
+              },
+              {
+                value: 2,
+                label: "Per Month",
+              },
+            ] || []
+
+            /* 
+            🔥 from backend -- 
+            public enum AllowanceDuration
+            {
+                [Description ("Perday") ]
+                PERDAY = 1,
+                [Description("Per Month")]
+                PER_MONTH = 2
+            }
+            */
+          }
+          value={values?.intAllowanceDuration}
+          onChange={(valueOption) => {
+            setFieldValue("intAllowanceDuration", valueOption);
+          }}
+          errors={errors}
+          touched={touched}
+        />
+      </div>
+      <div className="col-lg-3">
+        <label>
+          Max Amount{" "}
+        </label>
+        <FormikInput
+          classes="input-sm"
+          value={values?.maxAmount}
+          placeholder={" "}
+          name="maxAmount"
+          type="number"
+          min={0}
+          className="form-control"
+          onChange={(e) => setFieldValue("maxAmount", e.target.value)}
+          errors={errors}
+          touched={touched}
+        />
+      </div>
+      <div className="col-lg-3">
+        <label>AllowanceAttendenceStatus</label>
+        <FormikSelect
+          classes="input-sm"
+          styles={customStyles}
+          placeholder={" "}
+          name="intAllowanceAttendenceStatus"
+          options={
+            [
+              {
+                value: 1,
+                label: "Default",
+              },
+              {
+                value: 2,
+                label: "Based On InTime",
+              },
+              {
+                value: 3,
+                label: "Based On Attendence",
+              },
+            ] || []
+            /* 
+            🔥 from backend -- 
+              public enum AllowanceAttendenceStatus
+              {
+              [Description("Default")] 
+              DEFAULT = 1,  //Default value is for all.No restiction
+              [Description("Based On InTime")]
+              BASED_ON_INTIME = 2, //Will be implemented on only attendence intime
+              [Description("Based On Attendence")]
+              BASED_ON_ATTENDENCE = 3  
+              }
+            */
+          }
+          value={values?.intAllowanceAttendenceStatus}
+          onChange={(valueOption) => {
+            setFieldValue("intAllowanceAttendenceStatus", valueOption);
+          }}
           errors={errors}
           touched={touched}
         />
