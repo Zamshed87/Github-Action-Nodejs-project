@@ -88,4 +88,10 @@ export const apiList = {
   ApprovalPipelineHeaderDetailsById:
     "/ApprovalPipeline/ApprovalPipelineHeaderDetailsById",
   GetAllSalaryBreakdownLanding: "/Payroll/GetAllSalaryBreakdownLanding",
+  PFLanding: "/Employee/PfLanding",
+  SavePFRegisterType: "/SaasMasterData/SavePFRegisterType",
+  GetAllPFRegisterType: "/SaasMasterData/GetAllPFRegisterType",
+  GetPFRegisterTypeById: "/SaasMasterData/GetPFRegisterTypeById",
+  PFRegisterTypeDDL: "/SaasMasterData/PFRegisterTypeDDL",
+  SavePFInvestment: "/SaasMasterData/SavePFInvestment",
 };
