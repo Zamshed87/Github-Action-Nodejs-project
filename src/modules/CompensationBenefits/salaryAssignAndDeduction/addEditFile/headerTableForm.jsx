@@ -224,6 +224,8 @@ const HeaderTableForm = ({
           }
           value={values?.intAllowanceDuration}
           onChange={(valueOption) => {
+            setFieldValue("maxAmount", "");
+            setFieldValue("intAllowanceAttendenceStatus", "");
             setFieldValue("intAllowanceDuration", valueOption);
           }}
           errors={errors}
@@ -234,7 +236,7 @@ const HeaderTableForm = ({
         <>
           <div className="col-lg-3">
             <label>
-              Max Amount <small>[ for a month ]</small>
+              Max Amount <small>[ for a month ]  <span className="text-danger fs-3">*</span></small>
             </label>
             <FormikInput
               classes="input-sm"
@@ -250,7 +252,7 @@ const HeaderTableForm = ({
             />
           </div>
           <div className="col-lg-3">
-            <label>AllowanceAttendenceStatus</label>
+            <label>Allowanc Attendence Status  <span className="text-danger fs-3">*</span></label>
             <FormikSelect
               classes="input-sm"
               styles={customStyles}
