@@ -515,7 +515,7 @@ function BulkAddEditForm() {
                   <div className="row card-style pt-3 mb-3">
                     <div className="col-lg-4">
                       <div>
-                        <label>Employeement Type</label>
+                        <label>Employment Type</label>
                         <FormikSelect
                           placeholder=" "
                           classes="input-sm"
