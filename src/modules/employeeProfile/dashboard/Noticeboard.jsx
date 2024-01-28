@@ -10,6 +10,7 @@ import { dateFormatter } from "../../../utility/dateFormatter";
 import { customStyles } from "../../../utility/newSelectCustomStyle";
 import { yearDDLAction } from "../../../utility/yearDDL";
 import { getAllAnnouncement } from "../../dashboard/helper";
+import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 
 const initData = {
   monthYear: moment().format("YYYY-MM"),
@@ -53,8 +54,8 @@ export default function NoticeBoard({
         initialValues={{
           ...initData,
           monthYear: {
-            value: 2023,
-            label: "2023",
+            value: currentYear(),
+            label: `${currentYear()}`,
           },
         }}
         onSubmit={(values) => {}}
