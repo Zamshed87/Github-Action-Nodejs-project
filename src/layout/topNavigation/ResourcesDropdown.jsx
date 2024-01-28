@@ -46,7 +46,7 @@ export default function ResourcesDropdown() {
     workplaceGroupDDL,
     workplaceDDL,
   } = useSelector((state) => state?.auth, shallowEqual);
-  const [count, setCount] = useState("");
+  const [workPlaceWouldChange, setWorkPlaceWouldChange] = useState("");
   const dispatch = useDispatch();
 
   const handleResources = (event) => {
@@ -71,7 +71,7 @@ export default function ResourcesDropdown() {
     const filterData = workplaceGroupDDL?.filter(
       (item) => item?.WorkplaceGroupId === event.target.value
     );
-    setCount("wchange");
+    setWorkPlaceWouldChange("workplaceWillChange");
     dispatch(
       updateWgAction(
         filterData?.[0]?.WorkplaceGroupId,
@@ -102,7 +102,7 @@ export default function ResourcesDropdown() {
   }, [wgId, buId]);
 
   useEffect(() => {
-    if (count === "wchange") {
+    if (workPlaceWouldChange === "workplaceWillChange") {
       dispatch(
         updateWAction(
           workplaceDDL?.[0]?.WorkplaceId,
