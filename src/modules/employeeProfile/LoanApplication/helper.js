@@ -243,6 +243,22 @@ export const loanRequestLandingTableColumns = (
       width: 150,
     },
     {
+      title: "Effective Date",
+      dataIndex: "effectiveDate",
+      render: (_, rec) => dateFormatter(rec?.effectiveDate),
+      sorter: true,
+      dataType: "date",
+      width: 150,
+    },
+    {
+      title: "Closing Date",
+      dataIndex: "closingDate",
+      render: (_, rec) => dateFormatter(rec?.closingDate),
+      sorter: true,
+      dataType: "date",
+      width: 150,
+    },
+    {
       title: () => <span style={{ color: gray600 }}>Approve Installments</span>,
       dataIndex: "approveNumberOfInstallment",
       width: 200,
@@ -356,6 +372,7 @@ export const setSingleLoanApplication = (data, setSingleData, setFileId) => {
     amountPerInstallment: data?.numberOfInstallmentAmount,
     description: data?.description,
     effectiveDate: dateFormatterForInput(data?.effectiveDate),
+    loanClosingDate: dateFormatterForInput(data?.closingDate),
     fileUrl: data?.fileUrl,
     loanApplicationId: data?.loanApplicationId,
     status: data?.applicationStatus,
@@ -393,14 +410,30 @@ export const loanCrudAction = async (
   orgId,
   isDelete = false,
   buId,
-  wgId
+  wgId,
+  tableData
 ) => {
   if (values?.intInterest > 100) {
     toast.warn("Interest can't be greater than 100");
     return;
   }
+  // const id = values?.guarantor?.map((item) => item?.value);
+  // const guarantorId = id.join(",");
+
   try {
     setLoading?.(true);
+    const row = tableData?.map((item) => ({
+      loanApplicationId: item?.loanApplicationId || 0,
+      intInterest: item?.intInterest || 0,
+      totalLoanAmount: item?.totalLoanAmount || 0,
+      intInstallmentNumber: item?.intInstallmentNumber || 0,
+      intInstallmentAmount: item?.intInstallmentAmount || 0,
+      strApplicantName: item?.strApplicantName || "",
+      dteRepaymentDay: null,
+      intActualPaymentAmount: null,
+      strRemarks: null,
+      loanType: 6,
+    }));
     let payload = {
       partType: isDelete
         ? "LoanDelete"
@@ -412,7 +445,7 @@ export const loanCrudAction = async (
       employeeId: values?.employee?.value || 0,
       loanTypeId: values?.loanType?.value || 0,
       intInterest: +values?.interest || 0,
-      intGurrantor: +values?.guarantor?.value || 0,
+      intGurrantorId: "",
       loanAmount: +values?.loanAmount || 0,
       numberOfInstallment: +values?.installmentNumber || 0,
       numberOfInstallmentAmount: +values?.amountPerInstallment || 0,
@@ -427,6 +460,7 @@ export const loanCrudAction = async (
       approveNumberOfInstallment: 0,
       createdBy: employeeId,
       effectiveDate: values?.effectiveDate || todayDate(),
+      dteLoanClosingDate: values?.loanClosingDate || todayDate(),
       rejectBy: "",
       referenceNo: "",
       isActive: !isDelete,
@@ -444,6 +478,7 @@ export const loanCrudAction = async (
         values?.approveAmountPerInstallment || null,
       businessUnitId: buId,
       workPlaceGrop: wgId,
+      row: row
     };
     const res = await axios.post(`/Employee/LoanCRUD`, payload);
     setLoading?.(false);
@@ -506,3 +541,29 @@ export const LightTooltip = styled(({ className, ...props }) => (
     fontSize: 11,
   },
 }));
+
+export const costInputHandler = (
+  name,
+  value,
+  sl,
+  tableData,
+  setTableData,
+  values
+) => {
+  if (value > 0) {
+    const data = [...tableData];
+    const row = data[sl];
+    row[name] = value;
+
+    row.intInstallmentAmount = +row.intInstallmentAmount;
+
+    setTableData(data);
+  } else {
+    const data = [...tableData];
+    const row = data[sl];
+    row[name] = "";
+
+    row.intInstallmentAmount = +row.intInstallmentAmount;
+    setTableData(data);
+  }
+};
