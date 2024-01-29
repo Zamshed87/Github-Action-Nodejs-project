@@ -92,7 +92,7 @@ export const releaseEmpTransferNPromotion = async (
   try {
     setLoading(true);
     let res = await axios.put(
-      `/Employee/ReleaseEmpTransferNpromotion?accountId=${orgId}&employeeId=${singleData?.intEmployeeId}&substitutionEmployeeId=${values?.substituteEmployee?.value}&transferNPromotionId=${singleData?.intTransferNpromotionId}&ReleaseDate=${values?.releaseDate}&actionBy=${employeeId}`
+      `/Employee/ReleaseEmpTransferNpromotion?accountId=${orgId}&employeeId=${singleData?.intEmployeeId}&substitutionEmployeeId=${values?.substituteEmployee?.value || 0}&transferNPromotionId=${singleData?.intTransferNpromotionId || 0}&ReleaseDate=${values?.releaseDate}&actionBy=${employeeId}`
     );
 
     setLoading(false);
