@@ -534,7 +534,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
               // disabled={isEdit}
             />
           </Col>
-          <Col md={6} sm={12} xs={24}>
+          {/* <Col md={6} sm={12} xs={24}>
             <PSelect
               options={EmpFilterType}
               name="empSearchType"
@@ -656,7 +656,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
                 </>
               ) : undefined;
             }}
-          </Form.Item>
+          </Form.Item> */}
 
           <Col
             style={{
@@ -666,7 +666,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             <PButton type="primary" content="View" onClick={viewHandler} />
           </Col>
         </Row>
-        <DataTable
+        {/* <DataTable
           header={header}
           bordered
           data={AttendanceAdjustmentFilter?.data || []}
@@ -685,7 +685,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
               };
             },
           }}
-        />
+        /> */}
       </PCard>
 
       {/* Confirmation Modal */}

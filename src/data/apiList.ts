@@ -95,4 +95,5 @@ export const apiList = {
   PFRegisterTypeDDL: "/SaasMasterData/PFRegisterTypeDDL",
   SavePFInvestment: "/SaasMasterData/SavePFInvestment",
   BreakdownNPolicyForSalaryAssign: "/Payroll/BreakdownNPolicyForSalaryAssign",
+  PFInvestmentById: "/SaasMasterData/PFInvestmentById",
 };
