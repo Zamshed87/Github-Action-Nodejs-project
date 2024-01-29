@@ -88,8 +88,11 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
               isActive: true,
               isComplete: true,
               numRate: values?.rate,
-              intMaturityMonth: moment(values?.maturityMonth).format("YYYY-MM-DD"),
+              intMaturityMonth: 0,
               code: values?.investReffNo,
+              strMaturityDate: moment(values?.maturityMonth).format(
+                "YYYY-MM-DD"
+              ),
             },
             refernceDTO: data?.map((item: any) => ({
               intReferenceId: item?.intPfLedgerId,
