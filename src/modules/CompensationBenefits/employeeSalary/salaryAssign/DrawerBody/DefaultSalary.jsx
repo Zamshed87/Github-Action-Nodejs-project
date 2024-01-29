@@ -387,6 +387,8 @@ const DefaultSalary = ({ propsObj }) => {
                         setFieldValue("finalGrossSalary", e.target.value);
                         setFieldValue("perDaySalary", e.target.value);
                         setFieldValue("bankPay", e.target.value);
+                        setFieldValue("digitalPay", 0);
+                        setFieldValue("netPay", 0);
                       }}
                       errors={errors}
                       touched={touched}
@@ -613,6 +615,8 @@ const DefaultSalary = ({ propsObj }) => {
                         }
                         setFieldValue("totalGrossSalary", e.target.value);
                         setFieldValue("bankPay", e.target.value);
+                        setFieldValue("digitalPay", 0);
+                        setFieldValue("netPay", 0);
                       }}
                       errors={errors}
                       touched={touched}

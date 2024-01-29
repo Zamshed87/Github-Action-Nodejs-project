@@ -213,6 +213,14 @@ function BulkAddEditForm() {
     if (!values?.isAutoRenew && !values?.toMonth) {
       return toast.warn("To Month must be selected");
     }
+    if(values?.intAllowanceDuration?.value === 1){
+     if(!values?.intAllowanceAttendenceStatus){
+      return toast.warn("Allowance Attendence Status Required");
+     }
+     if(!values?.maxAmount){
+      return toast.warn("Max Amount Required");
+     }
+    }
     var months = [
       "January",
       "February",
@@ -388,7 +396,10 @@ function BulkAddEditForm() {
       department: [],
       hrPosition: [],
       designation: [],
-      intAllowanceDuration: "",
+      intAllowanceDuration: {
+        value: 2,
+        label: "Per Month",
+      },
       intAllowanceAttendenceStatus: "",
       maxAmount: "",
     }));
@@ -398,7 +409,7 @@ function BulkAddEditForm() {
       formikRef?.current?.values,
       { current: 1, pageSize: paginationSize },
       ""
-    )
+    );
   }, [wgId, buId, employeeId, wId, orgId]);
 
   const getLandingBulkAssignEmpListHandler = (values, pages, searchString) => {
