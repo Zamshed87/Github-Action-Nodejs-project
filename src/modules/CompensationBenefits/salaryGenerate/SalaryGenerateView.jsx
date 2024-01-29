@@ -1,40 +1,36 @@
-import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import DownloadIcon from "@mui/icons-material/Download";
+import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 import AvatarComponent from "../../../common/AvatarComponent";
 import BackButton from "../../../common/BackButton";
 import FormikRadio from "../../../common/FormikRadio";
-import Loading from "../../../common/loading/Loading";
 import PrimaryButton from "../../../common/PrimaryButton";
 import ScrollableTable from "../../../common/ScrollableTable";
+import Loading from "../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { greenColor } from "../../../utility/customColor";
+import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
 import { getRowTotal } from "../../../utility/getRowTotal";
 import { getMonthName } from "../../../utility/monthUtility";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
-import { getSalaryDetailsReportRDLC, getSalaryReport } from "../reports/salaryDetailsReport/helper";
+import { getSalaryDetailsReportRDLC } from "../reports/salaryDetailsReport/helper";
+import { generateExcelAction } from "../reports/salaryReport/excel/allSalaryExcel";
 import {
   allSalaryExcelColumn,
   allSalaryExcelData,
 } from "../reports/salaryReport/utility/excelColum";
-import { generateExcelAction } from "../reports/salaryReport/excel/allSalaryExcel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import {
-  createSalaryDetailsReportExcelHandeler,
   getBuDetails,
   getSalaryGenerateRequestById,
   salaryGenerateApproveReject,
 } from "./helper";
-import moment from "moment";
-import { toast } from "react-toastify";
-import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
-// import SalaryTableReport from "../reports/salaryDetailsReport/SalaryTableReport";
-import SalaryDetailsReportTable from "../reports/salaryDetailsReport/SalaryDetailsReportTable";
 
 const initData = {
   search: "",
@@ -49,7 +45,7 @@ const SalaryGenerateView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { state } = useLocation();
-  const { id } = useParams();
+
 
   // redux
   const { employeeId, isOfficeAdmin, orgId, buId, wgId } = useSelector(
@@ -71,13 +67,13 @@ const SalaryGenerateView = () => {
   const [totalCashPay, setTotalCashPay] = useState(0);
   const [buDetails, setBuDetails] = useState({});
 
-  const [tableAllowanceHead, setTableAllowanceHead] = useState([]);
-  const [tableDeductionHead, setTableDeductionHead] = useState([]);
-  const [tableColumn, setTableColumn] = useState([]);
+  // const [tableAllowanceHead, setTableAllowanceHead] = useState([]);
+  // const [tableDeductionHead, setTableDeductionHead] = useState([]);
+  // const [tableColumn, setTableColumn] = useState([]);
 
   const [totalWorkingDays, setTotalWorkingDays] = useState(0);
   const [totalAttendence, setTotalAttendence] = useState(0);
-  const [resDetailsReport, setDetailsReport] = useState([]);
+  // const [resDetailsReport, setDetailsReport] = useState([]);
 
   const month = getMonthName(state?.intMonth);
   const year = state?.intYear;
@@ -88,7 +84,7 @@ const SalaryGenerateView = () => {
     initialValues: initData,
     validationSchema: validationSchema,
     onSubmit: () => {
-      saveHandler();
+      // saveHandler();
     },
   });
 
@@ -162,7 +158,7 @@ const SalaryGenerateView = () => {
     intSalaryGenerateRequestId,
   } = !state?.data ? state : state?.data;
 
-  let saveHandler = () => {};
+  // let saveHandler = () => {};
 
   const getData = () => {
     getSalaryGenerateRequestById(
@@ -190,7 +186,7 @@ const SalaryGenerateView = () => {
   }, []);
 
   const approveNRejectHandler = (text) => {
-    let payload = [
+    const payload = [
       {
         applicationId: intSalaryGenerateRequestId,
         approverEmployeeId: employeeId,
@@ -411,9 +407,9 @@ const SalaryGenerateView = () => {
                               totalAttendence
                             );
                           } else {
-                            if (!resDetailsReport?.length > 0) {
-                              return toast.warn("No Data Found");
-                            }
+                            if (detailsData?.length <= 0) {
+                              return toast.warn("No Data Found"); 
+                            } 
                          /*    createSalaryDetailsReportExcelHandeler({
                               monthYear: moment(values?.monthYear).format(
                                 "MMMM-YYYY"
@@ -488,8 +484,9 @@ const SalaryGenerateView = () => {
                             }&isDownload=false`,
                             setLoading
                           ); */
+                 
                           if (detailsData?.length <= 0) {
-                            return toast.warn("No Data Found");
+                            return toast.warn("No Data Found"); 
                           } else {
                           getPDFAction(
                             `/PdfAndExcelReport/GetRDLCSalaryReport?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
