@@ -1116,6 +1116,9 @@ export default function AddEditForm({
                                     setIsUserCheckMsg,
                                     (data) => {
                                       if (data.message === "Valid") {
+                                        setIsUserCheckMsg((prev) => {
+                                          return { ...prev, ...data };
+                                        });
                                         resolve();
                                       } else {
                                         reject(
