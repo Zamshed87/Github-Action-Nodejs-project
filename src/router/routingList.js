@@ -741,6 +741,13 @@ const ManagementApplicationSeparationForm = lazy(() =>
 const ManagementSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/mgmApplication/index.jsx")
 );
+const FinalSettlementLanding = lazy(() =>
+  import("../modules/employeeProfile/finalSettlement/index.jsx")
+);
+const FinalSettlementAddEditView = lazy(() => 
+  import("../modules/employeeProfile/finalSettlement/create/CreateEditFinalSettlement.jsx")
+);
+
 const ManagementReleaseSeparationForm = lazy(() =>
   import(
     "../modules/employeeProfile/separation/mgmApplication/releaseForm/index.jsx"
@@ -1356,6 +1363,18 @@ export const routingList = [
   {
     path: "/profile/separation",
     component: ManagementSeparation,
+  },
+  {
+    path: "/profile/finalSettlement",
+    component: FinalSettlementLanding,
+  },
+  {
+    path: "/profile/finalSettlement/create",
+    component: FinalSettlementAddEditView,
+  },
+  {
+    path: "/profile/finalSettlement/:type/:id",
+    component: FinalSettlementAddEditView,
   },
   { path: "/profile/reports/separationReport", component: SeparationReport },
   {
