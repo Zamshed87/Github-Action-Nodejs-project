@@ -187,14 +187,6 @@ const FormCard = ({ propsObj }) => {
               value={values?.workGroup}
               onChange={(valueOption) => {
                 setFieldValue("workGroup", valueOption);
-                // valueOption?.forEach(options=>{
-                //   getAllWorkPlace(
-                //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${options?.value}&intId=${employeeId}`,
-                //     "intWorkplaceId",
-                //     "strWorkplace",
-                //     setWorkplaceDDL
-                //   );
-                // })
               }}
               isMulti
               errors={errors}

@@ -243,6 +243,22 @@ export const loanRequestLandingTableColumns = (
       width: 150,
     },
     {
+      title: "Effective Date",
+      dataIndex: "effectiveDate",
+      render: (_, rec) => dateFormatter(rec?.effectiveDate),
+      sorter: true,
+      dataType: "date",
+      width: 150,
+    },
+    {
+      title: "Closing Date",
+      dataIndex: "closingDate",
+      render: (_, rec) => dateFormatter(rec?.closingDate),
+      sorter: true,
+      dataType: "date",
+      width: 150,
+    },
+    {
       title: () => <span style={{ color: gray600 }}>Approve Installments</span>,
       dataIndex: "approveNumberOfInstallment",
       width: 200,
@@ -356,6 +372,7 @@ export const setSingleLoanApplication = (data, setSingleData, setFileId) => {
     amountPerInstallment: data?.numberOfInstallmentAmount,
     description: data?.description,
     effectiveDate: dateFormatterForInput(data?.effectiveDate),
+    loanClosingDate: dateFormatterForInput(data?.closingDate),
     fileUrl: data?.fileUrl,
     loanApplicationId: data?.loanApplicationId,
     status: data?.applicationStatus,
@@ -393,14 +410,46 @@ export const loanCrudAction = async (
   orgId,
   isDelete = false,
   buId,
-  wgId
+  wgId,
+  tableData
 ) => {
   if (values?.intInterest > 100) {
     toast.warn("Interest can't be greater than 100");
     return;
   }
+
+  let guarantorId = "";
+
+  // Check if values.guarantor exists and is an array
+  const guarantorArray = values?.guarantor;
+
+  if (
+    guarantorArray &&
+    Array.isArray(guarantorArray) &&
+    guarantorArray.length >= 2
+  ) {
+    // If it's an array with at least 2 elements, extract values and join them
+    const id = guarantorArray.map((item) => item?.value);
+    guarantorId = id.join(",");
+  } else {
+    // If values.guarantor is not an array or doesn't have at least 2 elements, show an error
+    return toast.warn("There should be at least 2 Guarantor employees.");
+  }
+
   try {
     setLoading?.(true);
+    const row = tableData?.map((item) => ({
+      loanApplicationId: item?.loanApplicationId || 0,
+      intInterest: item?.intInterest || 0,
+      totalLoanAmount: item?.totalLoanAmount || 0,
+      installmentNumber: item?.intInstallmentNumber || 0,
+      installmentAmount: item?.intInstallmentAmount || 0,
+      strApplicantName: item?.strApplicantName || "",
+      repaymentDate: todayDate(),
+      actualPaymentAmount: item?.intInstallmentAmount || 0,
+      isHold: item?.isHold || false,
+      remark: item?.strRemarks || "",
+    }));
     let payload = {
       partType: isDelete
         ? "LoanDelete"
@@ -412,7 +461,7 @@ export const loanCrudAction = async (
       employeeId: values?.employee?.value || 0,
       loanTypeId: values?.loanType?.value || 0,
       intInterest: +values?.interest || 0,
-      intGurrantor: +values?.guarantor?.value || 0,
+      intGurrantorId: guarantorId || [],
       loanAmount: +values?.loanAmount || 0,
       numberOfInstallment: +values?.installmentNumber || 0,
       numberOfInstallmentAmount: +values?.amountPerInstallment || 0,
@@ -427,6 +476,7 @@ export const loanCrudAction = async (
       approveNumberOfInstallment: 0,
       createdBy: employeeId,
       effectiveDate: values?.effectiveDate || todayDate(),
+      dteLoanClosingDate: values?.loanClosingDate || todayDate(),
       rejectBy: "",
       referenceNo: "",
       isActive: !isDelete,
@@ -444,6 +494,7 @@ export const loanCrudAction = async (
         values?.approveAmountPerInstallment || null,
       businessUnitId: buId,
       workPlaceGrop: wgId,
+      rowList: row,
     };
     const res = await axios.post(`/Employee/LoanCRUD`, payload);
     setLoading?.(false);
@@ -506,3 +557,85 @@ export const LightTooltip = styled(({ className, ...props }) => (
     fontSize: 11,
   },
 }));
+function isValidDate(dateString) {
+  const dateObject = new Date(dateString);
+  return !isNaN(dateObject.getTime());
+}
+
+export const costInputHandler = (
+  name,
+  value,
+  sl,
+  tableData,
+  setTableData,
+  values
+) => {
+  if (value >= 0) {
+    const data = [...tableData];
+    const row = data[sl];
+    row[name] = value;
+    +row.intInstallmentAmount;
+    row.isHold = +row?.intInstallmentAmount === 0 ? false : true;
+
+    setTableData(data);
+  }
+  // else if (isValidDate(value)) {
+  //   const data = [...tableData];
+  //   const row = data[sl];
+  //   row[name] = value;
+
+  //   const repaymentDate = value;
+  //   const dateObject = new Date(repaymentDate);
+
+  //   +row.intInstallmentAmount
+  //   row.isHold = +row?.intInstallmentAmount === 0 ? false : true;
+  //   row.repaymentMonth = dateObject.getMonth() + 1;
+
+  // }
+  else {
+    const data = [...tableData];
+    const row = data[sl];
+    row[name] = "";
+
+    row.intInstallmentAmount = +value.intInstallmentAmount;
+    setTableData(data);
+  }
+};
+
+export const handleAmendmentClick = (tableData, setTableData) => {
+  // Clone the existing tableData
+  const updatedTableData = [...tableData];
+
+  // Create a new data object for the last index
+  const newDataRow = {
+    loanApplicationId: 0,
+    intInterest: 0,
+    totalLoanAmount: 0,
+    intInstallmentNumber: 0,
+    intInstallmentAmount: 10,
+    isHold: true,
+  };
+
+  // Add the new object to the last index
+  updatedTableData.push(newDataRow);
+
+  // Set the state with the updated array
+  setTableData(updatedTableData);
+};
+
+export const handleDeleteClick = (index, tableData, setTableData) => {
+  // Clone the existing tableData array
+  const updatedTableData = [...tableData];
+
+  // Remove the object at the specified index
+  updatedTableData.splice(index, 1);
+
+  // Set the state with the updated array
+  setTableData(updatedTableData);
+};
+
+export const subTotal = (tableData) => {
+  return tableData.reduce(function (a, c) {
+    return a + c?.intInstallmentAmount;
+  }, 0);
+};
