@@ -10,18 +10,20 @@ import { createEditEmpAction, userExistValidation } from "../helper";
 import { submitHandler } from "./helper";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
+import { calculateNextDate } from "utility/dateFormatter";
 
 export default function AddEditForm({
   setIsAddEditForm,
   getData,
   // empBasic,
-  isEdit,
+  isEdit = false,
   singleData,
   pages,
+  isMenuEditPermission = true,
+  isOfficeAdmin = true
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
-
   const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
 
@@ -502,7 +504,8 @@ export default function AddEditForm({
               label="Employee ID"
               placeholder="Employee ID"
               rules={[{ required: true, message: "Employee ID is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isMenuEditPermission || isOfficeAdmin}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -512,7 +515,8 @@ export default function AddEditForm({
               label="Full Name"
               placeholder="Full Name"
               rules={[{ required: true, message: "Full Name is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isMenuEditPermission || isOfficeAdmin}
             />
           </Col>
 
@@ -541,7 +545,8 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Workplace Group is required" },
               ]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isMenuEditPermission || isOfficeAdmin}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -568,7 +573,8 @@ export default function AddEditForm({
                 }
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isMenuEditPermission || isOfficeAdmin}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -585,7 +591,8 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Employment Type is required" },
               ]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isMenuEditPermission || isOfficeAdmin}
             />
           </Col>
 
@@ -597,7 +604,8 @@ export default function AddEditForm({
                 label="Reference ID"
                 placeholder="Reference ID"
                 // rules={[{ required: true, message: "Employee ID is required" }]}
-                disabled={isEdit}
+                // disabled={isEdit}
+                disabled={isMenuEditPermission || isOfficeAdmin}
               />
             </Col>
           )}
@@ -613,7 +621,8 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Religion is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isMenuEditPermission || isOfficeAdmin}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -628,7 +637,8 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Gender is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isMenuEditPermission || isOfficeAdmin}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -648,6 +658,13 @@ export default function AddEditForm({
               label="Joining Date"
               placeholder="Joining Date"
               rules={[{ required: true, message: "Joining Date is required" }]}
+              onChange={(value) => {
+                const next180Days = calculateNextDate(moment(value).format("YYYY-MM-DD"), 180);
+                form.setFieldsValue({
+                  joiningDate: value,
+                  dteProbationaryCloseDate: moment(next180Days),
+                });
+              }}
               // disabled={isEdit}
             />
           </Col>
@@ -826,7 +843,8 @@ export default function AddEditForm({
               rules={[{ required: true, message: "HR Position is required" }]}
             />
           </Col>
-          {isEdit ? (
+          {/* {isEdit ? ( */}
+          {(isMenuEditPermission || isOfficeAdmin) ? (
             <Col md={12} sm={24}>
               <PSelect
                 options={employeeStatusDDL?.data || []}
