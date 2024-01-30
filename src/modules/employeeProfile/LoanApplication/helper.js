@@ -6,6 +6,7 @@ import {
 } from "@mui/icons-material";
 import { Tooltip, styled, tooltipClasses } from "@mui/material";
 import axios from "axios";
+import moment from "moment";
 import { toast } from "react-toastify";
 import Chips from "../../../common/Chips";
 import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
@@ -193,12 +194,12 @@ export const loanRequestLandingTableColumns = (
         return <>{numberWithCommas(amount)}</>;
       },
     },
-    {
-      title: "Guarantor",
-      dataIndex: "GurrantorName",
-      width: 150,
-      filter: true,
-    },
+    // {
+    //   title: "Guarantor",
+    //   dataIndex: "GurrantorName",
+    //   width: 150,
+    //   filter: true,
+    // },
     {
       title: () => <span style={{ color: gray600 }}>Installment Amount</span>,
       dataIndex: "numberOfInstallmentAmount",
@@ -365,7 +366,6 @@ export const getGurantor = async (id, setGurantorDDL) => {
       };
     });
     setGurantorDDL(data)
-    console.log("data", data);
     return data;
   } catch (error) {
     console.log(error);
@@ -465,7 +465,7 @@ export const loanCrudAction = async (
       installmentNumber: item?.intInstallmentNumber || 0,
       installmentAmount: item?.intInstallmentAmount || 0,
       strApplicantName: item?.strApplicantName || "",
-      repaymentDate: todayDate(),
+      repaymentDate: item?.date || todayDate(),
       actualPaymentAmount: item?.intInstallmentAmount || 0,
       isHold: item?.isHold || false,
       remark: item?.strRemarks || "",
@@ -590,12 +590,13 @@ export const costInputHandler = (
   setTableData,
   values
 ) => {
-  if (value >= 0) {
+  if (value) {
     const data = [...tableData];
     const row = data[sl];
     row[name] = value;
     +row.intInstallmentAmount;
     row.isHold = +row?.intInstallmentAmount === 0 ? false : true;
+    row.strRemarks;
 
     setTableData(data);
   }
@@ -603,45 +604,66 @@ export const costInputHandler = (
   //   const data = [...tableData];
   //   const row = data[sl];
   //   row[name] = value;
-
-  //   const repaymentDate = value;
-  //   const dateObject = new Date(repaymentDate);
-
-  //   +row.intInstallmentAmount
+  //   +row.intInstallmentAmount;
   //   row.isHold = +row?.intInstallmentAmount === 0 ? false : true;
-  //   row.repaymentMonth = dateObject.getMonth() + 1;
-
+  //   row.strRemarks;
   // }
   else {
     const data = [...tableData];
     const row = data[sl];
     row[name] = "";
 
-    row.intInstallmentAmount = +value.intInstallmentAmount;
+    +row.intInstallmentAmount;
+    row.isHold = +row?.intInstallmentAmount === 0 ? false : true;
+    row.strRemarks;
+
     setTableData(data);
   }
 };
 
-export const handleAmendmentClick = (tableData, setTableData) => {
+
+
+export const handleAmendmentClick = (tableData, setTableData, item) => {
   // Clone the existing tableData
   const updatedTableData = [...tableData];
 
-  // Create a new data object for the last index
+  // Check if a new row has already been added
+  if (updatedTableData.some(item => item.loanApplicationId === 0)) {
+    // A new row has already been added, do nothing or handle as needed
+    return toast.warn("Already added a row for this month",{ toastId: "toastId" })
+  }
+
+  // Determine the last index
+  const lastIndex = updatedTableData.length - 1;
+
+  // Calculate the new date based on the previous index
+  const previousDate = moment(updatedTableData[lastIndex]?.date);
+  const newDate = previousDate.isValid() ? previousDate.add(1, 'months') : moment();
+
+  // Create a new data object for the last index with the new date
   const newDataRow = {
-    loanApplicationId: 0,
-    intInterest: 0,
-    totalLoanAmount: 0,
-    intInstallmentNumber: 0,
-    intInstallmentAmount: 10,
+    loanApplicationId: item?.loanApplicationId || 0,
+    intInterest: +item?.intInterest || 0,
+    totalLoanAmount: +item?.totalLoanAmount || 0,
+    intInstallmentNumber: +item?.intInstallmentNumber || 0,
+    intInstallmentAmount: +item?.intInstallmentAmount || 0,
+    strApplicantName: item?.strApplicantName || "",
+    inMonth: new Date().getMonth() + 1,
+    intYear: new Date().getFullYear(),
+    intActualPaymentAmount: null,
+    strRemarks: item?.strRemarks || "",
     isHold: true,
+    date: newDate.format("YYYY-MM"),
   };
 
   // Add the new object to the last index
   updatedTableData.push(newDataRow);
-
+  console.log("updatedTableData",updatedTableData)
   // Set the state with the updated array
   setTableData(updatedTableData);
 };
+
+
 
 export const handleDeleteClick = (index, tableData, setTableData) => {
   // Clone the existing tableData array
