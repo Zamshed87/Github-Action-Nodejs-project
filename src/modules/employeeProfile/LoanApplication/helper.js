@@ -353,6 +353,25 @@ export const loanRequestLandingTableColumns = (
   ];
 };
 
+export const getGurantor = async (id, setGurantorDDL) => {
+  try {
+    const res = await axios.get(`/Employee/GurrantorListByLoanId?loanId=${id}`);
+
+    const data = res?.data?.gurrantors?.map((item) => {
+      return {
+        ...item,
+        value: item?.gurrantorId,
+        label: item?.strGurrantorName,
+      };
+    });
+    setGurantorDDL(data)
+    console.log("data", data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const setSingleLoanApplication = (data, setSingleData, setFileId) => {
   setSingleData({
     employee: {
@@ -383,13 +402,14 @@ export const setSingleLoanApplication = (data, setSingleData, setFileId) => {
       data?.approveNumberOfInstallmentAmount || data?.numberOfInstallmentAmount,
     intCreatedBy: data?.intCreatedBy,
     // new requirment payload -- 2023-12-03
-    guarantor:
-      data?.GurrantorName && data?.GurrantorId
-        ? {
-            label: data?.GurrantorName,
-            value: data?.GurrantorId,
-          }
-        : "",
+    // guarantor:
+    //   data?.GurrantorName && data?.GurrantorId
+    //     ? {
+    //         label: data?.GurrantorName,
+    //         value: data?.GurrantorId,
+    //       }
+    //     : "",
+    guarantor: [],
     interest: data?.intInterest || 0,
     totalwithinterest: data?.intInterest
       ? (
