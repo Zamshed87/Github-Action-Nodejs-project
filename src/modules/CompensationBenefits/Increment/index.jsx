@@ -178,101 +178,6 @@ function IncrementLanding() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const incrementColumn = (page, paginationSize) => {
-  //   return [
-  //     {
-  //       title: "SL",
-  //       render: (text, record, index) =>
-  //         (page - 1) * paginationSize + index + 1,
-  //       sorter: false,
-  //       filter: false,
-  //       className: "text-center",
-  //     },
-  //     {
-  //       title: "Employee Name",
-  //       dataIndex: "strEmployeeName",
-  //       render: (_, record) => {
-  //         return (
-  //           <div className="d-flex align-items-center">
-  //             <AvatarComponent
-  //               classess=""
-  //               letterCount={1}
-  //               label={record?.strEmployeeName}
-  //             />
-  //             <span className="ml-2">{record?.strEmployeeName}</span>
-  //           </div>
-  //         );
-  //       },
-  //       sorter: true,
-  //       filter: true,
-  //     },
-  //     {
-  //       title: "Type",
-  //       dataIndex: "strEmploymentType",
-  //       sorter: true,
-  //       filter: true,
-  //     },
-  //     {
-  //       title: "Designation",
-  //       dataIndex: "strDesignation",
-  //       sorter: true,
-  //       filter: true,
-  //     },
-  //     {
-  //       title: "Department",
-  //       dataIndex: "strDepartment",
-  //       sorter: true,
-  //       filter: true,
-  //     },
-  //     {
-  //       title: "Depend On",
-  //       dataIndex: "strIncrementDependOn",
-  //       sorter: true,
-  //       filter: true,
-  //     },
-  //     {
-  //       title: "Increment Percentage/Amount",
-  //       dataIndex: "numIncrementPercentageOrAmount",
-  //       sorter: true,
-  //       filter: true,
-  //     },
-  //     {
-  //       title: "Effective Data",
-  //       dataIndex: "dteEffectiveDate",
-  //       render: (dteEffectiveDate) => dateFormatter(dteEffectiveDate),
-  //       sorter: false,
-  //       filter: false,
-  //     },
-  //     {
-  //       title: "Status",
-  //       dataIndex: "strStatus",
-  //       sorter: true,
-  //       filter: true,
-  //       render: (_, item) => {
-  //         return (
-  //           <div className="tableBody-title">
-  //             {item?.strStatus === "Approved" && (
-  //               <Chips label="Approved" classess="success" />
-  //             )}
-  //             {item?.strStatus === "Approved By Admin" && (
-  //               <Chips label="Approved" classess="success" />
-  //             )}
-  //             {item?.strStatus === "Pending" && (
-  //               <Chips label="Pending" classess="warning" />
-  //             )}
-  //             {item?.strStatus === "Rejected" && (
-  //               <Chips label="Rejected" classess="danger" />
-  //             )}
-  //             {item?.strStatus === "Reject By Admin" && (
-  //               <Chips label="Rejected" classess="danger" />
-  //             )}
-  //           </div>
-  //         );
-  //       },
-  //     },
-  //   ];
-  // };
-
   return (
     <>
       {loading && <Loading />}
@@ -461,7 +366,9 @@ function IncrementLanding() {
                             setRowDto,
                             setAllData,
                             setLoading,
-                            values
+                            values,
+                            pages,
+                            setPages
                           );
                         }}
                       >
@@ -493,7 +400,8 @@ function IncrementLanding() {
                   <PeopleDeskTable
                     columnData={incrementColumnData(
                       pages?.current,
-                      pages?.pageSize
+                      pages?.pageSize,
+                      history
                     )}
                     pages={pages}
                     rowDto={rowDto}

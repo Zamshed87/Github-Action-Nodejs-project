@@ -7,7 +7,7 @@ import {
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -114,11 +114,11 @@ function CreateSingleIncrement() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
+  console.log({ state });
   const modifiedData = {
     employee: {
       value: state?.singleData?.incrementList?.[0]?.intEmployeeId,
@@ -162,16 +162,16 @@ function CreateSingleIncrement() {
     role: state?.singleData?.transferPromotionObj
       ?.empTransferNpromotionUserRoleVMList
       ? state?.singleData?.transferPromotionObj?.empTransferNpromotionUserRoleVMList.map(
-        (item) => {
-          return {
-            intTransferNpromotionUserRoleId:
-              item?.intTransferNpromotionUserRoleId,
-            intTransferNpromotionId: item?.intTransferNpromotionId,
-            value: item?.intUserRoleId,
-            label: item?.strUserRoleName,
-          };
-        }
-      )
+          (item) => {
+            return {
+              intTransferNpromotionUserRoleId:
+                item?.intTransferNpromotionUserRoleId,
+              intTransferNpromotionId: item?.intTransferNpromotionId,
+              value: item?.intUserRoleId,
+              label: item?.strUserRoleName,
+            };
+          }
+        )
       : [],
     remarks: state?.singleData?.transferPromotionObj?.strRemarks,
     isRoleExtension: state?.singleData?.transferPromotionObj
@@ -232,7 +232,7 @@ function CreateSingleIncrement() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnitWorkplaceGroupId=0&intId=${employeeId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
@@ -356,7 +356,7 @@ function CreateSingleIncrement() {
           intTransferNpromotionId: !id
             ? 0
             : state?.singleData?.transferPromotionObj
-              ?.intTransferNpromotionId || 0,
+                ?.intTransferNpromotionId || 0,
           intUserRoleId: item?.value,
           strUserRoleName: item?.label,
         };
@@ -370,7 +370,7 @@ function CreateSingleIncrement() {
           intTransferNpromotionId: !id
             ? 0
             : state?.singleData?.transferPromotionObj
-              ?.intTransferNpromotionId || 0,
+                ?.intTransferNpromotionId || 0,
           intEmployeeId: values?.employee?.value,
           intOrganizationTypeId: item?.intOrganizationTypeId,
           strOrganizationTypeName: item?.strOrganizationTypeName,
@@ -438,10 +438,10 @@ function CreateSingleIncrement() {
       history.push("/compensationAndBenefits/increment");
     };
 
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `${values?.employee?.label} is eligable for promote, Do you want to promote?`,
-      yesAlertFunc: () => { },
+      yesAlertFunc: () => {},
       noAlertFunc: () => {
         addEditIncrementAndPromotion(payload, callBack, setLoading);
       },
@@ -457,7 +457,7 @@ function CreateSingleIncrement() {
       } else {
         addEditIncrementAndPromotion(payload, callBack, setLoading);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   return (
@@ -856,12 +856,22 @@ function CreateSingleIncrement() {
                             "DepartmentName",
                             setDepartmentDDL
                           );
-                          getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${valueOption?.value}`,
-                            "DesignationId",
-                            "DesignationName",
-                            setDesignationDDL
-                          );
+                          // getPeopleDeskAllDDL(
+                          //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${valueOption?.value}`,
+                          //   "DesignationId",
+                          //   "DesignationName",
+                          //   setDesignationDDL
+                          // );
+                          // getPeopleDeskAllDDL(
+                          //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
+                          //     valueOption?.value
+                          //   }&WorkplaceGroupId=${
+                          //     wgId || values?.workplaceGroup?.value
+                          //   }&intWorkplaceId=${wId || 0}`,
+                          //   "DesignationId",
+                          //   "DesignationName",
+                          //   setDesignationDDL
+                          // );
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${valueOption?.value}`,
                             "EmployeeId",
@@ -934,6 +944,26 @@ function CreateSingleIncrement() {
                             supervisor: "",
                             lineManager: "",
                           }));
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
+                              values?.businessUnit?.value
+                            }&WorkplaceGroupId=${
+                              values?.workplaceGroup?.value || wgId
+                            }&intWorkplaceId=${valueOption?.value || 0}`,
+                            "DepartmentId",
+                            "DepartmentName",
+                            setDepartmentDDL
+                          );
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
+                              values?.businessUnit?.value
+                            }&WorkplaceGroupId=${
+                              values?.workplaceGroup?.value
+                            }&intWorkplaceId=${valueOption?.value || 0}`,
+                            "DesignationId",
+                            "DesignationName",
+                            setDesignationDDL
+                          );
                         }}
                         placeholder=""
                         styles={customStyles}
@@ -995,42 +1025,48 @@ function CreateSingleIncrement() {
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Supervisor</label>
-                      <FormikSelect
-                        name="supervisor"
-                        placeholder=""
-                        options={supNLineManagerDDL || []}
-                        value={values?.supervisor}
-                        onChange={(valueOption) => {
+                      <AsyncFormikSelect
+                        selectedValue={values?.supervisor}
+                        isSearchIcon={true}
+                        handleChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
                             supervisor: valueOption,
                           }));
                         }}
-                        styles={customStyles}
-                        errors={errors}
-                        touched={touched}
-                        isDisabled={!values?.businessUnit}
+                        placeholder="Search (min 3 letter)"
+                        loadOptions={(v) =>
+                          getSearchEmployeeList(
+                            buId,
+                            values?.workplaceGroup?.value || 0,
+                            v
+                          )
+                        }
+                        isDisabled={!values?.workplaceGroup}
                       />
                     </div>
                   </div>
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Line Manager</label>
-                      <FormikSelect
-                        name="lineManager"
-                        placeholder=""
-                        options={supNLineManagerDDL || []}
-                        value={values?.lineManager}
-                        onChange={(valueOption) => {
+                      <AsyncFormikSelect
+                        selectedValue={values?.lineManager}
+                        isSearchIcon={true}
+                        handleChange={(valueOption) => {
                           setValues((prev) => ({
                             ...prev,
                             lineManager: valueOption,
                           }));
                         }}
-                        styles={customStyles}
-                        errors={errors}
-                        touched={touched}
-                        isDisabled={!values?.businessUnit}
+                        placeholder="Search (min 3 letter)"
+                        loadOptions={(v) =>
+                          getSearchEmployeeList(
+                            buId,
+                            values?.workplaceGroup?.value || 0,
+                            v
+                          )
+                        }
+                        isDisabled={!values?.workplaceGroup}
                       />
                     </div>
                   </div>
@@ -1134,7 +1170,7 @@ function CreateSingleIncrement() {
                                 getDownlloadFileView_Action(
                                   id && !fileId?.globalFileUrlId
                                     ? state?.singleData?.transferPromotionObj
-                                      ?.intAttachementId
+                                        ?.intAttachementId
                                     : fileId?.globalFileUrlId
                                 )
                               );
@@ -1149,7 +1185,7 @@ function CreateSingleIncrement() {
                       className={fileId ? " mt-0 " : "mt-3"}
                       onClick={onButtonClick}
                       style={{ cursor: "pointer" }}
-                    // style={{ cursor: "pointer", position: "relative" }}
+                      // style={{ cursor: "pointer", position: "relative" }}
                     >
                       <input
                         onChange={(e) => {
@@ -1313,12 +1349,12 @@ function CreateSingleIncrement() {
                           style={{ marginTop: "23px" }}
                           type="button"
                           onClick={() => {
-                            let roleExist = rowDto?.some(
+                            const roleExist = rowDto?.some(
                               (item) =>
                                 item?.intOrganizationTypeId ===
-                                values?.orgType?.value &&
+                                  values?.orgType?.value &&
                                 item?.intOrganizationReffId ===
-                                values?.orgName?.value
+                                  values?.orgName?.value
                             );
 
                             if (roleExist)

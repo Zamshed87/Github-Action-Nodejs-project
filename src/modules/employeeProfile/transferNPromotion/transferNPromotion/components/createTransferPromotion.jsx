@@ -6,18 +6,12 @@ import {
 } from "@mui/icons-material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useFormik } from "formik";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import {
-  attachment_action,
-  getPeopleDeskAllDDL,
-  getPeopleDeskWithoutAllDDL,
-  getSearchEmployeeList,
-  PeopleDeskSaasDDL,
-} from "../../../../../common/api";
+import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
 import BackButton from "../../../../../common/BackButton";
 import DefaultInput from "../../../../../common/DefaultInput";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
@@ -26,6 +20,13 @@ import NoResult from "../../../../../common/NoResult";
 import PrimaryButton from "../../../../../common/PrimaryButton";
 import ResetButton from "../../../../../common/ResetButton";
 import SortingIcon from "../../../../../common/SortingIcon";
+import {
+  PeopleDeskSaasDDL,
+  attachment_action,
+  getPeopleDeskAllDDL,
+  getPeopleDeskWithoutAllDDL,
+  getSearchEmployeeList,
+} from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { setFirstLevelNameAction } from "../../../../../commonRedux/reduxForLocalStorage/actions";
 import {
@@ -50,7 +51,6 @@ import {
 } from "../helper";
 import "../styles.css";
 import HistoryTransferTable from "./HistoryTransferTable";
-import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
 
 const initialValues = {
   employee: "",
@@ -891,7 +891,7 @@ function CreateTransferPromotion() {
                       }));
                       getPeopleDeskAllDDL(
                         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
-                          valueOption?.value
+                          values?.businessUnit?.value
                         }&WorkplaceGroupId=${
                           values?.workplaceGroup?.value || wgId
                         }&intWorkplaceId=${valueOption?.value || 0}`,
