@@ -16,6 +16,7 @@ import {
   getPeopleDeskAllDDL,
   getPeopleDeskWithoutAllDDL,
   getSearchEmployeeList,
+  getSearchEmployeeListNew,
   PeopleDeskSaasDDL,
 } from "../../../../../common/api";
 import BackButton from "../../../../../common/BackButton";
@@ -159,7 +160,7 @@ function CreateTransferPromotion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -1172,9 +1173,9 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeList(
+                      getSearchEmployeeListNew(
                         buId,
-                        values?.workplaceGroup?.value || 0,
+                        intAccountId,
                         v
                       )
                     }
@@ -1196,9 +1197,9 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeList(
+                      getSearchEmployeeListNew(
                         buId,
-                        values?.workplaceGroup?.value || 0,
+                        intAccountId,
                         v
                       )
                     }

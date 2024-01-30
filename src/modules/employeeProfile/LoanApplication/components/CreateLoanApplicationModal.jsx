@@ -25,6 +25,7 @@ import { attachment_action } from "../../../policyUpload/helper";
 import "../application.css";
 import {
   costInputHandler,
+  getGurantor,
   handleAmendmentClick,
   handleDeleteClick,
   loanCrudAction,
@@ -99,11 +100,24 @@ const CreateLoanApplicationModal = ({
   const [loading, setLoading] = useState(false);
   const [employeeDDL, setEmployeeDDL] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [guarantorDDL, setGuarantorDDL] = useState([]);
+
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (singleData?.loanApplicationId) {
+      getGurantor(singleData?.loanApplicationId, setGuarantorDDL);
+      setSingleData({ ...singleData, guarantor: guarantorDDL });
+    }
+
+  }, [tableData]);
+
+  console.log("guarantorDDL", guarantorDDL);
+  console.log("singleData", singleData);
 
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -220,22 +234,6 @@ const CreateLoanApplicationModal = ({
 
   const onButtonClick = () => {
     inputFile.current.click();
-  };
-
-  const [loadings, setLoadings] = useState([]);
-  const enterLoading = (index) => {
-    setLoadings((prevLoadings) => {
-      const newLoadings = [...prevLoadings];
-      newLoadings[index] = true;
-      return newLoadings;
-    });
-    setTimeout(() => {
-      setLoadings((prevLoadings) => {
-        const newLoadings = [...prevLoadings];
-        newLoadings[index] = false;
-        return newLoadings;
-      });
-    }, 500);
   };
 
   return (
