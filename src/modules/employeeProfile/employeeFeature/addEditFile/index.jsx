@@ -505,7 +505,7 @@ export default function AddEditForm({
               placeholder="Employee ID"
               rules={[{ required: true, message: "Employee ID is required" }]}
               // disabled={isEdit}
-              disabled={isMenuEditPermission || isOfficeAdmin}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -516,7 +516,7 @@ export default function AddEditForm({
               placeholder="Full Name"
               rules={[{ required: true, message: "Full Name is required" }]}
               // disabled={isEdit}
-              disabled={isMenuEditPermission || isOfficeAdmin}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
 
@@ -546,7 +546,7 @@ export default function AddEditForm({
                 { required: true, message: "Workplace Group is required" },
               ]}
               // disabled={isEdit}
-              disabled={isMenuEditPermission || isOfficeAdmin}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -574,7 +574,7 @@ export default function AddEditForm({
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
               // disabled={isEdit}
-              disabled={isMenuEditPermission || isOfficeAdmin}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -592,7 +592,7 @@ export default function AddEditForm({
                 { required: true, message: "Employment Type is required" },
               ]}
               // disabled={isEdit}
-              disabled={isMenuEditPermission || isOfficeAdmin}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
 
@@ -605,7 +605,7 @@ export default function AddEditForm({
                 placeholder="Reference ID"
                 // rules={[{ required: true, message: "Employee ID is required" }]}
                 // disabled={isEdit}
-                disabled={isMenuEditPermission || isOfficeAdmin}
+                disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
               />
             </Col>
           )}
@@ -622,7 +622,7 @@ export default function AddEditForm({
               }}
               rules={[{ required: true, message: "Religion is required" }]}
               // disabled={isEdit}
-              disabled={isMenuEditPermission || isOfficeAdmin}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -638,7 +638,7 @@ export default function AddEditForm({
               }}
               rules={[{ required: true, message: "Gender is required" }]}
               // disabled={isEdit}
-              disabled={isMenuEditPermission || isOfficeAdmin}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -844,7 +844,7 @@ export default function AddEditForm({
             />
           </Col>
           {/* {isEdit ? ( */}
-          {(isMenuEditPermission || isOfficeAdmin) ? (
+          {isEdit && (isMenuEditPermission || isOfficeAdmin) ? (
             <Col md={12} sm={24}>
               <PSelect
                 options={employeeStatusDDL?.data || []}
