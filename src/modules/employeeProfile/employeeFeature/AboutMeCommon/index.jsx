@@ -86,7 +86,7 @@ function AboutMeDetails() {
               >
                 <BackButton title={"Employee Details"} />
                 <div>
-                  {isOfficeAdmin && (
+                  {(isOfficeAdmin || employeeFeature?.isEdit) && (
                     <Button
                       onClick={() => {
                         history.push(
@@ -134,9 +134,9 @@ function AboutMeDetails() {
               editBtnHandler={() => {
                 setIsAddEditForm(true);
               }}
-              isOfficeAdmin={isOfficeAdmin}
+              isOfficeAdmin={isOfficeAdmin || employeeFeature?.isEdit}
             />
-            {isOfficeAdmin && (
+            {(isOfficeAdmin || employeeFeature?.isEdit) && (
               <>
                 <div className="bankDetailsCard about-info-card pb-0">
                   <div className="about-info-card-heading">
@@ -164,7 +164,7 @@ function AboutMeDetails() {
                 setBankData,
                 bankData,
                 getEmpData,
-                isOfficeAdmin,
+                isOfficeAdmin: employeeFeature?.isEdit || isOfficeAdmin,
               }}
               editBtnHandler={() => {
                 setBankData("create");
@@ -414,6 +414,8 @@ function AboutMeDetails() {
         components={
           <AddEditForm
             isEdit={true}
+            isMenuEditPermission={!employeeFeature?.isEdit}
+            isOfficeAdmin={!isOfficeAdmin}
             singleData={{
               empId:
                 empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
