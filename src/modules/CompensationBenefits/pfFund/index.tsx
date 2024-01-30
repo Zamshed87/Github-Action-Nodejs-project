@@ -196,12 +196,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
               {
                 type: "reload",
                 onClick: () => {},
-                prompt: "Refund",
-              },
-              {
-                type: "dollar",
-                onClick: () => {},
-                prompt: "Earning",
+                prompt: "Refund/Earning",
               },
             ]}
           />
