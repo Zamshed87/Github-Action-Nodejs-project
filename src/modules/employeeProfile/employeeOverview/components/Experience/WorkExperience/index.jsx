@@ -57,7 +57,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -364,26 +364,28 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
               {loading && <Loading />}
               <div>
                 <h5>Work Experience</h5>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ marginBottom: "25px", cursor: "pointer" }}
-                  onClick={() => {
-                    setStatus("input");
-                    setIsCreateForm(true);
-                  }}
-                >
+                {isOfficeAdmin && (
                   <div
-                    className="item"
-                    style={{ position: "relative", top: "-3px" }}
+                    className="d-flex align-items-center"
+                    style={{ marginBottom: "25px", cursor: "pointer" }}
+                    onClick={() => {
+                      setStatus("input");
+                      setIsCreateForm(true);
+                    }}
                   >
-                    <ControlPoint
-                      sx={{ color: success500, fontSize: "16px" }}
-                    />
+                    <div
+                      className="item"
+                      style={{ position: "relative", top: "-3px" }}
+                    >
+                      <ControlPoint
+                        sx={{ color: success500, fontSize: "16px" }}
+                      />
+                    </div>
+                    <div className="item">
+                      <p>Add your work experience</p>
+                    </div>
                   </div>
-                  <div className="item">
-                    <p>Add your work experience</p>
-                  </div>
-                </div>
+                )}
               </div>
               {isCreateForm ? (
                 <>
@@ -567,45 +569,47 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                           )}
                         </div>
 
-                        <div
-                          className="d-flex align-items-center justify-content-end"
-                          style={{ marginTop: "24px" }}
-                        >
-                          <button
-                            type="button"
-                            variant="text"
-                            className="btn btn-cancel"
-                            style={{ marginRight: "16px" }}
-                            onClick={() => {
-                              setStatus("empty");
-                              setSingleData("");
-                              setIsCreateForm(false);
-                              setFieldValue("companyName", "");
-                              setFieldValue("jobTitle", "");
-                              setFieldValue("location", "");
-                              setFieldValue("jobDescription", "");
-                              setImageFile("");
-                            }}
+                        {isOfficeAdmin && (
+                          <div
+                            className="d-flex align-items-center justify-content-end"
+                            style={{ marginTop: "24px" }}
                           >
-                            Cancel
-                          </button>
+                            <button
+                              type="button"
+                              variant="text"
+                              className="btn btn-cancel"
+                              style={{ marginRight: "16px" }}
+                              onClick={() => {
+                                setStatus("empty");
+                                setSingleData("");
+                                setIsCreateForm(false);
+                                setFieldValue("companyName", "");
+                                setFieldValue("jobTitle", "");
+                                setFieldValue("location", "");
+                                setFieldValue("jobDescription", "");
+                                setImageFile("");
+                              }}
+                            >
+                              Cancel
+                            </button>
 
-                          <button
-                            variant="text"
-                            type="submit"
-                            className="btn btn-green btn-green-disable"
-                            disabled={
-                              !values.companyName ||
-                              !values.jobTitle ||
-                              !values.location ||
-                              !values.jobDescription ||
-                              !values?.fromDate ||
-                              !values?.toDate
-                            }
-                          >
-                            Save
-                          </button>
-                        </div>
+                            <button
+                              variant="text"
+                              type="submit"
+                              className="btn btn-green btn-green-disable"
+                              disabled={
+                                !values.companyName ||
+                                !values.jobTitle ||
+                                !values.location ||
+                                !values.jobDescription ||
+                                !values?.fromDate ||
+                                !values?.toDate
+                              }
+                            >
+                              Save
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </>
                   )}
@@ -659,62 +663,65 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     </div>
                                   )}
                                 </div>
-                                <div className="col-lg-1">
-                                  <ActionMenu
-                                    color={gray900}
-                                    fontSize={"18px"}
-                                    options={[
-                                      {
-                                        value: 1,
-                                        label: "Edit",
-                                        icon: (
-                                          <ModeEditOutlined
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          setStatus("input");
-                                          setIsCreateForm(true);
-                                          setSingleData({
-                                            companyName: item?.strCompanyName,
-                                            jobTitle: item?.strJobTitle,
-                                            location: item?.strLocation,
-                                            jobDescription:
-                                              item?.strDescription,
-                                            fromDate: item?.dteFromDate,
-                                            toDate: item?.dteToDate,
-                                            intJobExperienceId:
+                                {isOfficeAdmin && (
+                                  <div className="col-lg-1">
+                                    <ActionMenu
+                                      color={gray900}
+                                      fontSize={"18px"}
+                                      options={[
+                                        {
+                                          value: 1,
+                                          label: "Edit",
+                                          icon: (
+                                            <ModeEditOutlined
+                                              sx={{
+                                                marginRight: "10px",
+                                                fontSize: "16px",
+                                              }}
+                                            />
+                                          ),
+                                          onClick: () => {
+                                            setStatus("input");
+                                            setIsCreateForm(true);
+                                            setSingleData({
+                                              companyName: item?.strCompanyName,
+                                              jobTitle: item?.strJobTitle,
+                                              location: item?.strLocation,
+                                              jobDescription:
+                                                item?.strDescription,
+                                              fromDate: item?.dteFromDate,
+                                              toDate: item?.dteToDate,
+                                              intJobExperienceId:
+                                                item?.intJobExperienceId,
+                                            });
+                                            setImageFile({
+                                              globalFileUrlId:
+                                                item?.intNocUrlId,
+                                            });
+                                          },
+                                        },
+                                        {
+                                          value: 2,
+                                          label: "Delete",
+                                          icon: (
+                                            <DeleteOutline
+                                              sx={{
+                                                marginRight: "10px",
+                                                fontSize: "16px",
+                                              }}
+                                            />
+                                          ),
+                                          onClick: () => {
+                                            deleteHandler(
                                               item?.intJobExperienceId,
-                                          });
-                                          setImageFile({
-                                            globalFileUrlId: item?.intNocUrlId,
-                                          });
+                                              item
+                                            );
+                                          },
                                         },
-                                      },
-                                      {
-                                        value: 2,
-                                        label: "Delete",
-                                        icon: (
-                                          <DeleteOutline
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          deleteHandler(
-                                            item?.intJobExperienceId,
-                                            item
-                                          );
-                                        },
-                                      },
-                                    ]}
-                                  />
-                                </div>
+                                      ]}
+                                    />
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </>

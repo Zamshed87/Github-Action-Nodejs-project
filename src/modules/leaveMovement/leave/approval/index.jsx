@@ -640,7 +640,7 @@ export default function LeaveApproval() {
                   <Chips label="Pending" classess=" warning" />
                 </div>
                 <div className="d-flex actionIcon justify-content-center">
-                  {isOfficeAdmin ? (
+                  {/* {isOfficeAdmin ? (
                     <Tooltip title="Edit" arrow>
                       <div
                         className="muiIconHover success "
@@ -656,7 +656,7 @@ export default function LeaveApproval() {
                         />
                       </div>
                     </Tooltip>
-                  ) : null}
+                  ) : null} */}
                   <Tooltip title="Approve">
                     <div
                       className="mx-2 muiIconHover success "
