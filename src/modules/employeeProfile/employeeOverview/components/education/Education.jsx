@@ -84,7 +84,7 @@ function Education({
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -372,9 +372,9 @@ function Education({
             instituteName: singleData ? singleData?.instituteName : "",
             degree: singleData?.degree?.value
               ? {
-                value: singleData?.degree?.value,
-                label: singleData?.degree?.label,
-              }
+                  value: singleData?.degree?.value,
+                  label: singleData?.degree?.label,
+                }
               : "",
             fieldOfStudy: singleData ? singleData?.fieldOfStudy : "",
             cgpa: singleData ? singleData?.cgpa : "",
@@ -409,23 +409,25 @@ function Education({
                   <div className="education check">
                     <div>
                       <h5>Education</h5>
-                      <div
-                        className="d-flex align-items-center"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          setStatus("input");
-                          setIsCreateForm(true);
-                        }}
-                      >
-                        <div className="item">
-                          <ControlPoint
-                            sx={{ color: success500, fontSize: "16px" }}
-                          />
+                      {isOfficeAdmin && (
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setStatus("input");
+                            setIsCreateForm(true);
+                          }}
+                        >
+                          <div className="item">
+                            <ControlPoint
+                              sx={{ color: success500, fontSize: "16px" }}
+                            />
+                          </div>
+                          <div className="item">
+                            <p>Add your education</p>
+                          </div>
                         </div>
-                        <div className="item">
-                          <p>Add your education</p>
-                        </div>
-                      </div>
+                      )}
                     </div>
                     {isCreateForm ? (
                       <>
@@ -636,46 +638,48 @@ function Education({
                                 )}
                               </div>
 
-                              <div
-                                className="d-flex align-items-center justify-content-end"
-                                style={{ marginTop: "24px" }}
-                              >
-                                <button
-                                  type="button"
-                                  variant="text"
-                                  className="btn btn-cancel"
-                                  style={{ marginRight: "16px" }}
-                                  onClick={() => {
-                                    setStatus("empty");
-                                    setSingleData("");
-                                    setIsCreateForm(false);
-                                    setFieldValue("instituteName", "");
-                                    setFieldValue("degree", "");
-                                    setFieldValue("fieldOfStudy", "");
-                                    setFieldValue("cgpa", "");
-                                    setFieldValue("outOf", "");
-                                    setImageFile("");
-                                  }}
+                              {isOfficeAdmin && (
+                                <div
+                                  className="d-flex align-items-center justify-content-end"
+                                  style={{ marginTop: "24px" }}
                                 >
-                                  Cancel
-                                </button>
+                                  <button
+                                    type="button"
+                                    variant="text"
+                                    className="btn btn-cancel"
+                                    style={{ marginRight: "16px" }}
+                                    onClick={() => {
+                                      setStatus("empty");
+                                      setSingleData("");
+                                      setIsCreateForm(false);
+                                      setFieldValue("instituteName", "");
+                                      setFieldValue("degree", "");
+                                      setFieldValue("fieldOfStudy", "");
+                                      setFieldValue("cgpa", "");
+                                      setFieldValue("outOf", "");
+                                      setImageFile("");
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
 
-                                <button
-                                  variant="text"
-                                  type="submit"
-                                  className="btn btn-green btn-green-disable"
-                                  disabled={
-                                    !values.instituteName ||
-                                    !values.degree ||
-                                    !values.fieldOfStudy ||
-                                    !values.cgpa ||
-                                    !values?.fromDate ||
-                                    !values?.toDate
-                                  }
-                                >
-                                  Save
-                                </button>
-                              </div>
+                                  <button
+                                    variant="text"
+                                    type="submit"
+                                    className="btn btn-green btn-green-disable"
+                                    disabled={
+                                      !values.instituteName ||
+                                      !values.degree ||
+                                      !values.fieldOfStudy ||
+                                      !values.cgpa ||
+                                      !values?.fromDate ||
+                                      !values?.toDate
+                                    }
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </>
                         )}
@@ -719,82 +723,85 @@ function Education({
                                           </small>
                                           {item?.intCertificateFileUrlId >
                                             0 && (
-                                              <div className="common-slider">
-                                                <div
-                                                  className="slider-main"
-                                                  style={{ height: "auto" }}
-                                                >
-                                                  <NocSlider item={item} />
-                                                </div>
+                                            <div className="common-slider">
+                                              <div
+                                                className="slider-main"
+                                                style={{ height: "auto" }}
+                                              >
+                                                <NocSlider item={item} />
                                               </div>
-                                            )}
+                                            </div>
+                                          )}
                                         </div>
-                                        <div className="col-lg-1">
-                                          <ActionMenu
-                                            color={gray900}
-                                            fontSize={"18px"}
-                                            options={[
-                                              {
-                                                value: 1,
-                                                label: "Edit",
-                                                icon: (
-                                                  <ModeEditOutlined
-                                                    sx={{
-                                                      marginRight: "10px",
-                                                      fontSize: "16px",
-                                                    }}
-                                                  />
-                                                ),
-                                                onClick: () => {
-                                                  setStatus("input");
-                                                  setIsCreateForm(true);
-                                                  setSingleData({
-                                                    isForeign: item?.isForeign,
-                                                    instituteName:
-                                                      item?.strInstituteName,
-                                                    degree: {
-                                                      value:
-                                                        item?.intEducationDegreeId,
-                                                      label:
-                                                        item?.strEducationDegree,
-                                                    },
-                                                    fieldOfStudy:
-                                                      item?.strEducationFieldOfStudy,
-                                                    cgpa: item?.strCgpa,
-                                                    outOf: item?.strOutOf,
-                                                    fromDate:
-                                                      item?.dteStartDate,
-                                                    toDate: item?.dteEndDate,
-                                                    intEmployeeEducationId:
+                                        {isOfficeAdmin && (
+                                          <div className="col-lg-1">
+                                            <ActionMenu
+                                              color={gray900}
+                                              fontSize={"18px"}
+                                              options={[
+                                                {
+                                                  value: 1,
+                                                  label: "Edit",
+                                                  icon: (
+                                                    <ModeEditOutlined
+                                                      sx={{
+                                                        marginRight: "10px",
+                                                        fontSize: "16px",
+                                                      }}
+                                                    />
+                                                  ),
+                                                  onClick: () => {
+                                                    setStatus("input");
+                                                    setIsCreateForm(true);
+                                                    setSingleData({
+                                                      isForeign:
+                                                        item?.isForeign,
+                                                      instituteName:
+                                                        item?.strInstituteName,
+                                                      degree: {
+                                                        value:
+                                                          item?.intEducationDegreeId,
+                                                        label:
+                                                          item?.strEducationDegree,
+                                                      },
+                                                      fieldOfStudy:
+                                                        item?.strEducationFieldOfStudy,
+                                                      cgpa: item?.strCgpa,
+                                                      outOf: item?.strOutOf,
+                                                      fromDate:
+                                                        item?.dteStartDate,
+                                                      toDate: item?.dteEndDate,
+                                                      intEmployeeEducationId:
+                                                        item?.intEmployeeEducationId,
+                                                    });
+                                                    setImageFile({
+                                                      globalFileUrlId:
+                                                        item?.intCertificateFileUrlId,
+                                                    });
+                                                  },
+                                                },
+                                                {
+                                                  value: 2,
+                                                  label: "Delete",
+                                                  icon: (
+                                                    <DeleteOutline
+                                                      sx={{
+                                                        marginRight: "10px",
+                                                        fontSize: "16px",
+                                                      }}
+                                                    />
+                                                  ),
+                                                  onClick: () => {
+                                                    deleteHandler(
                                                       item?.intEmployeeEducationId,
-                                                  });
-                                                  setImageFile({
-                                                    globalFileUrlId:
-                                                      item?.intCertificateFileUrlId,
-                                                  });
+                                                      item
+                                                    );
+                                                  },
                                                 },
-                                              },
-                                              {
-                                                value: 2,
-                                                label: "Delete",
-                                                icon: (
-                                                  <DeleteOutline
-                                                    sx={{
-                                                      marginRight: "10px",
-                                                      fontSize: "16px",
-                                                    }}
-                                                  />
-                                                ),
-                                                onClick: () => {
-                                                  deleteHandler(
-                                                    item?.intEmployeeEducationId,
-                                                    item
-                                                  );
-                                                },
-                                              },
-                                            ]}
-                                          />
-                                        </div>
+                                              ]}
+                                            />
+                                          </div>
+                                        )}
                                       </div>
                                     </div>
                                   );
