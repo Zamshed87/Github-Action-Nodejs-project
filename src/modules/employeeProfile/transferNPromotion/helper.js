@@ -23,7 +23,7 @@ export const getAllTransferAndPromotionLanding = async (
 
   fromDate &&
     toDate &&
-    (apiUrl += `dteFromDate=${fromDate}&dteToDate=${toDate}`);
+    (apiUrl += `&dteFromDate=${fromDate}&dteToDate=${toDate}`);
 
   searchText && (apiUrl += `&SearchTxt=${searchText}`);
 

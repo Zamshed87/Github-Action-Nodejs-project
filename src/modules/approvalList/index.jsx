@@ -23,6 +23,7 @@ import Loading from "./../../common/loading/Loading";
 import { getApprovalDashboardLanding } from "./helper";
 import "./index.css";
 import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
+import { isDevServer } from "App";
 
 const initData = {
   search: "",
@@ -51,7 +52,7 @@ export default function ApprovalList() {
   }, [orgId, employeeId]);
 
   useEffect(() => {
-    let arr = [];
+    const arr = [];
     approvalPermissions.forEach((item) => {
       if (item?.pipelineCode === "BABBAPBANDNQNARQ") {
         arr.push({
@@ -243,7 +244,7 @@ export default function ApprovalList() {
                         <table className="table">
                           <tbody>
                             {newTableData
-                              ?.filter((item) => item?.totalCount)
+                              ?.filter((item) => isDevServer ? true : item?.totalCount)
                               .map((data, index) => (
                                 <tr
                                   className="hasEvent"
