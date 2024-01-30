@@ -4,7 +4,7 @@ import {
   ArrowDropDown,
   ArrowDropUp,
   BusinessCenter,
-  EditOutlined
+  EditOutlined,
 } from "@mui/icons-material";
 import CakeIcon from "@mui/icons-material/Cake";
 import PersonIcon from "@mui/icons-material/Person";
@@ -43,6 +43,7 @@ const ProfileCard = ({
   strProfileImageUrl,
   getEmpData,
   isMargin,
+  isOfficeAdmin = false,
 }) => {
   // this component is used from about me and employee landing page
   // accordion
@@ -51,7 +52,7 @@ const ProfileCard = ({
 
   const dispatch = useDispatch();
   // eslint-disable-next-line
-  const { employeeId, orgId, buId, isOfficeAdmin } = useSelector(
+  const { employeeId, orgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
