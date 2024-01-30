@@ -60,7 +60,7 @@ function TrainingDevelopment({
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, isOfficeAdmin } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -368,26 +368,28 @@ function TrainingDevelopment({
               {loading && <Loading />}
               <div>
                 <h5>Training</h5>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ marginBottom: "25px", cursor: "pointer" }}
-                  onClick={() => {
-                    setStatus("input");
-                    setIsCreateForm(true);
-                  }}
-                >
+                {isOfficeAdmin && (
                   <div
-                    className="item"
-                    style={{ position: "relative", top: "-3px" }}
+                    className="d-flex align-items-center"
+                    style={{ marginBottom: "25px", cursor: "pointer" }}
+                    onClick={() => {
+                      setStatus("input");
+                      setIsCreateForm(true);
+                    }}
                   >
-                    <ControlPoint
-                      sx={{ color: success500, fontSize: "16px" }}
-                    />
+                    <div
+                      className="item"
+                      style={{ position: "relative", top: "-3px" }}
+                    >
+                      <ControlPoint
+                        sx={{ color: success500, fontSize: "16px" }}
+                      />
+                    </div>
+                    <div className="item">
+                      <p>Add your training</p>
+                    </div>
                   </div>
-                  <div className="item">
-                    <p>Add your training</p>
-                  </div>
-                </div>
+                )}
               </div>
               {isCreateForm ? (
                 <>
@@ -660,62 +662,66 @@ function TrainingDevelopment({
                                     </div>
                                   )}
                                 </div>
-                                <div className="col-lg-1">
-                                  <ActionMenu
-                                    color={gray900}
-                                    fontSize={"18px"}
-                                    options={[
-                                      {
-                                        value: 1,
-                                        label: "Edit",
-                                        icon: (
-                                          <ModeEditOutlined
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          setStatus("input");
-                                          setIsCreateForm(true);
-                                          setSingleData({
-                                            trainingTitle:
-                                              item?.strTrainingTitle,
-                                            issuingOrganization:
-                                              item?.strInstituteName,
-                                            fromDate: item?.dteStartDate,
-                                            toDate: item?.dteEndDate,
-                                            expirationDate: item?.dteExpiryDate,
-                                            intTrainingId: item?.intTrainingId,
-                                          });
-                                          setImageFile({
-                                            globalFileUrlId:
-                                              item?.intTrainingFileUrlId,
-                                          });
+                                {isOfficeAdmin && (
+                                  <div className="col-lg-1">
+                                    <ActionMenu
+                                      color={gray900}
+                                      fontSize={"18px"}
+                                      options={[
+                                        {
+                                          value: 1,
+                                          label: "Edit",
+                                          icon: (
+                                            <ModeEditOutlined
+                                              sx={{
+                                                marginRight: "10px",
+                                                fontSize: "16px",
+                                              }}
+                                            />
+                                          ),
+                                          onClick: () => {
+                                            setStatus("input");
+                                            setIsCreateForm(true);
+                                            setSingleData({
+                                              trainingTitle:
+                                                item?.strTrainingTitle,
+                                              issuingOrganization:
+                                                item?.strInstituteName,
+                                              fromDate: item?.dteStartDate,
+                                              toDate: item?.dteEndDate,
+                                              expirationDate:
+                                                item?.dteExpiryDate,
+                                              intTrainingId:
+                                                item?.intTrainingId,
+                                            });
+                                            setImageFile({
+                                              globalFileUrlId:
+                                                item?.intTrainingFileUrlId,
+                                            });
+                                          },
                                         },
-                                      },
-                                      {
-                                        value: 2,
-                                        label: "Delete",
-                                        icon: (
-                                          <DeleteOutline
-                                            sx={{
-                                              marginRight: "10px",
-                                              fontSize: "16px",
-                                            }}
-                                          />
-                                        ),
-                                        onClick: () => {
-                                          deleteHandler(
-                                            item?.intTrainingId,
-                                            item
-                                          );
+                                        {
+                                          value: 2,
+                                          label: "Delete",
+                                          icon: (
+                                            <DeleteOutline
+                                              sx={{
+                                                marginRight: "10px",
+                                                fontSize: "16px",
+                                              }}
+                                            />
+                                          ),
+                                          onClick: () => {
+                                            deleteHandler(
+                                              item?.intTrainingId,
+                                              item
+                                            );
+                                          },
                                         },
-                                      },
-                                    ]}
-                                  />
-                                </div>
+                                      ]}
+                                    />
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </>

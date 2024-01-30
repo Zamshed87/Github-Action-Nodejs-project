@@ -348,9 +348,11 @@ export const getPeopleDeskWithoutAllDDL = async (
 
 export const userExistValidation = async (payload, setter, cb) => {
   try {
-    let res = await axios.post(`/Auth/UserIsExistsRemoteValidation`, payload);
+    const res = await axios.post(`/Auth/UserIsExistsRemoteValidation`, payload);
     cb && cb(res?.data);
-    setter(res?.data);
+    setter((prev) => {
+      return { ...prev, ...res?.data };
+    });
   } catch (error) {
     cb && cb(error?.response);
     setter(error?.response?.data);

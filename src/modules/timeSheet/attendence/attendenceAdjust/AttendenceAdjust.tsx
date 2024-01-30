@@ -115,15 +115,15 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
-            inTime: values?.inTime || item?.StartTime,
-            outTime: values?.outTime || item?.EndTime,
+            inTime: moment(values?.intime).format("h:mm:ss") || item?.StartTime,
+            outTime: moment(values?.outtime).format("h:mm:ss") || item?.EndTime,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
               ? "Leave"
               : "Absent",
             requestStatus: values?.attendanceAdujust?.label,
-            remarks: values?.strReason || "By HR",
+            remarks: values?.reason || "By HR",
             isApproved: true,
             isActive: true,
             isManagement: true,
@@ -444,7 +444,6 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               setSelectedRow(selectedRows);
             },
             getCheckboxProps: (rec) => {
-              console.log(rec);
               return {
                 disabled: rec?.ApplicationStatus === "Approved",
               };
