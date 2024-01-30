@@ -5,27 +5,28 @@ import {
   Cancel,
   CheckCircle,
   EditOutlined,
+  InfoOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { Tooltip, tooltipClasses } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { styled } from "@mui/styles";
-import { InfoOutlined } from "@mui/icons-material";
 import AntTable from "../../../../common/AntTable";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import BackButton from "../../../../common/BackButton";
+import Chips from "../../../../common/Chips";
 import FilterBadgeComponent from "../../../../common/FilterBadgeComponent";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import IConfirmModal from "../../../../common/IConfirmModal";
-import MasterFilter from "../../../../common/MasterFilter";
+import { LightTooltip } from "../../../../common/LightTooltip";
 import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../../common/PopoverMasterFilter";
 import ResetButton from "../../../../common/ResetButton";
-import SortingIcon from "../../../../common/SortingIcon";
+import ViewModal from "../../../../common/ViewModal";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   blackColor90,
@@ -35,25 +36,19 @@ import {
   successColor,
 } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
+import { dateFormatter } from "../../../../utility/dateFormatter";
 import {
   getAllAnnouncement,
   getAllLeaveApplicatonListDataForApproval,
   leaveApproveReject,
 } from "../helper";
 import Loading from "./../../../../common/loading/Loading";
-import FilterModal from "./component/FilterModal";
-import LeaveApprovalTable from "./component/LeaveApprovalTable";
 import CreateModal from "./CreateFormModal/CreateModal";
+import FilterModal from "./component/FilterModal";
+import SingleNotice from "./component/SingleNotice";
+import LeaveApprovalEditForm from "./component/editForm";
 import "./leaveApproval.css";
 import ViewFormComponent from "./view-form";
-import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
-import { dateFormatter } from "../../../../utility/dateFormatter";
-import Chips from "../../../../common/Chips";
-import { LightTooltip } from "../../../../common/LightTooltip";
-import ViewModal from "../../../../common/ViewModal";
-import LeaveApprovalEditForm from "./component/editForm";
-import SingleNotice from "./component/SingleNotice";
-import NoticeBoard from "./component/NoticeBoard";
 
 const initData = {
   searchString: "",
@@ -302,7 +297,7 @@ export default function LeaveApproval() {
   };
 
   const singlePopup = (action, text, item) => {
-    let payload = [
+    const payload = [
       {
         applicationId: item?.leaveApplication?.intApplicationId,
         fromDate: item?.leaveApplication?.dteFromDate,
@@ -340,7 +335,7 @@ export default function LeaveApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
@@ -714,7 +709,6 @@ export default function LeaveApproval() {
           errors,
           touched,
           setFieldValue,
-          isValid,
           dirty,
         }) => (
           <>
@@ -782,8 +776,9 @@ export default function LeaveApproval() {
                                           <CheckCircle
                                             sx={{
                                               color: successColor,
-                                              width: "16px",
-                                              height: "16px",
+                                              width: "20px !important",
+                                              height: "20px !important",
+                                              fontSize: "20px !important"
                                             }}
                                           />
                                         }
@@ -806,8 +801,9 @@ export default function LeaveApproval() {
                                           <Cancel
                                             sx={{
                                               color: failColor,
-                                              width: "16px",
-                                              height: "16px",
+                                              width: "20px",
+                                              height: "20px",
+                                              fontSize: "20px !important"
                                             }}
                                           />
                                         }

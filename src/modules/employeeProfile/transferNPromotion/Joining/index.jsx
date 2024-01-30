@@ -50,7 +50,7 @@ export default function Joining() {
     total: 0,
   });
 
-  const { buId, wgId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -87,7 +87,8 @@ export default function Joining() {
       pagination?.current,
       pagination?.pageSize,
       setPages,
-      srcTxt
+      srcTxt,
+      wId
     );
   };
 
