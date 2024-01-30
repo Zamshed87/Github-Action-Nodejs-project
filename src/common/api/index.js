@@ -566,28 +566,15 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
 
 export const getSearchEmployeeListNew = (buId, intAccountId, v) => {
   if (v?.length < 2) return [];
-  const payload = {
-    accountId: intAccountId,
-    businessUnitId: buId,
-    workplaceGroupId: 0,
-    workplaceId: 0,
-    employmentTypeId: [],
-    hrPositionId: [],
-    departmentId: [],
-    designationId: [],
-    isPaginated: true,
-    searchTxt: v || "",
-    currentPage: 1,
-    pageSize: 25,
-  };
+
   return axios
-    .post(`/Employee/EmployeeProfileLandingPaginationMaster`, payload)
+    .get(`/Employee/AllEmployeeDDL?intAccountId=${intAccountId}&strSearch=${v}`)
     .then((res) => {
-      const modifiedData = res?.data?.data?.map((item) => {
+      const modifiedData = res?.data?.map((item) => {
         return {
           ...item,
-          value: item?.intSupervisorId,
-          label: item?.strSupervisorName,
+          value: item?.value,
+          label: item?.label,
         };
       });
       return modifiedData;
