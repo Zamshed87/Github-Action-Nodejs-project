@@ -168,20 +168,10 @@ const DefaultSalary = ({ propsObj }) => {
                           <th className="sortable" style={{ width: "30px" }}>
                             SL
                           </th>
-                          <th>Code</th>
+                          <th>Employee ID</th>
                           <th>Employee</th>
                           <th>Designation</th>
                           <th>Workplace Group</th>
-                          {wgId === 3 ? (
-                            <>
-                              <th>Wing</th>
-                              <th>Sole Depo</th>
-                              <th>Region</th>
-                              <th>Area</th>
-                              <th>Territory</th>
-                            </>
-                          ) : null}
-
                           <th>Department</th>
                           <th>Status</th>
                         </tr>
@@ -215,35 +205,7 @@ const DefaultSalary = ({ propsObj }) => {
                                   {item?.WorkplaceGroupName}
                                 </div>
                               </td>
-                              {wgId === 3 ? (
-                                <>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.wingName}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.soleDepoName}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.regionName}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.areaName}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.TerritoryName}
-                                    </div>
-                                  </td>
-                                </>
-                              ) : null}
+
                               <td>
                                 <div className="content tableBody-title">
                                   {item?.DepartmentName}
