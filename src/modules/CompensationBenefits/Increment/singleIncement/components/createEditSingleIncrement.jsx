@@ -118,7 +118,6 @@ function CreateSingleIncrement() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-  console.log({ state });
   const modifiedData = {
     employee: {
       value: state?.singleData?.incrementList?.[0]?.intEmployeeId,
