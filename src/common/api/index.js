@@ -563,6 +563,25 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
     })
     .catch((err) => []);
 };
+
+export const getSearchEmployeeListNew = (buId, intAccountId, v) => {
+  if (v?.length < 2) return [];
+
+  return axios
+    .get(`/Employee/AllEmployeeDDL?intAccountId=${intAccountId}&strSearch=${v}`)
+    .then((res) => {
+      const modifiedData = res?.data?.map((item) => {
+        return {
+          ...item,
+          value: item?.value,
+          label: item?.label,
+        };
+      });
+      return modifiedData;
+    })
+    .catch((err) => []);
+};
+
 export const getSearchEmployeeListForEmp = (
   buId,
   wgId,

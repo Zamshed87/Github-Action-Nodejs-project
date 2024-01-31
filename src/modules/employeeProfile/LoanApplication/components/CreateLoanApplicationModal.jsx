@@ -1,5 +1,6 @@
 import {
   AttachmentOutlined,
+  DeleteOutline,
   FileUpload,
   VisibilityOutlined,
 } from "@mui/icons-material";
@@ -9,6 +10,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import {
+  getPeopleDeskAllDDL,
   getSearchEmployeeList,
   PeopleDeskSaasDDL,
 } from "../../../../common/api";
@@ -21,8 +23,23 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import { attachment_action } from "../../../policyUpload/helper";
 import "../application.css";
-import { loanCrudAction } from "../helper";
+import {
+  costInputHandler,
+  getGurantor,
+  handleAmendmentClick,
+  handleDeleteClick,
+  loanCrudAction,
+  subTotal,
+} from "../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+import { gray600, success500 } from "utility/customColor";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { Button, Tag } from "antd";
+import { IconButton, Tooltip } from "@mui/material";
+import { formatMoney } from "utility/formatMoney";
+import DefaultInput from "common/DefaultInput";
+import moment from "moment";
+import Required from "common/Required";
 
 const validationSchema = Yup.object().shape({
   description: Yup.string().required("Description is required"),
@@ -83,11 +100,31 @@ const CreateLoanApplicationModal = ({
 }) => {
   const [loanType, setLoanType] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [employeeDDL, setEmployeeDDL] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [guarantorDDL, setGuarantorDDL] = useState([]);
+
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (singleData?.loanApplicationId) {
+      getGurantor(singleData?.loanApplicationId, setGuarantorDDL);
+      setSingleData({ ...singleData, guarantor: guarantorDDL });
+    }
+  }, [tableData]);
+
+  useEffect(() => {
+    getPeopleDeskAllDDL(
+      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      "intEmployeeBasicInfoId",
+      "strEmployeeName",
+      setEmployeeDDL
+    );
+  }, [employeeId, wgId]);
 
   const saveHandler = (values, cb) => {
     // approveLoanAmount approveInstallmentNumber approveAmountPerInstallment
@@ -118,6 +155,14 @@ const CreateLoanApplicationModal = ({
           "Approve Installment number can't be greather than amount"
         );
     }
+    const total = subTotal(tableData);
+    if (singleData?.loanApplicationId) {
+      if (values?.loanAmount != total) {
+        return toast.warn(
+          "Total Actual Payment Amount and Loan Amount Must Be Equal"
+        );
+      }
+    }
     loanCrudAction(
       values,
       cb,
@@ -127,7 +172,8 @@ const CreateLoanApplicationModal = ({
       orgId,
       false,
       buId,
-      wgId
+      wgId,
+      tableData
     );
   };
 
@@ -143,6 +189,40 @@ const CreateLoanApplicationModal = ({
       wId
     );
   }, [wgId, buId]);
+
+  const [resForView, getForView, loadingForView2, setForView] = useAxiosGet([]);
+
+  useEffect(() => {
+    if (singleData?.loanApplicationId) {
+      getForView(
+        `/Employee/LoanInstallmentRowGetById?loanId=${singleData?.loanApplicationId}`,
+        (data) => {
+          const currentDate = moment();
+          const modifyData = {
+            row: data?.map((item, index) => ({
+              loanApplicationId: item?.loanApplicationId || 0,
+              intInterest: +item?.intInterest || 0,
+              totalLoanAmount: +item?.totalLoanAmount || 0,
+              intInstallmentNumber: +item?.intInstallmentNumber || 0,
+              intInstallmentAmount: +item?.intInstallmentAmount || 0,
+              strApplicantName: item?.strApplicantName || "",
+              repaymentDate: currentDate
+                .clone()
+                .add(index, "months")
+                .format("YYYY-MM-DD"),
+              date: currentDate.clone().add(index, "months").format("YYYY-MM"),
+              inMonth: new Date().getMonth() + 1,
+              intYear: new Date().getFullYear(),
+              intActualPaymentAmount: null,
+              strRemarks: item?.strRemarks || "",
+              isHold: true,
+            })),
+          };
+          setTableData(modifyData?.row);
+        }
+      );
+    }
+  }, []);
 
   const labelShowLastInstallmentAmt = (values) => {
     const lastAmount = values?.loanAmount % values?.amountPerInstallment;
@@ -189,8 +269,8 @@ const CreateLoanApplicationModal = ({
             <div className="businessUnitModal">
               <div className="modalBody" style={{ padding: "0px 16px" }}>
                 <div className="row">
-                  <div className="col-6">
-                    <label>Employee</label>
+                  <div className="col-4">
+                    <label>Employee <Required/></label>
                     <AsyncFormikSelect
                       selectedValue={values?.employee}
                       isSearchIcon={true}
@@ -201,8 +281,8 @@ const CreateLoanApplicationModal = ({
                       loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Loan Type</label>
+                  <div className="col-4">
+                    <label>Loan Type <Required/></label>
                     <FormikSelect
                       name="loanType"
                       options={loanType}
@@ -218,8 +298,8 @@ const CreateLoanApplicationModal = ({
                       isDisabled={false}
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Loan Amount</label>
+                  <div className="col-4">
+                    <label>Loan Amount <Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.loanAmount}
@@ -236,7 +316,6 @@ const CreateLoanApplicationModal = ({
                             +e.target.value +
                             +e.target.value * (values?.interest / 100)
                           ).toFixed(2);
-                          // console.log({ totalAmountwithInterest });
                           setFieldValue(
                             "totalwithinterest",
                             totalAmountwithInterest
@@ -253,8 +332,8 @@ const CreateLoanApplicationModal = ({
                       }
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Interest (%)</label>
+                  <div className="col-4">
+                    <label>Interest (%) <Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.interest}
@@ -268,7 +347,6 @@ const CreateLoanApplicationModal = ({
                             +values?.loanAmount +
                             +values?.loanAmount * (e.target.value / 100)
                           ).toFixed(2);
-                          // console.log({ totalAmountwithInterest });
                           setFieldValue(
                             "totalwithinterest",
                             totalAmountwithInterest
@@ -286,7 +364,7 @@ const CreateLoanApplicationModal = ({
                       disabled={!values?.loanAmount}
                     />
                   </div>
-                  <div className="col-6">
+                  <div className="col-4">
                     <label>Total Loan Amount with interest</label>
                     <FormikInput
                       classes="input-sm"
@@ -304,27 +382,78 @@ const CreateLoanApplicationModal = ({
                       disabled={true}
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Guarantor Employee</label>
-                    <AsyncFormikSelect
+                  <div className="col-4">
+                    <label>Guarantor Employee <Required/></label>
+
+                    <FormikSelect
                       name="guarantor"
-                      selectedValue={values?.guarantor}
-                      isSearchIcon={true}
-                      handleChange={(valueOption) => {
-                        if (valueOption?.value === values?.employee?.value) {
-                          setFieldValue("guarantor", "");
-                          return toast.warn(
-                            "Please choose a different employee as the guarantor"
-                          );
-                        }
+                      isClearable={false}
+                      options={employeeDDL || []}
+                      value={values?.guarantor}
+                      onChange={(valueOption) => {
                         setFieldValue("guarantor", valueOption);
                       }}
-                      placeholder="Search (min 3 letter)"
-                      loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
+                      styles={{
+                        ...customStyles,
+                        control: (provided, state) => ({
+                          ...provided,
+                          minHeight: "auto",
+                          height:
+                            values?.guarantor?.length > 1 ? "auto" : "auto",
+                          borderRadius: "4px",
+                          boxShadow: `${success500}!important`,
+                          ":hover": {
+                            borderColor: `${gray600}!important`,
+                          },
+                          ":focus": {
+                            borderColor: `${gray600}!important`,
+                          },
+                        }),
+                        valueContainer: (provided, state) => ({
+                          ...provided,
+                          height:
+                            values?.guarantor?.length > 1 ? "auto" : "auto",
+                          padding: "0 6px",
+                        }),
+                        multiValue: (styles) => {
+                          return {
+                            ...styles,
+                            position: "relative",
+                            top: "-1px",
+                          };
+                        },
+                        multiValueLabel: (styles) => ({
+                          ...styles,
+                          padding: "0",
+                        }),
+                      }}
+                      isMulti
+                      errors={errors}
+                      placeholder="Guarantor Employee"
+                      touched={touched}
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Installment Number</label>
+
+                  <div className="col-4">
+                    <label>Closing Date</label>
+                    <FormikInput
+                      classes="input-sm"
+                      value={values?.loanClosingDate}
+                      name="loanClosingDate"
+                      type="date"
+                      onChange={(e) => {
+                        setFieldValue("loanClosingDate", e.target.value);
+                      }}
+                      min={!singleData && todayDate()}
+                      className="form-control"
+                      placeholder=""
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+
+                  <div className="col-4">
+                    <label>Installment Number<Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.installmentNumber}
@@ -359,8 +488,8 @@ const CreateLoanApplicationModal = ({
                       }
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Amount Per Installment</label>
+                  <div className="col-4">
+                    <label>Amount Per Installment <Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.amountPerInstallment}
@@ -397,7 +526,7 @@ const CreateLoanApplicationModal = ({
                   </div>
                   {singleData?.loanApplicationId && (
                     <>
-                      <div className="col-6">
+                      <div className="col-4">
                         <label>Approve Loan Amount</label>
                         <FormikInput
                           classes="input-sm"
@@ -416,7 +545,7 @@ const CreateLoanApplicationModal = ({
                           touched={touched}
                         />
                       </div>
-                      <div className="col-6">
+                      <div className="col-4">
                         <label>Approve Installment Number</label>
                         <FormikInput
                           classes="input-sm"
@@ -441,7 +570,7 @@ const CreateLoanApplicationModal = ({
                           touched={touched}
                         />
                       </div>
-                      <div className="col-6">
+                      <div className="col-4">
                         <label>Approve Amount Per Installment</label>
                         <FormikInput
                           classes="input-sm"
@@ -468,8 +597,8 @@ const CreateLoanApplicationModal = ({
                       </div>
                     </>
                   )}
-                  <div className="col-6">
-                    <label>Effective Date</label>
+                  <div className="col-4">
+                    <label>Effective Date <Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.effectiveDate}
@@ -485,38 +614,8 @@ const CreateLoanApplicationModal = ({
                       touched={touched}
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Description</label>
-                    {/* <FormikInput
-                      classes="input-sm"
-                      value={values?.description}
-                      name="description"
-                      type="text"
-                      className="form-control"
-                      placeholder=""
-                      onChange={(e) => {
-                        setFieldValue("description", e.target.value);
-                      }}
-                      errors={errors}
-                      touched={touched}
-                      style={{ height: "60px" }}
-                    /> */}
-                    <FormikTextArea
-                      classes="textarea-with-label"
-                      value={values?.description}
-                      name="description"
-                      type="text"
-                      className="form-control"
-                      placeholder=""
-                      onChange={(e) => {
-                        setFieldValue("description", e.target.value);
-                      }}
-                      errors={errors}
-                      touched={touched}
-                      style={{ height: "60px" }}
-                    />
-                  </div>
-                  <div className="col-6 mt-4">
+
+                  <div className="col-4 mt-4">
                     <div className="input-main position-group-select">
                       {fileId ? (
                         <>
@@ -618,11 +717,261 @@ const CreateLoanApplicationModal = ({
                       )}
                     </div>
                   </div>
-                  <div className="col-6">
+                  <div className="col-4">
                     {labelShowLastInstallmentAmt(values)}
+                  </div>
+                  <div className="col-6">
+                    <label>Description <Required/></label>
+                    <FormikTextArea
+                      classes="textarea-with-label"
+                      value={values?.description}
+                      name="description"
+                      type="text"
+                      className="form-control"
+                      placeholder=""
+                      onChange={(e) => {
+                        setFieldValue("description", e.target.value);
+                      }}
+                      errors={errors}
+                      touched={touched}
+                      style={{ height: "60px" }}
+                    />
                   </div>
                 </div>
               </div>
+              {/* row table start */}
+              {singleData?.loanApplicationId && (
+                <div className="table-card-body pt-3">
+                  <div
+                    className=" table-card-styled tableOne"
+                    style={{ padding: "0px 12px" }}
+                  >
+                    <table className="table align-middle">
+                      <thead style={{ color: "#212529" }}>
+                        <tr>
+                          <th>
+                            <div className="d-flex align-items-center">
+                              Installment no
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex align-items-center">
+                              Repayment Date
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex align-items-center">
+                              Total Actual Payment Amount
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex align-items-center">
+                              Remarks
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex align-items-center justify-content-end">
+                              Action
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {tableData?.length > 0 && (
+                          <>
+                            {tableData.map((item, index) => {
+                              return (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+                                  <td>
+                                    <DefaultInput
+                                      classes="input-sm"
+                                      value={item?.date}
+                                      name="date"
+                                      type="month"
+                                      className="form-control"
+                                      disabled={true}
+                                      onChange={(e) => {
+                                        // setFieldValue("repaymentDate", "");
+                                        setFieldValue("date", e.target.value);
+                                        setFieldValue(
+                                          "inMonth",
+                                          +e.target.value
+                                            .split("")
+                                            .slice(-2)
+                                            .join("")
+                                        );
+                                        setFieldValue(
+                                          "intYear",
+                                          +e.target.value
+                                            .split("")
+                                            .slice(0, 4)
+                                            .join("")
+                                        );
+                                        costInputHandler(
+                                          "repaymentDate",
+                                          e.target.value,
+                                          index,
+                                          tableData,
+                                          setTableData,
+                                          values
+                                        );
+                                      }}
+                                      errors={errors}
+                                      touched={touched}
+                                    />
+                                  </td>
+                                  {/* <td>{item?.dteRepaymentDay}</td> */}
+                                  <td>
+                                    <FormikInput
+                                      classes="input-sm"
+                                      value={+item?.intInstallmentAmount}
+                                      name="intInstallmentAmount"
+                                      type="number"
+                                      // disabled={item?.isHold}
+                                      onChange={(e) => {
+                                        if (e.target.value < 0) {
+                                          return toast.warn(
+                                            "Non-positive values not allowed",
+                                            { toastId: "toastId" }
+                                          );
+                                        } else {
+                                          setFieldValue(
+                                            "intInstallmentAmount",
+                                            ""
+                                          );
+                                        }
+                                        costInputHandler(
+                                          "intInstallmentAmount",
+                                          +e.target.value,
+                                          index,
+                                          tableData,
+                                          setTableData,
+                                          values
+                                        );
+                                      }}
+                                      // onBlur={(e) => {
+                                      //   // Get the current value and remove leading zeros
+                                      //   const currentValue = e.target.value.replace(/^0+/, '');
+                                    
+                                      //   // Update the field value without leading zeros
+                                      //   setFieldValue("intInstallmentAmount", currentValue);
+                                      // }}
+                                      className="form-control"
+                                      placeholder=""
+                                      errors={errors}
+                                      touched={touched}
+                                    />
+                                  </td>
+                                  <td>
+                                    <FormikInput
+                                      classes="input-sm"
+                                      value={item?.strRemarks}
+                                      name="strRemarks"
+                                      type="string"
+                                      onChange={(e) => {
+                                        setFieldValue(
+                                          "strRemarks",
+                                          e.target.value
+                                        );
+                                        costInputHandler(
+                                          "strRemarks",
+                                          e.target.value,
+                                          index,
+                                          tableData,
+                                          setTableData,
+                                          values
+                                        );
+                                      }}
+                                      className="form-control"
+                                      placeholder=""
+                                      errors={errors}
+                                      touched={touched}
+                                    />
+                                  </td>
+                                  <td>
+                                    <div className="d-flex align-items-end justify-content-end">
+                                      <span
+                                        style={{
+                                          cursor: `${
+                                            item?.isHold ? "" : "pointer"
+                                          }`,
+                                        }}
+                                        disabled={item?.isHold}
+                                        onClick={() => {
+                                          if (!item?.isHold) {
+                                            handleAmendmentClick(
+                                              tableData,
+                                              setTableData,
+                                              item
+                                            );
+                                          }
+                                        }}
+                                      >
+                                        <Tag
+                                          color={`${
+                                            item?.isHold ? "gray" : "green"
+                                          }`}
+                                        >
+                                          {"Amendment!"}
+                                        </Tag>
+                                      </span>
+                                      {item?.isHold && (
+                                        <IconButton
+                                          type="button"
+                                          style={{
+                                            height: "25px",
+                                            width: "25px",
+                                          }}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteClick(
+                                              index,
+                                              tableData,
+                                              setTableData
+                                            );
+                                          }}
+                                        >
+                                          <Tooltip title="Delete">
+                                            <DeleteOutline
+                                              sx={{
+                                                height: "25px",
+                                                width: "25px",
+                                              }}
+                                            />
+                                          </Tooltip>
+                                        </IconButton>
+                                      )}
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                            <tr>
+                              <td></td>
+                              <td
+                                style={{
+                                  textAlign: "right",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                Total:{" "}
+                              </td>
+                              <td style={{ fontWeight: "bold" }}>
+                                {formatMoney(subTotal(tableData))}
+                              </td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                          </>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* row table end  */}
               <div className="modal-footer form-modal-footer">
                 <button
                   type="button"

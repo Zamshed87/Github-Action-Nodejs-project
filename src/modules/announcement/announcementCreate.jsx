@@ -65,18 +65,6 @@ export default function AnnouncementCreate() {
       toast.error("Work Place Group is required");
       return;
     }
-    // if (values.workPlace.length === 0) {
-    //   toast.error("Work Place is required");
-    // }
-    // if (values.department.length === 0) {
-    //   toast.error("Department is required");
-    // }
-    // if (values.designation.length === 0) {
-    //   toast.error("Designation is required");
-    // }
-    // if (values.userGroup.length === 0) {
-    //   toast.error("UserGroup is required");
-    // }
     values?.workGroup?.length > 0 &&
       (workGroup = values.workGroup?.map((item) => {
         return {

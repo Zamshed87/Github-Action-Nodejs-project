@@ -11,7 +11,14 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
+import {
+  attachment_action,
+  getPeopleDeskAllDDL,
+  getPeopleDeskWithoutAllDDL,
+  getSearchEmployeeList,
+  getSearchEmployeeListNew,
+  PeopleDeskSaasDDL,
+} from "../../../../../common/api";
 import BackButton from "../../../../../common/BackButton";
 import DefaultInput from "../../../../../common/DefaultInput";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
@@ -20,13 +27,13 @@ import NoResult from "../../../../../common/NoResult";
 import PrimaryButton from "../../../../../common/PrimaryButton";
 import ResetButton from "../../../../../common/ResetButton";
 import SortingIcon from "../../../../../common/SortingIcon";
-import {
-  PeopleDeskSaasDDL,
-  attachment_action,
-  getPeopleDeskAllDDL,
-  getPeopleDeskWithoutAllDDL,
-  getSearchEmployeeList,
-} from "../../../../../common/api";
+// import {
+//   PeopleDeskSaasDDL,
+//   attachment_action,
+//   getPeopleDeskAllDDL,
+//   getPeopleDeskWithoutAllDDL,
+//   getSearchEmployeeList,
+// } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { setFirstLevelNameAction } from "../../../../../commonRedux/reduxForLocalStorage/actions";
 import {
@@ -51,6 +58,7 @@ import {
 } from "../helper";
 import "../styles.css";
 import HistoryTransferTable from "./HistoryTransferTable";
+import AsyncFormikSelect from "common/AsyncFormikSelect";
 
 const initialValues = {
   employee: "",
@@ -159,11 +167,10 @@ function CreateTransferPromotion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-  console.log({state})
 
   const modifiedData = {
     employee: {
@@ -1173,9 +1180,9 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeList(
+                      getSearchEmployeeListNew(
                         buId,
-                        values?.workplaceGroup?.value || 0,
+                        intAccountId,
                         v
                       )
                     }
@@ -1197,9 +1204,9 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeList(
+                      getSearchEmployeeListNew(
                         buId,
-                        values?.workplaceGroup?.value || 0,
+                        intAccountId,
                         v
                       )
                     }
