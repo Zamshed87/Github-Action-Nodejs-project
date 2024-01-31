@@ -202,7 +202,8 @@ export default function BulkIncrementEntry() {
                                   </td>
                                   <td>
                                     <div className="content tableBody-title">
-                                      {dateFormatter(item?.dteEffectiveDate)}
+                                      {item?.dteEffectiveDate}
+                                      {/* dateFormatter(item?.dteEffectiveDate) ||  */}
                                     </div>
                                   </td>
                                 </tr>
