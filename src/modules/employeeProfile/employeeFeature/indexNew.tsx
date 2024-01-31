@@ -21,10 +21,7 @@ import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import AddEditForm from "./addEditFile";
-import {
-  columnForHeadOffice,
-  getTableDataEmployee,
-} from "./helper";
+import { columnForHeadOffice, getTableDataEmployee } from "./helper";
 import "./styles.css";
 import { toast } from "react-toastify";
 
@@ -46,6 +43,7 @@ function EmployeeFeatureNew() {
 
   // state
   const [open, setOpen] = useState(false);
+  const [filterList, setFilterList] = useState({});
 
   // Form Instance
   const [form] = Form.useForm();
@@ -136,7 +134,10 @@ function EmployeeFeatureNew() {
   }, []);
 
   const searchFunc = debounce((value) => {
-    landingApiCall({ searchText: value });
+    landingApiCall({
+      filerList: filterList,
+      searchText: value,
+    });
   }, 500);
 
   // Header
@@ -320,7 +321,7 @@ function EmployeeFeatureNew() {
       <PForm
         form={form}
         onFinish={() => {
-          setOpen(true);
+          // setOpen(true);
         }}
       >
         <PCard>
@@ -329,9 +330,12 @@ function EmployeeFeatureNew() {
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
+              form.setFieldsValue({
+                search: e?.target?.value,
+              });
             }}
-            submitText="Create New"
-            submitIcon={<AddOutlined />}
+            // submitText="Create New"
+            // submitIcon={<AddOutlined />}
             buttonList={[
               {
                 type: "primary",
@@ -339,6 +343,18 @@ function EmployeeFeatureNew() {
                 onClick: () => {
                   if (employeeFeature?.isCreate) {
                     history.push("/profile/employee/bulk");
+                  } else {
+                    toast.warn("You don't have permission");
+                  }
+                },
+              },
+              {
+                type: "primary",
+                content: "Create New",
+                icon: "plus",
+                onClick: () => {
+                  if (employeeFeature?.isCreate) {
+                    setOpen(true);
                   } else {
                     toast.warn("You don't have permission");
                   }
@@ -513,6 +529,7 @@ function EmployeeFeatureNew() {
               // Return if sort function is called
               if (extra.action === "sort") return;
               const { search } = form.getFieldsValue(true);
+              setFilterList(filters);
               landingApiCall({
                 pagination,
                 filerList: filters,
