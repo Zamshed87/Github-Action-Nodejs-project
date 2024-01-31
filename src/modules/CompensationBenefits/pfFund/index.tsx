@@ -19,6 +19,7 @@ import { shallowEqual, useSelector } from "react-redux";
 import CreateInvestment from "./Create/CreateInvestment";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import PFFundModalView from "./view/PFFundModalView";
+import RefundEarning from "./Create/RefundEarning";
 
 type TPfFundLanding = {};
 const PfFundLanding: React.FC<TPfFundLanding> = () => {
@@ -40,6 +41,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
 
   // state
   const [open, setOpen] = useState(false);
+  const [refundEarningModalOpen, setRefundEarningModalOpen] = useState(false);
   const [viewModal, setViewModal] = useState(false);
   const [selectedRows, setsSelectedRows] = useState<any>([]);
   const [checkedRowKeys, setCheckRowKeys] = useState<any>([]);
@@ -195,7 +197,10 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
               },
               {
                 type: "reload",
-                onClick: () => {},
+                onClick: () => {
+                  setsSelectedRows([record]);
+                  setRefundEarningModalOpen(true);
+                },
                 prompt: "Refund/Earning",
               },
             ]}
@@ -311,6 +316,24 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
         components={
           <CreateInvestment
             setOpen={setOpen}
+            data={selectedRows}
+            landingApi={landingApi}
+            setsSelectedRows={setsSelectedRows}
+            setCheckRowKeys={setCheckRowKeys}
+          />
+        }
+      />
+      <PModal
+        title="Refund/Earning"
+        open={refundEarningModalOpen}
+        onCancel={() => {
+          setsSelectedRows([]);
+          setCheckRowKeys([]);
+          setRefundEarningModalOpen(false);
+        }}
+        components={
+          <RefundEarning
+            setOpen={setRefundEarningModalOpen}
             data={selectedRows}
             landingApi={landingApi}
             setsSelectedRows={setsSelectedRows}
