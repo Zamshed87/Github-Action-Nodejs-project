@@ -116,10 +116,10 @@ function AttendanceRawDataProcess() {
                   type="date"
                   min={values?.fromDate}
                   max={
-                    calcDateDiff(values?.fromDate, today) < 10
+                    calcDateDiff(values?.fromDate, today) < 3
                       ? today
                       : moment(values?.fromDate)
-                          .add(10, "days")
+                          .add(2, "days")
                           .format("YYYY-MM-DD")
                   }
                   className="form-control"
