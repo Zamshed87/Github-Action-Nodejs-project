@@ -37,6 +37,9 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { Button, Tag } from "antd";
 import { IconButton, Tooltip } from "@mui/material";
 import { formatMoney } from "utility/formatMoney";
+import DefaultInput from "common/DefaultInput";
+import moment from "moment";
+import Required from "common/Required";
 
 const validationSchema = Yup.object().shape({
   description: Yup.string().required("Description is required"),
@@ -85,7 +88,6 @@ const initData = {
   guarantor: "",
   interest: "",
   totalwithinterest: "",
-  repaymentDate: "",
 };
 
 const CreateLoanApplicationModal = ({
@@ -113,11 +115,7 @@ const CreateLoanApplicationModal = ({
       getGurantor(singleData?.loanApplicationId, setGuarantorDDL);
       setSingleData({ ...singleData, guarantor: guarantorDDL });
     }
-
   }, [tableData]);
-
-  console.log("guarantorDDL", guarantorDDL);
-  console.log("singleData", singleData);
 
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -199,19 +197,24 @@ const CreateLoanApplicationModal = ({
       getForView(
         `/Employee/LoanInstallmentRowGetById?loanId=${singleData?.loanApplicationId}`,
         (data) => {
+          const currentDate = moment();
           const modifyData = {
-            row: data?.map((item) => ({
+            row: data?.map((item, index) => ({
               loanApplicationId: item?.loanApplicationId || 0,
               intInterest: +item?.intInterest || 0,
               totalLoanAmount: +item?.totalLoanAmount || 0,
               intInstallmentNumber: +item?.intInstallmentNumber || 0,
               intInstallmentAmount: +item?.intInstallmentAmount || 0,
               strApplicantName: item?.strApplicantName || "",
-              dteRepaymentDay: null,
-              repaymentMonth: 0,
+              repaymentDate: currentDate
+                .clone()
+                .add(index, "months")
+                .format("YYYY-MM-DD"),
+              date: currentDate.clone().add(index, "months").format("YYYY-MM"),
+              inMonth: new Date().getMonth() + 1,
+              intYear: new Date().getFullYear(),
               intActualPaymentAmount: null,
               strRemarks: item?.strRemarks || "",
-              loanType: 6,
               isHold: true,
             })),
           };
@@ -267,7 +270,7 @@ const CreateLoanApplicationModal = ({
               <div className="modalBody" style={{ padding: "0px 16px" }}>
                 <div className="row">
                   <div className="col-4">
-                    <label>Employee</label>
+                    <label>Employee <Required/></label>
                     <AsyncFormikSelect
                       selectedValue={values?.employee}
                       isSearchIcon={true}
@@ -279,7 +282,7 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Loan Type</label>
+                    <label>Loan Type <Required/></label>
                     <FormikSelect
                       name="loanType"
                       options={loanType}
@@ -296,7 +299,7 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Loan Amount</label>
+                    <label>Loan Amount <Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.loanAmount}
@@ -330,7 +333,7 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Interest (%)</label>
+                    <label>Interest (%) <Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.interest}
@@ -380,24 +383,8 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Guarantor Employee</label>
-                    {/* <AsyncFormikSelect
-                      name="guarantor"
-                      isMulti
-                      selectedValue={values?.guarantor}
-                      isSearchIcon={true}
-                      handleChange={(valueOption) => {
-                        if (valueOption?.value === values?.employee?.value) {
-                          setFieldValue("guarantor", "");
-                          return toast.warn(
-                            "Please choose a different employee as the guarantor"
-                          );
-                        }
-                        setFieldValue("guarantor", valueOption);
-                      }}
-                      placeholder="Search (min 3 letter)"
-                      loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
-                    /> */}
+                    <label>Guarantor Employee <Required/></label>
+
                     <FormikSelect
                       name="guarantor"
                       isClearable={false}
@@ -466,7 +453,7 @@ const CreateLoanApplicationModal = ({
                   </div>
 
                   <div className="col-4">
-                    <label>Installment Number</label>
+                    <label>Installment Number<Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.installmentNumber}
@@ -502,7 +489,7 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Amount Per Installment</label>
+                    <label>Amount Per Installment <Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.amountPerInstallment}
@@ -611,7 +598,7 @@ const CreateLoanApplicationModal = ({
                     </>
                   )}
                   <div className="col-4">
-                    <label>Effective Date</label>
+                    <label>Effective Date <Required/></label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.effectiveDate}
@@ -734,7 +721,7 @@ const CreateLoanApplicationModal = ({
                     {labelShowLastInstallmentAmt(values)}
                   </div>
                   <div className="col-6">
-                    <label>Description</label>
+                    <label>Description <Required/></label>
                     <FormikTextArea
                       classes="textarea-with-label"
                       value={values?.description}
@@ -789,7 +776,6 @@ const CreateLoanApplicationModal = ({
                           </th>
                         </tr>
                       </thead>
-                      {console.log("tableData", tableData)}
                       <tbody>
                         {tableData?.length > 0 && (
                           <>
@@ -798,30 +784,39 @@ const CreateLoanApplicationModal = ({
                                 <tr key={index}>
                                   <td>{index + 1}</td>
                                   <td>
-                                    <FormikInput
+                                    <DefaultInput
                                       classes="input-sm"
-                                      value={
-                                        values?.repaymentDate || todayDate()
-                                      }
-                                      name="repaymentDate"
-                                      type="date"
-                                      onChange={(e) => {
-                                        setFieldValue(
-                                          "repaymentDate",
-                                          e.target.value
-                                        );
-                                        // costInputHandler(
-                                        //   "repaymentDate",
-                                        //   e.target.value,
-                                        //   index,
-                                        //   tableData,
-                                        //   setTableData,
-                                        //   values
-                                        // );
-                                      }}
-                                      min={todayDate()}
+                                      value={item?.date}
+                                      name="date"
+                                      type="month"
                                       className="form-control"
-                                      placeholder=""
+                                      disabled={true}
+                                      onChange={(e) => {
+                                        // setFieldValue("repaymentDate", "");
+                                        setFieldValue("date", e.target.value);
+                                        setFieldValue(
+                                          "inMonth",
+                                          +e.target.value
+                                            .split("")
+                                            .slice(-2)
+                                            .join("")
+                                        );
+                                        setFieldValue(
+                                          "intYear",
+                                          +e.target.value
+                                            .split("")
+                                            .slice(0, 4)
+                                            .join("")
+                                        );
+                                        costInputHandler(
+                                          "repaymentDate",
+                                          e.target.value,
+                                          index,
+                                          tableData,
+                                          setTableData,
+                                          values
+                                        );
+                                      }}
                                       errors={errors}
                                       touched={touched}
                                     />
@@ -855,6 +850,13 @@ const CreateLoanApplicationModal = ({
                                           values
                                         );
                                       }}
+                                      // onBlur={(e) => {
+                                      //   // Get the current value and remove leading zeros
+                                      //   const currentValue = e.target.value.replace(/^0+/, '');
+                                    
+                                      //   // Update the field value without leading zeros
+                                      //   setFieldValue("intInstallmentAmount", currentValue);
+                                      // }}
                                       className="form-control"
                                       placeholder=""
                                       errors={errors}
@@ -871,6 +873,14 @@ const CreateLoanApplicationModal = ({
                                         setFieldValue(
                                           "strRemarks",
                                           e.target.value
+                                        );
+                                        costInputHandler(
+                                          "strRemarks",
+                                          e.target.value,
+                                          index,
+                                          tableData,
+                                          setTableData,
+                                          values
                                         );
                                       }}
                                       className="form-control"
@@ -892,7 +902,8 @@ const CreateLoanApplicationModal = ({
                                           if (!item?.isHold) {
                                             handleAmendmentClick(
                                               tableData,
-                                              setTableData
+                                              setTableData,
+                                              item
                                             );
                                           }
                                         }}
