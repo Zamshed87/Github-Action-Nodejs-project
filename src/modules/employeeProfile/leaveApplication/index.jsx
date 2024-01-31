@@ -66,6 +66,8 @@ function EmLeaveApplication(props) {
     setAllData,
     wgId,
     permission,
+    isOfficeAdmin,
+    demoPopupForDeleteAdmin,
   } = props?.propjObj;
 
   const dispatch = useDispatch();
@@ -75,6 +77,7 @@ function EmLeaveApplication(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Leave Application";
   }, []);
+
   return (
     <>
       <Formik
@@ -287,7 +290,8 @@ function EmLeaveApplication(props) {
                           isEdit,
                           setIsEdit,
                           setSingleData,
-                          leaveTypeDDL: leaveBalanceData?.length > 0 ? leaveTypeDDL : [],
+                          leaveTypeDDL:
+                            leaveBalanceData?.length > 0 ? leaveTypeDDL : [],
                           setLoading,
                           loading,
                           editPermission: permission?.isEdit,
@@ -342,7 +346,9 @@ function EmLeaveApplication(props) {
                                 scrollRef,
                                 setSingleData,
                                 setImageFile,
-                                demoPopupForDelete
+                                demoPopupForDelete,
+                                isOfficeAdmin,
+                                demoPopupForDeleteAdmin
                               )}
                               onRowClick={(item) => {
                                 setSingleData(item);

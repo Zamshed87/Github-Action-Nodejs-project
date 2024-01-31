@@ -6,6 +6,7 @@ import IConfirmModal from "../IConfirmModal";
 import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
 import {
   createLeaveApplication,
+  deleteLeaveApplication,
   getEmployeeLeaveBalanceAndHistory,
 } from "./helperAPI";
 import {
@@ -24,6 +25,7 @@ const withLeaveApplication = (WrappedComponent) => {
         buId,
         employeeId,
         wgId,
+        isOfficeAdmin,
       },
       permissionList,
     } = useSelector((state) => state?.auth, shallowEqual);
@@ -102,6 +104,23 @@ const withLeaveApplication = (WrappedComponent) => {
         message: "Are you want to sure you delete your leave?",
         yesAlertFunc: () => {
           createLeaveApplication(payload, setLoading, callback);
+        },
+        noAlertFunc: () => {
+          //   history.push("/components/dialogs")
+        },
+      };
+      IConfirmModal(confirmObject);
+    };
+    const demoPopupForDeleteAdmin = (item, values) => {
+      const callback = () => {
+        getData(values?.employee?.value, values?.year?.value);
+      };
+
+      const confirmObject = {
+        closeOnClickOutside: false,
+        message: "Are you want to sure you delete this leave?",
+        yesAlertFunc: () => {
+          deleteLeaveApplication(values, item, setLoading, callback);
         },
         noAlertFunc: () => {
           //   history.push("/components/dialogs")
@@ -298,6 +317,8 @@ const withLeaveApplication = (WrappedComponent) => {
           setAllData,
           wgId,
           permission,
+          isOfficeAdmin,
+          demoPopupForDeleteAdmin,
         }}
       />
     );
