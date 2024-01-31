@@ -252,7 +252,7 @@ function CreateSingleIncrement() {
   }, [id, state]);
 
   useEffect(() => {
-    if (id && state?.singleData?.transferPromotionObj) {
+    if (id && state?.singleData?.transferPromotionObj?.intEmployeeId) {
       getTransferAndPromotionHistoryById(
         orgId,
         state?.singleData?.transferPromotionObj?.intEmployeeId,
@@ -850,12 +850,12 @@ function CreateSingleIncrement() {
                             "label",
                             0
                           );
-                          getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${valueOption?.value}`,
-                            "DepartmentId",
-                            "DepartmentName",
-                            setDepartmentDDL
-                          );
+                          // getPeopleDeskAllDDL(
+                          //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${valueOption?.value}`,
+                          //   "DepartmentId",
+                          //   "DepartmentName",
+                          //   setDepartmentDDL
+                          // );
                           // getPeopleDeskAllDDL(
                           //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${valueOption?.value}`,
                           //   "DesignationId",
@@ -872,12 +872,12 @@ function CreateSingleIncrement() {
                           //   "DesignationName",
                           //   setDesignationDDL
                           // );
-                          getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${valueOption?.value}`,
-                            "EmployeeId",
-                            "EmployeeName",
-                            setSupNLineManagerDDL
-                          );
+                          // getPeopleDeskAllDDL(
+                          //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoDDL&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${valueOption?.value}`,
+                          //   "EmployeeId",
+                          //   "EmployeeName",
+                          //   setSupNLineManagerDDL
+                          // );
                           setValues((prev) => ({
                             ...prev,
                             businessUnit: valueOption,
@@ -1367,7 +1367,7 @@ function CreateSingleIncrement() {
                           Add
                         </button>
                       </div>
-                      {!!rowDto.length > 0 && (
+                      {!!rowDto?.length > 0 && (
                         <>
                           <div className="col-lg-12 mb-2 mt-3">
                             <h3

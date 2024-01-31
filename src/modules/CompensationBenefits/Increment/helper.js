@@ -41,7 +41,12 @@ export const getAllIncrementAndPromotionLanding = async (
   }
 };
 
-export const incrementColumnData = (page, paginationSize, history) => {
+export const incrementColumnData = (
+  page,
+  paginationSize,
+  history,
+  getTransferNpromotion
+) => {
   return [
     {
       title: "SL",
@@ -155,20 +160,40 @@ export const incrementColumnData = (page, paginationSize, history) => {
               type="button"
             >
               <EditOutlined
-                onClick={() =>
-                  history.push({
-                    pathname: `/compensationAndBenefits/increment/singleIncrement/edit/${record?.intIncrementId}`,
-                    state: {
-                      singleData: {
-                        incrementList: [record],
-                        transferPromotionObj: {},
+                onClick={() => {
+                  if (record?.intTransferNpromotionReferenceId) {
+                    getTransferNpromotion(
+                      `/Employee/GetEmpTransferNpromotionById?id=${record?.intTransferNpromotionReferenceId}`,
+                      (res) => {
+                        history.push({
+                          pathname: `/compensationAndBenefits/increment/singleIncrement/edit/${record?.intIncrementId}`,
+                          state: {
+                            singleData: {
+                              incrementList: [record],
+                              transferPromotionObj: res,
+                            },
+                            // isPromotion: false,
+                            // incrementList: modifiedData,
+                            // transferPromotionObj: null,
+                          },
+                        });
+                      }
+                    );
+                  } else {
+                    history.push({
+                      pathname: `/compensationAndBenefits/increment/singleIncrement/edit/${record?.intIncrementId}`,
+                      state: {
+                        singleData: {
+                          incrementList: [record],
+                          transferPromotionObj: {},
+                        },
+                        // isPromotion: false,
+                        // incrementList: modifiedData,
+                        // transferPromotionObj: null,
                       },
-                      // isPromotion: false,
-                      // incrementList: modifiedData,
-                      // transferPromotionObj: null,
-                    },
-                  })
-                }
+                    });
+                  }
+                }}
               />
             </button>
           </Tooltip>

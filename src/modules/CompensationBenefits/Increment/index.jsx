@@ -29,6 +29,7 @@ import {
 import PeopleDeskTable, {
   paginationSize,
 } from "../../../common/peopleDeskTable";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const initialValues = {
   searchString: "",
@@ -177,10 +178,12 @@ function IncrementLanding() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const [transferNpromotion, getTransferNpromotion, loading1] = useAxiosGet();
+
 
   return (
     <>
-      {loading && <Loading />}
+      {(loading || loading1 ) && <Loading />}
       <form onSubmit={handleSubmit} className="employeeProfile-form-main">
         <div className="employee-profile-main">
           {/* box-employee-profile  */}
@@ -401,7 +404,8 @@ function IncrementLanding() {
                     columnData={incrementColumnData(
                       pages?.current,
                       pages?.pageSize,
-                      history
+                      history,
+                      getTransferNpromotion
                     )}
                     pages={pages}
                     rowDto={rowDto}

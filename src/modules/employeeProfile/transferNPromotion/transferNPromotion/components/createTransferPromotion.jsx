@@ -163,6 +163,7 @@ function CreateTransferPromotion() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  console.log({state})
 
   const modifiedData = {
     employee: {
