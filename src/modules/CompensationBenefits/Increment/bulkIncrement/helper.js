@@ -25,6 +25,7 @@ export const processBulkUploadIncrementAction = async (
       isActive: true,
       intCreatedBy: employeeId,
     }));
+    isDevServer &&  console.log({modifiedData, data})
     setter(modifiedData);
     setLoading(false);
   } catch (error) {
