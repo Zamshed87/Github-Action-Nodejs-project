@@ -147,7 +147,7 @@ function SalaryAssignAndDeduction() {
       wgId
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId, wgId]);
+  }, [orgId, buId, wgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
