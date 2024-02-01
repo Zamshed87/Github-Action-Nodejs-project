@@ -63,3 +63,15 @@ export const deleteLeaveApplication = async (values, item, setLoading, cb) => {
     setLoading && setLoading(false);
   }
 };
+export const approveEditLeaveApplication = async (payload, setLoading, cb) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.post(`/LeaveMovement/ApproveLeaveEdit`, payload);
+    cb && cb();
+    toast.success(res?.data?.result?.Message || "Submitted Successfully");
+    setLoading && setLoading(false);
+  } catch (error) {
+    toast.warn(error?.response?.data?.message || "Something went wrong");
+    setLoading && setLoading(false);
+  }
+};
