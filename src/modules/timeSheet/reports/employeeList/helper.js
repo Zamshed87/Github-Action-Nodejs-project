@@ -213,10 +213,11 @@ export const empReportListColumns = (
     {
       title: "Payroll Group",
       dataIndex: "payrollGroup",
-      sorter: false,
+      sorter: true,
       filter: true,
       width: "200px",
       filterDropDownList: headerList[`strPayrollGroupList`],
+      fieldType: "string",
     },
     {
       title: "Supervisor",
