@@ -84,7 +84,7 @@ function Education({
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId, wgId, isOfficeAdmin } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -387,7 +387,7 @@ function Education({
               : todayDate(),
           }}
           validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting, resetForm }) => {
+          onSubmit={(values, {  resetForm }) => {
             saveHandler(values, () => {
               resetForm(initData);
             });
@@ -395,12 +395,10 @@ function Education({
         >
           {({
             handleSubmit,
-            resetForm,
             values,
             errors,
             touched,
             setFieldValue,
-            isValid,
           }) => (
             <>
               {loading && <Loading />}
@@ -409,25 +407,23 @@ function Education({
                   <div className="education check">
                     <div>
                       <h5>Education</h5>
-                      {1 && (
-                        <div
-                          className="d-flex align-items-center"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            setStatus("input");
-                            setIsCreateForm(true);
-                          }}
-                        >
-                          <div className="item">
-                            <ControlPoint
-                              sx={{ color: success500, fontSize: "16px" }}
-                            />
-                          </div>
-                          <div className="item">
-                            <p>Add your education</p>
-                          </div>
+                      <div
+                        className="d-flex align-items-center"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          setStatus("input");
+                          setIsCreateForm(true);
+                        }}
+                      >
+                        <div className="item">
+                          <ControlPoint
+                            sx={{ color: success500, fontSize: "16px" }}
+                          />
                         </div>
-                      )}
+                        <div className="item">
+                          <p>Add your education</p>
+                        </div>
+                      </div>
                     </div>
                     {isCreateForm ? (
                       <>
@@ -638,7 +634,7 @@ function Education({
                                 )}
                               </div>
 
-                              {isOfficeAdmin && (
+                              {1 && (
                                 <div
                                   className="d-flex align-items-center justify-content-end"
                                   style={{ marginTop: "24px" }}
@@ -733,7 +729,7 @@ function Education({
                                             </div>
                                           )}
                                         </div>
-                                        {isOfficeAdmin && (
+                                        {1 && (
                                           <div className="col-lg-1">
                                             <ActionMenu
                                               color={gray900}

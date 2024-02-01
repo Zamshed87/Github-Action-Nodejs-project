@@ -325,7 +325,6 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const onButtonClick = () => {
     inputFile.current.click();
   };
-console.log({isOfficeAdmin})
   return (
     <>
       <Formik
@@ -568,8 +567,6 @@ console.log({isOfficeAdmin})
                             </div>
                           )}
                         </div>
-
-                        {isOfficeAdmin && (
                           <div
                             className="d-flex align-items-center justify-content-end"
                             style={{ marginTop: "24px" }}
@@ -609,7 +606,6 @@ console.log({isOfficeAdmin})
                               Save
                             </button>
                           </div>
-                        )}
                       </div>
                     </>
                   )}
@@ -663,7 +659,7 @@ console.log({isOfficeAdmin})
                                     </div>
                                   )}
                                 </div>
-                                {isOfficeAdmin && (
+                                {1 && (
                                   <div className="col-lg-1">
                                     <ActionMenu
                                       color={gray900}
