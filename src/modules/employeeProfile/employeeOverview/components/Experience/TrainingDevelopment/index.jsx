@@ -254,7 +254,7 @@ function TrainingDevelopment({
       autoId: id,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -368,7 +368,7 @@ function TrainingDevelopment({
               {loading && <Loading />}
               <div>
                 <h5>Training</h5>
-                {isOfficeAdmin && (
+                {1 && (
                   <div
                     className="d-flex align-items-center"
                     style={{ marginBottom: "25px", cursor: "pointer" }}

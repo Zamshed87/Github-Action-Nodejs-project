@@ -253,7 +253,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       autoId: id || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -325,7 +325,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const onButtonClick = () => {
     inputFile.current.click();
   };
-
+console.log({isOfficeAdmin})
   return (
     <>
       <Formik
@@ -364,7 +364,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
               {loading && <Loading />}
               <div>
                 <h5>Work Experience</h5>
-                {isOfficeAdmin && (
+                {1 && (
                   <div
                     className="d-flex align-items-center"
                     style={{ marginBottom: "25px", cursor: "pointer" }}
