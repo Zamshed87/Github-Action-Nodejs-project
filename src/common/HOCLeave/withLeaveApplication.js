@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import IConfirmModal from "../IConfirmModal";
 import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
 import {
-  approveEditLeaveApplication,
   createLeaveApplication,
   deleteLeaveApplication,
   getEmployeeLeaveBalanceAndHistory,
@@ -199,8 +198,11 @@ const withLeaveApplication = (WrappedComponent) => {
         closeOnClickOutside: false,
         message: `Do you want to ${action} ?`,
         yesAlertFunc: () => {
-          if (singleData?.ApprovalStatus === "Approved" && isOfficeAdmin) {
-            approveEditLeaveApplication(payload, setLoading, callback);
+          if (values?.employee) {
+            createLeaveApplication(payload, setLoading, callback);
+
+            // if (singleData?.ApprovalStatus === "Approved" && isOfficeAdmin) {
+            // approveEditLeaveApplication(payload, setLoading, callback);
           } else {
             createLeaveApplication(payload, setLoading, callback);
           }

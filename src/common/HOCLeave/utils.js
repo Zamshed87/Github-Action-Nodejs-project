@@ -212,7 +212,7 @@ export const empMgmtLeaveApplicationDtoColumn = (
               </button>
             </Tooltip>
           )}
-          {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
+          {/* {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
             <Tooltip title="Edit" arrow>
               <button className="iconButton" type="button">
                 <EditOutlined
@@ -242,7 +242,7 @@ export const empMgmtLeaveApplicationDtoColumn = (
                 />
               </button>
             </Tooltip>
-          )}
+          )} */}
         </div>
       ),
     },
