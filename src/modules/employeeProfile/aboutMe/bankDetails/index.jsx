@@ -35,7 +35,7 @@ const BankDetails = ({ objProps, isEditBtn, editBtnHandler, empId }) => {
     getEmpData,
     isOfficeAdmin
   } = objProps;
-
+  console.log({isOfficeAdmin})
   return (
     <div className="bankDetailsCard about-info-card pb-0">
       <div className="about-info-card-heading">

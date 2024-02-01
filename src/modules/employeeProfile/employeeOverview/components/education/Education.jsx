@@ -290,7 +290,7 @@ function Education({
       autoId: id || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -409,7 +409,7 @@ function Education({
                   <div className="education check">
                     <div>
                       <h5>Education</h5>
-                      {isOfficeAdmin && (
+                      {1 && (
                         <div
                           className="d-flex align-items-center"
                           style={{ cursor: "pointer" }}
