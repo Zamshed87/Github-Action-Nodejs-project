@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import { useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import { getEmployeeProfileViewDataForAddress } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
 import OtherAddress from "./OtherAddress";
 import ParmanentAddress from "./ParmanentAddress";
 import PresentAddress from "./PresentAddress";
-import { shallowEqual, useSelector } from "react-redux";
+import Loading from "common/loading/Loading";
 
 function Address({ empId }) {
   const [rowDto, setRowDto] = useState({});
@@ -27,6 +28,7 @@ function Address({ empId }) {
 
   return (
     <>
+      {loading && <Loading />}
       <h5>Address</h5>
       <ParmanentAddress getData={getData} empId={empId} />
       <PresentAddress getData={getData} rowDto={rowDto} empId={empId} />

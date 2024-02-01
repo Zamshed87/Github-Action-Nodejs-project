@@ -60,7 +60,7 @@ function TrainingDevelopment({
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId, isOfficeAdmin } = useSelector(
+  const { orgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -254,7 +254,7 @@ function TrainingDevelopment({
       autoId: id,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -368,7 +368,7 @@ function TrainingDevelopment({
               {loading && <Loading />}
               <div>
                 <h5>Training</h5>
-                {isOfficeAdmin && (
+                {1 && (
                   <div
                     className="d-flex align-items-center"
                     style={{ marginBottom: "25px", cursor: "pointer" }}
@@ -662,66 +662,63 @@ function TrainingDevelopment({
                                     </div>
                                   )}
                                 </div>
-                                {isOfficeAdmin && (
-                                  <div className="col-lg-1">
-                                    <ActionMenu
-                                      color={gray900}
-                                      fontSize={"18px"}
-                                      options={[
-                                        {
-                                          value: 1,
-                                          label: "Edit",
-                                          icon: (
-                                            <ModeEditOutlined
-                                              sx={{
-                                                marginRight: "10px",
-                                                fontSize: "16px",
-                                              }}
-                                            />
-                                          ),
-                                          onClick: () => {
-                                            setStatus("input");
-                                            setIsCreateForm(true);
-                                            setSingleData({
-                                              trainingTitle:
-                                                item?.strTrainingTitle,
-                                              issuingOrganization:
-                                                item?.strInstituteName,
-                                              fromDate: item?.dteStartDate,
-                                              toDate: item?.dteEndDate,
-                                              expirationDate:
-                                                item?.dteExpiryDate,
-                                              intTrainingId:
-                                                item?.intTrainingId,
-                                            });
-                                            setImageFile({
-                                              globalFileUrlId:
-                                                item?.intTrainingFileUrlId,
-                                            });
-                                          },
+
+                                <div className="col-lg-1">
+                                  <ActionMenu
+                                    color={gray900}
+                                    fontSize={"18px"}
+                                    options={[
+                                      {
+                                        value: 1,
+                                        label: "Edit",
+                                        icon: (
+                                          <ModeEditOutlined
+                                            sx={{
+                                              marginRight: "10px",
+                                              fontSize: "16px",
+                                            }}
+                                          />
+                                        ),
+                                        onClick: () => {
+                                          setStatus("input");
+                                          setIsCreateForm(true);
+                                          setSingleData({
+                                            trainingTitle:
+                                              item?.strTrainingTitle,
+                                            issuingOrganization:
+                                              item?.strInstituteName,
+                                            fromDate: item?.dteStartDate,
+                                            toDate: item?.dteEndDate,
+                                            expirationDate: item?.dteExpiryDate,
+                                            intTrainingId: item?.intTrainingId,
+                                          });
+                                          setImageFile({
+                                            globalFileUrlId:
+                                              item?.intTrainingFileUrlId,
+                                          });
                                         },
-                                        {
-                                          value: 2,
-                                          label: "Delete",
-                                          icon: (
-                                            <DeleteOutline
-                                              sx={{
-                                                marginRight: "10px",
-                                                fontSize: "16px",
-                                              }}
-                                            />
-                                          ),
-                                          onClick: () => {
-                                            deleteHandler(
-                                              item?.intTrainingId,
-                                              item
-                                            );
-                                          },
+                                      },
+                                      {
+                                        value: 2,
+                                        label: "Delete",
+                                        icon: (
+                                          <DeleteOutline
+                                            sx={{
+                                              marginRight: "10px",
+                                              fontSize: "16px",
+                                            }}
+                                          />
+                                        ),
+                                        onClick: () => {
+                                          deleteHandler(
+                                            item?.intTrainingId,
+                                            item
+                                          );
                                         },
-                                      ]}
-                                    />
-                                  </div>
-                                )}
+                                      },
+                                    ]}
+                                  />
+                                </div>
                               </div>
                             </div>
                           </>
