@@ -116,7 +116,6 @@ function EmLeaveApplication(props) {
             <Form onSubmit={handleSubmit}>
               {permission?.isCreate ? (
                 <div className="table-card">
-                  {console.log({ employeeInfo })}
                   <div ref={scrollRef} className="table-card-heading pb-1 pr-0">
                     <div className="employeeInfo d-flex align-items-center  ml-lg-0 ml-md-4">
                       {loadingForInfo && (
