@@ -179,14 +179,14 @@ function Phone({ empId, buId, wgId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = () => {
     const payload = {
       partType: "Phone",
       employeeId: empId,
       autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -253,7 +253,7 @@ function Phone({ empId, buId, wgId }) {
           phone: singleData ? singleData : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -261,12 +261,10 @@ function Phone({ empId, buId, wgId }) {
       >
         {({
           handleSubmit,
-          resetForm,
           values,
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -295,7 +293,6 @@ function Phone({ empId, buId, wgId }) {
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -309,7 +306,6 @@ function Phone({ empId, buId, wgId }) {
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={!values.phone}

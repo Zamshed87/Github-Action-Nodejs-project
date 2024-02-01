@@ -73,7 +73,7 @@ function AboutMeDetails() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
-  console.log({employeeFeature, isOfficeAdmin})
+
   return (
     <>
       {loading && <Loading />}
@@ -137,7 +137,7 @@ function AboutMeDetails() {
               }}
               isOfficeAdmin={isOfficeAdmin || employeeFeature?.isEdit}
             />
-            {(isOfficeAdmin || employeeFeature?.isEdit) && (
+            {/* {(isOfficeAdmin || employeeFeature?.isEdit) && ( */}
               <>
                 <div className="bankDetailsCard about-info-card pb-0">
                   <div className="about-info-card-heading">
@@ -148,7 +148,7 @@ function AboutMeDetails() {
                   </div>
                 </div>
               </>
-            )}
+            
             <BankDetails
               objProps={{
                 empBasic: empBasic?.empEmployeeBankDetail,
