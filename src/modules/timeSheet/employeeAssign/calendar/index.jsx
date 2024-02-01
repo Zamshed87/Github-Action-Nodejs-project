@@ -130,8 +130,8 @@ function Calendar() {
       const data = [
         ...new Set(singleShiftData.map((item) => item.strCalendarName)),
       ];
-      let colorData = {};
-      let colorDataBg = {};
+      const colorData = {};
+      const colorDataBg = {};
       data.forEach((status, index) => {
         colorData[status] = colors[index % colors.length];
       });
