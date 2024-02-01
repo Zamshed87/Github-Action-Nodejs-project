@@ -57,7 +57,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId, isOfficeAdmin } = useSelector(
+  const { orgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -253,7 +253,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       autoId: id || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -325,7 +325,6 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   const onButtonClick = () => {
     inputFile.current.click();
   };
-
   return (
     <>
       <Formik
@@ -364,7 +363,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
               {loading && <Loading />}
               <div>
                 <h5>Work Experience</h5>
-                {isOfficeAdmin && (
+                {1 && (
                   <div
                     className="d-flex align-items-center"
                     style={{ marginBottom: "25px", cursor: "pointer" }}
@@ -568,8 +567,6 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                             </div>
                           )}
                         </div>
-
-                        {isOfficeAdmin && (
                           <div
                             className="d-flex align-items-center justify-content-end"
                             style={{ marginTop: "24px" }}
@@ -609,7 +606,6 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                               Save
                             </button>
                           </div>
-                        )}
                       </div>
                     </>
                   )}
@@ -663,7 +659,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                     </div>
                                   )}
                                 </div>
-                                {isOfficeAdmin && (
+                                {1 && (
                                   <div className="col-lg-1">
                                     <ActionMenu
                                       color={gray900}

@@ -115,8 +115,10 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
-            inTime: moment(values?.intime).format("h:mm:ss") || item?.StartTime,
-            outTime: moment(values?.outtime).format("h:mm:ss") || item?.EndTime,
+            inTime:
+              moment(values?.intime).format("HH:mm:ss") || item?.StartTime,
+            outTime:
+              moment(values?.outtime).format("HH:mm:ss") || item?.EndTime,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave

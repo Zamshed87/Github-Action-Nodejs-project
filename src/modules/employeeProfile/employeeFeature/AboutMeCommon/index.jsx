@@ -73,6 +73,7 @@ function AboutMeDetails() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
+
   return (
     <>
       {loading && <Loading />}
@@ -136,7 +137,7 @@ function AboutMeDetails() {
               }}
               isOfficeAdmin={isOfficeAdmin || employeeFeature?.isEdit}
             />
-            {(isOfficeAdmin || employeeFeature?.isEdit) && (
+            {/* {(isOfficeAdmin || employeeFeature?.isEdit) && ( */}
               <>
                 <div className="bankDetailsCard about-info-card pb-0">
                   <div className="about-info-card-heading">
@@ -147,7 +148,7 @@ function AboutMeDetails() {
                   </div>
                 </div>
               </>
-            )}
+            
             <BankDetails
               objProps={{
                 empBasic: empBasic?.empEmployeeBankDetail,
@@ -588,7 +589,7 @@ function AboutMeDetails() {
                     value:
                       empBasic?.employeeProfileLandingView?.intSupervisorId,
                     label:
-                      empBasic?.employeeProfileLandingView?.strSupervisorName,
+                      empBasic?.employeeProfileLandingView?.strSupervisorNameWithCode,
                   }
                 : undefined,
               lineManager: empBasic?.employeeProfileLandingView
@@ -596,7 +597,7 @@ function AboutMeDetails() {
                 ? {
                     value:
                       empBasic?.employeeProfileLandingView?.intLineManagerId,
-                    label: empBasic?.employeeProfileLandingView?.strLinemanager,
+                    label: empBasic?.employeeProfileLandingView?.strLinemanagerNameWithCode,
                   }
                 : undefined,
               dottedSupervisor: empBasic?.employeeProfileLandingView
@@ -607,7 +608,7 @@ function AboutMeDetails() {
                         ?.intDottedSupervisorId,
                     label:
                       empBasic?.employeeProfileLandingView
-                        ?.strDottedSupervisorName,
+                        ?.strDottedSupervisorNameWithCode,
                   }
                 : undefined,
               isSalaryHold: empBasic?.employeeProfileLandingView?.isSalaryHold,

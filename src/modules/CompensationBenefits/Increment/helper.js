@@ -1,7 +1,9 @@
+import { EditOutlined } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import axios from "axios";
-import { dateFormatter } from "../../../utility/dateFormatter";
-import Chips from "../../../common/Chips";
 import AvatarComponent from "../../../common/AvatarComponent";
+import Chips from "../../../common/Chips";
+import { dateFormatter } from "../../../utility/dateFormatter";
 
 export const getAllIncrementAndPromotionLanding = async (
   orgId,
@@ -39,7 +41,12 @@ export const getAllIncrementAndPromotionLanding = async (
   }
 };
 
-export const incrementColumnData = (page, paginationSize) => {
+export const incrementColumnData = (
+  page,
+  paginationSize,
+  history,
+  getTransferNpromotion
+) => {
   return [
     {
       title: "SL",
@@ -138,6 +145,60 @@ export const incrementColumnData = (page, paginationSize) => {
           </div>
         );
       },
+    },
+    {
+      title: "Action",
+      dataIndex: "strStatus",
+      width: 80,
+      render: (record) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="Edit" arrow>
+            <button
+              className={`${
+                record?.strStatus === "Pending" ? "iconButton" : "d-none"
+              }`}
+              type="button"
+            >
+              <EditOutlined
+                onClick={() => {
+                  if (record?.intTransferNpromotionReferenceId) {
+                    getTransferNpromotion(
+                      `/Employee/GetEmpTransferNpromotionById?id=${record?.intTransferNpromotionReferenceId}`,
+                      (res) => {
+                        history.push({
+                          pathname: `/compensationAndBenefits/increment/singleIncrement/edit/${record?.intIncrementId}`,
+                          state: {
+                            singleData: {
+                              incrementList: [record],
+                              transferPromotionObj: res,
+                            },
+                            // isPromotion: false,
+                            // incrementList: modifiedData,
+                            // transferPromotionObj: null,
+                          },
+                        });
+                      }
+                    );
+                  } else {
+                    history.push({
+                      pathname: `/compensationAndBenefits/increment/singleIncrement/edit/${record?.intIncrementId}`,
+                      state: {
+                        singleData: {
+                          incrementList: [record],
+                          transferPromotionObj: {},
+                        },
+                        // isPromotion: false,
+                        // incrementList: modifiedData,
+                        // transferPromotionObj: null,
+                      },
+                    });
+                  }
+                }}
+              />
+            </button>
+          </Tooltip>
+        </div>
+      ),
     },
   ];
 };

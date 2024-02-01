@@ -1,16 +1,16 @@
-import * as Yup from "yup";
-import moment from "moment";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { LightTooltip } from "../LightTooltip";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
 import { Attachment, EditOutlined } from "@mui/icons-material";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { Tooltip } from "@mui/material";
+import moment from "moment";
+import * as Yup from "yup";
+import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
 import {
   dateFormatter,
   dateFormatterForInput,
 } from "../../utility/dateFormatter";
 import Chips from "../Chips";
-import { Tooltip } from "@mui/material";
+import { LightTooltip } from "../LightTooltip";
 
 export const initDataForLeaveApplication = {
   search: "",
@@ -46,7 +46,9 @@ export const empMgmtLeaveApplicationDtoColumn = (
   scrollRef,
   setSingleData,
   setImageFile,
-  demoPopupForDelete
+  demoPopupForDelete,
+  isOfficeAdmin,
+  demoPopupForDeleteAdmin
 ) => {
   return [
     {
@@ -191,6 +193,20 @@ export const empMgmtLeaveApplicationDtoColumn = (
                     e.stopPropagation();
                     setSingleData("");
                     demoPopupForDelete(data, values);
+                  }}
+                />
+              </button>
+            </Tooltip>
+          )}
+
+          {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
+            <Tooltip title="Delete" arrow>
+              <button type="button" className="iconButton">
+                <DeleteOutlineOutlinedIcon
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSingleData("");
+                    demoPopupForDeleteAdmin(data, values);
                   }}
                 />
               </button>
