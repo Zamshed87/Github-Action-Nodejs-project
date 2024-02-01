@@ -6,12 +6,12 @@ import {
   ModeEditOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
 import ActionMenu from "../../../../../../common/ActionMenu";
-import { getPeopleDeskAllDDL } from "../../../../../../common/api";
 import FormikSelect from "../../../../../../common/FormikSelect";
+import { getPeopleDeskAllDDL } from "../../../../../../common/api";
 import Loading from "../../../../../../common/loading/Loading";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import { customStyles } from "../../../../../../utility/selectCustomStyle";
@@ -211,7 +211,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = () => {
     const payload = {
       partType: "BloodGroup",
       employeeId:
@@ -298,7 +298,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
             : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -306,12 +306,10 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       >
         {({
           handleSubmit,
-          resetForm,
           values,
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -342,7 +340,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                         >
                           <button
                             type="button"
-                            variant="text"
+                            // variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -356,7 +354,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                           </button>
 
                           <button
-                            variant="text"
+                            // variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={!values.bloodGroup}

@@ -251,7 +251,7 @@ function PresentAddress({ getData, rowDto, empId }) {
       autoId: rowDto?.presentAddress[0]?.intEmployeeAddressId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",

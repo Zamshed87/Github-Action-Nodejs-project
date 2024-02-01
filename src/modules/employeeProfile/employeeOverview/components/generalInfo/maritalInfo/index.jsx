@@ -6,7 +6,7 @@ import {
   SupervisorAccount,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
 import ActionMenu from "../../../../../../common/ActionMenu";
@@ -203,7 +203,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = () => {
     const payload = {
       partType: "MaritalStatus",
       employeeId:
@@ -290,7 +290,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
             : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -298,12 +298,10 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       >
         {({
           handleSubmit,
-          resetForm,
           values,
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -341,7 +339,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                         >
                           <button
                             type="button"
-                            variant="text"
+                            // variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {

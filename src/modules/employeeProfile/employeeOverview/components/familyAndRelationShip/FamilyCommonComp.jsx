@@ -92,7 +92,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
       autoId: autoId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: isDelete ? false : true,
+      isActive: isDelete ? true : true,
       name: values?.name,
       relationId: values?.relationship?.value || 0,
       relationName: values?.relationship?.label || "",

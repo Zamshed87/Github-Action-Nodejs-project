@@ -57,7 +57,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
   // image
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId, isOfficeAdmin } = useSelector(
+  const { orgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
