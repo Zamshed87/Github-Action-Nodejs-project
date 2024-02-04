@@ -1816,9 +1816,10 @@ const CreateEditLeavePolicy = () => {
                                         item?.value !==
                                         existingPolicies[index]?.intWorkplace
                                     );
-                                    form.setFieldsValue({
-                                      intWorkplaceList: temp,
-                                    });
+                                    // requirement from habiba apu🔥🔥🔥
+                                    // form.setFieldsValue({
+                                    //   intWorkplaceList: temp,
+                                    // });
                                     // deleteRow(item?.intWorkplaceId);
                                   }}
                                 >
