@@ -25,6 +25,7 @@ import EmployeeSelfManagerList from "../../employeeProfile/dashboard/components/
 import { getPolicyOnEmployeeInbox } from "../../policyUpload/helper";
 import NoticeBoard from "./Noticeboard";
 import Loading from "common/loading/Loading";
+import { useHistory } from "react-router-dom";
 
 const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   const { orgId, employeeId, buId } = useSelector(
@@ -39,6 +40,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   const [singleNoticeData, setSingleNoticeData] = useState("");
   const [rowDto, setRowDto] = useState([]);
   const [loadingForBirth, setLoadingForBirth] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     setLoading(true);
@@ -116,12 +118,15 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                 }}
               >
                 <h2
-                  className="w-100"
+                  className="w-100 pointer"
                   style={{
                     color: gray500,
                     fontSize: "1rem",
                     height: "15%",
                     padding: "12px 0 0 12px",
+                  }}
+                  onClick={() => {
+                    history.push("/SelfService/leaveAndMovement/leaveApplication");
                   }}
                 >
                   Leave Balance
