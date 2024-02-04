@@ -10,6 +10,7 @@ import { customStyles } from "../../utility/selectCustomStyle";
 import ManagementDashboardLanding from "./ManagementDashboardLanding/ManagementDashboardLanding";
 import SelfDashboardLanding from "./SelfDashboardLanding/SelfDashboardLanding";
 import SupervisorDashboardLanding from "./SupervisorDashboardLanding/SupervisorDashboardLanding";
+import { useHistory } from "react-router-dom";
 
 const MasterDashboardLanding = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const MasterDashboardLanding = () => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const { values, setValues, errors, touched } = useFormik({
     initialValues: {
@@ -60,7 +62,16 @@ const MasterDashboardLanding = () => {
               className="employee-self-dashboard-employee-name"
               style={{ color: gray500, fontSize: "1rem" }}
             >
-              Hello, {strDisplayName}, Welcome Back !
+              Hello,{" "}
+              <span
+                className="pointer"
+                onClick={() => {
+                  history.push("/SelfService/aboutMe");
+                }}
+              >
+                {strDisplayName}
+              </span>
+              , Welcome Back !
             </h4>
           </div>
           {values?.dashboardRoles?.length > 1 &&
