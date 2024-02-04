@@ -31,7 +31,7 @@ function EmployeeFeatureNew() {
   const history = useHistory();
 
   // redux
-  const { buId, wgId, wId, buName } = useSelector(
+  const { buId, wgId, wId, buName, isOfficeAdmin } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -566,6 +566,8 @@ function EmployeeFeatureNew() {
               isEdit={false}
               pages={undefined}
               singleData={undefined}
+              isMenuEditPermission={employeeFeature?.isEdit}
+              isOfficeAdmin={isOfficeAdmin}
             />
           </>
         }
