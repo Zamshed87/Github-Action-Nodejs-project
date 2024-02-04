@@ -129,6 +129,14 @@ const PFFundModalView: React.FC<TPFFundModalView> = ({
           </span>
         </Col>
         <Col md={8} sm={24}>
+          <b style={{ fontWeight: 600, fontSize: "12px" }}>Total Amount: </b>{" "}
+          <span style={{ fontSize: "12px" }}>
+            {singleData?.strType === "Investment"
+              ? singleData?.numAmount * -1
+              : singleData?.numAmount}
+          </span>
+        </Col>
+        <Col md={8} sm={24}>
           <b style={{ fontWeight: 600, fontSize: "12px" }}>Status: </b>{" "}
           <span>
             {singleData?.status === "Incomplete" ? (
