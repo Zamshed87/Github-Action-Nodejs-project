@@ -1203,6 +1203,30 @@ const CreateEditLeavePolicy = () => {
                             </Col>
                             <Col md={12} sm={24}>
                               <PInput
+                                label="Earn Leave Include Absent"
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isEarnLveIncludeAbsent"
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PInput
+                                label="Earn Leave Include Movement"
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isEarnLveIncludeLeaveMovement"
+                              />
+                            </Col>
+                            <Col md={24} sm={24}>
+                              <PInput
+                                label="Earn Leave Count From Confirmation Date"
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isEarnLveCountFromConfirmationDate"
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PInput
                                 type="number"
                                 name="intDayForOneEarnLve"
                                 label="Day For One Earn Leave"
