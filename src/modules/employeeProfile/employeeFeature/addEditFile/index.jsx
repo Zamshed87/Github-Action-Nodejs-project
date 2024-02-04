@@ -19,8 +19,8 @@ export default function AddEditForm({
   isEdit = false,
   singleData,
   pages,
-  isMenuEditPermission = true,
-  isOfficeAdmin = true
+  isMenuEditPermission = false,
+  isOfficeAdmin = false
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
@@ -461,6 +461,7 @@ export default function AddEditForm({
     }
   }, [orgId, buId, singleData, employeeId]);
 
+  console.log({isMenuEditPermission, isOfficeAdmin})
   return (
     <>
       <PForm
