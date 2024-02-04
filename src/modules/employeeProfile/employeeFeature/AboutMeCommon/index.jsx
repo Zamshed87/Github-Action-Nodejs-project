@@ -589,7 +589,7 @@ function AboutMeDetails() {
                     value:
                       empBasic?.employeeProfileLandingView?.intSupervisorId,
                     label:
-                      empBasic?.employeeProfileLandingView?.strSupervisorName,
+                      empBasic?.employeeProfileLandingView?.strSupervisorNameWithCode,
                   }
                 : undefined,
               lineManager: empBasic?.employeeProfileLandingView
@@ -597,7 +597,7 @@ function AboutMeDetails() {
                 ? {
                     value:
                       empBasic?.employeeProfileLandingView?.intLineManagerId,
-                    label: empBasic?.employeeProfileLandingView?.strLinemanager,
+                    label: empBasic?.employeeProfileLandingView?.strLinemanagerNameWithCode,
                   }
                 : undefined,
               dottedSupervisor: empBasic?.employeeProfileLandingView
@@ -608,7 +608,7 @@ function AboutMeDetails() {
                         ?.intDottedSupervisorId,
                     label:
                       empBasic?.employeeProfileLandingView
-                        ?.strDottedSupervisorName,
+                        ?.strDottedSupervisorNameWithCode,
                   }
                 : undefined,
               isSalaryHold: empBasic?.employeeProfileLandingView?.isSalaryHold,

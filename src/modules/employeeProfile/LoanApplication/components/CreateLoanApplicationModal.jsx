@@ -272,6 +272,7 @@ const CreateLoanApplicationModal = ({
                   <div className="col-4">
                     <label>Employee <Required/></label>
                     <AsyncFormikSelect
+                      isDisabled={singleData?.loanApplicationId}
                       selectedValue={values?.employee}
                       isSearchIcon={true}
                       handleChange={(valueOption) => {
@@ -287,6 +288,7 @@ const CreateLoanApplicationModal = ({
                       name="loanType"
                       options={loanType}
                       value={values?.loanType}
+                      isDisabled={singleData?.loanApplicationId}
                       label=""
                       onChange={(valueOption) => {
                         setFieldValue("loanType", valueOption);
@@ -295,7 +297,6 @@ const CreateLoanApplicationModal = ({
                       styles={customStyles}
                       errors={errors}
                       touched={touched}
-                      isDisabled={false}
                     />
                   </div>
                   <div className="col-4">
@@ -428,6 +429,7 @@ const CreateLoanApplicationModal = ({
                         }),
                       }}
                       isMulti
+                      isDisabled={singleData}
                       errors={errors}
                       placeholder="Guarantor Employee"
                       touched={touched}
@@ -447,6 +449,7 @@ const CreateLoanApplicationModal = ({
                       min={!singleData && todayDate()}
                       className="form-control"
                       placeholder=""
+                      disabled={singleData}
                       errors={errors}
                       touched={touched}
                     />
@@ -603,6 +606,7 @@ const CreateLoanApplicationModal = ({
                       classes="input-sm"
                       value={values?.effectiveDate}
                       name="effectiveDate"
+                      disabled={singleData}
                       type="date"
                       onChange={(e) => {
                         setFieldValue("effectiveDate", e.target.value);
@@ -850,13 +854,6 @@ const CreateLoanApplicationModal = ({
                                           values
                                         );
                                       }}
-                                      // onBlur={(e) => {
-                                      //   // Get the current value and remove leading zeros
-                                      //   const currentValue = e.target.value.replace(/^0+/, '');
-                                    
-                                      //   // Update the field value without leading zeros
-                                      //   setFieldValue("intInstallmentAmount", currentValue);
-                                      // }}
                                       className="form-control"
                                       placeholder=""
                                       errors={errors}

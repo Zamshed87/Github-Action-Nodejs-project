@@ -144,17 +144,6 @@ export default function LeaveApproval() {
     });
   }, [filterData]);
 
-  const searchData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter((item) =>
-        regex.test(item?.employeeName?.toLowerCase())
-      );
-      setRowDto({ listData: newDta });
-    } catch {
-      setRowDto([]);
-    }
-  };
   const getLandingData = (/* isSupOrLineManager = 1 */) => {
     getAllAnnouncement(ApplicationId, setAllNoticeData);
     getAllLeaveApplicatonListDataForApproval(
@@ -700,7 +689,9 @@ export default function LeaveApproval() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
+        onSubmit={() => {
+          //
+        }}
       >
         {({
           handleSubmit,
@@ -723,46 +714,16 @@ export default function LeaveApproval() {
                           <div className="heading mt-2">
                             <div className="d-flex align-items-center">
                               <BackButton title={"Leave Approval"} />
-                              {/* <div className="ml-3">
-                                <Tooltip title="Print">
-                                  <button
-                                    className="btn-save"
-                                    type="button"
-                                    style={{
-                                      border: "transparent",
-                                      width: "30px",
-                                      height: "30px",
-                                      background: "#f2f2f7",
-                                      borderRadius: "100px",
-                                    }}
-                                    onClick={() => {
-                                      // getPDFAction(
-                                      //   `/emp/PdfAndExcelReport/PdfAllLeaveApplicatonListForApprove?ViewType=${viewType}&EmployeeId=${employeeId}&WorkplaceGroupId=${workplaceGroupId}&DepartmentId=${departmentId}&DesignationId=${designationId}&ApplicantId=${
-                                      //     applicantId || 0
-                                      //   }&LeaveTypeId=${leaveTypeId}&FromDate=${fromDate}&ToDate=${toDate}&ApplicationId=${0}`,
-                                      //   setLoading
-                                      // );
-                                    }}
-                                  >
-                                    <PrintIcon
-                                      sx={{
-                                        color: "#637381",
-                                        fontSize: "16px",
-                                      }}
-                                    />
-                                  </button>
-                                </Tooltip>
-                              </div> */}
                             </div>
 
-                            <div className="table-card-head-right">
+                            <div >
                               {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
                               ).length > 0 && (
                                 <div className="d-flex actionIcon mr-3">
                                   <Tooltip title="Approve">
                                     <div
-                                      className="muiIconHover success mr-2"
+                                      className="muiIconHover success mr-3"
                                       onClick={() => {
                                         demoPopup(
                                           "approve",
@@ -776,9 +737,9 @@ export default function LeaveApproval() {
                                           <CheckCircle
                                             sx={{
                                               color: successColor,
-                                              width: "20px !important",
-                                              height: "20px !important",
-                                              fontSize: "20px !important"
+                                              width: "25px !important",
+                                              height: "35px !important",
+                                              fontSize: "20px !important",
                                             }}
                                           />
                                         }
@@ -801,8 +762,8 @@ export default function LeaveApproval() {
                                           <Cancel
                                             sx={{
                                               color: failColor,
-                                              width: "20px",
-                                              height: "20px",
+                                              width: "25px !important",
+                                              height: "35px !important",
                                               fontSize: "20px !important"
                                             }}
                                           />
