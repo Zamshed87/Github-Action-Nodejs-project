@@ -23,7 +23,6 @@ import { yearDDLAction } from "../../../utility/yearDDL";
 import "./leaveApplication.css";
 import { getSearchEmployeeList } from "../../../common/api";
 import AsyncFormikSelect from "../../../common/AsyncFormikSelect";
-import moment from "moment";
 import { dateFormatter } from "utility/dateFormatter";
 
 function EmLeaveApplication(props) {
@@ -166,7 +165,7 @@ function EmLeaveApplication(props) {
                         </p>
                         <p className="employeePosition">
                           {!loadingForInfo && employeeInfo?.[0]?.DesignationName
-                            ?  `${employeeInfo?.[0]?.DesignationName}, ${employeeInfo?.[0]?.EmployeeCode}`
+                            ?  `${employeeInfo?.[0]?.DesignationName}, ${employeeInfo?.[0]?.EmployeeCode}`  
                             : ""}
                         </p>
                         <p className="employeePosition">
