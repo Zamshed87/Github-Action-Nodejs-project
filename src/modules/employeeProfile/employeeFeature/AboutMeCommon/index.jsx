@@ -211,8 +211,8 @@ function AboutMeDetails() {
         components={
           <AddEditForm
             isEdit={true}
-            isMenuEditPermission={employeeFeature?.isEdit}
-            isOfficeAdmin={isOfficeAdmin}
+            isMenuEditPermission={!employeeFeature?.isEdit}
+            isOfficeAdmin={!isOfficeAdmin}
             singleData={{
               empId:
                 empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
