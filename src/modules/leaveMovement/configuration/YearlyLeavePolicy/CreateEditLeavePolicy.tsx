@@ -654,7 +654,7 @@ const CreateEditLeavePolicy = () => {
                               rules={[
                                 {
                                   required: true,
-                                  message: "Employment Type is required",
+                                  message: "Workplace is required",
                                 },
                               ]}
                             />
