@@ -566,8 +566,8 @@ function EmployeeFeatureNew() {
               isEdit={false}
               pages={undefined}
               singleData={undefined}
-              isMenuEditPermission={employeeFeature?.isEdit}
-              isOfficeAdmin={isOfficeAdmin}
+              // isMenuEditPermission={employeeFeature?.isEdit}
+              // isOfficeAdmin={isOfficeAdmin}
             />
           </>
         }
