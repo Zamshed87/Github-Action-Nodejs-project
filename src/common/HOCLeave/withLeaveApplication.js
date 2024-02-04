@@ -130,6 +130,7 @@ const withLeaveApplication = (WrappedComponent) => {
     };
 
     const demoPopup = (action, values, cb) => {
+      let payload = {};
       const callback = () => {
         getData(values?.employee?.value, values?.year?.value);
         setSingleData("");
@@ -155,34 +156,53 @@ const withLeaveApplication = (WrappedComponent) => {
         toast.error("Please Select half Time");
         return;
       }
-      const payload = {
-        isActive: true,
-        yearId: values?.year?.value,
-        leavePolicyId: values?.leaveType?.intPolicyId,
-        partId: singleData?.intApplicationId ? 2 : 1,
-        leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
-        leaveTypeId: values?.leaveType?.value,
-        employeeId: values?.employee ? values?.employee?.value : employeeId,
-        accountId: orgId,
-        businessUnitId: buId,
-        applicationDate: new Date(),
-        appliedFromDate: values?.fromDate,
-        appliedToDate: values?.toDate,
-        documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
-        leaveReason: values?.reason,
-        addressDuetoLeave: values?.location,
-        insertBy: employeeId,
-        isHalfDay: values?.isHalfDay?.label === "Half Day" ? true : false,
-        strHalDayRange: values?.halfTime?.label ? values?.halfTime?.label : " ",
-        workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
-      };
+      if (singleData?.ApprovalStatus === "Approved" && isOfficeAdmin) {
+        payload = {
+          intEmployeeId: values?.employee
+            ? values?.employee?.value
+            : employeeId,
+          intApplicationId: singleData?.intApplicationId,
+          intLeaveTypeId: values?.leaveType?.value,
+          fromDate: values?.fromDate,
+          toDate: values?.toDate,
+          intActionBy: employeeId,
+          strApprovalRemarks: "By office Admin",
+        };
+      } else {
+        payload = {
+          isActive: true,
+          yearId: values?.year?.value,
+          leavePolicyId: values?.leaveType?.intPolicyId,
+          partId: singleData?.intApplicationId ? 2 : 1,
+          leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
+          leaveTypeId: values?.leaveType?.value,
+          employeeId: values?.employee ? values?.employee?.value : employeeId,
+          accountId: orgId,
+          businessUnitId: buId,
+          applicationDate: new Date(),
+          appliedFromDate: values?.fromDate,
+          appliedToDate: values?.toDate,
+          documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
+          leaveReason: values?.reason,
+          addressDuetoLeave: values?.location,
+          insertBy: employeeId,
+          isHalfDay: values?.isHalfDay?.label === "Half Day" ? true : false,
+          strHalDayRange: values?.halfTime?.label
+            ? values?.halfTime?.label
+            : " ",
+          workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
+        };
+      }
 
-      let confirmObject = {
+      const confirmObject = {
         closeOnClickOutside: false,
         message: `Do you want to ${action} ?`,
         yesAlertFunc: () => {
           if (values?.employee) {
             createLeaveApplication(payload, setLoading, callback);
+
+            // if (singleData?.ApprovalStatus === "Approved" && isOfficeAdmin) {
+            // approveEditLeaveApplication(payload, setLoading, callback);
           } else {
             createLeaveApplication(payload, setLoading, callback);
           }

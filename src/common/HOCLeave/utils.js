@@ -212,6 +212,37 @@ export const empMgmtLeaveApplicationDtoColumn = (
               </button>
             </Tooltip>
           )}
+          {/* {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
+            <Tooltip title="Edit" arrow>
+              <button className="iconButton" type="button">
+                <EditOutlined
+                  onClick={(e) => {
+                    setIsEdit(true);
+                    e.stopPropagation();
+                    scrollRef.current.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                    setSingleData(record);
+                    setValues({
+                      ...values,
+                      leaveType: {
+                        value: record?.LeaveTypeId,
+                        label: record?.LeaveType,
+                      },
+                      fromDate: dateFormatterForInput(record?.AppliedFromDate),
+                      toDate: dateFormatterForInput(record?.AppliedToDate),
+                      location: record?.AddressDuetoLeave,
+                      reason: record?.Reason,
+                    });
+
+                    setImageFile({
+                      globalFileUrlId: record?.DocumentFileUrl,
+                    });
+                  }}
+                />
+              </button>
+            </Tooltip>
+          )} */}
         </div>
       ),
     },
