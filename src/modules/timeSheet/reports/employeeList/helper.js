@@ -213,9 +213,11 @@ export const empReportListColumns = (
     {
       title: "Payroll Group",
       dataIndex: "payrollGroup",
-      sorter: false,
-      filter: false,
+      sorter: true,
+      filter: true,
       width: "200px",
+      filterDropDownList: headerList[`strPayrollGroupList`],
+      fieldType: "string",
     },
     {
       title: "Supervisor",
@@ -417,8 +419,10 @@ export const empReportListColumns = (
       dataIndex: "bankName",
       key: "bankName",
       sorter: false,
-      filter: false,
+      filter: true,
       width: "200px",
+      filterDropDownList: headerList[`strBankList`],
+      fieldType: "string",
     },
     {
       title: "Branch",
@@ -436,14 +440,6 @@ export const empReportListColumns = (
       sorter: false,
       filter: false,
     },
-    // {
-    //   title: "Gross Salary",
-    //   dataIndex: "grossSalary",
-    //   key: "grossSalary",
-    //   width: "150px",
-    //   sorter: false,
-    //   filter: false,
-    // },
     {
       title: "Routing",
       dataIndex: "routingNo",

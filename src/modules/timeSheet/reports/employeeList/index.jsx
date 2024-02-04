@@ -11,12 +11,10 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import {
   columnForExcel,
   empReportListColumns,
-  getBuDetails,
   getTableDataEmployeeReports,
 } from "./helper";
 import axios from "axios";
 import { gray900 } from "../../../../utility/customColor";
-// import { generateExcelAction } from "./excel/generateExcelList";
 import NoResult from "../../../../common/NoResult";
 import { todayDate } from "../../../../utility/todayDate";
 import { dateFormatter } from "../../../../utility/dateFormatter";
@@ -59,19 +57,20 @@ const initHeaderList = {
   regionNameList: [],
   areaNameList: [],
   territoryNameList: [],
-
   strWorkplaceGroupList: [],
   strWorkplaceList: [],
   strDivisionList: [],
   strSectionList: [],
   strHrPositionList: [],
   strDottedSupervisorNameList: [],
+  strPayrollGroupList: [],
+  strBankList: [],
 };
 
 export default function EmployeeList() {
   // redux
   const dispatch = useDispatch();
-  const { buId, buName, wgId, wId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -278,6 +277,8 @@ export default function EmployeeList() {
                                     strSectionList: [],
                                     strHrPositionList: [],
                                     strDottedSupervisorNameList: [],
+                                    strPayrollGroupList: [],
+                                    strBankList: [],
                                   }
                                 );
                                 if (res?.data?.data?.length > 0) {

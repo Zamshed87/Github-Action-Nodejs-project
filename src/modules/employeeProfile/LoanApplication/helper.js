@@ -590,7 +590,7 @@ export const costInputHandler = (
   setTableData,
   values
 ) => {
-  if (value) {
+  if (value >= 0) {
     const data = [...tableData];
     const row = data[sl];
     row[name] = value;
@@ -600,14 +600,14 @@ export const costInputHandler = (
 
     setTableData(data);
   }
-  // else if (isValidDate(value)) {
-  //   const data = [...tableData];
-  //   const row = data[sl];
-  //   row[name] = value;
-  //   +row.intInstallmentAmount;
-  //   row.isHold = +row?.intInstallmentAmount === 0 ? false : true;
-  //   row.strRemarks;
-  // }
+  else if (value) {
+    const data = [...tableData];
+    const row = data[sl];
+    row[name] = value;
+    +row.intInstallmentAmount;
+    row.isHold = +row?.intInstallmentAmount === 0 ? false : true;
+    row.strRemarks;
+  }
   else {
     const data = [...tableData];
     const row = data[sl];
@@ -652,7 +652,7 @@ export const handleAmendmentClick = (tableData, setTableData, item) => {
     intYear: new Date().getFullYear(),
     intActualPaymentAmount: null,
     strRemarks: item?.strRemarks || "",
-    isHold: true,
+    isHold: item?.isHold || false,
     date: newDate.format("YYYY-MM"),
   };
 
