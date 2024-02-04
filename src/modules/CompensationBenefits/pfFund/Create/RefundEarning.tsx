@@ -30,7 +30,7 @@ const RefundEarning: React.FC<TAddEditForm> = ({
   const [form] = Form.useForm();
 
   // Api Actions
-  const createInvestmentApi = useApiRequest({});
+  const createRefundEarningApi = useApiRequest({});
 
   // Life Cycle Hooks
   useEffect(() => {
@@ -49,34 +49,19 @@ const RefundEarning: React.FC<TAddEditForm> = ({
       }}
       onFinish={() => {
         const values = form.getFieldsValue();
-        createInvestmentApi.action({
+        createRefundEarningApi.action({
           method: "post",
-          urlKey: "SavePFInvestment",
+          urlKey: "SavePFRefundEarning",
           payload: {
-            // headerDTO: {
-            //   intPfLedgerId: 0,
-            //   intPfLedgerCode: "",
-            //   intTypeId: 1,
-            //   strType: "Investment",
-            //   intReferenceId: 0,
-            //   strReferenceNo: "",
-            //   intInvestmentBankId: values?.bank?.BankID,
-            //   intInvestmentBankBranchId: values?.branch?.value,
-            //   dteTransactionDate: moment(values.invstDate).format("YYYY-MM-DD"),
-            //   numAmount: totalAmount,
-            //   isActive: true,
-            //   isComplete: true,
-            //   numRate: values?.rate,
-            //   intMaturityMonth: 0,
-            //   code: values?.investReffNo,
-            //   strMaturityDate: moment(values?.maturityMonth).format(
-            //     "YYYY-MM-DD"
-            //   ),
-            // },
-            refernceDTO: data?.map((item: any) => ({
-              intReferenceId: item?.intPfLedgerId,
-              strReferenceCode: item?.intPfLedgerCode,
-            })),
+            partName: "Create",
+            pfId: 0,
+            intAmount: values?.amount || 0,
+            intInterestRate: values?.interestRate || 0,
+            dteInvestmentDate: moment(values.refundEarningDate).format(
+              "YYYY-MM-DD"
+            ),
+            strRemark: values?.remarks || "",
+            isEarning: values?.earning || false,
           },
           toast: true,
           onSuccess: () => {
@@ -110,6 +95,8 @@ const RefundEarning: React.FC<TAddEditForm> = ({
                 setIsEarningChecked(e.target.checked);
                 if (!e.target.checked) {
                   form.setFieldsValue({ amount: data[0]?.numAmount });
+                } else {
+                  form.setFieldsValue({ interestRate: "" });
                 }
               }}
             />
@@ -120,9 +107,10 @@ const RefundEarning: React.FC<TAddEditForm> = ({
           <PInput
             type="number"
             name="interestRate"
-            placeholder="Interest Rate"
-            label="Interest Rate"
+            placeholder="Interest Amount"
+            label="Interest Amount"
             rules={[{ required: false }]}
+            disabled={isEarningChecked}
           />
         </Col>
         <Col md={8} sm={24}>
@@ -152,7 +140,7 @@ const RefundEarning: React.FC<TAddEditForm> = ({
           setsSelectedRows([]);
           setCheckRowKeys([]);
         }}
-        loading={createInvestmentApi?.loading}
+        loading={createRefundEarningApi?.loading}
       />
     </PForm>
   );

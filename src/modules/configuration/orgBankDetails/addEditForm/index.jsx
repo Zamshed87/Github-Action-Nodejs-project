@@ -236,7 +236,7 @@ export default function AddEditForm({
           </Col>
           <Col md={12} sm={24}>
             <PInput
-              type="number"
+              type="text"
               name="accNo"
               label="Account No"
               placeholder="Account No"
