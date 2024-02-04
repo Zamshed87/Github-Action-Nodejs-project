@@ -26,6 +26,7 @@ import EmployeeSelfDashboardHeader from "./components/EmployeeSelfDashboardHeade
 import EmployeeSelfManagerList from "./components/EmployeeSelfManagerList";
 import NoticeBoard from "./Noticeboard";
 import "./style.css";
+import { useHistory } from "react-router-dom";
 export default function SelfDashboard() {
   const dispatch = useDispatch();
 
@@ -33,6 +34,7 @@ export default function SelfDashboard() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const history = useHistory();
 
   // current Yaer
   // let currentYear = new Date().getFullYear();
@@ -126,12 +128,15 @@ export default function SelfDashboard() {
                   }}
                 >
                   <h2
-                    className="w-100"
+                    className="w-100 pointer"
                     style={{
                       color: gray500,
                       fontSize: "1rem",
                       height: "15%",
                       padding: "12px 0 0 12px",
+                    }}
+                    onClick={() => {
+                      history.push("/SelfService/leaveAndMovement/leaveApplication");
                     }}
                   >
                     Leave Balance
