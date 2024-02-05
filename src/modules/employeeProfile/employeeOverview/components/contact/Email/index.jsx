@@ -44,7 +44,7 @@ function Emails({ empId, buId, wgId }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const saveHandler = (values) => {
+  const saveHandler = (values, cb) => {
     if (singleData) {
       const payload = {
         partType: "Email",
@@ -108,6 +108,7 @@ function Emails({ empId, buId, wgId }) {
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
+        cb?.()
       };
       updateEmployeeProfile(payload, setLoading, callback);
     } else {
@@ -173,12 +174,13 @@ function Emails({ empId, buId, wgId }) {
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
+        cb?.()
       };
       updateEmployeeProfile(payload, setLoading, callback);
     }
   };
 
-  const deleteHandler = () => {
+  const deleteHandler = (values, setFieldValue) => {
     const payload = {
       partType: "Email",
       employeeId: empId,
@@ -240,6 +242,7 @@ function Emails({ empId, buId, wgId }) {
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
+      setFieldValue("email", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -409,7 +412,7 @@ function Emails({ empId, buId, wgId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(values, setFieldValue);
                                       },
                                     },
                                   ]}
