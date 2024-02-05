@@ -230,7 +230,7 @@ const BankForm = ({
                         setFieldValue("accNo", e.target.value);
                       }}
                       name="accNo"
-                      type="number"
+                      type="text"
                       className="form-control"
                       errors={errors}
                       touched={touched}
