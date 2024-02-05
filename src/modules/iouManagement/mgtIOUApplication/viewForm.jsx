@@ -410,7 +410,7 @@ export default function MgtIOUApplicationView() {
                                           );
                                         }}
                                       >
-                                        {image?.intDocURLId !== 0 && (
+                                        {image?.intDocUrlid !== 0 && (
                                           <div className="mr-1">
                                             <FilePresentOutlined />{" "}
                                             {`Attachment_${i + 1}`}

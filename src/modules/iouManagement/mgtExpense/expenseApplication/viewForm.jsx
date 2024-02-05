@@ -164,12 +164,12 @@ const MgtExpenseApplicationView = () => {
                                     e.stopPropagation();
                                     dispatch(
                                       getDownlloadFileView_Action(
-                                        image?.intDocURLId
+                                        image?.intDocUrlid
                                       )
                                     );
                                   }}
                                 >
-                                  {image?.intDocURLId !== 0 && (
+                                  {image?.intDocUrlid !== 0 && (
                                     <>
                                       <FilePresentOutlined />{" "}
                                       {`Attachment_${i + 1}`}
