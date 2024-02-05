@@ -77,22 +77,22 @@ const withLeaveApplication = (WrappedComponent) => {
         isHalfDay: item?.HalfDay,
         strHalDayRange: item?.HalfDayRange,
         isActive: false,
-        partId: 3,
+        // partId: 3,
         yearId: item?.yearId,
-        leavePolicyId: item?.intPolicyId,
+        // leavePolicyId: item?.intPolicyId,
         leaveApplicationId: item?.intApplicationId,
         leaveTypeId: item?.LeaveTypeId,
         employeeId: values?.employee ? values?.employee?.value : employeeId,
-        accountId: orgId,
-        businessUnitId: buId,
-        applicationDate: item?.ApplicationDate,
+        // accountId: orgId,
+        // applicationDate: item?.ApplicationDate,
         appliedFromDate: item?.AppliedFromDate,
         appliedToDate: item?.AppliedToDate,
         documentFile: item?.DocumentFileUrl ? item?.DocumentFileUrl : 0,
         leaveReason: item?.Reason,
         addressDuetoLeave: item?.AddressDuetoLeave,
-        insertBy: employeeId,
+        // insertBy: employeeId,
         workplaceGroupId: wgId,
+        isSelfService: values?.isSelfService,
       };
 
       const callback = () => {
@@ -186,8 +186,7 @@ const withLeaveApplication = (WrappedComponent) => {
             ? values?.halfTime?.label
             : " ",
           workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
-          isSelfService: values?.isSelfService
-
+          isSelfService: values?.isSelfService,
         };
       }
 
