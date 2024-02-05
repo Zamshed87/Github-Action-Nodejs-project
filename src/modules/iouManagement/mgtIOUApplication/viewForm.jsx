@@ -821,7 +821,7 @@ export default function MgtIOUApplicationView() {
                                     dispatch(
                                       getDownlloadFileView_Action(
                                         image?.globalFileUrlId ||
-                                          image?.intDocURLId
+                                          image?.intDocUrlid
                                       )
                                     );
                                   }}
