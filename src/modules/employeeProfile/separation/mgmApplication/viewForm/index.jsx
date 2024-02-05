@@ -123,16 +123,16 @@ export default function ManagementViewSeparationForm() {
                       </div>
                     </div>
                     <div>
-                      {singleData?.ApprovalStatus === "Approve" && (
+                      {singleData?.approvalStatus === "Approved" && (
                         <Chips label="Approved" classess="success p-2" />
                       )}
-                      {singleData?.ApprovalStatus === "Pending" && (
+                      {singleData?.approvalStatus === "Pending" && (
                         <Chips label="Pending" classess="warning p-2" />
                       )}
-                      {singleData?.ApprovalStatus === "Process" && (
+                      {singleData?.approvalStatus === "Process" && (
                         <Chips label="Process" classess="primary p-2" />
                       )}
-                      {singleData?.ApprovalStatus === "Reject" && (
+                      {singleData?.approvalStatus === "Reject" && (
                         <>
                           <Chips label="Rejected" classess="danger p-2 mr-2" />
                         </>

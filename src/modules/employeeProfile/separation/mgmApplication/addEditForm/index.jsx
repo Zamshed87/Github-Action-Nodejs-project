@@ -23,7 +23,6 @@ import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/act
 import { IconButton } from "@mui/material";
 import {
   deleteSeparationAttachment,
-  getSeparationLandingById,
   separationCrud,
 } from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
@@ -80,6 +79,7 @@ export default function ManagementApplicationSeparationForm() {
   const [separationTypeDDL, setSeparationTypeDDL] = useState([]);
   const [singleData, setSingleData] = useState([]);
   const [, getSeperationDataApi, loadingSeperationData, ,] = useAxiosGet();
+  const [lastWorkingDay, getLastWorkingDay, ,setLastWorkingDay] = useAxiosGet();
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -351,6 +351,23 @@ export default function ManagementApplicationSeparationForm() {
                         isSearchIcon={true}
                         handleChange={(valueOption) => {
                           setFieldValue("employeeName", valueOption);
+                          if (valueOption) {
+                            getLastWorkingDay(
+                              `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${0}&employmentType=${
+                                valueOption?.employmentTypeId
+                              }&designationId=${
+                                valueOption?.designation
+                              }&hrpositionId=${0}`, (data) => {
+                                const formattedLastWorkingDay = new Date(data);
+                                const formattedMinDate = formattedLastWorkingDay
+                                  .toISOString()
+                                  .split("T")[0];
+                                  setLastWorkingDay(formattedMinDate);
+                              }
+                            );
+                          } else {
+                            setLastWorkingDay("");
+                          }
                         }}
                         placeholder="Search (min 3 letter)"
                         loadOptions={(v) =>
@@ -401,7 +418,7 @@ export default function ManagementApplicationSeparationForm() {
                         <DefaultInput
                           classes="input-sm"
                           value={values?.lastWorkingDay}
-                          min={values?.applicationDate}
+                          min={lastWorkingDay || values?.applicationDate}
                           onChange={(e) => {
                             setFieldValue("lastWorkingDay", e.target.value);
                           }}
@@ -410,7 +427,9 @@ export default function ManagementApplicationSeparationForm() {
                           className="form-control"
                           errors={errors}
                           touched={touched}
-                          disabled={!values?.applicationDate}
+                          disabled={
+                            !values?.applicationDate || !values?.employeeName
+                          }
                         />
                       </div>
                     </div>
