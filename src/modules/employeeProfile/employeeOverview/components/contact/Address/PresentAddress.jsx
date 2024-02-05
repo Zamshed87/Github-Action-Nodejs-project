@@ -19,7 +19,11 @@ import { todayDate } from "../../../../../../utility/todayDate";
 import { DDLForAddress } from "../../helper";
 import { updateEmployeeProfile } from "../helper";
 import FormikCheckBox from "./../../../../../../common/FormikCheckbox";
-import { gray900, greenColor, success500 } from "./../../../../../../utility/customColor";
+import {
+  gray900,
+  greenColor,
+  success500,
+} from "./../../../../../../utility/customColor";
 
 const initData = {
   country: "",
@@ -127,8 +131,10 @@ function PresentAddress({ getData, rowDto, empId }) {
         divisionName: values?.division?.label || singleData?.division?.label,
         districtId: values?.district?.value || singleData?.district?.value,
         districtName: values?.district?.label || singleData?.district?.label,
-        thanaId: values?.policeStation?.value || singleData?.policeStation?.value,
-        thanaName: values?.policeStation?.label || singleData?.policeStation?.label,
+        thanaId:
+          values?.policeStation?.value || singleData?.policeStation?.value,
+        thanaName:
+          values?.policeStation?.label || singleData?.policeStation?.label,
         postOfficeId:
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
@@ -198,8 +204,10 @@ function PresentAddress({ getData, rowDto, empId }) {
         divisionName: values?.division?.label || singleData?.division?.label,
         districtId: values?.district?.value || singleData?.district?.value,
         districtName: values?.district?.label || singleData?.district?.label,
-        thanaId: values?.policeStation?.value || singleData?.policeStation?.value,
-        thanaName: values?.policeStation?.label || singleData?.policeStation?.label,
+        thanaId:
+          values?.policeStation?.value || singleData?.policeStation?.value,
+        thanaName:
+          values?.policeStation?.label || singleData?.policeStation?.label,
         postOfficeId:
           values?.postOffice?.value || singleData?.postOffice?.value,
         postOfficeName:
@@ -243,7 +251,7 @@ function PresentAddress({ getData, rowDto, empId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = (values, cb) => {
     const payload = {
       partType: "Address",
       employeeId:
@@ -273,7 +281,8 @@ function PresentAddress({ getData, rowDto, empId }) {
       districtId: values?.district?.value || singleData?.district?.value,
       districtName: values?.district?.label || singleData?.district?.label,
       thanaId: values?.policeStation?.value || singleData?.policeStation?.value,
-      thanaName: values?.policeStation?.label || singleData?.policeStation?.label,
+      thanaName:
+        values?.policeStation?.label || singleData?.policeStation?.label,
       postOfficeId: values?.postOffice?.value || singleData?.postOffice?.value,
       postOfficeName:
         values?.postOffice?.label || singleData?.postOffice?.label,
@@ -310,6 +319,7 @@ function PresentAddress({ getData, rowDto, empId }) {
       getData();
       setStatus("empty");
       setSingleData("");
+      cb?.();
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -377,36 +387,36 @@ function PresentAddress({ getData, rowDto, empId }) {
           ...initData,
           country: singleData?.country?.value
             ? {
-              value: singleData?.country?.value,
-              label: singleData?.country?.label,
-            }
+                value: singleData?.country?.value,
+                label: singleData?.country?.label,
+              }
             : {
-              value: countryDDL[17]?.CountryId,
-              label: countryDDL[17]?.CountryName,
-            },
+                value: countryDDL[17]?.CountryId,
+                label: countryDDL[17]?.CountryName,
+              },
           division: singleData?.division?.value
             ? {
-              value: singleData?.division?.value,
-              label: singleData?.division?.label,
-            }
+                value: singleData?.division?.value,
+                label: singleData?.division?.label,
+              }
             : "",
           district: singleData?.district?.value
             ? {
-              value: singleData?.district?.value,
-              label: singleData?.district?.label,
-            }
+                value: singleData?.district?.value,
+                label: singleData?.district?.label,
+              }
             : "",
           policeStation: singleData?.policeStation?.value
             ? {
-              value: singleData?.policeStation?.value,
-              label: singleData?.policeStation?.label,
-            }
+                value: singleData?.policeStation?.value,
+                label: singleData?.policeStation?.label,
+              }
             : "",
           postOffice: singleData?.postOffice?.value
             ? {
-              value: singleData?.postOffice?.value,
-              label: singleData?.postOffice?.label,
-            }
+                value: singleData?.postOffice?.value,
+                label: singleData?.postOffice?.label,
+              }
             : "",
           postCode: singleData ? singleData?.postCode : "",
           address: singleData ? singleData?.address : "",
@@ -473,11 +483,9 @@ function PresentAddress({ getData, rowDto, empId }) {
                                   },
                                   policeStation: {
                                     value:
-                                      rowDto?.permanentAddress[0]
-                                        ?.intThanaId,
+                                      rowDto?.permanentAddress[0]?.intThanaId,
                                     label:
-                                      rowDto?.permanentAddress[0]
-                                        ?.strThana,
+                                      rowDto?.permanentAddress[0]?.strThana,
                                   },
                                   postOffice: {
                                     value:
@@ -635,7 +643,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                         <FormikInput
                           name="postCode"
                           value={values?.postCode}
-                          onChange={(e) => { }}
+                          onChange={(e) => {}}
                           errors={errors}
                           touched={touched}
                           placeholder="Post Code"
@@ -702,7 +710,7 @@ function PresentAddress({ getData, rowDto, empId }) {
                   {!singleData && (
                     <>
                       {rowDto?.presentAddress &&
-                        !rowDto?.presentAddress.length ? (
+                      !rowDto?.presentAddress.length ? (
                         <>
                           <div
                             className="d-flex align-items-center"
@@ -712,7 +720,10 @@ function PresentAddress({ getData, rowDto, empId }) {
                               setIsCreateForm(true);
                             }}
                           >
-                            <div className="item" style={{ position: "relative", top: "-3px" }}>
+                            <div
+                              className="item"
+                              style={{ position: "relative", top: "-3px" }}
+                            >
                               <ControlPoint
                                 sx={{ color: success500, fontSize: "16px" }}
                               />
@@ -750,7 +761,11 @@ function PresentAddress({ getData, rowDto, empId }) {
                                 </h4>
                                 <small>Present Address</small>
                               </div>
-                              <div className={`col-lg-1 ${!rowDto.presentAddress? "d-none" : ""}`}>
+                              <div
+                                className={`col-lg-1 ${
+                                  !rowDto.presentAddress ? "d-none" : ""
+                                }`}
+                              >
                                 <ActionMenu
                                   color={gray900}
                                   fontSize={"18px"}
@@ -831,7 +846,9 @@ function PresentAddress({ getData, rowDto, empId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(values, () => {
+                                          resetForm(initData);
+                                        });
                                       },
                                     },
                                   ]}

@@ -266,7 +266,7 @@ function ParmanentAddress({ getData, empId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = (values, cb) => {
     const payload = {
       partType: "Address",
       employeeId:
@@ -341,6 +341,7 @@ function ParmanentAddress({ getData, empId }) {
       setStatus("empty");
       setSingleData("");
       getData();
+      cb?.();
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -812,7 +813,9 @@ function ParmanentAddress({ getData, empId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(values, () =>
+                                          resetForm(initData)
+                                        );
                                       },
                                     },
                                   ]}

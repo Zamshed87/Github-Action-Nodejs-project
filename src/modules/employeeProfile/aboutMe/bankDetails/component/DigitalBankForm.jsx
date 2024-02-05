@@ -61,10 +61,10 @@ const DigitalBankForm = ({
       : Yup.object().shape({
         mobileNo: Yup.string()
           .required("Mobile Number is required")
-          .matches(
-            /^(?:\+?88|0088)?01[15-9]\d{8}$/,
-            "Mobile Number is invalid"
-          ),
+          // .matches(
+          //   /^(?:\+?88|0088)?01[15-9]\d{8}$/,
+          //   "Mobile Number is invalid"
+          // ),
       });
 
   useEffect(() => {
@@ -149,7 +149,7 @@ const DigitalBankForm = ({
                         setFieldValue("mobileNo", e.target.value);
                       }}
                       name="mobileNo"
-                      type="number"
+                      type="text"
                       className="form-control"
                       errors={errors}
                       touched={touched}

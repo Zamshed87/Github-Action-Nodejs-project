@@ -179,7 +179,7 @@ function WorkPhone({ empId, buId, wgId }) {
     }
   };
 
-  const deleteHandler = () => {
+  const deleteHandler = (setFieldsValue) => {
     const payload = {
       partType: "OfficialPhone",
       employeeId: empId,
@@ -241,6 +241,7 @@ function WorkPhone({ empId, buId, wgId }) {
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
+      setFieldsValue("workPhone", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -403,7 +404,7 @@ function WorkPhone({ empId, buId, wgId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(setFieldValue);
                                       },
                                     },
                                   ]}
