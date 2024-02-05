@@ -846,7 +846,7 @@ export default function AddEditForm({
           </Col>
           {/* {isEdit ? ( */}
           {/* {isEdit && (isMenuEditPermission || isOfficeAdmin) ? ( */}
-          {isEdit ? (
+          {isEdit && (!isMenuEditPermission || !isOfficeAdmin) ? (
             <Col md={12} sm={24}>
               <PSelect
                 options={employeeStatusDDL?.data || []}
