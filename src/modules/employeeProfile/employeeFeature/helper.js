@@ -161,7 +161,6 @@ export const createEditEmpAction = async (
       };
     }
     setLoading(true);
-    console.log({payload, values})
     const res = await axios.post(
       `/Employee/CreateNUpdateEmployeeBasicInfo`,
       payload
