@@ -179,7 +179,7 @@ function WorkEmail({ empId, buId, wgId }) {
     }
   };
 
-  const deleteHandler = () => {
+  const deleteHandler = (setFieldsValue) => {
     const payload = {
       partType: "OfficialEmail",
       employeeId: empId,
@@ -241,6 +241,7 @@ function WorkEmail({ empId, buId, wgId }) {
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
+      setFieldsValue("workEmail", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -401,7 +402,7 @@ function WorkEmail({ empId, buId, wgId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(setFieldValue);
                                       },
                                     },
                                   ]}
