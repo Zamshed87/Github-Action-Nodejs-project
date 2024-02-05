@@ -234,7 +234,7 @@ function OtherAddress({ getData, rowDto, empId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = (values, cb) => {
     const payload = {
       partType: "Address",
       employeeId:
@@ -298,6 +298,7 @@ function OtherAddress({ getData, rowDto, empId }) {
       getData();
       setStatus("empty");
       setSingleData("");
+      cb?.()
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -818,7 +819,9 @@ function OtherAddress({ getData, rowDto, empId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(values, () => {
+                                          resetForm(initData);
+                                        });
                                       },
                                     },
                                   ]}
