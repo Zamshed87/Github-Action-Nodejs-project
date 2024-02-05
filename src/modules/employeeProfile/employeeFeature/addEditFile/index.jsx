@@ -11,6 +11,7 @@ import { submitHandler } from "./helper";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
 import { calculateNextDate } from "utility/dateFormatter";
+import { isDevServer } from "App";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -19,8 +20,8 @@ export default function AddEditForm({
   isEdit = false,
   singleData,
   pages,
-  isMenuEditPermission = true,
-  isOfficeAdmin = true
+  isMenuEditPermission = false,
+  isOfficeAdmin = false
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
@@ -461,7 +462,7 @@ export default function AddEditForm({
     }
   }, [orgId, buId, singleData, employeeId]);
 
-  console.log({isMenuEditPermission, isOfficeAdmin})
+  isDevServer && console.log({isMenuEditPermission: isMenuEditPermission, isOfficeAdmin: isOfficeAdmin})
   return (
     <>
       <PForm
