@@ -83,7 +83,6 @@ export default function MgtIOUApplicationView() {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   useEffect(() => {
     if (singleData?.employeeId) {
       getEmployeeProfileViewData(
@@ -406,12 +405,12 @@ export default function MgtIOUApplicationView() {
                                           e.stopPropagation();
                                           dispatch(
                                             getDownlloadFileView_Action(
-                                              image?.intDocURLId
+                                              image?.intDocUrlid
                                             )
                                           );
                                         }}
                                       >
-                                        {image?.intDocURLId !== 0 && (
+                                        {image?.intDocUrlid !== 0 && (
                                           <div className="mr-1">
                                             <FilePresentOutlined />{" "}
                                             {`Attachment_${i + 1}`}
