@@ -80,7 +80,7 @@ const SelfSalaryPayslipReport = () => {
   useEffect(() => {
     if (values?.inMonth && values?.intYear) {
       getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&intId=${employeeId}&IntMonth=${values?.inMonth}&IntYear=${values?.intYear}`,
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&intId=${0}&IntMonth=${values?.inMonth}&IntYear=${values?.intYear}`,
         "SalaryGenerateRequestId",
         "SalaryCode",
         setPayrollPeiodDDL
@@ -169,7 +169,7 @@ const SelfSalaryPayslipReport = () => {
                         );
                         if (e.target.value && values?.employee?.value) {
                           getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&intId=${employeeId}&IntMonth=${+e.target.value
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&intId=${0}&IntMonth=${+e.target.value
                               .split("")
                               .slice(-2)
                               .join("")}&IntYear=${+e.target.value
