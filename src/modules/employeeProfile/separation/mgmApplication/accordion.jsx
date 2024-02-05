@@ -5,7 +5,7 @@ import profileImg from "../../../../assets/images/profile.jpg";
 
 const Accordion = ({ empBasic, loading, userRole }) => {
 
-  let ddlToStringUserRole = userRole.map(itm => itm?.label);
+  const ddlToStringUserRole = userRole.map(itm => itm?.label);
 
   return (
     <div className="card-about-info-main about-info-card">

@@ -80,31 +80,31 @@ export default function SelfApplicationSeparationForm() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&IsView=true&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&IsView=true&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intWorkplaceId=${wId}`,
       "SeparationTypeId",
       "SeparationType",
       setSeparationTypeDDL
     );
-  }, [wgId]);
+  }, [wgId, buId, wId]);
 
   useEffect(() => {
     if (+params?.id) {
-      const payload = {
-        intSeparationId: +params?.id,
-        status: "",
-        workplaceGroupId: wgId,
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employeeId: employeeId,
-        separationTypeId: 0,
-        applicationFromDate: null,
-        applicationToDate: null,
-        businessUnitId: buId,
-        accountId: orgId,
-        tableName: "EmployeeSeparationReportBySeparationId",
-      };
-      getSeparationLandingById(payload, setSingleData, setLoading);
+      // const payload = {
+      //   intSeparationId: +params?.id,
+      //   status: "",
+      //   workplaceGroupId: wgId,
+      //   departmentId: 0,
+      //   designationId: 0,
+      //   supervisorId: 0,
+      //   employeeId: employeeId,
+      //   separationTypeId: 0,
+      //   applicationFromDate: null,
+      //   applicationToDate: null,
+      //   businessUnitId: buId,
+      //   accountId: orgId,
+      //   tableName: "EmployeeSeparationReportBySeparationId",
+      // };
+      getSeparationLandingById(+params?.id, setSingleData, setLoading);
     }
   }, [orgId, buId, employeeId, params?.id, wgId]);
 
@@ -190,12 +190,16 @@ export default function SelfApplicationSeparationForm() {
       initialValues: +params?.id
         ? {
             separationType: {
-              value: singleData?.SeparationTypeId,
-              label: singleData?.SeparationTypeName,
+              value: singleData?.intSeparationTypeId,
+              label: singleData?.strSeparationTypeName,
             },
-            applicationDate: dateFormatterForInput(singleData?.SeparationDate),
-            lastWorkingDay: dateFormatterForInput(singleData?.LastWorkingDay),
-            applicationBody: `${singleData?.Reason}`,
+            applicationDate: dateFormatterForInput(
+              singleData?.dteSeparationDate
+            ),
+            lastWorkingDay: dateFormatterForInput(
+              singleData?.dteLastWorkingDate
+            ),
+            applicationBody: `${singleData?.strReason}`,
           }
         : {
             ...initData,
@@ -203,22 +207,22 @@ export default function SelfApplicationSeparationForm() {
       onSubmit: (values, { setSubmitting, resetForm }) => {
         saveHandler(values, () => {
           if (params?.id) {
-            const payload = {
-              intSeparationId: +params?.id,
-              status: "",
-              workplaceGroupId: wgId,
-              departmentId: 0,
-              designationId: 0,
-              supervisorId: 0,
-              employeeId: employeeId,
-              separationTypeId: 0,
-              applicationFromDate: null,
-              applicationToDate: null,
-              businessUnitId: buId,
-              accountId: orgId,
-              tableName: "EmployeeSeparationReportBySeparationId",
-            };
-            getSeparationLandingById(payload, setSingleData, setLoading);
+            // const payload = {
+            //   intSeparationId: +params?.id,
+            //   status: "",
+            //   workplaceGroupId: wgId,
+            //   departmentId: 0,
+            //   designationId: 0,
+            //   supervisorId: 0,
+            //   employeeId: employeeId,
+            //   separationTypeId: 0,
+            //   applicationFromDate: null,
+            //   applicationToDate: null,
+            //   businessUnitId: buId,
+            //   accountId: orgId,
+            //   tableName: "EmployeeSeparationReportBySeparationId",
+            // };
+            getSeparationLandingById(+params?.id, setSingleData, setLoading);
           } else {
             resetForm(initData);
           }
@@ -228,22 +232,22 @@ export default function SelfApplicationSeparationForm() {
 
   const deleteImageHandler = (documentId) => {
     deleteSeparationAttachment(+params?.id, documentId, () => {
-      const payload = {
-        intSeparationId: +params?.id,
-        status: "",
-        workplaceGroupId: wgId,
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employeeId: employeeId,
-        separationTypeId: 0,
-        applicationFromDate: null,
-        applicationToDate: null,
-        businessUnitId: buId,
-        accountId: orgId,
-        tableName: "EmployeeSeparationReportBySeparationId",
-      };
-      getSeparationLandingById(payload, setSingleData, setLoading);
+      // const payload = {
+      //   intSeparationId: +params?.id,
+      //   status: "",
+      //   workplaceGroupId: wgId,
+      //   departmentId: 0,
+      //   designationId: 0,
+      //   supervisorId: 0,
+      //   employeeId: employeeId,
+      //   separationTypeId: 0,
+      //   applicationFromDate: null,
+      //   applicationToDate: null,
+      //   businessUnitId: buId,
+      //   accountId: orgId,
+      //   tableName: "EmployeeSeparationReportBySeparationId",
+      // };
+      getSeparationLandingById(+params?.id, setSingleData, setLoading);
       setImgRow(singleData?.docArr);
     });
   };
@@ -327,7 +331,9 @@ export default function SelfApplicationSeparationForm() {
                         name="applicationDate"
                         min={
                           params?.id
-                            ? dateFormatterForInput(singleData?.SeparationDate)
+                            ? dateFormatterForInput(
+                                singleData?.dteSeparationDate
+                              )
                             : todayDate()
                         }
                         type="date"
