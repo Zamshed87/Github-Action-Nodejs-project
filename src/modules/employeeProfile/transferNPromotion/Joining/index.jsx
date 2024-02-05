@@ -354,8 +354,7 @@ export default function Joining() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group, Wing, Sole Depo,
-                                    Region, Area, Territory
+                                    B.Unit, Workplace Group
                                   </div>
                                 </td>
                                 <td
@@ -373,8 +372,7 @@ export default function Joining() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group, Wing, Sole Depo,
-                                    Region, Area, Territory
+                                    B.Unit, Workplace Group
                                   </div>
                                 </td>
                                 <td

@@ -461,6 +461,7 @@ export default function AddEditForm({
     }
   }, [orgId, buId, singleData, employeeId]);
 
+  console.log({isMenuEditPermission, isOfficeAdmin})
   return (
     <>
       <PForm
@@ -491,9 +492,9 @@ export default function AddEditForm({
           generateDate: moment(todayDate()),
         }}
         onValuesChange={(changedFields, allFields) => {
-          if (allFields?.workplaceGroup && changedFields?.workplaceGroup) {
-            setTimeout(autoGenerateEmployeeCode, 500);
-          }
+          // if (allFields?.workplaceGroup && changedFields?.workplaceGroup) {
+          //   setTimeout(autoGenerateEmployeeCode, 500);
+          // }
         }}
       >
         <Row gutter={[10, 2]}>
@@ -844,7 +845,8 @@ export default function AddEditForm({
             />
           </Col>
           {/* {isEdit ? ( */}
-          {isEdit && (isMenuEditPermission || isOfficeAdmin) ? (
+          {/* {isEdit && (isMenuEditPermission || isOfficeAdmin) ? ( */}
+          {isEdit && (!isMenuEditPermission || !isOfficeAdmin) ? (
             <Col md={12} sm={24}>
               <PSelect
                 options={employeeStatusDDL?.data || []}

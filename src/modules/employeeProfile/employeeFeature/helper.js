@@ -46,6 +46,7 @@ export const createEditEmpAction = async (
   // let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
   // let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
   // console.log("values?.dateofBirth", values?.dateofBirth)
+  // console.log({values})
   try {
     let payload = {
       intEmployeeBasicInfoId: values?.empId || 0,
@@ -160,8 +161,8 @@ export const createEditEmpAction = async (
       };
     }
     setLoading(true);
-    // console.log({payload})
-    let res = await axios.post(
+    console.log({payload, values})
+    const res = await axios.post(
       `/Employee/CreateNUpdateEmployeeBasicInfo`,
       payload
     );
