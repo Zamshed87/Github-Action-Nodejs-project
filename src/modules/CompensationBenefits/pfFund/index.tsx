@@ -136,8 +136,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
     {
       title: "Fund Date",
       dataIndex: "dteTransactionDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
+      render: (data: any) => moment(data).format("DD-MMM-YYYY"),
     },
     {
       title: "Type",
@@ -152,7 +151,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
       title: "Invst. Status",
       dataIndex: "status",
       align: "center",
-      render: (data: any, record: any, index: number) =>
+      render: (data: any, record: any) =>
         // Write condition to check status
         record?.status === "Incomplete" ? (
           <PBadge type="warning" text={record?.status} />
@@ -164,13 +163,12 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
     {
       title: "Invst. Date",
       dataIndex: "investmentDate",
-      render: (data: any, record: any, index: number) =>
-        data ? moment(data).format("DD-MMM-YYYY") : "",
+      render: (data: any) => (data ? moment(data).format("DD-MMM-YYYY") : ""),
     },
     {
       title: "Action",
       align: "center",
-      render: (data: any, record: any, index: number) => {
+      render: (data: any, record: any) => {
         return (
           <TableButton
             buttonsList={[
@@ -191,7 +189,8 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 isActive:
                   record?.status === "Complete" ||
                   record?.status === "" ||
-                  record?.intTypeId === 1
+                  record?.intTypeId === 1 ||
+                  record?.intTypeId === 4
                     ? false
                     : true,
               },
@@ -202,6 +201,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                   setRefundEarningModalOpen(true);
                 },
                 prompt: "Refund/Earning",
+                isActive: record?.strType === "Fund" ? false : true,
               },
             ]}
           />
@@ -283,7 +283,10 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
               },
               getCheckboxProps: (record) => ({
                 disabled:
-                  record?.status === "Complete" || record?.status === "",
+                  record?.status === "Complete" ||
+                  record?.status === "" ||
+                  record?.strType === "Investment" ||
+                  record?.strType === "Refund",
               }),
             }}
             bordered

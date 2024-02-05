@@ -2,6 +2,7 @@ import {
   EditOutlined,
   FilePresentOutlined,
   InfoOutlined,
+  VisibilityOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import axios from "axios";
@@ -95,7 +96,8 @@ export const separationApplicationLandingTableColumn = (
   paginationSize,
   history,
   dispatch,
-  permission
+  setOpenModal,
+  permission,
 ) => {
   return [
     {
@@ -273,6 +275,16 @@ export const separationApplicationLandingTableColumn = (
       dataIndex: "approvalStatus",
       render: (item) => (
         <div className="d-flex">
+          <Tooltip title="View" arrow>
+            <button className="iconButton" type="button">
+              <VisibilityOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenModal(true);
+                }}
+              />
+            </button>
+          </Tooltip>
           {item?.approvalStatus === "Pending" && (
             <Tooltip title="Edit" arrow>
               <button className="iconButton" type="button">
