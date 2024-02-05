@@ -24,6 +24,7 @@ import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/action
 import AntTable from "../../../../common/AntTable";
 import { LightTooltip } from "../../LoanApplication/helper";
 import { paginationSize } from "../../../../common/peopleDeskTable";
+import { todayDate } from "utility/todayDate";
 
 const initData = {
   status: "",
@@ -33,7 +34,7 @@ export default function SelfSeparation() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -53,22 +54,36 @@ export default function SelfSeparation() {
   });
 
   const getData = () => {
-    getSeparationLanding({
-      status: null,
-      depId: null,
-      desId: null,
-      supId: null,
-      empId: employeeId,
-      workId: null,
+    getSeparationLanding(
+      "EmployeeSeparationList",
       buId,
-      orgId,
-      setter: setRowDto,
+      wgId,
+      todayDate(),
+      todayDate(),
+      "",
+      setRowDto,
       setLoading,
-      separationTypeId: null,
-      setAllData,
-      tableName: "EmployeeSeparationList",
-      pages,
-    });
+      pages?.current,
+      pages?.pageSize,
+      setPages,
+      wId
+    );
+    // getSeparationLanding({
+    //   status: null,
+    //   depId: null,
+    //   desId: null,
+    //   supId: null,
+    //   empId: employeeId,
+    //   workId: null,
+    //   buId,
+    //   orgId,
+    //   setter: setRowDto,
+    //   setLoading,
+    //   separationTypeId: null,
+    //   setAllData,
+    //   tableName: "EmployeeSeparationList",
+    //   pages,
+    // });
   };
 
   useEffect(() => {
@@ -142,7 +157,7 @@ export default function SelfSeparation() {
                       removePagination
                       onRowClick={(item) => {
                         history.push(
-                          `/SelfService/separation/application/view/${item?.SeparationId}`
+                          `/SelfService/separation/application/view/${item?.separationId}`
                         );
                       }}
                     />
@@ -244,7 +259,7 @@ const empSeparationDtoCol = (dispatch, history) => {
               />
             </LightTooltip>
             <span className="ml-2"></span>
-            {item?.SeparationTypeName}
+            {item?.strSeparationTypeName}
           </div>
         );
       },
@@ -254,14 +269,14 @@ const empSeparationDtoCol = (dispatch, history) => {
       dataIndex: "SeparationDate",
       isDate: true,
       sorter: true,
-      render: (_, record) => dateFormatter(record?.SeparationDate),
+      render: (_, record) => dateFormatter(record?.dteSeparationDate),
     },
     {
       title: "Late Working Date",
       dataIndex: "dteFromDate",
       isDate: true,
       sorter: true,
-      render: (_, record) => dateFormatter(record?.LastWorkingDay),
+      render: (_, record) => dateFormatter(record?.dteLastWorkingDate),
     },
     {
       title: "Status",
@@ -270,21 +285,21 @@ const empSeparationDtoCol = (dispatch, history) => {
       render: (_, item) => {
         return (
           <div>
-            {item?.ApprovalStatus === "Approve" && (
+            {item?.approvalStatus === "Approve" && (
               <Chips label="Approved" classess="success p-2" />
             )}
-            {item?.ApprovalStatus === "Pending" && (
+            {item?.approvalStatus === "Pending" && (
               <Chips label="Pending" classess="warning p-2" />
             )}
-            {item?.ApprovalStatus === "Process" && (
+            {item?.approvalStatus === "Process" && (
               <Chips label="Process" classess="primary p-2" />
             )}
-            {item?.ApprovalStatus === "Reject" && (
+            {item?.approvalStatus === "Reject" && (
               <>
                 <Chips label="Rejected" classess="danger p-2 mr-2" />
               </>
             )}
-            {item?.ApprovalStatus === "Released" && (
+            {item?.approvalStatus === "Released" && (
               <>
                 <Chips label="Released" classess="p-2 mr-2" />
               </>
@@ -299,14 +314,14 @@ const empSeparationDtoCol = (dispatch, history) => {
       render: (_, item) => {
         return (
           <div className="d-flex">
-            {item?.ApprovalStatus === "Pending" && (
+            {item?.approvalStatus === "Pending" && (
               <Tooltip title="Edit" arrow>
                 <button className="iconButton" type="button">
                   <EditOutlined
                     onClick={(e) => {
                       e.stopPropagation();
                       history.push(
-                        `/SelfService/separation/application/edit/${item?.SeparationId}`
+                        `/SelfService/separation/application/edit/${item?.separationId}`
                       );
                     }}
                   />

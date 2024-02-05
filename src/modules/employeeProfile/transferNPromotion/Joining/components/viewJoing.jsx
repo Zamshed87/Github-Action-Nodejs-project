@@ -25,7 +25,6 @@ const ViewJoining = () => {
   const [transferNpromotion, getTransferNpromotion, loading1] = useAxiosGet();
   const [empBasic, setEmpBasic] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const getSingleData = () => {
     getTransferNpromotion(`/Employee/GetEmpTransferNpromotionById?id=${id}`);
     getEmployeeProfileViewData(
@@ -42,6 +41,7 @@ const ViewJoining = () => {
     getSingleData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  console.log({ transferNpromotion });
 
   return (
     <>
@@ -69,7 +69,7 @@ const ViewJoining = () => {
               }}
               style={{
                 height: "32px",
-                width: "199px",
+                width: "150px",
                 boxSizing: "border-box",
                 border: "1px solid #EAECF0",
                 borderRadius: "4px",
@@ -93,7 +93,7 @@ const ViewJoining = () => {
                   }}
                   className="pl-2"
                 >
-                  Download Letter
+                  Joining Letter
                 </p>
               </div>
               <div>
