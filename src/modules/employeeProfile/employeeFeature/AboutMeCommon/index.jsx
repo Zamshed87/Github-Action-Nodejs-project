@@ -18,6 +18,7 @@ import OverviewTab from "../../employeeOverview/components/OverviewTab";
 import AddEditForm from "../addEditFile";
 import { getEmployeeProfileViewData } from "../helper";
 import "./aboutMeCommon.css";
+import { isDevServer } from "App";
 
 function AboutMeDetails() {
   const dispatch = useDispatch();
@@ -74,11 +75,11 @@ function AboutMeDetails() {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
 
-  console.log({isOfficeAdmin, employeeFeature})
+  isDevServer && console.log({isOfficeAdmin, employeeFeature})
   return (
     <>
       {loading && <Loading />}
-      {employeeFeature?.isEdit ? (
+      {employeeFeature?.isView ? (
         <div className="about-info-main" style={{ paddingTop: "46px" }}>
           <div className="container-about-info">
             <div className="card-about-info-main">
