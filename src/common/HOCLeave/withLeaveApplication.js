@@ -99,7 +99,7 @@ const withLeaveApplication = (WrappedComponent) => {
         getData(values?.employee?.value, values?.year?.value);
       };
 
-      let confirmObject = {
+      const confirmObject = {
         closeOnClickOutside: false,
         message: "Are you want to sure you delete your leave?",
         yesAlertFunc: () => {
@@ -172,25 +172,22 @@ const withLeaveApplication = (WrappedComponent) => {
         payload = {
           isActive: true,
           yearId: values?.year?.value,
-          leavePolicyId: values?.leaveType?.intPolicyId,
-          partId: singleData?.intApplicationId ? 2 : 1,
           leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
           leaveTypeId: values?.leaveType?.value,
           employeeId: values?.employee ? values?.employee?.value : employeeId,
-          accountId: orgId,
           businessUnitId: buId,
-          applicationDate: new Date(),
           appliedFromDate: values?.fromDate,
           appliedToDate: values?.toDate,
           documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
           leaveReason: values?.reason,
           addressDuetoLeave: values?.location,
-          insertBy: employeeId,
           isHalfDay: values?.isHalfDay?.label === "Half Day" ? true : false,
           strHalDayRange: values?.halfTime?.label
             ? values?.halfTime?.label
             : " ",
           workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
+          isSelfService: values?.isSelfService
+
         };
       }
 
@@ -219,7 +216,7 @@ const withLeaveApplication = (WrappedComponent) => {
     const searchData = (keywords, allData, setLeaveHistoryData) => {
       try {
         const regex = new RegExp(keywords?.toLowerCase());
-        let newDta = allData?.filter(
+        const newDta = allData?.filter(
           (item) =>
             regex.test(item?.LeaveType?.toLowerCase()) ||
             regex.test(item?.AddressDuetoLeave?.toLowerCase())
