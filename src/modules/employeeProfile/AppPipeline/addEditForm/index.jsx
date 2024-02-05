@@ -176,6 +176,7 @@ export default function AddEditForm({
       onSuccess: () => {
         cb();
       },
+      toast: true,
     });
   };
 
