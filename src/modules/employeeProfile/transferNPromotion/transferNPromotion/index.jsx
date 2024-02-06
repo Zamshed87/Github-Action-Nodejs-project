@@ -412,7 +412,7 @@ export default function TransferAndPromotion() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group
+                                    B.Unit, Workplace Group, Workplace
                                   </div>
                                 </td>
                                 <td
@@ -430,7 +430,7 @@ export default function TransferAndPromotion() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group
+                                  B.Unit, Workplace Group, Workplace
                                   </div>
                                 </td>
                                 <td
