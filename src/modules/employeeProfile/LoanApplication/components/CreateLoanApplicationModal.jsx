@@ -119,7 +119,7 @@ const CreateLoanApplicationModal = ({
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
       "intEmployeeBasicInfoId",
       "strEmployeeName",
       setEmployeeDDL
@@ -377,9 +377,7 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>
-                      Interest (%)
-                    </label>
+                    <label>Interest (%)</label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.interest}
