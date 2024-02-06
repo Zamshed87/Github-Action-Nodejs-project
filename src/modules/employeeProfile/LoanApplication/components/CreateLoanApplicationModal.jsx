@@ -198,14 +198,15 @@ const CreateLoanApplicationModal = ({
   //       `/Employee/LoanInstallmentRowGetById?loanId=${singleData?.loanApplicationId}`,
   //       (data) => {
   //         const currentDate = moment();
+  //         console.log("data",data)
   //         const modifyData = {
   //           row: data?.map((item, index) => {
-  //             const repaymentDate = moment(item?.dteRepaymentDay || currentDate).add(
+  //             const repaymentDate = moment(item?.date || currentDate).add(
   //               index,
   //               "months"
   //             );
   //             return {
-  //               isHold: item?.isHold,
+  //               isHold: item?.isHold || false,
   //               date: repaymentDate.format("YYYY-MM"),
   //               paymentYear: repaymentDate.year() || 0,
   //               paymentMonth: repaymentDate.month() + 1,
@@ -223,7 +224,7 @@ const CreateLoanApplicationModal = ({
   //       }
   //     );
   //   }
-  // }, []);
+  // }, [singleData?.loanApplicationId]);
 
   useEffect(() => {
     if (singleData?.loanApplicationId) {
@@ -233,11 +234,9 @@ const CreateLoanApplicationModal = ({
           const currentDate = moment();
           const modifyData = {
             row: data?.map((item, index) => {
-              const repaymentDate = moment(item?.date || currentDate).add(
-                index,
-                "months"
-              );
-
+              const repaymentDate = item?.date
+                ? moment(item.date)
+                : currentDate.clone().add(index, "months");
               return {
                 isHold: item?.isHold || false,
                 date: repaymentDate.format("YYYY-MM"),
@@ -253,7 +252,6 @@ const CreateLoanApplicationModal = ({
               };
             }),
           };
-          console.log("modifyData?.row", modifyData?.row);
           setTableData(modifyData?.row);
         }
       );
@@ -834,6 +832,7 @@ const CreateLoanApplicationModal = ({
                           </th>
                         </tr>
                       </thead>
+                      {console.log("tableData", tableData)}
                       <tbody>
                         {tableData?.length > 0 && (
                           <>
@@ -852,28 +851,28 @@ const CreateLoanApplicationModal = ({
                                       onChange={(e) => {
                                         // setFieldValue("repaymentDate", "");
                                         setFieldValue("date", e.target.value);
-                                        setFieldValue(
-                                          "inMonth",
-                                          +e.target.value
-                                            .split("")
-                                            .slice(-2)
-                                            .join("")
-                                        );
-                                        setFieldValue(
-                                          "intYear",
-                                          +e.target.value
-                                            .split("")
-                                            .slice(0, 4)
-                                            .join("")
-                                        );
-                                        costInputHandler(
-                                          "repaymentDate",
-                                          e.target.value,
-                                          index,
-                                          tableData,
-                                          setTableData,
-                                          values
-                                        );
+                                        // setFieldValue(
+                                        //   "inMonth",
+                                        //   +e.target.value
+                                        //     .split("")
+                                        //     .slice(-2)
+                                        //     .join("")
+                                        // );
+                                        // setFieldValue(
+                                        //   "intYear",
+                                        //   +e.target.value
+                                        //     .split("")
+                                        //     .slice(0, 4)
+                                        //     .join("")
+                                        // );
+                                        // costInputHandler(
+                                        //   "date",
+                                        //   e.target.value,
+                                        //   index,
+                                        //   tableData,
+                                        //   setTableData,
+                                        //   values
+                                        // );
                                       }}
                                       errors={errors}
                                       touched={touched}
