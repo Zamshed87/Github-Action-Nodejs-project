@@ -77,6 +77,7 @@ function LeaveApplication(props) {
             value: employeeInfo?.[0]?.EmployeeId || employeeId,
             label: employeeInfo?.[0]?.EmployeeName || userName,
           },
+          isSelfService:true
         }}
         validationSchema={validationSchemaForLeaveApplication}
         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -221,6 +222,7 @@ function LeaveApplication(props) {
                         setLoading,
                         loading,
                         show: true,
+
                       }}
                     />
                   </div>

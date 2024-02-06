@@ -126,7 +126,9 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                     padding: "12px 0 0 12px",
                   }}
                   onClick={() => {
-                    history.push("/SelfService/leaveAndMovement/leaveApplication");
+                    history.push(
+                      "/SelfService/leaveAndMovement/leaveApplication"
+                    );
                   }}
                 >
                   Leave Balance
@@ -158,8 +160,14 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeDashboard?.leaveBalanceHistoryList?.map(
-                          (item, i) => (
+                        {console.log(
+                          employeeDashboard?.leaveBalanceHistoryList
+                        )}
+                        {employeeDashboard?.leaveBalanceHistoryList
+                          ?.filter(
+                            (item) => item?.isLveBalanceShowForSelfService
+                          )
+                          ?.map((item, i) => (
                             <>
                               <tr key={i}>
                                 <td style={{ borderTop: "1px solid #F2F4F7" }}>
@@ -194,8 +202,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                                 </td>
                               </tr>
                             </>
-                          )
-                        )}
+                          ))}
                       </tbody>
                     </table>
                   </div>
