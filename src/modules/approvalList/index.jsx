@@ -32,7 +32,7 @@ const initData = {
 export default function ApprovalList() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { orgId, employeeId, isOfficeAdmin } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -47,7 +47,8 @@ export default function ApprovalList() {
       employeeId,
       isOfficeAdmin,
       setApprovalPermissions,
-      setLoading
+      setLoading,
+      wId
     );
   }, [orgId, employeeId]);
 
