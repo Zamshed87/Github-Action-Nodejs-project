@@ -23,10 +23,10 @@ import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/act
 import { IconButton } from "@mui/material";
 import {
   deleteSeparationAttachment,
-  getSeparationLandingById,
   separationCrud,
 } from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const initData = {
   separationType: "",
@@ -59,12 +59,15 @@ export default function SelfApplicationSeparationForm() {
     isSupNLMORManagement,
     wgId,
     wId,
+    intDepartmentId,
+    intDesignationId,
   } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const [loading, setLoading] = useState(false);
   const [separationTypeDDL, setSeparationTypeDDL] = useState([]);
   const [singleData, setSingleData] = useState([]);
-
+   const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
+   const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] = useAxiosGet();
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -80,50 +83,77 @@ export default function SelfApplicationSeparationForm() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&IsView=true&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&IsView=true&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intWorkplaceId=${wId}`,
       "SeparationTypeId",
       "SeparationType",
       setSeparationTypeDDL
     );
-  }, [wgId]);
+  }, [wgId, buId, wId]);
+
+  const getEmpSeparationDataHandlerById = () => {
+    getSeparationDataApi(
+      `/Employee/EmployeeSeparationById?SeparationId=${+params?.id}`,
+      (res) => {
+        setValues((prev) => ({
+          ...prev,
+          employeeName: {
+            value: res?.intEmployeeId,
+            label: res?.strEmployeeName,
+            employeeId: res?.intEmployeeId,
+            employeeName: res?.strEmployeeName,
+            employeeCode: res?.strEmployeeCode,
+            employmentType: res?.strEmploymentType,
+            designationName: res?.strDesignation,
+          },
+          separationType: {
+            value: res?.intSeparationTypeId,
+            label: res?.strSeparationTypeName,
+          },
+          applicationDate: dateFormatterForInput(res?.dteSeparationDate),
+          lastWorkingDay: dateFormatterForInput(res?.dteLastWorkingDate),
+          applicationBody: `${res?.strReason}`,
+        }));
+        setImgRow(res?.strDocumentId?.split(","));
+        const documentList =
+          res?.strDocumentId?.length > 0
+            ? res?.strDocumentId?.split(",")?.map((image) => {
+                return {
+                  globalFileUrlId: +image,
+                };
+              })
+            : [];
+        setEditImageRow(documentList);
+        setSingleData(res);
+        getLastWorkingDay(
+          `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${0}&employmentType=${0}&designationId=${0}&hrpositionId=${0}`,
+          (data) => {
+            const formattedLastWorkingDay = new Date(data);
+            const formattedMinDate = formattedLastWorkingDay
+              .toISOString()
+              .split("T")[0];
+            setLastWorkingDay(formattedMinDate);
+          }
+        );
+      }
+    );
+  };
 
   useEffect(() => {
     if (+params?.id) {
-      const payload = {
-        intSeparationId: +params?.id,
-        status: "",
-        workplaceGroupId: wgId,
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employeeId: employeeId,
-        separationTypeId: 0,
-        applicationFromDate: null,
-        applicationToDate: null,
-        businessUnitId: buId,
-        accountId: orgId,
-        tableName: "EmployeeSeparationReportBySeparationId",
-      };
-      getSeparationLandingById(payload, setSingleData, setLoading);
+      getEmpSeparationDataHandlerById();
+    } else {
+      getLastWorkingDay(
+        `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${intDepartmentId}&employmentType=${0}&designationId=${intDesignationId}&hrpositionId=${0}`,
+        (data) => {
+          const formattedLastWorkingDay = new Date(data);
+          const formattedMinDate = formattedLastWorkingDay
+            .toISOString()
+            .split("T")[0];
+          setLastWorkingDay(formattedMinDate);
+        }
+      );
     }
   }, [orgId, buId, employeeId, params?.id, wgId]);
-
-  useEffect(() => {
-    if (+params?.id) {
-      setImgRow(singleData?.docArr);
-    }
-  }, [params?.id, singleData]);
-
-  useEffect(() => {
-    if (params?.id && imgRow?.length) {
-      const modifyImageArray = imgRow.map((image) => {
-        return {
-          globalFileUrlId: image,
-        };
-      });
-      setEditImageRow(modifyImageArray);
-    }
-  }, [imgRow, params?.id]);
 
   const loadUserList = (v) => {
     if (v?.length < 2) return [];
@@ -183,74 +213,51 @@ export default function SelfApplicationSeparationForm() {
     separationCrud(payload, setLoading, callback);
   };
 
-  const { setFieldValue, values, errors, touched, handleSubmit, resetForm } =
-    useFormik({
-      enableReinitialize: true,
-      validationSchema: validationSchema,
-      initialValues: +params?.id
-        ? {
-            separationType: {
-              value: singleData?.SeparationTypeId,
-              label: singleData?.SeparationTypeName,
-            },
-            applicationDate: dateFormatterForInput(singleData?.SeparationDate),
-            lastWorkingDay: dateFormatterForInput(singleData?.LastWorkingDay),
-            applicationBody: `${singleData?.Reason}`,
-          }
-        : {
-            ...initData,
+  const {
+    setFieldValue,
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    resetForm,
+    setValues,
+  } = useFormik({
+    enableReinitialize: true,
+    validationSchema: validationSchema,
+    initialValues: +params?.id
+      ? {
+          separationType: {
+            value: singleData?.intSeparationTypeId,
+            label: singleData?.strSeparationTypeName,
           },
-      onSubmit: (values, { setSubmitting, resetForm }) => {
-        saveHandler(values, () => {
-          if (params?.id) {
-            const payload = {
-              intSeparationId: +params?.id,
-              status: "",
-              workplaceGroupId: wgId,
-              departmentId: 0,
-              designationId: 0,
-              supervisorId: 0,
-              employeeId: employeeId,
-              separationTypeId: 0,
-              applicationFromDate: null,
-              applicationToDate: null,
-              businessUnitId: buId,
-              accountId: orgId,
-              tableName: "EmployeeSeparationReportBySeparationId",
-            };
-            getSeparationLandingById(payload, setSingleData, setLoading);
-          } else {
-            resetForm(initData);
-          }
-        });
-      },
-    });
+          applicationDate: dateFormatterForInput(singleData?.dteSeparationDate),
+          lastWorkingDay: dateFormatterForInput(singleData?.dteLastWorkingDate),
+          applicationBody: `${singleData?.strReason}`,
+        }
+      : {
+          ...initData,
+        },
+    onSubmit: (values, { setSubmitting, resetForm }) => {
+      saveHandler(values, () => {
+        if (params?.id) {
+          getEmpSeparationDataHandlerById();
+        } else {
+          resetForm(initData);
+        }
+      });
+    },
+  });
 
   const deleteImageHandler = (documentId) => {
     deleteSeparationAttachment(+params?.id, documentId, () => {
-      const payload = {
-        intSeparationId: +params?.id,
-        status: "",
-        workplaceGroupId: wgId,
-        departmentId: 0,
-        designationId: 0,
-        supervisorId: 0,
-        employeeId: employeeId,
-        separationTypeId: 0,
-        applicationFromDate: null,
-        applicationToDate: null,
-        businessUnitId: buId,
-        accountId: orgId,
-        tableName: "EmployeeSeparationReportBySeparationId",
-      };
-      getSeparationLandingById(payload, setSingleData, setLoading);
+      getEmpSeparationDataHandlerById();
       setImgRow(singleData?.docArr);
     });
   };
 
   return (
     <>
-      {loading && <Loading />}
+      {(loading || loadingSeparationData) && <Loading />}
       <form onSubmit={handleSubmit}>
         <div className="table-card">
           <div className="table-card-heading mb12">
@@ -305,7 +312,7 @@ export default function SelfApplicationSeparationForm() {
                   <div className="col-lg-3">
                     <label>Separation Type</label>
                     <FormikSelect
-                      placeholder=" "
+                      placeholder="Select Separation Type"
                       classes="input-sm"
                       styles={customStyles}
                       name="separationType"
@@ -327,7 +334,9 @@ export default function SelfApplicationSeparationForm() {
                         name="applicationDate"
                         min={
                           params?.id
-                            ? dateFormatterForInput(singleData?.SeparationDate)
+                            ? dateFormatterForInput(
+                                singleData?.dteSeparationDate
+                              )
                             : todayDate()
                         }
                         type="date"
@@ -346,7 +355,7 @@ export default function SelfApplicationSeparationForm() {
                       <DefaultInput
                         classes="input-sm"
                         value={values?.lastWorkingDay}
-                        min={values?.applicationDate}
+                        min={lastWorkingDay || values?.applicationDate}
                         onChange={(e) => {
                           setFieldValue("lastWorkingDay", e.target.value);
                         }}

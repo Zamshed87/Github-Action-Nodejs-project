@@ -363,7 +363,7 @@ const SelfExpanseApplicationAddForm = () => {
                           errors={errors}
                           touched={touched}
                         />
-                        <div className="category-add">
+                        {/* <div className="category-add">
                           <button
                             type="button"
                             className="btn add-ddl-btn"
@@ -374,7 +374,7 @@ const SelfExpanseApplicationAddForm = () => {
                           >
                             <AddOutlined sx={{ fontSize: "16px" }} />
                           </button>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div className="col-lg-9">
