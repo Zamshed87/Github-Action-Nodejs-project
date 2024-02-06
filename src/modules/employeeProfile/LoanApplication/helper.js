@@ -191,7 +191,7 @@ export const loanRequestLandingTableColumns = (
               +record?.loanAmount +
               +record?.loanAmount * (+record?.intInterest / 100)
             ).toFixed(2)
-          : 0;
+          : record?.loanAmount;
         return <>{numberWithCommas(amount)}</>;
       },
     },
@@ -417,7 +417,7 @@ export const setSingleLoanApplication = (data, setSingleData, setFileId) => {
           +data?.loanAmount +
           +data?.loanAmount * (+data?.intInterest / 100)
         ).toFixed(2)
-      : 0,
+      : data?.loanAmount,
   });
   setFileId(data?.fileUrl);
 };
@@ -434,7 +434,7 @@ export const loanCrudAction = async (
   wgId,
   tableData
 ) => {
-  console.log("values", values);
+
   if (values?.intInterest > 100) {
     toast.warn("Interest can't be greater than 100");
     return;
