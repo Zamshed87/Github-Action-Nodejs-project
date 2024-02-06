@@ -71,7 +71,7 @@ const ViewTransferTable = ({ transferNpromotion }) => {
               backgroundColor: "rgba(247, 220, 92, 1)",
             }}
           >
-            <div>B.Unit & Workplace Group</div>
+            <div>B.Unit, Workplace Group & Workplace</div>
           </td>
           {/* <td
             style={{
@@ -99,7 +99,7 @@ const ViewTransferTable = ({ transferNpromotion }) => {
               backgroundColor: "rgba(129, 225, 255, 1)",
             }}
           >
-            B.Unit & Workplace
+            B.Unit, Workplace Group & Workplace
           </td>
           {/* <td
             style={{
@@ -146,6 +146,7 @@ const ViewTransferTable = ({ transferNpromotion }) => {
               className=" "
             >
               <div>{transferNpromotion?.businessUnitNameFrom}</div>
+              <div>{transferNpromotion?.workplaceGroupNameFrom}</div>
               <div>{transferNpromotion?.workplaceNameFrom}</div>
             </div>
           </td>
@@ -207,6 +208,7 @@ const ViewTransferTable = ({ transferNpromotion }) => {
               className=""
             >
               <div>{transferNpromotion?.businessUnitName}</div>
+              <div>{transferNpromotion?.workplaceGroupName}</div>
               <div>{transferNpromotion?.workplaceName}</div>
             </div>
           </td>
