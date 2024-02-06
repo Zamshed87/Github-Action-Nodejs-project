@@ -256,10 +256,12 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         <PBadge text="Present" type="success" />
       ) : record?.actualAttendanceStatus === "Absence" ? (
         <PBadge text="Absence" type="warning" />
-      ) : record?.actualAttendanceStatus === "Process" ? (
-        <PBadge text="Process" type="primary" />
+      ) : record?.actualAttendanceStatus === "Holiday" ? (
+        <PBadge text="Holiday" type="light" />
       ) : record?.actualAttendanceStatus === "Late" ? (
         <PBadge text="Late" type="danger" />
+      ) : record?.actualAttendanceStatus === "Offday" ? (
+        <PBadge text="Offday" type="light" />
       ) : (
         ""
       ),
