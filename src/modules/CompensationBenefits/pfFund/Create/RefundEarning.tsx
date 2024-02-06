@@ -62,6 +62,9 @@ const RefundEarning: React.FC<TAddEditForm> = ({
             ),
             strRemark: values?.remarks || "",
             isEarning: values?.earning || false,
+            referenceId: {
+              intReferenceId: data[0]?.intReferenceId || 0,
+            },
           },
           toast: true,
           onSuccess: () => {
