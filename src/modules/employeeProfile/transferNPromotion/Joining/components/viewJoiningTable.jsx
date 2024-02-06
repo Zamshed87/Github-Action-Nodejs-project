@@ -26,7 +26,7 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
             style={{
               border: "1px solid rgba(0, 0, 0, 0.12)",
             }}
-            colSpan="4"
+            colSpan="2"
           >
             <div className="text-center">From</div>
           </th>
@@ -34,7 +34,7 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
             style={{
               border: "1px solid rgba(0, 0, 0, 0.12)",
             }}
-            colSpan="4"
+            colSpan="2"
           >
             <div className="text-center">To</div>
           </th>
@@ -72,21 +72,8 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
             }}
           >
             <div>B.Unit & Workplace</div>
-          </td>
-          <td
-            style={{
-              backgroundColor: "rgba(247, 220, 92, 1)",
-            }}
-          >
-            <div>Wing, Sole Depo & Region</div>
-          </td>
-          <td
-            style={{
-              backgroundColor: "rgba(247, 220, 92, 1)",
-            }}
-          >
-            <div>Area & Territory</div>
-          </td>
+          </td> 
+     
           <td
             style={{
               backgroundColor: "rgba(247, 220, 92, 1)",
@@ -101,20 +88,7 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
           >
             B.Unit & Workplace
           </td>
-          <td
-            style={{
-              backgroundColor: "rgba(129, 225, 255, 1)",
-            }}
-          >
-            Wing, Sole Depo & Region
-          </td>
-          <td
-            style={{
-              backgroundColor: "rgba(129, 225, 255, 1)",
-            }}
-          >
-            Area & Territory
-          </td>
+    
           <td
             style={{
               backgroundColor: "rgba(129, 225, 255, 1)",
@@ -149,37 +123,7 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
               <div>{transferNpromotion?.workplaceNameFrom}</div>
             </div>
           </td>
-          <td
-            style={{
-              backgroundColor: "rgba(254, 249, 223, 1)",
-            }}
-          >
-            <div
-              style={{
-                color: "rgba(95, 99, 104, 1)",
-              }}
-              className=" "
-            >
-              <div>{transferNpromotion?.wingNameFrom}</div>
-              <div>{transferNpromotion?.soldDepoNameFrom}</div>
-              <div>{transferNpromotion?.regionNameFrom}</div>
-            </div>
-          </td>
-          <td
-            style={{
-              backgroundColor: "rgba(254, 249, 223, 1)",
-            }}
-          >
-            <div
-              style={{
-                color: "rgba(95, 99, 104, 1)",
-              }}
-              className=" "
-            >
-              <div>{transferNpromotion?.areaNameFrom}</div>
-              <div>{transferNpromotion?.territoryNameFrom}</div>
-            </div>
-          </td>
+     
           <td
             style={{
               backgroundColor: "rgba(254, 249, 223, 1)",
@@ -209,37 +153,7 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
               <div>{transferNpromotion?.workplaceName}</div>
             </div>
           </td>
-          <td
-            style={{
-              backgroundColor: "rgba(230, 246, 253, 1)",
-            }}
-          >
-            <div
-              style={{
-                color: "rgba(95, 99, 104, 1)",
-              }}
-              className=""
-            >
-              <div>{transferNpromotion?.wingName}</div>
-              <div>{transferNpromotion?.soldDepoName}</div>
-              <div>{transferNpromotion?.regionName}</div>
-            </div>
-          </td>
-          <td
-            style={{
-              backgroundColor: "rgba(230, 246, 253, 1)",
-            }}
-          >
-            <div
-              style={{
-                color: "rgba(95, 99, 104, 1)",
-              }}
-              className=""
-            >
-              <div>{transferNpromotion?.areaName}</div>
-              <div>{transferNpromotion?.territoryName}</div>
-            </div>
-          </td>
+  
           <td
             style={{
               backgroundColor: "rgba(230, 246, 253, 1)",

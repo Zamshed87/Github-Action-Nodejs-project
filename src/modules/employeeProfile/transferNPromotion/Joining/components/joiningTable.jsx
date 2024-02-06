@@ -53,11 +53,6 @@ const JoiningTable = ({
         >
           <div>{item?.businessUnitNameFrom}</div>
           <div>{item?.workplaceGroupNameFrom}</div>
-          <div>{item?.wingNameFrom}</div>
-          <div>{item?.soldDepoNameFrom}</div>
-          <div>{item?.regionNameFrom}</div>
-          <div>{item?.areaNameFrom}</div>
-          <div>{item?.territoryNameFrom}</div>
         </div>
       </td>
       <td
@@ -86,11 +81,6 @@ const JoiningTable = ({
         >
           <div>{item?.businessUnitName}</div>
           <div>{item?.workplaceGroupName}</div>
-          <div>{item?.wingName}</div>
-          <div>{item?.soldDepoName}</div>
-          <div>{item?.regionName}</div>
-          <div>{item?.areaName}</div>
-          <div>{item?.territoryName}</div>
         </div>
       </td>
       <td

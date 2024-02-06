@@ -1,38 +1,37 @@
 import { Avatar } from "@material-ui/core";
 import {
-  Call,
+  AirportShuttleOutlined,
   ControlPoint,
   DeleteOutline,
   ModeEditOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
 import ActionMenu from "../../../../../../common/ActionMenu";
 import FormikInput from "../../../../../../common/FormikInput";
 import Loading from "../../../../../../common/loading/Loading";
 import { gray900, success500 } from "../../../../../../utility/customColor";
+import { todayDate } from "../../../../../../utility/todayDate";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
-import { todayDate } from "./../../../../../../utility/todayDate";
-import { updateEmployeeProfile } from "./../helper";
+import { updateEmployeeProfile } from "../helper";
 
 const initData = {
-  workPhone: "",
+  tinNo: "",
 };
 
 const validationSchema = Yup.object().shape({
-  workPhone: Yup.string().required("Work Phone is required"),
-  // .matches(/^(?:\+?88)?01[15-9]\d{8}/, "Work Phone Number is invalid"),
+  tinNo: Yup.string().required("Driving license no. required"),
 });
 
-function WorkPhone({ empId, buId, wgId }) {
+function TinNo({ empId, buId, wgId }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("empty");
   const [isCreateForm, setIsCreateForm] = useState(false);
-  const [rowDto, setRowDto] = useState([]);
-  const [singleData, setSingleData] = useState("");
+  const [rowDto, setRowDto] = useState({});
+  const [singleData, setSingleData] = useState(0);
 
   const { employeeId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -41,17 +40,17 @@ function WorkPhone({ empId, buId, wgId }) {
 
   useEffect(() => {
     getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const saveHandler = (values) => {
     if (singleData) {
       const payload = {
-        partType: "OfficialPhone",
+        partType: "TinNo",
         employeeId: empId,
-        autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
-        value: values?.workPhone || singleData,
+        autoId: rowDto?.empEmployeePhotoIdentity?.intEmployeeBasicInfoId || 0,
+        value: values?.tinNo || singleData,
+        tinNo: values?.tinNo || singleData,
         insertByEmpId: employeeId,
         isActive: true,
         bankId: 0,
@@ -113,10 +112,11 @@ function WorkPhone({ empId, buId, wgId }) {
       updateEmployeeProfile(payload, setLoading, callback);
     } else {
       const payload = {
-        partType: "OfficialPhone",
+        partType: "TinNo",
         employeeId: empId,
         autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
-        value: values?.workPhone || singleData,
+        value: values?.tinNo || singleData,
+        tinNo: values?.tinNo || singleData,
         insertByEmpId: employeeId,
         isActive: true,
         bankId: 0,
@@ -179,9 +179,9 @@ function WorkPhone({ empId, buId, wgId }) {
     }
   };
 
-  const deleteHandler = (setFieldsValue) => {
+  const deleteHandler = (values) => {
     const payload = {
-      partType: "OfficialPhone",
+      partType: "TinNo",
       employeeId: empId,
       autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
       value: "",
@@ -241,26 +241,34 @@ function WorkPhone({ empId, buId, wgId }) {
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
-      setFieldsValue("workPhone", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
+
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={{
           ...initData,
-          workPhone: singleData ? singleData : "",
+          tinNo: singleData ? singleData : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { resetForm }) => {
+        onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
+        {({
+          handleSubmit,
+          resetForm,
+          values,
+          errors,
+          touched,
+          setFieldValue,
+          isValid,
+        }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -269,13 +277,15 @@ function WorkPhone({ empId, buId, wgId }) {
                   {/* addEdit form */}
                   {status === "input" && (
                     <>
-                      <h5>Work Phone</h5>
+                      <h5>TIN No.</h5>
                       <div style={{ marginBottom: "25px", cursor: "pointer" }}>
-                        <FormikInput
-                          name="workPhone"
-                          value={values?.workPhone}
+                      <FormikInput
+                          name="tinNo"
+                          value={values?.tinNo}
+                          type="text"
+                          className="form-control"
                           onChange={(e) => {
-                            setFieldValue("workPhone", e.target.value);
+                            setFieldValue("tinNo", e.target.value);
                           }}
                           placeholder=" "
                           errors={errors}
@@ -288,22 +298,24 @@ function WorkPhone({ empId, buId, wgId }) {
                         >
                           <button
                             type="button"
+                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
                               setStatus("empty");
                               setSingleData("");
                               setIsCreateForm(false);
-                              setFieldValue("workPhone", "");
+                              setFieldValue("tinNo", "");
                             }}
                           >
                             Cancel
                           </button>
 
                           <button
+                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
-                            disabled={!values.workPhone}
+                            disabled={!values.tinNo}
                           >
                             Save
                           </button>
@@ -315,20 +327,24 @@ function WorkPhone({ empId, buId, wgId }) {
               ) : (
                 <>
                   {/* landing */}
-                  {rowDto?.employeeProfileLandingView && !singleData && (
+                  {!singleData && (
                     <>
-                      {rowDto?.employeeProfileLandingView?.strOfficeMobile ===
-                        "" ||
-                      rowDto?.employeeProfileLandingView?.strOfficeMobile ===
-                        null ? (
+                      {!rowDto?.employeeProfileLandingView?.tinNo ? (
                         <>
-                          <h5>Work Phone</h5>
+                          <h5>TIN No.</h5>
                           <div
                             className="d-flex align-items-center"
                             style={{ marginBottom: "25px", cursor: "pointer" }}
                             onClick={() => {
                               setStatus("input");
                               setIsCreateForm(true);
+                              getEmployeeProfileViewData(
+                                empId,
+                                setRowDto,
+                                setLoading,
+                                buId,
+                                wgId
+                              );
                             }}
                           >
                             <div
@@ -340,7 +356,7 @@ function WorkPhone({ empId, buId, wgId }) {
                               />
                             </div>
                             <div className="item">
-                              <p>Add your work phone</p>
+                              <p>Add your TIN no.</p>
                             </div>
                           </div>
                         </>
@@ -350,22 +366,22 @@ function WorkPhone({ empId, buId, wgId }) {
                             <div className="row">
                               <div className="col-lg-1">
                                 <Avatar className="overviewAvatar">
-                                  <Call
+                                  {/* <AirportShuttleOutlined
                                     sx={{
                                       color: gray900,
                                       fontSize: "18px",
                                     }}
-                                  />
+                                  /> */}
                                 </Avatar>
                               </div>
                               <div className="col-lg-10">
                                 <h4>
                                   {
                                     rowDto?.employeeProfileLandingView
-                                      ?.strOfficeMobile
+                                      ?.tinNo
                                   }
                                 </h4>
-                                <small>Work Phone</small>
+                                <small>TIN No.</small>
                               </div>
                               <div className="col-lg-1">
                                 <ActionMenu
@@ -386,7 +402,7 @@ function WorkPhone({ empId, buId, wgId }) {
                                       onClick: () => {
                                         setSingleData(
                                           rowDto?.employeeProfileLandingView
-                                            ?.strOfficeMobile
+                                            ?.tinNo
                                         );
                                         setStatus("input");
                                         setIsCreateForm(true);
@@ -404,7 +420,7 @@ function WorkPhone({ empId, buId, wgId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(setFieldValue);
+                                        deleteHandler(values);
                                       },
                                     },
                                   ]}
@@ -426,4 +442,4 @@ function WorkPhone({ empId, buId, wgId }) {
   );
 }
 
-export default WorkPhone;
+export default TinNo;

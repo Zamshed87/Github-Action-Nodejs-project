@@ -35,7 +35,7 @@ const getFinalSettlementById = async (
   setEmployeeDDL,
   cb
 ) => {
-  setLoading && setLoading(true);
+  setLoading(true);
 
   try {
     const res = await axios.get(
@@ -48,15 +48,15 @@ const getFinalSettlementById = async (
         value: res?.data?.intEmployeeId,
         label: res?.data?.strEmployeeCode,
       });
-      setLoading && setLoading(false);
+      setLoading(false);
     }
   } catch (error) {
-    setLoading && setLoading(false);
+    setLoading(false);
   }
 };
 
 const getFinalSettlement = async (accId, buId, empId, setter, setLoading) => {
-  setLoading && setLoading(true);
+  setLoading(true);
 
   try {
     const res = await axios.get(
@@ -72,15 +72,14 @@ const getFinalSettlement = async (accId, buId, empId, setter, setLoading) => {
         salaryElement: "Total Gross",
         amount: totalGross,
       });
-      setter &&
-        setter({
-          ...res?.data,
-          monthlyCompensation,
-        });
-      setLoading && setLoading(false);
+      setter({
+        ...res?.data,
+        monthlyCompensation,
+      });
+      setLoading(false);
     }
   } catch (error) {
-    setLoading && setLoading(false);
+    setLoading(false);
   }
 };
 
@@ -205,19 +204,18 @@ const getFinalSettlementLanding = async (
   setLoading,
   setAllData
 ) => {
-  setLoading && setLoading(true);
-
+  setLoading(true);
   try {
     const res = await axios.get(
       `/SaasMasterData/GetEmpFinalSettlementLanding?AccountId=${accId}&intBusinessUnitId=${buId}`
     );
     if (res?.data) {
-      setter && setter(res?.data);
-      setAllData && setAllData(res?.data);
-      setLoading && setLoading(false);
+      setter(res?.data);
+      setAllData(res?.data);
+      setLoading(false);
     }
   } catch (error) {
-    setLoading && setLoading(false);
+    setLoading(false);
   }
 };
 const deleteFinalSettlement = async (
@@ -228,18 +226,18 @@ const deleteFinalSettlement = async (
   setLoading,
   cb
 ) => {
-  setLoading && setLoading(true);
+  setLoading(true);
   try {
     const res = await axios.get(
       `/SaasMasterData/DeleteEmpFinalSettlement?AccountId=${accId}&intBusinessUnitId=${buId}&FinalSettlementId=${stlmntId}&ActionBy=${employeeId}`
     );
     if (res?.data) {
-      setLoading && setLoading(false);
+      setLoading(false);
       cb && cb();
       toast.success(res?.data?.message || "Deleted Successfully");
     }
   } catch (error) {
-    setLoading && setLoading(false);
+    setLoading(false);
     toast.warn(error?.response?.data?.message || "Something went wrong");
   }
 };
@@ -337,63 +335,61 @@ const finalSettlementColumns = (
       dataIndex: "Status",
       render: (data, record) => (
         <div className="d-flex align-items-center">
-          <>
-            <Tooltip title="Edit" arrow>
-              <button
-                type="button"
-                className="iconButton"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  history.push(
-                    `/profile/finalSettlement/edit/${record?.intFinalSettlementId}`,
-                    { employeeId: record?.intEmployeeId }
-                  );
-                }}
-              >
-                <CreateOutlined />
-              </button>
-            </Tooltip>
-            <Tooltip title="Delete" arrow>
-              <button
-                type="button"
-                className="iconButton mt-0 mt-md-2 mt-lg-0"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  demoPopup(record?.intFinalSettlementId);
-                }}
-              >
-                <DeleteOutlined />
-              </button>
-            </Tooltip>
-            <Tooltip title="View" arrow>
-              <button
-                type="button"
-                className="iconButton mt-0 mt-md-2 mt-lg-0"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  history.push(
-                    `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
-                    { employeeId: record?.intEmployeeId }
-                  );
-                }}
-              >
-                <VisibilityOutlined />
-              </button>
-            </Tooltip>
-            <Tooltip title="Print/Pdf" arrow>
-              <button
-                type="button"
-                className="iconButton mt-0 mt-md-2 mt-lg-0"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const api = `/PdfAndExcelReport/FinalSettlementReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntEmployeeId=${record?.intEmployeeId}&IntFinalSettlementId=${record?.intFinalSettlementId}`;
-                  getPDFAction(api, setLoading);
-                }}
-              >
-                <Print sx={{}} />
-              </button>
-            </Tooltip>
-          </>
+          <Tooltip title="Edit" arrow>
+            <button
+              type="button"
+              className="iconButton"
+              onClick={(e) => {
+                e.stopPropagation();
+                history.push(
+                  `/profile/finalSettlement/edit/${record?.intFinalSettlementId}`,
+                  { employeeId: record?.intEmployeeId }
+                );
+              }}
+            >
+              <CreateOutlined />
+            </button>
+          </Tooltip>
+          <Tooltip title="Delete" arrow>
+            <button
+              type="button"
+              className="iconButton mt-0 mt-md-2 mt-lg-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                demoPopup(record?.intFinalSettlementId);
+              }}
+            >
+              <DeleteOutlined />
+            </button>
+          </Tooltip>
+          <Tooltip title="View" arrow>
+            <button
+              type="button"
+              className="iconButton mt-0 mt-md-2 mt-lg-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                history.push(
+                  `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
+                  { employeeId: record?.intEmployeeId }
+                );
+              }}
+            >
+              <VisibilityOutlined />
+            </button>
+          </Tooltip>
+          <Tooltip title="Print/Pdf" arrow>
+            <button
+              type="button"
+              className="iconButton mt-0 mt-md-2 mt-lg-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                const api = `/PdfAndExcelReport/FinalSettlementReportPDF?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntEmployeeId=${record?.intEmployeeId}&IntFinalSettlementId=${record?.intFinalSettlementId}`;
+                getPDFAction(api, setLoading);
+              }}
+            >
+              <Print sx={{}} />
+            </button>
+          </Tooltip>
         </div>
       ),
       sorter: false,

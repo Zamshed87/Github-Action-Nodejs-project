@@ -4,6 +4,7 @@ import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/Overt
 import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/PayrollElement";
 import PayrollGroupCreate from "modules/PayrollManagementSytem/SalaryBreakdown/Create/PayrollGroupCreate";
 import SalaryBreakdownN from "modules/PayrollManagementSytem/SalaryBreakdown/indexN";
+import SeparationSetupLanding from "modules/PayrollManagementSytem/SeparationSetup";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BankBranch from "modules/configuration/bankBranch";
 import BusinessUnit from "modules/configuration/busisnessUnit";
@@ -2673,6 +2674,10 @@ export const routingList = [
     component: OvertimePolicy,
   },
   // Policy Create/Landing
+  {
+    path: "/administration/payrollConfiguration/separationSetup",
+    component: SeparationSetupLanding,
+  },
   {
     path: "/administration/payrollConfiguration/overtimePolicy",
     component: OvertimePolicyN,

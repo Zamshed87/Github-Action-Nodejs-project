@@ -11,6 +11,7 @@ import {
   gray600,
   gray900,
 } from "../../../../../utility/customColor";
+import { useHistory } from "react-router-dom";
 const initData = {
   monthYear: moment().format("YYYY-MM"),
 };
@@ -19,6 +20,7 @@ const EmployeeSelfCalendar = ({ employeeDashboard }) => {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const history = useHistory();
 
   const [days, setDays] = useState("");
   const [attendenceList, setAttendenceList] = useState([]);
@@ -82,7 +84,12 @@ const EmployeeSelfCalendar = ({ employeeDashboard }) => {
               }}
             >
               <div>
-                <h2 style={{ color: gray500, fontSize: "1rem" }}>
+                <h2 style={{ color: gray500, fontSize: "1rem" }}
+                className="pointer"
+                onClick={() => {
+                  history.push("/SelfService/timeManagement/attendenceAdjustRequest");
+                }}
+                >
                   Attendance Calendar
                 </h2>
                 <FormikInput

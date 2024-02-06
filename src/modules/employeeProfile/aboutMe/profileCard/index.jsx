@@ -24,6 +24,7 @@ import { dateFormatter } from "../../../../utility/dateFormatter";
 import "../aboutMe.css";
 import AccordionCom from "../accordion";
 import { empProfilePicUpload } from "../helper";
+import { toast } from "react-toastify";
 
 const Input = styled("input")({
   display: "none",
@@ -128,6 +129,7 @@ const ProfileCard = ({
                   );
                 }}
               />
+
               <div className="cart-img-btn">
                 <img src={editProPic} alt="pro pic" />
               </div>

@@ -41,6 +41,7 @@ const TransferPromotionTable = ({
         >
           <div>{item?.businessUnitNameFrom}</div>
           <div>{item?.workplaceGroupNameFrom}</div>
+          <div>{item?.workplaceNameFrom}</div>
           {/* <div>{item?.wingNameFrom}</div>
           <div>{item?.soldDepoNameFrom}</div>
           <div>{item?.regionNameFrom}</div>
@@ -75,6 +76,7 @@ const TransferPromotionTable = ({
         >
           <div>{item?.businessUnitName}</div>
           <div>{item?.workplaceGroupName}</div>
+          <div>{item?.workplaceName}</div>
           {/* <div>{item?.wingName}</div>
           <div>{item?.soldDepoName}</div>
           <div>{item?.regionName}</div>
