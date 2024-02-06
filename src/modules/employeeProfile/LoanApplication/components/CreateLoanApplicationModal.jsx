@@ -354,6 +354,7 @@ const CreateLoanApplicationModal = ({
                         setFieldValue("amountPerInstallment", "");
                         setFieldValue("approveLoanAmount", e.target.value);
                         setFieldValue("loanAmount", e.target.value);
+                        setFieldValue("totalwithinterest", e.target.value);
                         if (values?.interest) {
                           const totalAmountwithInterest = (
                             +e.target.value +
@@ -377,7 +378,7 @@ const CreateLoanApplicationModal = ({
                   </div>
                   <div className="col-4">
                     <label>
-                      Interest (%) <Required />
+                      Interest (%)
                     </label>
                     <FormikInput
                       classes="input-sm"
