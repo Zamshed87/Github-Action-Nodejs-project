@@ -5,12 +5,13 @@ export const getApprovalDashboardLanding = async (
   employeeId,
   isOfficeAdmin,
   setter,
-  setIsLoading
+  setIsLoading,
+  wId
 ) => {
   setIsLoading && setIsLoading(true);
   try {
     let res = await axios.get(
-      `/Dashboard/PendingApprovalDashboard?accountId=${accId}&employeeId=${employeeId}&isAdmin=${isOfficeAdmin}&iAmFromWeb=true&iAmFromApps=false`
+      `/Dashboard/PendingApprovalDashboard?accountId=${accId}&employeeId=${employeeId}&isAdmin=${isOfficeAdmin}&iAmFromWeb=true&iAmFromApps=false&workplaceId=${wId}`
     );
     setIsLoading && setIsLoading(false);
     setter(res?.data);
