@@ -2,14 +2,14 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const getEmployeeDocumentManagement = async (
-  accId,
-  id,
+  accId = 1,
+  id =1,
   setter,
   setLoading
 ) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(`/Employee/GetAllEmployeeDocumentManagement`);
+    const res = await axios.get(`/Employee/GetAllEmployeeDocumentManagement?+=${accId}&IntEmployeeId=${id}`);
     if (res?.data) {
       setter && setter(res?.data);
       setLoading && setLoading(false);

@@ -72,6 +72,11 @@ export const generatePayload = (
     isEarnLeave: values?.isEarnLeave || false,
     isEarnLveIncludeHoliday: values?.isEarnLveIncludeHoliday || false,
     isEarnLveIncludeOffday: values?.isEarnLveIncludeOffday || false,
+    isEarnLveIncludeAbsent: values?.isEarnLveIncludeAbsent || false,
+    isEarnLveIncludeLeaveMovement:
+      values?.isEarnLveIncludeLeaveMovement || false,
+    isEarnLveCountFromConfirmationDate:
+      values?.isEarnLveCountFromConfirmationDate || false,
     isCarryForward: values?.isCarryForward || false,
     isAutoRenewable: values?.isAutoRenewable || false,
     isApplicableBeforeAndAfterHoliday:
