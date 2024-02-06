@@ -188,9 +188,9 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 prompt: "Investment",
                 isActive:
                   record?.status === "Complete" ||
-                  record?.status === "" ||
                   record?.intTypeId === 1 ||
-                  record?.intTypeId === 4
+                  record?.intTypeId === 4 ||
+                  record?.intTypeId === 5
                     ? false
                     : true,
               },
@@ -284,9 +284,9 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
               getCheckboxProps: (record) => ({
                 disabled:
                   record?.status === "Complete" ||
-                  record?.status === "" ||
                   record?.strType === "Investment" ||
-                  record?.strType === "Refund",
+                  record?.strType === "Refund" ||
+                  record?.strType === "Earning",
               }),
             }}
             bordered
