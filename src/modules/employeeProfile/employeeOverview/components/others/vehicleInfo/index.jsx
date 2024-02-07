@@ -12,7 +12,7 @@ import FormikInput from "../../../../../../common/FormikInput";
 import Loading from "../../../../../../common/loading/Loading";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
-import { updateEmployeeProfile } from "../../contact/helper";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   vehicleNo: "",
@@ -54,7 +54,7 @@ export default function VehicleInfo({ empId, buId, wgId }) {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(
             values,
             () => {

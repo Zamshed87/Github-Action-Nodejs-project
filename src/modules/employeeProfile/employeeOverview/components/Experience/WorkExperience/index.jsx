@@ -22,10 +22,11 @@ import {
   dateFormatterForInput,
 } from "./../../../../../../utility/dateFormatter";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { attachment_action, updateEmployeeProfile } from "./../helper";
+import { attachment_action } from "./../helper";
 import NocSlider from "./NocSlider";
 import { fromDateToDateDiff } from "./../../../../../../utility/fromDateToDateDiff";
 import { gray900, success500 } from "../../../../../../utility/customColor";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   companyName: "",

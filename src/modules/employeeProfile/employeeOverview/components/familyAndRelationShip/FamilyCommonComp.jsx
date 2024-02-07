@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { Avatar } from "@material-ui/core";
@@ -29,7 +28,7 @@ import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../../utility/todayDate";
 import "../../employeeOverview.css";
-import { commonUpdateEmployeeProfileAction } from "../helper";
+import { updateEmployeeProfile } from "../helper";
 import { getEmployeeProfileViewData } from "./../../../employeeFeature/helper";
 
 const initData = {
@@ -110,7 +109,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
       specialContactTypeId: typeId,
       specialContactTypeName: typeName,
     };
-    commonUpdateEmployeeProfileAction(payload, setLoading, cb);
+    updateEmployeeProfile(payload, setLoading, cb);
   };
 
   return (
@@ -119,7 +118,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(
             values,
             () => {
@@ -138,7 +137,6 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
           errors,
           touched,
           setFieldValue,
-          isValid,
           setValues,
         }) => (
           <>
@@ -341,7 +339,6 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                           setEmergencyContact("empty");
                           resetForm(initData);
                         }}
-                        variant="text"
                         className="btn btn-cancel"
                         style={{ marginRight: "16px" }}
                       >
@@ -349,7 +346,6 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                       </button>
 
                       <button
-                        variant="text"
                         type="submit"
                         className="btn btn-green btn-green-disable"
                       >
@@ -388,7 +384,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                     }}
                                   />
                                 ),
-                                onClick: (e) => {
+                                onClick: () => {
                                   setValues({
                                     ...values,
                                     name: item?.strRelativesName || "",
@@ -424,7 +420,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                                     }}
                                   />
                                 ),
-                                onClick: (e) => {
+                                onClick: () => {
                                   saveHandler(
                                     values,
                                     () => {

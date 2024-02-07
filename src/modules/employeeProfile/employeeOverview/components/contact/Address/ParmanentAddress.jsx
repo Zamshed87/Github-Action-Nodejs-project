@@ -16,10 +16,9 @@ import Loading from "../../../../../../common/loading/Loading";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import { customStyles } from "../../../../../../utility/selectCustomStyle";
 import { getEmployeeProfileViewDataForAddress } from "../../../../employeeFeature/helper";
-import { DDLForAddress } from "../../helper";
+import { DDLForAddress, updateEmployeeProfile } from "../../helper";
 import FormikSelect from "./../../../../../../common/FormikSelect";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { updateEmployeeProfile } from "./../helper";
 
 const initData = {
   country: "",
