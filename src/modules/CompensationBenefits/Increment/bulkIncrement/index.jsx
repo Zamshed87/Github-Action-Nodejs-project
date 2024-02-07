@@ -115,8 +115,8 @@ export default function BulkIncrementEntry() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=19"
-                                  : "/document/downloadfile?id=19"
+                                  ? "/document/downloadfile?id=104"
+                                  : "/document/downloadfile?id=120"
                               }`,
                               "Increment Bulk Upload",
                               "xlsx",
