@@ -70,7 +70,7 @@ export default function AttendanceApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
 
   useEffect(() => {
     const modifyData = allData?.map((item) => ({ ...item, isSelect: false }));
