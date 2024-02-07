@@ -318,7 +318,8 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     updateEmployeeProfile(
       { ...payload, fileUrlId: imageFile?.globalFileUrlId || 0 },
       setLoading,
-      callback
+      callback,
+      "Deleted Worked Experience"
     );
   };
 
