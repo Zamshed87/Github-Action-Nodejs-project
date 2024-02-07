@@ -1,6 +1,5 @@
 import { Avatar } from "@material-ui/core";
 import {
-  AirportShuttleOutlined,
   ControlPoint,
   DeleteOutline,
   ModeEditOutlined,
@@ -16,7 +15,7 @@ import { gray900, success500 } from "../../../../../../utility/customColor";
 import { todayDate } from "../../../../../../utility/todayDate";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
-import { updateEmployeeProfile } from "../helper";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   tinNo: "",
@@ -179,7 +178,7 @@ function TinNo({ empId, buId, wgId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = () => {
     const payload = {
       partType: "TinNo",
       employeeId: empId,
@@ -254,7 +253,7 @@ function TinNo({ empId, buId, wgId }) {
           tinNo: singleData ? singleData : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -262,12 +261,10 @@ function TinNo({ empId, buId, wgId }) {
       >
         {({
           handleSubmit,
-          resetForm,
           values,
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -298,7 +295,6 @@ function TinNo({ empId, buId, wgId }) {
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -312,7 +308,6 @@ function TinNo({ empId, buId, wgId }) {
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={!values.tinNo}
