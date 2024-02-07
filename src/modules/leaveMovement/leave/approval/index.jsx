@@ -4,7 +4,6 @@ import {
   Attachment,
   Cancel,
   CheckCircle,
-  EditOutlined,
   InfoOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
@@ -188,6 +187,7 @@ export default function LeaveApproval() {
       {
         approverId: employeeId,
         workplaceGroupId: wgId || 0,
+        workplaceId:wId,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
         applicantId: values?.employee?.id || 0,
@@ -259,6 +259,7 @@ export default function LeaveApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           accountId: orgId,
+          workplaceId:wId,
         },
         setAllLeaveApplicatonData,
         setAllData,
@@ -314,6 +315,7 @@ export default function LeaveApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           accountId: orgId,
+          workplaceId:wId,
         },
 
         setAllLeaveApplicatonData,
