@@ -25,7 +25,7 @@ import {
 } from "./helper";
 
 const MasterLocationRegistration = () => {
-  const { employeeId, isOfficeAdmin, orgId, buId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -75,6 +75,7 @@ const MasterLocationRegistration = () => {
         applicationStatus: "pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
+        workplaceId: wId,
         busineessUnit: buId,
         accountId: orgId,
         applicantId: 0,
@@ -141,6 +142,7 @@ const MasterLocationRegistration = () => {
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
           busineessUnit: 0,
+          workplaceId: wId,
           applicantId: 0,
           accountId: orgId,
           intId: 0,
@@ -174,8 +176,7 @@ const MasterLocationRegistration = () => {
 
   useEffect(() => {
     getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [wId]);
 
   const columns = (setFieldValue, page, paginationSize) => {
     return [

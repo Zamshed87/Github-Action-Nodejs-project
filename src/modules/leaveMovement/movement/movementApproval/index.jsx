@@ -257,7 +257,7 @@ export default function MovementApproval() {
 
   useEffect(() => {
     getLandingData(/* isSupOrLineManager?.value */);
-  }, [employeeId]);
+  }, [employeeId, wId]);
 
   const columns = (setFieldValue, page, paginationSize) => {
     return [
