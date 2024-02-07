@@ -31,7 +31,7 @@ const initData = {
 };
 
 export default function RequisitionApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -48,6 +48,7 @@ export default function RequisitionApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
+        workplaceId: wId,
         busineessUnit: 0,
         applicantId: 0,
         accountId: orgId,
@@ -63,7 +64,7 @@ export default function RequisitionApproval() {
   useEffect(() => {
     getLandingData(/* isSupOrLineManager?.value */);
     // eslint-disable-next-line
-  }, [employeeId]);
+  }, [employeeId, wId]);
 
   // advance filter
   const [filterBages, setFilterBages] = useState({});
@@ -146,6 +147,7 @@ export default function RequisitionApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
+          workplaceId: wId,
           workplaceGroupId: 0,
           departmentId: 0,
           designationId: 0,

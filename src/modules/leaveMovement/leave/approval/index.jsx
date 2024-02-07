@@ -168,7 +168,7 @@ export default function LeaveApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [employeeId, orgId, wgId, ApplicationId]);
+  }, [employeeId, orgId, wgId, ApplicationId, wId]);
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);

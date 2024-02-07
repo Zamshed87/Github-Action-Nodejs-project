@@ -48,7 +48,7 @@ const initData = {
 };
 
 export default function AssetTransferApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -67,6 +67,7 @@ export default function AssetTransferApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
+        workplaceId: wId,
         approverId: employeeId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -89,6 +90,7 @@ export default function AssetTransferApproval() {
         isSupOrLineManager: 0,
         approverId: employeeId,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -99,7 +101,7 @@ export default function AssetTransferApproval() {
       setAllData,
       setLoading
     );
-  }, [employeeId, orgId, isOfficeAdmin]);
+  }, [employeeId, orgId, isOfficeAdmin, wId]);
 
   const debounce = useDebounce();
 
@@ -152,6 +154,7 @@ export default function AssetTransferApproval() {
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
           workplaceGroupId: 0,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -199,6 +202,7 @@ export default function AssetTransferApproval() {
           workplaceGroupId: 0,
           departmentId: 0,
           designationId: 0,
+          workplaceId: wId,
           applicantId: 0,
           accountId: orgId,
           intId: 0,

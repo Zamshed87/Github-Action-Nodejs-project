@@ -91,7 +91,7 @@ export default function OvertimeApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [employeeId]);
+  }, [employeeId, wId]);
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);

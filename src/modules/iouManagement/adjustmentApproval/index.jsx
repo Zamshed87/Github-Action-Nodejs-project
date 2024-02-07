@@ -52,7 +52,7 @@ const initData = {
 };
 
 export default function AdjustmentIOUApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -91,6 +91,7 @@ export default function AdjustmentIOUApproval() {
         isUserGroup: false,
         approverId: employeeId,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -115,6 +116,7 @@ export default function AdjustmentIOUApproval() {
         approverId: employeeId,
         workplaceGroupId: 0,
         departmentId: 0,
+        workplaceId: wId,
         designationId: 0,
         applicantId: 0,
         accountId: orgId,
@@ -144,6 +146,7 @@ export default function AdjustmentIOUApproval() {
         isSupervisor: false,
         isLineManager: false,
         isUserGroup: false,
+        workplaceId: wId,
         approverId: employeeId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -228,6 +231,7 @@ export default function AdjustmentIOUApproval() {
         {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
+          workplaceId: wId,
           isSupOrLineManager: 0,
           isSupervisor: false,
           isLineManager: false,
@@ -291,6 +295,7 @@ export default function AdjustmentIOUApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
+          workplaceId: wId,
           isSupervisor: false,
           isLineManager: false,
           isUserGroup: false,

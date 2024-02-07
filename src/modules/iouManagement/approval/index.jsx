@@ -52,7 +52,7 @@ const initData = {
 };
 
 export default function IOUApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -95,6 +95,7 @@ export default function IOUApproval() {
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
       setApplicationListData,
       setAllData,
@@ -114,6 +115,7 @@ export default function IOUApproval() {
         designationId: 0,
         applicantId: 0,
         accountId: orgId,
+        workplaceId: wId,
         intId: 0,
       },
       setApplicationListData,
@@ -138,6 +140,7 @@ export default function IOUApproval() {
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -222,6 +225,7 @@ export default function IOUApproval() {
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
           workplaceGroupId: 0,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -268,6 +272,7 @@ export default function IOUApproval() {
           approverId: employeeId,
           workplaceGroupId: 0,
           departmentId: 0,
+          workplaceId: wId,
           designationId: 0,
           applicantId: 0,
           accountId: orgId,

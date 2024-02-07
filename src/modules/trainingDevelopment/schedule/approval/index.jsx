@@ -30,7 +30,7 @@ const initData = {
 };
 
 export default function TrainingScheduleApproval() {
-  const { employeeId, isOfficeAdmin, orgId, buId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -57,7 +57,7 @@ export default function TrainingScheduleApproval() {
         isLineManager: true,
         isUserGroup: true,
         approverId: employeeId,
-        workplaceId: 0,
+        workplaceId: wId,
         businessUnitId: buId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -92,7 +92,7 @@ export default function TrainingScheduleApproval() {
   };
   useEffect(() => {
     getLandingData();
-  }, [employeeId]);
+  }, [employeeId, wId]);
 
   // const searchData = (keywords, allData, setRowDto) => {
   //   try {
