@@ -6,6 +6,7 @@ export const updateEmployeeProfile = async (payload, setLoading, cb, toastMessag
   try {
     const res = await axios.post(`/Employee/UpdateEmployeeProfile`, payload);
     cb && cb();
+    console.log("payload", payload)
     toast.success(toastMessage || res.data?.message || "Successfully");
     setLoading && setLoading(false);
   } catch (error) {

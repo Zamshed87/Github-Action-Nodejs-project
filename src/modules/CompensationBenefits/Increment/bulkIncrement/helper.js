@@ -41,7 +41,7 @@ export const saveBulkUploadIncrementAction = async (
   data,
   callback
 ) => {
-  let modifiedData = data.map((item) => ({
+  const modifiedData = data.map((item) => ({
     intIncrementId: item?.intIncrementId,
     intEmployeeId: item?.intEmployeeId,
     strEmployeeName: item?.strEmployeeName,
