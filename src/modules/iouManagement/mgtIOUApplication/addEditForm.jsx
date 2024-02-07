@@ -118,7 +118,7 @@ export default function MgtIOUApplicationCreate() {
     if (params?.id && imgRow?.length) {
       const modifyImageArray = imgRow.map((image) => {
         return {
-          globalFileUrlId: image?.intDocURLId,
+          globalFileUrlId: image?.intDocUrlid,
         };
       });
       setEditImageRow(modifyImageArray);

@@ -15,6 +15,7 @@ import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { AttendanceType, EmpFilterType } from "./utils/utils";
+import { convertTo12HourFormat } from "utility/timeFormatter";
 
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
@@ -164,18 +165,20 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       title: "SL",
       render: (value: any, row: any, index: number) => index + 1,
       align: "center",
-      width: 20,
+      width: 30,
       fixed: "left",
     },
     {
       title: "Employee Name",
       dataIndex: "EmployeeName",
       fixed: "left",
+      width: 120,
     },
     {
       title: "Employee ID",
       dataIndex: "EmployeeCode",
       fixed: "left",
+      width: 90,
     },
     {
       title: "Department",
@@ -198,45 +201,71 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       filter: true,
     },
     {
+      title: "Calender Name",
+      dataIndex: "CalendarName",
+      sorter: true,
+      filter: true,
+      // width: 130,
+    },
+    {
       title: "Attendance Date",
       dataIndex: "AttendanceDate",
       render: (data: any) => moment(data).format("DD-MMM-YYYY"),
+      // width: 130,
     },
     {
-      title: "In-Time",
-      dataIndex: "InTime",
+      title: "Punch In/Out",
+      dataIndex: "",
+      render: (data: any) => `${data?.InTime} - ${data?.OutTime}`,
+      // width: 130,
     },
     {
-      title: "Out-Time",
-      dataIndex: "OutTime",
+      title: "Manual In/Out",
+      dataIndex: "",
+      render: (data: any) =>
+        `${data?.ManulInTime || "N/A"} - ${data?.ManulOutTime || "N/A"}`,
+      // width: 130,
+    },
+    {
+      title: "Calender Time In/Out",
+      dataIndex: "",
+      render: (data: any) =>
+        `${convertTo12HourFormat(data?.CalenderStartTime) || "N/A"} - ${
+          convertTo12HourFormat(data?.CalenderEndTime) || "N/A"
+        }`,
+      // width: 130,
+    },
+    {
+      title: "Late Min",
+      dataIndex: "LateMin",
+      // width: 100,
     },
     {
       title: "Total Working Hours",
       dataIndex: "WorkingHours",
     },
     {
+      title: "Total OT Hours",
+      dataIndex: "OverTimeCalednder",
+    },
+    {
       title: "Actual Attendance",
       dataIndex: "actualAttendanceStatus",
+      render: (_: any, record: any) =>
+      record?.actualAttendanceStatus === "Present" ? (
+        <PBadge text="Present" type="success" />
+      ) : record?.actualAttendanceStatus === "Absence" ? (
+        <PBadge text="Absence" type="warning" />
+      ) : record?.actualAttendanceStatus === "Holiday" ? (
+        <PBadge text="Holiday" type="light" />
+      ) : record?.actualAttendanceStatus === "Late" ? (
+        <PBadge text="Late" type="danger" />
+      ) : record?.actualAttendanceStatus === "Offday" ? (
+        <PBadge text="Offday" type="light" />
+      ) : (
+        ""
+      ),
       align: "center",
-      // render: (data: any, record: any, index: number) => {
-      //   return (record?.isPresent && record?.isLate) || record?.isLate ? (
-      //     <PBadge type="warning" text="Late" />
-      //   ) : record?.isPresent ? (
-      //     <PBadge type="success" text="Present" />
-      //   ) : record?.isHoliday === true ? (
-      //     <PBadge type="secondary" text="Holiday" />
-      //   ) : record?.isOffday === true ? (
-      //     <PBadge type="dark" text="Offday" />
-      //   ) : record?.isLeave ? (
-      //     <PBadge type="light" text="Leave" />
-      //   ) : record?.isMovement ? (
-      //     <PBadge type="dark" text="Movement" />
-      //   ) : record?.isAbsent ? (
-      //     <PBadge type="danger" text="Absent" />
-      //   ) : (
-      //     ""
-      //   );
-      // },
     },
     {
       title: "Request Attendance",

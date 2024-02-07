@@ -136,7 +136,9 @@ export default function SelfDashboard() {
                       padding: "12px 0 0 12px",
                     }}
                     onClick={() => {
-                      history.push("/SelfService/leaveAndMovement/leaveApplication");
+                      history.push(
+                        "/SelfService/leaveAndMovement/leaveApplication"
+                      );
                     }}
                   >
                     Leave Balance
@@ -172,44 +174,55 @@ export default function SelfDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                        {employeeDashboard?.leaveBalanceHistoryList?.map(
-                          (item, i) => (
-                            <>
-                              <tr key={i}>
-                                <td style={{ borderTop: "1px solid #F2F4F7" }}>
-                                  <p
-                                    style={{
-                                      color: gray700,
-                                      paddingLeft: "8px",
-                                    }}
+                          {console.log(
+                            employeeDashboard?.leaveBalanceHistoryList
+                          )}
+                          {employeeDashboard?.leaveBalanceHistoryList
+                            ?.filter(
+                              (item) => item?.isLveBalanceShowForSelfService
+                            )
+                            ?.map((item, i) => (
+                              <>
+                                <tr key={i}>
+                                  <td
+                                    style={{ borderTop: "1px solid #F2F4F7" }}
                                   >
-                                    {item?.strLeaveType}
-                                  </p>
-                                </td>
-                                <td style={{ borderTop: "1px solid #F2F4F7" }}>
-                                  <p
-                                    style={{
-                                      textAlign: "center",
-                                      color: gray700,
-                                    }}
+                                    <p
+                                      style={{
+                                        color: gray700,
+                                        paddingLeft: "8px",
+                                      }}
+                                    >
+                                      {item?.strLeaveType}
+                                    </p>
+                                  </td>
+                                  <td
+                                    style={{ borderTop: "1px solid #F2F4F7" }}
                                   >
-                                    {item?.intTakenLveInDay}
-                                  </p>
-                                </td>
-                                <td style={{ borderTop: "1px solid #F2F4F7" }}>
-                                  <p
-                                    style={{
-                                      textAlign: "center",
-                                      color: gray700,
-                                    }}
+                                    <p
+                                      style={{
+                                        textAlign: "center",
+                                        color: gray700,
+                                      }}
+                                    >
+                                      {item?.intTakenLveInDay}
+                                    </p>
+                                  </td>
+                                  <td
+                                    style={{ borderTop: "1px solid #F2F4F7" }}
                                   >
-                                    {item?.intBalanceLveInDay}
-                                  </p>
-                                </td>
-                              </tr>
-                            </>
-                          )
-                        )}
+                                    <p
+                                      style={{
+                                        textAlign: "center",
+                                        color: gray700,
+                                      }}
+                                    >
+                                      {item?.intBalanceLveInDay}
+                                    </p>
+                                  </td>
+                                </tr>
+                              </>
+                            ))}
                         </tbody>
                       </table>
                     </div>

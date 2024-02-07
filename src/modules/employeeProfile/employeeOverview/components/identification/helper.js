@@ -1,5 +1,5 @@
-import { toast } from "react-toastify";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const updateEmployeeProfile = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);

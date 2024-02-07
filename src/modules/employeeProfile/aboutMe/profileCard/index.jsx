@@ -129,13 +129,10 @@ const ProfileCard = ({
                   );
                 }}
               />
-              {isOfficeAdmin ? (
-                <div className="cart-img-btn">
-                  <img src={editProPic} alt="pro pic" />
-                </div>
-              ) : (
-                <> </>
-              )}
+
+              <div className="cart-img-btn">
+                <img src={editProPic} alt="pro pic" />
+              </div>
             </>
           </label>
         </div>

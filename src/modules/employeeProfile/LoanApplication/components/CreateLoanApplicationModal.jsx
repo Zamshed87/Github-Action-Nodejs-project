@@ -119,7 +119,7 @@ const CreateLoanApplicationModal = ({
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
       "intEmployeeBasicInfoId",
       "strEmployeeName",
       setEmployeeDDL
@@ -192,6 +192,40 @@ const CreateLoanApplicationModal = ({
 
   const [resForView, getForView, loadingForView2, setForView] = useAxiosGet([]);
 
+  // useEffect(() => {
+  //   if (singleData?.loanApplicationId) {
+  //     getForView(
+  //       `/Employee/LoanInstallmentRowGetById?loanId=${singleData?.loanApplicationId}`,
+  //       (data) => {
+  //         const currentDate = moment();
+  //         console.log("data",data)
+  //         const modifyData = {
+  //           row: data?.map((item, index) => {
+  //             const repaymentDate = moment(item?.date || currentDate).add(
+  //               index,
+  //               "months"
+  //             );
+  //             return {
+  //               isHold: item?.isHold || false,
+  //               date: repaymentDate.format("YYYY-MM"),
+  //               paymentYear: repaymentDate.year() || 0,
+  //               paymentMonth: repaymentDate.month() + 1,
+  //               strRemarks: item?.strRemarks || "",
+  //               loanApplicationId: item?.loanApplicationId || 0,
+  //               intInterest: +item?.intInterest || 0,
+  //               totalLoanAmount: +item?.totalLoanAmount || 0,
+  //               intInstallmentNumber: +item?.intInstallmentNumber || 0,
+  //               intInstallmentAmount: +item?.intInstallmentAmount || 0,
+  //               strApplicantName: item?.strApplicantName || "",
+  //             };
+  //           }),
+  //         };
+  //         setTableData(modifyData?.row);
+  //       }
+  //     );
+  //   }
+  // }, [singleData?.loanApplicationId]);
+
   useEffect(() => {
     if (singleData?.loanApplicationId) {
       getForView(
@@ -199,30 +233,30 @@ const CreateLoanApplicationModal = ({
         (data) => {
           const currentDate = moment();
           const modifyData = {
-            row: data?.map((item, index) => ({
-              loanApplicationId: item?.loanApplicationId || 0,
-              intInterest: +item?.intInterest || 0,
-              totalLoanAmount: +item?.totalLoanAmount || 0,
-              intInstallmentNumber: +item?.intInstallmentNumber || 0,
-              intInstallmentAmount: +item?.intInstallmentAmount || 0,
-              strApplicantName: item?.strApplicantName || "",
-              repaymentDate: currentDate
-                .clone()
-                .add(index, "months")
-                .format("YYYY-MM-DD"),
-              date: currentDate.clone().add(index, "months").format("YYYY-MM"),
-              inMonth: new Date().getMonth() + 1,
-              intYear: new Date().getFullYear(),
-              intActualPaymentAmount: null,
-              strRemarks: item?.strRemarks || "",
-              isHold: true,
-            })),
+            row: data?.map((item, index) => {
+              const repaymentDate = item?.date
+                ? moment(item.date)
+                : currentDate.clone().add(index, "months");
+              return {
+                isHold: item?.isHold || false,
+                date: repaymentDate.format("YYYY-MM"),
+                paymentYear: repaymentDate.year() || 0,
+                paymentMonth: repaymentDate.month() + 1,
+                strRemarks: item?.strRemarks || "",
+                loanApplicationId: item?.loanApplicationId || 0,
+                intInterest: +item?.intInterest || 0,
+                totalLoanAmount: +item?.totalLoanAmount || 0,
+                intInstallmentNumber: +item?.intInstallmentNumber || 0,
+                intInstallmentAmount: +item?.intInstallmentAmount || 0,
+                strApplicantName: item?.strApplicantName || "",
+              };
+            }),
           };
           setTableData(modifyData?.row);
         }
       );
     }
-  }, []);
+  }, [singleData?.loanApplicationId]);
 
   const labelShowLastInstallmentAmt = (values) => {
     const lastAmount = values?.loanAmount % values?.amountPerInstallment;
@@ -270,7 +304,9 @@ const CreateLoanApplicationModal = ({
               <div className="modalBody" style={{ padding: "0px 16px" }}>
                 <div className="row">
                   <div className="col-4">
-                    <label>Employee <Required/></label>
+                    <label>
+                      Employee <Required />
+                    </label>
                     <AsyncFormikSelect
                       isDisabled={singleData?.loanApplicationId}
                       selectedValue={values?.employee}
@@ -283,7 +319,9 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Loan Type <Required/></label>
+                    <label>
+                      Loan Type <Required />
+                    </label>
                     <FormikSelect
                       name="loanType"
                       options={loanType}
@@ -300,7 +338,9 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Loan Amount <Required/></label>
+                    <label>
+                      Loan Amount <Required />
+                    </label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.loanAmount}
@@ -312,6 +352,7 @@ const CreateLoanApplicationModal = ({
                         setFieldValue("amountPerInstallment", "");
                         setFieldValue("approveLoanAmount", e.target.value);
                         setFieldValue("loanAmount", e.target.value);
+                        setFieldValue("totalwithinterest", e.target.value);
                         if (values?.interest) {
                           const totalAmountwithInterest = (
                             +e.target.value +
@@ -334,7 +375,7 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Interest (%) <Required/></label>
+                    <label>Interest (%)</label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.interest}
@@ -384,7 +425,9 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Guarantor Employee <Required/></label>
+                    <label>
+                      Guarantor Employee <Required />
+                    </label>
 
                     <FormikSelect
                       name="guarantor"
@@ -456,7 +499,10 @@ const CreateLoanApplicationModal = ({
                   </div>
 
                   <div className="col-4">
-                    <label>Installment Number<Required/></label>
+                    <label>
+                      Installment Number
+                      <Required />
+                    </label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.installmentNumber}
@@ -492,7 +538,9 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
                   <div className="col-4">
-                    <label>Amount Per Installment <Required/></label>
+                    <label>
+                      Amount Per Installment <Required />
+                    </label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.amountPerInstallment}
@@ -601,7 +649,9 @@ const CreateLoanApplicationModal = ({
                     </>
                   )}
                   <div className="col-4">
-                    <label>Effective Date <Required/></label>
+                    <label>
+                      Effective Date <Required />
+                    </label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.effectiveDate}
@@ -725,7 +775,9 @@ const CreateLoanApplicationModal = ({
                     {labelShowLastInstallmentAmt(values)}
                   </div>
                   <div className="col-6">
-                    <label>Description <Required/></label>
+                    <label>
+                      Description <Required />
+                    </label>
                     <FormikTextArea
                       classes="textarea-with-label"
                       value={values?.description}
@@ -780,6 +832,7 @@ const CreateLoanApplicationModal = ({
                           </th>
                         </tr>
                       </thead>
+                      {console.log("tableData", tableData)}
                       <tbody>
                         {tableData?.length > 0 && (
                           <>
@@ -798,28 +851,28 @@ const CreateLoanApplicationModal = ({
                                       onChange={(e) => {
                                         // setFieldValue("repaymentDate", "");
                                         setFieldValue("date", e.target.value);
-                                        setFieldValue(
-                                          "inMonth",
-                                          +e.target.value
-                                            .split("")
-                                            .slice(-2)
-                                            .join("")
-                                        );
-                                        setFieldValue(
-                                          "intYear",
-                                          +e.target.value
-                                            .split("")
-                                            .slice(0, 4)
-                                            .join("")
-                                        );
-                                        costInputHandler(
-                                          "repaymentDate",
-                                          e.target.value,
-                                          index,
-                                          tableData,
-                                          setTableData,
-                                          values
-                                        );
+                                        // setFieldValue(
+                                        //   "inMonth",
+                                        //   +e.target.value
+                                        //     .split("")
+                                        //     .slice(-2)
+                                        //     .join("")
+                                        // );
+                                        // setFieldValue(
+                                        //   "intYear",
+                                        //   +e.target.value
+                                        //     .split("")
+                                        //     .slice(0, 4)
+                                        //     .join("")
+                                        // );
+                                        // costInputHandler(
+                                        //   "date",
+                                        //   e.target.value,
+                                        //   index,
+                                        //   tableData,
+                                        //   setTableData,
+                                        //   values
+                                        // );
                                       }}
                                       errors={errors}
                                       touched={touched}
@@ -832,7 +885,9 @@ const CreateLoanApplicationModal = ({
                                       value={+item?.intInstallmentAmount}
                                       name="intInstallmentAmount"
                                       type="number"
-                                      // disabled={item?.isHold}
+                                      disabled={
+                                        item?.intInstallmentAmount === 0
+                                      }
                                       onChange={(e) => {
                                         if (e.target.value < 0) {
                                           return toast.warn(
@@ -886,23 +941,24 @@ const CreateLoanApplicationModal = ({
                                       touched={touched}
                                     />
                                   </td>
+                                  {console.log("tableData main", tableData)}
                                   <td>
                                     <div className="d-flex align-items-end justify-content-end">
                                       <span
                                         style={{
                                           cursor: `${
-                                            item?.isHold ? "" : "pointer"
+                                            !item?.isHold ? "pointer" : ""
                                           }`,
                                         }}
-                                        disabled={item?.isHold}
+                                        disabled={true}
                                         onClick={() => {
-                                          if (!item?.isHold) {
-                                            handleAmendmentClick(
-                                              tableData,
-                                              setTableData,
-                                              item
-                                            );
-                                          }
+                                          if (item?.isHold) return;
+                                          handleAmendmentClick(
+                                            tableData,
+                                            setTableData,
+                                            item,
+                                            index
+                                          );
                                         }}
                                       >
                                         <Tag
@@ -913,32 +969,31 @@ const CreateLoanApplicationModal = ({
                                           {"Amendment!"}
                                         </Tag>
                                       </span>
-                                      {item?.isHold && (
-                                        <IconButton
-                                          type="button"
-                                          style={{
-                                            height: "25px",
-                                            width: "25px",
-                                          }}
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleDeleteClick(
-                                              index,
-                                              tableData,
-                                              setTableData
-                                            );
-                                          }}
-                                        >
-                                          <Tooltip title="Delete">
-                                            <DeleteOutline
-                                              sx={{
-                                                height: "25px",
-                                                width: "25px",
-                                              }}
-                                            />
-                                          </Tooltip>
-                                        </IconButton>
-                                      )}
+                                      <IconButton
+                                        disabled={item?.isHold}
+                                        type="button"
+                                        style={{
+                                          height: "25px",
+                                          width: "25px",
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDeleteClick(
+                                            index,
+                                            tableData,
+                                            setTableData
+                                          );
+                                        }}
+                                      >
+                                        <Tooltip title="Delete">
+                                          <DeleteOutline
+                                            sx={{
+                                              height: "25px",
+                                              width: "25px",
+                                            }}
+                                          />
+                                        </Tooltip>
+                                      </IconButton>
                                     </div>
                                   </td>
                                 </tr>

@@ -412,7 +412,7 @@ export default function TransferAndPromotion() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group
+                                    B.Unit, Workplace Group, Workplace
                                   </div>
                                 </td>
                                 <td
@@ -430,7 +430,7 @@ export default function TransferAndPromotion() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group
+                                  B.Unit, Workplace Group, Workplace
                                   </div>
                                 </td>
                                 <td
@@ -588,7 +588,7 @@ export default function TransferAndPromotion() {
                         />
                       </div>
                     </div>
-                    <div className="col-6">
+                    <div className="col-6 d-none">
                       <div className="input-field-main">
                         <label>Substitute Employee</label>
                         <FormikSelect

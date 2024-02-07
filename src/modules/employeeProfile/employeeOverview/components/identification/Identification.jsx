@@ -6,6 +6,7 @@ import Passport from "./passport";
 import CardNo from "./cardNo";
 import BirthCertificate from "./birthCertificate";
 import DrivingLicense from "./drivingLicense";
+import TinNo from "./tinNo";
 function Identification({ index, tabIndex, empId, wgId, buId }) {
   return (
     index === tabIndex && (
@@ -17,6 +18,7 @@ function Identification({ index, tabIndex, empId, wgId, buId }) {
             <Nationality empId={empId} wgId={wgId} buId={buId} />
             <Passport empId={empId} wgId={wgId} buId={buId} />
             <DrivingLicense empId={empId} wgId={wgId} buId={buId} />
+            <TinNo empId={empId} wgId={wgId} buId={buId} />
             <CardNo empId={empId} wgId={wgId} buId={buId} />
           </div>
         </div>
