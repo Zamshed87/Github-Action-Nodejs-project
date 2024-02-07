@@ -1,3 +1,4 @@
+import { isDevServer } from "App";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -45,6 +46,7 @@ export const createLeaveApplication = async (payload, setLoading, cb) => {
     toast.success(res?.data?.Result?.Message || "Submitted Successfully");
     setLoading && setLoading(false);
   } catch (error) {
+    isDevServer && console.log(error?.response?.data);
     toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading && setLoading(false);
   }
