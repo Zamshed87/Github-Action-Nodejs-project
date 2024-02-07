@@ -8,7 +8,7 @@ import FormikTextArea from "../../../../../../common/FormikTextArea";
 import Loading from "../../../../../../common/loading/Loading";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
-import { updateEmployeeProfile } from "../../contact/helper";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   remarks: "",
@@ -50,7 +50,7 @@ export default function Remarks({ empId, buId, wgId }) {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(
             values,
             () => {

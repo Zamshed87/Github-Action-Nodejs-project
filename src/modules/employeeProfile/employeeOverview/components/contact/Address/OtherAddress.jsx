@@ -18,8 +18,7 @@ import Loading from "../../../../../../common/loading/Loading";
 import { gray900, greenColor, success500 } from "../../../../../../utility/customColor";
 import { customStyles } from "../../../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../../../utility/todayDate";
-import { DDLForAddress } from "../../helper";
-import { updateEmployeeProfile } from "../helper";
+import { DDLForAddress, updateEmployeeProfile } from "../../helper";
 
 const initData = {
   country: "",

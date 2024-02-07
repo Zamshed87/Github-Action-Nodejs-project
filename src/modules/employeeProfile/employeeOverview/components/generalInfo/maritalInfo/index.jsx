@@ -17,7 +17,7 @@ import { customStyles } from "../../../../../../utility/selectCustomStyle";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { updateEmployeeProfile } from "./helper";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   materialStatus: "",
