@@ -22,6 +22,7 @@ export const initDataForLeaveApplication = {
   toDate: "",
   halfTime: "",
   isHalfDay: "",
+  isSelfService:false,
   year: { value: moment().year(), label: moment().year() },
 };
 

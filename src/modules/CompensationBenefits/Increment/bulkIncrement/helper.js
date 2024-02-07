@@ -12,7 +12,7 @@ export const processBulkUploadIncrementAction = async (
 ) => {
   try {
     setLoading(true);
-    let modifiedData = data.map((item) => ({
+    const modifiedData = data.map((item) => ({
       intIncrementId: 0,
       intEmployeeId: item["Employee Id"],
       strEmployeeName: item["Employee Name"],
@@ -20,7 +20,7 @@ export const processBulkUploadIncrementAction = async (
       intAccountId: orgId,
       intBusinessUnitId: buId,
       strIncrementDependOn: item["Depend On"],
-      numIncrementPercentageOrAmount: item["Increment percentage"],
+      numIncrementPercentageOrAmount:  item["Increment percentage/Amount"], // item["Increment percentage"],
       dteEffectiveDate: item["Effective Date"],
       isActive: true,
       intCreatedBy: employeeId,
@@ -41,7 +41,7 @@ export const saveBulkUploadIncrementAction = async (
   data,
   callback
 ) => {
-  let modifiedData = data.map((item) => ({
+  const modifiedData = data.map((item) => ({
     intIncrementId: item?.intIncrementId,
     intEmployeeId: item?.intEmployeeId,
     strEmployeeName: item?.strEmployeeName,

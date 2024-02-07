@@ -22,7 +22,7 @@ const initData = {
 };
 
 export default function AttendanceApproval() {
-  const { buId, orgId, employeeId, isSupNLMORManagement, isOfficeAdmin } =
+  const { buId, orgId, employeeId, isSupNLMORManagement, isOfficeAdmin, wId } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
   const [anchorEl, setAnchorEl] = useState(null);
   // const handleClick = (event) => {
@@ -50,7 +50,6 @@ export default function AttendanceApproval() {
       isAdmin: isOfficeAdmin,
       isSupOrLineManager: isSupNLMORManagement,
       approverId: employeeId,
-      workplaceId: 0,
       businessUnitId: buId,
       workplaceGroupId: 0,
       departmentId: 0,
@@ -58,6 +57,7 @@ export default function AttendanceApproval() {
       applicantId: 0,
       accountId: orgId,
       intId: 0,
+      workplaceId: wId,
     };
     getAttendanceApprovalLanding(
       payload,
@@ -70,7 +70,7 @@ export default function AttendanceApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
 
   useEffect(() => {
     const modifyData = allData?.map((item) => ({ ...item, isSelect: false }));

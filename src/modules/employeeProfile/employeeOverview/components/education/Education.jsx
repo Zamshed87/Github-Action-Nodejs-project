@@ -31,10 +31,10 @@ import { dateFormatter } from "./../../../../../utility/dateFormatter";
 import { todayDate } from "./../../../../../utility/todayDate";
 import {
   attachment_action,
-  updateEmployeeProfile,
 } from "./../Experience/helper";
 import "./education.css";
 import NocSlider from "./NocSlider";
+import { updateEmployeeProfile } from "../helper";
 
 const initData = {
   isForeign: false,

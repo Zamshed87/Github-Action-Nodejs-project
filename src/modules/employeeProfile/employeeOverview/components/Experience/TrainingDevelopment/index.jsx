@@ -15,7 +15,7 @@ import {
 import ActionMenu from "../../../../../../common/ActionMenu";
 import FormikInput from "../../../../../../common/FormikInput";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { attachment_action, updateEmployeeProfile } from "./../helper";
+import { attachment_action } from "./../helper";
 import {
   dateFormatter,
   dateFormatterForInput,
@@ -26,6 +26,7 @@ import { getDownlloadFileView_Action } from "../../../../../../commonRedux/auth/
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import { fromDateToDateDiff } from "../../../../../../utility/fromDateToDateDiff";
 import { gray900, success500 } from "../../../../../../utility/customColor";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   trainingTitle: "",

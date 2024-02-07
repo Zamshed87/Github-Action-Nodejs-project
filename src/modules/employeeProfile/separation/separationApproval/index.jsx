@@ -43,7 +43,7 @@ const initData = {
 };
 
 export default function SeparationApproval() {
-  const { employeeId, isOfficeAdmin, orgId, buId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -78,7 +78,6 @@ export default function SeparationApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceId: 0,
         businessUnitId: buId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -86,6 +85,7 @@ export default function SeparationApproval() {
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
 
       setApplicationListData,
@@ -101,7 +101,7 @@ export default function SeparationApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceId: 0,
+        workplaceId: wId,
         businessUnitId: buId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -132,7 +132,7 @@ export default function SeparationApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceId: 0,
+        workplaceId: wId,
         businessUnitId: buId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -223,7 +223,7 @@ export default function SeparationApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           approverId: employeeId,
-          workplaceId: 0,
+          workplaceId: wId,
           businessUnitId: buId,
           workplaceGroupId: 0,
           departmentId: 0,

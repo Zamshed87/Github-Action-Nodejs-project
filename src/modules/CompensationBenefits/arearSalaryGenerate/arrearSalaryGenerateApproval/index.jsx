@@ -41,7 +41,7 @@ const initData = {
 };
 
 export default function ArrearSalaryGenerateApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -58,6 +58,7 @@ export default function ArrearSalaryGenerateApproval() {
         approverId: employeeId,
         intId: 0,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -78,6 +79,7 @@ export default function ArrearSalaryGenerateApproval() {
     getAllSalaryGenerateListDataForApproval(
       {
         approverId: employeeId,
+        workplaceId: wId,
         intId: 0,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -122,6 +124,7 @@ export default function ArrearSalaryGenerateApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         accountId: orgId,
+        workplaceId: wId,
       },
       setApplicationListData,
       setAllData,
@@ -213,6 +216,7 @@ export default function ArrearSalaryGenerateApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           accountId: orgId,
+          workplaceId: wId,
         },
         setApplicationListData,
         setAllData,

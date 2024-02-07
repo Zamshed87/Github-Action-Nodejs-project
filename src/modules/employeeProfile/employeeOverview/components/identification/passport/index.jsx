@@ -16,7 +16,7 @@ import { gray900, success500 } from "../../../../../../utility/customColor";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { updateEmployeeProfile } from "./../helper";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   passport: "",
