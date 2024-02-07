@@ -9,7 +9,7 @@ export const getEmployeeDocumentManagement = async (
 ) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(`/Employee/GetAllEmployeeDocumentManagement?+=${accId}&IntEmployeeId=${id}`);
+    const res = await axios.get(`/Employee/GetAllEmployeeDocumentManagement?IntAccountId=${accId}&IntEmployeeId=${id}`);
     if (res?.data) {
       setter && setter(res?.data);
       setLoading && setLoading(false);

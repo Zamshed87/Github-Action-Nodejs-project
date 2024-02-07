@@ -64,7 +64,7 @@ const initData = {
 };
 
 export default function LeaveApproval() {
-  const { orgId, employeeId, isOfficeAdmin, wgId } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -93,10 +93,7 @@ export default function LeaveApproval() {
   const [ApplicationId, setApplicationId] = useState(0);
   const [allNoticeData, setAllNoticeData] = useState([]);
   // filter
-  const [empOrder, setEmpOrder] = useState("desc");
-  const [designationOrder, setDesignationOrder] = useState("desc");
-  const [deptOrder, setDeptOrder] = useState("desc");
-  const [dateRangeOrder, setDateRangeOrder] = useState("desc");
+
 
   const debounce = useDebounce();
   const dispatch = useDispatch();
@@ -151,6 +148,7 @@ export default function LeaveApproval() {
         approverId: employeeId,
         // workplaceGroupId: wgId,
         workplaceGroupId: 0,
+        workplaceId:wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
