@@ -36,7 +36,6 @@ import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import CreateModal from "../common/CreateModal";
 import FilterModal from "./component/FilterModal";
-import LoanApprovalTable from "./component/LoanApprovalTable";
 import {
   getAllLoanApplicatonListDataForApproval,
   loanApproveReject,
@@ -75,7 +74,7 @@ const LightTooltip = styled(({ className, ...props }) => (
 }));
 
 export default function LoanApproval() {
-  const { orgId, employeeId, isOfficeAdmin, buId } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -100,12 +99,7 @@ export default function LoanApproval() {
   const [allData, setAllData] = useState();
   const [filterData, setFilterData] = useState([]);
 
-  // filter
-  const [empOrder, setEmpOrder] = useState("desc");
-  const [designationOrder, setDesignationOrder] = useState("desc");
-  const [deptOrder, setDeptOrder] = useState("desc");
 
-  const debounce = useDebounce();
   const dispatch = useDispatch();
 
   const handleOpen = () => {
@@ -179,6 +173,7 @@ export default function LoanApproval() {
         isSupOrLineManager: 0,
         accountId: orgId,
         businessUnitId: buId,
+        workplaceId: wId,
       },
       setAllLoanApplicatonData,
       setAllData,

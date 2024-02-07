@@ -42,7 +42,7 @@ const BonusApproval = () => {
   // filter
   const [status, setStatus] = useState("");
 
-  const { userId, orgId, buId } = useSelector(
+  const { userId, orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -51,6 +51,7 @@ const BonusApproval = () => {
     const payload = {
       strPartName: "BonusApprovalStatus",
       intBusinessUnitId: buId,
+      workplaceId: wId,
     };
     getBonusGenerateRequestReport(payload, setRowDto, setAllData, setLoading);
   };
