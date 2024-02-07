@@ -6,7 +6,7 @@ import {
   Person,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
 import ActionMenu from "../../../../../../common/ActionMenu";
@@ -15,8 +15,8 @@ import Loading from "../../../../../../common/loading/Loading";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
+import { updateEmployeeProfile } from "../../helper";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { updateEmployeeProfile } from "./../helper";
 
 const initData = {
   birthCertificate: "",

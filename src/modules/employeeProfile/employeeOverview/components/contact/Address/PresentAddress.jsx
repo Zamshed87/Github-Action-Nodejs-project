@@ -16,8 +16,7 @@ import FormikSelect from "../../../../../../common/FormikSelect";
 import Loading from "../../../../../../common/loading/Loading";
 import { customStyles } from "../../../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../../../utility/todayDate";
-import { DDLForAddress } from "../../helper";
-import { updateEmployeeProfile } from "../helper";
+import { DDLForAddress, updateEmployeeProfile } from "../../helper";
 import FormikCheckBox from "./../../../../../../common/FormikCheckbox";
 import {
   gray900,
