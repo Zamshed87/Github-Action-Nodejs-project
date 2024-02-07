@@ -9,7 +9,7 @@ export const getEmployeeDocumentManagement = async (
 ) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(`/Employee/GetAllEmployeeDocumentManagement?IntAccountId=${accId}&IntEmployeeId=${id}`);
+    const res = await axios.get(`/Employee/GetAllEmployeeDocumentManagement?accountId=${accId}&employeeId=${id}`);
     if (res?.data) {
       setter && setter(res?.data);
       setLoading && setLoading(false);
@@ -44,7 +44,7 @@ export const deleteEmployeeDocumentManagement = async (id, setLoading, cb) => {
     if (res?.data) {
       setLoading && setLoading(false);
       cb && cb();
-      toast.success(res.data?.message || "Delete Successfully!!!");
+      toast.success( "Document Delete Successfully!!!" || res.data?.message);
     }
   } catch (error) {
     setLoading && setLoading(false);
@@ -62,10 +62,10 @@ export const attachment_action = async (
   setLoading
 ) => {
   setLoading && setLoading(true);
-  let formData = new FormData();
+  const formData = new FormData();
   formData.append("files", attachment[0]);
   try {
-    let { data } = await axios.post(
+    const { data } = await axios.post(
       `/Document/UploadFile?accountId=${accountId}&tableReferrence=${tableReferrence}&documentTypeId=${documentTypeId}&businessUnitId=${buId}&createdBy=${userId}`,
       formData,
       {
