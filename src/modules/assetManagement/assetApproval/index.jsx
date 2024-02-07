@@ -45,7 +45,7 @@ const initData = {
 };
 
 export default function AssetApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -71,6 +71,7 @@ export default function AssetApproval() {
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
       setApplicationListData,
       setAllData,
@@ -91,6 +92,7 @@ export default function AssetApproval() {
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
       setApplicationListData,
       setAllData,
@@ -154,6 +156,7 @@ export default function AssetApproval() {
           applicantId: 0,
           accountId: orgId,
           intId: 0,
+          workplaceId: wId,
         },
         setApplicationListData,
         setAllData,
@@ -199,6 +202,7 @@ export default function AssetApproval() {
           applicantId: 0,
           accountId: orgId,
           intId: 0,
+          workplaceId: wId,
         },
         setApplicationListData,
         setAllData,
