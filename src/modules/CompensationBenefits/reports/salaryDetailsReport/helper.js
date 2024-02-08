@@ -180,18 +180,18 @@ export const getSalaryDetailsReportRDLC = async ({
   url,
   wgId,
 }) => {
-  if (
-    !url &&
-    (!partName ||
-      !intMonthId ||
-      !intYearId ||
-      !strSalaryCode ||
-      !intAccountId ||
-      !wgId)
-  ) {
-    toast.warn("Missing required parameters");
-    return;
-  }
+  // if (
+  //   !url &&
+  //   (!partName ||
+  //     !intMonthId ||
+  //     !intYearId ||
+  //     !strSalaryCode ||
+  //     !intAccountId ||
+  //     !wgId)
+  // ) {
+  //   toast.warn("Missing required parameters");
+  //   return;
+  // }
   setLoading?.(true);
   try {
     const res = await axios.get(
