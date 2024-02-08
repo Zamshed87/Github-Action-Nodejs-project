@@ -46,7 +46,6 @@ const SalaryGenerateView = () => {
   const history = useHistory();
   const { state } = useLocation();
 
-
   // redux
   const { employeeId, isOfficeAdmin, orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -218,7 +217,6 @@ const SalaryGenerateView = () => {
   };
 
   const getDetailsReport = (partName) => {
-  
     /*   getSalaryReport(
         "DynamicSalaryColumnList",
         orgId,
@@ -237,23 +235,29 @@ const SalaryGenerateView = () => {
         setTableAllowanceHead,
         setTableDeductionHead
       ); */
-      if (!detailsData?.length > 0) {
-        const parameter = {
-          partName: partName,
-          intMonthId: !state?.data ? state?.intMonth : state?.data?.intMonth,
-          intYearId: !state?.data ? state?.intYear : state?.data?.intYear,
-          strSalaryCode: !state?.data
-            ? state?.strSalaryCode
-            : state?.data?.strSalaryCode,
-          intAccountId: orgId,
-          setLoading: setDetailsReportLoading,
-          buId,
-          setterData: setDetailsData,
-          wgId,
-        };
-        getSalaryDetailsReportRDLC(parameter);
-      }
- 
+    if (!detailsData?.length > 0) {
+      const parameter = {
+        partName: partName,
+        intMonthId: !state?.data ? state?.intMonth : state?.data?.intMonth,
+        intYearId: !state?.data ? state?.intYear : state?.data?.intYear,
+        strSalaryCode: !state?.data
+          ? state?.strSalaryCode
+          : state?.data?.strSalaryCode,
+        intAccountId: orgId,
+        setLoading: setDetailsReportLoading,
+        buId,
+        setterData: setDetailsData,
+        wgId,
+        url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+          !state?.data ? state?.intMonth : state?.data?.intMonth
+        }&intYearId=${
+          !state?.data ? state?.intYear : state?.data?.intYear
+        }&strSalaryCode=${
+          !state?.data ? state?.strSalaryCode : state?.data?.strSalaryCode
+        }`,
+      };
+      getSalaryDetailsReportRDLC(parameter);
+    }
   };
 
   const totalEmpLOnSalarySheet = useMemo(() => {
@@ -408,9 +412,9 @@ const SalaryGenerateView = () => {
                             );
                           } else {
                             if (detailsData?.length <= 0) {
-                              return toast.warn("No Data Found"); 
-                            } 
-                         /*    createSalaryDetailsReportExcelHandeler({
+                              return toast.warn("No Data Found");
+                            }
+                            /*    createSalaryDetailsReportExcelHandeler({
                               monthYear: moment(values?.monthYear).format(
                                 "MMMM-YYYY"
                               ),
@@ -423,21 +427,15 @@ const SalaryGenerateView = () => {
                               tableAllowanceHead,
                               tableDeductionHead,
                             }); */
-              
+                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                              !state?.data ? state?.intMonth : state?.data?.intMonth
+                            }&intYearId=${
+                              !state?.data ? state?.intYear : state?.data?.intYear
+                            }&strSalaryCode=${
+                              !state?.data ? state?.strSalaryCode : state?.data?.strSalaryCode
+                            }`
                             downloadFile(
-                              `/PdfAndExcelReport/GetRDLCSalaryReportExcell?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
-                                !state?.data
-                                  ? state?.intMonth
-                                  : state?.data?.intMonth
-                              }&intYearId=${
-                                !state?.data
-                                  ? state?.intYear
-                                  : state?.data?.intYear
-                              }&strSalaryCode=${
-                                !state?.data
-                                  ? state?.strSalaryCode
-                                  : state?.data?.strSalaryCode
-                              }`,
+                              url,
                               "Salary Details Report",
                               "xlsx",
                               setLoading
@@ -468,7 +466,7 @@ const SalaryGenerateView = () => {
                         className="btn-save"
                         type="button"
                         onClick={() => {
-                     /*      getPDFAction(
+                          /*      getPDFAction(
                             `/PdfAndExcelReport/SalaryDetailsReport?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
                               !state?.data
                                 ? state?.intMonth
@@ -484,26 +482,22 @@ const SalaryGenerateView = () => {
                             }&isDownload=false`,
                             setLoading
                           ); */
-                 
+
                           if (detailsData?.length <= 0) {
-                            return toast.warn("No Data Found"); 
+                            return toast.warn("No Data Found");
                           } else {
-                          getPDFAction(
-                            `/PdfAndExcelReport/GetRDLCSalaryReport?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
-                              !state?.data
-                                ? state?.intMonth
-                                : state?.data?.intMonth
+                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                              !state?.data ? state?.intMonth : state?.data?.intMonth
                             }&intYearId=${
-                              !state?.data
-                                ? state?.intYear
-                                : state?.data?.intYear
+                              !state?.data ? state?.intYear : state?.data?.intYear
                             }&strSalaryCode=${
-                              !state?.data
-                                ? state?.strSalaryCode
-                                : state?.data?.strSalaryCode
-                            }`,
-                            setLoading
-                          );
+                              !state?.data ? state?.strSalaryCode : state?.data?.strSalaryCode
+                            }`
+                          
+                            getPDFAction(
+                              url,
+                              setLoading
+                            );
                           }
                         }}
                         // disabled={resDetailsReport?.length <= 0}
