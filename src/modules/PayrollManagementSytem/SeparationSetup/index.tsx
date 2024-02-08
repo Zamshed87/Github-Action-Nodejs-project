@@ -4,11 +4,13 @@ import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import CreateEditForm from "./createEdit/CreateEditForm";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 type TSeparationSetupLanding = {};
 const SeparationSetupLanding: React.FC<TSeparationSetupLanding> = () => {
+  const dispatch = useDispatch();
   // Data From Store
   const { buId, wgId, wId, intAccountId } = useSelector(
     (state: any) => state?.auth?.profileData,
@@ -48,8 +50,14 @@ const SeparationSetupLanding: React.FC<TSeparationSetupLanding> = () => {
   // Life Cycle Hooks
   useEffect(() => {
     landingApi();
+    document.title = "Separation Setup";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Table Header
   const header: any = [
@@ -76,10 +84,6 @@ const SeparationSetupLanding: React.FC<TSeparationSetupLanding> = () => {
     {
       title: "Department",
       dataIndex: "strDepartmentName",
-    },
-    {
-      title: "HR Position",
-      dataIndex: "strHRPositionName",
     },
     {
       title: "Period In Days",

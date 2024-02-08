@@ -134,7 +134,7 @@ export const directAssetAssignTableColumn = (
                     onClick={(e) => {
                       e.stopPropagation();
                       const payload = {
-                        assetDirectAssignId: item?.id,
+                        assetDirectAssignId: item?.assetDirectAssignId,
                         accountId: orgId,
                         businessUnitId: buId,
                         employeeId: item?.employeeName?.value,

@@ -15,14 +15,16 @@ import { getSerial } from "Utils";
 import { Col, Form, Row } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import CreateInvestment from "./Create/CreateInvestment";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import PFFundModalView from "./view/PFFundModalView";
 import RefundEarning from "./Create/RefundEarning";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 type TPfFundLanding = {};
 const PfFundLanding: React.FC<TPfFundLanding> = () => {
+  const dispatch = useDispatch();
   // Data From Store
   const { buId, wgId, wId, orgId, intEmployeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
@@ -114,6 +116,11 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
     document.title = "PF Fund";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Table Header
   const header: any = [

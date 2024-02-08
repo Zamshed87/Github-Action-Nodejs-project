@@ -7,7 +7,6 @@ import { shallowEqual, useSelector } from "react-redux";
 import {
   getEmployeDepartment,
   getEmployeDesignation,
-  getEmployeePosition,
   getEmploymentType,
   getWorkplace,
 } from "../utility/utils";
@@ -37,7 +36,6 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
   // Api Actions
   const createEditSeparationSetupApi = useApiRequest({});
   const workplaceDDLApi = useApiRequest([]);
-  const positionDDLApi = useApiRequest([]);
   const empDepartmentDDLApi = useApiRequest([]);
   const empDesignationDDLApi = useApiRequest([]);
   const employmentTypeDDLApi = useApiRequest([]);
@@ -63,10 +61,6 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
           label: data?.strDesignationName,
           value: data?.intDesignationId,
         },
-        hrPosition: data?.intHrpositionId && {
-          label: data?.strPositionName,
-          value: data?.intHrpositionId,
-        },
         days: data?.intNoticePeriodDayId,
         employeeType: data?.intEmploymentType && {
           label: data?.strEmploymentTypeName,
@@ -74,7 +68,6 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
         },
       };
       form.setFieldsValue(modifyData);
-      getEmployeePosition({ form, positionDDLApi, buId, wgId });
       getEmployeDepartment({ form, empDepartmentDDLApi, buId, wgId });
       getEmployeDesignation({
         form,
@@ -105,7 +98,6 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
             intWorkplaceId: values?.workplace?.value,
             intDesignationId: values?.designation?.value,
             intDepartmentId: values?.department?.value,
-            intHrpositionId: values?.hrPosition?.value,
             intNoticePeriodDayId: values?.days,
             isActive: true,
             intCreatedBy: employeeId,
@@ -143,7 +135,6 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
                 employeeType: undefined,
               });
               if (value) {
-                getEmployeePosition({ form, positionDDLApi, buId, wgId });
                 getEmployeDepartment({ form, empDepartmentDDLApi, buId, wgId });
                 getEmployeDesignation({
                   form,
@@ -154,7 +145,6 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
                 });
                 getEmploymentType({ form, employmentTypeDDLApi, buId, wgId });
               } else {
-                positionDDLApi.reset();
                 empDepartmentDDLApi.reset();
                 empDesignationDDLApi.reset();
                 employmentTypeDDLApi.reset();
@@ -211,23 +201,6 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
               console.log(op);
             }}
             rules={[{ required: true, message: "Designation is required" }]}
-            disabled={data?.isView}
-          />
-        </Col>
-        <Col md={8} sm={24}>
-          <PSelect
-            options={positionDDLApi?.data || []}
-            name="hrPosition"
-            showSearch
-            filterOption={true}
-            label="HR Position"
-            placeholder="HR Position"
-            onChange={(value: any, op: any) => {
-              form.setFieldsValue({
-                hrPosition: op,
-              });
-            }}
-            rules={[{ required: true, message: "HR Position is required" }]}
             disabled={data?.isView}
           />
         </Col>
