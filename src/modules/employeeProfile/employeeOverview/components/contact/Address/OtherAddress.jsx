@@ -235,7 +235,7 @@ function OtherAddress({ getData, rowDto, empId }) {
 
   const deleteHandler = (values, cb) => {
     const payload = {
-      partType: "Address",
+      partType: "AddressDelete",
       employeeId:
         rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId,
       autoId: rowDto?.otherAddress[0]?.intEmployeeAddressId || 0,
