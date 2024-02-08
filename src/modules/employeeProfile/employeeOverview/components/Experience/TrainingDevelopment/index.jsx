@@ -250,7 +250,7 @@ function TrainingDevelopment({
 
   const deleteHandler = (id, item) => {
     const payload = {
-      partType: "TrainingAndDevelopment",
+      partType: "TrainingAndDevelopmentDelete",
       employeeId: empId,
       autoId: id,
       value: "",

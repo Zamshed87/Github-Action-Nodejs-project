@@ -19,6 +19,11 @@ const StyledTable = ({
                 </div>
               </th>
               <th>
+                <div className="d-flex align-items-center ">
+                  <small>Employee Name</small>
+                </div>
+              </th>
+              <th>
                 <div
                   className="d-flex align-items-center "
                   style={{ width: "100px" }}
@@ -31,7 +36,7 @@ const StyledTable = ({
                   <FormikCheckBox
                     styleObj={{
                       color: gray900,
-                      checkedColor: greenColor
+                      checkedColor: greenColor,
                     }}
                     name="isCreate"
                     checked={
@@ -52,7 +57,7 @@ const StyledTable = ({
                     styleObj={{
                       margin: "0 auto!important",
                       color: gray900,
-                      checkedColor: greenColor
+                      checkedColor: greenColor,
                     }}
                     name="isEdit"
                     checked={
@@ -72,7 +77,7 @@ const StyledTable = ({
                   <FormikCheckBox
                     styleObj={{
                       color: gray900,
-                      checkedColor: greenColor
+                      checkedColor: greenColor,
                     }}
                     name="isView"
                     label="View"
@@ -92,7 +97,7 @@ const StyledTable = ({
                   <FormikCheckBox
                     styleObj={{
                       color: gray900,
-                      checkedColor: greenColor
+                      checkedColor: greenColor,
                     }}
                     name="isDelete"
                     label="Inactive"
@@ -122,6 +127,11 @@ const StyledTable = ({
                   <span className="tableBody-title">{data?.moduleName}</span>
                 </td>
                 <td>
+                  <span className="tableBody-title">
+                    {index === 0 ? data?.strEmployeeName : ""}
+                  </span>
+                </td>
+                <td>
                   <span className="tableBody-title">{data?.strMenuName}</span>
                 </td>
                 <td>
@@ -129,7 +139,7 @@ const StyledTable = ({
                     <FormikCheckBox
                       styleObj={{
                         color: gray900,
-                        checkedColor: greenColor
+                        checkedColor: greenColor,
                       }}
                       name="isCreate"
                       color={greenColor}
@@ -149,7 +159,7 @@ const StyledTable = ({
                     <FormikCheckBox
                       styleObj={{
                         color: gray900,
-                        checkedColor: greenColor
+                        checkedColor: greenColor,
                       }}
                       name="isEdit"
                       color={greenColor}
@@ -169,7 +179,7 @@ const StyledTable = ({
                     <FormikCheckBox
                       styleObj={{
                         color: gray900,
-                        checkedColor: greenColor
+                        checkedColor: greenColor,
                       }}
                       name="isView"
                       color={greenColor}
@@ -189,7 +199,7 @@ const StyledTable = ({
                     <FormikCheckBox
                       styleObj={{
                         color: gray900,
-                        checkedColor: greenColor
+                        checkedColor: greenColor,
                       }}
                       name="isDelete"
                       color={greenColor}

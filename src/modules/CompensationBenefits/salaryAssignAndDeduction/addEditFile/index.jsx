@@ -946,7 +946,7 @@ function AddEditForm() {
                                 <th>Auto Renewal</th>
                                 <th>Applicable Month</th>
                                 <th>Dimension</th>
-                                <th>Amount</th>
+                                <th>Amount/Percentage</th>
                                 {isView && (
                                   <th className="text-center">Status</th>
                                 )}
@@ -975,7 +975,12 @@ function AddEditForm() {
                                     {!item?.intToYear && "Continue"}
                                   </td>
                                   <td>{item?.strAmountWillBe}</td>
-                                  <td>{item?.numAmount}</td>
+                                  <td>
+                                    {item?.numAmount}
+                                    {item?.strAmountWillBe !== "Fixed Amount"
+                                      ? "%"
+                                      : ""}
+                                  </td>
                                   <td className="text-center">
                                     {item?.strStatus === "Approved" && (
                                       <Chips

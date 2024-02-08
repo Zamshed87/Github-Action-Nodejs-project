@@ -249,7 +249,7 @@ function WorkExperience({ empId, buId: businessUnit, wgId: workplaceGroup }) {
 
   const deleteHandler = (id, item) => {
     const payload = {
-      partType: "JobExperience",
+      partType: "JobExperienceDelete",
       employeeId: rowDto?.empJobExperience[0]?.intEmployeeBasicInfoId || empId,
       autoId: id || 0,
       value: "",
