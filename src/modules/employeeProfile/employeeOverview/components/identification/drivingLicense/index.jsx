@@ -178,7 +178,7 @@ function DrivingLicense({ empId, buId, wgId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = (setFieldValue) => {
     const payload = {
       partType: "DrivingLicense",
       employeeId: empId,
@@ -240,6 +240,7 @@ function DrivingLicense({ empId, buId, wgId }) {
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
+      setFieldValue("drivingLicense", "")
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -423,7 +424,7 @@ function DrivingLicense({ empId, buId, wgId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(setFieldValue);
                                       },
                                     },
                                   ]}
