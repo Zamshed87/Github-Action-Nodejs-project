@@ -83,7 +83,7 @@ export default function ContactClosingReport() {
     total: 0,
   });
 
-  const getData = (pagination, searchText) => {
+  const getData = (pagination = pages, searchText = "") => {
     getContractClosingInfo(
       buId,
       wgId,
@@ -170,6 +170,9 @@ export default function ContactClosingReport() {
   const excelDataFunc = () => {
     return contractualExcelData(rowDto);
   };
+  useEffect(() => {
+    getData();
+  }, [wgId]);
 
   return (
     <>
