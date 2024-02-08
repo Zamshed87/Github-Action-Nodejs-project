@@ -27,6 +27,8 @@ import {
   getAllSeparationListDataForApproval,
   separationApproveReject,
 } from "../helper";
+import { PModal } from "Components/Modal";
+import ManagementSeparationHistoryView from "../../mgmApplication/viewForm/ManagementSeparationHistoryView";
 
 const CardTable = ({ propsObj }) => {
   const dispatch = useDispatch();
@@ -44,22 +46,26 @@ const CardTable = ({ propsObj }) => {
     setLoading,
   } = propsObj;
 
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, strDisplayName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
   const [page, setPage] = useState(1);
-    const [paginationSize, setPaginationSize] = useState(15);
+  const [paginationSize, setPaginationSize] = useState(15);
+  const [openModal, setOpenModal] = useState(false);
+  const [id, setId] = useState(null);
 
   const demoPopup = (action, text, data) => {
-    let payload = [
+    const payload = [
       {
         applicationId: data?.application?.intSeparationId,
         approverEmployeeId: employeeId,
         isReject: text === "Reject" ? true : false,
         accountId: orgId,
         isAdmin: isOfficeAdmin,
+        approverEmployeeName: strDisplayName,
+        comments: "All ok",
       },
     ];
 
@@ -81,7 +87,7 @@ const CardTable = ({ propsObj }) => {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to ${action}? `,
       yesAlertFunc: () => {
@@ -339,8 +345,10 @@ const CardTable = ({ propsObj }) => {
                   <div
                     className="mx-2 muiIconHover success "
                     onClick={(e) => {
-                      demoPopup("approve", "Approve", record);
                       e.stopPropagation();
+                      // demoPopup("approve", "Approve", record);
+                      setId(record?.application?.intSeparationId);
+                      setOpenModal(true);
                     }}
                   >
                     <MuiIcon icon={<CheckCircle sx={{ color: "#34A853" }} />} />
@@ -350,8 +358,10 @@ const CardTable = ({ propsObj }) => {
                   <div
                     className="muiIconHover danger"
                     onClick={(e) => {
-                      demoPopup("reject", "Reject", record);
                       e.stopPropagation();
+                      // demoPopup("reject", "Reject", record);
+                      setId(record?.application?.intSeparationId);
+                      setOpenModal(true);
                     }}
                   >
                     <MuiIcon icon={<Cancel sx={{ color: "#FF696C" }} />} />
@@ -401,6 +411,19 @@ const CardTable = ({ propsObj }) => {
       ) : (
         <NoResult />
       )}
+      <PModal
+        title="Separation History View"
+        open={openModal}
+        onCancel={() => {
+          setOpenModal(false);
+        }}
+        components={
+          <ManagementSeparationHistoryView
+            id={id}
+          />
+        }
+        width={1000}
+      />
     </>
   );
 };
