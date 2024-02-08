@@ -103,7 +103,7 @@ function PresentAddress({ getData, rowDto, empId }) {
   const saveHandler = (values) => {
     if (singleData) {
       const payload = {
-        partType: "Address",
+        partType: "AddressDelete",
         employeeId:
           rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId,
         autoId: rowDto?.presentAddress[0]?.intEmployeeAddressId || 0,
