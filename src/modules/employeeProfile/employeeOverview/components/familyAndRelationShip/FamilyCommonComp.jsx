@@ -86,7 +86,7 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
 
   const saveHandler = (values, cb, autoId, isDelete = false) => {
     const payload = {
-      partType: "SpecialContact",
+      partType: isDelete ? "SpecialContactDelete" : "SpecialContact",
       employeeId: empId,
       autoId: autoId || 0,
       value: "",
