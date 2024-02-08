@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { APIUrl } from "../../../../../App";
 import { gray700 } from "../../../../../utility/customColor";
 import profileImg from "../../../../../assets/images/profile.jpg";
@@ -8,10 +8,30 @@ import useAxiosGet from "utility/customHooks/useAxiosGet";
 import ReactToPrint from "react-to-print";
 import { Button } from "@mui/material";
 import { PrintOutlined } from "@mui/icons-material";
+import moment from "moment";
+import { shallowEqual, useSelector } from "react-redux";
 
-const ManagementSeparationApproverView = ({ empBasic }) => {
+const ManagementSeparationApproverView = ({ id }) => {
   const printRef = useRef();
-  const [data, getData, loading] = useAxiosGet();
+  const { orgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+  const [empBasic, setEmpBasic] = useState({});
+  const [approveListData, getData, loading, setApproveListData] = useAxiosGet();
+
+  useEffect(() => {
+    if (id) {
+      getData(
+        `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${id}`,
+        (res) => {
+          setEmpBasic(res);
+          setApproveListData(res?.approvalView);
+        }
+      );
+    }
+  }, [id, orgId]);
+
   // Table Header
   const header = [
     {
@@ -22,25 +42,34 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
     },
     {
       title: "Approve Dept.",
-      dataIndex: "approveDept",
+      dataIndex: "strStatusTitle",
       sorter: true,
+      render: (data, record) =>
+        record?.strStatusTitle === "Approve By Supervisor"
+          ? "Supervisor"
+          : record?.strStatusTitle === "Approve By User Group"
+          ? "User Group"
+          : "Line Manager",
     },
     {
       title: "Status",
       dataIndex: "status",
       align: "center",
-      // render: (data, record) =>
-      //   // Write condition to check status
-      //   record?.status === "Pending" ? (
-      //     <PBadge type="warning" text={record?.status} />
-      //   ) : (
-      //     <PBadge type="success" text={record?.status} />
-      //   ),
+      render: (data, record) =>
+        // Write condition to check status
+        record?.status === "Pending" ? (
+          <PBadge type="warning" text={record?.status} />
+        ) : record?.status === "Rejected" ? (
+          <PBadge type="danger" text={record?.status} />
+        ) : (
+          <PBadge type="success" text={record?.status} />
+        ),
       width: "50px",
     },
     {
       title: "Comments",
       dataIndex: "comments",
+      render: (data, record) => record?.comments || "N/A",
     },
   ];
   return (
@@ -94,9 +123,9 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
                     htmlFor="contained-button-file"
                     className="label-add-image sm-size"
                   >
-                    {empBasic?.empEmployeePhotoIdentity ? (
+                    {empBasic?.imageId ? (
                       <img
-                        src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.empEmployeePhotoIdentity?.intProfilePicFileUrlId}`}
+                        src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.imageId}`}
                         alt=""
                         style={{ maxHeight: "36px", minWidth: "36px" }}
                       />
@@ -119,9 +148,9 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
                     className="name-about-info"
                     style={{ marginBottom: "5px" }}
                   >
-                    {empBasic?.employeeProfileLandingView?.strEmployeeName}
+                    {empBasic?.strEmployeeName}
                     <span style={{ fontWeight: "400", color: gray700 }}>
-                      [{empBasic?.employeeProfileLandingView?.strCardNumber}]
+                      [{empBasic?.strEmployeeCode}]
                     </span>{" "}
                   </h4>
                 </div>
@@ -135,7 +164,7 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
                         <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                           Designation -
                         </small>{" "}
-                        {empBasic?.employeeProfileLandingView?.strDesignation}
+                        {empBasic?.strEmployeeDesignation}
                       </p>
                     </div>
                     <div className="single-info">
@@ -146,7 +175,7 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
                         <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                           Department -
                         </small>{" "}
-                        {empBasic?.employeeProfileLandingView?.strDepartment}
+                        {empBasic?.strEmployeeDepartment}
                       </p>
                     </div>
                     <div className="single-info">
@@ -157,10 +186,11 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
                         <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                           Joining Date -
                         </small>{" "}
-                        {
-                          empBasic?.employeeProfileLandingView
-                            ?.strSupervisorName
-                        }
+                        {empBasic?.dteJoiningDate
+                          ? moment(empBasic?.dteJoiningDate).format(
+                              "YYYY-MM-DD"
+                            )
+                          : "N/A"}
                       </p>
                     </div>
                   </div>
@@ -173,10 +203,7 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
                         <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                           Business Unit -
                         </small>{" "}
-                        {
-                          empBasic?.employeeProfileLandingView
-                            ?.strBusinessUnitName
-                        }
+                        {empBasic?.strEmployeeBusinessUnit}
                       </p>
                     </div>
                     <div className="single-info">
@@ -187,10 +214,7 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
                         <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                           Workplace Group -
                         </small>{" "}
-                        {
-                          empBasic?.employeeProfileLandingView
-                            ?.strWorkplaceGroupName
-                        }
+                        {empBasic?.strEmployeeWorkplaceGroupName}
                       </p>
                     </div>
                     <div className="single-info">
@@ -201,7 +225,7 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
                         <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                           Workplace -
                         </small>{" "}
-                        {empBasic?.employeeProfileLandingView?.strWorkplaceName}
+                        {empBasic?.strEmployeeWorkplaceName}
                       </p>
                     </div>
                   </div>
@@ -214,7 +238,7 @@ const ManagementSeparationApproverView = ({ empBasic }) => {
           <DataTable
             header={header}
             bordered
-            data={data || []}
+            data={approveListData || []}
             loading={loading}
             scroll={{ x: 700 }}
             onChange={(pagination, filters, sorter, extra) => {

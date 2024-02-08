@@ -189,7 +189,6 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 isActive:
                   record?.status === "Complete" ||
                   record?.intTypeId === 1 ||
-                  record?.intTypeId === 4 ||
                   record?.intTypeId === 5
                     ? false
                     : true,
@@ -201,7 +200,12 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                   setRefundEarningModalOpen(true);
                 },
                 prompt: "Refund/Earning",
-                isActive: record?.strType === "Fund" ? false : true,
+                isActive:
+                  record?.strType === "Fund" ||
+                  record?.strType === "Refund" ||
+                  record?.status === "Complete"
+                    ? false
+                    : true,
               },
             ]}
           />
@@ -285,7 +289,6 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 disabled:
                   record?.status === "Complete" ||
                   record?.strType === "Investment" ||
-                  record?.strType === "Refund" ||
                   record?.strType === "Earning",
               }),
             }}

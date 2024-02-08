@@ -59,6 +59,7 @@ export default function ManagementSeparation() {
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [id, setId] = useState(null);
 
   // landing
   const [rowDto, setRowDto] = useState([]);
@@ -326,7 +327,8 @@ export default function ManagementSeparation() {
                     history,
                     dispatch,
                     setOpenModal,
-                    permission
+                    permission,
+                    setId,
                   )}
                   pages={pages}
                   rowDto={rowDto}
@@ -352,7 +354,8 @@ export default function ManagementSeparation() {
                   onCancel={() => {
                     setOpenModal(false);
                   }}
-                  components={<ManagementSeparationApproverView />}
+                  components={<ManagementSeparationApproverView id={id} />}
+                  width={1000}
                 />
               </>
             ) : (

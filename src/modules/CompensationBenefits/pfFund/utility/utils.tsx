@@ -21,7 +21,10 @@ function calculateTotalAmount(data: DataItem[]): number {
   let totalAmount = 0;
 
   for (const item of data) {
-    if (item?.status === "Incomplete" && item?.strType === "Fund") {
+    if (
+      (item?.status === "Incomplete" && item?.strType === "Fund") ||
+      item?.strType === "Refund"
+    ) {
       totalAmount += item?.numAmount || 0;
     }
   }

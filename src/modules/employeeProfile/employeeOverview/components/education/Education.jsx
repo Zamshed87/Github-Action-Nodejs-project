@@ -285,7 +285,7 @@ function Education({
 
   const deleteHandler = (id, item) => {
     const payload = {
-      partType: "Education",
+      partType: "EducationDelete",
       employeeId: empId,
       autoId: id || 0,
       value: "",
