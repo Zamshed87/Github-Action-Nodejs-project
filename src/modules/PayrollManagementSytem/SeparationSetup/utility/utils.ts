@@ -29,40 +29,6 @@ const getWorkplace = ({
   });
 };
 
-type TGetEmployeePosition = {
-  form: any;
-  positionDDLApi: any;
-  buId: number;
-  wgId: number;
-};
-
-const getEmployeePosition = ({
-  form,
-  positionDDLApi,
-  buId,
-  wgId,
-}: TGetEmployeePosition) => {
-  const { workplace } = form.getFieldsValue(true);
-
-  positionDDLApi?.action({
-    urlKey: "PeopleDeskAllDDL",
-    method: "GET",
-    params: {
-      DDLType: "Position",
-      BusinessUnitId: buId,
-      WorkplaceGroupId: wgId,
-      IntWorkplaceId: workplace?.value,
-      intId: 0,
-    },
-    onSuccess: (res: any) => {
-      res.forEach((item: any, i: any) => {
-        res[i].label = item?.PositionName;
-        res[i].value = item?.PositionId;
-      });
-    },
-  });
-};
-
 type TGetEmployeDepartment = {
   form: any;
   empDepartmentDDLApi: any;
@@ -90,10 +56,16 @@ const getEmployeDepartment = ({
       intId: 0,
     },
     onSuccess: (res: any) => {
-      res.forEach((item: any, i: any) => {
-        res[i].label = item?.DepartmentName;
-        res[i].value = item?.DepartmentId;
-      });
+      const departments = res.map((item: any) => ({
+        label: item?.DepartmentName,
+        value: item?.DepartmentId,
+      }));
+
+      // Add the "All" value
+      departments.unshift({ value: 0, label: "All" });
+
+      // Assuming you need to set the modified result back to the response
+      res.splice(0, res.length, ...departments);
     },
   });
 };
@@ -127,10 +99,16 @@ const getEmployeDesignation = ({
       intId: 0,
     },
     onSuccess: (res: any) => {
-      res.forEach((item: any, i: any) => {
-        res[i].label = item?.DesignationName;
-        res[i].value = item?.DesignationId;
-      });
+      const designations = res.map((item: any) => ({
+        label: item?.DesignationName,
+        value: item?.DesignationId,
+      }));
+
+      // Add the "All" value
+      designations.unshift({ value: 0, label: "All" });
+
+      // Assuming you need to set the modified result back to the response
+      res.splice(0, res.length, ...designations);
     },
   });
 };
@@ -168,9 +146,7 @@ const getEmploymentType = ({
   });
 };
 
-
 export {
-  getEmployeePosition,
   getWorkplace,
   getEmployeDepartment,
   getEmployeDesignation,
