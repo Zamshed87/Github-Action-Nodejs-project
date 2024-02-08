@@ -211,7 +211,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     }
   };
 
-  const deleteHandler = () => {
+  const deleteHandler = (setFieldValue) => {
     const payload = {
       partType: "BloodGroup",
       employeeId:
@@ -219,7 +219,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -280,6 +280,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       );
       setStatus("empty");
       setSingleData("");
+      setFieldValue("bloodGroup", "")
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -463,7 +464,7 @@ function BloodGroup({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                           />
                                         ),
                                         onClick: () => {
-                                          deleteHandler(values);
+                                          deleteHandler(setFieldValue);
                                         },
                                       },
                                     ]}
