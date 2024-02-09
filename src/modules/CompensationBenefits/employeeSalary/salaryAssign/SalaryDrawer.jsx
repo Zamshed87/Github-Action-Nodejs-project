@@ -141,7 +141,11 @@ export default function SalaryDrawer(props) {
           ? singleData[0]?.numGrossSalary
           : "",
         bankPay:
-          singleData[0]?.BankPayInAmount || singleData[0]?.numGrossSalary,
+          singleData[0]?.BankPayInAmount ||
+          (singleData[0]?.DigitalPayInAmount + singleData[0]?.CashPayInAmount >
+          1
+            ? 0
+            : singleData[0]?.numGrossSalary),
         digitalPay: singleData[0]?.DigitalPayInAmount || 0,
         netPay: singleData[0]?.CashPayInAmount || 0,
       },
