@@ -43,10 +43,8 @@ const initData = {
 };
 
 export default function SeparationApproval() {
-  const { employeeId, isOfficeAdmin, orgId, buId, wId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { employeeId, isOfficeAdmin, orgId, buId, wId, strDisplayName } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
   // const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [applicationListData, setApplicationListData] = useState([]);
@@ -174,6 +172,8 @@ export default function SeparationApproval() {
           approverEmployeeId: employeeId,
           accountId: orgId,
           isAdmin: isOfficeAdmin,
+          approverEmployeeName: strDisplayName,
+          comments: "All ok",
         });
       }
       setApplicationData(array);

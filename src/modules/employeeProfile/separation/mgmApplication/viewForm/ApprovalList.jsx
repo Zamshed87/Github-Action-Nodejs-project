@@ -39,8 +39,8 @@ const ApprovalList = ({ approveListData, loading }) => {
     },
     {
       title: "Comments",
-      dataIndex: "comments",
-      render: (data, record) => record?.comments || "N/A",
+      dataIndex: "comment",
+      render: (data, record) => record?.comment || "N/A",
     },
   ].filter((item) => !item.isHidden);
   return (
