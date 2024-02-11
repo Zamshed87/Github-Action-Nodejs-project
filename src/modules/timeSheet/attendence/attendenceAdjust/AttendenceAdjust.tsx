@@ -229,10 +229,15 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Calender Time In/Out",
       dataIndex: "",
-      render: (data: any) =>
-        `${convertTo12HourFormat(data?.CalenderStartTime) || "N/A"} - ${
-          convertTo12HourFormat(data?.CalenderEndTime) || "N/A"
-        }`,
+      render: (data: any) => {
+        const startTime = data?.CalenderStartTime
+          ? convertTo12HourFormat(data.CalenderStartTime)
+          : "N/A";
+        const endTime = data?.CalenderEndTime
+          ? convertTo12HourFormat(data.CalenderEndTime)
+          : "N/A";
+        return `${startTime} - ${endTime}`;
+      },
       // width: 130,
     },
     {
