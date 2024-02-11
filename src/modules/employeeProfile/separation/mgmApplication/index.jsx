@@ -354,7 +354,7 @@ export default function ManagementSeparation() {
                   onCancel={() => {
                     setOpenModal(false);
                   }}
-                  components={<ManagementSeparationHistoryView id={id} />}
+                  components={<ManagementSeparationHistoryView id={id} type="view" />}
                   width={1000}
                 />
               </>
