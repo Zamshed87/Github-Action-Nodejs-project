@@ -10,7 +10,14 @@ import TabPanel, {
   a11yProps,
 } from "modules/trainingDevelopment/assessment/assessmentFormDetails/tabpanel";
 
-const ManagementSeparationHistoryView = ({ id }) => {
+const ManagementSeparationHistoryView = ({
+  id,
+  type,
+  demoPopup,
+  data,
+  buttonType,
+  setComment,
+}) => {
   const printRef = useRef();
   const { orgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -95,7 +102,13 @@ const ManagementSeparationHistoryView = ({ id }) => {
             <TabPanel value={value} index={0}>
               <ApprovalList
                 approveListData={approveListData}
+                setApproveListData={setApproveListData}
                 loading={loading}
+                type={type}
+                demoPopup={demoPopup}
+                data={data}
+                buttonType={buttonType}
+                setComment={setComment}
               />
             </TabPanel>
             <TabPanel value={value} index={1}>

@@ -26,7 +26,8 @@ export const getAllSeparationListDataForApproval = async (
   }
 };
 
-export const separationApproveReject = async (payload, cb) => {
+export const separationApproveReject = async (payload, setLoading, cb) => {
+  setLoading(true);
   try {
     const res = await axios.post(
       `/ApprovalPipeline/EmployeeSeparationApprovalEngine`,
@@ -34,7 +35,9 @@ export const separationApproveReject = async (payload, cb) => {
     );
     cb && cb();
     toast.success(res?.data || "Submitted Successfully");
+    setLoading(false);
   } catch (error) {
     toast.warn(error?.response?.data?.message || "Something went wrong");
+    setLoading(false);
   }
 };
