@@ -1,8 +1,18 @@
 import React from "react";
 import { DataTable } from "Components";
 import PBadge from "Components/Badge";
+import FormikInput from "common/FormikInput";
 
-const ApprovalList = ({ approveListData, loading }) => {
+const ApprovalList = ({
+  approveListData,
+  setApproveListData,
+  loading,
+  type,
+  demoPopup,
+  data,
+  buttonType,
+  setComment,
+}) => {
   // Table Header
   const header = [
     {
@@ -40,9 +50,72 @@ const ApprovalList = ({ approveListData, loading }) => {
     {
       title: "Comments",
       dataIndex: "comment",
-      render: (data, record) => record?.comment || "N/A",
+      render: (_, record, index) =>
+        type === "approval" ? (
+          <div>
+            <FormikInput
+              placeholder="Comments"
+              classes="input-sm"
+              name="comment"
+              type="text"
+              value={record?.comment}
+              onChange={(e) => {
+                rowDtoHandler(
+                  "comment",
+                  e.target.value,
+                  index,
+                  approveListData,
+                  setApproveListData
+                );
+                setComment(e.target.value);
+              }}
+              disabled={record?.strStatusTitle !== data?.currentStage}
+            />
+          </div>
+        ) : (
+          record?.comment || "N/A"
+        ),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      align: "center",
+      render: (data, record) => {
+        return (
+          <div className="d-flex justify-content-center">
+            {buttonType === "approve" ? (
+              <button
+                type="button"
+                onClick={() =>
+                  demoPopup("approve", "Approve", data)
+                }
+                className="btn btn-green"
+              >
+                Approve
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() =>
+                  demoPopup("reject", "Reject", data)
+                }
+                className="btn btn-cancel"
+                style={{
+                  backgroundColor: "#dc3545",
+                  color: "white",
+                  borderColor: "#dc3545",
+                }}
+              >
+                Reject
+              </button>
+            )}
+          </div>
+        );
+      },
+      isHidden: type === "view",
     },
   ].filter((item) => !item.isHidden);
+
   return (
     <>
       <div className="mt-3">
@@ -62,3 +135,10 @@ const ApprovalList = ({ approveListData, loading }) => {
 };
 
 export default ApprovalList;
+
+const rowDtoHandler = (name, value, sl, rowDto, setRowDto) => {
+  const data = [...rowDto];
+  const _sl = data[sl];
+  _sl[name] = value;
+  setRowDto(data);
+};
