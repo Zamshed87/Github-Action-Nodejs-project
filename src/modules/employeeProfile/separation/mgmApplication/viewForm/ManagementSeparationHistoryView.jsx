@@ -9,6 +9,9 @@ import ApprovalList from "./ApprovalList";
 import TabPanel, {
   a11yProps,
 } from "modules/trainingDevelopment/assessment/assessmentFormDetails/tabpanel";
+import Loading from "common/loading/Loading";
+import AssetHistory from "./AssetHistory";
+import EmploymentHistory from "./EmploymentHistory";
 
 const ManagementSeparationHistoryView = ({
   id,
@@ -17,6 +20,7 @@ const ManagementSeparationHistoryView = ({
   data,
   buttonType,
   setComment,
+  loading,
 }) => {
   const printRef = useRef();
   const { orgId } = useSelector(
@@ -26,7 +30,9 @@ const ManagementSeparationHistoryView = ({
 
   const [value, setValue] = useState(0);
   const [empBasic, setEmpBasic] = useState({});
-  const [approveListData, getData, loading, setApproveListData] = useAxiosGet();
+  const [approveListData, getData, approvalListLoading, setApproveListData] =
+    useAxiosGet();
+  const [assetHistory, setAssetHistory] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -39,6 +45,7 @@ const ManagementSeparationHistoryView = ({
         (res) => {
           setEmpBasic(res);
           setApproveListData(res?.approvalView);
+          setAssetHistory(res?.assetHistory);
         }
       );
     }
@@ -46,6 +53,7 @@ const ManagementSeparationHistoryView = ({
 
   return (
     <>
+      {loading && <Loading />}
       <div className="mb-2 d-flex justify-content-end">
         <ReactToPrint
           documentTitle={"Separation History View"}
@@ -103,7 +111,7 @@ const ManagementSeparationHistoryView = ({
               <ApprovalList
                 approveListData={approveListData}
                 setApproveListData={setApproveListData}
-                loading={loading}
+                loading={approvalListLoading}
                 type={type}
                 demoPopup={demoPopup}
                 data={data}
@@ -112,10 +120,10 @@ const ManagementSeparationHistoryView = ({
               />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <div>Employment History</div>
+              <EmploymentHistory />
             </TabPanel>
             <TabPanel value={value} index={2}>
-              <div>Asset History</div>
+              <AssetHistory assetHistory={assetHistory} loading={loading} />
             </TabPanel>
           </Box>
         </div>
