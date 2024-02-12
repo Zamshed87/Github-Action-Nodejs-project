@@ -64,6 +64,7 @@ const HolidayException = () => {
     regionNameList: [],
     areaNameList: [],
     territoryNameList: [],
+    sectionList: [],
   };
   const [landingLoading, setLandingLoading] = useState(false);
 
@@ -116,7 +117,7 @@ const HolidayException = () => {
         businessUnitId: buId,
         workplaceGroupId: wgId,
         isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
-        workplaceId: wId || 0,
+        workplaceId: wId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -128,6 +129,14 @@ const HolidayException = () => {
         ...payload,
         ...modifiedPayload,
       });
+      const newData =
+        res?.data?.data?.length > 0
+          ? res?.data?.data?.map((item) => {
+              return {
+                ...item,
+              };
+            })
+          : [];
       if (res?.data?.data) {
         setEmpIDString(res?.data?.employeeList);
         setHeaderListDataDynamically({
@@ -136,7 +145,7 @@ const HolidayException = () => {
           headerListKey: "holidayAssignHeader",
           headerList,
           setHeaderList,
-          response: res?.data,
+          response: { ...res?.data, data: [...newData] },
           filterOrderList,
           setFilterOrderList,
           initialHeaderListData,
@@ -241,12 +250,6 @@ const HolidayException = () => {
   //   }
   // };
 
-  useEffect(() => {
-    getData(pages);
-    // setChecked([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wgId, wId]);
-
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -291,6 +294,10 @@ const HolidayException = () => {
       checkedHeaderList
     );
   };
+
+  useEffect(() => {
+    getData(pages);
+  }, [wgId, wId]);
 
   return (
     <>
