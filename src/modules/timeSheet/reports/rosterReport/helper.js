@@ -98,7 +98,7 @@ export const monthlyRosterReportColumns = (
     },
     {
       title: "Workplace/Concern",
-      dataIndex: "strWorkplace ",
+      dataIndex: "strWorkplace",
       sorter: false,
       filter: false,
       width: 180,
