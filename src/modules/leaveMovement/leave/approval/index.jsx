@@ -4,6 +4,7 @@ import {
   Attachment,
   Cancel,
   CheckCircle,
+  EditOutlined,
   InfoOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
@@ -93,7 +94,6 @@ export default function LeaveApproval() {
   const [allNoticeData, setAllNoticeData] = useState([]);
   // filter
 
-
   const debounce = useDebounce();
   const dispatch = useDispatch();
 
@@ -147,7 +147,7 @@ export default function LeaveApproval() {
         approverId: employeeId,
         // workplaceGroupId: wgId,
         workplaceGroupId: 0,
-        workplaceId:wId,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -187,7 +187,7 @@ export default function LeaveApproval() {
       {
         approverId: employeeId,
         workplaceGroupId: wgId || 0,
-        workplaceId:wId,
+        workplaceId: wId,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
         applicantId: values?.employee?.id || 0,
@@ -259,7 +259,7 @@ export default function LeaveApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           accountId: orgId,
-          workplaceId:wId,
+          workplaceId: wId,
         },
         setAllLeaveApplicatonData,
         setAllData,
@@ -315,7 +315,7 @@ export default function LeaveApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           accountId: orgId,
-          workplaceId:wId,
+          workplaceId: wId,
         },
 
         setAllLeaveApplicatonData,
@@ -526,7 +526,10 @@ export default function LeaveApproval() {
             >
               <InfoOutlined sx={{ color: gray900 }} />
             </LightTooltip>
-            <div className="ml-2">{leaveType}</div>
+            <div className="ml-2">
+              {leaveType}{" "}
+              {record?.leaveApplication?.isHalfDay ? "(Half Day)" : ""}
+            </div>
 
             {record?.intDocumentFileId && (
               <div
@@ -629,7 +632,7 @@ export default function LeaveApproval() {
                   <Chips label="Pending" classess=" warning" />
                 </div>
                 <div className="d-flex actionIcon justify-content-center">
-                  {/* {isOfficeAdmin ? (
+                  {isOfficeAdmin ? (
                     <Tooltip title="Edit" arrow>
                       <div
                         className="muiIconHover success "
@@ -645,7 +648,7 @@ export default function LeaveApproval() {
                         />
                       </div>
                     </Tooltip>
-                  ) : null} */}
+                  ) : null}
                   <Tooltip title="Approve">
                     <div
                       className="mx-2 muiIconHover success "
@@ -716,7 +719,7 @@ export default function LeaveApproval() {
                               <BackButton title={"Leave Approval"} />
                             </div>
 
-                            <div >
+                            <div>
                               {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
                               ).length > 0 && (
@@ -764,7 +767,7 @@ export default function LeaveApproval() {
                                               color: failColor,
                                               width: "25px !important",
                                               height: "35px !important",
-                                              fontSize: "20px !important"
+                                              fontSize: "20px !important",
                                             }}
                                           />
                                         }

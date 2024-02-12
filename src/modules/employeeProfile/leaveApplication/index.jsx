@@ -68,7 +68,7 @@ function EmLeaveApplication(props) {
     wgId,
     permission,
     isOfficeAdmin,
-    demoPopupForDeleteAdmin,
+    // demoPopupForDeleteAdmin,
   } = props?.propjObj;
 
   const dispatch = useDispatch();
@@ -165,7 +165,7 @@ function EmLeaveApplication(props) {
                         </p>
                         <p className="employeePosition">
                           {!loadingForInfo && employeeInfo?.[0]?.DesignationName
-                            ?  `${employeeInfo?.[0]?.DesignationName}, ${employeeInfo?.[0]?.EmployeeCode}`  
+                            ? `${employeeInfo?.[0]?.DesignationName}, ${employeeInfo?.[0]?.EmployeeCode}`
                             : ""}
                         </p>
                         <p className="employeePosition">
@@ -175,7 +175,6 @@ function EmLeaveApplication(props) {
                               )}`
                             : ""}
                         </p>
-
                       </div>
                     </div>
                     <div className="table-card-head-right">
@@ -356,8 +355,8 @@ function EmLeaveApplication(props) {
                                 setSingleData,
                                 setImageFile,
                                 demoPopupForDelete,
-                                isOfficeAdmin,
-                                demoPopupForDeleteAdmin
+                                isOfficeAdmin
+                                // demoPopupForDeleteAdmin
                               )}
                               onRowClick={(item) => {
                                 setSingleData(item);
