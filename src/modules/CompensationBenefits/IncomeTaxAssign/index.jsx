@@ -30,6 +30,11 @@ const initData = {
   workplace: "",
   employee: "",
   status: "",
+  // master filter
+  department: "",
+  designation: "",
+  supervisor: "",
+  employmentType: "",
 };
 
 // status DDL
@@ -49,6 +54,20 @@ export default function IncomeTaxAssign() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+
+  const initHeaderList = {
+    designationList: [],
+    departmentList: [],
+    supervisorNameList: [],
+    wingNameList: [],
+    soleDepoNameList: [],
+    regionNameList: [],
+    areaNameList: [],
+    territoryNameList: [],
+    employmentTypeList: [],
+    sectionList: [],
+    hrPositionList: [],
+  };
 
   // state
   const [loading, setLoading] = useState(false);
