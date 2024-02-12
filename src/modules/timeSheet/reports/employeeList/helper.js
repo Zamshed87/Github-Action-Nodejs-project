@@ -210,6 +210,20 @@ export const empReportListColumns = (
       sorter: false,
       filter: false,
     },
+
+    {
+      title: "Service Length",
+      dataIndex: "strServiceLength",
+      isDate: true,
+      width: "150px",
+      sorter: false,
+      filter: false,
+    },
+
+    {
+      title: "Salary Type",
+      dataIndex: "strSalaryType",
+    },
     {
       title: "Payroll Group",
       dataIndex: "payrollGroup",
@@ -484,6 +498,7 @@ export const columnForExcel = {
   strHrPosition: "HR Position/Employee Type",
   strEmploymentType: "Employment Type",
   dateOfJoining: "Date of Joining",
+  strSalaryType: "Salary Type",
   payrollGroup: "Payroll Group",
   strSupervisorName: "Supervisor",
   strDottedSupervisorName: "Dotted Supervisor",
