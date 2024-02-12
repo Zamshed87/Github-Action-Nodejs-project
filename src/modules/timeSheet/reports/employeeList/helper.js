@@ -498,6 +498,7 @@ export const columnForExcel = {
   strHrPosition: "HR Position/Employee Type",
   strEmploymentType: "Employment Type",
   dateOfJoining: "Date of Joining",
+  strServiceLength: "Service Length",
   strSalaryType: "Salary Type",
   payrollGroup: "Payroll Group",
   strSupervisorName: "Supervisor",
