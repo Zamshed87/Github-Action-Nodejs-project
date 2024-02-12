@@ -210,6 +210,16 @@ export const empReportListColumns = (
       sorter: false,
       filter: false,
     },
+
+    {
+      title: "Service Length",
+      dataIndex: "strServiceLength",
+      isDate: true,
+      width: "150px",
+      sorter: false,
+      filter: false,
+    },
+
     {
       title: "Salary Type",
       dataIndex: "strSalaryType",
