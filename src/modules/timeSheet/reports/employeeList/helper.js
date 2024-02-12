@@ -211,6 +211,10 @@ export const empReportListColumns = (
       filter: false,
     },
     {
+      title: "Salary Type",
+      dataIndex: "strSalaryType",
+    },
+    {
       title: "Payroll Group",
       dataIndex: "payrollGroup",
       sorter: true,
@@ -484,6 +488,7 @@ export const columnForExcel = {
   strHrPosition: "HR Position/Employee Type",
   strEmploymentType: "Employment Type",
   dateOfJoining: "Date of Joining",
+  strSalaryType: "Salary Type",
   payrollGroup: "Payroll Group",
   strSupervisorName: "Supervisor",
   strDottedSupervisorName: "Dotted Supervisor",
