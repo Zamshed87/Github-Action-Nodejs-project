@@ -22,7 +22,7 @@ export const initDataForLeaveApplication = {
   toDate: "",
   halfTime: "",
   isHalfDay: "",
-  isSelfService:false,
+  isSelfService: false,
   year: { value: moment().year(), label: moment().year() },
 };
 
@@ -48,8 +48,8 @@ export const empMgmtLeaveApplicationDtoColumn = (
   setSingleData,
   setImageFile,
   demoPopupForDelete,
-  isOfficeAdmin,
-  demoPopupForDeleteAdmin
+  isOfficeAdmin
+  // demoPopupForDeleteAdmin
 ) => {
   return [
     {
@@ -207,13 +207,13 @@ export const empMgmtLeaveApplicationDtoColumn = (
                   onClick={(e) => {
                     e.stopPropagation();
                     setSingleData("");
-                    demoPopupForDeleteAdmin(data, values);
+                    demoPopupForDelete(data, values);
                   }}
                 />
               </button>
             </Tooltip>
           )}
-          {/* {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
+          {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
             <Tooltip title="Edit" arrow>
               <button className="iconButton" type="button">
                 <EditOutlined
@@ -243,7 +243,7 @@ export const empMgmtLeaveApplicationDtoColumn = (
                 />
               </button>
             </Tooltip>
-          )} */}
+          )}
         </div>
       ),
     },
