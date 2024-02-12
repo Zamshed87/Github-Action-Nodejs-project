@@ -6,6 +6,9 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { header } from "./utils";
+import { AddOutlined } from "@mui/icons-material";
+import { PModal } from "Components/Modal";
+import AddEditForm from "./AddEditForm";
 
 const ReporterUpdation = () => {
   // Data From Store
@@ -24,6 +27,8 @@ const ReporterUpdation = () => {
 
   // States
   const [selectedRow, setSelectedRow] = useState<any[]>([]);
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState("");
 
   // menu permission
   let employeeFeature: any = null;
@@ -41,8 +46,6 @@ const ReporterUpdation = () => {
 
   const getEmployeeLandingForBulkReporter = () => {
     const { employee } = form.getFieldsValue(true);
-
-    console.log(employee);
 
     const payload = {
       accountId: orgId,
@@ -95,7 +98,12 @@ const ReporterUpdation = () => {
       }}
     >
       <PCard>
-        <PCardHeader title="Bulk Reporter Update"></PCardHeader>
+        <PCardHeader
+          title="Bulk Reporter Update"
+          submitText="Change Reporter"
+          submitIcon={<AddOutlined />}
+          buttonList={[]}
+        ></PCardHeader>
         <Row gutter={[10, 2]} className="mb-3">
           <Form.Item shouldUpdate noStyle>
             <>
@@ -143,6 +151,27 @@ const ReporterUpdation = () => {
           }}
         />
       </PCard>
+      <PModal
+        open={open}
+        title={"Change Reporter"}
+        width=""
+        onCancel={() => {
+          setId("");
+          setOpen(false);
+        }}
+        maskClosable={false}
+        components={
+          <>
+            <AddEditForm
+              getData={getEmployeeLandingForBulkReporter}
+              setIsAddEditForm={setOpen}
+              isEdit={id ? true : false}
+              singleData={id}
+              setId={setId}
+            />
+          </>
+        }
+      />
     </PForm>
   ) : (
     <NotPermittedPage />
