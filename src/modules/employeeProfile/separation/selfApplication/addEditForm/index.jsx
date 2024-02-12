@@ -290,7 +290,7 @@ export default function SelfApplicationSeparationForm() {
             <div className="col-md-12 px-0 mt-3">
               <div className="card-style">
                 <div className="row">
-                  {isSupNLMORManagement && (
+                  {isSupNLMORManagement ? (
                     <>
                       <div className="col-lg-3 d-none">
                         <div className="input-field-main">
@@ -309,7 +309,7 @@ export default function SelfApplicationSeparationForm() {
                       </div>
                       <div className="col-12"></div>
                     </>
-                  )}
+                  ) : null}
                   <div className="col-12"></div>
                   <div className="col-lg-3">
                     <label>Separation Type</label>
