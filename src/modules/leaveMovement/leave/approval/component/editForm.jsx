@@ -3,13 +3,15 @@ import { useFormik } from "formik";
 import { shallowEqual, useSelector } from "react-redux";
 
 import * as Yup from "yup";
-import { dateFormatterForInput, getDateOfYear } from "../../../../../utility/dateFormatter";
+import {
+  dateFormatterForInput,
+  getDateOfYear,
+} from "../../../../../utility/dateFormatter";
 import useAxiosPost from "../../../../../utility/customHooks/useAxiosPost";
 import Loading from "../../../../../common/loading/Loading";
 import FormikSelect from "../../../../../common/FormikSelect";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import DefaultInput from "../../../../../common/DefaultInput";
-
 
 export const validationSchemaForApprovedLeaveApplication = Yup.object().shape({
   fromDate: Yup.string().required("From Date is required"),
@@ -59,17 +61,23 @@ const LeaveApprovalEditForm = ({ objProps }) => {
 
   const handleSubmitEdit = (values, cb) => {
     const aprovedEditPayload = {
-      intEmployeeId: singleApplication?.leaveApplication?.intEmployeeId,
-      intApplicationId:
-        singleApplication?.leaveApplication?.intApplicationId || 0,
-      intLeaveTypeId: singleApplication?.leaveApplication?.intLeaveTypeId,
+      intApplicationId: singleApplication?.leaveApplication?.intApplicationId,
       fromDate: values?.fromDate,
       toDate: values?.toDate,
       intActionBy: employeeId,
       strApprovalRemarks: values?.strApprovalRemarks || "",
+
+      // intEmployeeId: singleApplication?.leaveApplication?.intEmployeeId,
+      // intApplicationId:
+      //   singleApplication?.leaveApplication?.intApplicationId || 0,
+      // intLeaveTypeId: singleApplication?.leaveApplication?.intLeaveTypeId,
+      // fromDate: values?.fromDate,
+      // toDate: values?.toDate,
+      // intActionBy: employeeId,
+      // strApprovalRemarks: values?.strApprovalRemarks || "",
     };
     reqApprovedApi(
-      "/LeaveMovement/ApproveLeaveEdit",
+      "/LeaveMovement/UpdateLeaveApplicationDuringApproval",
       aprovedEditPayload,
       (res) => {
         cb?.();
