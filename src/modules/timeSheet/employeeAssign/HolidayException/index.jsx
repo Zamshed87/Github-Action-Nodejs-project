@@ -129,14 +129,7 @@ const HolidayException = () => {
         ...payload,
         ...modifiedPayload,
       });
-      const newData =
-        res?.data?.data?.length > 0
-          ? res?.data?.data?.map((item) => {
-              return {
-                ...item,
-              };
-            })
-          : [];
+
       if (res?.data?.data) {
         setEmpIDString(res?.data?.employeeList);
         setHeaderListDataDynamically({
@@ -145,7 +138,7 @@ const HolidayException = () => {
           headerListKey: "holidayAssignHeader",
           headerList,
           setHeaderList,
-          response: { ...res?.data, data: [...newData] },
+          response: res?.data,
           filterOrderList,
           setFilterOrderList,
           initialHeaderListData,
@@ -250,6 +243,12 @@ const HolidayException = () => {
   //   }
   // };
 
+  useEffect(() => {
+    getData(pages);
+    // setChecked([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wgId, wId]);
+
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -294,10 +293,6 @@ const HolidayException = () => {
       checkedHeaderList
     );
   };
-
-  useEffect(() => {
-    getData(pages);
-  }, [wgId, wId]);
 
   return (
     <>
