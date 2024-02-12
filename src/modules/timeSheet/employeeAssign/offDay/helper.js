@@ -126,6 +126,14 @@ export const offDayAssignDtoCol = (
       fieldType: "string",
     },
     {
+      title: "Section",
+      dataIndex: "section",
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`sectionList`],
+      fieldType: "string",
+    },
+    {
       title: "Designation",
       dataIndex: "designation",
       sort: true,

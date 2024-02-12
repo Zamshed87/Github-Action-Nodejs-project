@@ -52,7 +52,7 @@ const CardTable = ({ propsObj }) => {
     loading,
   } = propsObj;
 
-  const { employeeId, isOfficeAdmin, orgId, strDisplayName } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, strDisplayName, wId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -83,6 +83,8 @@ const CardTable = ({ propsObj }) => {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
+          workplaceId: wId,
+          businessUnitId: buId,
           workplaceGroupId: 0,
           departmentId: 0,
           designationId: 0,
@@ -338,13 +340,13 @@ const CardTable = ({ propsObj }) => {
     },
     {
       title: "Status",
-      dataIndex: "strStatus",
+      dataIndex: "status",
       render: (_, record) => (
         <div>
-          {record?.application?.strStatus === "Approved" && (
+          {record?.status === "Approved" && (
             <Chips label="Approved" classess="success" />
           )}
-          {record?.application?.strStatus === "Pending" && (
+          {record?.status === "Pending" && (
             <>
               <div className="actionChip">
                 <Chips label="Pending" classess=" warning" />
@@ -445,6 +447,7 @@ const CardTable = ({ propsObj }) => {
             data={data}
             buttonType={buttonType}
             setComment={setComment}
+            loading={loading}
           />
         }
         width={1000}

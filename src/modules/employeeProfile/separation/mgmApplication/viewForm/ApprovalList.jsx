@@ -80,31 +80,29 @@ const ApprovalList = ({
       title: "Action",
       dataIndex: "action",
       align: "center",
-      render: (data, record) => {
+      render: (_, record) => {
         return (
           <div className="d-flex justify-content-center">
             {buttonType === "approve" ? (
               <button
                 type="button"
-                onClick={() =>
-                  demoPopup("approve", "Approve", data)
-                }
+                onClick={() => demoPopup("approve", "Approve", data)}
                 className="btn btn-green"
+                disabled={record?.strStatusTitle !== data?.currentStage}
               >
                 Approve
               </button>
             ) : (
               <button
                 type="button"
-                onClick={() =>
-                  demoPopup("reject", "Reject", data)
-                }
+                onClick={() => demoPopup("reject", "Reject", data)}
                 className="btn btn-cancel"
                 style={{
                   backgroundColor: "#dc3545",
                   color: "white",
                   borderColor: "#dc3545",
                 }}
+                disabled={record?.strStatusTitle !== data?.currentStage}
               >
                 Reject
               </button>

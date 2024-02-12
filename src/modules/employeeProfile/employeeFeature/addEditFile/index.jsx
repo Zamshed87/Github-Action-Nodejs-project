@@ -62,7 +62,7 @@ export default function AddEditForm({
   // Api Functions
   const getSuperVisorDDL = debounce((value) => {
     if (value?.length < 2) return supervisorDDL?.reset();
-    const { workplaceGroup } = form.getFieldsValue(true);
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
     supervisorDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -72,6 +72,7 @@ export default function AddEditForm({
         BusinessUnitId: buId,
         intId: employeeId,
         workplaceGroupId: workplaceGroup?.value,
+        strWorkplaceIdList: workplace?.value.toString(),
         searchTxt: value || "",
       },
       onSuccess: (res) => {
@@ -95,6 +96,7 @@ export default function AddEditForm({
         BusinessUnitId: buId,
         intId: employeeId,
         workplaceGroupId: wgId,
+        strWorkplaceIdList: wId.toString(),
         searchTxt: value || "",
       },
       onSuccess: (res) => {
@@ -118,6 +120,7 @@ export default function AddEditForm({
         BusinessUnitId: buId,
         intId: employeeId,
         workplaceGroupId: wgId,
+        strWorkplaceIdList: wId.toString(),
         searchTxt: value || "",
       },
       onSuccess: (res) => {
