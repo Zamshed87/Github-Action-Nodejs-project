@@ -340,13 +340,13 @@ const CardTable = ({ propsObj }) => {
     },
     {
       title: "Status",
-      dataIndex: "strStatus",
+      dataIndex: "status",
       render: (_, record) => (
         <div>
-          {record?.application?.strStatus === "Approved" && (
+          {record?.status === "Approved" && (
             <Chips label="Approved" classess="success" />
           )}
-          {record?.application?.strStatus === "Pending" && (
+          {record?.status === "Pending" && (
             <>
               <div className="actionChip">
                 <Chips label="Pending" classess=" warning" />
