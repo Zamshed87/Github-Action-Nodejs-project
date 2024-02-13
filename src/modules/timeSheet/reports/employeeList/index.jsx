@@ -27,6 +27,7 @@ import {
 } from "../../../../common/peopleDeskTable/helper";
 import { toast } from "react-toastify";
 import { getWorkplaceDetails } from "common/api";
+import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 
 const initData = {
   searchString: "",
@@ -248,108 +249,145 @@ export default function EmployeeList() {
                           onClick={(e) => {
                             e.stopPropagation();
                             setLoading(true);
-                            const excelLanding = async () => {
-                              try {
-                                const res = await axios.post(
-                                  `/Employee/EmployeeReportWithFilter`,
-                                  {
-                                    businessUnitId: 1,
-                                    workplaceGroupId: wgId,
-                                    workplaceId: wId,
-                                    pageNo: 1,
-                                    pageSize: 1000000,
-                                    isPaginated: false,
-                                    isHeaderNeed: true,
-                                    searchTxt: "",
-                                    strDesignationList: [],
-                                    strDepartmentList: [],
-                                    strSupervisorNameList: [],
-                                    strEmploymentTypeList: [],
-                                    strLinemanagerList: [],
-                                    wingNameList: [],
-                                    soleDepoNameList: [],
-                                    regionNameList: [],
-                                    areaNameList: [],
-                                    territoryNameList: [],
-                                    strWorkplaceGroupList: [],
-                                    strWorkplaceList: [],
-                                    strDivisionList: [],
-                                    strSectionList: [],
-                                    strHrPositionList: [],
-                                    strDottedSupervisorNameList: [],
-                                    strPayrollGroupList: [],
-                                    strBankList: [],
-                                  }
-                                );
-                                if (res?.data?.data?.length > 0) {
-                                  const newData = res?.data?.data?.map(
-                                    (item, index) => {
-                                      return {
-                                        ...item,
-                                        sl: index + 1,
-                                        dateOfJoining: dateFormatter(
-                                          item?.dateOfJoining
-                                        ),
-                                        dateOfConfirmation: dateFormatter(
-                                          item?.dateOfConfirmation
-                                        ),
-                                        dateOfBirth: dateFormatter(
-                                          item?.dateOfBirth
-                                        ),
-                                      };
-                                    }
-                                  );
-                                  const date = todayDate();
+                            // const excelLanding = async () => {
+                            //   try {
+                            //     const res = await axios.post(
+                            //       `/Employee/EmployeeReportWithFilter`,
+                            //       {
+                            //         businessUnitId: 1,
+                            //         workplaceGroupId: wgId,
+                            //         workplaceId: wId,
+                            //         pageNo: 1,
+                            //         pageSize: 1000000,
+                            //         isPaginated: false,
+                            //         isHeaderNeed: true,
+                            //         searchTxt: "",
+                            //         strDesignationList: [],
+                            //         strDepartmentList: [],
+                            //         strSupervisorNameList: [],
+                            //         strEmploymentTypeList: [],
+                            //         strLinemanagerList: [],
+                            //         wingNameList: [],
+                            //         soleDepoNameList: [],
+                            //         regionNameList: [],
+                            //         areaNameList: [],
+                            //         territoryNameList: [],
+                            //         strWorkplaceGroupList: [],
+                            //         strWorkplaceList: [],
+                            //         strDivisionList: [],
+                            //         strSectionList: [],
+                            //         strHrPositionList: [],
+                            //         strDottedSupervisorNameList: [],
+                            //         strPayrollGroupList: [],
+                            //         strBankList: [],
+                            //       }
+                            //     );
+                            //     if (res?.data?.data?.length > 0) {
+                            //       const newData = res?.data?.data?.map(
+                            //         (item, index) => {
+                            //           return {
+                            //             ...item,
+                            //             sl: index + 1,
+                            //             dateOfJoining: dateFormatter(
+                            //               item?.dateOfJoining
+                            //             ),
+                            //             dateOfConfirmation: dateFormatter(
+                            //               item?.dateOfConfirmation
+                            //             ),
+                            //             dateOfBirth: dateFormatter(
+                            //               item?.dateOfBirth
+                            //             ),
+                            //           };
+                            //         }
+                            //       );
+                            //       const date = todayDate();
 
-                                  createCommonExcelFile({
-                                    titleWithDate: `Employee List -${dateFormatter(
-                                      date
-                                    )}`,
-                                    fromDate: "",
-                                    toDate: "",
-                                    buAddress: buDetails?.strAddress,
-                                    businessUnit: buDetails?.strWorkplace,
-                                    tableHeader: columnForExcel,
-                                    getTableData: () =>
-                                      getTableDataEmployeeReports(
-                                        newData,
-                                        Object.keys(columnForExcel)
-                                      ),
-                                    tableFooter: [],
-                                    extraInfo: {},
-                                    tableHeadFontSize: 10,
-                                    widthList: {
-                                      B: 30,
-                                      C: 30,
-                                      D: 30,
-                                      E: 30,
-                                      G: 20,
-                                      H: 30,
-                                      T: 20,
-                                      J: 30,
-                                      K: 15,
-                                      M: 25,
-                                      N: 25,
-                                      O: 20,
-                                      P: 20,
-                                      Q: 15,
-                                      Y: 15,
-                                      AF: 35,
-                                    },
-                                    commonCellRange: "A1:J1",
-                                    CellAlignment: "left",
-                                  });
-                                  setLoading && setLoading(false);
-                                } else {
-                                  setLoading && setLoading(false);
-                                  toast.warn("Empty Employee Data");
-                                }
-                              } catch (error) {
-                                toast.warn("Failed to download excel");
-                                setLoading && setLoading(false);
-                              }
+                            //       createCommonExcelFile({
+                            //         titleWithDate: `Employee List -${dateFormatter(
+                            //           date
+                            //         )}`,
+                            //         fromDate: "",
+                            //         toDate: "",
+                            //         buAddress: buDetails?.strAddress,
+                            //         businessUnit: buDetails?.strWorkplace,
+                            //         tableHeader: columnForExcel,
+                            //         getTableData: () =>
+                            //           getTableDataEmployeeReports(
+                            //             newData,
+                            //             Object.keys(columnForExcel)
+                            //           ),
+                            //         tableFooter: [],
+                            //         extraInfo: {},
+                            //         tableHeadFontSize: 10,
+                            //         widthList: {
+                            //           B: 30,
+                            //           C: 30,
+                            //           D: 30,
+                            //           E: 30,
+                            //           G: 20,
+                            //           H: 30,
+                            //           T: 20,
+                            //           J: 30,
+                            //           K: 15,
+                            //           M: 25,
+                            //           N: 25,
+                            //           O: 20,
+                            //           P: 20,
+                            //           Q: 15,
+                            //           Y: 15,
+                            //           AF: 35,
+                            //         },
+                            //         commonCellRange: "A1:J1",
+                            //         CellAlignment: "left",
+                            //       });
+                            //       setLoading && setLoading(false);
+                            //     } else {
+                            //       setLoading && setLoading(false);
+                            //       toast.warn("Empty Employee Data");
+                            //     }
+                            //   } catch (error) {
+                            //     toast.warn("Failed to download excel");
+                            //     setLoading && setLoading(false);
+                            //   }
+                            // };
+                            // excelLanding();
+                            let paylaod = {
+                              businessUnitId: 1,
+                              workplaceGroupId: 1,
+                              workplaceId: 1,
+                              pageNo: 1,
+                              pageSize: 25,
+                              isPaginated: true,
+                              isHeaderNeed: true,
+                              searchTxt: "",
+                              strDesignationList: [],
+                              strDepartmentList: [],
+                              strSupervisorNameList: [],
+                              strEmploymentTypeList: [],
+                              strLinemanagerList: [],
+                              wingNameList: [],
+                              soleDepoNameList: [],
+                              regionNameList: [],
+                              areaNameList: [],
+                              territoryNameList: [],
+                              strWorkplaceGroupList: [],
+                              strWorkplaceList: [],
+                              strDivisionList: [],
+                              strSectionList: [],
+                              strHrPositionList: [],
+                              strDottedSupervisorNameList: [],
+                              strPayrollGroupList: [],
+                              strBankList: [],
                             };
-                            excelLanding();
+                            let url =
+                              "/PdfAndExcelReport/EmployeeReportWithFilter_RDLC";
+                            downloadEmployeeCardFile(
+                              url,
+                              paylaod,
+                              "Employee List",
+                              "xlsx",
+                              setLoading
+                            );
                           }}
                           disabled={resEmpLanding?.data?.length <= 0}
                         >
