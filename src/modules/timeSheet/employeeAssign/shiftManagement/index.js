@@ -603,9 +603,9 @@ function ShiftManagement() {
                       {ismulti ? (
                         <div className="">
                           {rowDto?.map(
-                            (data) =>
+                            (data, index) =>
                               data?.isSelected && (
-                                <ol className="mb-2">
+                                <ol key={index} className="mb-2">
                                   <li
                                     style={{ display: "list-item !important" }}
                                   >

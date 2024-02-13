@@ -30,6 +30,11 @@ const initData = {
   workplace: "",
   employee: "",
   status: "",
+  // master filter
+  department: "",
+  designation: "",
+  supervisor: "",
+  employmentType: "",
 };
 
 // status DDL
@@ -49,6 +54,20 @@ export default function IncomeTaxAssign() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+
+  const initHeaderList = {
+    designationList: [],
+    departmentList: [],
+    supervisorNameList: [],
+    wingNameList: [],
+    soleDepoNameList: [],
+    regionNameList: [],
+    areaNameList: [],
+    territoryNameList: [],
+    employmentTypeList: [],
+    sectionList: [],
+    hrPositionList: [],
+  };
 
   // state
   const [loading, setLoading] = useState(false);
@@ -97,22 +116,6 @@ export default function IncomeTaxAssign() {
     });
     createTaxAssign(payload, setLoading, callBack);
   };
-
-  // Confirmed & not Confirmed filter
-  // const statusTypeFilter = (statusType) => {
-  //   const newRowData = [...allData];
-  //   let modifyRowData = [];
-  //   if (statusType === "Yes") {
-  //     modifyRowData = newRowData?.filter(
-  //       (item) => item?.isTakeHomePay === true
-  //     );
-  //   } else if (statusType === "No") {
-  //     modifyRowData = newRowData?.filter(
-  //       (item) => item?.isTakeHomePay === false || item?.isTakeHomePay === null
-  //     );
-  //   }
-  //   setRowDto(modifyRowData);
-  // };
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
@@ -404,160 +407,6 @@ export default function IncomeTaxAssign() {
                         }
                         uniqueKey="employeeCode"
                       />
-                      {/* <div className="table-card-body">
-                        <div className="table-card-styled tableOne">
-                          <table className="table">
-                            <thead>
-                              <tr>
-                                <th style={{ width: "30px" }}>
-                                  <div>SL</div>
-                                </th>
-                                <th>
-                                  <div>Employee Code</div>
-                                </th>
-                                <th>
-                                  <div>Employee Name</div>
-                                </th>
-                                <th>
-                                  <div>Designation</div>
-                                </th>
-                                <th>
-                                  <div>Department</div>
-                                </th>
-                                <th>
-                                  <div className="d-flex align-items-center justify-content-center">
-                                    Take-Home Pay
-                                    <span>
-                                      <Select
-                                        sx={{
-                                          "& .MuiOutlinedInput-notchedOutline":
-                                          {
-                                            border: "none !important",
-                                          },
-                                          "& .MuiSelect-select": {
-                                            paddingRight: "22px !important",
-                                          },
-                                        }}
-                                        className="selectBtn"
-                                        name="status"
-                                        IconComponent={ArrowDropDown}
-                                        value={values?.status}
-                                        onChange={(e) => {
-                                          setFieldValue("status", "");
-                                          setStatus(e.target.value?.label);
-                                          setIsFilter(true);
-                                          statusTypeFilter(
-                                            e.target.value?.label
-                                          );
-                                        }}
-                                      >
-                                        {statusDDL?.length > 0 &&
-                                          statusDDL?.map((item, index) => {
-                                            return (
-                                              <MenuItem
-                                                key={index}
-                                                value={item}
-                                              >
-                                                {item?.label}
-                                              </MenuItem>
-                                            );
-                                          })}
-                                      </Select>
-                                    </span>
-                                  </div>
-                                </th>
-                                <th>
-                                  <div className="text-right">Gross Salary</div>
-                                </th>
-                                <th>
-                                  <div
-                                    className="text-right"
-                                    style={{ width: "140px" }}
-                                  >
-                                    Tax Amount
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {rowDto?.map((item, index) => {
-                                return (
-                                  <tr key={index}>
-                                    <td className="text-center">{index + 1}</td>
-                                    <td>
-                                      <div>
-                                        <span className="tableBody-title">
-                                          {item?.employeeCode}
-                                        </span>
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div>
-                                        <span className="tableBody-title">
-                                          {item?.employeeName}
-                                        </span>
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div>
-                                        <span className="tableBody-title">
-                                          {item?.strDesignation}
-                                        </span>
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div>
-                                        <span className="tableBody-title">
-                                          {item?.strDepartment}
-                                        </span>
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div className="tableBody-title text-center">
-                                        {item?.isTakeHomePay ? "Yes" : "No"}
-                                      </div>
-                                    </td>
-                                    <td>
-                                      <div className="tableBody-title text-right">
-                                        {formatMoney(item?.numGrossSalary)}
-                                      </div>
-                                    </td>
-                                    <td className="tableBody-title text-right">
-                                      <div
-                                        className="input-field-main pl-2"
-                                        style={{ height: "25px" }}
-                                      >
-                                        <input
-                                          style={{
-                                            height: "25px",
-                                            width: "140px",
-                                            fontSize: "12px",
-                                          }}
-                                          className="form-control text-right"
-                                          value={item?.numTaxAmount}
-                                          name={item?.numTaxAmount}
-                                          placeholder=" "
-                                          type="number"
-                                          onChange={(e) => {
-                                            rowDtoHandler(
-                                              "numTaxAmount",
-                                              index,
-                                              e.target.value
-                                            );
-                                          }}
-                                          required
-                                          errors={errors}
-                                          touched={touched}
-                                        />
-                                      </div>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div> */}
                     </>
                   ) : (
                     <>
