@@ -62,8 +62,7 @@ export const incomeTaxColumnData = (
   page,
   paginationSize,
   rowDtoHandler,
-  errors,
-  touched
+  headerList
 ) => {
   return [
     {
@@ -90,16 +89,26 @@ export const incomeTaxColumnData = (
     },
     {
       title: "Designation",
-      dataIndex: "strDesignation",
+      dataIndex: "designation",
       sort: true,
-      filter: false,
+      filter: true,
+      filterDropDownList: headerList[`designationList`],
       fieldType: "string",
     },
     {
       title: "Department",
-      dataIndex: "strDepartment",
-      sort: true,
-      filter: false,
+      dataIndex: "department",
+      sort: false,
+      filter: true,
+      filterDropDownList: headerList[`departmentList`],
+      fieldType: "string",
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
+      sort: false,
+      filter: true,
+      filterDropDownList: headerList[`sectionList`],
       fieldType: "string",
     },
     {
@@ -141,8 +150,6 @@ export const incomeTaxColumnData = (
               }
             }}
             required
-            errors={errors}
-            touched={touched}
           />
         </div>
       ),
