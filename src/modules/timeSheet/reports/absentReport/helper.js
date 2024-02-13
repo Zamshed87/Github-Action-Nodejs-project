@@ -54,7 +54,7 @@ export const getAbsentData = async (
   }
 };
 // UI Table columns
-export const absentDtoCol = (page, paginationSize) => {
+export const absentDtoCol = (page, paginationSize, headerList) => {
   return [
     {
       title: "SL",
@@ -62,34 +62,45 @@ export const absentDtoCol = (page, paginationSize) => {
       sort: false,
       filter: false,
       className: "text-center",
-      width: 30,
+      // width: 30,
+      // fixed: "left",
     },
     {
       title: "Work. Group/Location",
       dataIndex: "workplaceGroup",
-      sort: false,
+      sorter: false,
       filter: false,
-      render: (record) => record?.workplaceGroup || "N/A",
+      // filterDropDownList: headerList[`strWorkplaceGroupList`],
+      width: 200,
+      fieldType: "string",
+
+      // fixed: "left",
     },
     {
       title: "Workplace/Concern",
       dataIndex: "workplace",
-      sort: false,
+      sorter: false,
       filter: false,
-      render: (record) => record?.workplace || "N/A",
+      fieldType: "string",
+
+      // filterDropDownList: headerList[`strWorkplaceGroupList`],
+      width: 200,
+      // fixed: "left",
     },
     {
       title: "Employee Id",
       dataIndex: "employeeCode",
-      sort: false,
+      sorter: false,
       filter: false,
       width: 100,
+      fieldType: "string",
+
       render: (record) => record?.employeeCode || "N/A",
     },
     {
       title: "Employee",
       dataIndex: "employeeName",
-      sort: false,
+      sorter: false,
       filter: false,
       render: (item) => (
         <div className="d-flex align-items-center justify-content-start">
@@ -111,23 +122,31 @@ export const absentDtoCol = (page, paginationSize) => {
     {
       title: "Designation",
       dataIndex: "designation",
-      sort: false,
-      filter: false,
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`designationList`],
+      fieldType: "string",
+
       render: (record) => record?.designation || "N/A",
     },
     {
       title: "Department",
       dataIndex: "department",
-      sort: false,
-      filter: false,
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`departmentList`],
+      fieldType: "string",
+
       render: (record) => record?.department || "N/A",
     },
     {
       title: "Section",
       dataIndex: "section",
-      sort: true,
+      sorter: true,
       fieldType: "string",
-      filter: false,
+      filterDropDownList: headerList[`sectionList`],
+
+      filter: true,
       render: (record) => record?.section || "N/A",
     },
 
