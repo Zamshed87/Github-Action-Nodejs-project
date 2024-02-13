@@ -57,6 +57,7 @@ function MonthlyOffdayAssignLanding() {
     areaNameList: [],
     territoryNameList: [],
     employmentTypeList: [],
+    sectionList: [],
   };
 
   const dispatch = useDispatch();

@@ -64,6 +64,7 @@ const HolidayException = () => {
     regionNameList: [],
     areaNameList: [],
     territoryNameList: [],
+    sectionList: [],
   };
   const [landingLoading, setLandingLoading] = useState(false);
 
@@ -116,7 +117,7 @@ const HolidayException = () => {
         businessUnitId: buId,
         workplaceGroupId: wgId,
         isNotAssign: isAssigned === 1 ? false : isAssigned === 2 ? true : null,
-        workplaceId: wId || 0,
+        workplaceId: wId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -128,6 +129,7 @@ const HolidayException = () => {
         ...payload,
         ...modifiedPayload,
       });
+
       if (res?.data?.data) {
         setEmpIDString(res?.data?.employeeList);
         setHeaderListDataDynamically({

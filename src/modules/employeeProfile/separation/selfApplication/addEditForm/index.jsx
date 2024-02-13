@@ -21,10 +21,7 @@ import {
 } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { IconButton } from "@mui/material";
-import {
-  deleteSeparationAttachment,
-  separationCrud,
-} from "../../helper";
+import { deleteSeparationAttachment, separationCrud } from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 
@@ -66,8 +63,9 @@ export default function SelfApplicationSeparationForm() {
   const [loading, setLoading] = useState(false);
   const [separationTypeDDL, setSeparationTypeDDL] = useState([]);
   const [singleData, setSingleData] = useState([]);
-   const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
-   const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] = useAxiosGet();
+  const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
+  const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] =
+    useAxiosGet();
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -125,7 +123,11 @@ export default function SelfApplicationSeparationForm() {
         setEditImageRow(documentList);
         setSingleData(res);
         getLastWorkingDay(
-          `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${0}&employmentType=${0}&designationId=${0}&hrpositionId=${0}`,
+          `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${
+            res?.intDepertmentId || 0
+          }&employmentType=${res?.intEmploymentTypeId || 0}&designationId=${
+            res?.intDesignationId || 0
+          }`,
           (data) => {
             const formattedLastWorkingDay = new Date(data);
             const formattedMinDate = formattedLastWorkingDay
@@ -143,7 +145,7 @@ export default function SelfApplicationSeparationForm() {
       getEmpSeparationDataHandlerById();
     } else {
       getLastWorkingDay(
-        `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${intDepartmentId}&employmentType=${0}&designationId=${intDesignationId}&hrpositionId=${0}`,
+        `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${intDepartmentId}&employmentType=${0}&designationId=${intDesignationId}`,
         (data) => {
           const formattedLastWorkingDay = new Date(data);
           const formattedMinDate = formattedLastWorkingDay
@@ -288,7 +290,7 @@ export default function SelfApplicationSeparationForm() {
             <div className="col-md-12 px-0 mt-3">
               <div className="card-style">
                 <div className="row">
-                  {isSupNLMORManagement && (
+                  {isSupNLMORManagement ? (
                     <>
                       <div className="col-lg-3 d-none">
                         <div className="input-field-main">
@@ -307,7 +309,7 @@ export default function SelfApplicationSeparationForm() {
                       </div>
                       <div className="col-12"></div>
                     </>
-                  )}
+                  ) : null}
                   <div className="col-12"></div>
                   <div className="col-lg-3">
                     <label>Separation Type</label>

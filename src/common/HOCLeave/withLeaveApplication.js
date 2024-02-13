@@ -6,7 +6,6 @@ import IConfirmModal from "../IConfirmModal";
 import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
 import {
   createLeaveApplication,
-  deleteLeaveApplication,
   getEmployeeLeaveBalanceAndHistory,
 } from "./helperAPI";
 import {
@@ -113,23 +112,23 @@ const withLeaveApplication = (WrappedComponent) => {
       };
       IConfirmModal(confirmObject);
     };
-    const demoPopupForDeleteAdmin = (item, values) => {
-      const callback = () => {
-        getData(values?.employee?.value, values?.year?.value);
-      };
+    // const demoPopupForDeleteAdmin = (item, values) => {
+    //   const callback = () => {
+    //     getData(values?.employee?.value, values?.year?.value);
+    //   };
 
-      const confirmObject = {
-        closeOnClickOutside: false,
-        message: "Are you want to sure you delete this leave?",
-        yesAlertFunc: () => {
-          deleteLeaveApplication(values, item, setLoading, callback);
-        },
-        noAlertFunc: () => {
-          //   history.push("/components/dialogs")
-        },
-      };
-      IConfirmModal(confirmObject);
-    };
+    //   const confirmObject = {
+    //     closeOnClickOutside: false,
+    //     message: "Are you want to sure you delete this leave?",
+    //     yesAlertFunc: () => {
+    //       deleteLeaveApplication(values, item, setLoading, callback);
+    //     },
+    //     noAlertFunc: () => {
+    //       //   history.push("/components/dialogs")
+    //     },
+    //   };
+    //   IConfirmModal(confirmObject);
+    // };
 
     const demoPopup = (action, values, cb) => {
       let payload = {};
@@ -158,39 +157,24 @@ const withLeaveApplication = (WrappedComponent) => {
         toast.error("Please Select half Time");
         return;
       }
-      if (singleData?.ApprovalStatus === "Approved" && isOfficeAdmin) {
-        payload = {
-          intEmployeeId: values?.employee
-            ? values?.employee?.value
-            : employeeId,
-          intApplicationId: singleData?.intApplicationId,
-          intLeaveTypeId: values?.leaveType?.value,
-          fromDate: values?.fromDate,
-          toDate: values?.toDate,
-          intActionBy: employeeId,
-          strApprovalRemarks: "By office Admin",
-        };
-      } else {
-        payload = {
-          isActive: true,
-          yearId: values?.year?.value,
-          leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
-          leaveTypeId: values?.leaveType?.value,
-          employeeId: values?.employee ? values?.employee?.value : employeeId,
-          businessUnitId: buId,
-          appliedFromDate: values?.fromDate,
-          appliedToDate: values?.toDate,
-          documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
-          leaveReason: values?.reason,
-          addressDuetoLeave: values?.location,
-          isHalfDay: values?.isHalfDay?.label === "Half Day" ? true : false,
-          strHalDayRange: values?.halfTime?.label
-            ? values?.halfTime?.label
-            : " ",
-          workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
-          isSelfService: values?.isSelfService,
-        };
-      }
+
+      payload = {
+        isActive: true,
+        yearId: values?.year?.value,
+        leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
+        leaveTypeId: values?.leaveType?.value,
+        employeeId: values?.employee ? values?.employee?.value : employeeId,
+        businessUnitId: buId,
+        appliedFromDate: values?.fromDate,
+        appliedToDate: values?.toDate,
+        documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
+        leaveReason: values?.reason,
+        addressDuetoLeave: values?.location,
+        isHalfDay: values?.isHalfDay?.label === "Half Day" ? true : false,
+        strHalDayRange: values?.halfTime?.label ? values?.halfTime?.label : " ",
+        workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
+        isSelfService: values?.isSelfService,
+      };
 
       const confirmObject = {
         closeOnClickOutside: false,
@@ -198,9 +182,6 @@ const withLeaveApplication = (WrappedComponent) => {
         yesAlertFunc: () => {
           if (values?.employee) {
             createLeaveApplication(payload, setLoading, callback);
-
-            // if (singleData?.ApprovalStatus === "Approved" && isOfficeAdmin) {
-            // approveEditLeaveApplication(payload, setLoading, callback);
           } else {
             createLeaveApplication(payload, setLoading, callback);
           }
@@ -336,7 +317,7 @@ const withLeaveApplication = (WrappedComponent) => {
           wgId,
           permission,
           isOfficeAdmin,
-          demoPopupForDeleteAdmin,
+          // demoPopupForDeleteAdmin,
         }}
       />
     );

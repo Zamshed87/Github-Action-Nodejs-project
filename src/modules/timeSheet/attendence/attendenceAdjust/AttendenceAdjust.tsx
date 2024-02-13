@@ -229,10 +229,15 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Calender Time In/Out",
       dataIndex: "",
-      render: (data: any) =>
-        `${convertTo12HourFormat(data?.CalenderStartTime) || "N/A"} - ${
-          convertTo12HourFormat(data?.CalenderEndTime) || "N/A"
-        }`,
+      render: (data: any) => {
+        const startTime = data?.CalenderStartTime
+          ? convertTo12HourFormat(data.CalenderStartTime)
+          : "N/A";
+        const endTime = data?.CalenderEndTime
+          ? convertTo12HourFormat(data.CalenderEndTime)
+          : "N/A";
+        return `${startTime} - ${endTime}`;
+      },
       // width: 130,
     },
     {
@@ -252,19 +257,19 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       title: "Actual Attendance",
       dataIndex: "actualAttendanceStatus",
       render: (_: any, record: any) =>
-      record?.actualAttendanceStatus === "Present" ? (
-        <PBadge text="Present" type="success" />
-      ) : record?.actualAttendanceStatus === "Absence" ? (
-        <PBadge text="Absence" type="warning" />
-      ) : record?.actualAttendanceStatus === "Holiday" ? (
-        <PBadge text="Holiday" type="light" />
-      ) : record?.actualAttendanceStatus === "Late" ? (
-        <PBadge text="Late" type="danger" />
-      ) : record?.actualAttendanceStatus === "Offday" ? (
-        <PBadge text="Offday" type="light" />
-      ) : (
-        ""
-      ),
+        record?.actualAttendanceStatus === "Present" ? (
+          <PBadge text="Present" type="success" />
+        ) : record?.actualAttendanceStatus === "Absence" ? (
+          <PBadge text="Absence" type="warning" />
+        ) : record?.actualAttendanceStatus === "Holiday" ? (
+          <PBadge text="Holiday" type="light" />
+        ) : record?.actualAttendanceStatus === "Late" ? (
+          <PBadge text="Late" type="danger" />
+        ) : record?.actualAttendanceStatus === "Offday" ? (
+          <PBadge text="Offday" type="light" />
+        ) : (
+          ""
+        ),
       align: "center",
     },
     {

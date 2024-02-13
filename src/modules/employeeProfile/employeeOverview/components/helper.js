@@ -14,14 +14,10 @@ export const updateEmployeeProfile = async (payload, setLoading, cb) => {
   try {
     const res = await axios.post(`/Employee/UpdateEmployeeProfile`, payload);
     cb?.(res.data);
-    if ( // if api is calling for delete then it will show the message
-      payload?.value === "" ||
-      payload?.value === null ||
-      payload?.value === undefined
-    ) {
-      toast.success(
-        `${payload?.partType || "Information"} deleted successfully`
-      );
+     // if api is calling for delete then it will show the message
+    if (!payload?.value) { // "" , 0, false, null, undefined
+      const message = `${payload?.partType || "Information"} deleted successfully`;
+      toast.success(message);
     } else {
       toast.success(res.data?.message || "Successfully");
     }

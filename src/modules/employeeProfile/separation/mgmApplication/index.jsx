@@ -25,8 +25,8 @@ import {
   monthFirstDate,
   monthLastDate,
 } from "./../../../../utility/dateFormatter";
-import ManagementSeparationApproverView from "./viewForm/ModalView";
 import { PModal } from "Components/Modal";
+import ManagementSeparationHistoryView from "./viewForm/ManagementSeparationHistoryView";
 
 const initData = {
   status: "",
@@ -59,6 +59,7 @@ export default function ManagementSeparation() {
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [id, setId] = useState(null);
 
   // landing
   const [rowDto, setRowDto] = useState([]);
@@ -326,7 +327,8 @@ export default function ManagementSeparation() {
                     history,
                     dispatch,
                     setOpenModal,
-                    permission
+                    permission,
+                    setId
                   )}
                   pages={pages}
                   rowDto={rowDto}
@@ -347,12 +349,13 @@ export default function ManagementSeparation() {
                   }}
                 />
                 <PModal
-                  title="Separation Approver View"
+                  title="Separation History View"
                   open={openModal}
                   onCancel={() => {
                     setOpenModal(false);
                   }}
-                  components={<ManagementSeparationApproverView />}
+                  components={<ManagementSeparationHistoryView id={id} type="view" />}
+                  width={1000}
                 />
               </>
             ) : (

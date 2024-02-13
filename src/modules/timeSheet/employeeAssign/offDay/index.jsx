@@ -108,6 +108,7 @@ function OffDay() {
     regionNameList: [],
     areaNameList: [],
     territoryNameList: [],
+    sectionList: [],
   };
   const [landingLoading, setLandingLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);

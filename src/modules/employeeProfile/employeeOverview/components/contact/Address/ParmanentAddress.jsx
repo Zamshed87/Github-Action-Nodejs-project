@@ -267,7 +267,7 @@ function ParmanentAddress({ getData, empId }) {
 
   const deleteHandler = (values, cb) => {
     const payload = {
-      partType: "Address",
+      partType: "AddressDelete",
       employeeId:
         rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId,
       autoId: rowDto?.permanentAddress[0]?.intEmployeeAddressId || 0,

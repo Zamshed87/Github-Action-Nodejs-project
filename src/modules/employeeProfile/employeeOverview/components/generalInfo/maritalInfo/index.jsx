@@ -203,7 +203,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     }
   };
 
-  const deleteHandler = () => {
+  const deleteHandler = (setFieldValue) => {
     const payload = {
       partType: "MaritalStatus",
       employeeId:
@@ -272,6 +272,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       );
       setStatus("empty");
       setSingleData("");
+      setFieldValue("materialStatus", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -460,7 +461,7 @@ function MaritalStatus({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(setFieldValue);
                                       },
                                     },
                                   ]}

@@ -98,6 +98,7 @@ export const separationApplicationLandingTableColumn = (
   dispatch,
   setOpenModal,
   permission,
+  setId,
 ) => {
   return [
     {
@@ -280,6 +281,7 @@ export const separationApplicationLandingTableColumn = (
               <VisibilityOutlined
                 onClick={(e) => {
                   e.stopPropagation();
+                  setId(item?.separationId);
                   setOpenModal(true);
                 }}
               />

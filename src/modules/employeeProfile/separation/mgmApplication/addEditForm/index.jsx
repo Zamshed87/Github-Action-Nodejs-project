@@ -21,10 +21,7 @@ import {
 } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { IconButton } from "@mui/material";
-import {
-  deleteSeparationAttachment,
-  separationCrud,
-} from "../../helper";
+import { deleteSeparationAttachment, separationCrud } from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
@@ -79,7 +76,8 @@ export default function ManagementApplicationSeparationForm() {
   const [separationTypeDDL, setSeparationTypeDDL] = useState([]);
   const [singleData, setSingleData] = useState([]);
   const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
-  const [lastWorkingDay, getLastWorkingDay, ,setLastWorkingDay] = useAxiosGet();
+  const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] =
+    useAxiosGet();
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -137,7 +135,11 @@ export default function ManagementApplicationSeparationForm() {
         setEditImageRow(documentList);
         setSingleData(res);
         getLastWorkingDay(
-          `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${0}&employmentType=${0}&designationId=${0}&hrpositionId=${0}`,
+          `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${
+            res?.intDepertmentId || 0
+          }&employmentType=${res?.intEmploymentTypeId || 0}&designationId=${
+            res?.intDesignationId || 0
+          }`,
           (data) => {
             const formattedLastWorkingDay = new Date(data);
             const formattedMinDate = formattedLastWorkingDay
@@ -300,9 +302,7 @@ export default function ManagementApplicationSeparationForm() {
                             getLastWorkingDay(
                               `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${0}&employmentType=${
                                 valueOption?.employmentTypeId
-                              }&designationId=${
-                                valueOption?.designation
-                              }&hrpositionId=${0}`,
+                              }&designationId=${valueOption?.designation}`,
                               (data) => {
                                 const formattedLastWorkingDay = new Date(data);
                                 const formattedMinDate = formattedLastWorkingDay
