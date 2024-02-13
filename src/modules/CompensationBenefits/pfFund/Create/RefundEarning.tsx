@@ -20,7 +20,6 @@ const RefundEarning: React.FC<TAddEditForm> = ({
   setsSelectedRows,
   setCheckRowKeys,
 }) => {
-  const [isEarningChecked, setIsEarningChecked] = useState(false);
   // Data From Store
   const { buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
@@ -82,10 +81,12 @@ const RefundEarning: React.FC<TAddEditForm> = ({
           <PInput
             type="number"
             name="amount"
-            placeholder="Amount"
-            label="Amount"
-            rules={[{ required: true, message: "Amount Is Required" }]}
-            disabled={!isEarningChecked}
+            placeholder="Principle Amount"
+            label="Principle Amount"
+            rules={[
+              { required: true, message: "Principle Amount Is Required" },
+            ]}
+            disabled={true}
           />
         </Col>
         <Col md={16} sm={24}>
@@ -94,13 +95,12 @@ const RefundEarning: React.FC<TAddEditForm> = ({
               type="checkbox"
               name="earning"
               layout="horizontal"
-              label="Earning"
+              label="Only Earning"
               onChange={(e: any) => {
-                setIsEarningChecked(e.target.checked);
                 if (!e.target.checked) {
                   form.setFieldsValue({ amount: data[0]?.numAmount });
                 } else {
-                  form.setFieldsValue({ interestRate: "" });
+                  form.setFieldsValue({ interestRate: "", amount: 0 });
                 }
               }}
             />
@@ -114,7 +114,6 @@ const RefundEarning: React.FC<TAddEditForm> = ({
             placeholder="Interest Amount"
             label="Interest Amount"
             rules={[{ required: false }]}
-            disabled={isEarningChecked}
           />
         </Col>
         <Col md={8} sm={24}>
