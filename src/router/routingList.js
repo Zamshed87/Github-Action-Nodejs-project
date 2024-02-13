@@ -28,6 +28,7 @@ import Workplace from "modules/configuration/workplace";
 import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
+import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
@@ -745,8 +746,10 @@ const ManagementSeparation = lazy(() =>
 const FinalSettlementLanding = lazy(() =>
   import("../modules/employeeProfile/finalSettlement/index.jsx")
 );
-const FinalSettlementAddEditView = lazy(() => 
-  import("../modules/employeeProfile/finalSettlement/create/CreateEditFinalSettlement.jsx")
+const FinalSettlementAddEditView = lazy(() =>
+  import(
+    "../modules/employeeProfile/finalSettlement/create/CreateEditFinalSettlement.jsx"
+  )
 );
 
 const ManagementReleaseSeparationForm = lazy(() =>
@@ -1334,6 +1337,10 @@ export const routingList = [
   {
     path: "/profile/reports/inactiveEmployees",
     component: ActiveInactiveEmployeeReport,
+  },
+  {
+    path: "/administration/configuration/bulkReporterChange",
+    component: ReporterUpdation,
   },
   {
     path: "/profile/employee/go-for-print/print-preview",
