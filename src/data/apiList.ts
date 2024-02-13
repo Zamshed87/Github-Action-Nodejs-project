@@ -99,4 +99,5 @@ export const apiList = {
   SaveSeparationSetup: "/SaasMasterData/SavePyrSeparationPolicySetup",
   GetSeparationSetupLanding: "/SaasMasterData/GetPyrSeparationPolicySetup",
   GetLandingForBulkReporter: "/Employee/SupervisorLineManagerChangeLanding",
+  ChangeReporter: "/Employee/SupervisorLineManagerChange",
 };
