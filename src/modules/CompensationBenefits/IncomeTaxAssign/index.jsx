@@ -1,4 +1,7 @@
-import { AddOutlined, Refresh } from "@mui/icons-material";
+import {
+  AddOutlined,
+  SettingsBackupRestoreOutlined,
+} from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -10,18 +13,18 @@ import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PrimaryButton from "../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import useDebounce from "../../../utility/customHooks/useDebounce";
-import {
-  createTaxAssign,
-  getTaxAssignLanding,
-  incomeTaxColumnData,
-} from "./helper";
+import { createTaxAssign, incomeTaxColumnData } from "./helper";
 import ResetButton from "../../../common/ResetButton";
 import { toast } from "react-toastify";
 import AsyncFormikSelect from "../../../common/AsyncFormikSelect";
 import PeopleDeskTable, {
   paginationSize,
 } from "../../../common/peopleDeskTable";
+import axios from "axios";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "common/peopleDeskTable/helper";
 
 const initData = {
   search: "",
@@ -46,11 +49,10 @@ const initData = {
 export default function IncomeTaxAssign() {
   // hooks
   const dispatch = useDispatch();
-  const debounce = useDebounce();
   const history = useHistory();
 
   // redux data
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -58,21 +60,11 @@ export default function IncomeTaxAssign() {
   const initHeaderList = {
     designationList: [],
     departmentList: [],
-    supervisorNameList: [],
-    wingNameList: [],
-    soleDepoNameList: [],
-    regionNameList: [],
-    areaNameList: [],
-    territoryNameList: [],
-    employmentTypeList: [],
     sectionList: [],
-    hrPositionList: [],
   };
 
   // state
   const [loading, setLoading] = useState(false);
-  const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [status, setStatus] = useState("");
   const [pages, setPages] = useState({
@@ -80,8 +72,16 @@ export default function IncomeTaxAssign() {
     pageSize: paginationSize,
     total: 0,
   });
+  const [resEmpLanding, setEmpLanding] = useState([]);
+  const [headerList, setHeaderList] = useState({});
+  const [filterOrderList, setFilterOrderList] = useState([]);
+  const [initialHeaderListData, setInitialHeaderListData] = useState({});
+  const [landingLoading, setLandingLoading] = useState(false);
+  const [checkedHeaderList, setCheckedHeaderList] = useState({
+    ...initHeaderList,
+  });
 
-  const { handleSubmit, values, errors, touched, setFieldValue } = useFormik({
+  const { handleSubmit, values, setFieldValue } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
     onSubmit: () => saveHandler(),
@@ -89,20 +89,19 @@ export default function IncomeTaxAssign() {
 
   const saveHandler = () => {
     const callBack = () => {
-      getTaxAssignLanding(
-        buId,
-        orgId,
-        pages,
-        values,
-        wgId,
-        wId,
-        setRowDto,
-        setPages,
-        setLoading,
-        ""
+      getData(
+        {
+          current: pages?.current,
+          pageSize: pages?.pageSize,
+          total: pages?.total,
+        },
+        values.search,
+        -1,
+        filterOrderList,
+        checkedHeaderList
       );
     };
-    const payload = rowDto.map((item) => {
+    const payload = resEmpLanding.map((item) => {
       return {
         intTaxId: item?.intTaxId,
         intEmployeeId: item?.intEmployeeId,
@@ -133,9 +132,88 @@ export default function IncomeTaxAssign() {
   });
 
   const rowDtoHandler = (name, index, value) => {
-    const data = [...rowDto];
+    const data = [...resEmpLanding];
     data[index][name] = value;
-    setRowDto(data);
+    setEmpLanding(data);
+  };
+
+  useEffect(() => {
+    setHeaderList({});
+    setEmpLanding([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [buId, wgId, wId]);
+
+  const getDataApiCall = async (
+    modifiedPayload,
+    pagination,
+    searchText,
+    currentFilterSelection = -1,
+    checkedHeaderList
+  ) => {
+    try {
+      const payload = {
+        intBusinessUnitId: buId,
+        intWorkplaceGroupId: wgId,
+        intWorkplaceId: wId,
+        intEmployeeId: values?.employee?.value || 0,
+        pageNo: pagination.current,
+        pageSize: pagination.pageSize,
+        isPaginated: true,
+        isHeaderNeed: true,
+        searchTxt: searchText || "",
+      };
+
+      const res = await axios.post(`/Employee/GetAllEmployeeForTaxAssign`, {
+        ...payload,
+        ...modifiedPayload,
+      });
+
+      if (res?.data?.data) {
+        setHeaderListDataDynamically({
+          currentFilterSelection,
+          checkedHeaderList,
+          headerListKey: "activeEmployeeTaxAssignLandingHeader",
+          headerList,
+          setHeaderList,
+          response: res?.data,
+          filterOrderList,
+          setFilterOrderList,
+          initialHeaderListData,
+          setInitialHeaderListData,
+          setEmpLanding,
+          setPages,
+        });
+
+        setLandingLoading(false);
+      }
+    } catch (error) {
+      setLandingLoading(false);
+    }
+  };
+
+  const getData = async (
+    pagination,
+    searchText = "",
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList }
+  ) => {
+    setLandingLoading(true);
+
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+
+    getDataApiCall(
+      modifiedPayload,
+      pagination,
+      searchText,
+      currentFilterSelection,
+      checkedHeaderList
+    );
   };
 
   const handleChangePage = (_, newPage, searchText) => {
@@ -143,44 +221,35 @@ export default function IncomeTaxAssign() {
       return { ...prev, current: newPage };
     });
 
-    getTaxAssignLanding(
-      buId,
-      orgId,
+    getData(
       {
         current: newPage,
-        pageSize: paginationSize,
+        pageSize: pages?.pageSize,
         total: pages?.total,
       },
-      values,
-      wgId,
-      wId,
-      setRowDto,
-      setPages,
-      setLoading,
-      searchText
+      searchText,
+      -1,
+      filterOrderList,
+      checkedHeaderList
     );
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages(() => {
-      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    setPages({
+      current: 1,
+      total: pages?.total,
+      pageSize: +event.target.value,
     });
-
-    getTaxAssignLanding(
-      buId,
-      orgId,
+    getData(
       {
         current: 1,
         pageSize: +event.target.value,
         total: pages?.total,
       },
-      values,
-      wgId,
-      wId,
-      setRowDto,
-      setPages,
-      setLoading,
-      searchText
+      searchText,
+      -1,
+      filterOrderList,
+      checkedHeaderList
     );
   };
 
@@ -191,7 +260,9 @@ export default function IncomeTaxAssign() {
         {permission?.isCreate ? (
           <div className="table-card">
             <div className="table-card-heading">
-              <div></div>
+              <div className="d-flex align-items-center">
+                <h2 className="ml-1">Income Tax Assign</h2>
+              </div>
               <div className="table-card-head-right">
                 <ul>
                   <li className="pr-2">
@@ -223,7 +294,7 @@ export default function IncomeTaxAssign() {
                       className="btn btn-green btn-green-disable"
                       type="submit"
                       label="Save"
-                      disabled={loading || !rowDto?.length}
+                      disabled={loading || !resEmpLanding?.length}
                       onClick={(e) => {
                         e.stopPropagation();
                       }}
@@ -237,28 +308,12 @@ export default function IncomeTaxAssign() {
                 <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>Select Employee</label>
-                    {/* <FormikSelect
-                      menuPosition="fixed"
-                      name="employee"
-                      options={employeeDDL || []}
-                      value={values?.employee}
-                      onChange={(valueOption) => {
-                        setFieldValue("employee", valueOption);
-                        setRowDto([]);
-                        setAllData([]);
-                      }}
-                      styles={customStyles}
-                      errors={errors}
-                      placeholder=""
-                      touched={touched}
-                    /> */}
                     <AsyncFormikSelect
                       selectedValue={values?.employee}
                       isSearchIcon={true}
                       handleChange={(valueOption) => {
                         setFieldValue("employee", valueOption);
-                        setRowDto([]);
-                        setAllData([]);
+                        setEmpLanding([]);
                       }}
                       placeholder="Search (min 3 letter)"
                       loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
@@ -273,19 +328,12 @@ export default function IncomeTaxAssign() {
                       className="btn btn-green btn-green-disable"
                       onClick={(e) => {
                         e.stopPropagation();
-                        getTaxAssignLanding(
-                          buId,
-                          orgId,
-                          {
-                            current: 1,
-                            pageSize: paginationSize,
-                          },
-                          values,
-                          wgId,
-                          wId,
-                          setRowDto,
-                          setPages,
-                          setLoading
+                        getData(
+                          { current: 1, pageSize: paginationSize },
+                          "",
+                          -1,
+                          filterOrderList,
+                          checkedHeaderList
                         );
                       }}
                     >
@@ -298,119 +346,137 @@ export default function IncomeTaxAssign() {
 
             {/* tax landing */}
             <div>
-              <div className="table-card-heading" style={{ marginTop: "12px" }}>
-                <div>
-                  {/* {rowDto?.length > 0 && (
-                    <> */}
-                  <h6 className="count">Total {rowDto?.length} employees</h6>
-                  {/* </>
-                  )} */}
-                </div>
-                <ul className="d-flex flex-wrap">
-                  {(isFilter || status) && (
-                    <ResetButton
-                      classes="btn-filter-reset"
-                      title="Reset"
-                      icon={<Refresh sx={{ marginRight: "10px" }} />}
-                      onClick={() => {
-                        getTaxAssignLanding(
-                          buId,
-                          orgId,
-                          values,
-                          wgId,
-                          wId,
-                          setRowDto,
-                          setLoading,
-                          setAllData
-                        );
-                        setRowDto(allData);
-                        setFieldValue("search", "");
-                        setIsFilter(false);
-                        setStatus("");
-                      }}
-                      styles={{
-                        height: "auto",
-                        fontSize: "12px",
-                        marginRight: "10px",
-                        marginTop: "3px",
-                        paddingTop: "0px",
-                      }}
-                    />
-                  )}
-                  {/* {values?.businessUnit?.value && ( */}
-                  <li>
-                    <MasterFilter
-                      inputWidth="250px"
-                      width="250px"
-                      isHiddenFilter
-                      value={values?.search}
-                      setValue={(value) => {
-                        setFieldValue("search", value);
-                        debounce(() => {
-                          getTaxAssignLanding(
-                            buId,
-                            orgId,
-                            {
-                              current: 1,
-                              pageSize: pages?.pageSize,
-                            },
-                            values,
-                            wgId,
-                            wId,
-                            setRowDto,
-                            setPages,
-                            setLoading,
-                            value
+              {resEmpLanding?.length > 0 && (
+                <div
+                  className="table-card-heading"
+                  style={{ marginTop: "12px" }}
+                >
+                  <div>
+                    <h6 className="count">
+                      Total {resEmpLanding?.length} employees
+                    </h6>
+                  </div>
+                  <ul className="d-flex flex-wrap">
+                    {(isFilter || status || values?.searchString) && (
+                      <li>
+                        <ResetButton
+                          classes="btn-filter-reset"
+                          title="reset"
+                          icon={
+                            <SettingsBackupRestoreOutlined
+                              sx={{
+                                marginRight: "10px",
+                                fontSize: "16px",
+                              }}
+                            />
+                          }
+                          onClick={() => {
+                            setIsFilter(false);
+                            setStatus("");
+                            setFieldValue("searchString", "");
+                            getData(
+                              { current: 1, pageSize: paginationSize },
+                              "",
+                              -1,
+                              filterOrderList,
+                              checkedHeaderList
+                            );
+                          }}
+                        />
+                      </li>
+                    )}
+                    <li>
+                      <MasterFilter
+                        inputWidth="250px"
+                        width="250px"
+                        isHiddenFilter
+                        value={values?.searchString}
+                        setValue={(value) => {
+                          setFieldValue("searchString", value);
+                          if (value) {
+                            getData(
+                              { current: 1, pageSize: paginationSize },
+                              value,
+                              -1,
+                              filterOrderList,
+                              checkedHeaderList
+                            );
+                          } else {
+                            getData(
+                              { current: 1, pageSize: paginationSize },
+                              "",
+                              -1,
+                              filterOrderList,
+                              checkedHeaderList
+                            );
+                          }
+                        }}
+                        cancelHandler={() => {
+                          setFieldValue("searchString", "");
+                          getData(
+                            { current: 1, pageSize: paginationSize },
+                            "",
+                            -1,
+                            filterOrderList,
+                            checkedHeaderList
                           );
-                        }, 500);
-                      }}
-                      cancelHandler={() => {
-                        setFieldValue("search", "");
-                        getTaxAssignLanding(
-                          buId,
-                          orgId,
-                          pages,
-                          values,
-                          wgId,
-                          wId,
-                          setRowDto,
-                          setPages,
-                          setLoading,
-                          ""
-                        );
-                      }}
-                    />
-                  </li>
-                  {/* )} */}
-                </ul>
-              </div>
+                        }}
+                      />
+                    </li>
+                  </ul>
+                </div>
+              )}
               <div className="row">
                 <div className="col-12">
-                  {rowDto?.length > 0 ? (
+                  {resEmpLanding?.length > 0 ? (
                     <>
                       <PeopleDeskTable
                         columnData={incomeTaxColumnData(
                           pages?.current,
                           pages?.pageSize,
                           rowDtoHandler,
-                          errors,
-                          touched
+                          headerList
                         )}
                         pages={pages}
-                        rowDto={rowDto}
-                        setRowDto={setRowDto}
+                        rowDto={resEmpLanding}
+                        setRowDto={setEmpLanding}
+                        checkedHeaderList={checkedHeaderList}
+                        setCheckedHeaderList={setCheckedHeaderList}
                         handleChangePage={(e, newPage) =>
-                          handleChangePage(e, newPage, values?.search)
+                          handleChangePage(e, newPage, values?.searchString)
                         }
                         handleChangeRowsPerPage={(e) =>
-                          handleChangeRowsPerPage(e, values?.search)
+                          handleChangeRowsPerPage(e, values?.searchString)
                         }
-                        uniqueKey="employeeCode"
+                        filterOrderList={filterOrderList}
+                        setFilterOrderList={setFilterOrderList}
+                        uniqueKey="intEmployeeId"
+                        getFilteredData={(
+                          currentFilterSelection,
+                          updatedFilterData,
+                          updatedCheckedHeaderData
+                        ) => {
+                          getData(
+                            {
+                              current: 1,
+                              pageSize: paginationSize,
+                              total: 0,
+                            },
+                            "",
+                            currentFilterSelection,
+                            updatedFilterData,
+                            updatedCheckedHeaderData
+                          );
+                        }}
                       />
                     </>
                   ) : (
                     <>
-                      {!loading && <NoResult title="No Data Found" para="" />}
+                      {!landingLoading && (
+                        <div className="col-12">
+                          <NoResult title={"No Data Found"} para={""} />
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
