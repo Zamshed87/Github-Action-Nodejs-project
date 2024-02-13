@@ -169,7 +169,6 @@ function BankBranch() {
       ),
     },
   ];
-  console.log(landingApi);
   return employeeFeature?.isView ? (
     <>
       <PForm
