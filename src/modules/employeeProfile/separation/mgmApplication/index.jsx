@@ -102,7 +102,7 @@ export default function ManagementSeparation() {
   };
 
   const handleChangeRowsPerPage = (event, searchText = "") => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -119,7 +119,7 @@ export default function ManagementSeparation() {
   const { setFieldValue, values, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
-    onSubmit: (values, { setSubmitting, resetForm }) => {},
+    // onSubmit: (values, { setSubmitting, resetForm }) => {},
   });
 
   // initial
@@ -354,7 +354,9 @@ export default function ManagementSeparation() {
                   onCancel={() => {
                     setOpenModal(false);
                   }}
-                  components={<ManagementSeparationHistoryView id={id} type="view" />}
+                  components={
+                    <ManagementSeparationHistoryView id={id} type="view" />
+                  }
                   width={1000}
                 />
               </>

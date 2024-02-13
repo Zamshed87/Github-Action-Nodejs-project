@@ -24,7 +24,6 @@ import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../../common/PopoverMasterFilter";
 import ResetButton from "../../../../common/ResetButton";
-import SortingIcon from "../../../../common/SortingIcon";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   failColor,
@@ -32,7 +31,6 @@ import {
   greenColor,
   successColor,
 } from "../../../../utility/customColor";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import CreateModal from "../common/CreateModal";
 import FilterModal from "./component/FilterModal";
@@ -215,6 +213,7 @@ export default function LoanApproval() {
         isSupOrLineManager: 0,
         accountId: orgId,
         businessUnitId: buId,
+        workplaceId: wId,
       },
 
       setAllLoanApplicatonData,
@@ -275,6 +274,7 @@ export default function LoanApproval() {
           isSupOrLineManager: 0,
           accountId: orgId,
           businessUnitId: buId,
+          workplaceId: wId,
         },
         setAllLoanApplicatonData,
         setAllData,
@@ -331,6 +331,7 @@ export default function LoanApproval() {
           isSupOrLineManager: 0,
           accountId: orgId,
           businessUnitId: buId,
+          workplaceId: wId,
         },
 
         setAllLoanApplicatonData,
