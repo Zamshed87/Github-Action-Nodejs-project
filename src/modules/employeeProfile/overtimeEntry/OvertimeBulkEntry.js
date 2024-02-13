@@ -27,7 +27,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const OvertimeBulkEntry = () => {
-  const { buId, employeeId, orgId } = useSelector(
+  const { buId, employeeId, orgId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -68,7 +68,8 @@ const OvertimeBulkEntry = () => {
         setIsLoading,
         buId,
         orgId,
-        employeeId
+        employeeId,
+        wgId
       );
     } catch (error) {
       toast.warn("Failed to process!");
@@ -100,23 +101,7 @@ const OvertimeBulkEntry = () => {
 
           <div className="card-style pb-0 mt-3 mb-2">
             <div className="row">
-              {/* <div className="col-3">
-                <div className="input-field-main">
-                  <label>Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.date}
-                    onChange={(val) => {
-                      setFieldValue("date", val.target.value);
-                    }}
-                    name="date"
-                    type="month"
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-              </div> */}
+
               <div className="col-6 d-flex align-items-center my-2">
                 <PrimaryButton
                   className="btn btn-default mr-1"
