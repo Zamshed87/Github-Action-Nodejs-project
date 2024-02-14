@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
+import { SettingsBackupRestoreOutlined, SaveAlt } from "@mui/icons-material";
 import { Form, Formik } from "formik";
+import { Tooltip } from "@mui/material";
+
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -27,6 +29,8 @@ import {
 import axios from "axios";
 import FormikSelect from "../../../../common/FormikSelect";
 import { customStyles } from "../../../../utility/selectCustomStyle";
+import { downloadEmployeeCardFile } from "modules/timeSheet/reports/employeeIDCard/helper";
+import { gray900 } from "utility/customColor";
 
 const initData = {
   search: "",
@@ -353,7 +357,47 @@ function OffDay() {
               {permission?.isView ? (
                 <div className="table-card">
                   <div className="table-card-heading">
-                    <div style={{ paddingLeft: "6px" }}>
+                    <div style={{ display: "flex", paddingLeft: "6px" }}>
+                      <Tooltip title="Export CSV" arrow>
+                        <button
+                          type="button"
+                          className="btn-save mr-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLoading(true);
+
+                            const paylaod = {
+                              businessUnitId: buId,
+                              workplaceGroupId: wgId,
+                              isAssign: null,
+                              workplaceId: wId,
+                              pageNo: 1,
+                              pageSize: 10000000,
+                              isPaginated: false,
+                              isHeaderNeed: false,
+                              searchTxt: "",
+                              ...checkedHeaderList,
+                            };
+                            const url =
+                              "/PdfAndExcelReport/OffdayLandingFilter_RDLC";
+                            downloadEmployeeCardFile(
+                              url,
+                              paylaod,
+                              "Off Day List",
+                              "xlsx",
+                              setLoading
+                            );
+                          }}
+                          disabled={rowDto?.length <= 0}
+                        >
+                          <SaveAlt
+                            sx={{
+                              color: gray900,
+                              fontSize: "14px",
+                            }}
+                          />
+                        </button>
+                      </Tooltip>
                       {checkedList.length > 0 ? (
                         <h6 className="count">
                           Total {checkedList.length}{" "}
