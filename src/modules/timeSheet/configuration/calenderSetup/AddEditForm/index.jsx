@@ -42,6 +42,9 @@ const initData = {
   officeStartTime: "",
   officeCloseTime: "",
   nightShift: false,
+  isEmployeeUpdate: false,
+  dteEmployeeUpdateFromDate: "",
+  dteEmployeeUpdateToDate: "",
 };
 
 const validationSchema = Yup.object({
@@ -269,7 +272,7 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                    <label>
+                      <label>
                         Extended Start Time
                         <small>
                           <span>
@@ -301,12 +304,11 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                    <label>
+                      <label>
                         Last Start Time
                         <small>
                           {" "}
                           <span>
-                            {" "}
                             {" "}
                             <InfoOutlined
                               sx={{
@@ -408,6 +410,64 @@ const CalendarSetupModal = ({
                         touched={touched}
                       />
                     </div>
+                    {singleData?.strCalenderName ? (
+                      <div className="col-6 mt-3">
+                        <FormikCheckBox
+                          name="isEmployeeUpdate"
+                          styleObj={{
+                            color: greenColor,
+                          }}
+                          label="is Employee Update"
+                          checked={values?.isEmployeeUpdate}
+                          onChange={(e) => {
+                            setFieldValue("isEmployeeUpdate", e.target.checked);
+                          }}
+                        />
+                      </div>
+                    ) : null}
+                    {values?.isEmployeeUpdate ? (
+                      <>
+                        <div className="col-6 mt-3">
+                          <label className="mr-2">
+                            Employee Generate From Date
+                          </label>
+                          <FormikInput
+                            classes="input-sm"
+                            type="date"
+                            value={values?.dteEmployeeUpdateFromDate}
+                            name="dteEmployeeUpdateFromDate"
+                            onChange={(e) => {
+                              setFieldValue(
+                                "dteEmployeeUpdateFromDate",
+                                e.target.value
+                              );
+                            }}
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                        <div className="col-6 mt-3">
+                          <label className="mr-2">
+                            Employee Generate To Date
+                          </label>
+                          <FormikInput
+                            classes="input-sm"
+                            type="date"
+                            value={values?.dteEmployeeUpdateToDate}
+                            name="dteEmployeeUpdateToDate"
+                            onChange={(e) => {
+                              setFieldValue(
+                                "dteEmployeeUpdateToDate",
+                                e.target.value
+                              );
+                            }}
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                      </>
+                    ) : null}
+
                     <div className="col-12">
                       <hr
                         style={{

@@ -54,8 +54,8 @@ const initHeaderList = {
   calenderList: [],
   designationList: [],
   departmentList: [],
-  hrPositionList: [],
   sectionList: [],
+  hrPositionList: [],
   actualStatusList: [],
   manualStatusList: [],
 };

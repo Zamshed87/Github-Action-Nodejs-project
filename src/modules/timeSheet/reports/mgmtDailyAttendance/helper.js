@@ -132,8 +132,17 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       sort: true,
       fieldType: "string",
       filterDropDownList: headerList[`sectionList`],
-      filter: false,
+      filter: true,
       render: (record) => record?.section || "N/A",
+    },
+    {
+      title: "HR Position",
+      dataIndex: "hrPosition",
+      sort: true,
+      fieldType: "string",
+      filterDropDownList: headerList[`hrPositionList`],
+      filter: true,
+      render: (record) => record?.hrPosition || "N/A",
     },
 
     {
@@ -190,7 +199,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       render: (record) => record?.actualStatus || "N/A",
       filterDropDownList: headerList[`actualStatusList`],
       sort: false,
-      filter: false,
+      filter: true,
     },
     {
       title: "Manual Status",
@@ -199,7 +208,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       sort: false,
       filterDropDownList: headerList[`manualStatusList`],
 
-      filter: false,
+      filter: true,
     },
     {
       title: "Address",
