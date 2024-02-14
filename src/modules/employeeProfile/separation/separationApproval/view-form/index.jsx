@@ -32,10 +32,8 @@ export default function ViewFormComponent({ objProps }) {
     fullscreen = false,
     setLoading,
   } = objProps;
-  const { orgId, employeeId, isOfficeAdmin } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, employeeId, isOfficeAdmin, wId, buId, strDisplayName } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   var LogoURL = "";
   const avatarSx = {
@@ -50,13 +48,15 @@ export default function ViewFormComponent({ objProps }) {
   };
 
   const demoPopup = (action, text, item) => {
-    let payload = [
+    const payload = [
       {
         applicationId: item?.application?.intSeparationId,
         approverEmployeeId: employeeId,
         isReject: text === "Approve" ? false : true,
         accountId: orgId,
         isAdmin: isOfficeAdmin,
+        approverEmployeeName: strDisplayName,
+        comments: "",
       },
     ];
 
@@ -68,19 +68,21 @@ export default function ViewFormComponent({ objProps }) {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
+          businessUnitId: buId,
           workplaceGroupId: 0,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
           accountId: orgId,
           intId: 0,
+          workplaceId: wId,
         },
         setApplicationListData,
         setAllData,
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
