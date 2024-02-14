@@ -54,6 +54,10 @@ const initHeaderList = {
   calenderList: [],
   designationList: [],
   departmentList: [],
+  hrPositionList: [],
+  sectionList: [],
+  actualStatusList: [],
+  manualStatusList: [],
 };
 
 const MgmtDailyAttendance = () => {
