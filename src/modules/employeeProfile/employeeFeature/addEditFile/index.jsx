@@ -719,12 +719,21 @@ export default function AddEditForm({
                 <>
                   {empType === "Probationary" ? (
                     <>
+                    
+                      <Col md={12} sm={24}>
+                        <PInput
+                          type="date"
+                          name="joiningDate"
+                          label={`Probation Start Date`}
+                          disabled={true}
+                        />
+                      </Col>
                       <Col md={12} sm={24}>
                         <PSelect
                           options={probationCloseDateCustomDDL || []}
                           name="probationayClosedBy"
-                          label="Probationay Closed By"
-                          placeholder="Probationay Closed By"
+                          label="Probation Period"
+                          placeholder="Probation Period"
                           onChange={(value, op) => {
                             const nextDate =
                               calculateProbationCloseDateByDateOrMonth({
@@ -746,14 +755,6 @@ export default function AddEditForm({
                               dteProbationaryCloseDate: moment(nextDate),
                             });
                           }}
-                        />
-                      </Col>
-                      <Col md={12} sm={24}>
-                        <PInput
-                          type="date"
-                          name="joiningDate"
-                          label={`Probation Start Date`}
-                          disabled={true}
                         />
                       </Col>
                       <Col md={12} sm={24}>
