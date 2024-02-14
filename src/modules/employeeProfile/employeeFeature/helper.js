@@ -41,7 +41,8 @@ export const createEditEmpAction = async (
   intUrlId,
   setLoading,
   cb,
-  isEdit
+  isEdit,
+  intSignature = 0
 ) => {
   // let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
   // let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
@@ -49,6 +50,10 @@ export const createEditEmpAction = async (
   // console.log({values})
   try {
     let payload = {
+      intPayscaleGradeId: values?.payScaleGrade?.value,
+      strPayscaleGradeName: values?.payScaleGrade?.label,
+      intSalaryTypeId: values?.salaryType?.value,
+      strSalaryTypeName: values?.salaryType?.label,
       intEmployeeBasicInfoId: values?.empId || 0,
       strEmployeeCode: String(values?.employeeCode),
       strCardNumber: String(values?.employeeCode),
@@ -113,6 +118,10 @@ export const createEditEmpAction = async (
       strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
       calendarAssignViewModel: null,
+
+      intSignature: values?.intSignature,
+      intProbationayClosedByInDate: +values?.probationayClosedBy?.value,
+      strProbationayClosedByInDate: values?.probationayClosedBy?.label,
     };
     if (!isEdit) {
       payload = {

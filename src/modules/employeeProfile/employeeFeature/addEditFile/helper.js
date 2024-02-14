@@ -326,6 +326,7 @@ export const submitHandler = ({
   buId,
   intUrlId,
   setLoading,
+  intSignature
 }) => {
   const cb = () => {
     !isEdit && resetForm();
@@ -405,7 +406,7 @@ export const submitHandler = ({
   //   // }
   // }
 
-  createEditEmpAction(values, buId, intUrlId, setLoading, cb, isEdit);
+  createEditEmpAction({...values, intSignature}, buId, intUrlId, setLoading, cb, isEdit);
 };
 
 
