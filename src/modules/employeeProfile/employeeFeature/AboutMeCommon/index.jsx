@@ -75,7 +75,7 @@ function AboutMeDetails() {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
 
-  isDevServer && console.log({isOfficeAdmin, employeeFeature})
+  isDevServer && console.log({ isOfficeAdmin, employeeFeature });
   return (
     <>
       {loading && <Loading />}
@@ -140,17 +140,17 @@ function AboutMeDetails() {
               isOfficeAdmin={isOfficeAdmin || employeeFeature?.isEdit}
             />
             {/* {(isOfficeAdmin || employeeFeature?.isEdit) && ( */}
-              <>
-                <div className="bankDetailsCard about-info-card pb-0">
-                  <div className="about-info-card-heading">
-                    <p className="bankCard-title">Overview</p>
-                  </div>
-                  <div className="card-body p-0">
-                    <OverviewTab empId={empId} wgId={wgId} buId={buId} />
-                  </div>
+            <>
+              <div className="bankDetailsCard about-info-card pb-0">
+                <div className="about-info-card-heading">
+                  <p className="bankCard-title">Overview</p>
                 </div>
-              </>
-            
+                <div className="card-body p-0">
+                  <OverviewTab empId={empId} wgId={wgId} buId={buId} />
+                </div>
+              </div>
+            </>
+
             <BankDetails
               objProps={{
                 empBasic: empBasic?.empEmployeeBankDetail,
@@ -386,7 +386,8 @@ function AboutMeDetails() {
                     value:
                       empBasic?.employeeProfileLandingView?.intSupervisorId,
                     label:
-                      empBasic?.employeeProfileLandingView?.strSupervisorNameWithCode,
+                      empBasic?.employeeProfileLandingView
+                        ?.strSupervisorNameWithCode,
                   }
                 : undefined,
               lineManager: empBasic?.employeeProfileLandingView
@@ -394,7 +395,9 @@ function AboutMeDetails() {
                 ? {
                     value:
                       empBasic?.employeeProfileLandingView?.intLineManagerId,
-                    label: empBasic?.employeeProfileLandingView?.strLinemanagerNameWithCode,
+                    label:
+                      empBasic?.employeeProfileLandingView
+                        ?.strLinemanagerNameWithCode,
                   }
                 : undefined,
               dottedSupervisor: empBasic?.employeeProfileLandingView
@@ -429,6 +432,25 @@ function AboutMeDetails() {
                 empBasic?.employeeProfileLandingView?.loginId ||
                 empBasic?.employeeProfileLandingView?.strEmployeeCode ||
                 undefined,
+              payScaleGrade: empBasic?.employeeProfileLandingView
+                ?.intPayscaleGradeId
+                ? {
+                    value:
+                      empBasic?.employeeProfileLandingView?.intPayscaleGradeId,
+                    label:
+                      empBasic?.employeeProfileLandingView
+                        ?.strPayscaleGradeName,
+                  }
+                : undefined,
+
+              salaryType: empBasic?.employeeProfileLandingView?.intSalaryTypeId
+                ? {
+                    value:
+                      empBasic?.employeeProfileLandingView?.intSalaryTypeId,
+                    label:
+                      empBasic?.employeeProfileLandingView?.strSalaryTypeName,
+                  }
+                : undefined,
               password:
                 empBasic?.employeeProfileLandingView?.strPassword || "123456",
               email: empBasic?.employeeProfileLandingView?.strPersonalMail,
@@ -444,7 +466,7 @@ function AboutMeDetails() {
                   }
                 : undefined,
               isActive: empBasic?.employeeProfileLandingView?.userStatus,
-              // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo 
+              // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo
               // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
               // calenderType: [{value: 1, label: "Calendar"},
               //                { value: 2, label: "Roster" }].find(itm => itm.label === empBasic?.employeeProfileLandingView?.strCalenderType)  || undefined,
