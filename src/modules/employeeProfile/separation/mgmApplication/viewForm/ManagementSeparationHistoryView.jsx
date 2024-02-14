@@ -33,6 +33,7 @@ const ManagementSeparationHistoryView = ({
   const [approveListData, getData, approvalListLoading, setApproveListData] =
     useAxiosGet();
   const [assetHistory, setAssetHistory] = useState([]);
+  const [employmentHistory, setEmploymentHistory] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -46,6 +47,7 @@ const ManagementSeparationHistoryView = ({
           setEmpBasic(res);
           setApproveListData(res?.approvalView);
           setAssetHistory(res?.assetHistory);
+          setEmploymentHistory(res?.employeeHistory);
         }
       );
     }
@@ -120,7 +122,10 @@ const ManagementSeparationHistoryView = ({
               />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <EmploymentHistory />
+              <EmploymentHistory
+                employmentHistory={employmentHistory}
+                loading={loading}
+              />
             </TabPanel>
             <TabPanel value={value} index={2}>
               <AssetHistory assetHistory={assetHistory} loading={loading} />

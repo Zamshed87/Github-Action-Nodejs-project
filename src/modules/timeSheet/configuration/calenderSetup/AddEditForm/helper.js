@@ -1,7 +1,6 @@
+import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { todayDate } from "../../../../../utility/todayDate";
-import axios from "axios";
 
 export function format_ms(time_ms) {
   let hours = 0;
@@ -125,6 +124,9 @@ export const onCreateCalendarSetupWithValidation = (
     intUpdatedBy: employeeId,
     dteUpdatedAt: "2023-08-30T09:23:42.542Z",
     isActive: true,
+    isEmployeeUpdate: values?.isEmployeeUpdate,
+    dteEmployeeUpdateFromDate: values?.dteEmployeeUpdateFromDate,
+    dteEmployeeUpdateToDate: values?.dteEmployeeUpdateToDate,
     dteBreakStartTime: id
       ? moment(values?.breakStartTime, "HH:mm").format("HH:mm:ss")
       : `${values?.breakStartTime}:00` || "00:00:00",
