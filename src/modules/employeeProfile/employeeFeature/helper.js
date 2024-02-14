@@ -49,6 +49,10 @@ export const createEditEmpAction = async (
   // console.log({values})
   try {
     let payload = {
+      intPayscaleGradeId: values?.payScaleGrade?.value,
+      strPayscaleGradeName: values?.payScaleGrade?.label,
+      intSalaryTypeId: values?.salaryType?.value,
+      strSalaryTypeName: values?.salaryType?.label,
       intEmployeeBasicInfoId: values?.empId || 0,
       strEmployeeCode: String(values?.employeeCode),
       strCardNumber: String(values?.employeeCode),

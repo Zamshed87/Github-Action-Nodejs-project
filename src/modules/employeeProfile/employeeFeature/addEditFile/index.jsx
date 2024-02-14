@@ -21,7 +21,7 @@ export default function AddEditForm({
   singleData,
   pages,
   isMenuEditPermission = false,
-  isOfficeAdmin = false
+  isOfficeAdmin = false,
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
@@ -56,6 +56,7 @@ export default function AddEditForm({
   const empDesignationDDL = useApiRequest([]);
   const employeeStatusDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
+  const payScaleGradeDDL = useApiRequest([]);
   const userTypeDDL = useApiRequest([]);
   const generateEmpCode = useApiRequest([]);
 
@@ -366,6 +367,9 @@ export default function AddEditForm({
     });
   };
 
+  // const getPayScaleGradeDDL = () => {
+  //   const { workplaceGroup, workplace } = form.getFieldsValue(true);
+  // };
   const getEmployeePosition = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
@@ -405,7 +409,22 @@ export default function AddEditForm({
         });
       },
     });
-
+    payScaleGradeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "PayscaleGrade",
+        BusinessUnitId: buId,
+        AccountId: intAccountId,
+        WorkplaceGroupId: wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.PayscaleGradeName;
+          res[i].value = item?.PayscaleGradeId;
+        });
+      },
+    });
     genderDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -454,6 +473,7 @@ export default function AddEditForm({
       getUserTypeDDL();
       getEmployeDepartment();
       getEmployeDesignation();
+      // getPayScaleGradeDDL();
       getEmployeeStatus();
       getEmployeePosition();
       getEmployeeSection();
@@ -465,7 +485,11 @@ export default function AddEditForm({
     }
   }, [orgId, buId, singleData, employeeId]);
 
-  isDevServer && console.log({isMenuEditPermission: isMenuEditPermission, isOfficeAdmin: isOfficeAdmin})
+  isDevServer &&
+    console.log({
+      isMenuEditPermission: isMenuEditPermission,
+      isOfficeAdmin: isOfficeAdmin,
+    });
   return (
     <>
       <PForm
@@ -664,7 +688,10 @@ export default function AddEditForm({
               placeholder="Joining Date"
               rules={[{ required: true, message: "Joining Date is required" }]}
               onChange={(value) => {
-                const next180Days = calculateNextDate(moment(value).format("YYYY-MM-DD"), 180);
+                const next180Days = calculateNextDate(
+                  moment(value).format("YYYY-MM-DD"),
+                  180
+                );
                 form.setFieldsValue({
                   joiningDate: value,
                   dteProbationaryCloseDate: moment(next180Days),
@@ -1093,6 +1120,42 @@ export default function AddEditForm({
               />
             </Col>
           ) : null} */}
+          <Col md={12} sm={24}>
+            <PSelect
+              options={[
+                { value: 1, label: "Daily" },
+                { value: 2, label: "Hourly" },
+              ]}
+              name="salaryType"
+              showSearch
+              filterOption={true}
+              label="Salary Type"
+              placeholder="Salary Type"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  salaryType: op,
+                });
+              }}
+              // rules={[{ required: true, message: "HR Position is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={payScaleGradeDDL?.data || []}
+              name="payScaleGrade"
+              showSearch
+              filterOption={true}
+              label="Pay Scale Grade"
+              placeholder="Pay Scale Grade"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  payScaleGrade: op,
+                });
+              }}
+              // rules={[{ required: true, message: "HR Position is required" }]}
+            />
+          </Col>
+
           {/* User Create */}
           <Form.Item noStyle shouldUpdate>
             {() => {
