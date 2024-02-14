@@ -19,6 +19,7 @@ import AddEditForm from "../addEditFile";
 import { getEmployeeProfileViewData } from "../helper";
 import "./aboutMeCommon.css";
 import { isDevServer } from "App";
+import { probationCloseDateCustomDDL } from "utility/yearDDL";
 
 function AboutMeDetails() {
   const dispatch = useDispatch();
@@ -466,6 +467,8 @@ function AboutMeDetails() {
                   }
                 : undefined,
               isActive: empBasic?.employeeProfileLandingView?.userStatus,
+
+              probationayClosedBy: probationCloseDateCustomDDL.find(dt => dt?.value === empBasic?.employeeProfileLandingView?.intProbationayClosedByInDate) || undefined,
               // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo
               // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
               // calenderType: [{value: 1, label: "Calendar"},
