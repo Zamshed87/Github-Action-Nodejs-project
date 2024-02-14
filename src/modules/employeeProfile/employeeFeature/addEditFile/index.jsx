@@ -7,11 +7,12 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
 import { createEditEmpAction, userExistValidation } from "../helper";
-import { submitHandler } from "./helper";
+import { calculateProbationCloseDateByDateOrMonth, submitHandler } from "./helper";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
 import { calculateNextDate } from "utility/dateFormatter";
 import { isDevServer } from "App";
+import { probationCloseDateCustomDDL } from "utility/yearDDL";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -21,7 +22,7 @@ export default function AddEditForm({
   singleData,
   pages,
   isMenuEditPermission = false,
-  isOfficeAdmin = false
+  isOfficeAdmin = false,
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
@@ -465,7 +466,11 @@ export default function AddEditForm({
     }
   }, [orgId, buId, singleData, employeeId]);
 
-  isDevServer && console.log({isMenuEditPermission: isMenuEditPermission, isOfficeAdmin: isOfficeAdmin})
+  isDevServer &&
+    console.log({
+      isMenuEditPermission: isMenuEditPermission,
+      isOfficeAdmin: isOfficeAdmin,
+    });
   return (
     <>
       <PForm
@@ -664,10 +669,15 @@ export default function AddEditForm({
               placeholder="Joining Date"
               rules={[{ required: true, message: "Joining Date is required" }]}
               onChange={(value) => {
-                const next180Days = calculateNextDate(moment(value).format("YYYY-MM-DD"), 180);
+                // const next180Days = calculateNextDate(
+                //   moment(value).format("YYYY-MM-DD"),
+                //   180
+                // );
                 form.setFieldsValue({
                   joiningDate: value,
-                  dteProbationaryCloseDate: moment(next180Days),
+                  probationayClosedBy: null,
+                  dteProbationaryCloseDate: null,
+                  // dteProbationaryCloseDate: moment(next180Days),
                 });
               }}
               // disabled={isEdit}
@@ -675,7 +685,7 @@ export default function AddEditForm({
           </Col>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { employeeType } = form.getFieldsValue();
+              const { employeeType, joiningDate } = form.getFieldsValue();
 
               const empType = employeeType?.label;
 
@@ -683,6 +693,25 @@ export default function AddEditForm({
                 <>
                   {empType === "Probationary" ? (
                     <>
+                      <Col md={12} sm={24}>
+                        <PSelect
+                          options={probationCloseDateCustomDDL || []}
+                          name="probationayClosedBy"
+                          label="Probationay Closed By"
+                          placeholder="Probationay Closed By"
+                          onChange={(value, op) => {
+                            const nextDate = calculateProbationCloseDateByDateOrMonth({
+                              inputDate: moment(joiningDate, "YYYY-MM-DD").format("YYYY-MM-DD"), // Use moment to parse the joiningDate
+                              days: op?.count?.length > 3 ? null : parseInt(op?.count),
+                              month: op?.count?.length > 3 ? parseInt(op?.count?.split(" ")[0]) : null,
+                            });
+                            form.setFieldsValue({
+                              probationayClosedBy: op,
+                              dteProbationaryCloseDate: moment(nextDate),
+                            });
+                          }}
+                        />
+                      </Col>
                       <Col md={12} sm={24}>
                         <PInput
                           type="date"

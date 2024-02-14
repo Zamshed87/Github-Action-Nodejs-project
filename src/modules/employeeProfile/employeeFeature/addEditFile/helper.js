@@ -1,4 +1,6 @@
+import moment from "moment";
 import { toast } from "react-toastify";
+import { calculateNextDate } from "utility/dateFormatter";
 import * as Yup from "yup";
 
 export const initData = {
@@ -404,4 +406,46 @@ export const submitHandler = ({
   // }
 
   createEditEmpAction(values, buId, intUrlId, setLoading, cb, isEdit);
+};
+
+
+function calculateDateAfterMonths(inputDate, month) {
+  const currentDate = new Date(inputDate);
+  
+  // Ensure the input is a valid date
+  if (isNaN(currentDate.getTime())) {
+    return "Invalid Date";
+  }
+
+  // Calculate the target month and year
+  const targetMonth = currentDate.getMonth() + month;
+  const targetYear = currentDate.getFullYear() + Math.floor(targetMonth / 12);
+
+  // Calculate the target day, considering varying days in each month
+  const targetDay = new Date(targetYear, targetMonth % 12, currentDate.getDate());
+
+  // Format the result to "YYYY-MM-DD"
+  const formattedDate = targetDay.toISOString().split("T")[0];
+
+  return formattedDate;
+} 
+export const calculateProbationCloseDateByDateOrMonth = ({
+  inputDate= moment().format("YYYY-MM-DD"),
+  days = 15,
+  month = 6,
+}) => {
+  // 
+  console.log({days, month, inputDate});
+
+  let date = null;
+  if(days) {
+    console.log("this is days")
+    date = calculateNextDate(inputDate, days);
+  }else if(month){
+    console.log("this is month..")
+
+    date = calculateDateAfterMonths(inputDate, month);
+  }
+  return date;
+
 };
