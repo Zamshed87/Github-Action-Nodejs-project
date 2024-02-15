@@ -116,7 +116,8 @@ export const incomeTaxColumnData = (
       dataIndex: "isTakeHomePay",
       sort: true,
       filter: false,
-      fieldType: "string",
+      // fieldType: "string",
+      render: (record, index) => (record?.isTakeHomePay ? "Yes" : "No"),
     },
     {
       title: "Gross Salary",

@@ -1,8 +1,11 @@
 import {
   AddOutlined,
   SettingsBackupRestoreOutlined,
+  SaveAlt,
 } from "@mui/icons-material";
 import { useFormik } from "formik";
+import { Tooltip } from "@mui/material";
+
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -25,6 +28,8 @@ import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "common/peopleDeskTable/helper";
+import { downloadEmployeeCardFile } from "modules/timeSheet/reports/employeeIDCard/helper";
+import { gray900 } from "utility/customColor";
 
 const initData = {
   search: "",
@@ -351,7 +356,48 @@ export default function IncomeTaxAssign() {
                   className="table-card-heading"
                   style={{ marginTop: "12px" }}
                 >
-                  <div>
+                  {" "}
+                  <div style={{ display: "flex", paddingLeft: "6px" }}>
+                    <Tooltip title="Export CSV" arrow>
+                      <button
+                        type="button"
+                        className="btn-save mr-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLoading(true);
+
+                          const paylaod = {
+                            intBusinessUnitId: buId,
+                            intWorkplaceGroupId: wgId,
+                            intWorkplaceId: wId,
+                            intEmployeeId: values?.employee?.value || 0,
+                            pageNo: 0,
+                            pageSize: 0,
+                            isPaginated: false,
+                            isHeaderNeed: false,
+                            searchTxt: "",
+                            ...checkedHeaderList,
+                          };
+                          const url =
+                            "/PdfAndExcelReport/GetAllEmployeeForTaxAssign_RDLC";
+                          downloadEmployeeCardFile(
+                            url,
+                            paylaod,
+                            "Tax Assign List",
+                            "xlsx",
+                            setLoading
+                          );
+                        }}
+                        disabled={resEmpLanding?.length <= 0}
+                      >
+                        <SaveAlt
+                          sx={{
+                            color: gray900,
+                            fontSize: "14px",
+                          }}
+                        />
+                      </button>
+                    </Tooltip>
                     <h6 className="count">
                       Total {resEmpLanding?.length} employees
                     </h6>
