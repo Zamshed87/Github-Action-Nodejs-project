@@ -1,4 +1,7 @@
 import axios from "axios";
+import IConfirmModal from "../../../../common/IConfirmModal";
+
+import { paginationSize } from "common/peopleDeskTable";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -11,10 +14,7 @@ import DefaultInput from "../../../../common/DefaultInput";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import FormikSelect from "../../../../common/FormikSelect";
 import NoResult from "../../../../common/NoResult";
-import {
-  getPeopleDeskAllDDL,
-  getPeopleDeskWithoutAllDDL,
-} from "../../../../common/api";
+import { getPeopleDeskAllDDL } from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
@@ -23,7 +23,6 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import TaxAssignCheckerModal from "../components/taxAssignChekerModal";
 import {
   createSalaryGenerateRequest,
-  getEditDDLs,
   getSalaryGenerateRequestHeaderId,
   getSalaryGenerateRequestLanding,
   getSalaryGenerateRequestLandingById,
@@ -31,6 +30,7 @@ import {
 } from "../helper";
 import { lastDayOfMonth } from "./../../../../utility/dateFormatter";
 import {
+  salaryGenerateCreateEditTableColumn,
   salaryGenerateInitialValues,
   salaryGenerateValidationSchema,
 } from "./helper";
@@ -42,10 +42,8 @@ const SalaryGenerateCreate = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { orgId, buId, employeeId, wgId, buName, wgName, wId, wName  } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, buId, employeeId, wgId, buName, wgName, wId, wName } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -63,13 +61,19 @@ const SalaryGenerateCreate = () => {
   const [allData, setAllData] = useState([]);
   const [takeHomePayTax, setTakeHomePayTax] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
+  const [allEmployeeString, setAllEmployeeString] = useState("");
+  const [isAllAssign, setAllAssign] = useState(false);
   // DDL
-  const [wingDDL, setWingDDL] = useState([]);
-  const [soleDepoDDL, setSoleDepoDDL] = useState([]);
-  const [regionDDL, setRegionDDL] = useState([]);
-  const [areaDDL, setAreaDDL] = useState([]);
-  const [territoryDDL, setTerritoryDDL] = useState([]);
+  // const [wingDDL, setWingDDL] = useState([]);
+  // const [soleDepoDDL, setSoleDepoDDL] = useState([]);
+  // const [regionDDL, setRegionDDL] = useState([]);
+  // const [areaDDL, setAreaDDL] = useState([]);
+  // const [territoryDDL, setTerritoryDDL] = useState([]);
 
   // for create state
   const [open, setOpen] = useState(false);
@@ -82,7 +86,7 @@ const SalaryGenerateCreate = () => {
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
 
   //get landing data
-  const getLandingData = (values) => {
+  const getLandingData = (pages = pages, values) => {
     getSalaryGenerateRequestLanding(
       "EmployeeListForSalaryGenerateRequest",
       orgId,
@@ -91,7 +95,10 @@ const SalaryGenerateCreate = () => {
       wId,
       setRowDto,
       setAllData,
-      setLoading
+      setLoading,
+      pages,
+      setPages,
+      setAllEmployeeString
     );
   };
 
@@ -105,14 +112,14 @@ const SalaryGenerateCreate = () => {
     );
   }, [orgId, buId, employeeId]);
 
-  useEffect(() => {
-    getPeopleDeskWithoutAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=0`,
-      "WingId",
-      "WingName",
-      setWingDDL
-    );
-  }, [orgId, buId, wgId]);
+  // useEffect(() => {
+  //   getPeopleDeskWithoutAllDDL(
+  //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=0`,
+  //     "WingId",
+  //     "WingName",
+  //     setWingDDL
+  //   );
+  // }, [orgId, buId, wgId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
@@ -145,31 +152,150 @@ const SalaryGenerateCreate = () => {
         setAllData,
         setLoading,
         wgId,
-        buId
+        buId,
+        pages,
+        setPages
       );
     }
   }, [params, orgId, wgId, buId]);
 
-  useEffect(() => {
-    if (+params?.id) {
-      getEditDDLs({
-        singleData,
-        getPeopleDeskWithoutAllDDL,
-        orgId,
-        buId,
-        wgId,
-        setWingDDL,
-        setSoleDepoDDL,
-        setRegionDDL,
-        setAreaDDL,
-        setTerritoryDDL,
-      });
-    }
-  }, [orgId, buId, wgId, singleData, params]);
+  // useEffect(() => {
+  //   if (+params?.id) {
+  //     getEditDDLs({
+  //       singleData,
+  //       getPeopleDeskWithoutAllDDL,
+  //       orgId,
+  //       buId,
+  //       wgId,
+  //       setWingDDL,
+  //       setSoleDepoDDL,
+  //       setRegionDDL,
+  //       setAreaDDL,
+  //       setTerritoryDDL,
+  //     });
+  //   }
+  // }, [orgId, buId, wgId, singleData, params]);
 
   // on form submit
+  // const saveHandler = async (values) => {
+  //   const modifyRowDto = rowDto
+  //     ?.filter((itm) => itm?.isSalaryGenerate === true)
+  //     ?.map((itm) => {
+  //       return {
+  //         intEmployeeId: itm?.intEmployeeId,
+  //         strEmployeeName: itm?.strEmployeeName,
+  //         intPayrollGroupId: itm?.intPayrollGroupId,
+  //         strPayrollGroup: itm?.strPayrollGroup,
+  //       };
+  //     });
+
+  //   const notTaxAssignList = modifyRowDto?.map((itm) => {
+  //     return {
+  //       intEmployeeId: itm?.intEmployeeId,
+  //     };
+  //   });
+  //   const payload = {
+  //     strPartName: "SalaryGenerateNReGenerateRequest",
+  //     intSalaryGenerateRequestId: +params?.id
+  //       ? state?.intSalaryGenerateRequestId
+  //       : 0,
+  //     strSalaryCode: " ",
+  //     intAccountId: orgId,
+  //     intBusinessUnitId: buId,
+  //     strBusinessUnit: buName,
+  //     intWorkplaceGroupId: wgId,
+  //     strWorkplaceGroup: wgName,
+  //     intWorkplaceId: wId,
+  //     strWorkplace: wName,
+  //     intWingId: values?.wing?.value || 0,
+  //     intSoleDepoId: values?.soleDepo?.value || 0,
+  //     intRegionId: values?.region?.value || 0,
+  //     intAreaId: values?.area?.value || 0,
+  //     intTerritoryId: values?.territory?.value || 0,
+  //     intMonthId: values?.monthId,
+  //     intYearId: values?.yearId,
+  //     strDescription: values?.description,
+  //     intCreatedBy: employeeId,
+  //     strSalryType: values?.salaryTpe?.value,
+  //     dteFromDate:
+  //       values?.fromDate ||
+  //       `${values?.yearId}-${
+  //         values?.monthId <= 9 ? `0${values?.monthId}` : values?.monthId
+  //       }-01`,
+  //     dteToDate:
+  //       values?.toDate || lastDayOfMonth(values?.monthId, values?.yearId),
+  //     generateRequestRows: modifyRowDto,
+  //   };
+  //   const callback = () => {
+  //     if (+params?.id) {
+  //       getSalaryGenerateRequestLandingById(
+  //         "SalaryGenerateRequestById",
+  //         orgId,
+  //         buId,
+  //         wgId,
+  //         +params?.id,
+  //         false,
+  //         values?.intMonth,
+  //         values?.intYear,
+  //         values?.fromDate,
+  //         values?.toDate,
+  //         setRowDto,
+  //         setAllData,
+  //         setLoading,
+  //         wId,
+  //         pages,
+  //         setPages,
+  //         setAllEmployeeString
+  //       );
+  //       resetForm(salaryGenerateInitialValues);
+  //       setIsEdit(true);
+  //       // searchKeyWord("")
+  //     } else {
+  //       resetForm(salaryGenerateInitialValues);
+  //       setIsEdit(false);
+  //       setRowDto([]);
+  //     }
+  //   };
+  //   const res = await axios.post(
+  //     `/Payroll/EmployeeTakeHomePayNotAssignForTax`,
+  //     {
+  //       partName: "EmployeeTaxNotAssignListForTakeHomePay",
+  //       intAccountId: orgId,
+  //       intBusinessUnitId: buId,
+  //       listOfEmployeeId: notTaxAssignList,
+  //     }
+  //   );
+  //   if (res?.data) {
+  //     setTakeHomePayTax(res?.data);
+  //     res?.data?.length > 0
+  //       ? setOpen(true)
+  //       : createSalaryGenerateRequest(payload, setLoading, callback);
+  //   }
+  // };
   const saveHandler = async (values) => {
-    const modifyRowDto = rowDto
+    const { empIdList, payload, callback } = salaryGeneratepayloadHandler(
+      values,
+      allData,
+      false
+    );
+    const res = await axios.post(
+      `/Payroll/EmployeeTakeHomePayNotAssignForTax`,
+      {
+        partName: "EmployeeTaxNotAssignListForTakeHomePay",
+        intAccountId: orgId,
+        intBusinessUnitId: buId,
+        listOfEmployeeId: empIdList.join(","),
+      }
+    );
+    if (res?.data) {
+      setTakeHomePayTax(res?.data);
+      res?.data?.length > 0
+        ? setOpen(true)
+        : createSalaryGenerateRequest(payload, setLoading, callback);
+    }
+  };
+  const salaryGeneratepayloadHandler = (values, allData, isAllAssign) => {
+    const modifyRowDto = allData
       ?.filter((itm) => itm?.isSalaryGenerate === true)
       ?.map((itm) => {
         return {
@@ -177,13 +303,16 @@ const SalaryGenerateCreate = () => {
           strEmployeeName: itm?.strEmployeeName,
           intPayrollGroupId: itm?.intPayrollGroupId,
           strPayrollGroup: itm?.strPayrollGroup,
+          // intWingId: itm?.intWingId,
+          // intSoleDepoId: itm?.intSoleDepoId,
+          // intRegionId: itm?.intRegionId,
+          // intAreaId: itm?.intAreaId,
+          // // intTerritoryId: itm?.intTerritoryId,
         };
       });
 
-    const notTaxAssignList = modifyRowDto?.map((itm) => {
-      return {
-        intEmployeeId: itm?.intEmployeeId,
-      };
+    const empIdList = modifyRowDto.map((data) => {
+      return data?.intEmployeeId;
     });
     const payload = {
       strPartName: "SalaryGenerateNReGenerateRequest",
@@ -202,7 +331,8 @@ const SalaryGenerateCreate = () => {
       intSoleDepoId: values?.soleDepo?.value || 0,
       intRegionId: values?.region?.value || 0,
       intAreaId: values?.area?.value || 0,
-      intTerritoryId: values?.territory?.value || 0,
+      territoryIdList: 0,
+      territoryNameList: 0,
       intMonthId: values?.monthId,
       intYearId: values?.yearId,
       strDescription: values?.description,
@@ -215,12 +345,14 @@ const SalaryGenerateCreate = () => {
         }-01`,
       dteToDate:
         values?.toDate || lastDayOfMonth(values?.monthId, values?.yearId),
-      generateRequestRows: modifyRowDto,
+      // generateRequestRows: modifyRowDto,
+      strEmpIdList: isAllAssign ? allEmployeeString : empIdList.join(","),
     };
     const callback = () => {
+      setAllAssign(false);
       if (+params?.id) {
         getSalaryGenerateRequestLandingById(
-          "SalaryGenerateRequestById",
+          "SalaryGenerateRequestRowByRequestId",
           orgId,
           buId,
           wgId,
@@ -233,7 +365,18 @@ const SalaryGenerateCreate = () => {
           setRowDto,
           setAllData,
           setLoading,
-          wId
+          wId,
+          {
+            current: pages?.current,
+            pageSize: 500,
+          },
+          setPages,
+          setAllEmployeeString,
+          values?.wing?.value,
+          values?.soleDepo?.value,
+          values?.region?.value,
+          values?.area?.value,
+          values?.territory
         );
         resetForm(salaryGenerateInitialValues);
         setIsEdit(true);
@@ -244,23 +387,38 @@ const SalaryGenerateCreate = () => {
         setRowDto([]);
       }
     };
-    const res = await axios.post(
-      `/Payroll/EmployeeTakeHomePayNotAssignForTax`,
-      {
-        partName: "EmployeeTaxNotAssignListForTakeHomePay",
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
-        listOfEmployeeId: notTaxAssignList,
-      }
-    );
-    if (res?.data) {
-      setTakeHomePayTax(res?.data);
-      res?.data?.length > 0
-        ? setOpen(true)
-        : createSalaryGenerateRequest(payload, setLoading, callback);
-    }
+    return { empIdList, payload, callback };
   };
-
+  const allBulkSalaryGenerateHandler = (values, allData) => {
+    const { payload, callback } = salaryGeneratepayloadHandler(
+      values,
+      allData,
+      true
+    );
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: "Do you want to generate all employee salary?",
+      yesAlertFunc: async () => {
+        const res = await axios.post(
+          `/Payroll/EmployeeTakeHomePayNotAssignForTax`,
+          {
+            partName: "EmployeeTaxNotAssignListForTakeHomePay",
+            intAccountId: orgId,
+            intBusinessUnitId: buId,
+            listOfEmployeeId: allEmployeeString,
+          }
+        );
+        if (res?.data) {
+          setTakeHomePayTax(res?.data);
+          res?.data?.length > 0
+            ? setOpen(true)
+            : createSalaryGenerateRequest(payload, setLoading, callback);
+        }
+      },
+      noAlertFunc: () => {},
+    };
+    IConfirmModal(confirmObject);
+  };
   const columns = [
     {
       title: "SL",
@@ -398,7 +556,56 @@ const SalaryGenerateCreate = () => {
 
     return isCheck;
   };
-
+  // table pagination option
+  const handleTableChange = (pagination, newRowDto, srcText) => {
+    if (newRowDto?.action === "filter") {
+      return;
+    }
+    if (
+      pages?.current === pagination?.current &&
+      pages?.pageSize !== pagination?.pageSize
+    ) {
+      if (+params?.id) {
+        getSalaryGenerateRequestRowId(
+          "SalaryGenerateRequestRowByRequestId",
+          +params?.id,
+          setRowDto,
+          setAllData,
+          setLoading,
+          wgId,
+          buId,
+          // pagination,
+          {
+            current: pages?.pagination,
+            pageSize: 500,
+          },
+          setPages
+        );
+      } else {
+        return getLandingData(pagination, srcText);
+      }
+    }
+    if (pages?.current !== pagination?.current) {
+      if (+params?.id) {
+        getSalaryGenerateRequestRowId(
+          "SalaryGenerateRequestRowByRequestId",
+          +params?.id,
+          setRowDto,
+          setAllData,
+          setLoading,
+          wgId,
+          buId,
+          {
+            current: pages?.pagination,
+            pageSize: 500,
+          },
+          setPages
+        );
+      } else {
+        return getLandingData(pagination, srcText);
+      }
+    }
+  };
   // useFormik hooks
   const {
     setFieldValue,
@@ -591,7 +798,7 @@ const SalaryGenerateCreate = () => {
                   {/* marketing setup */}
                   {"Marketing" === wgName && (
                     <>
-                      <div className="col-lg-3">
+                      {/* <div className="col-lg-3">
                         <div className="input-field-main">
                           <label>Wing</label>
                           <FormikSelect
@@ -775,7 +982,7 @@ const SalaryGenerateCreate = () => {
                             }
                           />
                         </div>
-                      </div>
+                      </div> */}
                     </>
                   )}
 
@@ -858,7 +1065,7 @@ const SalaryGenerateCreate = () => {
                             }
 
                             getSalaryGenerateRequestLandingById(
-                              "SalaryGenerateRequestById",
+                              "SalaryGenerateRequestRowByRequestId",
                               orgId,
                               buId,
                               wgId,
@@ -872,6 +1079,12 @@ const SalaryGenerateCreate = () => {
                               setAllData,
                               setLoading,
                               wId,
+                              {
+                                current: pages?.current,
+                                pageSize: 500,
+                              },
+                              setPages,
+                              setAllEmployeeString,
                               values?.wing?.value,
                               values?.soleDepo?.value,
                               values?.region?.value,
@@ -892,6 +1105,9 @@ const SalaryGenerateCreate = () => {
                               setRowDto,
                               setAllData,
                               setLoading,
+                              pages,
+                              setPages,
+                              setAllEmployeeString,
                               values?.wing?.value,
                               values?.soleDepo?.value,
                               values?.region?.value,
@@ -926,7 +1142,7 @@ const SalaryGenerateCreate = () => {
                             }
 
                             getSalaryGenerateRequestLandingById(
-                              "SalaryGenerateRequestById",
+                              "SalaryGenerateRequestRowByRequestId",
                               orgId,
                               buId,
                               wgId,
@@ -940,6 +1156,9 @@ const SalaryGenerateCreate = () => {
                               setAllData,
                               setLoading,
                               wId,
+                              pages,
+                              setPages,
+                              setAllEmployeeString,
                               values?.wing?.value,
                               values?.soleDepo?.value,
                               values?.region?.value,
@@ -960,6 +1179,9 @@ const SalaryGenerateCreate = () => {
                               setRowDto,
                               setAllData,
                               setLoading,
+                              pages,
+                              setPages,
+                              setAllEmployeeString,
                               values?.wing?.value,
                               values?.soleDepo?.value,
                               values?.region?.value,
@@ -973,18 +1195,49 @@ const SalaryGenerateCreate = () => {
                         Show
                       </button>
                     )}
-                    {rowDto?.filter((itm) => itm?.isSalaryGenerate === true)
+                    {allData?.filter((itm) => itm?.isSalaryGenerate === true)
                       ?.length > 0 && (
                       <button
                         style={{
                           padding: "0px 10px",
+                          marginTop:
+                            values?.salaryTpe?.value === "PartialSalary"
+                              ? "21px"
+                              : "0px",
                         }}
                         className="btn btn-default"
                         type="submit"
                       >
                         {state?.intSalaryGenerateRequestId
-                          ? "Re-Generate"
-                          : "Generate"}
+                          ? "Re-Generate " +
+                              allData?.filter(
+                                (itm) => itm?.isSalaryGenerate === true
+                              )?.length || 0
+                          : "Generate " +
+                              allData?.filter(
+                                (itm) => itm?.isSalaryGenerate === true
+                              )?.length || 0}
+                      </button>
+                    )}
+                    {allEmployeeString && (
+                      <button
+                        style={{
+                          padding: "0px 10px",
+                          marginTop:
+                            values?.salaryTpe?.value === "PartialSalary"
+                              ? "21px"
+                              : "0px",
+                        }}
+                        className="btn btn-default ml-2"
+                        type="button"
+                        onClick={() => {
+                          setAllAssign(true);
+                          allBulkSalaryGenerateHandler(values, allData);
+                        }}
+                      >
+                        {state?.intSalaryGenerateRequestId
+                          ? "Re-Generate All " + pages?.total || 0
+                          : "Generate All " + pages?.total || 0}
                       </button>
                     )}
                   </div>
@@ -1075,17 +1328,29 @@ const SalaryGenerateCreate = () => {
               </ul>
             </div>
             <div>
-              {rowDto?.length > 0 ? (
+              {allData?.length > 0 ? (
                 <>
                   <div className="table-card-styled employee-table-card tableOne customAntTable">
                     <AntTable
-                      // data={rowDto}
-                      // columnsData={columns}
-                      data={allData?.length > 0 ? allData : []}
-                      columnsData={columns}
+                      data={allData}
+                      columnsData={salaryGenerateCreateEditTableColumn(
+                        setAllData,
+                        pages,
+                        allData,
+                        setFieldValue
+                      )}
                       setColumnsData={(newRow) => {
-                        setRowDto(newRow);
+                        setAllData(newRow);
                       }}
+                      handleTableChange={({ pagination, newRowDto }) =>
+                        handleTableChange(
+                          pagination,
+                          newRowDto,
+                          values?.search || ""
+                        )
+                      }
+                      pages={pages?.pageSize}
+                      pagination={pages}
                     />
                   </div>
                 </>

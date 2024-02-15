@@ -1,4 +1,3 @@
-import { AddOutlined } from "@mui/icons-material";
 import {
   Avatar,
   DataTable,
@@ -16,6 +15,7 @@ import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
@@ -23,7 +23,6 @@ import { dateFormatter } from "../../../utility/dateFormatter";
 import AddEditForm from "./addEditFile";
 import { columnForHeadOffice, getTableDataEmployee } from "./helper";
 import "./styles.css";
-import { toast } from "react-toastify";
 
 function EmployeeFeatureNew() {
   // hook

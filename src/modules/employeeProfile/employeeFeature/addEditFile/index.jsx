@@ -7,11 +7,16 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
 import { createEditEmpAction, userExistValidation } from "../helper";
-import { submitHandler } from "./helper";
+import {
+  calculateProbationCloseDateByDateOrMonth,
+  submitHandler,
+} from "./helper";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
 import { calculateNextDate } from "utility/dateFormatter";
 import { isDevServer } from "App";
+import { probationCloseDateCustomDDL } from "utility/yearDDL";
+import FileUploadComponents from "utility/Upload/FileUploadComponents";
 
 export default function AddEditForm({
   setIsAddEditForm,
@@ -31,7 +36,7 @@ export default function AddEditForm({
   const [loading, setLoading] = useState(false);
 
   // states
-
+  const [empSignature, setEmpAuthSignature] = useState([]);
   const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
 
   // Pages Start From Here code from above will be removed soon
@@ -514,6 +519,8 @@ export default function AddEditForm({
             buId,
             intUrlId,
             setLoading,
+            intSignature:
+              empSignature?.[0]?.response?.[0]?.globalFileUrlId || 0,
           });
         }}
         initialValues={{
@@ -688,13 +695,15 @@ export default function AddEditForm({
               placeholder="Joining Date"
               rules={[{ required: true, message: "Joining Date is required" }]}
               onChange={(value) => {
-                const next180Days = calculateNextDate(
-                  moment(value).format("YYYY-MM-DD"),
-                  180
-                );
+                // const next180Days = calculateNextDate(
+                //   moment(value).format("YYYY-MM-DD"),
+                //   180
+                // );
                 form.setFieldsValue({
                   joiningDate: value,
-                  dteProbationaryCloseDate: moment(next180Days),
+                  probationayClosedBy: null,
+                  dteProbationaryCloseDate: null,
+                  // dteProbationaryCloseDate: moment(next180Days),
                 });
               }}
               // disabled={isEdit}
@@ -702,7 +711,7 @@ export default function AddEditForm({
           </Col>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { employeeType } = form.getFieldsValue();
+              const { employeeType, joiningDate } = form.getFieldsValue();
 
               const empType = employeeType?.label;
 
@@ -710,12 +719,42 @@ export default function AddEditForm({
                 <>
                   {empType === "Probationary" ? (
                     <>
+                    
                       <Col md={12} sm={24}>
                         <PInput
                           type="date"
                           name="joiningDate"
                           label={`Probation Start Date`}
                           disabled={true}
+                        />
+                      </Col>
+                      <Col md={12} sm={24}>
+                        <PSelect
+                          options={probationCloseDateCustomDDL || []}
+                          name="probationayClosedBy"
+                          label="Probation Period"
+                          placeholder="Probation Period"
+                          onChange={(value, op) => {
+                            const nextDate =
+                              calculateProbationCloseDateByDateOrMonth({
+                                inputDate: moment(
+                                  joiningDate,
+                                  "YYYY-MM-DD"
+                                ).format("YYYY-MM-DD"), // Use moment to parse the joiningDate
+                                days:
+                                  op?.count?.length > 3
+                                    ? null
+                                    : parseInt(op?.count),
+                                month:
+                                  op?.count?.length > 3
+                                    ? parseInt(op?.count?.split(" ")[0])
+                                    : null,
+                              });
+                            form.setFieldsValue({
+                              probationayClosedBy: op,
+                              dteProbationaryCloseDate: moment(nextDate),
+                            });
+                          }}
                         />
                       </Col>
                       <Col md={12} sm={24}>
@@ -1155,6 +1194,26 @@ export default function AddEditForm({
               // rules={[{ required: true, message: "HR Position is required" }]}
             />
           </Col>
+          {!isEdit && (
+            <Col md={12} sm={24}>
+              <div className="mt-4">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "Employee Signature",
+                    attachmentList: empSignature,
+                    setAttachmentList: setEmpAuthSignature,
+                    accountId: orgId,
+                    tableReferrence: "LeaveAndMovement",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+            </Col>
+          )}
 
           {/* User Create */}
           <Form.Item noStyle shouldUpdate>
