@@ -413,7 +413,7 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     {singleData?.strCalenderName ? (
-                      <div className="col-6 mt-3">
+                      <div className="col-12 mt-3">
                         <FormikCheckBox
                           name="isEmployeeUpdate"
                           styleObj={{
