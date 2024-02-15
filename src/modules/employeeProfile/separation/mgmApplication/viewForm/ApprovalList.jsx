@@ -25,7 +25,7 @@ const ApprovalList = ({
       title: "Approve Dept.",
       dataIndex: "strStatusTitle",
       sorter: true,
-      render: (data, record) =>
+      render: (_, record) =>
         record?.strStatusTitle === "Approve By Supervisor"
           ? "Supervisor"
           : record?.strStatusTitle === "Approve By User Group"
@@ -36,7 +36,7 @@ const ApprovalList = ({
       title: "Status",
       dataIndex: "status",
       align: "center",
-      render: (data, record) =>
+      render: (_, record) =>
         // Write condition to check status
         record?.status === "Pending" ? (
           <PBadge type="warning" text={record?.status} />
@@ -51,7 +51,7 @@ const ApprovalList = ({
       title: "Comments",
       dataIndex: "comment",
       render: (_, record, index) =>
-        type === "approval" ? (
+        type === "approval" && record?.status === "Pending" ? (
           <div>
             <FormikInput
               placeholder="Comments"
@@ -69,7 +69,11 @@ const ApprovalList = ({
                 );
                 setComment(e.target.value);
               }}
-              disabled={record?.strStatusTitle !== data?.currentStage}
+              disabled={
+                data?.application?.intCurrentStage === record?.intPipelineRowId
+                  ? false
+                  : true
+              }
             />
           </div>
         ) : (
@@ -83,12 +87,17 @@ const ApprovalList = ({
       render: (_, record) => {
         return (
           <div className="d-flex justify-content-center">
-            {buttonType === "approve" ? (
+            {record?.status === "Approved" || buttonType === "approve" ? (
               <button
                 type="button"
                 onClick={() => demoPopup("approve", "Approve", data)}
                 className="btn btn-green"
-                disabled={record?.strStatusTitle !== data?.currentStage}
+                disabled={
+                  data?.application?.intCurrentStage ===
+                  record?.intPipelineRowId
+                    ? false
+                    : true
+                }
               >
                 Approve
               </button>
@@ -102,7 +111,12 @@ const ApprovalList = ({
                   color: "white",
                   borderColor: "#dc3545",
                 }}
-                disabled={record?.strStatusTitle !== data?.currentStage}
+                disabled={
+                  data?.application?.intCurrentStage ===
+                  record?.intPipelineRowId
+                    ? false
+                    : true
+                }
               >
                 Reject
               </button>

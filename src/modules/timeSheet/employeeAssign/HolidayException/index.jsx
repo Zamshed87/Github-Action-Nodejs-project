@@ -244,7 +244,9 @@ const HolidayException = () => {
   // };
 
   useEffect(() => {
-    getData(pages);
+    if (wgId && wId) {
+      getData(pages);
+    }
     // setChecked([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wgId, wId]);

@@ -131,8 +131,7 @@ const PopoverDropdown = ({
       setRowDto([...columnData[currentFilterSelection]?.filterDropDownList]);
     }
     setCurrentHeaderListSelection(checkedHeaderList);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFilterSelection]);
+  }, [currentFilterSelection, columnData]);
 
   useEffect(() => {
     if (reset && currentFilterSelection !== -1) {

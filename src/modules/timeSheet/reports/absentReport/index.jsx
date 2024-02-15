@@ -31,6 +31,12 @@ import {
   getAbsentData,
   getTableDataDailyAttendance,
 } from "./helper";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "common/peopleDeskTable/helper";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const initialValues = {
   businessUnit: "",
@@ -45,6 +51,11 @@ const validationSchema = Yup.object().shape({
   date: Yup.date().required("Date is required").typeError("Date is required"),
 });
 
+const initHeaderList = {
+  departmentList: [],
+  sectionList: [],
+  designationList: [],
+};
 const AbsentReport = () => {
   // redux
   const dispatch = useDispatch();
@@ -59,6 +70,13 @@ const AbsentReport = () => {
   // states
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
+  const [headerList, setHeaderList] = useState({});
+  const [filterOrderList, setFilterOrderList] = useState([]);
+  const [initialHeaderListData, setInitialHeaderListData] = useState({});
+  const [landingLoading, setLandingLoading] = useState(false);
+  const [checkedHeaderList, setCheckedHeaderList] = useState({
+    ...initHeaderList,
+  });
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
     current: 1,
@@ -76,39 +94,107 @@ const AbsentReport = () => {
       permission = item;
     }
   });
-
-  const getData = (
-    pagination = { current: 1, pageSize: paginationSize },
-    srcTxt = "",
-    date = todayDate(),
-    todate = todayDate(),
-    isExcel = false
+  const getDataApiCall = async (
+    modifiedPayload,
+    pagination,
+    searchText,
+    currentFilterSelection = -1,
+    checkedHeaderList
   ) => {
-    getAbsentData(
-      buId,
-      date,
-      setRowDto,
-      setLoading,
-      srcTxt,
-      pagination?.current,
-      pagination?.pageSize,
-      isExcel,
-      wgId,
-      setPages,
-      wId,
-      todate
+    try {
+      const payload = {
+        intAccountId: orgId,
+        intBusinessUnitId: buId,
+        intWorkplaceGroupId: wgId,
+        intWorkplaceId: wId,
+        fromDate: values?.date,
+        toDate: values?.todate,
+        pageNo: pagination.current,
+        pageSize: pagination.pageSize,
+        isPaginated: true,
+        isHeaderNeed: true,
+        searchTxt: searchText || "",
+      };
+
+      const res = await axios.post(`/TimeSheetReport/GetAbsentReport`, {
+        ...payload,
+        ...modifiedPayload,
+      });
+
+      if (res?.data?.data) {
+        setHeaderListDataDynamically({
+          currentFilterSelection,
+          checkedHeaderList,
+          headerListKey: "timeSheetAbsentHeader",
+          headerList,
+          setHeaderList,
+          response: res?.data,
+          filterOrderList,
+          setFilterOrderList,
+          initialHeaderListData,
+          setInitialHeaderListData,
+          // setRowDto,
+          setPages,
+        });
+        setRowDto(res?.data?.data);
+        setLandingLoading(false);
+      }
+    } catch (error) {
+      setLandingLoading(false);
+    }
+  };
+  const getData = async (
+    pagination,
+    IsForXl = "false",
+    searchText = "",
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList }
+  ) => {
+    setLandingLoading(true);
+
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+
+    getDataApiCall(
+      modifiedPayload,
+      pagination,
+      searchText,
+      currentFilterSelection,
+      checkedHeaderList
     );
   };
+  // const getData = (
+  //   pagination = { current: 1, pageSize: paginationSize },
+  //   srcTxt = "",
+  //   date = todayDate(),
+  //   todate = todayDate(),
+  //   isExcel = false
+  // ) => {
+  //   getAbsentData(
+  //     buId,
+  //     date,
+  //     setRowDto,
+  //     setLoading,
+  //     srcTxt,
+  //     pagination?.current,
+  //     pagination?.pageSize,
+  //     isExcel,
+  //     wgId,
+  //     setPages,
+  //     wId,
+  //     todate
+  //   );
+  // };
 
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
-    getData(
-      { current: 1, pageSize: paginationSize },
-      "",
-      values?.date,
-      values?.todate
-    );
-  }, [wId, wgId, buId]);
+    getData(pages);
+  }, [wId, wgId]);
 
   // formik
   const { setFieldValue, values, errors, touched, handleSubmit } = useFormik({
@@ -116,7 +202,7 @@ const AbsentReport = () => {
     validationSchema,
     initialValues,
     onSubmit: () => {
-      getData({ current: 1, pageSize: paginationSize }, "", values?.date);
+      getData(pages);
       setFieldValue("search", "");
     },
   });
@@ -126,7 +212,6 @@ const AbsentReport = () => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     document.title = "Absent Report";
   }, [dispatch]);
-
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
@@ -138,8 +223,11 @@ const AbsentReport = () => {
         pageSize: pages?.pageSize,
         total: pages?.total,
       },
+      "false",
       searchText,
-      values?.date
+      -1,
+      filterOrderList,
+      checkedHeaderList
     );
   };
 
@@ -155,11 +243,14 @@ const AbsentReport = () => {
         pageSize: +event.target.value,
         total: pages?.total,
       },
+      "false",
       searchText,
-      values?.date
+      -1,
+      filterOrderList,
+      checkedHeaderList
     );
   };
-  console.log({ loading, apiLoading });
+
   return (
     <form onSubmit={handleSubmit}>
       {(loading || apiLoading) && <Loading />}
@@ -228,7 +319,7 @@ const AbsentReport = () => {
               </div>
             </div>
 
-            {rowDto?.data?.length > 0 ? (
+            {rowDto?.length > 0 ? (
               <div>
                 <div className="d-flex justify-content-between">
                   <div>
@@ -245,7 +336,7 @@ const AbsentReport = () => {
 
                   <div>
                     <ul className="d-flex flex-wrap">
-                      {rowDto?.data?.length > 0 && (
+                      {rowDto?.length > 0 && (
                         <>
                           <li className="pr-2">
                             <Tooltip title="Export CSV" arrow>
@@ -253,62 +344,91 @@ const AbsentReport = () => {
                                 style={{ color: "#101828" }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  getExcelData(
-                                    `/TimeSheetReport/GetAbsentReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&FromDate=${values?.date}&ToDate=${values?.todate}&IsXls=false&PageNo=1&PageSize=10000`,
-                                    (res) => {
-                                      console.log(res);
-                                      const newData = res?.data?.map(
-                                        (item, index) => {
-                                          return {
-                                            ...item,
-                                            sl: index + 1,
-                                          };
+                                  const excelLanding = async () => {
+                                    try {
+                                      const res = await axios.post(
+                                        `/TimeSheetReport/GetAbsentReport`,
+                                        {
+                                          intAccountId: orgId,
+                                          intBusinessUnitId: buId,
+                                          intWorkplaceGroupId: wgId,
+                                          intWorkplaceId: wId,
+                                          fromDate: values?.date,
+                                          toDate: values?.todate,
+                                          pageNo: 1,
+                                          pageSize: 1000000000,
+                                          isPaginated: false,
+                                          isHeaderNeed: false,
+                                          searchTxt: "",
+                                          departmentList: [],
+                                          sectionList: [],
+                                          designationList: [],
                                         }
                                       );
-                                      createCommonExcelFile({
-                                        titleWithDate: `Absent Report ${values?.todate} `,
-                                        fromDate: "",
-                                        toDate: "",
-                                        buAddress: buDetails?.strAddress,
-                                        businessUnit: buDetails?.strWorkplace,
-                                        tableHeader: column,
-                                        getTableData: () =>
-                                          getTableDataDailyAttendance(
-                                            newData,
-                                            Object.keys(column),
-                                            res?.data
-                                          ),
-                                        // getSubTableData: () =>
-                                        //   getTableDataSummaryHeadData(res),
-                                        // subHeaderInfoArr: [
-                                        //   res?.data?.workplaceGroup
-                                        //     ? `Workplace Group-${res?.data?.workplaceGroup}`
-                                        //     : "",
-                                        //   res?.data?.workplace
-                                        //     ? `Workplace-${res?.data?.workplace}`
-                                        //     : "",
-                                        // ],
-                                        // subHeaderColumn,
-                                        tableFooter: [],
-                                        extraInfo: {},
-                                        tableHeadFontSize: 10,
-                                        widthList: {
-                                          B: 30,
-                                          C: 30,
-                                          D: 15,
-                                          E: 25,
-                                          F: 20,
-                                          G: 25,
-                                          H: 15,
-                                          I: 15,
-                                          J: 20,
-                                          K: 20,
-                                        },
-                                        commonCellRange: "A1:J1",
-                                        CellAlignment: "left",
-                                      });
+                                      if (res?.data?.data?.length > 0) {
+                                        const newData = res?.data?.data?.map(
+                                          (item, index) => {
+                                            return {
+                                              ...item,
+                                              sl: index + 1,
+                                            };
+                                          }
+                                        );
+                                        const date = todayDate();
+
+                                        createCommonExcelFile({
+                                          titleWithDate: `Absent Report ${values?.todate} `,
+                                          fromDate: "",
+                                          toDate: "",
+                                          buAddress: buDetails?.strAddress,
+                                          businessUnit: buDetails?.strWorkplace,
+                                          tableHeader: column,
+                                          getTableData: () =>
+                                            getTableDataDailyAttendance(
+                                              newData,
+                                              Object.keys(column),
+                                              res?.data?.data
+                                            ),
+                                          // getSubTableData: () =>
+                                          //   getTableDataSummaryHeadData(res),
+                                          // subHeaderInfoArr: [
+                                          //   res?.data?.workplaceGroup
+                                          //     ? `Workplace Group-${res?.data?.workplaceGroup}`
+                                          //     : "",
+                                          //   res?.data?.workplace
+                                          //     ? `Workplace-${res?.data?.workplace}`
+                                          //     : "",
+                                          // ],
+                                          // subHeaderColumn,
+                                          tableFooter: [],
+                                          extraInfo: {},
+                                          tableHeadFontSize: 10,
+                                          widthList: {
+                                            B: 30,
+                                            C: 30,
+                                            D: 15,
+                                            E: 25,
+                                            F: 20,
+                                            G: 25,
+                                            H: 15,
+                                            I: 15,
+                                            J: 20,
+                                            K: 20,
+                                          },
+                                          commonCellRange: "A1:J1",
+                                          CellAlignment: "left",
+                                        });
+                                        setLoading && setLoading(false);
+                                      } else {
+                                        setLoading && setLoading(false);
+                                        toast.warn("Empty Employee Data");
+                                      }
+                                    } catch (error) {
+                                      toast.warn("Failed to download excel");
+                                      setLoading && setLoading(false);
                                     }
-                                  );
+                                  };
+                                  excelLanding();
                                 }}
                               >
                                 <DownloadIcon />
@@ -323,21 +443,6 @@ const AbsentReport = () => {
                                   e.stopPropagation();
                                   const list = rowDto?.data?.map(
                                     (item) => item?.employeeId
-                                  );
-                                  getPDFAction(
-                                    `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${
-                                      values?.date
-                                    }${
-                                      buId ? `&IntBusinessUnitId=${buId}` : ""
-                                    }${
-                                      wgId ? `&IntWorkplaceGroupId=${wgId}` : ""
-                                    }${
-                                      rowDto?.data?.length !==
-                                      rowDto?.totalCount
-                                        ? `&EmployeeIdList=${list}`
-                                        : ""
-                                    }${wId ? `&IntWorkplaceId=${wId}` : ""}`,
-                                    setLoading
                                   );
                                 }}
                               >
@@ -396,19 +501,44 @@ const AbsentReport = () => {
                     </ul>
                   </div>
                 </div>
-
                 <PeopleDeskTable
-                  columnData={absentDtoCol(pages?.current, pages?.pageSize)}
+                  columnData={absentDtoCol(
+                    pages?.current,
+                    pages?.pageSize,
+                    headerList
+                  )}
                   pages={pages}
-                  rowDto={rowDto?.data}
+                  rowDto={rowDto}
                   setRowDto={setRowDto}
+                  checkedHeaderList={checkedHeaderList}
+                  setCheckedHeaderList={setCheckedHeaderList}
                   handleChangePage={(e, newPage) =>
-                    handleChangePage(e, newPage, values?.search)
+                    handleChangePage(e, newPage, values?.searchString)
                   }
                   handleChangeRowsPerPage={(e) =>
-                    handleChangeRowsPerPage(e, values?.search)
+                    handleChangeRowsPerPage(e, values?.searchString)
                   }
-                  uniqueKey="expenseId"
+                  filterOrderList={filterOrderList}
+                  setFilterOrderList={setFilterOrderList}
+                  uniqueKey="employeeCode"
+                  getFilteredData={(
+                    currentFilterSelection,
+                    updatedFilterData,
+                    updatedCheckedHeaderData
+                  ) => {
+                    getData(
+                      {
+                        current: 1,
+                        pageSize: paginationSize,
+                        total: 0,
+                      },
+                      "false",
+                      "",
+                      currentFilterSelection,
+                      updatedFilterData,
+                      updatedCheckedHeaderData
+                    );
+                  }}
                   isCheckBox={false}
                   isScrollAble={false}
                 />
