@@ -14,7 +14,9 @@ export const getJoiningData = async (
   wgId,
   setPages,
   wId,
-  orgId
+  orgId,
+  fromDate,
+  toDate,
 ) => {
   setLoading && setLoading(true);
 
@@ -22,7 +24,7 @@ export const getJoiningData = async (
     const res = await axios.get(
       `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&PageNo=${pageNo}&PageSize=${pageSize}&SearchText=${
         srcTxt ? srcTxt : null
-      }}`
+      }&DteFromDate=${fromDate}&DteToDate=${toDate}`
     );
 
     if (res?.data) {
