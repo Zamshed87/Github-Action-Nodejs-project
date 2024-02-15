@@ -22,6 +22,7 @@ import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { isUniq } from "../../../../../utility/uniqChecker";
 import { IconButton, Tooltip } from "@mui/material";
 import { DeleteOutline, InfoOutlined } from "@mui/icons-material";
+import { calculateNextDate } from "utility/dateFormatter";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -80,6 +81,7 @@ const CalendarSetupModal = ({
   const [workPlaceDDL, setWorkPlaceDDL] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [deleteRowData, setDeleteRowData] = useState([]);
+  const [next3daysForEmp, setNext3daysForEmp] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -441,6 +443,13 @@ const CalendarSetupModal = ({
                                 "dteEmployeeUpdateFromDate",
                                 e.target.value
                               );
+                              setNext3daysForEmp(
+                                calculateNextDate(e?.target?.value, 35)
+                              );
+                              setFieldValue(
+                                "dteEmployeeUpdateToDate",
+                                e.target.value
+                              );
                             }}
                             errors={errors}
                             touched={touched}
@@ -453,6 +462,9 @@ const CalendarSetupModal = ({
                           <FormikInput
                             classes="input-sm"
                             type="date"
+                            disabled={!values?.dteEmployeeUpdateFromDate}
+                            min={values?.dteEmployeeUpdateFromDate}
+                            max={next3daysForEmp}
                             value={values?.dteEmployeeUpdateToDate}
                             name="dteEmployeeUpdateToDate"
                             onChange={(e) => {
