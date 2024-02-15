@@ -490,6 +490,8 @@ function CreateTransferPromotion() {
         : state?.singleData?.intTransferNpromotionId,
       intEmployeeId: values?.employee?.value,
       strEmployeeName: values?.employee?.label,
+      employmentTypeId: values?.employee?.employmentTypeId,
+      hrPositionId: values?.employee?.hrPositionId,
       StrTransferNpromotionType: values?.transferNPromotionType?.label,
       intAccountId: orgId,
       intBusinessUnitId: values?.businessUnit?.value,

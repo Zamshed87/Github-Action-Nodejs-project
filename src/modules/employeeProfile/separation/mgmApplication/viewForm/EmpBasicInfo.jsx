@@ -60,6 +60,17 @@ const EmpBasicInfo = ({ empBasic }) => {
                     style={{ fontWeight: "500", color: gray700 }}
                   >
                     <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                      Employee Id -
+                    </small>{" "}
+                    {"N/A"}
+                  </p>
+                </div>
+                <div className="single-info">
+                  <p
+                    className="text-single-info"
+                    style={{ fontWeight: "500", color: gray700 }}
+                  >
+                    <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                       Designation -
                     </small>{" "}
                     {empBasic?.strEmployeeDesignation}
@@ -89,8 +100,41 @@ const EmpBasicInfo = ({ empBasic }) => {
                       : "N/A"}
                   </p>
                 </div>
+                <div className="single-info">
+                  <p
+                    className="text-single-info"
+                    style={{ fontWeight: "500", color: gray700 }}
+                  >
+                    <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                      Length of Service -
+                    </small>{" "}
+                    {"N/A"}
+                  </p>
+                </div>
+                <div className="single-info">
+                  <p
+                    className="text-single-info"
+                    style={{ fontWeight: "500", color: gray700 }}
+                  >
+                    <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                      Last Working Date -
+                    </small>{" "}
+                    {"N/A"}
+                  </p>
+                </div>
               </div>
               <div>
+                <div className="single-info">
+                  <p
+                    className="text-single-info"
+                    style={{ fontWeight: "500", color: gray700 }}
+                  >
+                    <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                      Mobile (Official) -
+                    </small>{" "}
+                    {"N/A"}
+                  </p>
+                </div>
                 <div className="single-info">
                   <p
                     className="text-single-info"
@@ -122,6 +166,28 @@ const EmpBasicInfo = ({ empBasic }) => {
                       Workplace -
                     </small>{" "}
                     {empBasic?.strEmployeeWorkplaceName}
+                  </p>
+                </div>
+                <div className="single-info">
+                  <p
+                    className="text-single-info"
+                    style={{ fontWeight: "500", color: gray700 }}
+                  >
+                    <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                      Date of Resign -
+                    </small>{" "}
+                    {"N/A"}
+                  </p>
+                </div>
+                <div className="single-info">
+                  <p
+                    className="text-single-info"
+                    style={{ fontWeight: "500", color: gray700 }}
+                  >
+                    <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
+                      Notice Period -
+                    </small>{" "}
+                    {"N/A"}
                   </p>
                 </div>
               </div>
