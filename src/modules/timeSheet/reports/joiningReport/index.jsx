@@ -1,11 +1,9 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
-import { Tooltip, Typography } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import axios from "axios";
-import { Form, Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import FormikInput from "../../../../common/FormikInput";
-import PrimaryButton from "../../../../common/PrimaryButton";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
@@ -14,10 +12,6 @@ import {
   dateFormatter,
   dateFormatterForInput,
 } from "../../../../utility/dateFormatter";
-import { getPDFAction } from "../../../../utility/downloadFile";
-
-import { getBuDetails } from "../helper";
-
 import { toast } from "react-toastify";
 import PeopleDeskTable, {
   paginationSize,
@@ -28,12 +22,13 @@ import { getWorkplaceDetails } from "common/api";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import MasterFilter from "common/MasterFilter";
 import useDebounce from "utility/customHooks/useDebounce";
+import DefaultInput from "common/DefaultInput";
 
 const todayDate = dateFormatterForInput(new Date());
 const initData = {
   search: "",
-  //   fromDate: todayDate,
-  //   toDate: todayDate,
+  fromDate: todayDate,
+  toDate: todayDate,
 };
 
 export default function JoiningReport() {
@@ -48,7 +43,8 @@ export default function JoiningReport() {
   const getData = (
     pagination = { current: 1, pageSize: paginationSize },
     srcTxt = "",
-    isExcel = false
+    isExcel = false,
+    values
   ) => {
     getJoiningData(
       buId,
@@ -61,7 +57,9 @@ export default function JoiningReport() {
       wgId,
       setPages,
       wId,
-      orgId
+      orgId,
+      values?.fromDate || todayDate,
+      values?.toDate || todayDate
     );
   };
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -135,8 +133,8 @@ export default function JoiningReport() {
     enableReinitialize: true,
     initialValues: initData,
     onSubmit: () => {
-      //   getData({ current: 1, pageSize: paginationSize }, "", values?.date);
-      //   setFieldValue("search", "");
+      getData(pages, "", "", values);
+      // setFieldValue("search", "");
     },
   });
 
@@ -189,17 +187,6 @@ export default function JoiningReport() {
                                     Object.keys(column),
                                     res?.data
                                   ),
-                                // getSubTableData: () =>
-                                //   getTableDataSummaryHeadData(res),
-                                // subHeaderInfoArr: [
-                                //   res?.data?.workplaceGroup
-                                //     ? `Workplace Group-${res?.data?.workplaceGroup}`
-                                //     : "",
-                                //   res?.data?.workplace
-                                //     ? `Workplace-${res?.data?.workplace}`
-                                //     : "",
-                                // ],
-                                // subHeaderColumn,
                                 tableFooter: [],
                                 extraInfo: {},
                                 tableHeadFontSize: 10,
@@ -232,6 +219,7 @@ export default function JoiningReport() {
                     </div>
                   </Tooltip>
                 </div>
+
                 <div className="table-card-head-right ">
                   <ul>
                     {values?.search && (
@@ -274,6 +262,57 @@ export default function JoiningReport() {
                       />
                     </li>
                   </ul>
+                </div>
+              </div>
+              <div
+                className="card-style "
+                style={{ margin: "14px 0px 12px 0px" }}
+              >
+                <div className="row">
+                  {/* bu */}
+                  <div className="col-lg-2">
+                    <div className="input-field-main">
+                      <label>From Date</label>
+                      <DefaultInput
+                        classes="input-sm"
+                        placeholder=""
+                        value={values?.fromDate}
+                        name="fromDate"
+                        type="date"
+                        onChange={(e) => {
+                          setFieldValue("fromDate", e.target.value);
+                        }}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-2">
+                    <div className="input-field-main">
+                      <label>To Date</label>
+                      <DefaultInput
+                        classes="input-sm"
+                        placeholder=""
+                        value={values?.toDate}
+                        name="toDate"
+                        type="date"
+                        onChange={(e) => {
+                          setFieldValue("toDate", e.target.value);
+                        }}
+                        // min={values?.date}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-3 mt-3 pt-2">
+                    <button
+                      className="btn btn-green btn-green-disable"
+                      type="submit"
+                    >
+                      View
+                    </button>
+                  </div>
                 </div>
               </div>
               {rowDto?.length > 0 ? (

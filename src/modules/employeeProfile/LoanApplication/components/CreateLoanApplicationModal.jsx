@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import {
   getPeopleDeskAllDDL,
+  getPeopleDeskAllDDLWithCode,
   getSearchEmployeeList,
   PeopleDeskSaasDDL,
 } from "../../../../common/api";
@@ -118,7 +119,7 @@ const CreateLoanApplicationModal = ({
   }, [tableData]);
 
   useEffect(() => {
-    getPeopleDeskAllDDL(
+    getPeopleDeskAllDDLWithCode(
       `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
       "intEmployeeBasicInfoId",
       "strEmployeeName",
