@@ -165,6 +165,20 @@ export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
   } catch (error) {}
 };
 
+export const getPeopleDeskAllDDLWithCode = async (apiUrl, value, label, setter, cb) => {
+  try {
+    const res = await axios.get(apiUrl);
+    console.log("res", res?.data)
+    const newDDL = res?.data?.map((itm) => ({
+      ...itm,
+      value: itm?.intEmployeeBasicInfoId,
+      label: `${itm?.strEmployeeName} - ${itm?.strEmployeeCode}`,
+    }));
+    setter(newDDL);
+    cb && cb();
+  } catch (error) {}
+};
+
 export const getPeopleDeskAllDDLWithoutAllItem = async (
   apiUrl,
   value,
