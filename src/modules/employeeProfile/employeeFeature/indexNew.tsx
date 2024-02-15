@@ -235,6 +235,8 @@ function EmployeeFeatureNew() {
       dataIndex: "strSupervisorName",
       sorter: true,
       filter: true,
+      filterSearch: true,
+
       filterKey: "strSupervisorNameList",
       width: 60,
     },
@@ -243,6 +245,7 @@ function EmployeeFeatureNew() {
       dataIndex: "strLinemanager",
       sorter: true,
       filter: true,
+      filterSearch: true,
       filterKey: "strLinemanagerList",
       width: 60,
     },
@@ -257,6 +260,7 @@ function EmployeeFeatureNew() {
       dataIndex: "strEmploymentType",
       sorter: true,
       filter: true,
+      filterSearch: true,
       filterKey: "strEmploymentTypeList",
       width: 28,
     },
@@ -289,7 +293,7 @@ function EmployeeFeatureNew() {
       sorter: true,
       filter: true,
       filterKey: "strEmployeeStatusList",
-
+      filterSearch: true,
       width: 35,
     },
     {
