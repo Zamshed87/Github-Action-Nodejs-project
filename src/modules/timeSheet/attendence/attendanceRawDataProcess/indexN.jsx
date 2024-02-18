@@ -16,13 +16,11 @@ import {
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import Loading from "../../../../common/loading/Loading";
 import AsyncFormikSelect from "common/AsyncFormikSelect";
 import { paginationSize } from "common/peopleDeskTable";
 import { DataTable } from "Components";
-import { Avatar, Tag } from "antd";
+import { Button, Tag } from "antd";
 import { dateFormatter } from "utility/dateFormatter";
-import Chips from "common/Chips";
 import { CheckCircleOutlined, SyncOutlined } from "@ant-design/icons";
 
 function AttendanceRawDataProcess() {
@@ -67,7 +65,7 @@ function AttendanceRawDataProcess() {
       intWorkplaceId: wId,
       dteFromDate: values?.fromDate,
       dteToDate: values?.toDate,
-      strEmployeeId: values?.employee?.value || "",
+      strEmployeeId: String(values?.employee?.value || ""),
       intCreatedBy: 0,
       dteCreatedAt: "2024-02-15T08:50:05.869Z",
     };
@@ -214,12 +212,30 @@ function AttendanceRawDataProcess() {
               </div>
 
               <div style={{ marginTop: "21px" }} className="col-lg-3">
-                <PrimaryButton
-                  type="submit"
-                  className="btn btn-green flex-center"
-                  label={"Process"}
-                  disabled={loading ? true : false}
-                />
+                <div className="d-flex">
+                  <PrimaryButton
+                    type="submit"
+                    className="btn btn-green flex-center"
+                    label={"Process"}
+                    disabled={loading ? true : false}
+                  />
+                  {res?.data && (
+                    <Button
+                      className="btn btn-success flex-center ml-2"
+                      onClick={() => {
+                        onGetAttendanceResponse(
+                          wId,
+                          pages?.pageSize,
+                          pages?.current,
+                          setRes,
+                          setLoading
+                        );
+                      }}
+                    >
+                      Refresh
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {/* {res !== "" && (
