@@ -150,8 +150,10 @@ export const columns = (
       title: "HR Position",
       dataIndex: "hrPosition",
       sort: true,
-      filter: false,
-      filterDropDownList: headerList[`hrPositionList`],
+      filter: true,
+      filterDropDownList: headerList[`hrPositionList`]?.length > 0
+        ? headerList[`hrPositionList`]
+        : [],
       fieldType: "string",
     },
     {
