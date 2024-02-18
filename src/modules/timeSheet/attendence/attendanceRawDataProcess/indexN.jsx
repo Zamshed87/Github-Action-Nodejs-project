@@ -102,8 +102,20 @@ function AttendanceRawDataProcess() {
       fixed: "left",
     },
     {
-      title: "Employee Id",
-      dataIndex: "strEmployeeId",
+      title: "Employee Code",
+      dataIndex: "intEmployeeCode",
+      sorter: true,
+      fieldType: "string",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "strEmployeeName",
+      sorter: true,
+      fieldType: "string",
+    },
+    {
+      title: "Workplace Name",
+      dataIndex: "strWorkplaceName",
       sorter: true,
       fieldType: "string",
     },
