@@ -30,7 +30,7 @@ function EmployeeFeatureNew() {
   const history = useHistory();
 
   // redux
-  const { buId, wgId, wId, buName, isOfficeAdmin } = useSelector(
+  const { buId, wgId, wId, buName } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
