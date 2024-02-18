@@ -12,6 +12,7 @@ import TabPanel, {
 import Loading from "common/loading/Loading";
 import AssetHistory from "./AssetHistory";
 import EmploymentHistory from "./EmploymentHistory";
+import HistoryPrintView from "./HistoryPrintView";
 
 const ManagementSeparationHistoryView = ({
   id,
@@ -83,7 +84,9 @@ const ManagementSeparationHistoryView = ({
             </Button>
           )}
           content={() => printRef.current}
-          pageStyle={"@page { !important width: 100% } @media print {}"}
+          pageStyle={
+            "@page { !important width: 100% } @media print { .tab-panel { display: none } .historyPrintView { display: block!important } }"
+          }
         />
       </div>
       <div ref={printRef}>
@@ -131,6 +134,13 @@ const ManagementSeparationHistoryView = ({
               <AssetHistory assetHistory={assetHistory} loading={loading} />
             </TabPanel>
           </Box>
+        </div>
+        <div className="historyPrintView" style={{ display: "none" }}>
+          <HistoryPrintView 
+            approveListData={approveListData}
+            assetHistory={assetHistory}
+            employmentHistory={employmentHistory}
+          />
         </div>
       </div>
     </>
