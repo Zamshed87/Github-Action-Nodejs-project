@@ -1,20 +1,21 @@
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 import BackButton from "../../../common/BackButton";
-import Loading from "../../../common/loading/Loading";
-import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PrimaryButton from "../../../common/PrimaryButton";
 import ScrollableTable from "../../../common/ScrollableTable";
+import Loading from "../../../common/loading/Loading";
+import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { downloadFile } from "../../../utility/downloadFile";
 import { excelFileToArray } from "../../../utility/excelFileToJSON";
 import ErrorEmployeeModal from "./ErrorEmployeeModal";
 
+import { isDevServer } from "App";
 import {
   processBulkUploadEmployeeAction,
   saveBulkUploadEmployeeAction,
@@ -77,6 +78,7 @@ export default function BulkEmployeeCreate() {
   // new way
   const saveHandler = () => {
     const emptyCheck = data?.some(({ strEmployeeCode }) => !strEmployeeCode);
+    const isExistSalaryType = data?.some(({ strSalaryType }) => !strSalaryType);
     const isDuplicate =
       new Set(data.map(({ strEmployeeCode }) => strEmployeeCode)).size !==
       data.length;
@@ -85,7 +87,10 @@ export default function BulkEmployeeCreate() {
       history.push("/profile/employee");
       setData([]);
     };
-
+    if(isExistSalaryType){
+      toast.warn("Salary Type is required");
+      return;
+    }
     if (!data?.length || emptyCheck || isDuplicate) {
       toast.warn(
         "Invalid upload, please check your file or follow employee code which must be unique and not empty"
@@ -171,9 +176,9 @@ export default function BulkEmployeeCreate() {
                           onClick={() => {
                             downloadFile(
                               `${
-                                process.env.NODE_ENV === "development"
-                                  ? "/document/downloadfile?id=3"
-                                  : "/document/downloadfile?id=3"
+                                isDevServer
+                                  ? "/document/downloadfile?id=138"
+                                  : "/document/downloadfile?id=150"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -243,6 +248,9 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th>
                                 <div>Salary Hold</div>
+                              </th>
+                              <th>
+                                <div>Salary Tyoe</div>
                               </th>
                               <th>
                                 <div>Religion Name</div>
@@ -349,7 +357,7 @@ export default function BulkEmployeeCreate() {
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
-                                    {data?.strEmpDivision }
+                                    {data?.strEmpDivision}
                                   </div>
                                 </td>
                                 <td>
@@ -375,6 +383,11 @@ export default function BulkEmployeeCreate() {
                                 <td>
                                   <div className="tableBody-title">
                                     {`${data?.isSalaryHold}`?.toUpperCase()}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {`${data?.strSalaryType}`?.toUpperCase()}
                                   </div>
                                 </td>
                                 <td>

@@ -12,7 +12,7 @@ export const processBulkUploadEmployeeAction = async (
 ) => {
   setLoading && setLoading(true);
   try {
-    let modifiedData = data.map((item) => ({
+    const modifiedData = data.map((item) => ({
       intEmpBulkUploadId: 0,
       intAccountId: orgId,
       intUrlId: intUrlId,
@@ -59,6 +59,7 @@ export const processBulkUploadEmployeeAction = async (
       intCreateBy: employeeId,
       dteCreateAt: todayDate(),
       strSection: item["Section"] || "",
+      strSalaryType: item["Salary Type"] || "Daily",
     }));
     setter(modifiedData);
     setLoading && setLoading(false);
