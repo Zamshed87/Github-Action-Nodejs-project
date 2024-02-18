@@ -1,5 +1,6 @@
 import {
   AddOutlined,
+  InfoOutlined,
   SearchOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
@@ -23,6 +24,7 @@ import Loading from "./../../../../common/loading/Loading";
 import CalendarSetupModal from "./AddEditForm";
 import ViewCalendarSetup from "./ViewDetails";
 import "./calendarSetup.css";
+import { LightTooltip } from "common/LightTooltip";
 
 const initData = {
   search: "",
@@ -209,29 +211,6 @@ export default function CalendarSetup() {
           </span>
         ),
       },
-
-      // {
-      //   title: () => <span style={{ color: gray600 }}>Break Start Time</span>,
-      //   dataIndex: "dteBreakStartTime",
-      //   render: (_, record) => (
-      //     <span>
-      //       {record?.dteBreakStartTime
-      //         ? timeFormatter(record?.dteBreakStartTime)
-      //         : "-"}
-      //     </span>
-      //   ),
-      // },
-      // {
-      //   title: () => <span style={{ color: gray600 }}>Break End Time</span>,
-      //   dataIndex: "dteBreakEndTime",
-      //   render: (_, record) => (
-      //     <span>
-      //       {record?.dteBreakEndTime
-      //         ? timeFormatter(record?.dteBreakEndTime)
-      //         : "-"}
-      //     </span>
-      //   ),
-      // },
       {
         title: () => <span style={{ color: gray600 }}>End Time</span>,
         render: (_, record) => (
@@ -246,11 +225,32 @@ export default function CalendarSetup() {
         ),
         dataIndex: "dteOfficeCloseTime",
         render: (_, record) => (
-          <span>
-            {record?.dteOfficeCloseTime
-              ? timeFormatter(record?.dteOfficeCloseTime)
-              : "-"}
-          </span>
+          <>
+            <span style={{ marginRight: "20px" }}>
+              {record?.dteOfficeCloseTime
+                ? timeFormatter(record?.dteOfficeCloseTime)
+                : "-"}
+            </span>
+            <span>
+              <LightTooltip
+                title={
+                  <div className="holiday-exception-tooltip tableOne">
+                    <table className="table table-borderless mb-0">
+                      With each calendar setup modification, you must Re-assign
+                      the calendar{" "}
+                      <a href="/administration/timeManagement/calendarAssign" rel="noopener noreferrer">
+                        <span style={{fontSize:'13px', color:'blue'}}>here</span>
+                      </a>
+                      .
+                    </table>
+                  </div>
+                }
+                arrow
+              >
+                <InfoOutlined style={{ color: 'red' }}  />
+              </LightTooltip>
+            </span>
+          </>
         ),
       },
     ];

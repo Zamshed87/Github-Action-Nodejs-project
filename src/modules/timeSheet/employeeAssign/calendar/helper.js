@@ -59,6 +59,20 @@ export const rosterGenerateAction = async (payload, setLoading, cb) => {
   }
 };
 
+export const initHeaderList = {
+  designationList: [],
+  departmentList: [],
+  supervisorNameList: [],
+  wingNameList: [],
+  soleDepoNameList: [],
+  regionNameList: [],
+  areaNameList: [],
+  territoryNameList: [],
+  employmentTypeList: [],
+  sectionList: [],
+  hrPositionList: [],
+};
+
 export const columns = (
   pages,
   permission,
@@ -136,7 +150,7 @@ export const columns = (
       title: "HR Position",
       dataIndex: "hrPosition",
       sort: true,
-      filter: true,
+      filter: false,
       filterDropDownList: headerList[`hrPositionList`],
       fieldType: "string",
     },
@@ -319,19 +333,7 @@ export const bgColors = [
   "#F2F4F7",
   "#FEF0D7",
 ];
-export const initHeaderList = {
-  designationList: [],
-  departmentList: [],
-  supervisorNameList: [],
-  wingNameList: [],
-  soleDepoNameList: [],
-  regionNameList: [],
-  areaNameList: [],
-  territoryNameList: [],
-  employmentTypeList: [],
-  sectionList: [],
-  hrPositionList: [],
-};
+
 export const statusDDL = [
   { value: 0, label: "All" },
   { value: 1, label: "Assigned" },
