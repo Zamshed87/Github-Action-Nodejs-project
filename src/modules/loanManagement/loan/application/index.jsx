@@ -65,6 +65,8 @@ const Application = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Loan Request";
   }, []);
 
   const [show, setShow] = useState(false);

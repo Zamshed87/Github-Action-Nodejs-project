@@ -90,6 +90,35 @@ export const monthlyRosterReportColumns = (
       width: 200,
     },
     {
+      title: "Work. Group/Location",
+      dataIndex: "strWorkplaceGroup",
+      sorter: false,
+      filter: false,
+      width: 180,
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "strWorkplace",
+      sorter: false,
+      filter: false,
+      width: 180,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sorter: true,
+      filter: true,
+      width: 180,
+    },
+    {
+      title: "Section",
+      dataIndex: "strSectionName",
+      sorter: true,
+      filter: true,
+      width: 180,
+    },
+
+    {
       title: "Designation",
       dataIndex: "strDesignation",
       sorter: true,

@@ -1,28 +1,28 @@
 /* eslint-disable no-unused-vars */
+import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
 import React, { useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 
 export default function SideMenu() {
   const location = useLocation();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedFirstLevelMenu, setSelectedFirstLevelMenu] = useState("");
   const [selectedSecondLevelMenu, setSelectedSecondLevelMenu] = useState("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedThirdLevel, setSelectedThirdLevel] = useState("");
-
+  const dispatch = useDispatch();
   const { firstLevelName } = useSelector(
     (state) => state?.localStorage,
     shallowEqual
   );
 
-  const { menuList } = useSelector(
-    (state) => state?.auth,
-    shallowEqual
-  );
+  const { menuList } = useSelector((state) => state?.auth, shallowEqual);
 
   // const [menu] = useState(userRole === "Employee" ? menuListForEmp : menuList);
 
-  const menuObj = menuList?.filter((item, index) => {
+  const menuObj = menuList?.filter((item) => {
     return item?.label === firstLevelName;
   });
 
@@ -39,6 +39,9 @@ export default function SideMenu() {
     return isFound;
   };
 
+  const onMenuButtonClickCount = (menupathObj) => {
+    dispatch(handleMostClickedMenuListAction(menupathObj));
+  };
   return (
     <>
       <div className="side-menu-wrapper scrollbar-remove">
@@ -53,7 +56,7 @@ export default function SideMenu() {
                       <ul
                         className={
                           selectedFirstLevelMenu === firstLevel?.label ||
-                            makeActive(firstLevel?.to)
+                          makeActive(firstLevel?.to)
                             ? `dropdown-content firstLabel-dropdown-show`
                             : `dropdown-content firstLabel-dropdown-hide`
                         }
@@ -64,14 +67,14 @@ export default function SideMenu() {
                               <>
                                 <div
                                   className="d-flex align-items-center justify-content-around"
-                                  onClick={() =>
+                                  onClick={() => {
                                     setSelectedSecondLevelMenu(
                                       secondLevel?.label ===
                                         selectedSecondLevelMenu
                                         ? ""
                                         : secondLevel?.label
-                                    )
-                                  }
+                                    );
+                                  }}
                                 >
                                   <div className="sidebar-dropdown sidebar-second-dropdown">
                                     <span className="menu-bullet"></span>{" "}
@@ -84,7 +87,7 @@ export default function SideMenu() {
                                     className={
                                       selectedSecondLevelMenu ===
                                         secondLevel?.label ||
-                                        makeActive(secondLevel?.to)
+                                      makeActive(secondLevel?.to)
                                         ? "dropdown-content dropdown-second-content secondLevel-dropdown-show"
                                         : "dropdown-content dropdown-second-content secondLevel-dropdown-hide"
                                     }
@@ -94,13 +97,15 @@ export default function SideMenu() {
                                         <li key={index}>
                                           <div
                                             style={{ width: "100%" }}
-                                            onClick={() => { }}
+                                            onClick={() =>
+                                              onMenuButtonClickCount(thirdLevel)
+                                            }
                                           >
                                             <Link
                                               className={
                                                 thirdLevel?.label ===
                                                   selectedThirdLevel ||
-                                                  makeActive(thirdLevel?.to, true)
+                                                makeActive(thirdLevel?.to, true)
                                                   ? "active"
                                                   : ""
                                               }
@@ -117,12 +122,17 @@ export default function SideMenu() {
                                 )}
                               </>
                             ) : (
-                              <div style={{ width: "100%" }} onClick={() => { }}>
+                              <div
+                                style={{ width: "100%" }}
+                                onClick={() =>
+                                  onMenuButtonClickCount(secondLevel)
+                                }
+                              >
                                 <Link
                                   className={
                                     secondLevel?.label ===
                                       selectedSecondLevelMenu ||
-                                      makeActive(secondLevel?.to, true)
+                                    makeActive(secondLevel?.to, true)
                                       ? "active"
                                       : ""
                                   }
@@ -143,7 +153,7 @@ export default function SideMenu() {
                     <Link
                       className={
                         firstLevel?.label === selectedThirdLevel ||
-                          makeActive(firstLevel?.to, true)
+                        makeActive(firstLevel?.to, true)
                           ? `active`
                           : ""
                       }

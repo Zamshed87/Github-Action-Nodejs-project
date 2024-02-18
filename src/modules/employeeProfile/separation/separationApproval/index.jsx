@@ -43,10 +43,8 @@ const initData = {
 };
 
 export default function SeparationApproval() {
-  const { employeeId, isOfficeAdmin, orgId, buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { employeeId, isOfficeAdmin, orgId, buId, wId, strDisplayName } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
   // const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [applicationListData, setApplicationListData] = useState([]);
@@ -78,7 +76,6 @@ export default function SeparationApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceId: 0,
         businessUnitId: buId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -86,6 +83,7 @@ export default function SeparationApproval() {
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
 
       setApplicationListData,
@@ -101,7 +99,7 @@ export default function SeparationApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceId: 0,
+        workplaceId: wId,
         businessUnitId: buId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -132,7 +130,7 @@ export default function SeparationApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceId: 0,
+        workplaceId: wId,
         businessUnitId: buId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -174,6 +172,8 @@ export default function SeparationApproval() {
           approverEmployeeId: employeeId,
           accountId: orgId,
           isAdmin: isOfficeAdmin,
+          approverEmployeeName: strDisplayName,
+          comments: "All ok",
         });
       }
       setApplicationData(array);
@@ -189,7 +189,7 @@ export default function SeparationApproval() {
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter(
+      const newDta = allData?.listData?.filter(
         (item) =>
           regex.test(item?.strEmployeeName?.toLowerCase()) ||
           regex.test(item?.strDesignation?.toLowerCase()) ||
@@ -223,7 +223,7 @@ export default function SeparationApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           approverId: employeeId,
-          workplaceId: 0,
+          workplaceId: wId,
           businessUnitId: buId,
           workplaceGroupId: 0,
           departmentId: 0,
@@ -237,12 +237,12 @@ export default function SeparationApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
         if (array.length) {
-          separationApproveReject(newArray, callback);
+          separationApproveReject(newArray, setLoading, callback);
         }
         newArray = [];
       },
@@ -260,245 +260,247 @@ export default function SeparationApproval() {
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
-  let permission = useMemo(() => permissionList.find((item) => item?.menuReferenceId === 109), [permissionList]);
+  const permission = useMemo(
+    () => permissionList.find((item) => item?.menuReferenceId === 109),
+    [permissionList]
+  );
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Separation Approval";
   }, []);
 
   return (
-    <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-          dirty,
-        }) => (
-          <>
-            <Form onSubmit={handleSubmit}>
-              {loading && <Loading />}
-              <div className="all-candidate movement-wrapper">
-                <div className="container-fluid">
-                  <div className="row">
-                    <div className="col-md-12">
-                      <div className="table-card">
-                        <div className="table-card-heading">
-                          <BackButton title={"Separation Approval"} />
-                          <div className="table-card-head-right">
-                            {applicationListData?.listData?.filter(
-                              (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "16px",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "16px",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                              </div>
-                            )}
-                            <ul className="d-flex flex-wrap">
-                              {isFilter && (
-                                <li>
-                                  <ResetButton
-                                    title="reset"
+    <Formik
+      enableReinitialize={true}
+      initialValues={initData}
+      onSubmit={(values, { setSubmitting, resetForm }) => {
+        saveHandler(values, () => {
+          resetForm(initData);
+        });
+      }}
+    >
+      {({
+        handleSubmit,
+        resetForm,
+        values,
+        errors,
+        touched,
+        setFieldValue,
+        dirty,
+      }) => (
+        <>
+          <Form onSubmit={handleSubmit}>
+            {loading && <Loading />}
+            <div className="all-candidate movement-wrapper">
+              <div className="container-fluid">
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="table-card">
+                      <div className="table-card-heading">
+                        <BackButton title={"Separation Approval"} />
+                        <div className="table-card-head-right">
+                          {applicationListData?.listData?.filter(
+                            (item) => item?.selectCheckbox
+                          ).length > 0 && (
+                            <div className="d-flex actionIcon mr-3">
+                              <Tooltip title="Accept">
+                                <div
+                                  className="muiIconHover success mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  <MuiIcon
                                     icon={
-                                      <SettingsBackupRestoreOutlined
-                                        sx={{ marginRight: "10px" }}
+                                      <CheckCircle
+                                        sx={{
+                                          color: successColor,
+                                          width: "16px",
+                                        }}
                                       />
                                     }
-                                    onClick={() => {
-                                      setIsFilter(false);
-                                      setFieldValue("search", "");
-                                      setAppliedStatus({
-                                        value: 1,
-                                        label: "Pending",
-                                      });
-                                      getLandingData();
-                                    }}
                                   />
-                                </li>
-                              )}
-                              {permission?.isCreate && (
-                                <li>
-                                  <MasterFilter
-                                    styles={{
-                                      marginRight: "0px",
-                                    }}
-                                    isHiddenFilter
-                                    width="200px"
-                                    inputWidth="200px"
-                                    value={values?.search}
-                                    setValue={(value) => {
-                                      debounce(() => {
-                                        searchData(
-                                          value,
-                                          allData,
-                                          setApplicationListData
-                                        );
-                                      }, 500);
-                                      setFieldValue("search", value);
-                                    }}
-                                    cancelHandler={() => {
-                                      setFieldValue("search", "");
-                                      getLandingData(/* isSupOrLineManager?.value */);
-                                    }}
-                                    handleClick={(e) =>
-                                      setfilterAnchorEl(e.currentTarget)
+                                </div>
+                              </Tooltip>
+                              <Tooltip title="Reject">
+                                <div
+                                  className="muiIconHover  danger"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  <MuiIcon
+                                    icon={
+                                      <Cancel
+                                        sx={{
+                                          color: failColor,
+                                          width: "16px",
+                                        }}
+                                      />
                                     }
                                   />
-                                </li>
-                              )}
-                            </ul>
+                                </div>
+                              </Tooltip>
+                            </div>
+                          )}
+                          <ul className="d-flex flex-wrap">
+                            {isFilter && (
+                              <li>
+                                <ResetButton
+                                  title="reset"
+                                  icon={
+                                    <SettingsBackupRestoreOutlined
+                                      sx={{ marginRight: "10px" }}
+                                    />
+                                  }
+                                  onClick={() => {
+                                    setIsFilter(false);
+                                    setFieldValue("search", "");
+                                    setAppliedStatus({
+                                      value: 1,
+                                      label: "Pending",
+                                    });
+                                    getLandingData();
+                                  }}
+                                />
+                              </li>
+                            )}
+                            {permission?.isCreate && (
+                              <li>
+                                <MasterFilter
+                                  styles={{
+                                    marginRight: "0px",
+                                  }}
+                                  isHiddenFilter
+                                  width="200px"
+                                  inputWidth="200px"
+                                  value={values?.search}
+                                  setValue={(value) => {
+                                    debounce(() => {
+                                      searchData(
+                                        value,
+                                        allData,
+                                        setApplicationListData
+                                      );
+                                    }, 500);
+                                    setFieldValue("search", value);
+                                  }}
+                                  cancelHandler={() => {
+                                    setFieldValue("search", "");
+                                    getLandingData(/* isSupOrLineManager?.value */);
+                                  }}
+                                  handleClick={(e) =>
+                                    setfilterAnchorEl(e.currentTarget)
+                                  }
+                                />
+                              </li>
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                      <FilterBadgeComponent
+                        propsObj={{
+                          filterBages,
+                          setFieldValue,
+                          clearBadge,
+                          values: filterValues,
+                          resetForm,
+                          initData,
+                          clearFilter,
+                        }}
+                      />
+                      {permission?.isCreate ? (
+                        <div className="table-card-body">
+                          <div className="table-card-styled table-responsive tableOne">
+                            <CardTable
+                              propsObj={{
+                                setFieldValue,
+                                values,
+                                applicationListData,
+                                setApplicationListData,
+                                appliedStatus,
+                                setAllData,
+                                allData,
+                                setSingleData,
+                                filterValues,
+                                setFilterValues,
+                                setViewModal,
+                                setLoading,
+                                loading
+                              }}
+                            ></CardTable>
                           </div>
                         </div>
-                        <FilterBadgeComponent
-                          propsObj={{
-                            filterBages,
-                            setFieldValue,
-                            clearBadge,
-                            values: filterValues,
-                            resetForm,
-                            initData,
-                            clearFilter,
-                          }}
-                        />
-                        {permission?.isCreate ? (
-                          <div className="table-card-body">
-                            <div className="table-card-styled table-responsive tableOne">
-                              <CardTable
-                                propsObj={{
-                                  setFieldValue,
-                                  values,
-                                  applicationListData,
-                                  setApplicationListData,
-                                  appliedStatus,
-                                  setAllData,
-                                  allData,
-                                  setSingleData,
-                                  filterValues,
-                                  setFilterValues,
-                                  setViewModal,
-                                  setLoading,
-                                }}
-                              ></CardTable>
-                            </div>
-                          </div>
-                        ) : (
-                          <NotPermittedPage />
-                        )}
-                      </div>
+                      ) : (
+                        <NotPermittedPage />
+                      )}
                     </div>
                   </div>
                 </div>
-                {/* advance filter */}
-                <PopOverMasterFilter
+              </div>
+              {/* advance filter */}
+              <PopOverMasterFilter
+                propsObj={{
+                  id,
+                  open: openFilter,
+                  anchorEl: filterAnchorEl,
+                  handleClose: () => setfilterAnchorEl(null),
+                  handleSearch,
+                  values: filterValues,
+                  dirty,
+                  initData,
+                  resetForm,
+                  clearFilter,
+                  sx: {},
+                  size: "lg",
+                }}
+              >
+                <FilterModal
                   propsObj={{
-                    id,
-                    open: openFilter,
-                    anchorEl: filterAnchorEl,
-                    handleClose: () => setfilterAnchorEl(null),
-                    handleSearch,
-                    values: filterValues,
-                    dirty,
-                    initData,
-                    resetForm,
-                    clearFilter,
-                    sx: {},
-                    size: "lg",
-                  }}
-                >
-                  <FilterModal
-                    propsObj={{
-                      getFilterValues,
-                      setFieldValue,
-                      values,
-                      errors,
-                      touched,
-                    }}
-                  />
-                </PopOverMasterFilter>
-                {/* View Form Modal */}
-                <ViewFormComponent
-                  objProps={{
-                    show: viewModal,
-                    title: "Separation Details",
-                    onHide: handleViewClose,
-                    size: "lg",
-                    backdrop: "static",
-                    classes: "default-modal",
-                    handleOpen,
-                    singleData,
-                    setSingleData,
-                    setCreateModal,
-                    appliedStatus,
-                    setApplicationListData,
-                    imageFile,
-                    filterValues,
-                    setAllData,
-                    setLoading,
+                    getFilterValues,
+                    setFieldValue,
+                    values,
+                    errors,
+                    touched,
                   }}
                 />
-              </div>
-            </Form>
-          </>
-        )}
-      </Formik>
-    </>
+              </PopOverMasterFilter>
+              {/* View Form Modal */}
+              <ViewFormComponent
+                objProps={{
+                  show: viewModal,
+                  title: "Separation Details",
+                  onHide: handleViewClose,
+                  size: "lg",
+                  backdrop: "static",
+                  classes: "default-modal",
+                  handleOpen,
+                  singleData,
+                  setSingleData,
+                  setCreateModal,
+                  appliedStatus,
+                  setApplicationListData,
+                  imageFile,
+                  filterValues,
+                  setAllData,
+                  setLoading,
+                }}
+              />
+            </div>
+          </Form>
+        </>
+      )}
+    </Formik>
   );
 }

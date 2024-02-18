@@ -38,7 +38,7 @@ const HolidayExceptionModal = ({
   empIDString,
   setCheckedList,
 }) => {
-  const { orgId, buId, workPlaceGroupId, employeeId, wgId } = useSelector(
+  const { orgId, buId, workPlaceGroupId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -71,7 +71,7 @@ const HolidayExceptionModal = ({
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=HolidayGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=HolidayGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
       "HolidayGroupId",
       "HolidayGroupName",
       setAllHolidayGroupDDL

@@ -38,7 +38,7 @@ export const generateFilterBySrc = (
   dataSource: { [key: string]: any }
 ) => {
   const filterList = dataSource[dataIndex];
-  return filterList.map((data: any) => ({
+  return (filterList || []).map((data: any) => ({
     text: data.label,
     value: data.value,
   }));
@@ -60,8 +60,8 @@ export const generateColumnWidth = (
   const extraWidth = 70; // Add extra width for sort and filter icons
   if (context) {
     let width = context.measureText(title).width;
-    if (isSort) width += extraWidth;
-    if (isFilter) width += extraWidth;
+    if (isSort) width += extraWidth / 4;
+    if (isFilter) width += extraWidth / 4;
     // Clean up resources
     canvas.remove();
     return `${width}px`;

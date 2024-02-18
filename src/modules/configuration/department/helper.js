@@ -1,5 +1,5 @@
-import { toast } from "react-toastify";
 import axios from "axios";
+import { toast } from "react-toastify";
 import Chips from "../../../common/Chips";
 
 // search
@@ -52,19 +52,20 @@ export const getAllEmpDepartment = async (
   buId,
   setter,
   setAllData,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Employee/GetAllEmpDepartment?accountId=${accountId}&businessUnitId=${buId}`
+      `/Employee/GetAllEmpDepartment?accountId=${accountId}&businessUnitId=${buId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({
         ...item,
         statusValue: item?.isActive ? "Active" : "Inactive",
       }));
-      modified?.length > 0 && setter(modified);
+      modified?.length > 0 ? setter(modified) : setter([]);
       setAllData && setAllData(res?.data);
       setLoading && setLoading(false);
     }
@@ -122,3 +123,80 @@ export const depertmentDtoCol = () => {
     },
   ];
 };
+// useEffect(() => {
+//   getPeopleDeskAllDDL(
+//     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+//     "intBusinessUnitId",
+//     "strBusinessUnit",
+//     setBusinessUnitDDL
+//   );
+//   getPeopleDeskAllDDL(
+//     `/Employee/GetAllEmpDepartment?accountId=${orgId}&businessUnitId=${buId}&workplaceId=${wId}`,
+//     "intDepartmentId",
+//     "strDepartment",
+//     setSectionDepartmentDDL
+//   );
+// }, [orgId, buId, employeeId, wgId]);
+
+// useEffect(() => {
+//   if (singleData?.strDepartment) {
+//     const newRowData = {
+//       department: singleData?.strDepartment,
+//       code: singleData?.strDepartmentCode,
+//       sectionDepartment: {
+//         value: singleData?.intParentDepId,
+//         label: singleData?.strParentDepName,
+//       },
+//       businessUnit: {
+//         value: singleData?.intBusinessUnitId,
+//         label: singleData?.strBusinessUnit,
+//       },
+//       isActive: singleData?.isActive || false,
+//     };
+//     setModifySingleData(newRowData);
+//   }
+// }, [singleData]);
+
+// const saveHandler = (values, cb) => {
+//   let payload = {
+//     strDepartment: values?.department || "",
+//     strDepartmentCode: values?.code,
+//     isActive: values?.isActive,
+//     isDeleted: true,
+//     intParentDepId: values?.sectionDepartment?.value,
+//     strParentDepName: values?.sectionDepartment?.label,
+//     intBusinessUnitId: values?.businessUnit?.value || 0,
+//     intAccountId: orgId,
+//     dteCreatedAt: todayDate(),
+//     intCreatedBy: employeeId,
+//     dteUpdatedAt: todayDate(),
+//     intUpdatedBy: employeeId,
+//     intWorkplaceId: wId,
+//   };
+
+//   const callback = () => {
+//     cb();
+//     onHide();
+
+//     // For landing page data
+//     getAllEmpDepartment(orgId, buId, setRowDto, setAllData, setLoading, wId);
+//   };
+
+//   if (singleData?.strDepartment) {
+//     createDepartment(
+//       {
+//         ...payload,
+//         actionTypeId: 2,
+//         intDepartmentId: singleData?.intDepartmentId,
+//       },
+//       setLoading,
+//       callback
+//     );
+//   } else {
+//     createDepartment(
+//       { ...payload, actionTypeId: 1, intDepartmentId: 0 },
+//       setLoading,
+//       callback
+//     );
+//   }
+// };

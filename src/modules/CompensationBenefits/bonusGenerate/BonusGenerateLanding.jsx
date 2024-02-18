@@ -294,7 +294,8 @@ const BonusGenerateLanding = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
-  }, [dispatch]);
+    document.title = "Bonus Generate";
+  }, []);
 
   return (
     <>

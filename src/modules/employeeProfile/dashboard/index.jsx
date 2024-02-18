@@ -3,9 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatterForDashboard } from "../../../utility/dateFormatter";
-import {
-  getEmployeeDashboard
-} from "../../dashboard/helper";
+import { getEmployeeDashboard } from "../../dashboard/helper";
 import { getPolicyOnEmployeeInbox } from "../../policyUpload/helper";
 
 import moment from "moment";
@@ -17,8 +15,10 @@ import NoResult from "../../../common/NoResult";
 import ViewModal from "../../../common/ViewModal";
 import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
 import {
-  gray200, gray400, gray500,
-  gray700
+  gray200,
+  gray400,
+  gray500,
+  gray700,
 } from "../../../utility/customColor";
 import SingleNotice from "../../dashboard/dashboardModule/SingleNotice";
 import EmployeeSelfCalender from "./components/EmployeeSelfCalendar";
@@ -26,6 +26,7 @@ import EmployeeSelfDashboardHeader from "./components/EmployeeSelfDashboardHeade
 import EmployeeSelfManagerList from "./components/EmployeeSelfManagerList";
 import NoticeBoard from "./Noticeboard";
 import "./style.css";
+import { useHistory } from "react-router-dom";
 export default function SelfDashboard() {
   const dispatch = useDispatch();
 
@@ -33,6 +34,7 @@ export default function SelfDashboard() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+  const history = useHistory();
 
   // current Yaer
   // let currentYear = new Date().getFullYear();
@@ -54,6 +56,7 @@ export default function SelfDashboard() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Dashboard";
   }, []);
   return (
     <>
@@ -125,12 +128,17 @@ export default function SelfDashboard() {
                   }}
                 >
                   <h2
-                    className="w-100"
+                    className="w-100 pointer"
                     style={{
                       color: gray500,
                       fontSize: "1rem",
                       height: "15%",
                       padding: "12px 0 0 12px",
+                    }}
+                    onClick={() => {
+                      history.push(
+                        "/SelfService/leaveAndMovement/leaveApplication"
+                      );
                     }}
                   >
                     Leave Balance
@@ -166,10 +174,16 @@ export default function SelfDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {employeeDashboard?.leaveBalanceHistoryList?.map(
-                            (item) => (
+                          {console.log(
+                            employeeDashboard?.leaveBalanceHistoryList
+                          )}
+                          {employeeDashboard?.leaveBalanceHistoryList
+                            ?.filter(
+                              (item) => item?.isLveBalanceShowForSelfService
+                            )
+                            ?.map((item, i) => (
                               <>
-                                <tr key={item?.leaveBalanceId}>
+                                <tr key={i}>
                                   <td
                                     style={{ borderTop: "1px solid #F2F4F7" }}
                                   >
@@ -179,7 +193,7 @@ export default function SelfDashboard() {
                                         paddingLeft: "8px",
                                       }}
                                     >
-                                      {item?.leaveType}
+                                      {item?.strLeaveType}
                                     </p>
                                   </td>
                                   <td
@@ -191,7 +205,7 @@ export default function SelfDashboard() {
                                         color: gray700,
                                       }}
                                     >
-                                      {item?.leaveTakenDays}
+                                      {item?.intTakenLveInDay}
                                     </p>
                                   </td>
                                   <td
@@ -203,13 +217,12 @@ export default function SelfDashboard() {
                                         color: gray700,
                                       }}
                                     >
-                                      {item?.remainingDays}
+                                      {item?.intBalanceLveInDay}
                                     </p>
                                   </td>
                                 </tr>
                               </>
-                            )
-                          )}
+                            ))}
                         </tbody>
                       </table>
                     </div>
@@ -252,7 +265,7 @@ export default function SelfDashboard() {
                     </div>
                     <div className="tableOne" style={{ height: "90%" }}>
                       {employeeDashboard?.applicationPendingViewModels?.length <
-                        1 ? (
+                      1 ? (
                         <NoResult />
                       ) : (
                         <table className="table">
@@ -297,11 +310,11 @@ export default function SelfDashboard() {
                                           item?.approvalStatus === "Approved"
                                             ? "success"
                                             : item?.approvalStatus === "Pending"
-                                              ? "warning"
-                                              : item?.approvalStatus ===
-                                                "Rejected"
-                                                ? "danger"
-                                                : "primary"
+                                            ? "warning"
+                                            : item?.approvalStatus ===
+                                              "Rejected"
+                                            ? "danger"
+                                            : "primary"
                                         }
                                       />
                                     </div>
@@ -374,7 +387,7 @@ export default function SelfDashboard() {
                                   style={{ width: "35px", height: "35px" }}
                                   src={getFileIcon(
                                     item?.policyFileName.split(".")[
-                                    item?.policyFileName.split(".").length - 1
+                                      item?.policyFileName.split(".").length - 1
                                     ]
                                   )}
                                   alt=""
@@ -456,5 +469,5 @@ const getFileIcon = (fileName) =>
   fileName === "pdf"
     ? pdfIcon
     : fileName === "doc" || fileName === "docx"
-      ? docIcon
-      : imageFileIcon;
+    ? docIcon
+    : imageFileIcon;

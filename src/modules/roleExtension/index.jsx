@@ -25,14 +25,14 @@ const initData = {
 export default function UserRoleExtentionLanding() {
   const history = useHistory();
   const [rowDto, getLanding, loadingLanding, setRowDto] = useAxiosGet();
-  const { wgId, buId } = useSelector((state) => state?.auth?.profileData);
+  const { wgId, buId, wId } = useSelector((state) => state?.auth?.profileData);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
   });
   const getData = (pagination, searchtText = "") => {
-    const api = `/Auth/GetAllRoleExtensionAssignedEmployeeLanding?businessUnitId=${buId}&intWorkplaceGroupId=${wgId}&PageNo=${
+    const api = `/Auth/GetAllRoleExtensionAssignedEmployeeLanding?businessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intWorkPlaceId=${wId}&PageNo=${
       pagination?.current
     }&PageSize=${pagination?.pageSize}&SearchText=${searchtText || ""}`;
     getLanding(api, (res) => {
@@ -65,9 +65,7 @@ export default function UserRoleExtentionLanding() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
-      return { current: 1, total: pages?.total, pageSize: +event.target.value };
-    });
+    setPages({ current: 1, total: pages?.total, pageSize: +event.target.value });
     getData(
       {
         current: 1,
@@ -81,12 +79,13 @@ export default function UserRoleExtentionLanding() {
   useEffect(() => {
     getData(pages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wgId]);
+  }, [wgId, wId]);
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "User Role Extension";
   }, []);
 
   // // ascending & descending
@@ -137,17 +136,11 @@ export default function UserRoleExtentionLanding() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
         {({
           handleSubmit,
-          resetForm,
           values,
-          errors,
-          touched,
           setFieldValue,
-          isValid,
-          dirty,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>

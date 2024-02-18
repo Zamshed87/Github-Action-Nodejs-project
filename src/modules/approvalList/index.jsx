@@ -22,6 +22,8 @@ import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/
 import Loading from "./../../common/loading/Loading";
 import { getApprovalDashboardLanding } from "./helper";
 import "./index.css";
+import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
+import { isDevServer } from "App";
 
 const initData = {
   search: "",
@@ -30,7 +32,7 @@ const initData = {
 export default function ApprovalList() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { orgId, employeeId, isOfficeAdmin } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -45,13 +47,13 @@ export default function ApprovalList() {
       employeeId,
       isOfficeAdmin,
       setApprovalPermissions,
-      setLoading
+      setLoading,
+      wId
     );
   }, [orgId, employeeId]);
 
-  const saveHandler = (values) => { };
   useEffect(() => {
-    let arr = [];
+    const arr = [];
     approvalPermissions.forEach((item) => {
       if (item?.pipelineCode === "BABBAPBANDNQNARQ") {
         arr.push({
@@ -210,6 +212,7 @@ export default function ApprovalList() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Approval";
   }, []);
 
   return (
@@ -217,20 +220,12 @@ export default function ApprovalList() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={() => {
+          // console.log(values);
         }}
       >
         {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
+          handleSubmit
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -249,36 +244,49 @@ export default function ApprovalList() {
                       <div className="table-card-styled">
                         <table className="table">
                           <tbody>
-                            {newTableData?.map((data, index) => (
-                              <tr
-                                className="hasEvent"
-                                onClick={() =>
-                                  history.push(`${data?.routeUrl}`)
-                                }
-                                key={index}
-                              >
-                                <td>
-                                  <div className="employeeInfo d-flex align-items-center approval-avatar">
-                                    <Avatar alt="Remy Sharp" src={data?.icon} />
-                                    <div className="table-title pl-3">
-                                      <p>{data?.menuName}</p>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className="action-td">
-                                  <div className="d-flex align-items-center justify-content-between">
-                                    <Tooltip title={"Pending"}>
-                                      <div>
-                                        <Chips
-                                          label={data?.totalCount}
-                                          classess="success p-2 rounded-5"
-                                        />
+                            {newTableData
+                              ?.filter((item) => isDevServer ? true : item?.totalCount)
+                              .map((data, index) => (
+                                <tr
+                                  className="hasEvent"
+                                  onClick={() => {
+                                    dispatch(
+                                      handleMostClickedMenuListAction({
+                                        id: data?.id,
+                                        label: data?.menuName,
+                                        to: data?.routeUrl,
+                                      })
+                                    );
+
+                                    history.push(`${data?.routeUrl}`);
+                                  }}
+                                  key={index}
+                                >
+                                  <td>
+                                    <div className="employeeInfo d-flex align-items-center approval-avatar">
+                                      <Avatar
+                                        alt="Remy Sharp"
+                                        src={data?.icon}
+                                      />
+                                      <div className="table-title pl-3">
+                                        <p>{data?.menuName}</p>
                                       </div>
-                                    </Tooltip>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
+                                    </div>
+                                  </td>
+                                  <td className="action-td">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                      <Tooltip title={"Pending"}>
+                                        <div>
+                                          <Chips
+                                            label={data?.totalCount}
+                                            classess="success p-2 rounded-5"
+                                          />
+                                        </div>
+                                      </Tooltip>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>

@@ -1,7 +1,7 @@
 import {
   Cancel,
   CheckCircle,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -24,11 +24,14 @@ import {
   failColor,
   gray900,
   greenColor,
-  successColor
+  successColor,
 } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../utility/dateFormatter";
-import { AssetTransferApproveReject, getAssetTransferListDataForApproval } from "./helper";
+import {
+  AssetTransferApproveReject,
+  getAssetTransferListDataForApproval,
+} from "./helper";
 import "./index.css";
 
 const initData = {
@@ -45,7 +48,7 @@ const initData = {
 };
 
 export default function AssetTransferApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -64,6 +67,7 @@ export default function AssetTransferApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
+        workplaceId: wId,
         approverId: employeeId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -86,6 +90,7 @@ export default function AssetTransferApproval() {
         isSupOrLineManager: 0,
         approverId: employeeId,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -96,7 +101,7 @@ export default function AssetTransferApproval() {
       setAllData,
       setLoading
     );
-  }, [employeeId, orgId, isOfficeAdmin]);
+  }, [employeeId, orgId, isOfficeAdmin, wId]);
 
   const debounce = useDebounce();
 
@@ -149,6 +154,7 @@ export default function AssetTransferApproval() {
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
           workplaceGroupId: 0,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -196,6 +202,7 @@ export default function AssetTransferApproval() {
           workplaceGroupId: 0,
           departmentId: 0,
           designationId: 0,
+          workplaceId: wId,
           applicantId: 0,
           accountId: orgId,
           intId: 0,
@@ -228,6 +235,7 @@ export default function AssetTransferApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Asset Transfer Approval";
   }, [dispatch]);
 
   const getLandingTable = (setFieldValue, page, paginationSize) => {

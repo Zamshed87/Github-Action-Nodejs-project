@@ -1,8 +1,7 @@
-import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 import Axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 // components
 import PackageJson from "../package.json";
 import AuthPage from "./router/AuthPage.jsx";
@@ -17,34 +16,36 @@ import "swiper/components/navigation/navigation.min.css";
 import "swiper/components/pagination/pagination.min.css";
 import "swiper/swiper.min.css";
 import "./assets/css/index.css";
-import { refreshTokenAction } from "./commonRedux/auth/actions";
+import {
+  refreshTokenAction,
+  setIsExpiredTokenAction,
+  setLogoutAction,
+} from "./commonRedux/auth/actions";
 import store from "./redux/store";
 import { _zx123_Zx001_45___45_9999_ } from "./utility/cz";
 import { _Ad_xcvbn_df__dfg_568_dfghfff_ } from "./utility/czy";
-import { detectBrowserConsole } from "./utility/devtools";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
-import { ConfigProvider } from "antd";
 
-const origin = window.location.origin;
-const prodUrl = "https://matador.peopledesk.io";
+export const origin = window.location.origin;
+export const prodUrl = "https://devapp.peopledesk.io";
 
-// set axios base url
+export const isDevServer =
+  origin.includes("dev") || process.env.NODE_ENV === "development";
+
 export const APIUrl =
-  process.env.NODE_ENV === "development"
-    ? "https://devmatador.peopledesk.io/api"
-    : `${origin}/api`;
+  process.env.NODE_ENV === "development" ? `${prodUrl}/api` : `${origin}/api`;
 Axios.defaults.baseURL = APIUrl;
 
 export const domainUrl =
-  process.env.NODE_ENV === "development"
-    ? "https://devmatador.peopledesk.io"
-    : origin;
+  process.env.NODE_ENV === "development" ? prodUrl : origin;
 
-if (process.env.NODE_ENV === "production") {
-  disableReactDevTools();
-}
+// if (process.env.NODE_ENV === "production") {
+//   disableReactDevTools();
+// }
+
 Axios.interceptors.request.use(
   (config: any) => {
+    if (isDevServer) return config;
     let url = config.url;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
@@ -56,7 +57,7 @@ Axios.interceptors.request.use(
     const isIncludesQueryString = url.includes("?");
 
     if (isIncludesQueryString) {
-      let splitUrl = url.split("?");
+      const splitUrl = url.split("?");
       paramsQuery += splitUrl[1];
       url = splitUrl[0];
     }
@@ -106,15 +107,18 @@ Axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+let isToastDisplayed = false;
 Axios.interceptors.response.use(
   async function (response: any) {
+    if (isDevServer) return response;
     for (let index = 0; index < withoutEncryptionList.length; index++) {
       const element = withoutEncryptionList[index];
       if (response?.config?.url?.includes(`${element}`)) return response;
     }
 
-    let decryptedData = _Ad_xcvbn_df__dfg_568_dfghfff_(response?.data);
-    let decryptedRes = {
+    const decryptedData = _Ad_xcvbn_df__dfg_568_dfghfff_(response?.data);
+    const decryptedRes = {
       status: response.status,
       data: decryptedData,
     };
@@ -131,7 +135,7 @@ Axios.interceptors.response.use(
       };
 
       try {
-        let apiRefreshResponse = await Axios.post(
+        const apiRefreshResponse = await Axios.post(
           "/Auth/GenerateRefreshToken",
           payload
         );
@@ -151,16 +155,23 @@ Axios.interceptors.response.use(
           window.location.reload();
           // return Axios(originalConfig);
         }
-      } catch (error) {}
+      } catch (error) {
+        const dispatch: any = store.dispatch;
+        dispatch(setIsExpiredTokenAction(true));
+        dispatch(setLogoutAction());
+        if (!isToastDisplayed) {
+          toast.error("Session Expired, Please login again");
+          isToastDisplayed = true;
+        }
+      }
     }
-
-    if (process.env.NODE_ENV === "development") {
+    if (!isDevServer) { // error block for response 
+      const data = _Ad_xcvbn_df__dfg_568_dfghfff_(error?.response?.data);
+      const newError = { response: { data } };
+      return Promise.reject(newError);
+    }else{
+      return Promise.reject(error);
     }
-    let decryptedData = await _Ad_xcvbn_df__dfg_568_dfghfff_(
-      error?.response?.data
-    );
-    let newError = { response: { data: decryptedData } };
-    return Promise.reject(newError);
   }
 );
 
@@ -176,7 +187,7 @@ function App() {
     Axios.defaults.headers.common["Authorization"] = `Bearer ${tokenData}`;
 
   useEffect(() => {
-    let appVersion = localStorage.getItem("appVersion");
+    const appVersion = localStorage.getItem("appVersion");
     if (appVersion !== PackageJson.version) {
       localStorage.setItem("appVersion", PackageJson.version);
       window.location.reload();
@@ -200,24 +211,9 @@ function App() {
     }
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => {
-    let interval: any = null;
-    if (origin === prodUrl) {
-      interval = setInterval(() => {
-        if (!isOpen) {
-          detectBrowserConsole(setIsOpen);
-        }
-      }, 500);
-    }
-    return () => {
-      interval && clearInterval(interval);
-    };
-  }, [isOpen]);
-
   return (
     <div className="app">
-      {componentRender(isOpen)}
+      {componentRender(false)}
       <ToastContainer
         position="bottom-right"
         newestOnTop={true}

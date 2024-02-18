@@ -49,14 +49,15 @@ export const getAllGlobalEmploymentType = async (
   setter,
   setAllData,
   setLoading,
-  orgId
+  orgId,
+  wId
 ) => {
   setLoading && setLoading(true);
 
   // let status = statusId ? `&intStatusId=${statusId}` : "";
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetAllEmploymentType?accountId=${orgId}`
+      `/SaasMasterData/GetAllEmploymentType?accountId=${orgId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({
@@ -73,12 +74,19 @@ export const getAllGlobalEmploymentType = async (
   }
 };
 
-export const getAllGlobalLoanType = async (setter, setAllData, setLoading) => {
+export const getAllGlobalLoanType = async (
+  wId,
+  setter,
+  setAllData,
+  setLoading
+) => {
   setLoading && setLoading(true);
 
   // let status = statusId ? `&intStatusId=${statusId}` : "";
   try {
-    const res = await axios.get(`/SaasMasterData/GetAllEmpLoanType`);
+    const res = await axios.get(
+      `/SaasMasterData/GetAllEmpLoanType?workplaceId=${wId}`
+    );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({
         ...item,
@@ -151,6 +159,20 @@ export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
       ...itm,
       value: itm[value],
       label: itm[label],
+    }));
+    setter(newDDL);
+    cb && cb();
+  } catch (error) {}
+};
+
+export const getPeopleDeskAllDDLWithCode = async (apiUrl, value, label, setter, cb) => {
+  try {
+    const res = await axios.get(apiUrl);
+    console.log("res", res?.data)
+    const newDDL = res?.data?.map((itm) => ({
+      ...itm,
+      value: itm?.intEmployeeBasicInfoId,
+      label: `${itm?.strEmployeeName} - ${itm?.strEmployeeCode}`,
     }));
     setter(newDDL);
     cb && cb();
@@ -335,20 +357,22 @@ export const PeopleDeskSaasDDL = async (
   setter,
   value,
   label,
-  id
+  id,
+  wId,
+  year
 ) => {
   try {
     const res = await axios.get(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&WorkplaceGroupId=${wgId}&BusinessUnitId=${busId}&intId=${
         id || 0
-      }`
+      }&intWorkplaceId=${wId || 0}${year ? `&intYear=${year}` : ""}`
     );
     if (res?.data) {
       const newDDL = res?.data?.map((itm) => {
         return {
           ...itm,
-          value: itm[value],
-          label: itm[label],
+          value: value ? itm[value] : itm?.LeaveTypeId,
+          label: label ? itm[label] : itm?.LeaveType,
         };
       });
       setter(newDDL);
@@ -540,7 +564,6 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
   return axios
     .get(
       `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
-      // `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfoForEmpMgmt&AccountId=${intAccountId}&BusinessUnitId=${buId}&intId=${employeeId}&workplaceGroupId=${wgId}&SearchTxt=${v}`
     )
     .then((res) => {
       const modifiedData = res?.data?.map((item) => {
@@ -554,6 +577,25 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
     })
     .catch((err) => []);
 };
+
+export const getSearchEmployeeListNew = (buId, intAccountId, v) => {
+  if (v?.length < 2) return [];
+
+  return axios
+    .get(`/Employee/AllEmployeeDDL?intAccountId=${intAccountId}&strSearch=${v}`)
+    .then((res) => {
+      const modifiedData = res?.data?.map((item) => {
+        return {
+          ...item,
+          value: item?.value,
+          label: item?.label,
+        };
+      });
+      return modifiedData;
+    })
+    .catch((err) => []);
+};
+
 export const getSearchEmployeeListForEmp = (
   buId,
   wgId,
@@ -605,5 +647,19 @@ export const testApi = async (setLoading, cb) => {
   } catch (error) {
     toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading && setLoading(false);
+  }
+};
+
+export const getWorkplaceDetails = async (wId, setter, setLoading) => {
+  // used in many component
+  try {
+    const res = await axios.get(`/SaasMasterData/GetWorkplaceById?Id=${wId}`);
+    if (res?.data) {
+      setter(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+    setter([]);
   }
 };

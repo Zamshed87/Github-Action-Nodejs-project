@@ -1,0 +1,52 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react", "react-hooks"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/ban-types": "warn",
+    "react/jsx-key": "warn",
+    "@typescript-eslint/no-var-requires": "warn",
+    "react/no-unescaped-entities": "warn",
+    "prefer-spread": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "react/no-unknown-property": "warn",
+    "@typescript-eslint/no-empty-function": "warn",
+    // rules off
+    "@typescript-eslint/no-explicit-any": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/react-in-jsx-scope": "off",
+    "no-unsafe-optional-chaining": "off",
+    "react/prop-types": "off",
+    "react/display-name": "off",
+    "no-case-declarations": "off",
+    "no-console": "off",
+    "no-empty-function": "off",
+    "no-empty": "off",
+    "no-extra-boolean-cast": "off",
+    "no-undef": "error",
+    "no-constant-condition": "off",
+    "no-compare-neg-zero": "off",
+    "@typescript-eslint/no-array-constructor": "off",
+    "no-prototype-builtins": "off",
+    "jsx-a11y/img-redundant-alt": "off",
+    "no-unexpected-multiline": "warn",
+    "no-unreachable": "off",
+    "prefer-const": "warn"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "process": "readonly"
+  }
+}

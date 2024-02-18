@@ -1,0 +1,52 @@
+.peopleDeskModalWrapper {
+  $modalPadding_x: 20px;
+  $modalHeaderPadding_y: 12px;
+  $modalRadias: 8px;
+  .ant-modal {
+    .ant-modal-content {
+      border-radius: $modalRadias;
+      overflow: hidden;
+      .ant-modal-close {
+        .ant-modal-close-x {
+          .ant-modal-close-icon {
+          }
+        }
+      }
+      .ant-modal-header {
+        padding-inline: $modalPadding_x;
+        padding-block: $modalHeaderPadding_y;
+        // border-top-left-radius: $modalRadias;
+        // border-top-right-radius: $modalRadias;
+        .ant-modal-title {
+          color: var(--gray700) !important;
+          font-size: 14px !important;
+          font-weight: 600 !important;
+          line-height: 20px !important;
+        }
+      }
+      .ant-modal-body {
+        $estFooterHeight: 45px;
+        $bodyPadding_y: 10px;
+        padding-inline: $modalPadding_x;
+        padding-top: $bodyPadding_y;
+        margin-bottom: $estFooterHeight + $bodyPadding_y;
+        max-height: 520px;
+        overflow-y: auto;
+        // Modal Footer Style
+        .ant-modal-footer.modal_footer_button_list {
+          padding-inline: $modalPadding_x;
+          padding-block: $modalPadding_x - 5px;
+          background: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 10px;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+        }
+      }
+    }
+  }
+}

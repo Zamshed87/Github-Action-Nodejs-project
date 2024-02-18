@@ -41,7 +41,7 @@ const initData = {
 };
 
 export default function ArrearSalaryGenerateApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -58,6 +58,7 @@ export default function ArrearSalaryGenerateApproval() {
         approverId: employeeId,
         intId: 0,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -78,6 +79,7 @@ export default function ArrearSalaryGenerateApproval() {
     getAllSalaryGenerateListDataForApproval(
       {
         approverId: employeeId,
+        workplaceId: wId,
         intId: 0,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -122,6 +124,7 @@ export default function ArrearSalaryGenerateApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         accountId: orgId,
+        workplaceId: wId,
       },
       setApplicationListData,
       setAllData,
@@ -168,7 +171,7 @@ export default function ArrearSalaryGenerateApproval() {
     label: "Pending",
   });
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
@@ -213,6 +216,7 @@ export default function ArrearSalaryGenerateApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           accountId: orgId,
+          workplaceId: wId,
         },
         setApplicationListData,
         setAllData,
@@ -248,6 +252,7 @@ export default function ArrearSalaryGenerateApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Arrear Salary Generate Approval";
   }, [dispatch]);
 
   return (
@@ -280,60 +285,62 @@ export default function ArrearSalaryGenerateApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton title={"Arrear Salary Generate Approval"} />
+                          <BackButton
+                            title={"Arrear Salary Generate Approval"}
+                          />
                           <div className="table-card-head-right">
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                                <div className="d-flex actionIcon mr-3">
-                                  <Tooltip title="Accept">
-                                    <div
-                                      className="muiIconHover success mr-2"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "approve",
-                                          "isApproved",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <CheckCircle
-                                            sx={{
-                                              color: successColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                  <Tooltip title="Reject">
-                                    <div
-                                      className="muiIconHover  danger"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "reject",
-                                          "isReject",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <Cancel
-                                            sx={{
-                                              color: failColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                </div>
-                              )}
+                              <div className="d-flex actionIcon mr-3">
+                                <Tooltip title="Accept">
+                                  <div
+                                    className="muiIconHover success mr-2"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <CheckCircle
+                                          sx={{
+                                            color: successColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                                <Tooltip title="Reject">
+                                  <div
+                                    className="muiIconHover  danger"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <Cancel
+                                          sx={{
+                                            color: failColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                              </div>
+                            )}
                             <ul className="d-flex flex-wrap">
                               {isFilter && (
                                 <li>

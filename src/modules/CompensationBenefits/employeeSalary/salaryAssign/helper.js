@@ -1,9 +1,9 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { getByIdSalaryAssignDDL, getSalaryAssignDDL } from "./salaryAssignCal";
 import AvatarComponent from "../../../../common/AvatarComponent";
-import { numberWithCommas } from "../../../../utility/numberWithCommas";
 import Chips from "../../../../common/Chips";
+import { numberWithCommas } from "../../../../utility/numberWithCommas";
+import { getByIdSalaryAssignDDL, getSalaryAssignDDL } from "./salaryAssignCal";
 
 export const reverseBasedOnBasicPercentage = (basicElement, payrollElement) => {
   let percentage = 0;
@@ -17,11 +17,13 @@ export const getBreakdownPolicyDDL = async (
   buId,
   employeeId,
   id,
-  setter
+  setter,
+  wgId,
+  wId
 ) => {
   try {
     const res = await axios.get(
-      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntEmployeeId=${employeeId}&IntAccountId=${accId}&IntBusinessUnitId=${buId}&IntSalaryBreakdownHeaderId=${id}`
+      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntEmployeeId=${employeeId}&IntAccountId=${accId}&IntBusinessUnitId=${buId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`
     );
     if (res?.data) {
       const modifyData = res?.data?.map((itm) => {
@@ -42,16 +44,21 @@ export const getBreakdownListDDL = async (
   id,
   grossSalaryAmount,
   setter,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntSalaryBreakdownHeaderId=${id}`
+      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceId=${wId || 0}`
     );
     if (res?.data) {
       try {
-        const resBasicAllowance = await axios.get(`/Payroll/GetGrossWiseBasicAmountNPercentage?BreakDownHeaderId=${id}&GrossAmount=${grossSalaryAmount || 0}`);
+        const resBasicAllowance = await axios.get(
+          `/Payroll/GetGrossWiseBasicAmountNPercentage?BreakDownHeaderId=${id}&GrossAmount=${
+            grossSalaryAmount || 0
+          }`
+        );
         if (resBasicAllowance?.data) {
           getSalaryAssignDDL(
             accId,
@@ -157,12 +164,13 @@ export const getByIdBreakdownListDDL = async (
   id,
   setter,
   grossSalaryAmount,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntEmployeeId=${employeeId}&IntSalaryBreakdownHeaderId=${id}`
+      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntEmployeeId=${employeeId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceId=${wId || 0}`
     );
     if (res?.data) {
       try {

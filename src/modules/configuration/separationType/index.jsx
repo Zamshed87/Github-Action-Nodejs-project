@@ -3,7 +3,7 @@
 import {
   AddOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -64,7 +64,7 @@ function SeparationType() {
     setId("");
   };
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -75,11 +75,12 @@ function SeparationType() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Separation Type";
   }, []);
 
   useEffect(() => {
-    getSeparationType(orgId, setRowDto, setAllData, setLoading);
-  }, [orgId]);
+    getSeparationType(orgId, setRowDto, setAllData, setLoading, wId);
+  }, [orgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 

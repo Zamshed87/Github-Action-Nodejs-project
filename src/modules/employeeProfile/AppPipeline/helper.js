@@ -1,8 +1,8 @@
-import { getPeopleDeskAllDDL } from "../../../common/api";
-import { Tooltip } from "@mui/material";
 import { EditOutlined } from "@mui/icons-material";
-import { dateFormatter } from "../../../utility/dateFormatter";
+import { Tooltip } from "@mui/material";
 import { toast } from "react-toastify";
+import { getPeopleDeskAllDDL } from "../../../common/api";
+import { dateFormatter } from "../../../utility/dateFormatter";
 
 export const organizationTypeList = [
   {
@@ -89,13 +89,13 @@ export const pipleLineColumn = (
 
     {
       title: "Workplace Group",
-      dataIndex: "workplaceGroup",
+      dataIndex: "workplcaeGroup",
       sort: true,
       fieldType: "string",
     },
     {
       title: "Workplace",
-      dataIndex: "workplace",
+      dataIndex: "workplcae",
       sort: true,
       fieldType: "string",
     },

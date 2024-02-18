@@ -20,7 +20,12 @@ import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../common/PopoverMasterFilter";
 import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { failColor, gray900, greenColor, successColor } from "../../../utility/customColor";
+import {
+  failColor,
+  gray900,
+  greenColor,
+  successColor,
+} from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import FilterModal from "./component/FilterModal";
 import { getAllIOUListDataForApproval, IOUApproveReject } from "./helper";
@@ -47,7 +52,7 @@ const initData = {
 };
 
 export default function AdjustmentIOUApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -86,6 +91,7 @@ export default function AdjustmentIOUApproval() {
         isUserGroup: false,
         approverId: employeeId,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -110,6 +116,7 @@ export default function AdjustmentIOUApproval() {
         approverId: employeeId,
         workplaceGroupId: 0,
         departmentId: 0,
+        workplaceId: wId,
         designationId: 0,
         applicantId: 0,
         accountId: orgId,
@@ -139,6 +146,7 @@ export default function AdjustmentIOUApproval() {
         isSupervisor: false,
         isLineManager: false,
         isUserGroup: false,
+        workplaceId: wId,
         approverId: employeeId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -191,7 +199,7 @@ export default function AdjustmentIOUApproval() {
     label: "Pending",
   });
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
@@ -223,6 +231,7 @@ export default function AdjustmentIOUApproval() {
         {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
+          workplaceId: wId,
           isSupOrLineManager: 0,
           isSupervisor: false,
           isLineManager: false,
@@ -245,12 +254,17 @@ export default function AdjustmentIOUApproval() {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
-        console.log("applicationListData", applicationListData)
-        let isReceivableArr = applicationListData?.listData.filter(itm => itm?.application?.numReceivableAmount !== 0);
+        console.log("applicationListData", applicationListData);
+        let isReceivableArr = applicationListData?.listData.filter(
+          (itm) => itm?.application?.numReceivableAmount !== 0
+        );
         if (isReceivableArr?.length > 0) {
-          return toast.warning("Every Receivable amount must be equal zero!!!", {
-            toastId: "111"
-          })
+          return toast.warning(
+            "Every Receivable amount must be equal zero!!!",
+            {
+              toastId: "111",
+            }
+          );
         }
         if (array.length) {
           IOUApproveReject(newArray, callback);
@@ -281,6 +295,7 @@ export default function AdjustmentIOUApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
+          workplaceId: wId,
           isSupervisor: false,
           isLineManager: false,
           isUserGroup: false,
@@ -303,7 +318,7 @@ export default function AdjustmentIOUApproval() {
       yesAlertFunc: () => {
         IOUApproveReject(payload, callback);
       },
-      noAlertFunc: () => { },
+      noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
   };
@@ -325,6 +340,7 @@ export default function AdjustmentIOUApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Adjustment IOU Approval";
   }, [dispatch]);
 
   // landing table
@@ -365,27 +381,19 @@ export default function AdjustmentIOUApproval() {
                 }}
                 name="allSelected"
                 checked={
-                  applicationListData?.listData
-                    ?.length > 0 &&
+                  applicationListData?.listData?.length > 0 &&
                   applicationListData?.listData?.every(
                     (item) => item?.selectCheckbox
                   )
                 }
                 onChange={(e) => {
                   setApplicationListData({
-                    listData:
-                      applicationListData?.listData?.map(
-                        (item) => ({
-                          ...item,
-                          selectCheckbox:
-                            e.target.checked,
-                        })
-                      ),
+                    listData: applicationListData?.listData?.map((item) => ({
+                      ...item,
+                      selectCheckbox: e.target.checked,
+                    })),
                   });
-                  setFieldValue(
-                    "allSelected",
-                    e.target.checked
-                  );
+                  setFieldValue("allSelected", e.target.checked);
                 }}
               />
             </div>
@@ -407,16 +415,17 @@ export default function AdjustmentIOUApproval() {
                 color={greenColor}
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
-                  let data = applicationListData?.listData?.map(item => {
-                    if (item?.application?.intIouid ===
-                      record?.application?.intIouid) {
+                  let data = applicationListData?.listData?.map((item) => {
+                    if (
+                      item?.application?.intIouid ===
+                      record?.application?.intIouid
+                    ) {
                       return {
                         ...item,
-                        selectCheckbox: e.target.checked
-                      }
-                    }
-                    else return item;
-                  })
+                        selectCheckbox: e.target.checked,
+                      };
+                    } else return item;
+                  });
                   setApplicationListData({ listData: [...data] });
 
                   // let data = [...leaveApplicationData?.listData];
@@ -529,7 +538,10 @@ export default function AdjustmentIOUApproval() {
         title: "Total Adjusted",
         render: (_, record) => (
           <div className="d-flex align-items-center">
-            <div>{record?.numAdjustmentAmount + (+record?.accountsAdjustmentAmount || 0)}</div>
+            <div>
+              {record?.numAdjustmentAmount +
+                (+record?.accountsAdjustmentAmount || 0)}
+            </div>
           </div>
         ),
         filter: false,
@@ -653,55 +665,55 @@ export default function AdjustmentIOUApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                                <div className="d-flex actionIcon mr-3">
-                                  <Tooltip title="Accept">
-                                    <div
-                                      className="muiIconHover success mr-2"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "approve",
-                                          "isApproved",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <CheckCircle
-                                            sx={{
-                                              color: successColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                  <Tooltip title="Reject">
-                                    <div
-                                      className="muiIconHover  danger"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "reject",
-                                          "isReject",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <Cancel
-                                            sx={{
-                                              color: failColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                </div>
-                              )}
+                              <div className="d-flex actionIcon mr-3">
+                                <Tooltip title="Accept">
+                                  <div
+                                    className="muiIconHover success mr-2"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <CheckCircle
+                                          sx={{
+                                            color: successColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                                <Tooltip title="Reject">
+                                  <div
+                                    className="muiIconHover  danger"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <Cancel
+                                          sx={{
+                                            color: failColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                              </div>
+                            )}
                             <ul className="d-flex flex-wrap">
                               {isFilter && (
                                 <li>
@@ -773,8 +785,11 @@ export default function AdjustmentIOUApproval() {
                           <div className="table-card-body">
                             <div className="table-card-styled table-responsive tableOne">
                               <AntTable
-                                data={applicationListData?.listData?.length > 0 ?
-                                  applicationListData?.listData : []}
+                                data={
+                                  applicationListData?.listData?.length > 0
+                                    ? applicationListData?.listData
+                                    : []
+                                }
                                 columnsData={getLandingTable(setFieldValue)}
                               />
                             </div>

@@ -1,14 +1,15 @@
 import { TablePaginationConfig } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import React from "react";
 
 export type TDataTableProps = {
   wrapperClassName?: string;
   customScrollBar?: "thin";
-  title?: string | JSX.Element;
-  headerTitle?: (pageData: any) => JSX.Element | string;
-  header: ColumnsType<any>;
+  title?: string | React.ReactElement;
+  headerTitle?: (pageData: any) => React.ReactElement | string;
+  header: ColumnsType<any> | any;
   data: any[];
-  filterData?: { [key: string]: any };
+  filterData?: Record<string, unknown>;
   rowClassName?: (record: any, index: number) => string;
   rowSelection?: {
     isActive?: boolean;
@@ -31,7 +32,7 @@ export type TDataTableProps = {
       checked: boolean,
       record: any,
       index: number,
-      originNode: React.ReactNode
+      originNode: React.ReactElement
     ) => any;
   };
   onHeaderRow?: (
@@ -47,11 +48,11 @@ export type TDataTableProps = {
     record: any,
     rowIndex: any
   ) => {
-    onClick: (event: any) => {}; // click row
-    onDoubleClick: (event: any) => {}; // double click row
-    onContextMenu: (event: any) => {}; // right button click row
-    onMouseEnter: (event: any) => {}; // mouse enter row
-    onMouseLeave: (event: any) => {}; // mouse leave row
+    onClick?: (event: any) => any; // click row
+    onDoubleClick?: (event: any) => any; // double click row
+    onContextMenu?: (event: any) => any; // right button click row
+    onMouseEnter?: (event: any) => any; // mouse enter row
+    onMouseLeave?: (event: any) => any; // mouse leave row
     className?: string; // className for this row
   };
   components?: any;
@@ -61,13 +62,13 @@ export type TDataTableProps = {
     y?: number | string;
   };
   onChange?: (pagination: any, filters: any, sorter: any, extra: any) => any;
-  summary?: (pageData: any) => JSX.Element | string;
-  footer?: (pageData: any) => JSX.Element | string;
+  summary?: (pageData: any) => React.ReactElement | string;
+  footer?: (pageData: any) => React.ReactElement | string;
   expandable?: {
-    expandedRowRender?: (record: any, index: number) => JSX.Element;
+    expandedRowRender?: (record: any, index: number) => React.ReactElement;
     rowExpandable?: (record: any) => boolean;
     expandRowByClick?: boolean;
-    expandIcon?: (props: any) => JSX.Element;
+    expandIcon?: (props: any) => React.ReactElement;
     expandedRowClassName?: (record: any, index: number) => string;
     defaultExpandAllRows?: boolean;
     defaultExpandedRowKeys?: string[] | number[];
@@ -79,4 +80,25 @@ export type TDataTableProps = {
   pagination?: TablePaginationConfig;
   bordered?: boolean;
   loading?: boolean;
+};
+
+// Table Button Types
+export type buttonType =
+  | "edit"
+  | "delete"
+  | "view"
+  | "info"
+  | "plus"
+  | "calender"
+  | "reload"
+  | "dollar";
+export type buttonList = {
+  isActive?: boolean;
+  type: buttonType;
+  onClick?: (e: any) => any;
+  prompt?: string;
+};
+export type TableButtonType = {
+  buttonsList: buttonList[];
+  parentStyle?: React.CSSProperties;
 };

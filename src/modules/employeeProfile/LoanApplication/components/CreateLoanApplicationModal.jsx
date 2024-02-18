@@ -1,5 +1,6 @@
 import {
   AttachmentOutlined,
+  DeleteOutline,
   FileUpload,
   VisibilityOutlined,
 } from "@mui/icons-material";
@@ -9,6 +10,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import {
+  getPeopleDeskAllDDL,
+  getPeopleDeskAllDDLWithCode,
   getSearchEmployeeList,
   PeopleDeskSaasDDL,
 } from "../../../../common/api";
@@ -21,8 +24,23 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import { attachment_action } from "../../../policyUpload/helper";
 import "../application.css";
-import { loanCrudAction } from "../helper";
+import {
+  costInputHandler,
+  getGurantor,
+  handleAmendmentClick,
+  handleDeleteClick,
+  loanCrudAction,
+  subTotal,
+} from "../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+import { gray600, success500 } from "utility/customColor";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { Tag } from "antd";
+import { IconButton, Tooltip } from "@mui/material";
+import { formatMoney } from "utility/formatMoney";
+import DefaultInput from "common/DefaultInput";
+import moment from "moment";
+import Required from "common/Required";
 
 const validationSchema = Yup.object().shape({
   description: Yup.string().required("Description is required"),
@@ -68,6 +86,9 @@ const initData = {
   approveAmountPerInstallment: "",
   description: "",
   effectiveDate: "",
+  guarantor: "",
+  interest: "",
+  totalwithinterest: "",
 };
 
 const CreateLoanApplicationModal = ({
@@ -79,13 +100,32 @@ const CreateLoanApplicationModal = ({
   setSingleData,
 }) => {
   const [loanType, setLoanType] = useState([]);
-  // const [fileId, setFileId] = useState("");
   const [loading, setLoading] = useState(false);
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const [employeeDDL, setEmployeeDDL] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [guarantorDDL, setGuarantorDDL] = useState([]);
+
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (singleData?.loanApplicationId) {
+      getGurantor(singleData?.loanApplicationId, setGuarantorDDL);
+      setSingleData({ ...singleData, guarantor: guarantorDDL });
+    }
+  }, [tableData]);
+
+  useEffect(() => {
+    getPeopleDeskAllDDLWithCode(
+      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}&WorkplaceGroupId=${wgId}&businessUnitId=${buId}`,
+      "intEmployeeBasicInfoId",
+      "strEmployeeName",
+      setEmployeeDDL
+    );
+  }, [employeeId, wgId]);
 
   const saveHandler = (values, cb) => {
     // approveLoanAmount approveInstallmentNumber approveAmountPerInstallment
@@ -116,6 +156,14 @@ const CreateLoanApplicationModal = ({
           "Approve Installment number can't be greather than amount"
         );
     }
+    const total = subTotal(tableData);
+    if (singleData?.loanApplicationId) {
+      if (values?.loanAmount != total) {
+        return toast.warn(
+          "Total Actual Payment Amount and Loan Amount Must Be Equal"
+        );
+      }
+    }
     loanCrudAction(
       values,
       cb,
@@ -125,7 +173,8 @@ const CreateLoanApplicationModal = ({
       orgId,
       false,
       buId,
-      wgId
+      wgId,
+      tableData
     );
   };
 
@@ -136,9 +185,79 @@ const CreateLoanApplicationModal = ({
       buId,
       setLoanType,
       "LoanTypeId",
-      "LoanType"
+      "LoanType",
+      0,
+      wId
     );
   }, [wgId, buId]);
+
+  const [resForView, getForView, loadingForView2, setForView] = useAxiosGet([]);
+
+  // useEffect(() => {
+  //   if (singleData?.loanApplicationId) {
+  //     getForView(
+  //       `/Employee/LoanInstallmentRowGetById?loanId=${singleData?.loanApplicationId}`,
+  //       (data) => {
+  //         const currentDate = moment();
+  //         console.log("data",data)
+  //         const modifyData = {
+  //           row: data?.map((item, index) => {
+  //             const repaymentDate = moment(item?.date || currentDate).add(
+  //               index,
+  //               "months"
+  //             );
+  //             return {
+  //               isHold: item?.isHold || false,
+  //               date: repaymentDate.format("YYYY-MM"),
+  //               paymentYear: repaymentDate.year() || 0,
+  //               paymentMonth: repaymentDate.month() + 1,
+  //               strRemarks: item?.strRemarks || "",
+  //               loanApplicationId: item?.loanApplicationId || 0,
+  //               intInterest: +item?.intInterest || 0,
+  //               totalLoanAmount: +item?.totalLoanAmount || 0,
+  //               intInstallmentNumber: +item?.intInstallmentNumber || 0,
+  //               intInstallmentAmount: +item?.intInstallmentAmount || 0,
+  //               strApplicantName: item?.strApplicantName || "",
+  //             };
+  //           }),
+  //         };
+  //         setTableData(modifyData?.row);
+  //       }
+  //     );
+  //   }
+  // }, [singleData?.loanApplicationId]);
+
+  useEffect(() => {
+    if (singleData?.loanApplicationId) {
+      getForView(
+        `/Employee/LoanInstallmentRowGetById?loanId=${singleData?.loanApplicationId}`,
+        (data) => {
+          const currentDate = moment();
+          const modifyData = {
+            row: data?.map((item, index) => {
+              const repaymentDate = item?.date
+                ? moment(item.date)
+                : currentDate.clone().add(index, "months");
+              return {
+                isHold: item?.isHold || false,
+                date: repaymentDate.format("YYYY-MM"),
+                paymentYear: repaymentDate.year() || 0,
+                paymentMonth: repaymentDate.month() + 1,
+                strRemarks: item?.strRemarks || "",
+                loanApplicationId: item?.loanApplicationId || 0,
+                intInterest: +item?.intInterest || 0,
+                totalLoanAmount: +item?.totalLoanAmount || 0,
+                intInstallmentNumber: +item?.intInstallmentNumber || 0,
+                intInstallmentAmount: +item?.intInstallmentAmount || 0,
+                strApplicantName: item?.strApplicantName || "",
+              };
+            }),
+          };
+          setTableData(modifyData?.row);
+        }
+      );
+    }
+  }, [singleData?.loanApplicationId]);
 
   const labelShowLastInstallmentAmt = (values) => {
     const lastAmount = values?.loanAmount % values?.amountPerInstallment;
@@ -160,7 +279,7 @@ const CreateLoanApplicationModal = ({
       enableReinitialize={true}
       initialValues={singleData?.loanApplicationId ? singleData : initData}
       validationSchema={validationSchema}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
+      onSubmit={(values, { resetForm }) => {
         saveHandler(values, () => {
           getData();
           resetForm(initData);
@@ -178,7 +297,6 @@ const CreateLoanApplicationModal = ({
         errors,
         touched,
         setFieldValue,
-        isValid,
       }) => (
         <>
           <Form onSubmit={handleSubmit}>
@@ -186,9 +304,12 @@ const CreateLoanApplicationModal = ({
             <div className="businessUnitModal">
               <div className="modalBody" style={{ padding: "0px 16px" }}>
                 <div className="row">
-                  <div className="col-6">
-                    <label>Employee</label>
+                  <div className="col-4">
+                    <label>
+                      Employee <Required />
+                    </label>
                     <AsyncFormikSelect
+                      isDisabled={singleData?.loanApplicationId}
                       selectedValue={values?.employee}
                       isSearchIcon={true}
                       handleChange={(valueOption) => {
@@ -198,12 +319,15 @@ const CreateLoanApplicationModal = ({
                       loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Loan Type</label>
+                  <div className="col-4">
+                    <label>
+                      Loan Type <Required />
+                    </label>
                     <FormikSelect
                       name="loanType"
                       options={loanType}
                       value={values?.loanType}
+                      isDisabled={singleData?.loanApplicationId}
                       label=""
                       onChange={(valueOption) => {
                         setFieldValue("loanType", valueOption);
@@ -212,11 +336,12 @@ const CreateLoanApplicationModal = ({
                       styles={customStyles}
                       errors={errors}
                       touched={touched}
-                      isDisabled={false}
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Loan Amount</label>
+                  <div className="col-4">
+                    <label>
+                      Loan Amount <Required />
+                    </label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.loanAmount}
@@ -228,6 +353,17 @@ const CreateLoanApplicationModal = ({
                         setFieldValue("amountPerInstallment", "");
                         setFieldValue("approveLoanAmount", e.target.value);
                         setFieldValue("loanAmount", e.target.value);
+                        setFieldValue("totalwithinterest", e.target.value);
+                        if (values?.interest) {
+                          const totalAmountwithInterest = (
+                            +e.target.value +
+                            +e.target.value * (values?.interest / 100)
+                          ).toFixed(2);
+                          setFieldValue(
+                            "totalwithinterest",
+                            totalAmountwithInterest
+                          );
+                        }
                       }}
                       className="form-control"
                       placeholder=""
@@ -239,8 +375,135 @@ const CreateLoanApplicationModal = ({
                       }
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Installment Number</label>
+                  <div className="col-4">
+                    <label>Interest (%)</label>
+                    <FormikInput
+                      classes="input-sm"
+                      value={values?.interest}
+                      name="interest"
+                      type="number"
+                      step="1"
+                      onChange={(e) => {
+                        setFieldValue("interest", e.target.value);
+                        if (values?.loanAmount) {
+                          const totalAmountwithInterest = (
+                            +values?.loanAmount +
+                            +values?.loanAmount * (e.target.value / 100)
+                          ).toFixed(2);
+                          setFieldValue(
+                            "totalwithinterest",
+                            totalAmountwithInterest
+                          );
+                        }
+                        setFieldValue("amountPerInstallment", "");
+                        setFieldValue("installmentNumber", "");
+                      }}
+                      max={100}
+                      min={0}
+                      className="form-control"
+                      placeholder=""
+                      errors={errors}
+                      touched={touched}
+                      disabled={!values?.loanAmount}
+                    />
+                  </div>
+                  <div className="col-4">
+                    <label>Total Loan Amount with interest</label>
+                    <FormikInput
+                      classes="input-sm"
+                      value={values?.totalwithinterest}
+                      name="totalwithinterest"
+                      type="number"
+                      step="1"
+                      onChange={(e) => {
+                        setFieldValue("totalwithinterest", e.target.value);
+                      }}
+                      className="form-control"
+                      placeholder=""
+                      errors={errors}
+                      touched={touched}
+                      disabled={true}
+                    />
+                  </div>
+                  <div className="col-4">
+                    <label>
+                      Guarantor Employee <Required />
+                    </label>
+
+                    <FormikSelect
+                      name="guarantor"
+                      isClearable={false}
+                      options={employeeDDL || []}
+                      value={values?.guarantor}
+                      onChange={(valueOption) => {
+                        setFieldValue("guarantor", valueOption);
+                      }}
+                      styles={{
+                        ...customStyles,
+                        control: (provided, state) => ({
+                          ...provided,
+                          minHeight: "auto",
+                          height:
+                            values?.guarantor?.length > 1 ? "auto" : "auto",
+                          borderRadius: "4px",
+                          boxShadow: `${success500}!important`,
+                          ":hover": {
+                            borderColor: `${gray600}!important`,
+                          },
+                          ":focus": {
+                            borderColor: `${gray600}!important`,
+                          },
+                        }),
+                        valueContainer: (provided, state) => ({
+                          ...provided,
+                          height:
+                            values?.guarantor?.length > 1 ? "auto" : "auto",
+                          padding: "0 6px",
+                        }),
+                        multiValue: (styles) => {
+                          return {
+                            ...styles,
+                            position: "relative",
+                            top: "-1px",
+                          };
+                        },
+                        multiValueLabel: (styles) => ({
+                          ...styles,
+                          padding: "0",
+                        }),
+                      }}
+                      isMulti
+                      isDisabled={singleData}
+                      errors={errors}
+                      placeholder="Guarantor Employee"
+                      touched={touched}
+                    />
+                  </div>
+
+                  <div className="col-4">
+                    <label>Closing Date</label>
+                    <FormikInput
+                      classes="input-sm"
+                      value={values?.loanClosingDate}
+                      name="loanClosingDate"
+                      type="date"
+                      onChange={(e) => {
+                        setFieldValue("loanClosingDate", e.target.value);
+                      }}
+                      min={!singleData && todayDate()}
+                      className="form-control"
+                      placeholder=""
+                      disabled={singleData}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+
+                  <div className="col-4">
+                    <label>
+                      Installment Number
+                      <Required />
+                    </label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.installmentNumber}
@@ -248,7 +511,7 @@ const CreateLoanApplicationModal = ({
                       type="number"
                       onChange={(e) => {
                         const amountPI =
-                          (values?.loanAmount || 0) / e.target.value;
+                          (values?.totalwithinterest || 0) / e.target.value;
                         setFieldValue(
                           "amountPerInstallment",
                           Math.ceil(amountPI)
@@ -275,8 +538,10 @@ const CreateLoanApplicationModal = ({
                       }
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Amount Per Installment</label>
+                  <div className="col-4">
+                    <label>
+                      Amount Per Installment <Required />
+                    </label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.amountPerInstallment}
@@ -313,7 +578,7 @@ const CreateLoanApplicationModal = ({
                   </div>
                   {singleData?.loanApplicationId && (
                     <>
-                      <div className="col-6">
+                      <div className="col-4">
                         <label>Approve Loan Amount</label>
                         <FormikInput
                           classes="input-sm"
@@ -332,7 +597,7 @@ const CreateLoanApplicationModal = ({
                           touched={touched}
                         />
                       </div>
-                      <div className="col-6">
+                      <div className="col-4">
                         <label>Approve Installment Number</label>
                         <FormikInput
                           classes="input-sm"
@@ -357,7 +622,7 @@ const CreateLoanApplicationModal = ({
                           touched={touched}
                         />
                       </div>
-                      <div className="col-6">
+                      <div className="col-4">
                         <label>Approve Amount Per Installment</label>
                         <FormikInput
                           classes="input-sm"
@@ -384,12 +649,15 @@ const CreateLoanApplicationModal = ({
                       </div>
                     </>
                   )}
-                  <div className="col-6">
-                    <label>Effective Date</label>
+                  <div className="col-4">
+                    <label>
+                      Effective Date <Required />
+                    </label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.effectiveDate}
                       name="effectiveDate"
+                      disabled={singleData}
                       type="date"
                       onChange={(e) => {
                         setFieldValue("effectiveDate", e.target.value);
@@ -401,38 +669,8 @@ const CreateLoanApplicationModal = ({
                       touched={touched}
                     />
                   </div>
-                  <div className="col-6">
-                    <label>Description</label>
-                    {/* <FormikInput
-                      classes="input-sm"
-                      value={values?.description}
-                      name="description"
-                      type="text"
-                      className="form-control"
-                      placeholder=""
-                      onChange={(e) => {
-                        setFieldValue("description", e.target.value);
-                      }}
-                      errors={errors}
-                      touched={touched}
-                      style={{ height: "60px" }}
-                    /> */}
-                    <FormikTextArea
-                      classes="textarea-with-label"
-                      value={values?.description}
-                      name="description"
-                      type="text"
-                      className="form-control"
-                      placeholder=""
-                      onChange={(e) => {
-                        setFieldValue("description", e.target.value);
-                      }}
-                      errors={errors}
-                      touched={touched}
-                      style={{ height: "60px" }}
-                    />
-                  </div>
-                  <div className="col-6 mt-4">
+
+                  <div className="col-4 mt-4">
                     <div className="input-main position-group-select">
                       {fileId ? (
                         <>
@@ -480,7 +718,7 @@ const CreateLoanApplicationModal = ({
                               .then((data) => {
                                 setFileId(data?.[0]);
                               })
-                              .catch((error) => {
+                              .catch(() => {
                                 setFileId("");
                               });
                           }
@@ -534,11 +772,259 @@ const CreateLoanApplicationModal = ({
                       )}
                     </div>
                   </div>
-                  <div className="col-6">
+                  <div className="col-4">
                     {labelShowLastInstallmentAmt(values)}
+                  </div>
+                  <div className="col-6">
+                    <label>
+                      Description <Required />
+                    </label>
+                    <FormikTextArea
+                      classes="textarea-with-label"
+                      value={values?.description}
+                      name="description"
+                      type="text"
+                      className="form-control"
+                      placeholder=""
+                      onChange={(e) => {
+                        setFieldValue("description", e.target.value);
+                      }}
+                      errors={errors}
+                      touched={touched}
+                      style={{ height: "60px" }}
+                    />
                   </div>
                 </div>
               </div>
+              {/* row table start */}
+              {singleData?.loanApplicationId && (
+                <div className="table-card-body pt-3">
+                  <div
+                    className=" table-card-styled tableOne"
+                    style={{ padding: "0px 12px" }}
+                  >
+                    <table className="table align-middle">
+                      <thead style={{ color: "#212529" }}>
+                        <tr>
+                          <th>
+                            <div className="d-flex align-items-center">
+                              Installment no
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex align-items-center">
+                              Repayment Date
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex align-items-center">
+                              Total Actual Payment Amount
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex align-items-center">
+                              Remarks
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex align-items-center justify-content-end">
+                              Action
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      {console.log("tableData", tableData)}
+                      <tbody>
+                        {tableData?.length > 0 && (
+                          <>
+                            {tableData.map((item, index) => {
+                              return (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+                                  <td>
+                                    <DefaultInput
+                                      classes="input-sm"
+                                      value={item?.date}
+                                      name="date"
+                                      type="month"
+                                      className="form-control"
+                                      disabled={true}
+                                      onChange={(e) => {
+                                        // setFieldValue("repaymentDate", "");
+                                        setFieldValue("date", e.target.value);
+                                        // setFieldValue(
+                                        //   "inMonth",
+                                        //   +e.target.value
+                                        //     .split("")
+                                        //     .slice(-2)
+                                        //     .join("")
+                                        // );
+                                        // setFieldValue(
+                                        //   "intYear",
+                                        //   +e.target.value
+                                        //     .split("")
+                                        //     .slice(0, 4)
+                                        //     .join("")
+                                        // );
+                                        // costInputHandler(
+                                        //   "date",
+                                        //   e.target.value,
+                                        //   index,
+                                        //   tableData,
+                                        //   setTableData,
+                                        //   values
+                                        // );
+                                      }}
+                                      errors={errors}
+                                      touched={touched}
+                                    />
+                                  </td>
+                                  {/* <td>{item?.dteRepaymentDay}</td> */}
+                                  <td>
+                                    <FormikInput
+                                      classes="input-sm"
+                                      value={+item?.intInstallmentAmount}
+                                      name="intInstallmentAmount"
+                                      type="number"
+                                      disabled={
+                                        item?.intInstallmentAmount === 0
+                                      }
+                                      onChange={(e) => {
+                                        if (e.target.value < 0) {
+                                          return toast.warn(
+                                            "Non-positive values not allowed",
+                                            { toastId: "toastId" }
+                                          );
+                                        } else {
+                                          setFieldValue(
+                                            "intInstallmentAmount",
+                                            ""
+                                          );
+                                        }
+                                        costInputHandler(
+                                          "intInstallmentAmount",
+                                          +e.target.value,
+                                          index,
+                                          tableData,
+                                          setTableData,
+                                          values
+                                        );
+                                      }}
+                                      className="form-control"
+                                      placeholder=""
+                                      errors={errors}
+                                      touched={touched}
+                                    />
+                                  </td>
+                                  <td>
+                                    <FormikInput
+                                      classes="input-sm"
+                                      value={item?.strRemarks}
+                                      name="strRemarks"
+                                      type="string"
+                                      onChange={(e) => {
+                                        setFieldValue(
+                                          "strRemarks",
+                                          e.target.value
+                                        );
+                                        costInputHandler(
+                                          "strRemarks",
+                                          e.target.value,
+                                          index,
+                                          tableData,
+                                          setTableData,
+                                          values
+                                        );
+                                      }}
+                                      className="form-control"
+                                      placeholder=""
+                                      errors={errors}
+                                      touched={touched}
+                                    />
+                                  </td>
+                                  {console.log("tableData main", tableData)}
+                                  <td>
+                                    <div className="d-flex align-items-end justify-content-end">
+                                      <span
+                                        style={{
+                                          cursor: `${
+                                            !item?.isHold ? "pointer" : ""
+                                          }`,
+                                        }}
+                                        disabled={true}
+                                        onClick={() => {
+                                          if (item?.isHold) return;
+                                          handleAmendmentClick(
+                                            tableData,
+                                            setTableData,
+                                            item,
+                                            index
+                                          );
+                                        }}
+                                      >
+                                        <Tag
+                                          color={`${
+                                            item?.isHold ? "gray" : "green"
+                                          }`}
+                                        >
+                                          {"Amendment!"}
+                                        </Tag>
+                                      </span>
+                                      <IconButton
+                                        disabled={item?.isHold}
+                                        type="button"
+                                        style={{
+                                          height: "25px",
+                                          width: "25px",
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDeleteClick(
+                                            index,
+                                            tableData,
+                                            setTableData
+                                          );
+                                        }}
+                                      >
+                                        <Tooltip title="Delete">
+                                          <DeleteOutline
+                                            sx={{
+                                              height: "25px",
+                                              width: "25px",
+                                            }}
+                                          />
+                                        </Tooltip>
+                                      </IconButton>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                            <tr>
+                              <td></td>
+                              <td
+                                style={{
+                                  textAlign: "right",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                Total:{" "}
+                              </td>
+                              <td style={{ fontWeight: "bold" }}>
+                                {formatMoney(subTotal(tableData))}
+                              </td>
+                              <td></td>
+                              <td></td>
+                            </tr>
+                          </>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* row table end  */}
               <div className="modal-footer form-modal-footer">
                 <button
                   type="button"
@@ -546,7 +1032,7 @@ const CreateLoanApplicationModal = ({
                   style={{
                     marginRight: "15px",
                   }}
-                  onClick={(e) => {
+                  onClick={() => {
                     setShow(false);
                     resetForm(initData);
                     setFileId("");

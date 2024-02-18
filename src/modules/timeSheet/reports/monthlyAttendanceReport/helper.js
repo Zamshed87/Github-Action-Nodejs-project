@@ -1,4 +1,4 @@
-import AvatarComponent from "../../../../common/AvatarComponent";
+import AvatarComponent from "common/AvatarComponent";
 import { gray600 } from "../../../../utility/customColor";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import { getChipStyle } from "../../../employeeProfile/dashboard/components/EmployeeSelfCalendar";
@@ -17,11 +17,7 @@ export const onGetMonthlyAttendanceReport = (
 ) => {
   let search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
   getMonthlyAttendanceInformation(
-    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
-      values?.fromDate
-    }&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=${
-      pages.current
-    }&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`,
+    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate}&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=${pages.current}&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`,
     (data) => {
       setPages({
         ...pages,
@@ -84,15 +80,38 @@ export const monthlyAttendanceReportColumns = (
       dataIndex: "strDesignation",
       sorter: true,
       filter: true,
+      fixed: "left",
+      width: 180,
+    },
+    {
+      title: "Work. Group/Location",
+      dataIndex: "strWorkplaceGroup",
+      sorter: true,
+      // filter: true,
+      width: 180,
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      // filter: true,
       width: 180,
     },
     {
       title: "Department",
       dataIndex: "strDepartment",
       sorter: true,
-      filter: true,
+      // filter: true,
       width: 180,
     },
+    {
+      title: "Section",
+      dataIndex: "strSectionName",
+      sorter: true,
+      // filter: true,
+      width: 180,
+    },
+
     ...(dateList?.length > 0 &&
       dateList.map((item) => ({
         title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
@@ -356,10 +375,13 @@ export const column = (fromDate, toDate) => {
     });
   return {
     sl: "SL",
+    strWorkplaceGroup: "Workplace Group",
+    strWorkplace: "Workplace",
+    strDepartment: "Department",
+    strSectionName: "Section",
     EmployeeCode: "Code",
     strEmployeeName: "Employee Name",
     strDesignation: "Designation",
-    strDepartment: "Department",
     ...tempObj,
   };
 };

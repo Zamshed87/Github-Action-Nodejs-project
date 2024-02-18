@@ -96,7 +96,7 @@ export const saveBulkUploadOvertimeAction = async (setLoading, data, cb) => {
     });
 
     setLoading(true);
-    const res = await axios.post(`/Employee/InsertAllOvertime`, modifiedData);
+    const res = await axios.post(`/Employee/InsertAllOvertimeBulk`, modifiedData);
     setLoading(false);
     toast.success(res?.data?.message || "Successful");
     cb && cb();
@@ -113,7 +113,8 @@ export const processBulkUploadOvertimeAction = async (
   setLoading,
   buId,
   accId,
-  empId
+  empId,
+  wgId
 ) => {
   try {
     setLoading(true);
@@ -131,6 +132,7 @@ export const processBulkUploadOvertimeAction = async (
           ? "Daily"
           : "",
       intAccountId: accId,
+      intWorkplaceGroupId: wgId,
       intBusinessUnitId: buId,
       isActive: true,
       intCreatedBy: empId,

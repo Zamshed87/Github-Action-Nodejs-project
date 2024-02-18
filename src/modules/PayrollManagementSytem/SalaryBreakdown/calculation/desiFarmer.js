@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
-import { basedOnBasicPercentage, salaryBreakdownCreateNApply } from "../helper";
-import { isUniq } from "../../../../utility/uniqChecker";
 import { todayDate } from "../../../../utility/todayDate";
+import { isUniq } from "../../../../utility/uniqChecker";
+import { basedOnBasicPercentage, salaryBreakdownCreateNApply } from "../helper";
 
 export const desiFarmerSetter = (
   values,
@@ -181,7 +181,7 @@ export const desiFarmerCalculation = (
     ...payload,
     intSalaryBreakdownHeaderId:
       singleData?.intSalaryBreakdownHeaderId ||
-      state?.singleBreakdown?.intSalaryBreakdownHeaderId ||
+      state?.intSalaryBreakdownHeaderId ||
       dynamicForm[0]?.intSalaryBreakdownHeaderId ||
       0,
     strDependOn: values?.dependsOn?.label,

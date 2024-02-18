@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AddOutlined } from "@mui/icons-material";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -51,6 +51,7 @@ const SalaryAssign = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Salary Assign";
   }, []);
 
   const { orgId, buId, employeeId, wgId, wgName, wId } = useSelector(
@@ -104,9 +105,11 @@ const SalaryAssign = () => {
       buId,
       0,
       0,
-      setPayrollElementDDL
+      setPayrollElementDDL,
+      wgId,
+      wId
     );
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
 
   const defaultPayrollElement = payrollElementDDL?.filter(
     (itm) => itm?.isDefault === true
@@ -114,6 +117,7 @@ const SalaryAssign = () => {
   const noDefaultPayrollElement = payrollElementDDL?.filter(
     (itm) => itm?.isDefault === false
   );
+
   const finalPayrollElement = [
     ...defaultPayrollElement,
     ...noDefaultPayrollElement,
@@ -228,7 +232,9 @@ const SalaryAssign = () => {
   } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
-    onSubmit: (values) => {},
+    onSubmit: () => {
+      //
+    },
   });
 
   const [resEmpLanding, getEmployeeLanding, loadingLanding, setEmpLanding] =
@@ -246,7 +252,7 @@ const SalaryAssign = () => {
   };
 
   const handleChangeRowsPerPages = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getLanding(searchText, values?.salaryStatus?.value, {
@@ -276,13 +282,27 @@ const SalaryAssign = () => {
       pageSize: paginationSize,
       total: 0,
     });
-    getLanding("", "NotAssigned", {
-      current: 1,
-      pageSize: paginationSize,
-      total: 0,
-    });
+    getLanding(
+      "",
+      values?.salaryStatus?.value ? values?.salaryStatus?.value : "NotAssigned",
+      {
+        current: 1,
+        pageSize: paginationSize,
+        total: 0,
+      }
+    );
     setStatus(values?.salaryStatus?.value);
   }, [buId, wgId, wId]);
+
+  // const [updateCount, setUpdateCount] = useState(0);
+
+  // useEffect(() => {
+  //   // This effect runs every time yourState changes
+  //   // console.log({ resEmpLanding });
+  //   setUpdateCount((prevCount) => prevCount + 1);
+  // }, [resEmpLanding]);
+  // console.log({ updateCount });
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -768,7 +788,8 @@ const SalaryAssign = () => {
                         data?.intSalaryBreakdownHeaderId,
                         setBreakDownList,
                         data?.numNetGrossSalary,
-                        setLoading
+                        setLoading,
+                        wId
                       );
                     }
                   } else {
@@ -778,7 +799,9 @@ const SalaryAssign = () => {
                         orgId,
                         defaultPayrollElement[0]?.value,
                         0,
-                        setBreakDownList
+                        setBreakDownList,
+                        "",
+                        wId
                       );
                     }
                   }

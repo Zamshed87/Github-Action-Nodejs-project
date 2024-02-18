@@ -1,7 +1,7 @@
 import {
   AddOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ import OrgBankDetailsAddEditFormComponent from "./addEditForm";
 import {
   filterData,
   getAllOrgBankDetailsLanding,
-  orgBankDetailsDtoCol
+  orgBankDetailsDtoCol,
 } from "./helper";
 import "./orgBankDetails.css";
 import { default as OrgBankDetailsViewFormComponent } from "./viewForm";
@@ -68,6 +68,7 @@ function OrgBankDetailsLanding() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Org Bank Details";
   }, []);
 
   const getLandingData = () => {

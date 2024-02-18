@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -40,15 +40,17 @@ const style = {
 };
 
 export default function ResourcesDropdown() {
-  const { profileData: {orgId, buId, employeeId, wgId, wId}, businessUnitDDL, workplaceGroupDDL, workplaceDDL } = useSelector(
-    (state) => state?.auth,
-    shallowEqual
-  );
-
+  const {
+    profileData: { orgId, buId, employeeId, wgId, wId },
+    businessUnitDDL,
+    workplaceGroupDDL,
+    workplaceDDL,
+  } = useSelector((state) => state?.auth, shallowEqual);
+  const [workPlaceWouldChange, setWorkPlaceWouldChange] = useState("");
   const dispatch = useDispatch();
 
   const handleResources = (event) => {
-    let filterData = businessUnitDDL?.filter(
+    const filterData = businessUnitDDL?.filter(
       (item) => item?.BusinessUnitId === event.target.value
     );
 
@@ -66,18 +68,25 @@ export default function ResourcesDropdown() {
   };
 
   const handleWgResources = (event) => {
-    let filterData = workplaceGroupDDL?.filter(
+    const filterData = workplaceGroupDDL?.filter(
       (item) => item?.WorkplaceGroupId === event.target.value
     );
+    setWorkPlaceWouldChange("workplaceWillChange");
     dispatch(
       updateWgAction(
         filterData?.[0]?.WorkplaceGroupId,
         filterData?.[0]?.WorkplaceGroupName
       )
     );
+    dispatch(
+      updateWAction(
+        0,
+        ""
+      )
+    );
   };
   const handleWResources = (event) => {
-    let filterData = workplaceDDL?.filter(
+    const filterData = workplaceDDL?.filter(
       (item) => item?.WorkplaceId === event.target.value
     );
     dispatch(
@@ -97,14 +106,16 @@ export default function ResourcesDropdown() {
     dispatch(getWDDLAction(buId, wgId, employeeId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wgId, buId]);
-  
+
   useEffect(() => {
-    dispatch(
-      updateWAction(
-        workplaceDDL?.[0]?.WorkplaceId,
-        workplaceDDL?.[0]?.WorkplaceName
-      )
-    );
+    if (workPlaceWouldChange === "workplaceWillChange") {
+      dispatch(
+        updateWAction(
+          workplaceDDL?.[0]?.WorkplaceId,
+          workplaceDDL?.[0]?.WorkplaceName
+        )
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workplaceDDL]);
 

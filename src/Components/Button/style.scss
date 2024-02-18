@@ -1,0 +1,165 @@
+// primary_outline Colors
+$primary_outline: var(--primary-color);
+
+// -----------------Button Type ~ Start--------------
+// Primary Button Variables
+$primary_border_color: var(--primary-color);
+$primary_bg_color: var(--primary-color);
+$primary_text_color: var(--white);
+// Disabled
+$primary_disbaled_bg_color: #ececec;
+$primary_disbaled_border_color: #ECECEC;
+$primary_disbaled_color: rgb(51, 51, 51);
+// Secondary Button Variables
+$secondary_border_color: var(--gray300);
+$secondary_bg_color: var(--white);
+$secondary_text_color: var(--gray500);
+// Hover
+$secondary_border_color_dark: var(--gray100);
+// Disabled
+$secondary_disbaled_bg_color: rgb(121, 169, 218);
+$secondary_disbaled_border_color: rgb(121, 169, 218);
+$secondary_disbaled_color: rgb(255, 255, 255);
+//text button Primary variables
+$text_button_primary-color: var(--primary-color);
+//text button Primary variables
+$text_button_secondary_color: rgba(143, 161, 176, 1);
+// -----------------Button Type ~ End--------------
+
+// --------------------- Size ~ Start -------------
+// Normal Button Variables Here ~
+$normal_ButtonPadding: 4px 16px !important;
+$normal_ButtonFontSize: var(--fs_medium);
+
+//Small button variables
+$sm_ButtonPadding: 5px 15px !important;
+$sm_ButtonFontSize: var(--fs_medium);
+$sm_ButtonLoadingSize: 8px;
+
+// large button variables
+$lg_ButtonPadding: 10px 40px !important;
+$lg_ButtonFontSize: var(--fs_medium);
+$lg_ButtonLoadingSize: 8px;
+// --------------------- Size ~ End -------------
+
+// Button Size mixing
+// Primary Large Button
+@mixin largeButton {
+  &.ant-btn-lg {
+    padding: $lg_ButtonPadding;
+    font-size: $lg_ButtonFontSize;
+
+    .ant-btn-loading-icon {
+      font-size: $lg_ButtonLoadingSize;
+    }
+  }
+}
+// Primary Small Button
+@mixin smallButton {
+  &.ant-btn-sm {
+    padding: $sm_ButtonPadding;
+    font-size: $sm_ButtonFontSize;
+    .ant-btn-loading-icon {
+      font-size: $sm_ButtonLoadingSize;
+    }
+  }
+}
+
+// --------------------------------
+.people_dex_button {
+  display: flex;
+  align-items: center;
+  .ant-btn {
+    border-radius: 4px;
+    height: auto;
+    padding: $normal_ButtonPadding;
+    letter-spacing: normal;
+    line-height: var(--primary_line_height);
+    text-transform: uppercase;
+    font-size: $normal_ButtonFontSize;
+    font-weight: var(--fw-600);
+    // Flex
+    display: flex;
+    align-items: center;
+    &:has(.anticon) {
+      span:last-child {
+        margin-left: 5px;
+      }
+    }
+  }
+  //   Primary Button CSS
+  .ant-btn.ant-btn-primary {
+    // border: 1px solid $primary_border_color;
+    background: $primary_bg_color;
+    color: $primary_text_color;
+    border-color: transparent;
+    &:hover {
+      background: var(--primary-color-dark);
+      border: 1px solid var(--primary-color-dark);
+    }
+    // Small Button
+    @include smallButton;
+    // Large Button
+    @include largeButton;
+    &[disabled] {
+      color: $primary_disbaled_color;
+      border-color: $primary_disbaled_border_color;
+      background: $primary_disbaled_bg_color;
+      text-shadow: none;
+      box-shadow: none;
+    }
+  }
+  //   Secoundary Button CSS
+  .ant-btn.ant-btn-default {
+    border: 1px solid $secondary_border_color;
+    background: $secondary_bg_color;
+    color: $secondary_text_color;
+    &:hover {
+      color: var($secondary_border_color_dark);
+      border: 1px solid var($secondary_border_color_dark);
+      background: $secondary_border_color_dark;
+    }
+    // Small Button
+    @include smallButton;
+    // Large Button
+    @include largeButton;
+    &[disabled] {
+      color: $secondary_disbaled_color;
+      border-color: $secondary_disbaled_border_color;
+      background: $secondary_disbaled_bg_color;
+      text-shadow: none;
+      box-shadow: none;
+    }
+  }
+  .ant-btn.ant-btn-dashed {
+    border: 1px solid $primary_outline;
+    background: var(--white);
+    color: $primary_outline;
+    &:hover {
+      color: var($secondary_border_color_dark);
+      border: 1px solid var($secondary_border_color_dark);
+    }
+    // Small Button
+    @include smallButton;
+    // Large Button
+    @include largeButton;
+  }
+  .ant-btn.ant-btn-text.color_primary {
+    color: $text_button_primary-color;
+    border-radius: 4px;
+    padding: 5px 5px !important;
+    &:hover {
+      background: #fff;
+      color: var(--primary-color);
+    }
+  }
+  .ant-btn.ant-btn-text.color_secondary {
+    color: $text_button_secondary_color;
+    border-radius: 4px;
+    padding: 5px 5px !important;
+    &:hover {
+      background: #fff;
+      color: rgb(121, 137, 151);
+    }
+  }
+}

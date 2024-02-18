@@ -100,6 +100,7 @@ function Calendar() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Calendar Assign";
   }, []);
 
   // landing data
@@ -129,8 +130,8 @@ function Calendar() {
       const data = [
         ...new Set(singleShiftData.map((item) => item.strCalendarName)),
       ];
-      let colorData = {};
-      let colorDataBg = {};
+      const colorData = {};
+      const colorDataBg = {};
       data.forEach((status, index) => {
         colorData[status] = colors[index % colors.length];
       });
@@ -150,7 +151,7 @@ function Calendar() {
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           resetForm(initData);
         }}
       >

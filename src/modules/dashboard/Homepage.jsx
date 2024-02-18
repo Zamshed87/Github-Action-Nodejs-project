@@ -2,7 +2,7 @@ import { CardMedia } from "@material-ui/core";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Form, Formik } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 
@@ -20,6 +20,7 @@ import task from "../../assets/images/task.svg";
 import training from "../../assets/images/training.svg";
 import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/actions";
 import "./dashBoard.css";
+import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
 
 const initData = {
   search: "",
@@ -44,17 +45,72 @@ const Homepage = () => {
   //   return menuList.filter(itm => itm?.label === label);
   // };
 
-  const toAndImage = (label) => {
+  // const toAndImage = (label) => {
+  //   let to = null;
+  //   let image = null;
+  //   if (label === "Employee Self Service") {
+  //     to = "/SelfService/dashboard";
+  //     image = employeeSelfService;
+  //   } else if (label === "Employee Management") {
+  //     to = isOwner ? "/profile/reports/employeeList" : "/profile/employee";
+  //     image = employeeManagement;
+  //   } else if (label === "Administration") {
+  //     to = "/administration/roleManagement/usersInfo";
+  //     image = administration;
+  //   } else if (label === "Approval") {
+  //     to = "/approval";
+  //     image = approval;
+  //   } else if (label === "Compensation & Benefits") {
+  //     to = isOwner
+  //       ? "/compensationAndBenefits/reports/salaryReport"
+  //       : "/compensationAndBenefits/employeeSalary/salaryAssign";
+  //     image = calander;
+  //   } else if (label === "Analytics") {
+  //     to = "/analytics/comparativeAnalysis";
+  //     image = analystics;
+  //   } else if (label === "Dashboard") {
+  //     to = "/dashboard";
+  //     image = speedometer;
+  //   } else if (label === "Task Management") {
+  //     to = "/taskManagement";
+  //     image = task;
+  //   } else if (label === "Performance Management System") {
+  //     to = "/performancemanagementsystem";
+  //     image = performance;
+  //   } else if (label === "Recruitment") {
+  //     to = "https://devhire.peopledesk.io/";
+  //     image = requirment;
+  //   } else if (label === "Manning") {
+  //     to = "/manning";
+  //     image = requirment;
+  //   } else if (label === "Training & Development") {
+  //     to = "/trainingAndDevelopment/training/schedule";
+  //     image = training;
+  //   } else if (label === "Asset Management") {
+  //     to = "/assetManagement/registration/items";
+  //     image = assetManagement;
+  //   }
+  //   return { to, image };
+  // };
+
+  const toAndImage = (label, childMenu) => {
     let to = null;
     let image = null;
     if (label === "Employee Self Service") {
       to = "/SelfService/dashboard";
       image = employeeSelfService;
     } else if (label === "Employee Management") {
-      to = isOwner ? "/profile/reports/employeeList" : "/profile/employee";
+      to = isOwner
+        ? "/profile/reports/employeeList"
+        : childMenu?.length > 0
+        ? childMenu?.[0]?.to
+        : "/profile/employee";
       image = employeeManagement;
     } else if (label === "Administration") {
-      to = "/administration/roleManagement/usersInfo";
+      to =
+        childMenu?.length > 0
+          ? childMenu?.[0]?.to
+          : "/administration/roleManagement/usersInfo";
       image = administration;
     } else if (label === "Approval") {
       to = "/approval";
@@ -62,6 +118,8 @@ const Homepage = () => {
     } else if (label === "Compensation & Benefits") {
       to = isOwner
         ? "/compensationAndBenefits/reports/salaryReport"
+        : childMenu?.length > 0
+        ? childMenu?.[0]?.to
         : "/compensationAndBenefits/employeeSalary/salaryAssign";
       image = calander;
     } else if (label === "Analytics") {
@@ -92,21 +150,39 @@ const Homepage = () => {
     return { to, image };
   };
 
-  const onClickHandler = (label) => {
-    const { to } = toAndImage(label);
+  const onClickHandler = (label, childMenuArray = []) => {
+    const childMenu =
+      childMenuArray?.length > 0 ? flattenNestedArray(childMenuArray) : [];
+    const { to } = toAndImage(label, childMenu);
+    if (label !== "Approval" && label !== "Dashboard" && label !== "Employee Self Service") {
+      dispatch(handleMostClickedMenuListAction(childMenu?.[0]));
+    }
     if (to === "https://devhire.peopledesk.io/") {
       window.open(to, "_blank");
     } else {
       history.push(to);
     }
   };
-
-  const saveHandler = (values) => { };
+  const flattenNestedArray = (menuArr) => {
+    const result = [];
+    const recursiveFlatter = (arr) => {
+      arr.forEach((item) => {
+        if (item?.childList?.length > 0) {
+          recursiveFlatter(item?.childList);
+        } else {
+          result.push(item);
+        }
+      });
+    };
+    recursiveFlatter(menuArr);
+    return result;
+  };
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Overview"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "PeopleDesk";
   }, []);
 
   return (
@@ -114,21 +190,11 @@ const Homepage = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={() => {
+          console.log("");
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit }) => (
           <>
             <Form onSubmit={handleSubmit}>
               <div className="dashboard">
@@ -171,7 +237,7 @@ const Homepage = () => {
                         item?.label !== "Overview" && (
                           <div
                             onClick={() => {
-                              onClickHandler(item?.label);
+                              onClickHandler(item?.label, item?.childList);
                             }}
                             className="item-card text-center"
                             key={index}

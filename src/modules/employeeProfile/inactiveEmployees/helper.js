@@ -1,11 +1,11 @@
+import { GroupAddOutlined } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 import Chips from "../../../common/Chips";
-import { dateFormatter } from "../../../utility/dateFormatter";
-import { GroupAddOutlined } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
+import { dateFormatter } from "../../../utility/dateFormatter";
 
 export const getBuDetails = async (buId, setter, setLoading) => {
   try {
@@ -145,6 +145,32 @@ export const inactiveEmpColumns = (
       width: 50,
     },
     {
+      title: "Work. Group/Location",
+      dataIndex: "strWorkplaceGroup",
+      sort: false,
+      filter: false,
+      width: 200,
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "strWorkplace",
+      sort: false,
+      filter: false,
+      width: 200,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Section",
+      dataIndex: "strSection",
+      sort: false,
+      filter: false,
+    },
+    {
       title: "Employee Id",
       dataIndex: "strEmployeeCode",
       sort: false,
@@ -178,12 +204,7 @@ export const inactiveEmpColumns = (
       sort: false,
       filter: false,
     },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sort: false,
-      filter: false,
-    },
+
     {
       title: "Joining Date",
       dataIndex: "dteJoiningDate",
@@ -192,9 +213,28 @@ export const inactiveEmpColumns = (
       filter: false,
     },
     {
-      title: "Service Length",
-      dataIndex: "serviceLength",
-      key: "serviceLength",
+      title: "Inactive Date",
+      dataIndex: "dteLastInactivateDate",
+      isDate: true,
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Last Present date      ",
+      dataIndex: "dteLastPresentDate",
+      isDate: true,
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Reason",
+      dataIndex: "reason",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Mobile Number      ",
+      dataIndex: "strPersonalNumber",
       sort: false,
       filter: false,
     },
@@ -249,11 +289,17 @@ export const getTableDataInactiveEmployees = (row, keys, totalKey) => {
 // excel columns
 export const column = {
   sl: "SL",
+  strWorkplaceGroup: "Workplace Group",
+  strWorkplace: "Workplace",
+  strDepartment: "Department",
+  strSection: "Section",
   strEmployeeCode: "Employee Id",
   strEmployeeName: "Employee Name",
   strDesignation: "Designation",
-  strDepartment: "Department",
   dteJoiningDate: "Joining Date",
-  serviceLength: "Service Length",
+  dteLastInactivateDate: "Inactive Date",
+  dteLastPresentDate: "Last Present date",
+  reason: "Reason",
+  strPersonalNumber: "Mobile Number",
   strStatus: "Status",
 };

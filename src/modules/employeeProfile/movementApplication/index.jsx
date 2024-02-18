@@ -77,6 +77,7 @@ export default function EmMovementApplication() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Movement Application";
   }, []);
   const {
     userName,
@@ -432,7 +433,6 @@ export default function EmMovementApplication() {
     ];
   };
 
-  console.log(othersEmployee, "otemp");
 
   return (
     <>

@@ -21,11 +21,7 @@ import {
 } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { IconButton } from "@mui/material";
-import {
-  deleteSeparationAttachment,
-  getSeparationLandingById,
-  separationCrud,
-} from "../../helper";
+import { deleteSeparationAttachment, separationCrud } from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
@@ -62,7 +58,7 @@ export default function ManagementApplicationSeparationForm() {
   const dispatch = useDispatch();
   const inputFile = useRef(null);
 
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -79,7 +75,9 @@ export default function ManagementApplicationSeparationForm() {
   const [loading, setLoading] = useState(false);
   const [separationTypeDDL, setSeparationTypeDDL] = useState([]);
   const [singleData, setSingleData] = useState([]);
-  const [, getSeperationDataApi, loadingSeperationData, ,] = useAxiosGet();
+  const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
+  const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] =
+    useAxiosGet();
   // images
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
@@ -95,15 +93,15 @@ export default function ManagementApplicationSeparationForm() {
 
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=SeparationType&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intWorkplaceId=${wId}`,
       "SeparationTypeId",
       "SeparationType",
       setSeparationTypeDDL
     );
-  }, [wgId, buId]);
+  }, [wgId, buId, wId]);
 
-  const getEmpSeperationDataHandlerById = () => {
-    getSeperationDataApi(
+  const getEmpSeparationDataHandlerById = () => {
+    getSeparationDataApi(
       `/Employee/EmployeeSeparationById?SeparationId=${+params?.id}`,
       (res) => {
         setValues((prev) => ({
@@ -126,56 +124,40 @@ export default function ManagementApplicationSeparationForm() {
           applicationBody: `${res?.strReason}`,
         }));
         setImgRow(res?.strDocumentId?.split(","));
-        const documentList = res?.strDocumentId?.length > 0 ? res?.strDocumentId?.split(",")?.map((image) => {
-          return {
-            globalFileUrlId: +image,
-          };
-        }) : [];
+        const documentList =
+          res?.strDocumentId?.length > 0
+            ? res?.strDocumentId?.split(",")?.map((image) => {
+                return {
+                  globalFileUrlId: +image,
+                };
+              })
+            : [];
         setEditImageRow(documentList);
         setSingleData(res);
+        getLastWorkingDay(
+          `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${
+            res?.intDepertmentId || 0
+          }&employmentType=${res?.intEmploymentTypeId || 0}&designationId=${
+            res?.intDesignationId || 0
+          }`,
+          (data) => {
+            const formattedLastWorkingDay = new Date(data);
+            const formattedMinDate = formattedLastWorkingDay
+              .toISOString()
+              .split("T")[0];
+            setLastWorkingDay(formattedMinDate);
+          }
+        );
       }
     );
   };
 
   useEffect(() => {
     if (+params?.id) {
-      // const payload = {
-      //   intSeparationId: +params?.id,
-      //   status: "",
-      //   workplaceGroupId: wgId,
-      //   departmentId: 0,
-      //   designationId: 0,
-      //   supervisorId: 0,
-      //   employeeId: employeeId,
-      //   separationTypeId: 0,
-      //   applicationFromDate: null,
-      //   applicationToDate: null,
-      //   businessUnitId: buId,
-      //   accountId: orgId,
-      //   tableName: "EmployeeSeparationReportBySeparationId",
-      // };
-      // getSeparationLandingById(payload, setSingleData, setLoading);
-      getEmpSeperationDataHandlerById();
+      getEmpSeparationDataHandlerById();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId, params?.id]);
-
-  // useEffect(() => {
-  //   if (+params?.id) {
-  //     setImgRow(singleData?.docArr);
-  //   }
-  // }, [params?.id, singleData]);
-
-  // useEffect(() => {
-  //   if (params?.id && imgRow?.length) {
-  //     const modifyImageArray = imgRow.map((image) => {
-  //       return {
-  //         globalFileUrlId: image,
-  //       };
-  //     });
-  //     setEditImageRow(modifyImageArray);
-  //   }
-  // }, [imgRow, params?.id]);
 
   const saveHandler = (values, cb) => {
     const callback = () => {
@@ -241,16 +223,16 @@ export default function ManagementApplicationSeparationForm() {
     initialValues: +params?.id
       ? {
           employeeName: {
-            value: singleData?.EmployeeId,
-            label: singleData?.EmployeeName,
+            value: singleData?.intEmployeeId,
+            label: singleData?.strEmployeeName,
           },
           separationType: {
-            value: singleData?.SeparationTypeId,
-            label: singleData?.SeparationTypeName,
+            value: singleData?.intSeparationTypeId,
+            label: singleData?.strSeparationTypeName,
           },
-          applicationDate: dateFormatterForInput(singleData?.SeparationDate),
-          lastWorkingDay: dateFormatterForInput(singleData?.LastWorkingDay),
-          applicationBody: `${singleData?.Reason}`,
+          applicationDate: dateFormatterForInput(singleData?.dteSeparationDate),
+          lastWorkingDay: dateFormatterForInput(singleData?.dteLastWorkingDate),
+          applicationBody: `${singleData?.strReason}`,
         }
       : {
           ...initData,
@@ -258,23 +240,7 @@ export default function ManagementApplicationSeparationForm() {
     onSubmit: (values, { setSubmitting, resetForm }) => {
       saveHandler(values, () => {
         if (params?.id) {
-          // const payload = {
-          //   intSeparationId: +params?.id,
-          //   status: "",
-          //   workplaceGroupId: wgId,
-          //   departmentId: 0,
-          //   designationId: 0,
-          //   supervisorId: 0,
-          //   employeeId: employeeId,
-          //   separationTypeId: 0,
-          //   applicationFromDate: null,
-          //   applicationToDate: null,
-          //   businessUnitId: buId,
-          //   accountId: orgId,
-          //   tableName: "EmployeeSeparationReportBySeparationId",
-          // };
-          // getSeparationLandingById(payload, setSingleData, setLoading);
-          getEmpSeperationDataHandlerById();
+          getEmpSeparationDataHandlerById();
         } else {
           resetForm(initData);
         }
@@ -284,30 +250,14 @@ export default function ManagementApplicationSeparationForm() {
 
   const deleteImageHandler = (documentId) => {
     deleteSeparationAttachment(+params?.id, documentId, () => {
-      // const payload = {
-      //   intSeparationId: +params?.id,
-      //   status: "",
-      //   workplaceGroupId: wgId,
-      //   departmentId: 0,
-      //   designationId: 0,
-      //   supervisorId: 0,
-      //   employeeId: employeeId,
-      //   separationTypeId: 0,
-      //   applicationFromDate: null,
-      //   applicationToDate: null,
-      //   businessUnitId: buId,
-      //   accountId: orgId,
-      //   tableName: "EmployeeSeparationReportBySeparationId",
-      // };
-      // getSeparationLandingById(payload, setSingleData, setLoading);
-      getEmpSeperationDataHandlerById();
+      getEmpSeparationDataHandlerById();
       setImgRow(singleData?.docArr);
     });
   };
 
   return (
     <>
-      {(loading || loadingSeperationData) && <Loading />}
+      {(loading || loadingSeparationData) && <Loading />}
       {permission?.isCreate ? (
         <form onSubmit={handleSubmit}>
           <div className="table-card">
@@ -348,6 +298,22 @@ export default function ManagementApplicationSeparationForm() {
                         isSearchIcon={true}
                         handleChange={(valueOption) => {
                           setFieldValue("employeeName", valueOption);
+                          if (valueOption) {
+                            getLastWorkingDay(
+                              `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${0}&employmentType=${
+                                valueOption?.employmentTypeId
+                              }&designationId=${valueOption?.designation}`,
+                              (data) => {
+                                const formattedLastWorkingDay = new Date(data);
+                                const formattedMinDate = formattedLastWorkingDay
+                                  .toISOString()
+                                  .split("T")[0];
+                                setLastWorkingDay(formattedMinDate);
+                              }
+                            );
+                          } else {
+                            setLastWorkingDay("");
+                          }
                         }}
                         placeholder="Search (min 3 letter)"
                         loadOptions={(v) =>
@@ -398,7 +364,7 @@ export default function ManagementApplicationSeparationForm() {
                         <DefaultInput
                           classes="input-sm"
                           value={values?.lastWorkingDay}
-                          min={values?.applicationDate}
+                          min={lastWorkingDay || values?.applicationDate}
                           onChange={(e) => {
                             setFieldValue("lastWorkingDay", e.target.value);
                           }}
@@ -407,7 +373,9 @@ export default function ManagementApplicationSeparationForm() {
                           className="form-control"
                           errors={errors}
                           touched={touched}
-                          disabled={!values?.applicationDate}
+                          disabled={
+                            !values?.applicationDate || !values?.employeeName
+                          }
                         />
                       </div>
                     </div>
@@ -456,7 +424,6 @@ export default function ManagementApplicationSeparationForm() {
                       </p>
                       {imageFile?.length
                         ? imageFile.map((image, i) => (
-                          
                             <div
                               className="d-flex align-items-center"
                               style={{ width: "160px" }}

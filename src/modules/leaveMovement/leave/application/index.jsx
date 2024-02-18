@@ -64,6 +64,7 @@ function LeaveApplication(props) {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Self-Leave Application";
   }, []);
 
   return (
@@ -76,6 +77,7 @@ function LeaveApplication(props) {
             value: employeeInfo?.[0]?.EmployeeId || employeeId,
             label: employeeInfo?.[0]?.EmployeeName || userName,
           },
+          isSelfService:true
         }}
         validationSchema={validationSchemaForLeaveApplication}
         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -219,11 +221,16 @@ function LeaveApplication(props) {
                         leaveTypeDDL,
                         setLoading,
                         loading,
+                        show: true,
+
                       }}
                     />
                   </div>
                   <div className="col-lg-6 col-md-10 leave-movement-FormCard">
-                    <LeaveBalanceTable leaveBalanceData={leaveBalanceData} />
+                    <LeaveBalanceTable
+                      leaveBalanceData={leaveBalanceData}
+                      show={true}
+                    />
                   </div>
                 </div>
                 <div className="row">

@@ -2,7 +2,7 @@
 import {
   AddOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ import AddEditFormComponent from "./addEditForm";
 import {
   adminExpenceDtoCol,
   filterData,
-  getAllGlobalExpenseType
+  getAllGlobalExpenseType,
 } from "./helper";
 import ViewFormComponent from "./viewForm";
 
@@ -64,7 +64,7 @@ const ExpenseTypeCreate = () => {
     setId("");
   };
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -75,10 +75,11 @@ const ExpenseTypeCreate = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Expense Type";
   }, []);
 
   useEffect(() => {
-    getAllGlobalExpenseType(setRowDto, orgId, setAllData, setLoading);
+    getAllGlobalExpenseType(setRowDto, orgId, wId, setAllData, setLoading);
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);

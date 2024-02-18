@@ -6,17 +6,17 @@ import {
   ModeEditOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
 import ActionMenu from "../../../../../../common/ActionMenu";
 import FormikInput from "../../../../../../common/FormikInput";
 import Loading from "../../../../../../common/loading/Loading";
+import { gray900, success500 } from "../../../../../../utility/customColor";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { updateEmployeeProfile } from "./../helper";
-import { gray900, success500 } from "../../../../../../utility/customColor";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   workPhone: "",
@@ -179,14 +179,14 @@ function WorkPhone({ empId, buId, wgId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = (setFieldsValue) => {
     const payload = {
       partType: "OfficialPhone",
       employeeId: empId,
       autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -241,6 +241,7 @@ function WorkPhone({ empId, buId, wgId }) {
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
+      setFieldsValue("workPhone", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -253,21 +254,13 @@ function WorkPhone({ empId, buId, wgId }) {
           workPhone: singleData ? singleData : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -295,7 +288,6 @@ function WorkPhone({ empId, buId, wgId }) {
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -309,7 +301,6 @@ function WorkPhone({ empId, buId, wgId }) {
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={!values.workPhone}
@@ -413,7 +404,7 @@ function WorkPhone({ empId, buId, wgId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(setFieldValue);
                                       },
                                     },
                                   ]}

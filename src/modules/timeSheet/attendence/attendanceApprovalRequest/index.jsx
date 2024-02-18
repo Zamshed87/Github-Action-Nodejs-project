@@ -3,7 +3,7 @@ import { MenuItem } from "@material-ui/core";
 import {
   ArrowDropDown,
   EditOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Select, Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -43,6 +43,7 @@ export default function AttendanceApprovalRequest() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Attendance Adjust Request";
   }, []);
 
   const {

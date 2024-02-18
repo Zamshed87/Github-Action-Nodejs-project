@@ -3,7 +3,6 @@
 import {
   Cancel,
   CheckCircle,
-  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -13,10 +12,8 @@ import BackButton from "../../../common/BackButton";
 import FilterBadgeComponent from "../../../common/FilterBadgeComponent";
 import IConfirmModal from "../../../common/IConfirmModal";
 import Loading from "../../../common/loading/Loading";
-import MasterFilter from "../../../common/MasterFilter";
 import MuiIcon from "../../../common/MuiIcon";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { failColor, successColor } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
@@ -40,7 +37,7 @@ const initData = {
 };
 
 export default function MarketVistApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -49,7 +46,6 @@ export default function MarketVistApproval() {
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
   const [allData, setAllData] = useState();
-  const [isFilter, setIsFilter] = useState(false);
 
   const getLandingData = () => {
     getAllRemoteAttendanceListDataForApproval(
@@ -59,6 +55,7 @@ export default function MarketVistApproval() {
         isSupOrLineManager: 0,
         approverId: employeeId,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -92,6 +89,7 @@ export default function MarketVistApproval() {
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -142,7 +140,7 @@ export default function MarketVistApproval() {
     label: "Pending",
   });
 
-  const saveHandler = (values) => { };
+  const saveHandler = (values) => {};
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
@@ -176,6 +174,7 @@ export default function MarketVistApproval() {
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
           workplaceGroupId: 0,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -220,6 +219,7 @@ export default function MarketVistApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Market Visit Approval";
   }, []);
 
   return (
@@ -257,55 +257,55 @@ export default function MarketVistApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                                <div className="d-flex actionIcon mr-3">
-                                  <Tooltip title="Accept">
-                                    <div
-                                      className="muiIconHover success mr-2"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "approve",
-                                          "isApproved",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <CheckCircle
-                                            sx={{
-                                              color: successColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                  <Tooltip title="Reject">
-                                    <div
-                                      className="muiIconHover  danger"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "reject",
-                                          "isReject",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <Cancel
-                                            sx={{
-                                              color: failColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                </div>
-                              )}
+                              <div className="d-flex actionIcon mr-3">
+                                <Tooltip title="Accept">
+                                  <div
+                                    className="muiIconHover success mr-2"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <CheckCircle
+                                          sx={{
+                                            color: successColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                                <Tooltip title="Reject">
+                                  <div
+                                    className="muiIconHover  danger"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <Cancel
+                                          sx={{
+                                            color: failColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                              </div>
+                            )}
                             <ul className="d-flex flex-wrap">
                               {/* {isFilter && (
                                 <li>

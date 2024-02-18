@@ -7,31 +7,37 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
+
 import DefaultInput from "../../../../common/DefaultInput";
-import Loading from "../../../../common/loading/Loading";
 import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../../utility/customColor";
 
+import axios from "axios";
+import { getWorkplaceDetails } from "common/api";
+import {
+  createPayloadStructure,
+  setHeaderListDataDynamically,
+} from "common/peopleDeskTable/helper";
+import { toast } from "react-toastify";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
+import { getPDFAction } from "utility/downloadFile";
+import MasterFilter from "../../../../common/MasterFilter";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
+import useDebounce from "../../../../utility/customHooks/useDebounce";
+import { todayDate } from "../../../../utility/todayDate";
 import {
   column,
   dailyAttendenceDtoCol,
-  getDailyAttendanceData,
   getTableDataDailyAttendance,
   getTableDataSummaryHeadData,
   subHeaderColumn,
 } from "./helper";
-import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../../common/peopleDeskTable";
-import { todayDate } from "../../../../utility/todayDate";
-import MasterFilter from "../../../../common/MasterFilter";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
-import { getBuDetails } from "../helper";
-import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 
 const initialValues = {
   businessUnit: "",
@@ -44,12 +50,21 @@ const initialValues = {
 const validationSchema = Yup.object().shape({
   date: Yup.date().required("Date is required").typeError("Date is required"),
 });
+const initHeaderList = {
+  calenderList: [],
+  designationList: [],
+  departmentList: [],
+  sectionList: [],
+  hrPositionList: [],
+  actualStatusList: [],
+  manualStatusList: [],
+};
 
 const MgmtDailyAttendance = () => {
   // redux
   const dispatch = useDispatch();
 
-  const { buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -65,8 +80,14 @@ const MgmtDailyAttendance = () => {
     pageSize: paginationSize,
     total: 0,
   });
-  const [, getExcelData, apiLoading] = useAxiosGet();
-
+  const [resEmpLanding, setEmpLanding] = useState([]);
+  const [headerList, setHeaderList] = useState({});
+  const [filterOrderList, setFilterOrderList] = useState([]);
+  const [initialHeaderListData, setInitialHeaderListData] = useState({});
+  const [landingLoading, setLandingLoading] = useState(false);
+  const [checkedHeaderList, setCheckedHeaderList] = useState({
+    ...initHeaderList,
+  });
   const debounce = useDebounce();
 
   //  menu permission
@@ -77,31 +98,90 @@ const MgmtDailyAttendance = () => {
     }
   });
 
-  const getData = (
-    pagination = { current: 1, pageSize: paginationSize },
-    srcTxt = "",
-    date = todayDate(),
-    isExcel = false
+  const getDataApiCall = async (
+    modifiedPayload,
+    pagination,
+    searchText,
+    currentFilterSelection = -1,
+    checkedHeaderList,
+    IsForXl,
+    date
   ) => {
-    getDailyAttendanceData(
-      buId,
-      date,
-      setRowDto,
-      setLoading,
-      srcTxt,
-      pagination?.current,
-      pagination?.pageSize,
-      isExcel,
-      wgId,
-      setPages,
-      wId
+    try {
+      const payload = {
+        intBusinessUnitId: buId,
+        intWorkplaceGroupId: wgId,
+        intWorkplaceId: wId,
+        pageNo: pagination.current,
+        pageSize: pagination.pageSize,
+        isPaginated: true,
+        isHeaderNeed: true,
+        searchTxt: searchText || "",
+        isXls: IsForXl || false,
+        attendanceDate: date,
+      };
+
+      const res = await axios.post(`/Employee/GetDateWiseAttendanceReport`, {
+        ...payload,
+        ...modifiedPayload,
+      });
+
+      if (res?.data?.data) {
+        setHeaderListDataDynamically({
+          currentFilterSelection,
+          checkedHeaderList,
+          headerListKey: "dailyAttendanceHeader",
+          headerList,
+          setHeaderList,
+          response: res?.data,
+          filterOrderList,
+          setFilterOrderList,
+          initialHeaderListData,
+          setInitialHeaderListData,
+          setEmpLanding,
+          setPages,
+        });
+        setRowDto(res?.data);
+        setLandingLoading(false);
+      }
+    } catch (error) {
+      setLandingLoading(false);
+    }
+  };
+
+  const getData = async (
+    pagination,
+    IsForXl = false,
+    searchText = "",
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList },
+    date = todayDate()
+  ) => {
+    setLandingLoading(true);
+
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+
+    getDataApiCall(
+      modifiedPayload,
+      pagination,
+      searchText,
+      currentFilterSelection,
+      checkedHeaderList,
+      IsForXl,
+      date
     );
   };
 
   useEffect(() => {
-    getBuDetails(buId, setBuDetails);
-    getData({ current: 1, pageSize: paginationSize }, "", values?.date);
-  }, [wgId]);
+    getWorkplaceDetails(wId, setBuDetails);
+    getData(pages);
+  }, [wId]);
 
   // formik
   const { setFieldValue, values, errors, touched, handleSubmit } = useFormik({
@@ -109,7 +189,15 @@ const MgmtDailyAttendance = () => {
     validationSchema,
     initialValues,
     onSubmit: () => {
-      getData({ current: 1, pageSize: paginationSize }, "", values?.date);
+      getData(
+        { current: 1, pageSize: paginationSize },
+        false,
+        "",
+        -1,
+        filterOrderList,
+        checkedHeaderList,
+        values?.date
+      );
       setFieldValue("search", "");
     },
   });
@@ -117,7 +205,8 @@ const MgmtDailyAttendance = () => {
   //set to module
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-  }, [dispatch]);
+    document.title = "Daily Attendance Report";
+  }, []);
 
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {
@@ -130,14 +219,20 @@ const MgmtDailyAttendance = () => {
         pageSize: pages?.pageSize,
         total: pages?.total,
       },
+      "false",
       searchText,
-      values?.date,
+      -1,
+      filterOrderList,
+      checkedHeaderList,
+      values?.date
     );
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
-      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+    setPages({
+      current: 1,
+      total: pages?.total,
+      pageSize: +event.target.value,
     });
     getData(
       {
@@ -145,14 +240,17 @@ const MgmtDailyAttendance = () => {
         pageSize: +event.target.value,
         total: pages?.total,
       },
+      "false",
       searchText,
-      values?.date,
+      -1,
+      filterOrderList,
+      checkedHeaderList,
+      values?.date
     );
   };
-
   return (
     <form onSubmit={handleSubmit}>
-      {(loading || apiLoading) && <Loading />}
+      {landingLoading && <Loading />}
       {permission?.isView ? (
         <div className="table-card">
           <div className="table-card-heading mt-2 pt-1">
@@ -196,7 +294,7 @@ const MgmtDailyAttendance = () => {
               </div>
             </div>
 
-            {rowDto?.data?.length > 0 ? (
+            {resEmpLanding?.length > 0 ? (
               <div>
                 <div className="d-flex justify-content-between">
                   <div>
@@ -213,7 +311,7 @@ const MgmtDailyAttendance = () => {
 
                   <div>
                     <ul className="d-flex flex-wrap">
-                      {rowDto?.data?.length > 0 && (
+                      {resEmpLanding?.length > 0 && (
                         <>
                           <li className="pr-2">
                             <Tooltip title="Export CSV" arrow>
@@ -221,100 +319,120 @@ const MgmtDailyAttendance = () => {
                                 style={{ color: "#101828" }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  getExcelData(
-                                    `/Employee/GetDateWiseAttendanceReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&attendanceDate=${values?.date}&IsXls=true&PageNo=1&PageSize=10000&searchTxt=${values?.search}`,
-                                    (res) => {
-                                      console.log(res);
-                                      const newData = res?.data?.map(
-                                        (item, index) => {
-                                          return {
-                                            ...item,
-                                            sl: index + 1,
-                                          };
+                                  const excelLanding = async () => {
+                                    try {
+                                      const res = await axios.post(
+                                        `/Employee/GetDateWiseAttendanceReport`,
+                                        {
+                                          intBusinessUnitId: buId,
+                                          intWorkplaceGroupId: wgId,
+                                          intWorkplaceId: wId,
+                                          pageNo: pages.current,
+                                          pageSize: pages.pageSize,
+                                          isPaginated: true,
+                                          isHeaderNeed: false,
+                                          searchTxt: "",
+                                          isXls: true,
+                                          attendanceDate: values?.date,
                                         }
                                       );
-                                      createCommonExcelFile({
-                                        titleWithDate: `Daily Attendance ${res?.attendanceDate} `,
-                                        fromDate: "",
-                                        toDate: "",
-                                        buAddress:
-                                          buDetails?.strBusinessUnitAddress,
-                                        businessUnit:
-                                          values?.businessUnit?.label,
-                                        tableHeader: column,
-                                        getTableData: () =>
-                                          getTableDataDailyAttendance(
-                                            newData,
-                                            Object.keys(column),
-                                            res?.data
-                                          ),
-                                        getSubTableData: () =>
-                                          getTableDataSummaryHeadData(res),
-                                        subHeaderInfoArr: [
-                                          res?.data?.workplaceGroup
-                                            ? `Workplace Group-${res?.data?.workplaceGroup}`
-                                            : "",
-                                          res?.data?.workplace
-                                            ? `Workplace-${res?.data?.workplace}`
-                                            : "",
-                                        ],
-                                        subHeaderColumn,
-                                        tableFooter: [],
-                                        extraInfo: {},
-                                        tableHeadFontSize: 10,
-                                        widthList: {
-                                          C: 30,
-                                          D: 30,
-                                          E: 25,
-                                          F: 20,
-                                          G: 25,
-                                          H: 15,
-                                          I: 15,
-                                          J: 20,
-                                          K: 20,
-                                        },
-                                        commonCellRange: "A1:J1",
-                                        CellAlignment: "left",
-                                      });
+
+                                      if (res?.data?.data?.length > 0) {
+                                        const newData = res?.data?.data?.map(
+                                          (item, index) => {
+                                            return {
+                                              ...item,
+                                              sl: index + 1,
+                                            };
+                                          }
+                                        );
+                                        // const date = todayDate();
+
+                                        createCommonExcelFile({
+                                          titleWithDate: `Daily Attendance ${values?.date} `,
+                                          fromDate: "",
+                                          toDate: "",
+                                          buAddress: buDetails?.strAddress,
+                                          businessUnit: buDetails?.strWorkplace,
+                                          tableHeader: column,
+                                          getTableData: () =>
+                                            getTableDataDailyAttendance(
+                                              newData,
+                                              Object.keys(column),
+                                              res?.data?.data
+                                            ),
+                                          getSubTableData: () =>
+                                            getTableDataSummaryHeadData(
+                                              res?.data
+                                            ),
+                                          subHeaderInfoArr: [
+                                            res?.data?.workplaceGroup
+                                              ? `Workplace Group-${res?.data?.data?.workplaceGroup}`
+                                              : "",
+                                            res?.data?.workplace
+                                              ? `Workplace-${res?.data?.data?.workplace}`
+                                              : "",
+                                          ],
+                                          subHeaderColumn,
+                                          tableFooter: [],
+                                          extraInfo: {},
+                                          tableHeadFontSize: 10,
+                                          widthList: {
+                                            B: 30,
+                                            C: 30,
+                                            D: 15,
+                                            E: 25,
+                                            F: 20,
+                                            G: 25,
+                                            H: 15,
+                                            I: 15,
+                                            J: 20,
+                                            K: 20,
+                                          },
+                                          commonCellRange: "A1:J1",
+                                          CellAlignment: "left",
+                                        });
+                                        setLoading && setLoading(false);
+                                      } else {
+                                        setLoading && setLoading(false);
+                                        toast.warn("Empty Employee Data");
+                                      }
+                                    } catch (error) {
+                                      toast.warn("Failed to download excel");
+                                      setLoading && setLoading(false);
                                     }
-                                  );
+                                  };
+                                  excelLanding();
                                 }}
                               >
                                 <DownloadIcon />
                               </IconButton>
                             </Tooltip>
                           </li>
-                          <li className="pr-2 d-none">
+                          <li className="pr-2 ">
                             <Tooltip title="Print" arrow>
                               <IconButton
-                                disabled={
-                                  !values?.businessUnit || !values?.date
-                                }
                                 style={{ color: "#101828" }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  // getPDFAction(
-                                  //   `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${
-                                  //     values?.date
-                                  //   }${
-                                  //     values?.businessUnit?.value
-                                  //       ? `&IntBusinessUnitId=${values?.businessUnit?.value}`
-                                  //       : ""
-                                  //   }${
-                                  //     values?.workplaceGroup?.value
-                                  //       ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
-                                  //       : ""
-                                  //   }${
-                                  //     tableRowDto?.length > 0
-                                  //       ? `&EmployeeIdList=${null}`
-                                  //       : ""
-                                  //   }${
-                                  //     values?.workplace?.value
-                                  //       ? `&IntWorkplaceId=${values?.workplace?.value}`
-                                  //       : ""
-                                  //   }`,
-                                  //   setLoading
-                                  // );
+                                  const list = rowDto?.data?.map(
+                                    (item) => item?.employeeId
+                                  );
+                                  getPDFAction(
+                                    `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${
+                                      values?.date
+                                    }${
+                                      buId ? `&IntBusinessUnitId=${buId}` : ""
+                                    }${
+                                      wgId ? `&IntWorkplaceGroupId=${wgId}` : ""
+                                    }${
+                                      rowDto?.data?.length !==
+                                      rowDto?.totalCount
+                                        ? `&EmployeeIdList=${list}`
+                                        : ""
+                                    }${wId ? `&IntWorkplaceId=${wId}` : ""}`,
+                                    setLoading
+                                  );
                                 }}
                               >
                                 <LocalPrintshopIcon />
@@ -332,7 +450,11 @@ const MgmtDailyAttendance = () => {
                             onClick={() => {
                               getData(
                                 { current: 1, pageSize: paginationSize },
+                                false,
                                 "",
+                                -1,
+                                filterOrderList,
+                                checkedHeaderList,
                                 values?.date
                               );
                               setFieldValue("search", "");
@@ -354,7 +476,11 @@ const MgmtDailyAttendance = () => {
                             debounce(() => {
                               getData(
                                 { current: 1, pageSize: paginationSize },
+                                false,
                                 value,
+                                -1,
+                                filterOrderList,
+                                checkedHeaderList,
                                 values?.date
                               );
                             }, 500);
@@ -363,7 +489,11 @@ const MgmtDailyAttendance = () => {
                             setFieldValue("search", "");
                             getData(
                               { current: 1, pageSize: paginationSize },
+                              "false",
                               "",
+                              -1,
+                              filterOrderList,
+                              checkedHeaderList,
                               values?.date
                             );
                           }}
@@ -509,20 +639,44 @@ const MgmtDailyAttendance = () => {
                 <PeopleDeskTable
                   columnData={dailyAttendenceDtoCol(
                     pages?.current,
-                    pages?.pageSize
+                    pages?.pageSize,
+                    headerList
                   )}
                   pages={pages}
-                  rowDto={rowDto?.data}
-                  setRowDto={setRowDto}
+                  rowDto={resEmpLanding}
+                  setRowDto={setEmpLanding}
+                  checkedHeaderList={checkedHeaderList}
+                  setCheckedHeaderList={setCheckedHeaderList}
                   handleChangePage={(e, newPage) =>
                     handleChangePage(e, newPage, values?.search)
                   }
                   handleChangeRowsPerPage={(e) =>
                     handleChangeRowsPerPage(e, values?.search)
                   }
-                  uniqueKey="expenseId"
+                  getFilteredData={(
+                    currentFilterSelection,
+                    updatedFilterData,
+                    updatedCheckedHeaderData
+                  ) => {
+                    getData(
+                      {
+                        current: 1,
+                        pageSize: paginationSize,
+                        total: 0,
+                      },
+                      false,
+                      "",
+                      currentFilterSelection,
+                      updatedFilterData,
+                      updatedCheckedHeaderData,
+                      values?.date
+                    );
+                  }}
+                  filterOrderList={filterOrderList}
+                  setFilterOrderList={setFilterOrderList}
+                  uniqueKey="employeeId"
                   isCheckBox={false}
-                  isScrollAble={false}
+                  isScrollAble={true}
                 />
               </div>
             ) : (
@@ -538,102 +692,3 @@ const MgmtDailyAttendance = () => {
 };
 
 export default MgmtDailyAttendance;
-
-/*      <table className="table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: "30px" }}>
-                        <div>SL</div>
-                      </th>
-                      <th>
-                        <div>Code</div>
-                      </th>
-                      <th>
-                        <div>Employee Name</div>
-                      </th>
-                      <th>
-                        <div>Department</div>
-                      </th>
-                      <th>
-                        <div>Designation</div>
-                      </th>
-                      <th>
-                        <div>Employement Type</div>
-                      </th>
-                      <th>
-                        <div>In Time</div>
-                      </th>
-                      <th>
-                        <div>Out Time</div>
-                      </th>
-                      <th>
-                        <div>Status</div>
-                      </th>
-                      <th>
-                        <div>Address</div>
-                      </th>
-                      <th>
-                        <div>Remarks</div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rowDto?.map((item, index) => (
-                      <tr key={index}>
-                        <td style={{ width: "30px" }}>
-                          <div className="tableBody-title">{index + 1}</div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title">
-                            {item?.employeeCode || "N/A"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title">
-                            {item?.employeeName || "N/A"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title">
-                            {item?.department || "N/A"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title">
-                            {item?.designation || "N/A"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title">
-                            {item?.employmentType || "N/A"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title">
-                            {item?.inTime || "N/A"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title">
-                            {item?.outTime || "N/A"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title ">
-                            {item?.status || "N/A"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title">
-                            {item?.location || "N/A"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tableBody-title text-center">
-                            {item?.remarks || "N/A"}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>  */

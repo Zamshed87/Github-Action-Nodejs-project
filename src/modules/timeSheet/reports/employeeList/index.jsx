@@ -1,53 +1,27 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import Loading from "../../../../common/loading/Loading";
-import MasterFilter from "../../../../common/MasterFilter";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../../common/ResetButton";
-import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import {
-  columnForExcel,
-  columnForMarketingForExcel,
-  empReportListColumns,
-  getBuDetails,
-  getTableDataEmployeeReports,
-} from "./helper";
 import axios from "axios";
-import { gray900 } from "../../../../utility/customColor";
-// import { generateExcelAction } from "./excel/generateExcelList";
-import NoResult from "../../../../common/NoResult";
-import { todayDate } from "../../../../utility/todayDate";
-import { dateFormatter } from "../../../../utility/dateFormatter";
+import { getWorkplaceDetails } from "common/api";
+import { Form, Formik } from "formik";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { paginationSize } from "../../../../common/AntTable";
-import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
+import MasterFilter from "../../../../common/MasterFilter";
+import NoResult from "../../../../common/NoResult";
+import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
-
-// const initData = {
-//   search: "",
-//   email: "",
-//   workplaceGroup: "",
-//   payrollGroup: "",
-//   supervisor: "",
-//   rosterGroup: "",
-//   department: "",
-//   designation: "",
-//   calendar: "",
-//   gender: "",
-//   religion: "",
-//   employmentType: "",
-//   joiningDate: "",
-//   confirmDate: "",
-//   birthCertificate: { value: 0, label: "All" },
-//   isNID: { value: 0, label: "All" },
-//   status: "",
-// };
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import { gray900 } from "../../../../utility/customColor";
+import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
+import { empReportListColumns } from "./helper";
+import FormikInput from "common/FormikInput";
+import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 
 const initData = {
   searchString: "",
@@ -65,6 +39,9 @@ const initData = {
   contractualFromDate: "",
   contractualToDate: "",
   employmentStatus: "",
+
+  fromDate:  monthFirstDate(),
+  toDate:  monthLastDate(),
 };
 
 const initHeaderList = {
@@ -78,12 +55,20 @@ const initHeaderList = {
   regionNameList: [],
   areaNameList: [],
   territoryNameList: [],
+  strWorkplaceGroupList: [],
+  strWorkplaceList: [],
+  strDivisionList: [],
+  strSectionList: [],
+  strHrPositionList: [],
+  strDottedSupervisorNameList: [],
+  strPayrollGroupList: [],
+  strBankList: [],
 };
 
 export default function EmployeeList() {
   // redux
   const dispatch = useDispatch();
-  const { buId, buName, wgId, wId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -108,33 +93,17 @@ export default function EmployeeList() {
     ...initHeaderList,
   });
 
-  // useEffect(() => {
-  //   // allEmployeeList(
-  //   //   { orgId, buId, wgId },
-  //   //   "",
-  //   //   setLoading,
-  //   //   setRowDto,
-  //   //   setAllData,
-  //   //   "",
-  //   //   pages,
-  //   //   "",
-  //   //   setPages
-  //   // );
-  //   getLandingData(pages, "", "true");
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [orgId, buId, wgId]);
-
   useEffect(() => {
     setHeaderList({});
     setEmpLanding([]);
     getData(pages);
-    getBuDetails(buId, setBuDetails, setLoading);
+    // getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Report-Employee List";
   }, [dispatch]);
 
   const getDataApiCall = async (
@@ -142,7 +111,8 @@ export default function EmployeeList() {
     pagination,
     searchText,
     currentFilterSelection = -1,
-    checkedHeaderList
+    checkedHeaderList,
+    values
   ) => {
     try {
       const payload = {
@@ -154,6 +124,8 @@ export default function EmployeeList() {
         isPaginated: true,
         isHeaderNeed: true,
         searchTxt: searchText || "",
+        fromDate: values?.fromDate || monthFirstDate(),
+        toDate: values?.toDate || monthLastDate(),
       };
 
       const res = await axios.post(`/Employee/EmployeeReportWithFilter`, {
@@ -198,7 +170,8 @@ export default function EmployeeList() {
     searchText = "",
     currentFilterSelection = -1,
     filterOrderList = [],
-    checkedHeaderList = { ...initHeaderList }
+    checkedHeaderList = { ...initHeaderList },
+    values
   ) => {
     setLandingLoading(true);
 
@@ -214,11 +187,12 @@ export default function EmployeeList() {
       pagination,
       searchText,
       currentFilterSelection,
-      checkedHeaderList
+      checkedHeaderList,
+      values
     );
   };
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage, searchText, values) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
@@ -233,13 +207,16 @@ export default function EmployeeList() {
       searchText,
       -1,
       filterOrderList,
-      checkedHeaderList
+      checkedHeaderList,
+      values
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
-      return { current: 1, total: pages?.total, pageSize: +event.target.value };
+  const handleChangeRowsPerPage = (event, searchText, values) => {
+    setPages({
+      current: 1,
+      total: pages?.total,
+      pageSize: +event.target.value,
     });
     getData(
       {
@@ -251,26 +228,17 @@ export default function EmployeeList() {
       searchText,
       -1,
       filterOrderList,
-      checkedHeaderList
+      checkedHeaderList,
+      values
     );
   };
-
+  useEffect(() => {
+    getWorkplaceDetails(wId, setBuDetails);
+  }, [wId]);
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {(loading || landingLoading) && <Loading />}
@@ -285,120 +253,130 @@ export default function EmployeeList() {
                           onClick={(e) => {
                             e.stopPropagation();
                             setLoading(true);
-                            const excelLanding = async () => {
-                              try {
-                                const res = await axios.post(
-                                  `/Employee/EmployeeReportWithFilter`,
-                                  {
-                                    businessUnitId: buId,
-                                    workplaceGroupId: wgId,
-                                    workplaceId: 0,
-                                    pageNo: 0,
-                                    pageSize: 0,
-                                    isPaginated: false,
-                                    isHeaderNeed: false,
-                                    searchTxt: values?.searchString,
-                                    strDesignationList: [],
-                                    strDepartmentList: [],
-                                    strSupervisorNameList: [],
-                                    strLinemanagerList: [],
-                                    strEmploymentTypeList: [],
-                                    wingNameList: [],
-                                    soleDepoNameList: [],
-                                    regionNameList: [],
-                                    areaNameList: [],
-                                    territoryNameList: [],
-                                  }
-                                );
-                                if (res?.data?.data) {
-                                  const newData = res?.data?.data?.map(
-                                    (item, index) => {
-                                      return {
-                                        ...item,
-                                        sl: index + 1,
-                                        dateOfJoining: dateFormatter(
-                                          item?.dateOfJoining
-                                        ),
-                                        dateOfConfirmation: dateFormatter(
-                                          item?.dateOfConfirmation
-                                        ),
-                                        dateOfBirth: dateFormatter(
-                                          item?.dateOfBirth
-                                        ),
-                                      };
-                                    }
-                                  );
-                                  const date = todayDate();
+                            // const excelLanding = async () => {
+                            //   try {
+                            //     const res = await axios.post(
+                            //       `/Employee/EmployeeReportWithFilter`,
+                            //       {
+                            //         businessUnitId: 1,
+                            //         workplaceGroupId: wgId,
+                            //         workplaceId: wId,
+                            //         pageNo: 1,
+                            //         pageSize: 1000000,
+                            //         isPaginated: false,
+                            //         isHeaderNeed: true,
+                            //         searchTxt: "",
+                            //         strDesignationList: [],
+                            //         strDepartmentList: [],
+                            //         strSupervisorNameList: [],
+                            //         strEmploymentTypeList: [],
+                            //         strLinemanagerList: [],
+                            //         wingNameList: [],
+                            //         soleDepoNameList: [],
+                            //         regionNameList: [],
+                            //         areaNameList: [],
+                            //         territoryNameList: [],
+                            //         strWorkplaceGroupList: [],
+                            //         strWorkplaceList: [],
+                            //         strDivisionList: [],
+                            //         strSectionList: [],
+                            //         strHrPositionList: [],
+                            //         strDottedSupervisorNameList: [],
+                            //         strPayrollGroupList: [],
+                            //         strBankList: [],
+                            //       }
+                            //     );
+                            //     if (res?.data?.data?.length > 0) {
+                            //       const newData = res?.data?.data?.map(
+                            //         (item, index) => {
+                            //           return {
+                            //             ...item,
+                            //             sl: index + 1,
+                            //             dateOfJoining: dateFormatter(
+                            //               item?.dateOfJoining
+                            //             ),
+                            //             dateOfConfirmation: dateFormatter(
+                            //               item?.dateOfConfirmation
+                            //             ),
+                            //             dateOfBirth: dateFormatter(
+                            //               item?.dateOfBirth
+                            //             ),
+                            //           };
+                            //         }
+                            //       );
+                            //       const date = todayDate();
 
-                                  createCommonExcelFile({
-                                    titleWithDate: `Employee List -${dateFormatter(
-                                      date
-                                    )}`,
-                                    fromDate: "",
-                                    toDate: "",
-                                    buAddress:
-                                      buDetails?.strBusinessUnitAddress,
-                                    businessUnit: buName,
-                                    tableHeader:
-                                      wgId === 3
-                                        ? columnForMarketingForExcel
-                                        : columnForExcel,
-                                    getTableData: () =>
-                                      getTableDataEmployeeReports(
-                                        newData,
-                                        wgId === 3
-                                          ? Object.keys(
-                                              columnForMarketingForExcel
-                                            )
-                                          : Object.keys(columnForExcel)
-                                      ),
-                                    tableFooter: [],
-                                    extraInfo: {},
-                                    tableHeadFontSize: 10,
-                                    widthList:
-                                      wgId === 3
-                                        ? {
-                                            B: 30,
-                                            D: 20,
-                                            E: 20,
-                                            J: 15,
-                                            M: 15,
-                                            N: 15,
-                                            O: 20,
-                                            P: 20,
-                                            Q: 15,
-                                            T: 25,
-                                            U: 25,
-                                            V: 15,
-                                            AF: 25,
-                                          }
-                                        : {
-                                            B: 30,
-                                            D: 30,
-                                            E: 30,
-                                            G: 20,
-                                            H: 20,
-                                            T: 20,
-                                            J: 30,
-                                            K: 15,
-                                            M: 25,
-                                            N: 25,
-                                            O: 20,
-                                            P: 20,
-                                            Q: 15,
-                                            Y: 15,
-                                            AF: 35,
-                                          },
-                                    commonCellRange: "A1:J1",
-                                    CellAlignment: "left",
-                                  });
-                                  setLoading && setLoading(false);
-                                }
-                              } catch (error) {
-                                setLoading && setLoading(false);
-                              }
+                            //       createCommonExcelFile({
+                            //         titleWithDate: `Employee List -${dateFormatter(
+                            //           date
+                            //         )}`,
+                            //         fromDate: "",
+                            //         toDate: "",
+                            //         buAddress: buDetails?.strAddress,
+                            //         businessUnit: buDetails?.strWorkplace,
+                            //         tableHeader: columnForExcel,
+                            //         getTableData: () =>
+                            //           getTableDataEmployeeReports(
+                            //             newData,
+                            //             Object.keys(columnForExcel)
+                            //           ),
+                            //         tableFooter: [],
+                            //         extraInfo: {},
+                            //         tableHeadFontSize: 10,
+                            //         widthList: {
+                            //           B: 30,
+                            //           C: 30,
+                            //           D: 30,
+                            //           E: 30,
+                            //           G: 20,
+                            //           H: 30,
+                            //           T: 20,
+                            //           J: 30,
+                            //           K: 15,
+                            //           M: 25,
+                            //           N: 25,
+                            //           O: 20,
+                            //           P: 20,
+                            //           Q: 15,
+                            //           Y: 15,
+                            //           AF: 35,
+                            //         },
+                            //         commonCellRange: "A1:J1",
+                            //         CellAlignment: "left",
+                            //       });
+                            //       setLoading && setLoading(false);
+                            //     } else {
+                            //       setLoading && setLoading(false);
+                            //       toast.warn("Empty Employee Data");
+                            //     }
+                            //   } catch (error) {
+                            //     toast.warn("Failed to download excel");
+                            //     setLoading && setLoading(false);
+                            //   }
+                            // };
+                            // excelLanding();
+                            const paylaod = {
+                              businessUnitId: 1,
+                              workplaceGroupId: 1,
+                              workplaceId: 1,
+                              pageNo: 1,
+                              pageSize: 25,
+                              isPaginated: true,
+                              isHeaderNeed: true,
+                              searchTxt: "",
+                              fromDate: values?.fromDate || monthFirstDate(),
+                              toDate: values?.toDate || monthLastDate(),
+                              ...checkedHeaderList,
                             };
-                            excelLanding();
+                            const url =
+                              "/PdfAndExcelReport/EmployeeReportWithFilter_RDLC";
+                            downloadEmployeeCardFile(
+                              url,
+                              paylaod,
+                              "Employee List",
+                              "xlsx",
+                              setLoading
+                            );
                           }}
                           disabled={resEmpLanding?.data?.length <= 0}
                         >
@@ -448,7 +426,8 @@ export default function EmployeeList() {
                                 "",
                                 -1,
                                 filterOrderList,
-                                checkedHeaderList
+                                checkedHeaderList,
+                                values
                               );
                             }}
                           />
@@ -469,7 +448,8 @@ export default function EmployeeList() {
                                 value,
                                 -1,
                                 filterOrderList,
-                                checkedHeaderList
+                                checkedHeaderList,
+                                values
                               );
                             } else {
                               getData(
@@ -478,7 +458,8 @@ export default function EmployeeList() {
                                 "",
                                 -1,
                                 filterOrderList,
-                                checkedHeaderList
+                                checkedHeaderList,
+                                values
                               );
                             }
                           }}
@@ -490,7 +471,8 @@ export default function EmployeeList() {
                               "",
                               -1,
                               filterOrderList,
-                              checkedHeaderList
+                              checkedHeaderList,
+                              values
                             );
                           }}
                         />
@@ -498,6 +480,68 @@ export default function EmployeeList() {
                     </ul>
                   </div>
                   <div className="table-card-body">
+                    <div
+                      className="card-style mb-3"
+                      // style={{ marginTop: "13px" }}
+                    >
+                      <div className="row">
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>From Joining Date</label>
+                            <FormikInput
+                              classes="input-sm"
+                              value={values?.fromDate}
+                              placeholder="From Joining Date"
+                              name="fromDate"
+                              type="date"
+                              className="form-control"
+                              onChange={(e) => {
+                                setFieldValue("fromDate", e.target.value);
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>To Joining Date</label>
+                            <FormikInput
+                              classes="input-sm"
+                              value={values?.toDate}
+                              placeholder="To Joining Date"
+                              name="toDate"
+                              type="date"
+                              className="form-control"
+                              onChange={(e) => {
+                                setFieldValue("toDate", e.target.value);
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="col-lg-1">
+                          <button
+                            // disabled={
+                            //   !values?.filterToDate || !values?.filterFromDate
+                            // }
+                            style={{ marginTop: "21px" }}
+                            className="btn btn-green"
+                            onClick={() => {
+                              getData(
+                                { current: 1, pageSize: paginationSize },
+                                "false",
+                                "",
+                                -1,
+                                filterOrderList,
+                                checkedHeaderList,
+                                values
+                              );
+                            }}
+                          >
+                            View
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                     {resEmpLanding.length > 0 ? (
                       <PeopleDeskTable
                         columnData={empReportListColumns(
@@ -512,10 +556,10 @@ export default function EmployeeList() {
                         checkedHeaderList={checkedHeaderList}
                         setCheckedHeaderList={setCheckedHeaderList}
                         handleChangePage={(e, newPage) =>
-                          handleChangePage(e, newPage, values?.searchString)
+                          handleChangePage(e, newPage, values?.searchString, values)
                         }
                         handleChangeRowsPerPage={(e) =>
-                          handleChangeRowsPerPage(e, values?.searchString)
+                          handleChangeRowsPerPage(e, values?.searchString, values)
                         }
                         filterOrderList={filterOrderList}
                         setFilterOrderList={setFilterOrderList}
@@ -535,11 +579,13 @@ export default function EmployeeList() {
                             "",
                             currentFilterSelection,
                             updatedFilterData,
-                            updatedCheckedHeaderData
+                            updatedCheckedHeaderData,
+                            values
                           );
                         }}
                         isCheckBox={false}
                         isScrollAble={true}
+                        scrollCustomClass="emp-report-landing-table"
                       />
                     ) : (
                       <>
@@ -555,41 +601,6 @@ export default function EmployeeList() {
               ) : (
                 <NotPermittedPage />
               )}
-              {/* <Popover
-                sx={{
-                  "& .MuiPaper-root": {
-                    width: "675px",
-                    minHeight: "auto",
-                    borderRadius: "4px",
-                  },
-                }}
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-              >
-                <FilterModal
-                  objProps={{
-                    resetForm,
-                    values,
-                    errors,
-                    touched,
-                    setFieldValue,
-                    setIsFilter,
-                    setAnchorEl,
-                    rowDto,
-                    setRowDto,
-                    setLoading,
-                    setAllData,
-                    allData,
-                    initData,
-                  }}
-                />
-              </Popover> */}
             </Form>
           </>
         )}

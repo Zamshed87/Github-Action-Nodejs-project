@@ -88,7 +88,7 @@ export default function TransferAndPromotion() {
     total: 0,
   });
 
-  const getData = (pagination, fromDate, toDate) => {
+  const getData = (fromDate, toDate) => {
     getAllTransferAndPromotionLanding(
       buId,
       wgId,
@@ -97,8 +97,8 @@ export default function TransferAndPromotion() {
       toDate ? toDate : getDateOfYear("last"),
       setRowDto,
       setLoading,
-      pagination?.current,
-      pagination?.pageSize,
+      1,
+      paginationSize,
       setPages,
       "",
       wId
@@ -131,6 +131,7 @@ export default function TransferAndPromotion() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Transfer & Promotion";
   }, []);
 
   useEffect(() => {
@@ -411,8 +412,7 @@ export default function TransferAndPromotion() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group, Wing, Sole Depo,
-                                    Region, Area, Territory
+                                    B.Unit, Workplace Group, Workplace
                                   </div>
                                 </td>
                                 <td
@@ -421,7 +421,7 @@ export default function TransferAndPromotion() {
                                     width: "200px",
                                   }}
                                 >
-                                  Dept & Designation
+                                  Dept, Section & Designation
                                 </td>
                                 <td
                                   style={{
@@ -430,8 +430,7 @@ export default function TransferAndPromotion() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group, Wing, Sole Depo,
-                                    Region, Area, Territory
+                                  B.Unit, Workplace Group, Workplace
                                   </div>
                                 </td>
                                 <td
@@ -440,7 +439,7 @@ export default function TransferAndPromotion() {
                                     width: "200px",
                                   }}
                                 >
-                                  Dept & Designation
+                                  Dept, Section & Designation
                                 </td>
                               </tr>
                             </thead>
@@ -589,7 +588,7 @@ export default function TransferAndPromotion() {
                         />
                       </div>
                     </div>
-                    <div className="col-6">
+                    <div className="col-6 d-none">
                       <div className="input-field-main">
                         <label>Substitute Employee</label>
                         <FormikSelect

@@ -1,7 +1,7 @@
 import {
   AddOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 
 import { Form, Formik } from "formik";
@@ -59,7 +59,7 @@ function LoanTypeCreate() {
     setId("");
   };
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -70,11 +70,12 @@ function LoanTypeCreate() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Loan Type";
   }, []);
 
   useEffect(() => {
-    getAllGlobalLoanType(setRowDto, setAllData, setLoading);
-  }, []);
+    getAllGlobalLoanType(wId, setRowDto, setAllData, setLoading);
+  }, [wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 

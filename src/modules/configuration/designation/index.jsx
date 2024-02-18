@@ -68,7 +68,7 @@ function Designation() {
   // for view Modal
   const handleViewClose = () => setViewModal(false);
 
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -83,11 +83,12 @@ function Designation() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Designation";
   }, []);
 
   useEffect(() => {
-    getAllDesignation(orgId, buId, setRowDto, setAllData, setLoading);
-  }, [orgId, buId]);
+    getAllDesignation(orgId, buId, setRowDto, setAllData, setLoading, wId);
+  }, [orgId, buId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 

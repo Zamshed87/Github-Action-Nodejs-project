@@ -2,7 +2,7 @@
 
 import {
   AddOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
@@ -25,7 +25,7 @@ import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
 import {
   assetLandingTableColumn,
   filterExpenseApplicationLanding,
-  onGetAssetApplicationLanding
+  onGetAssetApplicationLanding,
 } from "./helper";
 
 const initData = {
@@ -61,7 +61,7 @@ const AssetApplication = () => {
 
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 30345) {
+    if (item?.menuReferenceId === 30391) {
       permission = item;
     }
   });
@@ -69,6 +69,7 @@ const AssetApplication = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Asset Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Asset Registration";
   }, []);
 
   useEffect(() => {

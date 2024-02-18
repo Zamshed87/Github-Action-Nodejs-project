@@ -140,15 +140,22 @@ export default function SalaryDrawer(props) {
         finalGrossSalary: singleData[0]?.numGrossSalary
           ? singleData[0]?.numGrossSalary
           : "",
+        bankPay:
+          singleData[0]?.BankPayInAmount ||
+          (singleData[0]?.DigitalPayInAmount + singleData[0]?.CashPayInAmount >
+          1
+            ? 0
+            : singleData[0]?.numGrossSalary),
+        digitalPay: singleData[0]?.DigitalPayInAmount || 0,
+        netPay: singleData[0]?.CashPayInAmount || 0,
       },
       validationSchema: DefaultSalaryValidationSchema,
-      onSubmit: (values, { setSubmitting, resetForm }) => {
+      onSubmit: (values) => {
         saveHandler(values, () => {
           // resetForm(defaultSalaryInitData);
         });
       },
     });
-
   const netGross = () => {
     let amount = 0;
     amount = breakDownList
@@ -226,6 +233,24 @@ export default function SalaryDrawer(props) {
     if (!values?.payrollElement) {
       return toast.warning("Payroll Element is required!!!");
     }
+    let grossCal = +values?.bankPay + +values?.netPay + +values?.digitalPay;
+
+    if (
+      !values?.payrollElement?.isPerday &&
+      +values?.totalGrossSalary !== grossCal
+    ) {
+      return toast.warning(
+        "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
+      );
+    }
+    if (
+      values?.payrollElement?.isPerday &&
+      +values?.perDaySalary !== grossCal
+    ) {
+      return toast.warning(
+        "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
+      );
+    }
 
     // for perday salary
     if (values?.payrollElement?.isPerday && !values?.perDaySalary) {
@@ -252,7 +277,7 @@ export default function SalaryDrawer(props) {
             businessUnitId: buId,
             workplaceGroupId: wgId || 0,
             departmentId: 0,
-            workplaceId: wId,
+            workplaceId: wId || 0,
             designationId: 0,
             supervisorId: 0,
             employeeId: 0,
@@ -276,7 +301,7 @@ export default function SalaryDrawer(props) {
             partType: "EmployeeSalaryInfoByEmployeeId",
             businessUnitId: buId,
             workplaceGroupId: wgId || 0,
-            workplaceId: wId,
+            workplaceId: wId || 0,
             departmentId: 0,
             designationId: 0,
             supervisorId: 0,
@@ -317,6 +342,19 @@ export default function SalaryDrawer(props) {
         numBasicORGross: 0,
         numNetGrossSalary: 0,
         numGrossAmount: +values?.finalGrossSalary,
+        numCashPayInPercent: +(
+          (+values?.netPay * 100) /
+          +values?.perDaySalary
+        ).toFixed(6),
+        numBankPayInPercent: +(
+          (+values?.bankPay * 100) /
+          +values?.perDaySalary
+        ).toFixed(6),
+
+        numDigitalPayInPercent: +(
+          (+values?.digitalPay * 100) /
+          +values?.perDaySalary
+        ).toFixed(6),
       };
       createEmployeeSalaryAssign(payload, setLoading, callback);
     } else {
@@ -336,7 +374,7 @@ export default function SalaryDrawer(props) {
         return toast.warning("Total gross salary must be equal net salary !!!");
       }
 
-      const modifyBreakdownList = breakDownList?.map((itm, index) => {
+      const modifyBreakdownList = breakDownList?.map((itm) => {
         let name = itm?.levelVariable;
         return {
           intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
@@ -361,6 +399,19 @@ export default function SalaryDrawer(props) {
           numBasicORGross: basicSalaryList[0]?.numAmount,
           numGrossAmount: finalTotalAmount,
           breakdownElements: modifyBreakdownList,
+          numCashPayInPercent: +(
+            (+values?.netPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+          numBankPayInPercent: +(
+            (+values?.bankPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+
+          numDigitalPayInPercent: +(
+            (+values?.digitalPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
         };
 
         createEmployeeSalaryAssign(payload, setLoading, callback);
@@ -374,6 +425,19 @@ export default function SalaryDrawer(props) {
           numBasicORGross: basicSalaryList[0]?.numAmount,
           numGrossAmount: finalTotalAmount,
           breakdownElements: modifyBreakdownList || [],
+          numCashPayInPercent: +(
+            (+values?.netPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+          numBankPayInPercent: +(
+            (+values?.bankPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+
+          numDigitalPayInPercent: +(
+            (+values?.digitalPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
         };
 
         createEmployeeSalaryAssign(payload, setLoading, callback);
@@ -400,7 +464,7 @@ export default function SalaryDrawer(props) {
                 businessUnitId: buId,
                 workplaceGroupId: values?.workplace?.value || wgId || 0,
                 departmentId: 0,
-                workplaceId: wId,
+                workplaceId: wId || 0,
                 designationId: 0,
                 supervisorId: 0,
                 employeeId: 0,
@@ -450,32 +514,32 @@ export default function SalaryDrawer(props) {
               className="d-flex justify-content-center align-items-center"
             >
               <IconButton
-                onClick={(e) => {
-                  getEmployeeSalaryInfo(
-                    setAllData,
-                    setRowDto,
-                    {
-                      partType: "SalaryAssignLanding",
-                      businessUnitId: buId,
-                      workplaceGroupId: wgId || 0,
-                      departmentId: 0,
-                      workplaceId: wId,
-                      designationId: 0,
-                      supervisorId: 0,
-                      employeeId: 0,
-                      strStatus: "NotAssigned",
-                      strSearchTxt: "",
-                      pageNo: pages?.current,
-                      pageSize: pages?.pageSize,
-                      isPaginated: true,
-                    },
-                    "NotAssigned",
-                    setLoading,
-                    "",
-                    pages,
-                    setPages
-                  );
-                  // cbLanding?.();
+                onClick={() => {
+                  // getEmployeeSalaryInfo(
+                  //   setAllData,
+                  //   setRowDto,
+                  //   {
+                  //     partType: "SalaryAssignLanding",
+                  //     businessUnitId: buId,
+                  //     workplaceGroupId: wgId || 0,
+                  //     departmentId: 0,
+                  //     workplaceId: wId || 0,
+                  //     designationId: 0,
+                  //     supervisorId: 0,
+                  //     employeeId: 0,
+                  //     strStatus: "NotAssigned",
+                  //     strSearchTxt: "",
+                  //     pageNo: pages?.current,
+                  //     pageSize: pages?.pageSize,
+                  //     isPaginated: true,
+                  //   },
+                  //   "NotAssigned",
+                  //   setLoading,
+                  //   "",
+                  //   pages,
+                  //   setPages
+                  // );
+                  cbLanding?.();
                   setIsOpen(false);
                   setIsBulk(false);
                   setStep("");
@@ -488,7 +552,9 @@ export default function SalaryDrawer(props) {
                       orgId,
                       defaultPayrollElement[0]?.value,
                       0,
-                      setBreakDownList
+                      setBreakDownList,
+                      "",
+                      wId
                     );
                   } else {
                     setBreakDownList([]);

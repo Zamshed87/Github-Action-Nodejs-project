@@ -225,6 +225,18 @@ export const getByIdSalaryAssignDDL = (
               showPercentage: itm?.numNumberOfPercent,
             };
           }
+          // Percentage && Percentage dependency 🔥🔥⚠ what is this ? 17/01/24 
+          if (
+            itm?.strBasedOn === "Percentage" &&  // Percentage && Percentage dependency 🔥🔥⚠ what is this ? 17/01/24 
+            itm?.strDependOn === "Percentage" &&  // Percentage && Percentage dependency 🔥🔥⚠ what is this ? 17/01/24 
+            !itm?.isBasicSalary 
+          ) {
+            modifyObj = {
+              [itm?.strSalaryElement.toLowerCase().split(" ").join("")]: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+              numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+              showPercentage: itm?.numNumberOfPercent,
+            };
+          }
         }
 
         // amount

@@ -18,8 +18,7 @@ import Loading from "../../../../../../common/loading/Loading";
 import { gray900, greenColor, success500 } from "../../../../../../utility/customColor";
 import { customStyles } from "../../../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../../../utility/todayDate";
-import { DDLForAddress } from "../../helper";
-import { updateEmployeeProfile } from "../helper";
+import { DDLForAddress, updateEmployeeProfile } from "../../helper";
 
 const initData = {
   country: "",
@@ -234,15 +233,15 @@ function OtherAddress({ getData, rowDto, empId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = (values, cb) => {
     const payload = {
-      partType: "Address",
+      partType: "AddressDelete",
       employeeId:
         rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId,
       autoId: rowDto?.otherAddress[0]?.intEmployeeAddressId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -298,6 +297,7 @@ function OtherAddress({ getData, rowDto, empId }) {
       getData();
       setStatus("empty");
       setSingleData("");
+      cb?.()
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -818,7 +818,9 @@ function OtherAddress({ getData, rowDto, empId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(values, () => {
+                                          resetForm(initData);
+                                        });
                                       },
                                     },
                                   ]}

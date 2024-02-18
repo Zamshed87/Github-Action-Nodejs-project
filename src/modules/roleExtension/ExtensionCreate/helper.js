@@ -28,7 +28,7 @@ export const setOrganizationDDLFunc = (
     ? getPeopleDeskAllDDL(
         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
         "intBusinessUnitId",
-        "strShortCode",
+        "strBusinessUnit",
         setOrganizationDDL
       )
     : valueOption?.value === 2
@@ -40,9 +40,9 @@ export const setOrganizationDDLFunc = (
       )
     : valueOption?.value === 3
     ? getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=0&WorkplaceGroupId=0&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceWithGroupName&BusinessUnitId=0&WorkplaceGroupId=0&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
         "intWorkplaceId",
-        "strWorkplace",
+        "Column1",
         setOrganizationDDL
       )
     : null;

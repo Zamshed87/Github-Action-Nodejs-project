@@ -120,6 +120,7 @@ export default function SelfIOUApplication() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Self-IOU Application";
   }, []);
 
   useEffect(() => {

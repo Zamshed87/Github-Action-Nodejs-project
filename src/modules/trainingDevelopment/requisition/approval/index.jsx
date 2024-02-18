@@ -1,8 +1,4 @@
-
-import {
-  Cancel,
-  CheckCircle,
-} from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -35,7 +31,7 @@ const initData = {
 };
 
 export default function RequisitionApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -52,6 +48,7 @@ export default function RequisitionApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
+        workplaceId: wId,
         busineessUnit: 0,
         applicantId: 0,
         accountId: orgId,
@@ -67,9 +64,7 @@ export default function RequisitionApproval() {
   useEffect(() => {
     getLandingData(/* isSupOrLineManager?.value */);
     // eslint-disable-next-line
-  }, [employeeId]);
-
-
+  }, [employeeId, wId]);
 
   // advance filter
   const [filterBages, setFilterBages] = useState({});
@@ -122,15 +117,15 @@ export default function RequisitionApproval() {
       }
       setApplicationData(array);
     });
-  }, [applicationListData,employeeId,isOfficeAdmin,orgId]);
-// eslint-disable-next-line
+  }, [applicationListData, employeeId, isOfficeAdmin, orgId]);
+  // eslint-disable-next-line
   const [appliedStatus, setAppliedStatus] = useState({
     value: 1,
     label: "Pending",
   });
 
-  const saveHandler = (values) => { };
- 
+  const saveHandler = (values) => {};
+
   const demoPopup = (action, text, array) => {
     let newArray = [];
 
@@ -152,6 +147,7 @@ export default function RequisitionApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
+          workplaceId: wId,
           workplaceGroupId: 0,
           departmentId: 0,
           designationId: 0,
@@ -197,6 +193,7 @@ export default function RequisitionApproval() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
     // eslint-disable-next-line
+    document.title = "Requisition Approval";
   }, []);
 
   return (
@@ -234,55 +231,55 @@ export default function RequisitionApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                                <div className="d-flex actionIcon mr-3">
-                                  <Tooltip title="Accept">
-                                    <div
-                                      className="muiIconHover success mr-2"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "approve",
-                                          "isApproved",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <CheckCircle
-                                            sx={{
-                                              color: successColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                  <Tooltip title="Reject">
-                                    <div
-                                      className="muiIconHover  danger"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "reject",
-                                          "isReject",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <Cancel
-                                            sx={{
-                                              color: failColor,
-                                              width: "16px",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                </div>
-                              )}
+                              <div className="d-flex actionIcon mr-3">
+                                <Tooltip title="Accept">
+                                  <div
+                                    className="muiIconHover success mr-2"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <CheckCircle
+                                          sx={{
+                                            color: successColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                                <Tooltip title="Reject">
+                                  <div
+                                    className="muiIconHover  danger"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <MuiIcon
+                                      icon={
+                                        <Cancel
+                                          sx={{
+                                            color: failColor,
+                                            width: "16px",
+                                          }}
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                </Tooltip>
+                              </div>
+                            )}
                             <ul className="d-flex flex-wrap">
                               {/* {isFilter && (
                                 <li>

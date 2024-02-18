@@ -1,20 +1,21 @@
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 import BackButton from "../../../common/BackButton";
-import Loading from "../../../common/loading/Loading";
-import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PrimaryButton from "../../../common/PrimaryButton";
 import ScrollableTable from "../../../common/ScrollableTable";
+import Loading from "../../../common/loading/Loading";
+import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { downloadFile } from "../../../utility/downloadFile";
 import { excelFileToArray } from "../../../utility/excelFileToJSON";
 import ErrorEmployeeModal from "./ErrorEmployeeModal";
 
+import { isDevServer } from "App";
 import {
   processBulkUploadEmployeeAction,
   saveBulkUploadEmployeeAction,
@@ -77,6 +78,7 @@ export default function BulkEmployeeCreate() {
   // new way
   const saveHandler = () => {
     const emptyCheck = data?.some(({ strEmployeeCode }) => !strEmployeeCode);
+    const isExistSalaryType = data?.some(({ strSalaryType }) => !strSalaryType);
     const isDuplicate =
       new Set(data.map(({ strEmployeeCode }) => strEmployeeCode)).size !==
       data.length;
@@ -85,7 +87,10 @@ export default function BulkEmployeeCreate() {
       history.push("/profile/employee");
       setData([]);
     };
-
+    if(isExistSalaryType){
+      toast.warn("Salary Type is required");
+      return;
+    }
     if (!data?.length || emptyCheck || isDuplicate) {
       toast.warn(
         "Invalid upload, please check your file or follow employee code which must be unique and not empty"
@@ -113,7 +118,6 @@ export default function BulkEmployeeCreate() {
   const processData = async (file) => {
     try {
       const processData = await excelFileToArray(file, "Employee Bulk Upload");
-      // console.log(processData);
       if (processData.length < 1) return toast.warn("No data found!");
       processBulkUploadEmployeeAction(
         processData,
@@ -172,9 +176,9 @@ export default function BulkEmployeeCreate() {
                           onClick={() => {
                             downloadFile(
                               `${
-                                process.env.NODE_ENV === "development"
-                                  ? "/document/downloadfile?id=1"
-                                  : "/document/downloadfile?id=1"
+                                isDevServer
+                                  ? "/document/downloadfile?id=138"
+                                  : "/document/downloadfile?id=150"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -228,14 +232,26 @@ export default function BulkEmployeeCreate() {
                                 <div>Department</div>
                               </th>
                               <th>
+                                <div>Employee Division</div>
+                              </th>
+                              <th>
+                                <div>Section</div>
+                              </th>
+                              <th>
+                                <div>HR Position</div>
+                              </th>
+                              <th>
                                 <div>Employment Type</div>
                               </th>
                               <th>
                                 <div>Gender</div>
                               </th>
-                              {/* <th>
+                              <th>
                                 <div>Salary Hold</div>
-                              </th> */}
+                              </th>
+                              <th>
+                                <div>Salary Tyoe</div>
+                              </th>
                               <th>
                                 <div>Religion Name</div>
                               </th>
@@ -244,6 +260,9 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th className="text-center">
                                 <div>Joining Date</div>
+                              </th>
+                              <th className="text-center">
+                                <div>Confirmation Date</div>
                               </th>
                               <th className="text-center">
                                 <div>Intern Close Date</div>
@@ -338,6 +357,21 @@ export default function BulkEmployeeCreate() {
                                 </td>
                                 <td>
                                   <div className="tableBody-title">
+                                    {data?.strEmpDivision}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {data?.strSection}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {data?.strHrPosition}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
                                     {data?.strEmploymentType}
                                   </div>
                                 </td>
@@ -346,11 +380,16 @@ export default function BulkEmployeeCreate() {
                                     {data?.strGender}
                                   </div>
                                 </td>
-                                {/* <td>
+                                <td>
                                   <div className="tableBody-title">
-                                    {data?.isSalaryHold}
+                                    {`${data?.isSalaryHold}`?.toUpperCase()}
                                   </div>
-                                </td> */}
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {`${data?.strSalaryType}`?.toUpperCase()}
+                                  </div>
+                                </td>
                                 <td>
                                   <div className="tableBody-title">
                                     {data?.strReligionName}
@@ -364,6 +403,11 @@ export default function BulkEmployeeCreate() {
                                 <td className="text-center">
                                   <div className="tableBody-title">
                                     {dateFormatter(data?.dteJoiningDate)}
+                                  </div>
+                                </td>
+                                <td className="text-center">
+                                  <div className="tableBody-title">
+                                    {dateFormatter(data?.dteConfirmationDate)}
                                   </div>
                                 </td>
                                 <td className="text-center">

@@ -119,6 +119,7 @@ export default function SupervisorIOUReport() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Supervisor Report";
   }, []);
 
   useEffect(() => {

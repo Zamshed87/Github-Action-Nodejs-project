@@ -4,7 +4,7 @@ import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import { paginationSize } from "../../../../common/AntTable";
 import DefaultInput from "../../../../common/DefaultInput";
@@ -24,6 +24,8 @@ import {
 } from "./helper";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { getWorkplaceDetails, getWorkplaceGroupDetails } from "common/api";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const initialValues = {
   search: "",
@@ -36,7 +38,7 @@ const initialValues = {
 const RosterReport = () => {
   const {
     permissionList,
-    profileData: { orgId, buId, buName, wgId, wId },
+    profileData: { orgId, buId, buName, wgId, wId, wName },
   } = useSelector((state) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
 
@@ -46,7 +48,12 @@ const RosterReport = () => {
       permission = item;
     }
   });
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Roster Report";
+  }, []);
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
     current: 1,
@@ -124,9 +131,8 @@ const RosterReport = () => {
     }
   };
   useEffect(() => {
-    getBuDetails(buId, setBuDetails);
-  }, []);
-
+    getWorkplaceDetails(wId, setBuDetails);
+  }, [wId]);
   return (
     <>
       {(loadingOnGetRosterReportInformation || loading) && <Loading />}
@@ -160,9 +166,9 @@ const RosterReport = () => {
                             "Roster Report",
                             values?.fromDate,
                             values?.toDate,
-                            values?.businessUnit?.label || buName,
+                            buDetails?.strWorkplace,
                             res?.data,
-                            buDetails?.strBusinessUnitAddress,
+                            buDetails?.strAddress,
                             getfromToDateList(values?.fromDate, values?.toDate)
                           );
                           setLoading(false);

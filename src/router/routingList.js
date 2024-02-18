@@ -1,4 +1,51 @@
+import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/CreateBonusSetup";
+import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
+import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
+import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/PayrollElement";
+import PayrollGroupCreate from "modules/PayrollManagementSytem/SalaryBreakdown/Create/PayrollGroupCreate";
+import SalaryBreakdownN from "modules/PayrollManagementSytem/SalaryBreakdown/indexN";
+import SeparationSetupLanding from "modules/PayrollManagementSytem/SeparationSetup";
+import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
+import BankBranch from "modules/configuration/bankBranch";
+import BusinessUnit from "modules/configuration/busisnessUnit";
+import Department from "modules/configuration/department";
+import Designation from "modules/configuration/designation";
+import DocumentType from "modules/configuration/documentType";
+import EmploymentTypeCreate from "modules/configuration/employmentType";
+import ExpenseTypeCreate from "modules/configuration/expenseType";
+import HRPosition from "modules/configuration/hrPosition";
+import LoanTypeCreate from "modules/configuration/loanType";
+import OrgBankDetailsLanding from "modules/configuration/orgBankDetails";
+import OrgInfoId from "modules/configuration/orgInfoForId";
+import PFRegisterTypeLanding from "modules/configuration/pfRegisterType";
+import Religion from "modules/configuration/religion";
+import Section from "modules/configuration/section";
+import SeparationType from "modules/configuration/separationType";
+import TaxChallanConfigLanding from "modules/configuration/taxChallanConfig";
+import UserInfoN from "modules/configuration/userInfo/UserInfo";
+import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
+import Workplace from "modules/configuration/workplace";
+import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
+import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
+import MovementType from "modules/leaveMovement/configuration/MovementType";
+import ReporterUpdation from "modules/reporterUpdation";
+import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
+import JoiningReport from "modules/timeSheet/reports/joiningReport";
+import LateReport from "modules/timeSheet/reports/lateReport";
 import { lazy } from "react";
+
+const MultiCalendarAssign = lazy(() =>
+  import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
+);
+const JoineeAttendanceReport = lazy(() =>
+  import("modules/timeSheet/reports/joineeAttendanceReport")
+);
+const EarlyReport = lazy(() =>
+  import("modules/timeSheet/reports/earlyInoutReport")
+);
+const AbsentReport = lazy(() =>
+  import("modules/timeSheet/reports/absentReport")
+);
 const CreateEditLeavePolicy = lazy(() =>
   import(
     "../modules/leaveMovement/configuration/YearlyLeavePolicy/CreateEditLeavePolicy"
@@ -281,6 +328,9 @@ const PfWithdrawApproval = lazy(() =>
 const PFCompLanding = lazy(() =>
   import("../modules/CompensationBenefits/PfWithdraw/index.jsx")
 );
+const PfFundLanding = lazy(() =>
+  import("../modules/CompensationBenefits/pfFund/index.tsx")
+);
 const CashDisbursementRegister = lazy(() =>
   import(
     "../modules/CompensationBenefits/reports/cashDisbursmentRegister/index.js"
@@ -438,12 +488,12 @@ const SelectionModule = lazy(() =>
 const Sliders = lazy(() =>
   import("../modules/componentModule/slidersModule/index.jsx")
 );
-const BankBranch = lazy(() =>
-  import("../modules/configuration/bankBranch/index.jsx")
-);
-const BusinessUnit = lazy(() =>
-  import("../modules/configuration/busisnessUnit/index.jsx")
-);
+// const BankBranch = lazy(() =>
+//   import("../modules/configuration/bankBranch/index.jsx")
+// );
+// const BusinessUnit = lazy(() =>
+//   import("../modules/configuration/busisnessUnit/index.jsx")
+// );
 const DashboardComponent = lazy(() =>
   import("../modules/configuration/dashboardComponent/index.jsx")
 );
@@ -452,33 +502,39 @@ const DashboardCompPermissionCreate = lazy(() =>
     "../modules/configuration/dashboardComponentPermission/addEditForm.jsx"
   )
 );
+const EmployeeIdCardLanding = lazy(() =>
+  import("../modules/timeSheet/reports/employeeIDCard/index.jsx")
+);
 const DashboardComponentPermission = lazy(() =>
   import("../modules/configuration/dashboardComponentPermission/index.jsx")
 );
 const DashboardCompPermissionDetails = lazy(() =>
   import("../modules/configuration/dashboardComponentPermission/singleView.jsx")
 );
-const Department = lazy(() =>
-  import("../modules/configuration/department/index.jsx")
-);
-const DocumentType = lazy(() =>
-  import("../modules/configuration/documentType/index.jsx")
-);
-const EmploymentTypeCreate = lazy(() =>
-  import("../modules/configuration/employmentType/index.jsx")
-);
-const ExpenseTypeCreate = lazy(() =>
-  import("../modules/configuration/expenseType/index.jsx")
-);
+// const Department = lazy(() =>
+//   import("../modules/configuration/department/index.jsx")
+// );
+// const Section = lazy(() =>
+//   import("../modules/configuration/section/index.jsx")
+// );
+// const DocumentType = lazy(() =>
+//   import("../modules/configuration/documentType/index.jsx")
+// );
+// const EmploymentTypeCreate = lazy(() =>
+//   import("../modules/configuration/employmentType/index.jsx")
+// );
+// const ExpenseTypeCreate = lazy(() =>
+//   import("../modules/configuration/expenseType/index.jsx")
+// );
 const FeatureGroup = lazy(() =>
   import("../modules/configuration/featureGroup/index.jsx")
 );
-const HRPosition = lazy(() =>
-  import("../modules/configuration/hrPosition/index.jsx")
-);
-const LoanTypeCreate = lazy(() =>
-  import("../modules/configuration/loanType/index.jsx")
-);
+// const HRPosition = lazy(() =>
+//   import("../modules/configuration/hrPosition/index.jsx")
+// );
+// const LoanTypeCreate = lazy(() =>
+//   import("../modules/configuration/loanType/index.jsx")
+// );
 const ManagementDashboardPermissionCreate = lazy(() =>
   import(
     "../modules/configuration/managementDashboardPermission/addEditForm.jsx"
@@ -501,33 +557,33 @@ const NotificationConfig = lazy(() =>
 const NotificationDetails = lazy(() =>
   import("../modules/configuration/NotificationConfig/singleView.jsx")
 );
-const OrgBankDetailsLanding = lazy(() =>
-  import("../modules/configuration/orgBankDetails/index.jsx")
-);
+// const OrgBankDetailsLanding = lazy(() =>
+//   import("../modules/configuration/orgBankDetails/index.jsx")
+// );
 const PayScaleGrade = lazy(() =>
   import("../modules/configuration/payScaleGrade/index.jsx")
 );
-const Religion = lazy(() =>
-  import("../modules/configuration/religion/index.jsx")
-);
+// const Religion = lazy(() =>
+//   import("../modules/configuration/religion/index.jsx")
+// );
 const SBUUnit = lazy(() =>
   import("../modules/configuration/sbuUnit/index.jsx")
 );
-const SeparationType = lazy(() =>
-  import("../modules/configuration/separationType/index.jsx")
-);
-const TaxChallanConfigLanding = lazy(() =>
-  import("../modules/configuration/taxChallanConfig/index.jsx")
-);
+// const SeparationType = lazy(() =>
+//   import("../modules/configuration/separationType/index.jsx")
+// );
+// const TaxChallanConfigLanding = lazy(() =>
+//   import("../modules/configuration/taxChallanConfig/index.jsx")
+// );
 const UserGroup = lazy(() =>
   import("../modules/configuration/userGroup/index.jsx")
 );
 const CreateUser = lazy(() =>
   import("../modules/configuration/userInfo/createUser/index.js")
 );
-const UserInfo = lazy(() =>
-  import("../modules/configuration/userInfo/index.jsx")
-);
+// const UserInfo = lazy(() =>
+//   import("../modules/configuration/userInfo/index.jsx")
+// );
 const FeatureAssignToRole = lazy(() =>
   import(
     "../modules/configuration/userRoleManager/featureAssignToRole/index.jsx"
@@ -550,9 +606,9 @@ const UserRole = lazy(() =>
 const WorklineConfig = lazy(() =>
   import("../modules/configuration/worklineConfig/index.jsx")
 );
-const Workplace = lazy(() =>
-  import("../modules/configuration/workplace/index.jsx")
-);
+// const Workplace = lazy(() =>
+//   import("../modules/configuration/workplace/index.jsx")
+// );
 const AboutMe = lazy(() => import("../modules/employeeProfile/aboutMe"));
 const GoForPrint = lazy(() =>
   import("../modules/employeeProfile/aboutMe/GoForPrint/GoForPrint.jsx")
@@ -560,9 +616,9 @@ const GoForPrint = lazy(() =>
 const PrintPreview = lazy(() =>
   import("../modules/employeeProfile/aboutMe/GoForPrint/PrintPreview.jsx")
 );
-const CommonAppPipeline = lazy(() =>
-  import("../modules/employeeProfile/AppPipeline/index.jsx")
-);
+// const CommonAppPipeline = lazy(() =>
+//   import("../modules/employeeProfile/AppPipeline/index.jsx")
+// );
 const EmAttendenceAdjust = lazy(() =>
   import("../modules/employeeProfile/attendenceAdjust/index.jsx")
 );
@@ -591,7 +647,7 @@ const AboutMeDetails = lazy(() =>
   import("../modules/employeeProfile/employeeFeature/AboutMeCommon/index.jsx")
 );
 const EmployeeFeatureNew = lazy(() =>
-  import("../modules/employeeProfile/employeeFeature/indexNew.jsx")
+  import("../modules/employeeProfile/employeeFeature/indexNew")
 );
 const FoodCorner = lazy(() =>
   import("../modules/employeeProfile/foodCorner/FoodCorner.jsx")
@@ -687,6 +743,15 @@ const ManagementApplicationSeparationForm = lazy(() =>
 const ManagementSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/mgmApplication/index.jsx")
 );
+const FinalSettlementLanding = lazy(() =>
+  import("../modules/employeeProfile/finalSettlement/index.jsx")
+);
+const FinalSettlementAddEditView = lazy(() =>
+  import(
+    "../modules/employeeProfile/finalSettlement/create/CreateEditFinalSettlement.jsx"
+  )
+);
+
 const ManagementReleaseSeparationForm = lazy(() =>
   import(
     "../modules/employeeProfile/separation/mgmApplication/releaseForm/index.jsx"
@@ -844,12 +909,12 @@ const SupervisorIOUReportView = lazy(() =>
 const AppPipeline = lazy(() =>
   import("../modules/leaveMovement/configuration/AppPipeline/index.jsx")
 );
-const LeaveTypeCreate = lazy(() =>
-  import("../modules/leaveMovement/configuration/LeaveType/index.jsx")
-);
-const MovementType = lazy(() =>
-  import("../modules/leaveMovement/configuration/MovementType/index.jsx")
-);
+// const LeaveTypeCreate = lazy(() =>
+//   import("../modules/leaveMovement/configuration/LeaveType/index.jsx")
+// );
+// const MovementType = lazy(() =>
+//   import("../modules/leaveMovement/configuration/MovementType/index.jsx")
+// );
 const YearlyLeavePolicy = lazy(() =>
   import("../modules/leaveMovement/configuration/YearlyLeavePolicy/index.jsx")
 );
@@ -923,7 +988,7 @@ const OvertimePolicy = lazy(() =>
   import("../modules/PayrollManagementSytem/OvertimePolicy/index.js")
 );
 const PayrollElementCreate = lazy(() =>
-  import("../modules/PayrollManagementSytem/PayrollElement/index.jsx")
+  import("../modules/PayrollManagementSytem/PayrollElement/Previous/index.jsx")
 );
 const PfGratuityPolicyForm = lazy(() =>
   import(
@@ -1064,6 +1129,9 @@ const UnderCreateRosterSetup = lazy(() =>
 const Calendar = lazy(() =>
   import("../modules/timeSheet/employeeAssign/calendar/index.jsx")
 );
+const LeavePolicyAssign = lazy(() =>
+  import("../modules/timeSheet/employeeAssign/leavePolicyAssign/index.jsx")
+);
 const HolidayException = lazy(() =>
   import("../modules/timeSheet/employeeAssign/HolidayException/index.jsx")
 );
@@ -1098,6 +1166,12 @@ const GorForPrint = lazy(() =>
 );
 const AttendanceReport = lazy(() =>
   import("../modules/timeSheet/reports/attendanceReport/index.jsx")
+);
+// const AttendanceRawDataProcess = lazy(() =>
+//   import("../modules/timeSheet/attendence/attendanceRawDataProcess/index.jsx")
+// );
+const AttendanceRawDataProcess = lazy(() =>
+  import("../modules/timeSheet/attendence/attendanceRawDataProcess/indexN.jsx")
 );
 const EmployeeList = lazy(() =>
   import("../modules/timeSheet/reports/employeeList/index.jsx")
@@ -1200,9 +1274,9 @@ const TMProjectTaskBoard = lazy(() =>
 const TMDashboard = lazy(() =>
   import("../saas/taskManagement/tmDashboard/index.jsx")
 );
-const Designation = lazy(() =>
-  import("./../modules/configuration/designation/index")
-);
+// const Designation = lazy(() =>
+//   import("./../modules/configuration/designation/index")
+// );
 const SelfViewSeparationForm = lazy(() =>
   import(
     "./../modules/employeeProfile/separation/selfApplication/viewForm/index"
@@ -1214,9 +1288,9 @@ const SeparationApproval = lazy(() =>
 const BonusSetupLanding = lazy(() =>
   import("./../modules/PayrollManagementSytem/BonusSetup/index")
 );
-const SalaryBreakdown = lazy(() =>
-  import("./../modules/PayrollManagementSytem/SalaryBreakdown/index.jsx")
-);
+// const SalaryBreakdown = lazy(() =>
+//   import("./../modules/PayrollManagementSytem/SalaryBreakdown/index.jsx")
+// );
 const DailyAttendenceReport = lazy(() =>
   import("./../modules/timeSheet/reports/dailyAttendance/Landing/index")
 );
@@ -1260,8 +1334,16 @@ export const routingList = [
     component: JobConfirmationReport,
   },
   {
+    path: "/profile/timeManagement/attendanceRawDataProcess",
+    component: AttendanceRawDataProcess,
+  },
+  {
     path: "/profile/reports/inactiveEmployees",
     component: ActiveInactiveEmployeeReport,
+  },
+  {
+    path: "/administration/configuration/bulkReporterChange",
+    component: ReporterUpdation,
   },
   {
     path: "/profile/employee/go-for-print/print-preview",
@@ -1292,6 +1374,18 @@ export const routingList = [
   {
     path: "/profile/separation",
     component: ManagementSeparation,
+  },
+  {
+    path: "/profile/finalSettlement",
+    component: FinalSettlementLanding,
+  },
+  {
+    path: "/profile/finalSettlement/create",
+    component: FinalSettlementAddEditView,
+  },
+  {
+    path: "/profile/finalSettlement/:type/:id",
+    component: FinalSettlementAddEditView,
   },
   { path: "/profile/reports/separationReport", component: SeparationReport },
   {
@@ -1335,6 +1429,10 @@ export const routingList = [
   {
     path: "/profile/overTime/autoGenerated",
     component: EmOvertimeAutoGenerated,
+  },
+  {
+    path: "/profile/reports/emloyeeIDCard",
+    component: EmployeeIdCardLanding,
   },
   {
     path: "/administration/configuration/commonapprovalpipeline",
@@ -1422,6 +1520,10 @@ export const routingList = [
     path: "/profile/cafeteriaManagement/detailsReport",
     component: FoodDetailsReport,
   },
+  {
+    path: "/administration/configuration/orgInfoForId",
+    component: OrgInfoId,
+  },
   //PF Management start for selfService
   {
     path: "/SelfService/pfmanagement",
@@ -1467,6 +1569,26 @@ export const routingList = [
   {
     path: "/profile/reports/dailyAttendanceReport",
     component: MgmtDailyAttendance,
+  },
+  {
+    path: "/profile/reports/lateReport",
+    component: LateReport,
+  },
+  {
+    path: "/profile/reports/joiningReport",
+    component: JoiningReport,
+  },
+  {
+    path: "/profile/reports/joineeAttendancereport",
+    component: JoineeAttendanceReport,
+  },
+  {
+    path: "/profile/reports/earlyOutReport",
+    component: EarlyReport,
+  },
+  {
+    path: "/profile/reports/absentReport",
+    component: AbsentReport,
   },
   {
     path: "/profile/reports/invalidInOutAttendanceReport",
@@ -1565,7 +1687,8 @@ export const routingList = [
     component: MasterLocationRegistration,
   },
   // <== Administration start
-  { path: "/administration/roleManagement/usersInfo", component: UserInfo },
+  // { path: "/administration/roleManagement/usersInfo", component: UserInfo },
+  { path: "/administration/roleManagement/usersInfo", component: UserInfoN },
   {
     path: "/administration/roleManagement/usersInfo/create",
     component: CreateUser,
@@ -1590,8 +1713,12 @@ export const routingList = [
   },
   //Bank branch end
   {
-    path: "/administration/roleManagement/userRole",
+    path: "/administration/roleManagement/userRolePrev",
     component: UserRole,
+  },
+  {
+    path: "/administration/roleManagement/userRole",
+    component: UserRoleN,
   },
   {
     path: "/administration/roleManagement/userRoleManager",
@@ -1682,6 +1809,10 @@ export const routingList = [
     component: Calendar,
   },
   {
+    path: "/administration/timeManagement/leavePolicyAssign",
+    component: LeavePolicyAssign,
+  },
+  {
     path: "/administration/timeManagement/offDayAssign",
     component: OffDay,
   },
@@ -1692,6 +1823,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/locationAssign",
     component: LocationAssign,
+  },
+  {
+    path: "/administration/timeManagement/multiCalendarAssign",
+    component: MultiCalendarAssign,
   },
   { path: "/administration/loanManagement/loanType", component: LoanType },
   {
@@ -1704,6 +1839,7 @@ export const routingList = [
   },
   { path: "/administration/configuration/sbu", component: SBUUnit },
   { path: "/administration/configuration/department", component: Department },
+  { path: "/administration/configuration/section", component: Section },
   { path: "/administration/configuration/hr-position", component: HRPosition },
   {
     path: "/administration/configuration/designation",
@@ -1787,11 +1923,23 @@ export const routingList = [
     path: "/administration/configuration/managementDashboardPermission/view/:id",
     component: ManagementDashboardPermissionDetails,
   },
+  {
+    path: "/administration/configuration/employeeDivision",
+    component: EmployeeDivision,
+  },
+  {
+    path: "/administration/configuration/PFRegisterType",
+    component: PFRegisterTypeLanding,
+  },
   { path: "/SelfService/dashboard", component: SelfDashboard },
   { path: "/SelfService/aboutMe", component: AboutMe },
   {
-    path: "/profile/timemanagement/attendenceadjust",
+    path: "/profile/timemanagement/attendenceadjustPrev",
     component: AttendenceAdjust,
+  },
+  {
+    path: "/profile/timemanagement/attendenceadjust",
+    component: AttendenceAdjustN,
   },
   {
     path: "/profile/timeManagement/attendanceAutoProcess",
@@ -2204,6 +2352,13 @@ export const routingList = [
     path: "/compensationAndBenefits/pfandgratuity/pfInvestment",
     component: PfInvestmentLanding,
   },
+  // PF Fund for Compensation & benefit start
+  {
+    path: "/compensationAndBenefits/pfandgratuity/PFFund",
+    component: PfFundLanding,
+  },
+  // PF Fund for Compensation & benefit End
+
   // PF Withdraw for Compensation & benefit start
   {
     path: "/compensationAndBenefits/pfandgratuity/pfWithdraw",
@@ -2428,14 +2583,29 @@ export const routingList = [
     path: "/profile/rewardsanddisciplinary/rewardandpunishment/create",
     component: RewardsAndPunishmentAdd,
   },
-
   {
-    path: "/administration/payrollConfiguration/payrollElement",
+    path: "/administration/payrollConfiguration/payrollElement/prev",
     component: PayrollElementCreate,
   },
   {
+    path: "/administration/payrollConfiguration/payrollElement",
+    component: PayrollElement,
+  },
+  // {
+  //   path: "/administration/payrollConfiguration/salaryBreakdown",
+  //   component: SalaryBreakdown,
+  // },
+  {
     path: "/administration/payrollConfiguration/salaryBreakdown",
-    component: SalaryBreakdown,
+    component: SalaryBreakdownN,
+  },
+  {
+    path: "/administration/payrollConfiguration/salaryBreakdown/create",
+    component: PayrollGroupCreate,
+  },
+  {
+    path: "/administration/payrollConfiguration/salaryBreakdown/edit/:id",
+    component: PayrollGroupCreate,
   },
   {
     path: "/administration/payrollConfiguration/salaryBreakdown/:id",
@@ -2483,11 +2653,15 @@ export const routingList = [
   },
   {
     path: "/administration/payrollConfiguration/bonusSetup/edit/:id",
+    component: CreateBonusSetup,
+  },
+  {
+    path: "/administration/payrollConfiguration/bonusSetup/createPrevious",
     component: BonusSetupForm,
   },
   {
     path: "/administration/payrollConfiguration/bonusSetup/create",
-    component: BonusSetupForm,
+    component: CreateBonusSetup,
   },
   {
     path: "/administration/payrollConfiguration/bonusSetup",
@@ -2506,8 +2680,25 @@ export const routingList = [
     component: PfGratuityPolicy,
   },
   {
-    path: "/administration/payrollConfiguration/overtimePolicy",
+    path: "/administration/payrollConfiguration/overtimePolicyPrevious",
     component: OvertimePolicy,
+  },
+  // Policy Create/Landing
+  {
+    path: "/administration/payrollConfiguration/separationSetup",
+    component: SeparationSetupLanding,
+  },
+  {
+    path: "/administration/payrollConfiguration/overtimePolicy",
+    component: OvertimePolicyN,
+  },
+  {
+    path: "/administration/payrollConfiguration/overtimePolicy/create",
+    component: CreateOvertimePolicy,
+  },
+  {
+    path: "/administration/payrollConfiguration/overtimePolicy/edit/:id",
+    component: CreateOvertimePolicy,
   },
   {
     path: "/administration/payrollConfiguration/payrollBasic/create",

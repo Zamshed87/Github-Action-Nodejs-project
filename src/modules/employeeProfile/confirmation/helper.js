@@ -16,14 +16,15 @@ export const confirmationEmpAction = async (
   cb
 ) => {
   try {
-    if (!values?.pinNo) {
-      return toast.warning("PIN No. is reqired.");
-    }
+    // requirement from fosu 🔥🔥
+    // if (!values?.pinNo) {
+    //   return toast.warning("PIN No. is reqired.");
+    // }
     let payload = {
       employeeId: singleData?.employeeId,
-      designationId: singleData?.designationId,
+      // designationId: singleData?.designationId,
       confirmationDate: values?.confirmDate,
-      pinNo: values?.pinNo,
+      // pinNo: values?.pinNo,
     };
     setLoading(true);
     let res = await axios.post(`/Employee/ConfirmationEmployee`, payload);
@@ -152,46 +153,46 @@ export const empConfirmcolumns = (
       filter: false,
       fieldType: "string",
     },
-    {
-      title: "Wing",
-      dataIndex: "wingName",
-      sort: true,
-      filter: false,
-      hidden: wgId !== 3 ? true : false,
-      fieldType: "string",
-    },
-    {
-      title: "Sole Depo",
-      dataIndex: "soleDepoName",
-      sort: true,
-      filter: false,
-      hidden: wgId !== 3 ? true : false,
-      fieldType: "string",
-    },
-    {
-      title: "Region",
-      dataIndex: "regionName",
-      sort: true,
-      filter: false,
-      hidden: wgId !== 3 ? true : false,
-      fieldType: "string",
-    },
-    {
-      title: "Area",
-      dataIndex: "areaName",
-      sort: true,
-      filter: false,
-      hidden: wgId !== 3 ? true : false,
-      fieldType: "string",
-    },
-    {
-      title: "Territory",
-      dataIndex: "territoryName",
-      sort: true,
-      filter: false,
-      hidden: wgId !== 3 ? true : false,
-      fieldType: "string",
-    },
+    // {
+    //   title: "Wing",
+    //   dataIndex: "wingName",
+    //   sort: true,
+    //   filter: false,
+    //   hidden: wgId !== 3 ? true : false,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Sole Depo",
+    //   dataIndex: "soleDepoName",
+    //   sort: true,
+    //   filter: false,
+    //   hidden: wgId !== 3 ? true : false,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Region",
+    //   dataIndex: "regionName",
+    //   sort: true,
+    //   filter: false,
+    //   hidden: wgId !== 3 ? true : false,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Area",
+    //   dataIndex: "areaName",
+    //   sort: true,
+    //   filter: false,
+    //   hidden: wgId !== 3 ? true : false,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Territory",
+    //   dataIndex: "territoryName",
+    //   sort: true,
+    //   filter: false,
+    //   hidden: wgId !== 3 ? true : false,
+    //   fieldType: "string",
+    // },
     {
       title: "Employment Type",
       dataIndex: "employmentType",
@@ -200,15 +201,15 @@ export const empConfirmcolumns = (
       width: 140,
       fieldType: "string",
     },
-    {
-      title: "Pin No.",
-      dataIndex: "pinNo",
-      render: (record) => (record?.pinNo ? record?.pinNo : "-"),
-      sort: true,
-      filter: false,
-      width: 100,
-      fieldType: "string",
-    },
+    // {
+    //   title: "Pin No.",
+    //   dataIndex: "pinNo",
+    //   render: (record) => (record?.pinNo ? record?.pinNo : "-"),
+    //   sort: true,
+    //   filter: false,
+    //   width: 100,
+    //   fieldType: "string",
+    // },
     {
       title: "Joining Date",
       dataIndex: "joiningDate",

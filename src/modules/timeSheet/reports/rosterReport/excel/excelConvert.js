@@ -20,9 +20,12 @@ const getTableDataForExcel = (row, dateList) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
-      new Cell(item?.strEmployeeName || "N/A", "left", "text").getCell(),
       new Cell(item?.EmployeeCode || "N/A", "left", "text").getCell(),
+      new Cell(item?.strEmployeeName || "N/A", "left", "text").getCell(),
+      new Cell(item?.strWorkplaceGroup || "N/A", "left", "text").getCell(),
+      new Cell(item?.strWorkplace || "N/A", "left", "text").getCell(),
       new Cell(item?.strDepartment || "N/A", "center", "text").getCell(),
+      new Cell(item?.strSectionName || "N/A", "center", "text").getCell(),
       new Cell(item?.strDesignation || "N/A", "center", "text").getCell(),
       ...(dateList?.length > 0 &&
         dateList.map((nestedItem) =>
@@ -42,11 +45,15 @@ const createExcelFile = (
   dateList
 ) => {
   const excel = {
-    name: `${comapanyNameHeader} ${dateList[0]?.level} to ${ dateList[dateList?.length-1]?.level}`,
+    name: `${comapanyNameHeader} ${dateList[0]?.level} to ${
+      dateList[dateList?.length - 1]?.level
+    }`,
     sheets: [
       {
         // name: `Salary Report-${monthYear}`,
-        name: `${comapanyNameHeader}  ${dateList[0]?.level} to ${ dateList[dateList?.length-1]?.level}`,
+        name: `${comapanyNameHeader}  ${dateList[0]?.level} to ${
+          dateList[dateList?.length - 1]?.level
+        }`,
         gridLine: false,
         rows: [
           ["_blank*2"],
@@ -72,7 +79,9 @@ const createExcelFile = (
           ],
           [
             {
-              text: `${comapanyNameHeader}-${dateList[0]?.level} to ${ dateList[dateList?.length-1]?.level}`,
+              text: `${comapanyNameHeader}-${dateList[0]?.level} to ${
+                dateList[dateList?.length - 1]?.level
+              }`,
               fontSize: 15,
               bold: true,
               cellRange: "A1:D1",
@@ -91,24 +100,42 @@ const createExcelFile = (
               border: "all 000000 thin",
             },
             {
+              text: "Employee Code",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+            {
               text: "Employee Name",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
             },
             {
-              text: "Employee Code",
+              text: "Wokrplace Group",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
             },
-
+            {
+              text: "Wokrplace",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
             {
               text: "Department",
               fontSize: 9,
               bold: true,
               border: "all 000000 thin",
             },
+            {
+              text: "Section",
+              fontSize: 9,
+              bold: true,
+              border: "all 000000 thin",
+            },
+
             {
               text: "Designation",
               fontSize: 9,

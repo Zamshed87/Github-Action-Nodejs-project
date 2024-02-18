@@ -101,6 +101,7 @@ export default function EmployeeLocations() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Employee Locations";
   }, []);
 
   useEffect(() => {
@@ -116,7 +117,6 @@ export default function EmployeeLocations() {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId]);
-
 
   return (
     <>

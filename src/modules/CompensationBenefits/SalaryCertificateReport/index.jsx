@@ -111,6 +111,7 @@ const SalaryPayslipReport = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Salary Certificate";
   }, []);
 
   const numTotal = (arr, property, intPayrollElementTypeId) => {
@@ -141,9 +142,12 @@ const SalaryPayslipReport = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         getPDFAction(
-                          `/PdfAndExcelReport/EmployeeSalaryCertificate?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${values?.employee?.value
-                          }&intMonthId=${values?.inMonth}&intYearId=${values?.intYear
-                          }&intSalaryGenerateRequestId=${values?.adviceName ? +values?.adviceName?.value : 0
+                          `/PdfAndExcelReport/EmployeeSalaryCertificate?partName=SalaryGenerateHeaderByPayrollMonthNEmployeeId&intEmployeeId=${
+                            values?.employee?.value
+                          }&intMonthId=${values?.inMonth}&intYearId=${
+                            values?.intYear
+                          }&intSalaryGenerateRequestId=${
+                            values?.adviceName ? +values?.adviceName?.value : 0
                           }`,
                           setLoading
                         );
@@ -193,14 +197,15 @@ const SalaryPayslipReport = () => {
                           );
                           if (e.target.value && values?.employee?.value) {
                             getPeopleDeskAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&WorkplaceGroupId=${wgId}&intId=${values?.employee?.value
+                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&WorkplaceGroupId=${wgId}&intId=${
+                                values?.employee?.value
                               }&IntMonth=${+e.target.value
                                 .split("")
                                 .slice(-2)
                                 .join("")}&IntYear=${+e.target.value
-                                  .split("")
-                                  .slice(0, 4)
-                                  .join("")}`,
+                                .split("")
+                                .slice(0, 4)
+                                .join("")}`,
                               "SalaryGenerateRequestId",
                               "SalaryCode",
                               setPayrollPeiodDDL
@@ -551,9 +556,9 @@ const SalaryPayslipReport = () => {
                               <p style={thStyles}>
                                 {numberWithCommas(
                                   numTotal(viewPaySlipData, "numAmount", 0) +
-                                  (salaryHeaderData[0]?.numTaxAmount || 0) +
-                                  (salaryHeaderData[0]?.numLoanAmount || 0) +
-                                  (salaryHeaderData[0]?.numPFAmount || 0)
+                                    (salaryHeaderData[0]?.numTaxAmount || 0) +
+                                    (salaryHeaderData[0]?.numLoanAmount || 0) +
+                                    (salaryHeaderData[0]?.numPFAmount || 0)
                                 )}
                               </p>
                             </th>
@@ -571,11 +576,11 @@ const SalaryPayslipReport = () => {
                                   (numTotal(viewPaySlipData, "numTotal", 1) +
                                     salaryHeaderData[0]?.numOverTimeAmount ||
                                     0) -
-                                  (numTotal(viewPaySlipData, "numAmount", 0) +
-                                    (salaryHeaderData[0]?.numTaxAmount || 0) +
-                                    (salaryHeaderData[0]?.numLoanAmount ||
-                                      0) +
-                                    (salaryHeaderData[0]?.numPFAmount || 0))
+                                    (numTotal(viewPaySlipData, "numAmount", 0) +
+                                      (salaryHeaderData[0]?.numTaxAmount || 0) +
+                                      (salaryHeaderData[0]?.numLoanAmount ||
+                                        0) +
+                                      (salaryHeaderData[0]?.numPFAmount || 0))
                                 )}
                               </p>
                             </th>

@@ -25,6 +25,8 @@ import {
   monthFirstDate,
   monthLastDate,
 } from "./../../../../utility/dateFormatter";
+import { PModal } from "Components/Modal";
+import ManagementSeparationHistoryView from "./viewForm/ManagementSeparationHistoryView";
 
 const initData = {
   status: "",
@@ -56,6 +58,8 @@ export default function ManagementSeparation() {
   // state
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [id, setId] = useState(null);
 
   // landing
   const [rowDto, setRowDto] = useState([]);
@@ -98,7 +102,7 @@ export default function ManagementSeparation() {
   };
 
   const handleChangeRowsPerPage = (event, searchText = "") => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -115,12 +119,13 @@ export default function ManagementSeparation() {
   const { setFieldValue, values, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
-    onSubmit: (values, { setSubmitting, resetForm }) => {},
+    // onSubmit: (values, { setSubmitting, resetForm }) => {},
   });
 
   // initial
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Separation";
   }, [dispatch]);
 
   useEffect(() => {
@@ -321,7 +326,9 @@ export default function ManagementSeparation() {
                     pages?.pageSize,
                     history,
                     dispatch,
-                    permission
+                    setOpenModal,
+                    permission,
+                    setId
                   )}
                   pages={pages}
                   rowDto={rowDto}
@@ -340,6 +347,17 @@ export default function ManagementSeparation() {
                       `/profile/separation/view/${data?.separationId}`
                     );
                   }}
+                />
+                <PModal
+                  title="Separation History View"
+                  open={openModal}
+                  onCancel={() => {
+                    setOpenModal(false);
+                  }}
+                  components={
+                    <ManagementSeparationHistoryView id={id} type="view" />
+                  }
+                  width={1000}
                 />
               </>
             ) : (

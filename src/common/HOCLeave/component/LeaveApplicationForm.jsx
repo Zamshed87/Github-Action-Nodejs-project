@@ -42,8 +42,14 @@ const LeaveApplicationForm = ({ propsObj }) => {
     setLoading,
     loading,
     editPermission = false,
+    show = false,
   } = propsObj;
-
+  let leaveDDl = leaveTypeDDL;
+  if (show) {
+    leaveDDl = leaveTypeDDL?.filter(
+      (itm) => itm?.IsLveBalanceApplyForSelfService
+    );
+  }
   // image
   const inputFile = useRef(null);
   const onButtonClick = () => {
@@ -56,6 +62,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
     }
     // eslint-disable-next-line
   }, [values?.fromDate, values?.toDate]);
+
   return (
     <>
       {loading && <Loading />}
@@ -67,7 +74,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
               name="leaveType"
               options={
                 [
-                  ...leaveTypeDDL,
+                  ...leaveDDl,
                   // {
                   //   label: "Special Leave",
                   //   value: 8,
@@ -100,7 +107,12 @@ const LeaveApplicationForm = ({ propsObj }) => {
                 onChange={(e) => {
                   setFieldValue("toDate", "");
                   setFieldValue("fromDate", e.target.value);
-                  setNext3daysForEmp(calculateNextDate(e?.target?.value, 2));
+                  setNext3daysForEmp(
+                    calculateNextDate(
+                      e?.target?.value,
+                      values?.leaveType?.intMaxLveDaySelf
+                    )
+                  );
                   const x = e.target.value.split("-")[0];
                   setStartYear(getDateOfYear("last", x));
                 }}
@@ -122,7 +134,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
                 max={
                   startYear
                     ? !editPermission &&
-                      values?.leaveType?.LeaveType === "Casual Leave"
+                      values?.leaveType?.strLeaveType === "Casual Leave"
                       ? next3daysForEmp
                       : startYear
                     : lastDate
@@ -138,9 +150,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
           </div>
         </div>
         {values?.fromDate === values?.toDate &&
-        (values?.leaveType?.label === "Casual Leave" ||
-          values?.leaveType?.label === "Earn Leave" ||
-          values?.leaveType?.label === "Sick Leave") ? (
+        values?.leaveType?.isHalfDayLeave ? (
           <div className="row">
             <div className="col-lg-6">
               <label> Leave Length</label>
@@ -247,7 +257,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
                   .then((data) => {
                     setImageFile(data?.[0]);
                   })
-                  .catch((error) => {
+                  .catch(() => {
                     setImageFile("");
                   });
               }
@@ -294,7 +304,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
           </button>
           {isEdit && (
             <button
-              onClick={(e) => {
+              onClick={() => {
                 setIsEdit(false);
                 resetForm(initData);
                 setSingleData("");

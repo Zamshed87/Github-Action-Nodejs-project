@@ -36,7 +36,7 @@ export default function RosterSetup() {
   const [rowDto, setRowDto] = useState([]);
   const [allData, setAllData] = useState([]);
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -45,6 +45,7 @@ export default function RosterSetup() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Roster Setup";
   }, []);
 
   const getData = () => {
@@ -58,14 +59,15 @@ export default function RosterSetup() {
       setLoading,
       null,
       null,
-      wgId
+      wgId,
+      wId
     );
   };
 
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId]);
+  }, [orgId, buId, wgId, wId]);
 
   // search
   const filterData = (keywords, allData, setRowDto) => {
@@ -104,6 +106,18 @@ export default function RosterSetup() {
       {
         title: "Roster Name",
         dataIndex: "RosterGroupName",
+        sorter: true,
+        filter: true,
+      },
+      {
+        title: "Work. Group/Location",
+        dataIndex: "workplaceGroupName",
+        sorter: true,
+        filter: true,
+      },
+      {
+        title: "Workplace/Concern",
+        dataIndex: "workplaceName",
         sorter: true,
         filter: true,
       },

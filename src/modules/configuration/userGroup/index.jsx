@@ -47,6 +47,7 @@ export default function UserGroup() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Users Group";
   }, []);
 
   const getData = (pagination, searchtText) => {

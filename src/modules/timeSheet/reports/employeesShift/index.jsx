@@ -2,19 +2,20 @@ import { SaveAlt } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { paginationSize } from "../../../../common/AntTable";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import DefaultInput from "../../../../common/DefaultInput";
 import NoResult from "../../../../common/NoResult";
-import { getSearchEmployeeList } from "../../../../common/api";
+import {
+  getSearchEmployeeList,
+  getWorkplaceDetails,
+} from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import { gray600 } from "../../../../utility/customColor";
-import {
-  monthFirstDate
-} from "../../../../utility/dateFormatter";
+import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
 import { getBuDetails } from "../helper";
 import { generateExcelAction } from "./excel/excelConvert";
@@ -23,6 +24,7 @@ import {
   getEmployeeInfo,
   onGetEmployeeShiftInformation,
 } from "./helper";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const initialValues = {
   employee: "",
@@ -30,6 +32,8 @@ const initialValues = {
   toDate: todayDate?.(),
 };
 const EmployeesShift = () => {
+  const dispatch = useDispatch();
+
   // redux
   const { intBusinessUnitId, buName } = useSelector(
     (state) => state?.auth?.profileData,
@@ -37,7 +41,7 @@ const EmployeesShift = () => {
   );
   const {
     permissionList,
-    profileData: { orgId, buId, employeeId, wgId, strDisplayName },
+    profileData: { orgId, buId, employeeId, wgId, wId, strDisplayName, wgName },
     keywords: { supervisor },
   } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -47,6 +51,11 @@ const EmployeesShift = () => {
       permission = item;
     }
   });
+  //set to module
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Emp Roster Report";
+  }, []);
 
   // state
   const [buDetails, setBuDetails] = useState({});
@@ -62,7 +71,6 @@ const EmployeesShift = () => {
   });
 
   const getData = (pagination, searchText) => {
-
     onGetEmployeeShiftInformation(
       buId,
       wgId,
@@ -83,26 +91,22 @@ const EmployeesShift = () => {
       return { ...prev, current: newPage };
     });
 
-    getData(
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getData(
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
   };
 
   const saveHandler = (values) => {
@@ -135,7 +139,7 @@ const EmployeesShift = () => {
       ...initialValues,
       employee: {
         value: employeeId,
-        label: strDisplayName
+        label: strDisplayName,
       },
     },
     onSubmit: (values) => saveHandler(values),
@@ -169,8 +173,8 @@ const EmployeesShift = () => {
   }, [orgId, buId, employeeId]);
 
   useEffect(() => {
-    getBuDetails(intBusinessUnitId, setBuDetails, setLoading);
-  }, [intBusinessUnitId]);
+    getWorkplaceDetails(wId, setBuDetails);
+  }, [wId]);
 
   return (
     <>
@@ -185,10 +189,7 @@ const EmployeesShift = () => {
                   className="btn-save mr-2"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (
-                      rowDto?.length <= 0 ||
-                      rowDto?.length === undefined
-                    ) {
+                    if (rowDto?.length <= 0 || rowDto?.length === undefined) {
                       return toast.warning("Data is empty !!!!", {
                         toastId: 1,
                       });
@@ -198,10 +199,11 @@ const EmployeesShift = () => {
                         "Employee Roster Report",
                         values?.fromDate,
                         values?.toDate,
-                        buName,
+                        buDetails?.strWorkplace,
                         rowDto,
-                        buDetails?.strBusinessUnitAddress,
-                        employeeInformation
+                        buDetails?.strAddress,
+                        employeeInformation,
+                        wgName
                       );
                     };
                     excelLanding();
@@ -312,10 +314,7 @@ const EmployeesShift = () => {
                     <strong>{employeeInformation?.[0]?.EmployeeName}</strong>{" "}
                   </p>
                   <p>
-                    Workplace Group:{" "}
-                    <strong>
-                      {employeeInformation?.[0]?.EmploymentTypeName}
-                    </strong>{" "}
+                    Workplace Group: <strong>{wgName}</strong>{" "}
                   </p>
                 </div>
               </div>
@@ -352,6 +351,10 @@ const EmployeesShift = () => {
                   <p>
                     Department:{" "}
                     <strong>{employeeInformation?.[0]?.DepartmentName}</strong>{" "}
+                  </p>
+                  <p>
+                    Section:{" "}
+                    <strong>{employeeInformation?.[0]?.SectionName}</strong>{" "}
                   </p>
                 </div>
               </div>

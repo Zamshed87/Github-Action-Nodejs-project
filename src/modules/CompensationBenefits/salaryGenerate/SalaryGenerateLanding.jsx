@@ -91,7 +91,11 @@ const SalaryGenerateLanding = () => {
 
   // for create state
   const [open, setOpen] = useState(false);
-
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
   const handleClose = () => {
     setOpen(false);
   };
@@ -120,7 +124,9 @@ const SalaryGenerateLanding = () => {
       values?.filterToDate,
       setRowDto,
       setAllData,
-      setLoading
+      setLoading,
+      pages,
+      setPages
     );
   };
 
@@ -137,7 +143,9 @@ const SalaryGenerateLanding = () => {
       values?.filterToDate,
       setRowDto,
       setAllData,
-      setLoading
+      setLoading,
+      pages,
+      setPages
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId, wgId]);
@@ -255,6 +263,7 @@ const SalaryGenerateLanding = () => {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    document.title = "Salary Generate";
   }, [dispatch]);
 
   const salaryGenerateColumn = (page, paginationSize) => {
@@ -295,7 +304,7 @@ const SalaryGenerateLanding = () => {
         filter: true,
         width: 120,
       },
-  /*     {
+      /*     {
         title: "Wing",
         dataIndex: "wingName",
         sorter: true,
@@ -645,7 +654,9 @@ const SalaryGenerateLanding = () => {
                         values?.filterToDate,
                         setRowDto,
                         setAllData,
-                        setLoading
+                        setLoading,
+                        pages,
+                        setPages
                       );
                     }}
                   >

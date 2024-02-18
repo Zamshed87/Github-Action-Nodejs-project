@@ -1,0 +1,34 @@
+@mixin badgeColor($color, $bgColor) {
+  color: $color;
+  background-color: $bgColor;
+}
+.ant-tag.PBadge {
+  margin: 0;
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 2px 7px;
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+  &.primary {
+    @include badgeColor(#299647, #e6f9e9);
+  }
+  &.secondary {
+    @include badgeColor(#616163, #e8e8e8);
+  }
+  &.success {
+    @include badgeColor(#299647, #e6f9e9);
+  }
+  &.danger {
+    @include badgeColor(#b42318, #fee4e2);
+  }
+  &.warning {
+    @include badgeColor(#b54708, #fef0c7);
+  }
+  &.info {
+    @include badgeColor(#026aa2, #e0f2fe);
+  }
+  &.dark {
+    @include badgeColor(#fee4e2, #b42318);
+  }
+}

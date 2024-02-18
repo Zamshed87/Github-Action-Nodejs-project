@@ -1,352 +1,212 @@
-import { Close } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
-import { Form, Formik } from "formik";
+import { ModalFooter } from "Components/Modal";
+import { PForm, PInput, PSelect } from "Components/PForm";
+import { useApiRequest } from "Hooks";
+import { Col, Form, Row } from "antd";
 import { useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
-import { shallowEqual, useSelector } from "react-redux";
-import * as Yup from "yup";
-import { todayDate } from "../../../../utility/todayDate";
-import { getPeopleDeskAllDDL } from "./../../../../common/api/index";
-import FormikInput from "./../../../../common/FormikInput";
-import FormikSelect from "./../../../../common/FormikSelect";
-import FormikToggle from "./../../../../common/FormikToggle";
-import Loading from "./../../../../common/loading/Loading";
-import { blackColor80, greenColor } from "./../../../../utility/customColor";
-import { customStyles } from "./../../../../utility/newSelectCustomStyle";
-import { createDepartment, getAllEmpDepartment } from "./../helper";
+import { Switch } from "antd";
 
-const initData = {
-  department: "",
-  code: "",
-  sectionDepartment: "",
-  businessUnit: "",
-  isActive: true,
-};
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { todayDate } from "utility/todayDate";
 
-const validationSchema = Yup.object().shape({
-  department: Yup.string().required("Department is required"),
-  code: Yup.string().required("Code is required"),
-});
-
-export default function AddEditFormComponent({
-  id,
-  show,
-  onHide,
-  size,
-  backdrop,
-  classes,
-  isVisibleHeading = true,
-  fullscreen,
-  title,
-  setRowDto,
-  setAllData,
+export default function AddEditForm({
+  setIsAddEditForm,
+  getData,
+  // empBasic,
+  isEdit,
   singleData,
-  setSingleData,
+  setId,
 }) {
-  const [loading, setLoading] = useState(false);
+  // const debounce = useDebounce();
+  const getBUnitDDL = useApiRequest({});
+  const saveDepartment = useApiRequest({});
 
-  const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  const [sectionDepartmentDDL, setSectionDepartmentDDL] = useState([]);
-
-  const [modifySingleData, setModifySingleData] = useState("");
-
-  const { employeeId, orgId, buId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
-    );
-    getPeopleDeskAllDDL(
-      `/Employee/GetAllEmpDepartment?accountId=${orgId}&businessUnitId=${buId}`,
-      "intDepartmentId",
-      "strDepartment",
-      setSectionDepartmentDDL
-    );
-  }, [orgId, buId, employeeId, wgId]);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (singleData?.strDepartment) {
-      const newRowData = {
-        department: singleData?.strDepartment,
-        code: singleData?.strDepartmentCode,
-        sectionDepartment: {
-          value: singleData?.intParentDepId,
-          label: singleData?.strParentDepName,
-        },
-        businessUnit: {
-          value: singleData?.intBusinessUnitId,
-          label: singleData?.strBusinessUnit,
-        },
-        isActive: singleData?.isActive || false,
-      };
-      setModifySingleData(newRowData);
-    }
-  }, [singleData]);
+  // states
 
-  const saveHandler = (values, cb) => {
+  // ddls
+  useEffect(() => {
+    getBUnitDDL.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        id: singleData?.intBusinessUnitId,
+        DDLType: "BusinessUnit",
+        WorkplaceGroupId: wgId,
+        BusinessUnitId: buId,
+        intId: employeeId || 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strBusinessUnit;
+          res[i].value = item?.intBusinessUnitId;
+        });
+      },
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId, buId, wgId]);
+  // Pages Start From Here code from above will be removed soon
+
+  // Form Instance
+  const [form] = Form.useForm();
+
+  // submit
+  const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
+    const cb = () => {
+      resetForm();
+      setIsAddEditForm(false);
+      getData();
+    };
     let payload = {
-      strDepartment: values?.department,
-      strDepartmentCode: values?.code,
+      actionTypeId: singleData?.intDepartmentId ? 2 : 1,
+      intDepartmentId: singleData?.intDepartmentId
+        ? singleData?.intDepartmentId
+        : 0,
+      strDepartment: values?.strDepartment || "",
+      strDepartmentCode: values?.strDepartmentCode,
       isActive: values?.isActive,
       isDeleted: true,
-      intParentDepId: values?.sectionDepartment?.value,
-      strParentDepName: values?.sectionDepartment?.label,
-      intBusinessUnitId: values?.businessUnit?.value || 0,
+      // intParentDepId: values?.sectionDepartment?.value,
+      // strParentDepName: values?.sectionDepartment?.label,
+      intBusinessUnitId: values?.bUnit?.value || 0,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: employeeId,
       dteUpdatedAt: todayDate(),
       intUpdatedBy: employeeId,
+      intWorkplaceId: wId,
     };
 
-    const callback = () => {
-      cb();
-      onHide();
-
-      // For landing page data
-      getAllEmpDepartment(orgId, buId, setRowDto, setAllData, setLoading);
-    };
-
-    if (singleData?.strDepartment) {
-      createDepartment(
-        {
-          ...payload,
-          actionTypeId: 2,
-          intDepartmentId: singleData?.intDepartmentId,
-        },
-        setLoading,
-        callback
-      );
-    } else {
-      createDepartment(
-        { ...payload, actionTypeId: 1, intDepartmentId: 0 },
-        setLoading,
-        callback
-      );
-    }
+    saveDepartment.action({
+      urlKey: "SaveEmpDepartment",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
+      },
+    });
   };
-
+  useEffect(() => {
+    if (singleData?.intDepartmentId) {
+      form.setFieldsValue({
+        ...singleData,
+        bUnit: {
+          value: singleData?.intBusinessUnitId,
+          label: singleData?.strBusinessUnit,
+        },
+      });
+    }
+  }, [singleData, getBUnitDDL?.data]);
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={
-          singleData?.strDepartment
-            ? modifySingleData
-            : {
-              ...initData,
-              businessUnit: { value: 0, label: "All" },
-            }
-        }
-        validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            if (singleData?.strDepartment) {
-              resetForm(modifySingleData);
-            } else {
-              resetForm(initData);
-            }
-            setSingleData("");
+      <PForm
+        form={form}
+        onFinish={() => {
+          const values = form.getFieldsValue(true);
+          submitHandler({
+            values,
+            getData,
+            resetForm: form.resetFields,
+            setIsAddEditForm,
+            isEdit,
           });
         }}
+        initialValues={{}}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
-          <>
-            {loading && <Loading />}
-            <div className="viewModal">
-              <Modal
-                show={show}
-                onHide={onHide}
-                size={size}
-                backdrop={backdrop}
-                aria-labelledby="example-modal-sizes-title-xl"
-                className={classes}
-                fullscreen={fullscreen && fullscreen}
-              >
-                <Form>
-                  {isVisibleHeading && (
-                    <Modal.Header className="bg-custom">
-                      <div className="d-flex w-100 justify-content-between align-items-center">
-                        <Modal.Title className="text-center">
-                          {title}
-                        </Modal.Title>
-                        <div>
-                          <IconButton
-                            onClick={() => {
-                              if (singleData?.strDepartment) {
-                                resetForm(modifySingleData);
-                              } else {
-                                resetForm(initData);
-                              }
-                              onHide();
-                              setSingleData("");
-                            }}
-                          >
-                            <Close />
-                          </IconButton>
-                        </div>
-                      </div>
-                    </Modal.Header>
-                  )}
+        <Row gutter={[10, 2]}>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strDepartment"
+              label="Department Name"
+              placeholder="Department Name"
+              rules={[
+                { required: true, message: "Department Name is required" },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strDepartmentCode"
+              label="Code"
+              placeholder="Code"
+              rules={[{ required: true, message: "Code is required" }]}
+            />
+          </Col>
 
-                  <Modal.Body id="example-modal-sizes-title-xl">
-                    <div className="businessUnitModal">
-                      <div className="modalBody" style={{ padding: "0px 12px" }}>
-                        <div className="row mx-0">
-                          <div className="col-12 px-0">
-                            <label>Department Name </label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.department}
-                              name="department"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("department", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-12 px-0">
-                            <label>Code</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.code}
-                              name="code"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("code", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-12 px-0">
-                            <label>Department Section</label>
-                            <FormikSelect
-                              name="sectionDepartment"
-                              options={sectionDepartmentDDL || []
-                              }
-                              value={values?.sectionDepartment}
-                              onChange={(valueOption) => {
-                                setFieldValue("sectionDepartment", valueOption);
-                              }}
-                              styles={customStyles}
-                              errors={errors}
-                              touched={touched}
-                              menuPosition="fixed"
-                            />
-                          </div>
-                          <div className="col-12 px-0">
-                            <label>Business Unit</label>
-                            <FormikSelect
-                              name="businessUnit"
-                              options={
-                                [
-                                  {
-                                    value: 0,
-                                    label: "All",
-                                  },
-                                  ...businessUnitDDL,
-                                ] || []
-                              }
-                              value={values?.businessUnit}
-                              onChange={(valueOption) => {
-                                setFieldValue("businessUnit", valueOption);
-                              }}
-                              styles={customStyles}
-                              errors={errors}
-                              touched={touched}
-                              menuPosition="fixed"
-                            />
-                          </div>
-                          {singleData?.strDepartment && (
-                            <>
-                              <div className="col-12 px-0">
-                                <div className="input-main position-group-select mt-2">
-                                  <label
-                                    className="lebel-bold"
-                                    style={{ fontSize: "14px" }}
-                                  >
-                                    Department Activation
-                                  </label>
-                                  <p>
-                                    Activation toggle indicates to the
-                                    particular department status
-                                    (Active/Inactive)
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="col-12 px-0">
-                                <FormikToggle
-                                  name="isActive"
-                                  color={
-                                    values?.isActive ? greenColor : blackColor80
-                                  }
-                                  checked={values?.isActive}
-                                  onChange={(e) => {
-                                    setFieldValue("isActive", e.target.checked);
-                                  }}
-                                />
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Modal.Body>
-                  <Modal.Footer className="form-modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-cancel"
-                      style={{
-                        marginRight: "15px",
-                      }}
-                      onClick={() => {
-                        if (singleData?.strDepartment) {
-                          resetForm(modifySingleData);
-                        } else {
-                          resetForm(initData);
-                        }
-                        onHide();
-                        setSingleData("");
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="btn btn-green btn-green-disable"
-                      style={{ width: "auto" }}
-                      type="submit"
-                      onSubmit={() => handleSubmit()}
-                    >
-                      Save
-                    </button>
-                  </Modal.Footer>
-                </Form>
-              </Modal>
-            </div>
-          </>
-        )}
-      </Formik>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={getBUnitDDL?.data?.length > 0 ? getBUnitDDL?.data : []}
+              name="bUnit"
+              label="Business Unit"
+              showSearch
+              filterOption={true}
+              placeholder="Business Unit"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  bUnit: op,
+                });
+              }}
+              // rules={[{ required: true, message: "District is required" }]}
+            />
+          </Col>
+
+          {isEdit && (
+            <Col
+              md={24}
+              style={{
+                marginLeft: "-0.5rem",
+              }}
+            >
+              <div
+                className=""
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  className="input-main position-group-select "
+                  style={{ margin: "3rem 0 0 0.7rem" }}
+                >
+                  <h6 className="title-item-name">Department Activation</h6>
+                  <p className="subtitle-p">
+                    Activation toggle indicates to the particular department
+                    status (Active/Inactive)
+                  </p>
+                </div>
+                <div
+                  style={{
+                    margin: "4rem 0 -1.5rem -2rem",
+                    // padding: "5rem -2rem 0 -15rem",
+                  }}
+                >
+                  <Form.Item name="isActive" valuePropName="checked">
+                    <Switch />
+                  </Form.Item>
+                </div>
+              </div>
+            </Col>
+          )}
+        </Row>
+        <ModalFooter
+          onCancel={() => {
+            setId("");
+
+            setIsAddEditForm(false);
+          }}
+          submitAction="submit"
+          loading={loading}
+        />
+      </PForm>
     </>
   );
 }

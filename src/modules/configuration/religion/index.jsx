@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import {
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -60,6 +60,7 @@ function Religion() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Religion";
   }, []);
 
   useEffect(() => {

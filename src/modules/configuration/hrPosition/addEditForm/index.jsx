@@ -1,434 +1,120 @@
-import { Close } from "@mui/icons-material";
-import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
-import { shallowEqual, useSelector } from "react-redux";
-import * as Yup from "yup";
-import { todayDate } from "../../../../utility/todayDate";
-import FormikInput from "./../../../../common/FormikInput";
-import FormikToggle from "./../../../../common/FormikToggle";
-import Loading from "./../../../../common/loading/Loading";
-import { blackColor80, greenColor } from "./../../../../utility/customColor";
-import { createPosition, getPositionById } from "./../helper";
+import { ModalFooter } from "Components/Modal";
+import { PForm, PInput, PSelect } from "Components/PForm";
+import { useApiRequest } from "Hooks";
+import { Col, Form, Row } from "antd";
+import { useEffect, useState } from "react";
+import { Switch } from "antd";
 
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { todayDate } from "utility/todayDate";
 
-const initData = {
-  hrPosition: "",
-  code: "",
-  positionGroup: "",
-  newPositionGroup: "",
-  newPositionGroupCode: "",
-  isActive: true,
-};
-const validationSchema = Yup.object().shape({
-  hrPosition: Yup.string().required("HR Position is required"),
-  code: Yup.string().required("Code is required"),
-  // positionGroup: Yup.object()
-  //   .shape({
-  //     label: Yup.string().required("Position Group is required"),
-  //     value: Yup.string().required("Position Group is required"),
-  //   })
-  //   .typeError("Position Group is required"),
-});
-
-export default function AddEditFormComponent({
-  id,
-  show,
-  onHide,
-  size,
-  backdrop,
-  classes,
-  isVisibleHeading = true,
-  fullscreen,
-  title,
-  setEditId,
+export default function AddEditForm({
+  setIsAddEditForm,
+  getData,
+  // empBasic,
+  isEdit,
   singleData,
-  setSingleData,
-  setRowDto,
-  setAllData,
-  getData
+  setId,
 }) {
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  // const debounce = useDebounce();
 
-  // const [positionGroupDDL, setPositionGroupDDL] = useState([]);
-  const [modifySingleData, setModifySingleData] = useState("");
+  const saveHRPostion = useApiRequest({});
 
-  const [, setAddNewType] = useState(false);
-
-  const { employeeId, orgId, buId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  useEffect(() => {
-    if (singleData?.intPositionId) {
-      const newRowData = {
-        hrPosition: singleData?.strPosition,
-        code: singleData?.strPositionCode,
-        // positionGroup: {
-        //   value: singleData?.Result[0]?.PositionGroupId,
-        //   label: singleData?.Result[0]?.PositionGroupName,
-        // },
-        isActive: singleData?.isActive,
-      };
-      setModifySingleData(newRowData);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [singleData]);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      getPositionById({ positionId: id, setter: setSingleData, setLoading });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  // states
 
-  // useEffect(() => {
-  //   getPeopleDeskAllDDL(
-  //     "PositionGroup",
-  //     orgId,
-  //     buId,
-  //     setPositionGroupDDL,
-  //     "PositionGroupId",
-  //     "PositionGroupName"
-  //   );
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [orgId, buId]);
+  // Pages Start From Here code from above will be removed soon
 
-  // const addPositionGroup = (values, setFieldValue) => {
-  //   const payload = {
-  //     actionTypeId: 1,
-  //     positionGroupId: 0,
-  //     positionGroupCode: values?.newPositionGroupCode,
-  //     positionGroupName: values?.newPositionGroup,
-  //     accountId: orgId,
-  //     isActive: true,
-  //     insertUserId: employeeId,
-  //   };
-  //   const callback = () => {
-  //     getPeopleDeskAllDDL(
-  //       "PositionGroup",
-  //       orgId,
-  //       buId,
-  //       setPositionGroupDDL,
-  //       "PositionGroupId",
-  //       "PositionGroupName"
-  //     );
-  //     setAddNewType(false);
-  //     setFieldValue("newPositionGroup", "");
-  //     setFieldValue("newPositionGroupCode", "");
-  //   };
-  //   createPositionGroup(payload, setLoading, callback);
-  // };
-
-  const saveHandler = (values, cb) => {
-    let payload = {
-      strPosition: values?.hrPosition,
-      strPositionCode: values?.code,
-      intBusinessUnitId: buId,
-      isActive: values?.isActive,
-      intAccountId: orgId,
-      dteCreatedAt: todayDate(),
-      intCreatedBy: id ? 0 : employeeId,
-      dteUpdatedAt: todayDate(),
-      intUpdatedBy: id ? employeeId : 0,
-    };
-    const callback = () => {
-      cb();
-      onHide();
+  // Form Instance
+  const [form] = Form.useForm();
+  // submit
+  const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
+    const cb = () => {
+      resetForm();
+      setIsAddEditForm(false);
       getData();
     };
-    if (id) {
-      createPosition(
-        { ...payload, intPositionId: id, },
-        setLoading,
-        callback
-      );
-    } else {
-      createPosition(
-        { ...payload, intPositionId: 0, },
-        setLoading,
-        callback
-      );
-    }
+    let payload = {
+      intPositionId: singleData?.intPositionId || 0,
+      strPosition: values?.strPosition || "",
+      strPositionCode: values?.strPositionCode || "",
+      intBusinessUnitId: buId,
+      isActive: true,
+      intAccountId: orgId,
+      dteCreatedAt: todayDate(),
+      intCreatedBy: singleData?.intPositionId ? 0 : employeeId,
+      dteUpdatedAt: todayDate(),
+      intUpdatedBy: singleData?.intPositionId ? employeeId : 0,
+      intWorkplaceId: wId,
+    };
+    saveHRPostion.action({
+      urlKey: "SavePosition",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
+      },
+    });
   };
+  useEffect(() => {
+    if (singleData?.intPositionId) {
+      form.setFieldsValue({
+        ...singleData,
+      });
+    }
+  }, [singleData]);
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={id ? modifySingleData : initData}
-        validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            if (id) {
-              resetForm(modifySingleData);
-            } else {
-              resetForm(initData);
-            }
+      <PForm
+        form={form}
+        onFinish={() => {
+          const values = form.getFieldsValue(true);
+          submitHandler({
+            values,
+            getData,
+            resetForm: form.resetFields,
+            setIsAddEditForm,
+            isEdit,
           });
         }}
+        initialValues={{}}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
-          <>
-            {loading && <Loading />}
-            <div className="viewModal">
-              <Modal
-                show={show}
-                onHide={onHide}
-                size={size}
-                backdrop={backdrop}
-                aria-labelledby="example-modal-sizes-title-xl"
-                className={classes}
-                fullscreen={fullscreen && fullscreen}
-              >
-                <Form>
-                  {isVisibleHeading && (
-                    <Modal.Header className="bg-custom">
-                      <div className="d-flex w-100 justify-content-between">
-                        <Modal.Title className="text-center">
-                          {title}
-                        </Modal.Title>
-                        <div>
-                          <div
-                            className="crossIcon"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              if (id) {
-                                resetForm(modifySingleData);
-                              } else {
-                                resetForm(initData);
-                              }
-                              setAddNewType(false)
-                              onHide();
-                            }}
-                          >
-                            <Close />
-                          </div>
-                        </div>
-                      </div>
-                    </Modal.Header>
-                  )}
-
-                  <Modal.Body id="example-modal-sizes-title-xl">
-                    <div className="businessUnitModal">
-                      <div className="modalBody pt-0">
-                        <div className="row">
-                          <div className="col-6">
-                            <label>HR Position</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.hrPosition}
-                              name="hrPosition"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("hrPosition", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-6">
-                            <label>Code</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.code}
-                              name="code"
-                              type="text"
-                              className="form-control"
-                              placeholder=""
-                              onChange={(e) => {
-                                setFieldValue("code", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          {/* <div className="col-6">
-                            <label>Position Group *</label>
-                            <FormikSelect
-                              name="positionGroup"
-                              options={positionGroupDDL || []}
-                              value={values?.positionGroup}
-                              onChange={(valueOption) => {
-                                setFieldValue("positionGroup", valueOption);
-                              }}
-                              placeholder=" "
-                              styles={customStyles}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div> */}
-                          {/* {addNewType ? (
-                            <>
-                              
-                            <div className="col-12 px-0 row m-0">
-                              <div className="col-6">
-                                <label>New Position Group</label>
-                                <FormikInput
-                                  classes="input-sm"
-                                  value={values?.newPositionGroup}
-                                  name="newPositionGroup"
-                                  type="text"
-                                  className="form-control"
-                                  placeholder=""
-                                  onChange={(e) => {
-                                    setFieldValue(
-                                      "newPositionGroup",
-                                      e.target.value
-                                    );
-                                  }}
-                                  errors={errors}
-                                  touched={touched}
-                                />
-                              </div>
-                              <div className="col-6">
-                                <label>New Position Group Code</label>
-                                <FormikInput
-                                  classes="input-sm"
-                                  value={values?.newPositionGroupCode}
-                                  name="newPositionGroupCode"
-                                  type="text"
-                                  className="form-control"
-                                  placeholder=""
-                                  onChange={(e) => {
-                                    setFieldValue(
-                                      "newPositionGroupCode",
-                                      e.target.value
-                                    );
-                                  }}
-                                  errors={errors}
-                                  touched={touched}
-                                />
-                              </div>
-                              <div className="offset-6 col-6 ">
-                                <div className="d-flex justify-content-end align-items-center mt-3">
-                                  <Button
-                                    type="button"
-                                    sx={{
-                                      fontWeight: "500",
-                                      fontSize: "14px",
-                                      lineHeight: "19px",
-                                      letterSpacing: "0.15px",
-                                      color: "rgba(0, 0, 0, 0.7)",
-                                      marginRight: "10px",
-                                    }}
-                                    onClick={() => {
-                                      setAddNewType(false);
-                                    }}
-                                  >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    type="button"
-                                    sx={{
-                                      fontWeight: "500",
-                                      fontSize: "14px",
-                                      lineHeight: "19px",
-                                      letterSpacing: "0.15px",
-                                      color: "#34A853",
-                                      marginRight: "10px",
-                                    }}
-                                    onClick={() => {
-                                      addPositionGroup(values, setFieldValue);
-                                    }}
-                                    disabled={
-                                      !values?.newPositionGroup ||
-                                      !values?.newPositionGroupCode
-                                    }
-                                  >
-                                    Add
-                                  </Button>
-                                </div>
-                              </div>
-                             </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="col-6">
-                              <button
-                                  className="btn btn-green btn-green-less row align-items-center  mx-0 mt-4"
-                                  type="button"
-                                  onClick={() => setAddNewType(true)}
-                                >
-                                  <AddSharp
-                                    sx={{
-                                      fontSize: "16px",
-                                      marginRight: "8px",
-                                    }}
-                                  />
-                                  ADD
-                                </button>
-                              </div>
-                            </>
-                          )} */}
-                          {id && (<div className="col-6 d-none">
-                            <div className="input-main position-group-select mt-2">
-                              <h6 className="title-item-name" style={{ fontSize: "14px" }}>
-                                HR Position Activation
-                              </h6>
-                              <p className="subtitle-p">
-                                Activation toggle indicates to the particular HR
-                                Position status (Active/Inactive)
-                              </p>
-                            </div>
-                            <FormikToggle
-                              name="isActive"
-                              color={
-                                values?.isActive ? greenColor : blackColor80
-                              }
-                              checked={values?.isActive}
-                              onChange={(e) => {
-                                setFieldValue("isActive", e.target.checked);
-                              }}
-                            />
-                          </div>)}
-
-                        </div>
-                      </div>
-                    </div>
-                  </Modal.Body>
-                  <Modal.Footer className="form-modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-cancel"
-                      sx={{
-                        marginRight: "10px",
-                      }}
-                      onClick={() => {
-                        if (id) {
-                          resetForm(modifySingleData);
-                        } else {
-                          resetForm(initData);
-                        }
-                        onHide();
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="btn btn-green btn-green-disable"
-                      type="submit"
-                      onSubmit={() => handleSubmit()}
-                    >
-                      Save
-                    </button>
-                  </Modal.Footer>
-                </Form>
-              </Modal>
-            </div>
-          </>
-        )}
-      </Formik>
+        <Row gutter={[10, 2]}>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strPosition"
+              label="HR Position"
+              placeholder="HR Position"
+              rules={[{ required: true, message: "HR Position is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PInput
+              type="text"
+              name="strPositionCode"
+              label="Code"
+              placeholder="Code"
+              rules={[{ required: true, message: "Code is required" }]}
+            />
+          </Col>
+        </Row>
+        <ModalFooter
+          onCancel={() => {
+            setId("");
+            setIsAddEditForm(false);
+          }}
+          submitAction="submit"
+          loading={loading}
+        />
+      </PForm>
     </>
   );
 }

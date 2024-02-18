@@ -11,7 +11,7 @@ import {
 } from "../../../../../common/api";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import FormikInput from "../../../../../common/FormikInput";
-import { greenColor } from "../../../../../utility/customColor";
+import { gray900, greenColor } from "../../../../../utility/customColor";
 import { createTimeSheetActionForCalender } from "../../../helper";
 import {
   getTimeSheetCalenderById,
@@ -21,7 +21,8 @@ import FormikSelect from "../../../../../common/FormikSelect";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { isUniq } from "../../../../../utility/uniqChecker";
 import { IconButton, Tooltip } from "@mui/material";
-import { DeleteOutline } from "@mui/icons-material";
+import { DeleteOutline, InfoOutlined } from "@mui/icons-material";
+import { calculateNextDate } from "utility/dateFormatter";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -42,6 +43,9 @@ const initData = {
   officeStartTime: "",
   officeCloseTime: "",
   nightShift: false,
+  isEmployeeUpdate: false,
+  dteEmployeeUpdateFromDate: "",
+  dteEmployeeUpdateToDate: "",
 };
 
 const validationSchema = Yup.object({
@@ -77,6 +81,7 @@ const CalendarSetupModal = ({
   const [workPlaceDDL, setWorkPlaceDDL] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [deleteRowData, setDeleteRowData] = useState([]);
+  const [next3daysForEmp, setNext3daysForEmp] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -112,12 +117,12 @@ const CalendarSetupModal = ({
   // DDL
   useEffect(() => {
     getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=0&WorkplaceGroupId=0&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceId",
       "strWorkplace",
       setWorkPlaceDDL
     );
-  }, []);
+  }, [buId, wgId, employeeId]);
 
   // setter function
   const setter = (payload) => {
@@ -269,7 +274,23 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Extended Start Time </label>
+                      <label>
+                        Extended Start Time
+                        <small>
+                          <span>
+                            {" "}
+                            <InfoOutlined
+                              sx={{
+                                color: gray900,
+                                fontSize: "12px",
+                                marginLeft: "5px",
+                              }}
+                            />{" "}
+                            Late punishment policy will be applicable after
+                            crossing this time limit.
+                          </span>
+                        </small>
+                      </label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.allowedStartTime}
@@ -285,7 +306,24 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Last Start Time </label>
+                      <label>
+                        Last Start Time
+                        <small>
+                          {" "}
+                          <span>
+                            {" "}
+                            <InfoOutlined
+                              sx={{
+                                color: gray900,
+                                fontSize: "12px",
+                                marginLeft: "5px",
+                              }}
+                            />{" "}
+                            Absent punishment policy will be applicable after
+                            crossing this time limit.
+                          </span>
+                        </small>
+                      </label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.lastStartTime}
@@ -301,7 +339,7 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Break Start Time</label>
+                      <label>Lunch Start Time</label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.breakStartTime}
@@ -317,7 +355,7 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Break End Time</label>
+                      <label>Lunch End Time</label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.breakEndTime}
@@ -374,6 +412,74 @@ const CalendarSetupModal = ({
                         touched={touched}
                       />
                     </div>
+                    {singleData?.strCalenderName ? (
+                      <div className="col-12 mt-3">
+                        <FormikCheckBox
+                          name="isEmployeeUpdate"
+                          styleObj={{
+                            color: greenColor,
+                          }}
+                          label="is Employee Update"
+                          checked={values?.isEmployeeUpdate}
+                          onChange={(e) => {
+                            setFieldValue("isEmployeeUpdate", e.target.checked);
+                          }}
+                        />
+                      </div>
+                    ) : null}
+                    {values?.isEmployeeUpdate ? (
+                      <>
+                        <div className="col-6 mt-3">
+                          <label className="mr-2">
+                            Employee Generate From Date
+                          </label>
+                          <FormikInput
+                            classes="input-sm"
+                            type="date"
+                            value={values?.dteEmployeeUpdateFromDate}
+                            name="dteEmployeeUpdateFromDate"
+                            onChange={(e) => {
+                              setFieldValue(
+                                "dteEmployeeUpdateFromDate",
+                                e.target.value
+                              );
+                              setNext3daysForEmp(
+                                calculateNextDate(e?.target?.value, 35)
+                              );
+                              setFieldValue(
+                                "dteEmployeeUpdateToDate",
+                                e.target.value
+                              );
+                            }}
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                        <div className="col-6 mt-3">
+                          <label className="mr-2">
+                            Employee Generate To Date
+                          </label>
+                          <FormikInput
+                            classes="input-sm"
+                            type="date"
+                            disabled={!values?.dteEmployeeUpdateFromDate}
+                            min={values?.dteEmployeeUpdateFromDate}
+                            max={next3daysForEmp}
+                            value={values?.dteEmployeeUpdateToDate}
+                            name="dteEmployeeUpdateToDate"
+                            onChange={(e) => {
+                              setFieldValue(
+                                "dteEmployeeUpdateToDate",
+                                e.target.value
+                              );
+                            }}
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                      </>
+                    ) : null}
+
                     <div className="col-12">
                       <hr
                         style={{

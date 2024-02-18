@@ -40,16 +40,16 @@ const initData = {
   filterFromDate: monthFirstDate(),
   filterToDate: todayDate(),
   confirmDate: getTodayDateAndTime(),
-  pinNo: "",
+  // pinNo: "",
 };
 
 const validationSchema = Yup.object({
-  designation: Yup.object()
-    .shape({
-      label: Yup.string().required("Designation is required"),
-      value: Yup.string().required("Designation is required"),
-    })
-    .typeError("Designation is required"),
+  // designation: Yup.object()
+  //   .shape({
+  //     label: Yup.string().required("Designation is required"),
+  //     value: Yup.number().required("Designation is required"),
+  //   })
+  //   .typeError("Designation is required"),
   confirmDate: Yup.string().required("Confirmation  Date is required"),
 });
 function Confirmation() {
@@ -110,6 +110,7 @@ function Confirmation() {
   // const openId = openModal ? "simple-popover" : undefined;
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Confirmation";
   }, [dispatch]);
 
   const handleClick = (event) => {
@@ -484,8 +485,9 @@ function Confirmation() {
                     className="body-employeeProfile-master-filter"
                     style={{ height: "250px" }}
                   >
-                    <div className="row content-input-field">
-                      <div className="col-6">
+                    {/* confirmation by fosu and maruf vai 🔥🔥 */}
+                    <div className="row content-input-field ">
+                      <div className="col-6 d-none">
                         <div className="input-field-main">
                           <label>Designation</label>
                           <FormikSelect
@@ -501,6 +503,7 @@ function Confirmation() {
                             errors={errors}
                             touched={touched}
                             isDisabled={isEdit && true}
+                            isClearable={false}
                           />
                         </div>
                       </div>
@@ -523,7 +526,9 @@ function Confirmation() {
                           />
                         </div>
                       </div>
-                      <div className="col-4">
+                      {/* // requirement from fosu 🔥🔥 */}
+
+                      <div className="col-4 d-none">
                         <div className="input-field-main">
                           <label>PIN No.</label>
                           <FormikInput
@@ -554,7 +559,7 @@ function Confirmation() {
                           setSingleData(false);
                           setIsEdit(false);
                           setFieldValue("confirmDate", "");
-                          setFieldValue("pinNo", "");
+                          // setFieldValue("pinNo", "");
                         }}
                         style={{
                           marginRight: "10px",

@@ -41,11 +41,12 @@ const TransferPromotionTable = ({
         >
           <div>{item?.businessUnitNameFrom}</div>
           <div>{item?.workplaceGroupNameFrom}</div>
-          <div>{item?.wingNameFrom}</div>
+          <div>{item?.workplaceNameFrom}</div>
+          {/* <div>{item?.wingNameFrom}</div>
           <div>{item?.soldDepoNameFrom}</div>
           <div>{item?.regionNameFrom}</div>
           <div>{item?.areaNameFrom}</div>
-          <div>{item?.territoryNameFrom}</div>
+          <div>{item?.territoryNameFrom}</div> */}
         </div>
       </td>
       <td
@@ -59,6 +60,7 @@ const TransferPromotionTable = ({
           }}
         >
           <div>{item?.departmentNameFrom}</div>
+          <div>{item?.sectionNameFrom || "N/A"}</div>
           <div>{item?.designationNameFrom}</div>
         </div>
       </td>
@@ -74,11 +76,12 @@ const TransferPromotionTable = ({
         >
           <div>{item?.businessUnitName}</div>
           <div>{item?.workplaceGroupName}</div>
-          <div>{item?.wingName}</div>
+          <div>{item?.workplaceName}</div>
+          {/* <div>{item?.wingName}</div>
           <div>{item?.soldDepoName}</div>
           <div>{item?.regionName}</div>
           <div>{item?.areaName}</div>
-          <div>{item?.territoryName}</div>
+          <div>{item?.territoryName}</div> */}
         </div>
       </td>
       <td
@@ -93,6 +96,7 @@ const TransferPromotionTable = ({
           className=""
         >
           <div>{item?.departmentName}</div>
+          <div>{item?.strSectionName || "N/A"}</div>
           <div>{item?.designationName}</div>
         </div>
       </td>

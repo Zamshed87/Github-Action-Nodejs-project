@@ -5,8 +5,8 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
 // Path: src/Components/PForm/styles.scss
 @mixin inputLabel {
   color: var(--gray700);
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   label {
     font-size: 12px;
     line-height: normal;
@@ -25,7 +25,8 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
 }
 
 .PeopleDeskInputWrapper,
-.PeopleDeskSelectWrapper {
+.PeopleDeskSelectWrapper,
+.PeopleDeskRadioWrapper {
   font-family: var(--interFont);
   margin: 0;
   .ant-form-item-label {
@@ -34,8 +35,9 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
   .ant-form-item-control {
     .ant-picker,
     .ant-select-selector,
-    .ant-input {
-      border-radius: 4px;
+    .ant-input,
+    .ant-input-number {
+      border-radius: 4px !important;
     }
     .ant-input-group {
       .ant-input {
@@ -43,7 +45,31 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         border-bottom-right-radius: 0;
       }
     }
-
+    .ant-radio-group {
+      .ant-radio-wrapper {
+        font-size: 12px;
+        margin-right: 0;
+        .ant-radio {
+          .ant-radio-inner::after {
+            background: var(--primary-color);
+          }
+        }
+      }
+      .ant-radio-wrapper:hover .ant-radio,
+      .ant-radio:hover .ant-radio-inner,
+      .ant-radio-input:focus + .ant-radio-inner {
+        border-color: var(--primary-color);
+      }
+      .ant-radio-checked .ant-radio-inner {
+        border-color: var(--primary-color);
+      }
+      .ant-radio-checked::after {
+        border-color: var(--primary-color);
+      }
+      span.ant-radio + * {
+        padding-left: 5px;
+      }
+    }
     .ant-checkbox {
       &:hover {
         &.ant-checkbox-checked::after,
@@ -52,7 +78,6 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         }
       }
     }
-
     .ant-input {
       // Placeholder
       &[placeholder] {
@@ -60,6 +85,11 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         font-size: inherit;
         line-height: inherit;
       }
+      // Autofill
+      // &:-webkit-autofill,
+      // &:-internal-autofill-selected {
+      //   background-color: red !important;
+      // }
       &:hover {
         @include inputHover;
       }
@@ -76,6 +106,11 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
       }
     }
     .ant-select {
+      .ant-select-selection-placeholder {
+        // color: var(--gray);
+        font-size: inherit;
+        // line-height: inherit;
+      }
       &:hover {
         .ant-select-selector {
           @include inputHover;
@@ -87,10 +122,85 @@ $boxShadow: 0 0 0 2px rgba(87, 233, 121, 0.2);
         }
       }
     }
+    .ant-input-number {
+      width: 100%;
+      &:hover {
+        @include inputHover;
+      }
+      &.ant-input-number-focused {
+        @include inputFocus;
+      }
+      .ant-input-number-input {
+        &[placeholder] {
+          color: var(--gray);
+          font-size: inherit;
+          line-height: inherit;
+        }
+      }
+    }
+    .ant-input-affix-wrapper {
+      border-radius: 4px;
+      &:hover {
+        @include inputHover;
+      }
+      &.ant-input-affix-wrapper-focused {
+        @include inputFocus;
+        .ant-input {
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+        }
+      }
+      &.ant-input-password {
+        padding: 0;
+        padding-right: 5px;
+        .ant-input {
+          padding: 4px 11px;
+          padding-right: 2px;
+          border-top-right-radius: 0 !important;
+          border-bottom-right-radius: 0 !important;
+        }
+      }
+    }
+
+    // Error Message
+    .ant-form-item-explain {
+      .ant-form-item-explain-error {
+        font-size: 11px;
+      }
+    }
+  }
+
+  // horizontal alignment
+  &.horizontal {
+    .ant-form-item-row {
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      .ant-form-item-label {
+      }
+      .ant-form-item-control {
+        width: fit-content;
+        flex-grow: unset;
+      }
+    }
+  }
+  &.checkbox {
+    .peopledesk_input_disabled {
+      .ant-form-item-label {
+        opacity: 0.5;
+      }
+    }
   }
 }
 
 // Date Picker Z-Index
 .ant-picker-dropdown {
   z-index: 99999999 !important;
+}
+
+// Select top menu search
+.top-menu-search .ant-select-selection-placeholder {
+  font-size: 11px !important;
 }

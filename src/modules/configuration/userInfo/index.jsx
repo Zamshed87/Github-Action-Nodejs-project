@@ -76,26 +76,11 @@ function UserInfo() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Users Info";
   }, []);
 
   const saveHandler = (values) => {};
 
-  // const getData = (search) => {
-  //   const searchText = search ? `&searchTxt=${search}` : "";
-  //   getRowDto(
-  //     `/Employee/EmployeeListForUserLandingPagination?accountId=${orgId}&businessUnitId=${buId}${searchText}&isUser=0`,
-  //     (data) => {
-  //       const modifiedData = data?.data?.map((item) => {
-  //         return {
-  //           ...item,
-  //           finalStatus: item?.userStatus ? "Active" : "Inactive",
-  //         };
-  //       });
-  //       setRowDto({ ...data, data: modifiedData });
-  //       setAllData({ ...data, data: modifiedData });
-  //     }
-  //   );
-  // };
   const getData = (pagination, searchtText = "") => {
     const api = `/Employee/EmployeeListForUserLandingPagination?businessUnitId=${buId}&PageNo=${
       pagination?.current
@@ -162,20 +147,6 @@ function UserInfo() {
     }
   });
 
-  // const filterData = (keywords) => {
-  //   try {
-  //     const regex = new RegExp(keywords?.toLowerCase());
-  //     let newDta = allData?.data?.filter(
-  //       (item) =>
-  //         regex.test(item?.strEmployeeName?.toLowerCase()) ||
-  //         regex.test(item?.strEmployeeCode?.toLowerCase()) ||
-  //         regex.test(item?.strOfficeMail?.toLowerCase())
-  //     );
-  //     setRowDto((prev) => ({ ...prev, data: newDta }));
-  //   } catch {
-  //     setRowDto([]);
-  //   }
-  // };
 
   return (
     <>

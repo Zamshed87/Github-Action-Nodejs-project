@@ -47,6 +47,9 @@ const initData = {
   allowanceAndDeduction: "",
   amountDimension: "",
   amount: "",
+  intAllowanceDuration: "",
+  intAllowanceAttendenceStatus: "",
+  maxAmount: "",
 };
 
 const validationSchema = Yup.object({
@@ -122,7 +125,7 @@ function AddEditForm() {
   const [singleData, setSingleData] = useState("");
 
   //redux data
-  const { orgId, buId, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -236,67 +239,68 @@ function AddEditForm() {
         getAdditionAndDeductionById()
       );
     }
-    const obj = [
-      {
-        strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
-        intSalaryAdditionAndDeductionId: singleData
-          ? singleData?.intSalaryAdditionAndDeductionId
-          : 0,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
-        intWorkplaceGroupId: wgId,
-        intEmployeeId: values?.employee?.value,
-        isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
-        intYear: +values?.fromMonth?.split("-")[0] || null,
-        intMonth: +values?.fromMonth?.split("-")[1] || null,
-        strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
-        isAddition: values?.salaryType?.value === "Addition" ? true : false,
-        strAdditionNDeduction: values?.allowanceAndDeduction?.label,
-        intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
-        intAmountWillBeId: values?.amountDimension?.value,
-        strAmountWillBe: values?.amountDimension?.label,
-        numAmount: +values?.amount,
-        isActive: true,
-        isReject: false,
-        intActionBy: employeeId,
-        intToYear: +values?.toMonth?.split("-")[0] || null,
-        intToMonth: +values?.toMonth?.split("-")[1] || null,
-        strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
-      },
-    ];
+    const obj = {
+      strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
+      intSalaryAdditionAndDeductionId: singleData
+        ? singleData?.intSalaryAdditionAndDeductionId
+        : 0,
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: wgId,
+      intEmployeeId: values?.employee?.value,
+      isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
+      intYear: +values?.fromMonth?.split("-")[0] || null,
+      intMonth: +values?.fromMonth?.split("-")[1] || null,
+      strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
+      isAddition: values?.salaryType?.value === "Addition" ? true : false,
+      strAdditionNDeduction: values?.allowanceAndDeduction?.label,
+      intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
+      intAmountWillBeId: values?.amountDimension?.value,
+      strAmountWillBe: values?.amountDimension?.label,
+      numAmount: +values?.amount,
+      isActive: true,
+      isReject: false,
+      intActionBy: employeeId,
+      intToYear: +values?.toMonth?.split("-")[0] || null,
+      intToMonth: +values?.toMonth?.split("-")[1] || null,
+      strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
+
+      // new requirement 🔥
+      intAllowanceDuration: values?.intAllowanceDuration?.value,
+      numMaxLimit: +values?.maxAmount,
+      intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
+    };
     createEditAllowanceAndDeduction(obj, setLoading, cb);
   };
 
   const demoPopup = (values) => {
-    const payload = [
-      {
-        strEntryType:
-          isView && !isEdit && "DeleteEmpSalaryAdditionNDeductionById",
-        intSalaryAdditionAndDeductionId: values
-          ? values?.intSalaryAdditionAndDeductionId
-          : 0,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
-        intWorkplaceGroupId: wgId,
-        intEmployeeId: values?.intEmployeeId,
-        isAutoRenew: values?.isAutoRenew,
-        intYear: values?.intYear,
-        intMonth: values?.intMonth,
-        strMonth: values?.strMonth,
-        isAddition: values?.isAddition,
-        strAdditionNDeduction: values?.strAdditionNDeduction,
-        intAdditionNDeductionTypeId: values?.intAdditionNDeductionTypeId,
-        intAmountWillBeId: values?.intAmountWillBeId,
-        strAmountWillBe: values?.strAmountWillBe,
-        numAmount: values?.numAmount,
-        isActive: true,
-        isReject: false,
-        intActionBy: employeeId,
-        intToYear: values?.intToYear,
-        intToMonth: values?.intToMonth,
-        strToMonth: values?.strToMonth,
-      },
-    ];
+    const payload = {
+      strEntryType:
+        isView && !isEdit && "DeleteEmpSalaryAdditionNDeductionById",
+      intSalaryAdditionAndDeductionId: values
+        ? values?.intSalaryAdditionAndDeductionId
+        : 0,
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: wgId,
+      intEmployeeId: values?.intEmployeeId,
+      isAutoRenew: values?.isAutoRenew,
+      intYear: values?.intYear,
+      intMonth: values?.intMonth,
+      strMonth: values?.strMonth,
+      isAddition: values?.isAddition,
+      strAdditionNDeduction: values?.strAdditionNDeduction,
+      intAdditionNDeductionTypeId: values?.intAdditionNDeductionTypeId,
+      intAmountWillBeId: values?.intAmountWillBeId,
+      strAmountWillBe: values?.strAmountWillBe,
+      numAmount: values?.numAmount,
+      isActive: true,
+      isReject: false,
+      intActionBy: employeeId,
+      intToYear: values?.intToYear,
+      intToMonth: values?.intToMonth,
+      strToMonth: values?.strToMonth,
+    };
 
     const callback = () => {
       getAdditionAndDeductionById();
@@ -338,7 +342,7 @@ function AddEditForm() {
         validationSchema={
           rowDto?.length ? validationSchema2 : !isView && validationSchema
         }
-        onSubmit={(values, { setSubmitting, resetForm, setFieldValue }) => {
+        onSubmit={(values, { setFieldValue }) => {
           saveHandler(values, () => {
             setFieldValue("allowanceAndDeduction", "");
             setFieldValue("amountDimension", "");
@@ -354,8 +358,6 @@ function AddEditForm() {
           errors,
           touched,
           setFieldValue,
-          isValid,
-          dirty,
         }) => (
           <>
             <Form
@@ -598,6 +600,7 @@ function AddEditForm() {
                                 getAllAllowanceAndDeduction(
                                   orgId,
                                   buId,
+                                  wId,
                                   setAllowanceAndDeductionDDL,
                                   valueOption?.value === "Addition"
                                     ? true
@@ -696,9 +699,134 @@ function AddEditForm() {
                               />
                             </div>
                           </div>
+                          <div className="col-lg-3">
+                            <label>Allowance Duration</label>
+                            <FormikSelect
+                              classes="input-sm"
+                              styles={customStyles}
+                              placeholder={" "}
+                              name="intAllowanceDuration"
+                              options={
+                                [
+                                  {
+                                    value: 1,
+                                    label: "Perday",
+                                  },
+                                  {
+                                    value: 2,
+                                    label: "Per Month",
+                                  },
+                                ] || []
+
+                                /* 
+            🔥 from backend -- 
+            public enum AllowanceDuration
+            {
+                [Description ("Perday") ]
+                PERDAY = 1,
+                [Description("Per Month")]
+                PER_MONTH = 2
+            }
+            */
+                              }
+                              value={values?.intAllowanceDuration}
+                              onChange={(valueOption) => {
+                                setFieldValue("maxAmount", "");
+                                setFieldValue(
+                                  "intAllowanceAttendenceStatus",
+                                  ""
+                                );
+                                setFieldValue(
+                                  "intAllowanceDuration",
+                                  valueOption
+                                );
+                              }}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                          {values?.intAllowanceDuration?.value === 1 ? (
+                            <>
+                              <div className="col-lg-3">
+                                <label>
+                                  Max Amount{" "}
+                                  <small>
+                                    [ for a month ]{" "}
+                                    <span className="text-danger fs-3">*</span>
+                                  </small>
+                                </label>
+                                <FormikInput
+                                  classes="input-sm"
+                                  value={values?.maxAmount}
+                                  placeholder={" "}
+                                  name="maxAmount"
+                                  type="number"
+                                  min={0}
+                                  className="form-control"
+                                  onChange={(e) =>
+                                    setFieldValue("maxAmount", e.target.value)
+                                  }
+                                  errors={errors}
+                                  touched={touched}
+                                />
+                              </div>
+                              <div className="col-lg-3">
+                                <label>
+                                  Allowanc Attendence Status{" "}
+                                  <span className="text-danger fs-3">*</span>
+                                </label>
+                                <FormikSelect
+                                  classes="input-sm"
+                                  styles={customStyles}
+                                  placeholder={" "}
+                                  name="intAllowanceAttendenceStatus"
+                                  options={
+                                    [
+                                      {
+                                        value: 1,
+                                        label: "Default",
+                                      },
+                                      {
+                                        value: 2,
+                                        label: "Based On InTime",
+                                      },
+                                      {
+                                        value: 3,
+                                        label: "Based On Attendence",
+                                      },
+                                    ] || []
+                                    /* 
+            🔥 from backend -- 
+              public enum AllowanceAttendenceStatus
+              {
+              [Description("Default")] 
+              DEFAULT = 1,  //Default value is for all.No restiction
+              [Description("Based On InTime")]
+              BASED_ON_INTIME = 2, //Will be implemented on only attendence intime
+              [Description("Based On Attendence")]
+              BASED_ON_ATTENDENCE = 3  
+              }
+            */
+                                  }
+                                  value={values?.intAllowanceAttendenceStatus}
+                                  onChange={(valueOption) => {
+                                    setFieldValue(
+                                      "intAllowanceAttendenceStatus",
+                                      valueOption
+                                    );
+                                  }}
+                                  errors={errors}
+                                  touched={touched}
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                           <div
                             style={{
                               marginTop: "22px",
+                              marginBottom: "22px",
                             }}
                             className="col-md-6 d-flex align-items-center-justify-content-center"
                           >
@@ -818,7 +946,7 @@ function AddEditForm() {
                                 <th>Auto Renewal</th>
                                 <th>Applicable Month</th>
                                 <th>Dimension</th>
-                                <th>Amount</th>
+                                <th>Amount/Percentage</th>
                                 {isView && (
                                   <th className="text-center">Status</th>
                                 )}
@@ -847,7 +975,12 @@ function AddEditForm() {
                                     {!item?.intToYear && "Continue"}
                                   </td>
                                   <td>{item?.strAmountWillBe}</td>
-                                  <td>{item?.numAmount}</td>
+                                  <td>
+                                    {item?.numAmount}
+                                    {item?.strAmountWillBe !== "Fixed Amount"
+                                      ? "%"
+                                      : ""}
+                                  </td>
                                   <td className="text-center">
                                     {item?.strStatus === "Approved" && (
                                       <Chips
@@ -877,76 +1010,112 @@ function AddEditForm() {
 
                                   <td width="40px">
                                     <div className="d-flex">
-                                      {isView &&(
-                                          <Tooltip title="Edit" arrow>
-                                            <button
-                                              className="iconButton"
-                                              type="button"
-                                            >
-                                              <EditOutlinedIcon
-                                                onClick={(e) => {
-                                                  setIsEdit(true);
-                                                  e.stopPropagation();
-                                                  scrollRef.current.scrollIntoView(
-                                                    {
-                                                      behavior: "smooth",
-                                                    }
-                                                  );
-                                                  setSingleData(item);
-                                                  setValues({
-                                                    ...values,
-                                                    employee: {
-                                                      value:
-                                                        item?.intEmployeeId,
-                                                      label:
-                                                        item?.strEmployeeName,
-                                                    },
-                                                    isAutoRenew:
-                                                      item?.isAutoRenew,
-                                                    fromMonth: `${
-                                                      item?.intYear
-                                                    }-${
-                                                      item?.intMonth <= 9
-                                                        ? `0${item?.intMonth}`
-                                                        : `${item?.intMonth}`
-                                                    }`,
-                                                    toMonth: `${
-                                                      item?.intToYear
-                                                    }-${
-                                                      item?.intToMonth <= 9
-                                                        ? `0${item?.intToMonth}`
-                                                        : `${item?.intToMonth}`
-                                                    }`,
-                                                    salaryType: {
-                                                      value: item?.isAddition
-                                                        ? "Addition"
-                                                        : "Deduction",
-                                                      label: item?.isAddition
-                                                        ? "Addition"
-                                                        : "Deduction",
-                                                    },
-                                                    allowanceAndDeduction: {
-                                                      value:
-                                                        item?.intAdditionNDeductionTypeId,
-                                                      label:
-                                                        item?.strAdditionNDeduction,
-                                                    },
-                                                    amountDimension: {
-                                                      value:
-                                                        item?.intAmountWillBeId,
-                                                      label:
-                                                        item?.strAmountWillBe,
-                                                    },
-                                                    amount: item?.numAmount,
-                                                  });
-                                                  !isFromOpen &&
-                                                    setIsFormOpen(!isFromOpen);
-                                                  deleteHandler(index);
-                                                }}
-                                              />
-                                            </button>
-                                          </Tooltip>
-                                        )}
+                                      {isView && (
+                                        <Tooltip title="Edit" arrow>
+                                          <button
+                                            className="iconButton"
+                                            type="button"
+                                          >
+                                            <EditOutlinedIcon
+                                              onClick={(e) => {
+                                                setIsEdit(true);
+                                                e.stopPropagation();
+                                                scrollRef.current.scrollIntoView(
+                                                  {
+                                                    behavior: "smooth",
+                                                  }
+                                                );
+                                                setSingleData(item);
+                                                setValues({
+                                                  ...values,
+                                                  employee: {
+                                                    value: item?.intEmployeeId,
+                                                    label:
+                                                      item?.strEmployeeName,
+                                                  },
+                                                  isAutoRenew:
+                                                    item?.isAutoRenew,
+                                                  fromMonth: `${
+                                                    item?.intYear
+                                                  }-${
+                                                    item?.intMonth <= 9
+                                                      ? `0${item?.intMonth}`
+                                                      : `${item?.intMonth}`
+                                                  }`,
+                                                  toMonth: `${
+                                                    item?.intToYear
+                                                  }-${
+                                                    item?.intToMonth <= 9
+                                                      ? `0${item?.intToMonth}`
+                                                      : `${item?.intToMonth}`
+                                                  }`,
+                                                  salaryType: {
+                                                    value: item?.isAddition
+                                                      ? "Addition"
+                                                      : "Deduction",
+                                                    label: item?.isAddition
+                                                      ? "Addition"
+                                                      : "Deduction",
+                                                  },
+                                                  allowanceAndDeduction: {
+                                                    value:
+                                                      item?.intAdditionNDeductionTypeId,
+                                                    label:
+                                                      item?.strAdditionNDeduction,
+                                                  },
+                                                  amountDimension: {
+                                                    value:
+                                                      item?.intAmountWillBeId,
+                                                    label:
+                                                      item?.strAmountWillBe,
+                                                  },
+                                                  amount: item?.numAmount,
+                                                  intAllowanceDuration:
+                                                    [
+                                                      {
+                                                        value: 1,
+                                                        label: "Perday",
+                                                      },
+                                                      {
+                                                        value: 2,
+                                                        label: "Per Month",
+                                                      },
+                                                    ].find(
+                                                      (el) =>
+                                                        el.value ===
+                                                        item?.intAllowanceDuration
+                                                    ) || "",
+                                                  maxAmount: item?.intMaxLimit,
+                                                  intAllowanceAttendenceStatus:
+                                                    [
+                                                      {
+                                                        value: 1,
+                                                        label: "Default",
+                                                      },
+                                                      {
+                                                        value: 2,
+                                                        label:
+                                                          "Based On InTime",
+                                                      },
+                                                      {
+                                                        value: 3,
+                                                        label:
+                                                          "Based On Attendence",
+                                                      },
+                                                    ].find(
+                                                      (el) =>
+                                                        el.value ===
+                                                        item?.intAllowanceAttendenceStatus
+                                                    ) || "",
+                                                });
+                                                !isFromOpen &&
+                                                  setIsFormOpen(!isFromOpen);
+                                                deleteHandler(index);
+                                              }}
+                                            />
+                                          </button>
+                                        </Tooltip>
+                                      )}
                                       {!isView && (
                                         <Tooltip title="Delete" arrow>
                                           <button

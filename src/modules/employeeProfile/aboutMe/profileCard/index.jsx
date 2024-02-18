@@ -4,7 +4,7 @@ import {
   ArrowDropDown,
   ArrowDropUp,
   BusinessCenter,
-  EditOutlined
+  EditOutlined,
 } from "@mui/icons-material";
 import CakeIcon from "@mui/icons-material/Cake";
 import PersonIcon from "@mui/icons-material/Person";
@@ -24,6 +24,7 @@ import { dateFormatter } from "../../../../utility/dateFormatter";
 import "../aboutMe.css";
 import AccordionCom from "../accordion";
 import { empProfilePicUpload } from "../helper";
+import { toast } from "react-toastify";
 
 const Input = styled("input")({
   display: "none",
@@ -43,6 +44,7 @@ const ProfileCard = ({
   strProfileImageUrl,
   getEmpData,
   isMargin,
+  isOfficeAdmin = false,
 }) => {
   // this component is used from about me and employee landing page
   // accordion
@@ -51,7 +53,7 @@ const ProfileCard = ({
 
   const dispatch = useDispatch();
   // eslint-disable-next-line
-  const { employeeId, orgId, buId, isOfficeAdmin } = useSelector(
+  const { employeeId, orgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -127,6 +129,7 @@ const ProfileCard = ({
                   );
                 }}
               />
+
               <div className="cart-img-btn">
                 <img src={editProPic} alt="pro pic" />
               </div>

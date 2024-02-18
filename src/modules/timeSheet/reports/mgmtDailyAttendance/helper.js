@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import AvatarComponent from "../../../../common/AvatarComponent";
+import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import { convertTo12HourFormat } from "../../../../utility/timeFormatter";
 
 export const getBuDetails = async (buId, setter, setLoading) => {
@@ -53,7 +53,7 @@ export const getDailyAttendanceData = async (
   }
 };
 // UI Table columns
-export const dailyAttendenceDtoCol = (page, paginationSize) => {
+export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
   return [
     {
       title: "SL",
@@ -61,7 +61,23 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       sort: false,
       filter: false,
       className: "text-center",
-      width: 30,
+      // width: 30,
+    },
+    {
+      title: "Work. Group/Location",
+      dataIndex: "workplaceGroup",
+      sort: false,
+      filter: false,
+      width: 200,
+      render: (record) => record?.workplaceGroup || "N/A",
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "workplace",
+      sort: false,
+      filter: false,
+      width: 200,
+      render: (record) => record?.workplace || "N/A",
     },
     {
       title: "Employee Id",
@@ -92,20 +108,43 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       ),
       fieldType: "string",
     },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sort: false,
-      filter: false,
-      render: (record) => record?.department || "N/A",
-    },
+
     {
       title: "Designation",
       dataIndex: "designation",
       sort: false,
-      filter: false,
+      filter: true,
+      filterDropDownList: headerList[`designationList`],
+
       render: (record) => record?.designation || "N/A",
     },
+    {
+      title: "Department",
+      dataIndex: "department",
+      sort: false,
+      filter: true,
+      filterDropDownList: headerList[`departmentList`],
+      render: (record) => record?.department || "N/A",
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
+      sort: true,
+      fieldType: "string",
+      filterDropDownList: headerList[`sectionList`],
+      filter: true,
+      render: (record) => record?.section || "N/A",
+    },
+    {
+      title: "HR Position",
+      dataIndex: "hrPosition",
+      sort: true,
+      fieldType: "string",
+      filterDropDownList: headerList[`hrPositionList`],
+      filter: true,
+      render: (record) => record?.hrPosition || "N/A",
+    },
+
     {
       title: "Employment Type",
       dataIndex: "employmentType",
@@ -115,9 +154,11 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
     },
     {
       title: "Calendar Name",
-      dataIndex: "calendarName",
+      dataIndex: "calender",
       sort: false,
-      filter: false,
+      filter: true,
+      filterDropDownList: headerList[`calenderList`],
+
       // render: (_, record) => record?.employmentType || "N/A",
     },
     {
@@ -130,7 +171,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       ),
       sort: false,
       filter: false,
-      width:80
+      width: 80,
     },
     {
       title: "Out Time",
@@ -143,7 +184,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
 
       sort: false,
       filter: false,
-      width:80
+      width: 80,
     },
     {
       title: "Duration",
@@ -156,15 +197,18 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
       title: "Status",
       dataIndex: "actualStatus",
       render: (record) => record?.actualStatus || "N/A",
+      filterDropDownList: headerList[`actualStatusList`],
       sort: false,
-      filter: false,
+      filter: true,
     },
     {
       title: "Manual Status",
       dataIndex: "manualStatus",
       render: (record) => record?.manualStatus || "N/A",
       sort: false,
-      filter: false,
+      filterDropDownList: headerList[`manualStatusList`],
+
+      filter: true,
     },
     {
       title: "Address",
@@ -186,12 +230,15 @@ export const dailyAttendenceDtoCol = (page, paginationSize) => {
 // excel columns
 export const column = {
   sl: "SL",
-  employeeCode: "Code",
+  workplaceGroup: "Workplace Group",
+  workplace: "Workplace",
+  employeeCode: "Employee Id",
   employeeName: "Employee Name",
-  department: "Department",
   designation: "Designation",
+  department: "Department",
+  section: "Section",
   employmentType: "Employment Type",
-  calendarName: "Calendar Name",
+  calendar: "Calendar Name",
   inTime: "In Time",
   outTime: "Out Time",
   dutyHours: "Duration",

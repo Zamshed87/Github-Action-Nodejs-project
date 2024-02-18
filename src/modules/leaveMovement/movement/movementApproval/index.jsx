@@ -50,7 +50,7 @@ const initData = {
 };
 
 export default function MovementApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -83,9 +83,9 @@ export default function MovementApproval() {
       toDate: "",
       applicationStatus: "Pending", // appliedStatus?.label,
       isAdmin: isOfficeAdmin,
-      // isSupOrLineManager: isSupOrLineManager,
       isSupOrLineManager: 0,
       accountId: orgId,
+      workplaceId: wId,
     };
     getLandingApproval(
       `/ApprovalPipeline/MovementApplicationLanding`,
@@ -251,11 +251,13 @@ export default function MovementApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Movement Approval";
   }, []);
 
   useEffect(() => {
     getLandingData(/* isSupOrLineManager?.value */);
-  }, [employeeId]);
+  }, [employeeId, wId]);
 
   const columns = (setFieldValue, page, paginationSize) => {
     return [

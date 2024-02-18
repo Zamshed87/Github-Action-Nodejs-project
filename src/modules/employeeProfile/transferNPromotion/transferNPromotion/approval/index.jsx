@@ -15,7 +15,6 @@ import BackButton from "../../../../../common/BackButton";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import IConfirmModal from "../../../../../common/IConfirmModal";
 import Loading from "../../../../../common/loading/Loading";
-import MasterFilter from "../../../../../common/MasterFilter";
 import MuiIcon from "../../../../../common/MuiIcon";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../../common/ResetButton";
@@ -28,7 +27,6 @@ import {
 } from "../../../../../utility/customColor";
 import useDebounce from "../../../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
-import CardTable from "./component/CardTable";
 import {
   getAllTransferAndPromotionListDataForApproval,
   transferNPromotionApproveReject,
@@ -44,11 +42,10 @@ const initData = {
 };
 
 export default function TransferNPromotionApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId} = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-  // const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
@@ -56,8 +53,6 @@ export default function TransferNPromotionApproval() {
 
   //View Modal
   const [viewModal, setViewModal] = useState(false);
-  const [imageFile, setImageFile] = useState("");
-  const [createModal, setCreateModal] = useState(false);
   const [singleData, setSingleData] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [page, setPage] = useState(1);
@@ -83,6 +78,7 @@ export default function TransferNPromotionApproval() {
         isSupOrLineManager: 0,
         approverId: employeeId,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -109,6 +105,7 @@ export default function TransferNPromotionApproval() {
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
         workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -155,7 +152,6 @@ export default function TransferNPromotionApproval() {
     }
   };
   const demoPopup = (action, text, array) => {
-
     let newArray = [];
 
     if (array.length > 0) {
@@ -177,6 +173,7 @@ export default function TransferNPromotionApproval() {
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
           workplaceGroupId: 0,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -223,6 +220,7 @@ export default function TransferNPromotionApproval() {
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
           workplaceGroupId: 0,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -243,7 +241,6 @@ export default function TransferNPromotionApproval() {
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
-
   };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -258,6 +255,7 @@ export default function TransferNPromotionApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Transfer & Promotion Approval";
   }, []);
 
   const columns = (setFieldValue, page, paginationSize) => {
@@ -346,7 +344,9 @@ export default function TransferNPromotionApproval() {
                         };
                       } else return item;
                     });
-                  setApplicationListData({ listData: [...transferNPromotionData] });
+                  setApplicationListData({
+                    listData: [...transferNPromotionData],
+                  });
                   setFilterData({ listData: [...data] });
                 }}
               />
@@ -727,7 +727,6 @@ export default function TransferNPromotionApproval() {
     ];
   };
 
-  
   return (
     <>
       <Formik
@@ -883,7 +882,10 @@ export default function TransferNPromotionApproval() {
                                     //   setFilterData({ listData: dataRow });
                                     // }}
                                     setColumnsData={(dataRow) => {
-                                      if (dataRow?.length === applicationListData?.listData?.length) {
+                                      if (
+                                        dataRow?.length ===
+                                        applicationListData?.listData?.length
+                                      ) {
                                         let temp = dataRow?.map((item) => {
                                           return {
                                             ...item,
@@ -891,9 +893,13 @@ export default function TransferNPromotionApproval() {
                                           };
                                         });
                                         setFilterData({ listData: [...temp] });
-                                        setApplicationListData({ listData: [...temp] });
+                                        setApplicationListData({
+                                          listData: [...temp],
+                                        });
                                       } else {
-                                        setFilterData({ listData: [...dataRow] });
+                                        setFilterData({
+                                          listData: [...dataRow],
+                                        });
                                       }
                                     }}
                                     onRowClick={(item) => {
@@ -902,6 +908,10 @@ export default function TransferNPromotionApproval() {
                                         {
                                           employeeId: item?.intEmployeeId,
                                           approval: true,
+                                          businessUnitId:
+                                            item?.intBusinessUnitId,
+                                          workplaceGroupId:
+                                            item?.intWorkplaceGroupId,
                                         }
                                       );
                                       setSingleData(item);

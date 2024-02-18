@@ -42,7 +42,8 @@ const AntTable = ({
                 new Date(dateFormatter(b?.[item?.dataIndex]))
               );
             }
-          : (a, b) => a?.[item?.dataIndex]?.length - b?.[item?.dataIndex]?.length
+          : (a, b) =>
+              a?.[item?.dataIndex]?.length - b?.[item?.dataIndex]?.length
         : "",
       filters: item?.filter
         ? item?.isDate
@@ -87,7 +88,7 @@ const AntTable = ({
             ? {
                 ...pagination,
                 totalBoundaryShowSizeChanger: 25,
-                pageSizeOptions: ["25", "100", "500"],
+                pageSizeOptions: ["25", "100", "500", "1000"],
               }
             : {
                 onChange(current, pageSize) {
@@ -96,7 +97,7 @@ const AntTable = ({
                 },
                 defaultPageSize: pages ? pages : AntPageSize,
                 showSizeChanger: true,
-                pageSizeOptions: ["25", "100", "500"],
+                pageSizeOptions: ["25", "100", "500", "1000"],
               }
         }
         onRow={(dataRow, index) => {

@@ -22,11 +22,18 @@ import {
   gray900,
   greenColor,
 } from "../../../../../utility/customColor";
-import { dateFormatter } from "../../../../../utility/dateFormatter";
+import {
+  dateFormatter,
+  dateFormatterForInput,
+} from "../../../../../utility/dateFormatter";
 import {
   getAllSeparationListDataForApproval,
   separationApproveReject,
 } from "../helper";
+import { PModal } from "Components/Modal";
+import ManagementSeparationHistoryView from "../../mgmApplication/viewForm/ManagementSeparationHistoryView";
+import { toast } from "react-toastify";
+import { todayDate } from "utility/todayDate";
 
 const CardTable = ({ propsObj }) => {
   const dispatch = useDispatch();
@@ -42,24 +49,31 @@ const CardTable = ({ propsObj }) => {
     // filterValues,
     // setFilterValues,
     setLoading,
+    loading,
   } = propsObj;
 
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, strDisplayName, wId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
   const [page, setPage] = useState(1);
-    const [paginationSize, setPaginationSize] = useState(15);
+  const [paginationSize, setPaginationSize] = useState(15);
+  const [openModal, setOpenModal] = useState(false);
+  const [data, setData] = useState(null);
+  const [buttonType, setButtonType] = useState(null);
+  const [comment, setComment] = useState("");
 
   const demoPopup = (action, text, data) => {
-    let payload = [
+    const payload = [
       {
         applicationId: data?.application?.intSeparationId,
         approverEmployeeId: employeeId,
         isReject: text === "Reject" ? true : false,
         accountId: orgId,
         isAdmin: isOfficeAdmin,
+        approverEmployeeName: strDisplayName,
+        comments: comment,
       },
     ];
 
@@ -69,6 +83,8 @@ const CardTable = ({ propsObj }) => {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
+          workplaceId: wId,
+          businessUnitId: buId,
           workplaceGroupId: 0,
           departmentId: 0,
           designationId: 0,
@@ -80,12 +96,13 @@ const CardTable = ({ propsObj }) => {
         setAllData,
         setLoading
       );
+      setOpenModal(false);
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to ${action}? `,
       yesAlertFunc: () => {
-        separationApproveReject(payload, callback);
+        separationApproveReject(payload, setLoading, callback);
       },
       noAlertFunc: () => {},
     };
@@ -115,90 +132,90 @@ const CardTable = ({ propsObj }) => {
       filter: false,
       className: "text-center",
     },
-    {
-      title: () => (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <FormikCheckBox
-            styleObj={{
-              margin: "0 auto!important",
-              padding: "0 !important",
-              color: gray900,
-              checkedColor: greenColor,
-            }}
-            name="allSelected"
-            checked={
-              applicationListData?.listData?.length > 0 &&
-              applicationListData?.listData?.every(
-                (item) => item?.selectCheckbox
-              )
-            }
-            onChange={(e) => {
-              setApplicationListData({
-                listData: applicationListData?.listData?.map((item) => ({
-                  ...item,
-                  selectCheckbox: e.target.checked,
-                })),
-              });
-              setAllData({
-                listData: allData?.listData?.map((item) => ({
-                  ...item,
-                  selectCheckbox: e.target.checked,
-                })),
-              });
-              setFieldValue("allSelected", e.target.checked);
-            }}
-          />
+    // {
+    //   title: () => (
+    //     <div
+    //       style={{
+    //         display: "flex",
+    //         alignItems: "center",
+    //       }}
+    //     >
+    //       <FormikCheckBox
+    //         styleObj={{
+    //           margin: "0 auto!important",
+    //           padding: "0 !important",
+    //           color: gray900,
+    //           checkedColor: greenColor,
+    //         }}
+    //         name="allSelected"
+    //         checked={
+    //           applicationListData?.listData?.length > 0 &&
+    //           applicationListData?.listData?.every(
+    //             (item) => item?.selectCheckbox
+    //           )
+    //         }
+    //         onChange={(e) => {
+    //           setApplicationListData({
+    //             listData: applicationListData?.listData?.map((item) => ({
+    //               ...item,
+    //               selectCheckbox: e.target.checked,
+    //             })),
+    //           });
+    //           setAllData({
+    //             listData: allData?.listData?.map((item) => ({
+    //               ...item,
+    //               selectCheckbox: e.target.checked,
+    //             })),
+    //           });
+    //           setFieldValue("allSelected", e.target.checked);
+    //         }}
+    //       />
 
-          <span style={{ marginLeft: "5px" }}>Employee Id</span>
-        </div>
-      ),
-      dataIndex: "employeeCode",
-      render: (_, record, index) => (
-        <div onClick={(e) => e.stopPropagation()}>
-          <FormikCheckBox
-            styleObj={{
-              margin: "0 auto!important",
-              color: gray900,
-              checkedColor: greenColor,
-              padding: "0px",
-            }}
-            name="selectCheckbox"
-            color={greenColor}
-            checked={record?.selectCheckbox}
-            onChange={(e) => {
-              // let data = [...applicationListData?.listData];
-              // data[i].selectCheckbox = e.target.checked;
-              let data = applicationListData?.listData?.map((item) => {
-                if (item.intId === record?.intId) {
-                  return {
-                    ...item,
-                    selectCheckbox: e.target.checked,
-                  };
-                } else return item;
-              });
-              let data2 = allData?.listData?.map((item) => {
-                if (item.intId === record?.intId) {
-                  return {
-                    ...item,
-                    selectCheckbox: e.target.checked,
-                  };
-                } else return item;
-              });
-              setApplicationListData({ listData: [...data] });
-              setAllData({ listData: [...data2] });
-            }}
-            disabled={record?.ApplicationStatus === "Approved"}
-          />
+    //       <span style={{ marginLeft: "5px" }}>Employee Id</span>
+    //     </div>
+    //   ),
+    //   dataIndex: "employeeCode",
+    //   render: (_, record, index) => (
+    //     <div onClick={(e) => e.stopPropagation()}>
+    //       <FormikCheckBox
+    //         styleObj={{
+    //           margin: "0 auto!important",
+    //           color: gray900,
+    //           checkedColor: greenColor,
+    //           padding: "0px",
+    //         }}
+    //         name="selectCheckbox"
+    //         color={greenColor}
+    //         checked={record?.selectCheckbox}
+    //         onChange={(e) => {
+    //           // let data = [...applicationListData?.listData];
+    //           // data[i].selectCheckbox = e.target.checked;
+    //           let data = applicationListData?.listData?.map((item) => {
+    //             if (item.intId === record?.intId) {
+    //               return {
+    //                 ...item,
+    //                 selectCheckbox: e.target.checked,
+    //               };
+    //             } else return item;
+    //           });
+    //           let data2 = allData?.listData?.map((item) => {
+    //             if (item.intId === record?.intId) {
+    //               return {
+    //                 ...item,
+    //                 selectCheckbox: e.target.checked,
+    //               };
+    //             } else return item;
+    //           });
+    //           setApplicationListData({ listData: [...data] });
+    //           setAllData({ listData: [...data2] });
+    //         }}
+    //         disabled={record?.ApplicationStatus === "Approved"}
+    //       />
 
-          <span style={{ marginLeft: "5px" }}>{record?.employeeCode}</span>
-        </div>
-      ),
-    },
+    //       <span style={{ marginLeft: "5px" }}>{record?.employeeCode}</span>
+    //     </div>
+    //   ),
+    // },
     {
       title: "Employee",
       dataIndex: "strEmployeeName",
@@ -323,24 +340,36 @@ const CardTable = ({ propsObj }) => {
     },
     {
       title: "Status",
-      dataIndex: "strStatus",
+      dataIndex: "status",
       render: (_, record) => (
         <div>
-          {record?.application?.strStatus === "Approved" && (
+          {record?.status === "Approved" && (
             <Chips label="Approved" classess="success" />
           )}
-          {record?.application?.strStatus === "Pending" && (
+          {record?.status === "Pending" && (
             <>
               <div className="actionChip">
                 <Chips label="Pending" classess=" warning" />
               </div>
               <div className="d-flex actionIcon justify-content-center">
-                <Tooltip title="Accept">
+                <Tooltip title="Approve">
                   <div
                     className="mx-2 muiIconHover success "
                     onClick={(e) => {
-                      demoPopup("approve", "Approve", record);
                       e.stopPropagation();
+                      // demoPopup("approve", "Approve", record);
+                      if (
+                        dateFormatterForInput(record?.dteLastWorkingDate) +
+                          "T00:00:00" >
+                        todayDate() + "T00:00:00"
+                      ) {
+                        return toast.warn(
+                          `Can not approve due to the employee having some working days left`
+                        );
+                      }
+                      setData(record);
+                      setButtonType("approve");
+                      setOpenModal(true);
                     }}
                   >
                     <MuiIcon icon={<CheckCircle sx={{ color: "#34A853" }} />} />
@@ -350,8 +379,11 @@ const CardTable = ({ propsObj }) => {
                   <div
                     className="muiIconHover danger"
                     onClick={(e) => {
-                      demoPopup("reject", "Reject", record);
                       e.stopPropagation();
+                      // demoPopup("reject", "Reject", record);
+                      setData(record);
+                      setButtonType("reject");
+                      setOpenModal(true);
                     }}
                   >
                     <MuiIcon icon={<Cancel sx={{ color: "#FF696C" }} />} />
@@ -372,9 +404,9 @@ const CardTable = ({ propsObj }) => {
     <>
       {allData?.listData?.length > 0 ? (
         <AntTable
-          rowSelection={{
-            type: "checkbox",
-          }}
+          // rowSelection={{
+          //   type: "checkbox",
+          // }}
           data={allData?.listData}
           columnsData={columns(page, paginationSize)}
           onRowClick={(dataRow) => {
@@ -383,7 +415,7 @@ const CardTable = ({ propsObj }) => {
           }}
           setColumnsData={(dataRow) => {
             if (dataRow?.length === allData?.listData?.length) {
-              let temp = dataRow?.map((item) => {
+              const temp = dataRow?.map((item) => {
                 return {
                   ...item,
                   selectCheckbox: false,
@@ -401,6 +433,25 @@ const CardTable = ({ propsObj }) => {
       ) : (
         <NoResult />
       )}
+      <PModal
+        title="Separation History View"
+        open={openModal}
+        onCancel={() => {
+          setOpenModal(false);
+        }}
+        components={
+          <ManagementSeparationHistoryView
+            id={data?.application?.intSeparationId}
+            type="approval"
+            demoPopup={demoPopup}
+            data={data}
+            buttonType={buttonType}
+            setComment={setComment}
+            loading={loading}
+          />
+        }
+        width={1000}
+      />
     </>
   );
 };

@@ -19,9 +19,7 @@ import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable from "../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray600, gray900 } from "../../../utility/customColor";
-import {
-  dateFormatterForInput,
-} from "../../../utility/dateFormatter";
+import { dateFormatterForInput } from "../../../utility/dateFormatter";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import Loading from "./../../../common/loading/Loading";
 import "./contactBook.css";
@@ -85,7 +83,7 @@ export default function ContactClosingReport() {
     total: 0,
   });
 
-  const getData = (pagination, searchText) => {
+  const getData = (pagination = pages, searchText = "") => {
     getContractClosingInfo(
       buId,
       wgId,
@@ -104,32 +102,29 @@ export default function ContactClosingReport() {
       return { ...prev, current: newPage };
     });
 
-    getData(
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getData(
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
   };
 
   // initial
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Contract Closing";
   }, []);
 
   useEffect(() => {
@@ -175,6 +170,9 @@ export default function ContactClosingReport() {
   const excelDataFunc = () => {
     return contractualExcelData(rowDto);
   };
+  useEffect(() => {
+    getData();
+  }, [wgId]);
 
   return (
     <>
@@ -343,7 +341,7 @@ export default function ContactClosingReport() {
                             pages?.pageSize,
                             permission,
                             setAnchorEl,
-                            setSingleData,
+                            setSingleData
                           )}
                           pages={pages}
                           rowDto={rowDto}
@@ -360,9 +358,12 @@ export default function ContactClosingReport() {
                         />
                       </>
                     ) : (
-                      <>{!loading && <NoResult title="No Result Found" para="" />}</>
+                      <>
+                        {!loading && (
+                          <NoResult title="No Result Found" para="" />
+                        )}
+                      </>
                     )}
-
                   </div>
 
                   {/* popover */}
@@ -531,7 +532,6 @@ export default function ContactClosingReport() {
                       </div>
                     </div>
                   </Popover>
-
                 </>
               ) : (
                 <NotPermittedPage />

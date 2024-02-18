@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { getPeopleDeskAllLanding, PeopleDeskSaasDDL } from "../api";
+import { toast } from "react-toastify";
 import IConfirmModal from "../IConfirmModal";
+import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
 import {
   createLeaveApplication,
   getEmployeeLeaveBalanceAndHistory,
@@ -13,7 +13,6 @@ import {
   initDataForLeaveApplication,
   validationSchemaForLeaveApplication,
 } from "./utils";
-import { toast } from "react-toastify";
 
 const withLeaveApplication = (WrappedComponent) => {
   const HocLeaveApplication = () => {
@@ -25,6 +24,7 @@ const withLeaveApplication = (WrappedComponent) => {
         buId,
         employeeId,
         wgId,
+        isOfficeAdmin,
       },
       permissionList,
     } = useSelector((state) => state?.auth, shallowEqual);
@@ -73,27 +73,34 @@ const withLeaveApplication = (WrappedComponent) => {
 
     const demoPopupForDelete = (item, values) => {
       const payload = {
-        partId: 3,
+        isHalfDay: item?.HalfDay,
+        strHalDayRange: item?.HalfDayRange,
+        isActive: false,
+        // partId: 3,
+        yearId: item?.yearId,
+        // leavePolicyId: item?.intPolicyId,
+        businessUnitId: buId,
+
         leaveApplicationId: item?.intApplicationId,
         leaveTypeId: item?.LeaveTypeId,
-        employeeId: employeeId,
-        accountId: orgId,
-        businessUnitId: buId,
-        applicationDate: item?.ApplicationDate,
+        employeeId: values?.employee ? values?.employee?.value : employeeId,
+        // accountId: orgId,
+        // applicationDate: item?.ApplicationDate,
         appliedFromDate: item?.AppliedFromDate,
         appliedToDate: item?.AppliedToDate,
         documentFile: item?.DocumentFileUrl ? item?.DocumentFileUrl : 0,
         leaveReason: item?.Reason,
         addressDuetoLeave: item?.AddressDuetoLeave,
-        insertBy: employeeId,
+        // insertBy: employeeId,
         workplaceGroupId: wgId,
+        isSelfService: values?.isSelfService,
       };
 
       const callback = () => {
         getData(values?.employee?.value, values?.year?.value);
       };
 
-      let confirmObject = {
+      const confirmObject = {
         closeOnClickOutside: false,
         message: "Are you want to sure you delete your leave?",
         yesAlertFunc: () => {
@@ -105,8 +112,26 @@ const withLeaveApplication = (WrappedComponent) => {
       };
       IConfirmModal(confirmObject);
     };
+    // const demoPopupForDeleteAdmin = (item, values) => {
+    //   const callback = () => {
+    //     getData(values?.employee?.value, values?.year?.value);
+    //   };
+
+    //   const confirmObject = {
+    //     closeOnClickOutside: false,
+    //     message: "Are you want to sure you delete this leave?",
+    //     yesAlertFunc: () => {
+    //       deleteLeaveApplication(values, item, setLoading, callback);
+    //     },
+    //     noAlertFunc: () => {
+    //       //   history.push("/components/dialogs")
+    //     },
+    //   };
+    //   IConfirmModal(confirmObject);
+    // };
 
     const demoPopup = (action, values, cb) => {
+      let payload = {};
       const callback = () => {
         getData(values?.employee?.value, values?.year?.value);
         setSingleData("");
@@ -116,9 +141,7 @@ const withLeaveApplication = (WrappedComponent) => {
       };
 
       if (
-        (values?.leaveType?.label === "Casual Leave" ||
-          values?.leaveType?.label === "Earn Leave" ||
-          values?.leaveType?.label === "Sick Leave") &&
+        values?.leaveType?.isHalfDayLeave &&
         values?.fromDate === values?.toDate &&
         values?.isHalfDay === ""
       ) {
@@ -126,9 +149,7 @@ const withLeaveApplication = (WrappedComponent) => {
         return;
       }
       if (
-        (values?.leaveType?.label === "Casual Leave" ||
-          values?.leaveType?.label === "Earn Leave" ||
-          values?.leaveType?.label === "Sick Leave") &&
+        values?.leaveType?.isHalfDayLeave &&
         values?.fromDate === values?.toDate &&
         values?.isHalfDay?.label === "Half Day" &&
         values?.halfTime === ""
@@ -136,26 +157,26 @@ const withLeaveApplication = (WrappedComponent) => {
         toast.error("Please Select half Time");
         return;
       }
-      const payload = {
-        partId: singleData?.intApplicationId ? 2 : 1,
+
+      payload = {
+        isActive: true,
+        yearId: values?.year?.value,
         leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
         leaveTypeId: values?.leaveType?.value,
         employeeId: values?.employee ? values?.employee?.value : employeeId,
-        accountId: orgId,
         businessUnitId: buId,
-        applicationDate: new Date(),
         appliedFromDate: values?.fromDate,
         appliedToDate: values?.toDate,
         documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
         leaveReason: values?.reason,
         addressDuetoLeave: values?.location,
-        insertBy: employeeId,
         isHalfDay: values?.isHalfDay?.label === "Half Day" ? true : false,
         strHalDayRange: values?.halfTime?.label ? values?.halfTime?.label : " ",
         workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
+        isSelfService: values?.isSelfService,
       };
 
-      let confirmObject = {
+      const confirmObject = {
         closeOnClickOutside: false,
         message: `Do you want to ${action} ?`,
         yesAlertFunc: () => {
@@ -165,7 +186,7 @@ const withLeaveApplication = (WrappedComponent) => {
             createLeaveApplication(payload, setLoading, callback);
           }
         },
-        noAlertFunc: () => {},
+        noAlertFunc: () => null,
       };
       IConfirmModal(confirmObject);
     };
@@ -177,7 +198,7 @@ const withLeaveApplication = (WrappedComponent) => {
     const searchData = (keywords, allData, setLeaveHistoryData) => {
       try {
         const regex = new RegExp(keywords?.toLowerCase());
-        let newDta = allData?.filter(
+        const newDta = allData?.filter(
           (item) =>
             regex.test(item?.LeaveType?.toLowerCase()) ||
             regex.test(item?.AddressDuetoLeave?.toLowerCase())
@@ -196,7 +217,9 @@ const withLeaveApplication = (WrappedComponent) => {
         setLeaveTypeDDL,
         "LeaveTypeId",
         "LeaveType",
-        empId ? empId : employeeId
+        empId ? empId : employeeId,
+        0,
+        year
       );
       getEmployeeLeaveBalanceAndHistory(
         empId ? empId : employeeId,
@@ -293,6 +316,8 @@ const withLeaveApplication = (WrappedComponent) => {
           setAllData,
           wgId,
           permission,
+          isOfficeAdmin,
+          // demoPopupForDeleteAdmin,
         }}
       />
     );

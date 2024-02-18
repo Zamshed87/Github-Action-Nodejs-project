@@ -110,6 +110,7 @@ const PeopleDeskTable = ({
               <MenuItem value={50}>50 per page</MenuItem>
               <MenuItem value={100}>100 per page</MenuItem>
               <MenuItem value={500}>500 per page</MenuItem>
+              <MenuItem value={1000}>1000 per page</MenuItem>
             </Select>
             <Pagination
               count={Math.ceil(pages?.total / pages?.pageSize)}

@@ -1,8 +1,8 @@
-import { toast } from "react-toastify";
-import axios from "axios";
-import Chips from "../../../common/Chips";
-import { Tooltip } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { Tooltip } from "@mui/material";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Chips from "../../../common/Chips";
 
 // search
 export const filterData = (keywords, allData, setRowDto) => {
@@ -21,7 +21,7 @@ export const createDesignation = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(`/SaasMasterData/SaveDesignation`, payload);
-    cb();
+    cb && cb();
     toast.success(res.data?.message || "Successfully", { toastId: 1 });
     setLoading && setLoading(false);
   } catch (error) {
@@ -35,19 +35,20 @@ export const getAllDesignation = async (
   buId,
   setter,
   setAllData,
-  setLoading
+  setLoading,
+  wId
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetAllDesignation?accountId=${orgId}&businessUnitId=${buId}`
+      `/SaasMasterData/GetAllDesignation?accountId=${orgId}&businessUnitId=${buId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const modified = res?.data?.map((item) => ({
         ...item,
         statusValue: item?.isActive ? "Active" : "Inactive",
       }));
-      modified?.length > 0 && setter(modified);
+      modified?.length > 0 ? setter(modified) : setter([]);
       setAllData && setAllData(res?.data);
       setLoading && setLoading(false);
     }

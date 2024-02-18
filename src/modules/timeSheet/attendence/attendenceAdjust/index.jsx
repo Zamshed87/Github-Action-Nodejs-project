@@ -6,17 +6,21 @@ import {
   Unpublished,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Loading from "../../../../common/loading/Loading";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import FilterModal from "./component/FilterModal";
 // import MasterFilter from "../../../../common/MasterFilter";
+import { ModalFooter, PModal } from "Components/Modal";
+import FormikInput from "common/FormikInput";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import AntTable from "../../../../common/AntTable";
 import FilterBadgeComponent from "../../../../common/FilterBadgeComponent";
 import FormikSelectWithIcon from "../../../../common/FormikSelectWithIcon";
 import MasterFilter from "../../../../common/MasterFilter";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../../common/PopoverMasterFilter";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import IConfirmModal from "./../../../../common/IConfirmModal";
@@ -31,7 +35,7 @@ import {
   // filterData,
   manualAttendanceAction,
 } from "./helper";
-import AntTable from "../../../../common/AntTable";
+import { toast } from "react-toastify";
 
 const initData = {
   search: "",
@@ -40,21 +44,25 @@ const initData = {
   attendedanceAdjustStatus: "",
   attendedanceStatus: "",
   allSelected: false,
-
-  // master filter
   workplace: "",
   department: "",
   employee: "",
   attendenceDate: "",
   attendenceStatus: "",
   employmentType: "",
+  inTime: "09:00",
+  outTime: "18:00",
+  strCalenderName: "",
+  strReason: "",
   monthYear: `${new Date().getFullYear()}-${new Date().getMonth() + 1}`,
 };
 
 export default function AttendenceAdjust() {
   const { userName, buId, employeeId, orgId, wgId, isOfficeAdmin } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const [, getExistingCalenderByTime] = useAxiosGet();
 
+  const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // row data
@@ -82,6 +90,7 @@ export default function AttendenceAdjust() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Attendence Adjust";
   }, []);
 
   const getData = (values, initData) => {
@@ -125,8 +134,8 @@ export default function AttendenceAdjust() {
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
-            inTime: item?.StartTime,
-            outTime: item?.EndTime,
+            inTime: values?.inTime || item?.StartTime,
+            outTime: values?.outTime || item?.EndTime,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
@@ -177,7 +186,48 @@ export default function AttendenceAdjust() {
     setAnchorEl(null);
   };
 
-  const saveHandler = (values) => {};
+  const saveHandler = (values) => {
+    console.log("COME HERE");
+    if (!values?.inTime) {
+      return toast.warn("In Time is Required");
+    }
+    if (!values?.outTime) {
+      return toast.warn("Out Time is Required");
+    }
+    const modifyFilterRowDto = rowDto.filter(
+      (itm) => itm.presentStatus === true
+    );
+    const payload = modifyFilterRowDto.map((item) => {
+      return {
+        id: item?.ManualAttendanceId || 0,
+        accountId: orgId,
+        attendanceSummaryId: item?.AutoId,
+        employeeId: item?.EmployeeId,
+        attendanceDate: item?.AttendanceDate,
+        inTime: values?.inTime || item?.StartTime,
+        outTime: values?.outTime || item?.EndTime,
+        status: item?.isPresent
+          ? "Present"
+          : item?.isLeave
+          ? "Leave"
+          : "Absent",
+        requestStatus: values?.attendedanceAdjustStatus?.label,
+        remarks: values?.strReason || "By HR",
+        isApproved: true,
+        isActive: true,
+        isManagement: true,
+        insertUserId: employeeId,
+        insertDateTime: todayDate(),
+        workPlaceGroup: wgId,
+        businessUnitId: buId,
+      };
+    });
+    const callBack = () => {
+      getData(values);
+      setOpenModal(false);
+    };
+    manualAttendanceAction(payload, setLoading, callBack);
+  };
 
   const [filterBages, setFilterBages] = useState({});
   const [filterValues, setFilterValues] = useState({});
@@ -302,60 +352,62 @@ export default function AttendenceAdjust() {
                           </li>
                         )}
                         <li>
-                          {rowDto?.length > 0 &&
-                            rowDto?.filter((item) => item?.presentStatus)
-                              .length > 0 && (
-                              <div
-                                style={{
-                                  width: "300px",
-                                  marginRight: "15px",
-                                }}
-                              >
-                                <FormikSelectWithIcon
-                                  name="attendedanceAdjustStatus"
-                                  options={[
-                                    {
-                                      value: 1,
-                                      label: "Present",
-                                      code: "present",
-                                      icon: <CheckCircle />,
-                                    },
-                                    {
-                                      value: 2,
-                                      label: "Absent",
-                                      code: "absent",
-                                      icon: <Unpublished />,
-                                    },
-                                    {
-                                      value: 3,
-                                      label: "Late",
-                                      code: "late",
-                                      icon: <Info />,
-                                    },
-                                  ]}
-                                  value={values?.attendedanceAdjustStatus}
-                                  onChange={(valueOption) => {
-                                    if (valueOption) {
-                                      adjustStatushandler(
-                                        values,
-                                        setFieldValue,
-                                        valueOption
-                                      );
+                          {rowDto?.filter((item) => item?.presentStatus)
+                            .length > 0 && (
+                            <div
+                              style={{
+                                width: "300px",
+                                marginRight: "15px",
+                              }}
+                            >
+                              <FormikSelectWithIcon
+                                name="attendedanceAdjustStatus"
+                                options={[
+                                  {
+                                    value: 1,
+                                    label: "Present",
+                                    code: "present",
+                                    icon: <CheckCircle />,
+                                  },
+                                  {
+                                    value: 2,
+                                    label: "Absent",
+                                    code: "absent",
+                                    icon: <Unpublished />,
+                                  },
+                                  {
+                                    value: 3,
+                                    label: "Late",
+                                    code: "late",
+                                    icon: <Info />,
+                                  },
+                                ]}
+                                value={values?.attendedanceAdjustStatus}
+                                onChange={(valueOption) => {
+                                  setFieldValue(
+                                    "attendedanceAdjustStatus",
+                                    valueOption
+                                  );
+                                  if (valueOption) {
+                                    if (valueOption?.value === 1) {
+                                      setOpenModal(true);
+                                      return;
                                     }
-
-                                    setFieldValue(
-                                      "attendedanceAdjustStatus",
+                                    adjustStatushandler(
+                                      values,
+                                      setFieldValue,
                                       valueOption
                                     );
-                                  }}
-                                  placeholder="Change Attendance"
-                                  styles={customStyles}
-                                  errors={errors}
-                                  touched={touched}
-                                  isDisabled={false}
-                                />
-                              </div>
-                            )}
+                                  }
+                                }}
+                                placeholder="Change Attendance"
+                                styles={customStyles}
+                                errors={errors}
+                                touched={touched}
+                                isDisabled={false}
+                              />
+                            </div>
+                          )}
                         </li>
                       </ul>
                       <ul>
@@ -497,6 +549,123 @@ export default function AttendenceAdjust() {
                   }}
                 />
               </PopOverMasterFilter>
+              <PModal
+                title={"In Time/Out Time Setup For Present"}
+                open={openModal}
+                onClose={() => {
+                  setOpenModal(false);
+                  setFieldValue("attendedanceAdjustStatus", "");
+                  setFieldValue("inTime", "");
+                  setFieldValue("outTime", "");
+                  setFieldValue("strCalenderName", "");
+                  setFieldValue("strReason", "");
+                }}
+                onCancel={() => {
+                  setOpenModal(false);
+                }}
+                components={
+                  <>
+                    <div className="modalBody p-0">
+                      <div className="row mx-0">
+                        <div className="col-6">
+                          <label>In Time </label>
+                          <FormikInput
+                            classes="input-sm"
+                            value={values?.inTime}
+                            onChange={(e) => {
+                              setFieldValue("inTime", e.target.value);
+                              setFieldValue("strCalenderName", "");
+                              // if (e.target.value) {
+                              //   debounce(
+                              //     () =>
+                              //       getExistingCalenderByTime(
+                              //         `/Employee/ManualAttendanceShiftTracing?InTime=${e.target.value}&WorkPlaceGroupId=${wgId}`,
+                              //         (res) => {
+                              //           setFieldValue(
+                              //             "strCalenderName",
+                              //             res?.strCalenderName
+                              //           );
+                              //         }
+                              //       ),
+                              //     500
+                              //   );
+                              // }
+                            }}
+                            name="inTime"
+                            type="time"
+                            className="form-control"
+                            placeholder=""
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                        <div className="col-6">
+                          <label>Out Time </label>
+                          <FormikInput
+                            classes="input-sm"
+                            value={values?.outTime}
+                            onChange={(e) => {
+                              setFieldValue("outTime", e.target.value);
+                            }}
+                            name="outTime"
+                            type="time"
+                            className="form-control"
+                            placeholder=""
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                      </div>
+                      <div className="row mx-0">
+                        <div
+                          className={`${
+                            values?.strCalenderName ? "col-6" : "d-none"
+                          }`}
+                        >
+                          <label>Existing Calender Name</label>
+                          <FormikInput
+                            classes="input-sm"
+                            value={values?.strCalenderName}
+                            disabled
+                            name="strCalenderName"
+                            type="text"
+                            className="form-control"
+                          />
+                        </div>
+                        <div
+                          className={`${
+                            values?.strCalenderName ? "col-6" : "col-12"
+                          }`}
+                        >
+                          <label>Reason </label>
+                          <FormikInput
+                            classes="input-sm"
+                            value={values?.strReason}
+                            onChange={(e) => {
+                              setFieldValue("strReason", e.target.value);
+                            }}
+                            name="strReason"
+                            type="string"
+                            className="form-control"
+                            placeholder=""
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <ModalFooter
+                      onCancel={() => {
+                        setOpenModal(false);
+                      }}
+                      onSubmit={() => {
+                        saveHandler(values);
+                      }}
+                    />
+                  </>
+                }
+              />
             </Form>
           </>
         )}

@@ -1,9 +1,9 @@
-import AvatarComponent from "../../../../common/AvatarComponent";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Tooltip, tooltipClasses } from "@mui/material";
 import { styled } from "@mui/styles";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { dateFormatter } from "../../../../utility/dateFormatter";
+import AvatarComponent from "../../../../common/AvatarComponent";
 import Chips from "../../../../common/Chips";
+import { dateFormatter } from "../../../../utility/dateFormatter";
 
 const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -31,7 +31,39 @@ export const empSeparationCol = (page, paginationSize) => {
       width: 60,
     },
     {
-      title: "Code",
+      title: "Work. Group/Location",
+      dataIndex: "strWorkplaceGroupName",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+      width: 200,
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "strWorkplaceName",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+      width: 200,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
+      sort: true,
+      filter: false,
+      width: 200,
+      fieldType: "string",
+    },
+    {
+      title: "Section",
+      dataIndex: "strSectionName",
+      sort: true,
+      filter: false,
+      width: 200,
+      fieldType: "string",
+    },
+    {
+      title: "Employee ID",
       dataIndex: "strEmployeeCode",
       sort: true,
       filter: false,
@@ -66,14 +98,7 @@ export const empSeparationCol = (page, paginationSize) => {
       width: 200,
       fieldType: "string",
     },
-    {
-      title: "Department",
-      dataIndex: "strDesignation",
-      sort: true,
-      filter: false,
-      width: 200,
-      fieldType: "string",
-    },
+
     {
       title: "Separation Type",
       dataIndex: "strSeparationTypeName",
@@ -120,6 +145,16 @@ export const empSeparationCol = (page, paginationSize) => {
       fieldType: "date",
     },
     {
+      title: "Separetion Date",
+      dataIndex: "dteSeparationDate",
+      render: (item) => dateFormatter(item?.dteSeparationDate),
+      isDate: true,
+      width: 200,
+      sort: true,
+      filter: false,
+      fieldType: "date",
+    },
+    {
       title: "Service Length",
       dataIndex: "serviceLength",
       sort: true,
@@ -129,8 +164,8 @@ export const empSeparationCol = (page, paginationSize) => {
     },
     {
       title: "Application Date",
-      dataIndex: "dteSeparationDate",
-      render: (item) => dateFormatter(item?.dteSeparationDate),
+      dataIndex: "dteCreatedAt",
+      render: (item) => dateFormatter(item?.dteCreatedAt),
       sort: true,
       filter: false,
       fieldType: "date",
@@ -155,13 +190,13 @@ export const empSeparationCol = (page, paginationSize) => {
       render: (item) => {
         return (
           <div className="tableBody-title">
-            {item?.approvalStatus === "Approved" && (
+            {item?.approvalStatus === "Approve" && (
               <Chips label="Approved" classess="success" />
             )}
             {item?.approvalStatus === "Pending" && (
               <Chips label="Pending" classess=" warning" />
             )}
-            {item?.approvalStatus === "Rejected" && (
+            {item?.approvalStatus === "Reject" && (
               <Chips label="Rejected" classess="danger" />
             )}
             {item?.approvalStatus === "Released" && (

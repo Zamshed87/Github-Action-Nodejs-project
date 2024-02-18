@@ -23,7 +23,7 @@ export default function SelfViewSeparationForm() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
+  console.log(+params?.id);
   const [loading, setLoading] = useState(false);
   const [isAccordion, setIsAccordion] = useState(false);
   const [singleData, setSingleData] = useState([]);
@@ -34,22 +34,22 @@ export default function SelfViewSeparationForm() {
   }, []);
 
   useEffect(() => {
-    const payload = {
-      intSeparationId: +params?.id,
-      status: "",
-      workplaceGroupId: wgId,
-      departmentId: 0,
-      designationId: 0,
-      supervisorId: 0,
-      employeeId: employeeId,
-      separationTypeId: 0,
-      applicationFromDate: null,
-      applicationToDate: null,
-      businessUnitId: buId,
-      accountId: orgId,
-      tableName: "EmployeeSeparationReportBySeparationId",
-    };
-    getSeparationLandingById(payload, setSingleData, setLoading);
+    // const payload = {
+    //   intSeparationId: +params?.id,
+    //   status: "",
+    //   workplaceGroupId: wgId,
+    //   departmentId: 0,
+    //   designationId: 0,
+    //   supervisorId: 0,
+    //   employeeId: employeeId,
+    //   separationTypeId: 0,
+    //   applicationFromDate: null,
+    //   applicationToDate: null,
+    //   businessUnitId: buId,
+    //   accountId: orgId,
+    //   tableName: "EmployeeSeparationReportBySeparationId",
+    // };
+    getSeparationLandingById(+params?.id, setSingleData, setLoading);
   }, [orgId, buId, employeeId, params?.id, wgId]);
 
   return (
@@ -79,7 +79,7 @@ export default function SelfViewSeparationForm() {
                         <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                           Separation Type -
                         </small>
-                        {singleData?.SeparationTypeName}
+                        {singleData?.strSeparationTypeName}
                       </p>
                     </div>
                     <div className="single-info">
@@ -90,7 +90,7 @@ export default function SelfViewSeparationForm() {
                         <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                           Application Date -
                         </small>
-                        {dateFormatter(singleData?.SeparationDate)}
+                        {dateFormatter(singleData?.dteSeparationDate)}
                       </p>
                     </div>
                     <div className="single-info">
@@ -101,26 +101,26 @@ export default function SelfViewSeparationForm() {
                         <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                           Last Working Date -
                         </small>
-                        {dateFormatter(singleData?.LastWorkingDay)}
+                        {dateFormatter(singleData?.dteLastWorkingDate)}
                       </p>
                     </div>
                   </div>
                   <div>
-                    {singleData?.ApprovalStatus === "Approve" && (
+                    {singleData?.approvalStatus === "Approve" && (
                       <Chips label="Approved" classess="success p-2" />
                     )}
-                    {singleData?.ApprovalStatus === "Pending" && (
+                    {singleData?.approvalStatus === "Pending" && (
                       <Chips label="Pending" classess="warning p-2" />
                     )}
-                    {singleData?.ApprovalStatus === "Process" && (
+                    {singleData?.approvalStatus === "Process" && (
                       <Chips label="Process" classess="primary p-2" />
                     )}
-                    {singleData?.ApprovalStatus === "Reject" && (
+                    {singleData?.approvalStatus === "Reject" && (
                       <>
                         <Chips label="Rejected" classess="danger p-2 mr-2" />
                       </>
                     )}
-                    {singleData?.ApprovalStatus === "Released" && (
+                    {singleData?.approvalStatus === "Released" && (
                       <>
                         <Chips label="Released" classess="p-2 mr-2" />
                       </>

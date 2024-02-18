@@ -32,6 +32,7 @@ export default function ManagementDashboardPermission() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Management Dashboard Permission";
   }, []);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export default function ManagementDashboardPermission() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => { }}
+        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
         {({
           handleSubmit,

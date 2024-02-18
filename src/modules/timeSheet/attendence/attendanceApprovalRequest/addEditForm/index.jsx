@@ -15,6 +15,8 @@ import {
   getManualAttendanceApprovalList,
 } from "../helper";
 import { currentYear } from "../utilities/currentYear";
+import useDebounce from "utility/customHooks/useDebounce";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const initData = {
   businessUnit: "",
@@ -25,6 +27,8 @@ const initData = {
   email: "",
   isActive: false,
   inputFieldType: "",
+  inTime: "09:00",
+  outTime: "17:00",
 };
 const validationSchema = Yup.object().shape({
   inputFieldType: Yup.object()
@@ -59,6 +63,8 @@ export default function AddEditFormComponent({
   const [loading, setLoading] = useState(false);
 
   const [modifySingleData, setModifySingleData] = useState("");
+  const debounce = useDebounce();
+  const [, getExistingCalenderByTime] = useAxiosGet();
 
   const { buId, employeeId, orgId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -68,6 +74,7 @@ export default function AddEditFormComponent({
   let currentMonth = new Date().getMonth() + 1;
 
   const saveHandler = (values, cb) => {
+    console.log({ values });
     if (isMulti) {
       const payload = [];
       tableData.forEach((item) => {
@@ -77,8 +84,8 @@ export default function AddEditFormComponent({
             attendanceSummaryId: item?.AttendanceSummaryId,
             employeeId: employeeId,
             attendanceDate: item?.dteAttendanceDate,
-            inTime: item?.timeInTime || "",
-            outTime: item?.timeOutTime || "",
+            inTime: values?.inputFieldType?.value == 1 ? values?.inTime : "",
+            outTime: values?.inputFieldType?.value == 1 ? values?.outTime : "",
             currentStatus:
               item?.isPresent === true
                 ? "Present"
@@ -125,8 +132,8 @@ export default function AddEditFormComponent({
           attendanceSummaryId: singleRowData?.AttendanceSummaryId,
           employeeId: employeeId,
           attendanceDate: singleRowData?.dteAttendanceDate,
-          inTime: singleRowData?.timeInTime || "",
-          outTime: singleRowData?.timeOutTime || "",
+          inTime: values?.inputFieldType?.value == 1 ? values?.inTime : "",
+          outTime: values?.inputFieldType?.value == 1 ? values?.outTime : "",
           currentStatus: status,
           requestStatus: values?.inputFieldType?.label,
           remarks: values?.code,
@@ -250,6 +257,58 @@ export default function AddEditFormComponent({
                               touched={touched}
                             />
                           </div>
+                          {values?.inputFieldType?.value == 1 && (
+                            <>
+                              <div className="col-6">
+                                <label>In Time </label>
+                                <FormikInput
+                                  classes="input-sm"
+                                  value={values?.inTime}
+                                  onChange={(e) => {
+                                    setFieldValue("inTime", e.target.value);
+                                    setFieldValue("strCalenderName", "");
+                                    if (e.target.value) {
+                                      debounce(
+                                        () =>
+                                          getExistingCalenderByTime(
+                                            `/Employee/ManualAttendanceShiftTracing?InTime=${e.target.value}&WorkPlaceGroupId=${wgId}`,
+                                            (res) => {
+                                              setFieldValue(
+                                                "strCalenderName",
+                                                res?.strCalenderName
+                                              );
+                                            }
+                                          ),
+                                        500
+                                      );
+                                    }
+                                  }}
+                                  name="inTime"
+                                  type="time"
+                                  className="form-control"
+                                  placeholder=""
+                                  errors={errors}
+                                  touched={touched}
+                                />
+                              </div>
+                              <div className="col-6">
+                                <label>Out Time </label>
+                                <FormikInput
+                                  classes="input-sm"
+                                  value={values?.outTime}
+                                  onChange={(e) => {
+                                    setFieldValue("outTime", e.target.value);
+                                  }}
+                                  name="outTime"
+                                  type="time"
+                                  className="form-control"
+                                  placeholder=""
+                                  errors={errors}
+                                  touched={touched}
+                                />
+                              </div>
+                            </>
+                          )}
                           <div className="col-12">
                             <label>Remarks</label>
                             <FormikInput

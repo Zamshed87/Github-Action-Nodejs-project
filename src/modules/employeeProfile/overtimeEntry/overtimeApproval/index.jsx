@@ -50,7 +50,7 @@ const initData = {
 };
 
 export default function OvertimeApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -80,13 +80,9 @@ export default function OvertimeApproval() {
       isAdmin: isOfficeAdmin,
       isSupOrLineManager: 0,
       accountId: orgId,
+      workplaceId: wId,
     };
-    // getAllOvertimeApplicationListDataForApproval(
-    //   payload,
-    //   setApplicationListData,
-    //   setAllData,
-    //   setLoading
-    // );
+
     getOvertimeApproval("/ApprovalPipeline/OverTimeLanding", payload, (res) => {
       setOvertimeApproval(res?.listData);
       setFilterLanding(res?.listData);
@@ -95,7 +91,7 @@ export default function OvertimeApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [employeeId]);
+  }, [employeeId, wId]);
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);
@@ -305,6 +301,8 @@ export default function OvertimeApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Overtime Approval";
   }, []);
 
   const columns = (setFieldValue, page, paginationSize) => {

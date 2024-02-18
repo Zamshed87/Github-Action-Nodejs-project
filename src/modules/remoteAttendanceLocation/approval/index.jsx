@@ -3,7 +3,6 @@
 import {
   Cancel,
   CheckCircle,
-  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
@@ -13,10 +12,8 @@ import BackButton from "../../../common/BackButton";
 import FilterBadgeComponent from "../../../common/FilterBadgeComponent";
 import IConfirmModal from "../../../common/IConfirmModal";
 import Loading from "../../../common/loading/Loading";
-import MasterFilter from "../../../common/MasterFilter";
 import MuiIcon from "../../../common/MuiIcon";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { failColor, successColor } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
@@ -40,7 +37,7 @@ const initData = {
 };
 
 export default function RemoteAttendanceApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -64,6 +61,7 @@ export default function RemoteAttendanceApproval() {
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
 
       setApplicationListData,
@@ -95,6 +93,7 @@ export default function RemoteAttendanceApproval() {
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
+        workplaceId: wId,
         accountId: orgId,
         intId: 0,
       },
@@ -175,6 +174,7 @@ export default function RemoteAttendanceApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
+          workplaceId: wId,
           workplaceGroupId: 0,
           departmentId: 0,
           designationId: 0,
@@ -220,6 +220,7 @@ export default function RemoteAttendanceApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Remote Attendance";
   }, []);
 
   return (

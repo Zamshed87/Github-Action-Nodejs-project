@@ -52,7 +52,7 @@ const initData = {
 };
 
 export default function AllowanceNDeductionApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -80,6 +80,7 @@ export default function AllowanceNDeductionApproval() {
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
 
       setApplicationListData,
@@ -115,6 +116,7 @@ export default function AllowanceNDeductionApproval() {
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
 
       setApplicationListData,
@@ -236,6 +238,7 @@ export default function AllowanceNDeductionApproval() {
           applicantId: 0,
           accountId: orgId,
           intId: 0,
+          workplaceId: wId,
         },
         setApplicationListData,
         setAllData,
@@ -274,6 +277,7 @@ export default function AllowanceNDeductionApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Allowance & Deduction Approval";
   }, []);
 
   const columns = (setFieldValue, page, paginationSize) => {

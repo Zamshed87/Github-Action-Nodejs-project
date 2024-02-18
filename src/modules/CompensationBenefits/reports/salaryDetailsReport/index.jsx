@@ -17,9 +17,9 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import { gray500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/newSelectCustomStyle";
 import { getMonthName } from "./../../../../utility/monthIdToMonthName";
-import { getSalaryReport } from "./helper";
+import { getSalaryDetailsReportRDLC, getSalaryReport } from "./helper";
 import { createSalaryDetailsReportExcelHandeler } from "../../salaryGenerate/helper";
-import { getPDFAction } from "../../../../utility/downloadFile";
+import { downloadFile, getPDFAction } from "../../../../utility/downloadFile";
 // import SalaryTableReport from "./SalaryTableReport";
 import SalaryDetailsReportTable from "./SalaryDetailsReportTable";
 
@@ -45,6 +45,7 @@ export default function SalaryDetailsReport() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Salary Details Report";
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -82,26 +83,35 @@ export default function SalaryDetailsReport() {
     onSubmit: (values) => saveHandler(values),
   });
 
+  const [detailsData, setDetailsData] = useState("");
+  const [detailsReportLoading, setDetailsReportLoading] = useState(false);
   // on form submit
   const saveHandler = (values) => {
-    getSalaryReport(
-      "DynamicSalaryColumnList",
-      orgId,
-      buId,
-      wgId,
-      values?.monthId,
-      values?.yearId,
-      values?.payrollPolicy?.value,
-      0,
-      0,
-      employeeId,
-      setRowDto,
-      setAllData,
-      setTableColumn,
-      setLoading,
-      setTableAllowanceHead,
-      setTableDeductionHead
-    );
+    // getSalaryReport(
+    //   "DynamicSalaryColumnList",
+    //   orgId,
+    //   buId,
+    //   wgId,
+    //   values?.monthId,
+    //   values?.yearId,
+    //   values?.payrollPolicy?.value,
+    //   0,
+    //   0,
+    //   employeeId,
+    //   setRowDto,
+    //   setAllData,
+    //   setTableColumn,
+    //   setLoading,
+    //   setTableAllowanceHead,
+    //   setTableDeductionHead
+    // );
+    getSalaryDetailsReportRDLC(
+      {
+        setLoading: setDetailsReportLoading,
+        setterData: setDetailsData,
+        url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`
+      }
+    )
   };
 
   useEffect(() => {
@@ -117,7 +127,7 @@ export default function SalaryDetailsReport() {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        {loading && <Loading />}
+        {(loading || detailsReportLoading) && <Loading />}
         {permission?.isView ? (
           <div className="table-card">
             <div className="table-card-heading">
@@ -145,9 +155,9 @@ export default function SalaryDetailsReport() {
                                 .split("")
                                 .slice(-2)
                                 .join("")}&IntYear=${+e.target.value
-                                  .split("")
-                                  .slice(0, 4)
-                                  .join("")}`,
+                                .split("")
+                                .slice(0, 4)
+                                .join("")}`,
                               "SalaryCode",
                               "SalaryCode",
                               setPayrollPolicyDDL
@@ -166,6 +176,7 @@ export default function SalaryDetailsReport() {
                             monthYear: e.target.value,
                           }));
                           setRowDto([]);
+                          setDetailsData("");
                           setAllData([]);
                           setTableColumn([]);
                         }}
@@ -187,6 +198,8 @@ export default function SalaryDetailsReport() {
                             payrollPolicy: valueOption,
                           }));
                           setRowDto([]);
+                          setDetailsData("");
+
                           setAllData([]);
                           setTableColumn([]);
                         }}
@@ -210,7 +223,7 @@ export default function SalaryDetailsReport() {
                       >
                         Show
                       </button>
-                      {rowDto?.length > 0 && (
+                      {detailsData?.length > 0 && (
                         <button
                           style={{
                             marginTop: "23px",
@@ -221,6 +234,7 @@ export default function SalaryDetailsReport() {
                           onClick={(e) => {
                             e.stopPropagation();
                             setRowDto([]);
+                            setDetailsData("");
                             setAllData([]);
                             setTableColumn([]);
                             setFieldValue("search", "");
@@ -241,11 +255,9 @@ export default function SalaryDetailsReport() {
                 style={{ marginBottom: "12px" }}
               >
                 <div className="d-flex align-center-center">
-                  {rowDto?.length > 0 && (
+                  {detailsData?.length > 0 && (
                     <div>
-                      <h2>
-                        Business Unit: {buName || "N/A"}
-                      </h2>
+                      <h2>Business Unit: {buName || "N/A"}</h2>
                       <div className="single-info">
                         <p style={{ fontWeight: "400", color: gray500 }}>
                           Salary report of{" "}
@@ -255,7 +267,7 @@ export default function SalaryDetailsReport() {
                     </div>
                   )}
                 </div>
-                {rowDto?.length > 0 && (
+                {detailsData?.length > 0 && (
                   <ul className="d-flex flex-wrap align-items-center justify-content-center">
                     <li style={{ cursor: "pointer" }} className="pr-2">
                       <Tooltip title="Export CSV" arrow>
@@ -264,23 +276,47 @@ export default function SalaryDetailsReport() {
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (!rowDto?.length > 0) {
+                            // if (!rowDto?.length > 0) {
+                            //   return toast.warn("No Data Found");
+                            // }
+                            // createSalaryDetailsReportExcelHandeler({
+                            //   monthYear: moment(values?.monthYear).format(
+                            //     "MMMM-YYYY"
+                            //   ),
+                            //   buAddress:
+                            //     businessUnitDDL[0]?.BusinessUnitAddress,
+                            //   businessUnit:
+                            //     buName || values?.businessUnit?.label,
+                            //   data: rowDto,
+                            //   tableColumn,
+                            //   tableAllowanceHead,
+                            //   tableDeductionHead,
+                            // });
+                            if (detailsData?.length <= 0) {
                               return toast.warn("No Data Found");
                             }
-                            createSalaryDetailsReportExcelHandeler({
+                            /*    createSalaryDetailsReportExcelHandeler({
                               monthYear: moment(values?.monthYear).format(
                                 "MMMM-YYYY"
                               ),
-                              buAddress:
-                                businessUnitDDL[0]?.BusinessUnitAddress,
-                              businessUnit: buName || values?.businessUnit?.label,
-                              data: rowDto,
+                              buAddress: buDetails?.strBusinessUnitAddress,
+                              businessUnit: !state?.data
+                                ? state?.strBusinessUnit
+                                : state?.data?.strBusinessUnit,
+                              data: resDetailsReport,
                               tableColumn,
                               tableAllowanceHead,
                               tableDeductionHead,
-                            });
+                            }); */
+                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`
+                            downloadFile(
+                              url,
+                              "Salary Details Report",
+                              "xlsx",
+                              setLoading
+                            );
                           }}
-                          disabled={rowDto?.length <= 0}
+                          // disabled={detailsData?.length <= 0}
                           style={{
                             border: "transparent",
                             width: "30px",
@@ -303,12 +339,22 @@ export default function SalaryDetailsReport() {
                         className="btn-save"
                         type="button"
                         onClick={() => {
-                          getPDFAction(
-                            `/PdfAndExcelReport/SalaryDetailsReport?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`,
-                            setLoading
-                          );
+                          // getPDFAction(
+                          //   `/PdfAndExcelReport/SalaryDetailsReport?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`,
+                          //   setLoading
+                          // );
+                          if (detailsData?.length <= 0) {
+                            return toast.warn("No Data Found");
+                          } else {
+                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`
+                          
+                            getPDFAction(
+                              url,
+                              setLoading
+                            );
+                          }
                         }}
-                        disabled={rowDto?.length <= 0}
+                        // disabled={detailsData?.length <= 0}
                         style={{
                           border: "transparent",
                           width: "30px",
@@ -330,14 +376,8 @@ export default function SalaryDetailsReport() {
               </div>
             </div>
             <div className="table-card-body">
-              {rowDto?.length > 0 ? (
+              {/* {rowDto?.length > 0 ? (
                 <>
-                  {/* <SalaryTableReport
-                    rowDto={rowDto}
-                    tableColumn={tableColumn}
-                    tableAllowanceHead={tableAllowanceHead}
-                    tableDeductionHead={tableDeductionHead}
-                  /> */}
                   <SalaryDetailsReportTable
                     rowDto={rowDto}
                     tableColumn={tableColumn}
@@ -347,6 +387,17 @@ export default function SalaryDetailsReport() {
                 </>
               ) : (
                 <>{!loading && <NoResult title="No Result Found" para="" />}</>
+              )} */}
+
+              {detailsData?.length > 0 ? (
+                <div className="sme-scrollable-table">
+                  <div
+                    className="scroll-table scroll-table-height"
+                    dangerouslySetInnerHTML={{ __html: detailsData }}
+                  ></div>
+                </div>
+              ) : (
+                <NoResult title="No Result Found" para="" />
               )}
             </div>
           </div>

@@ -11,11 +11,13 @@ const HeaderTableForm = ({
   errors,
   touched,
   orgId,
+  wId,
   buId,
   setAllowanceAndDeductionDDL,
   setLoading,
   allowanceAndDeductionDDL,
 }) => {
+
   return (
     <div className="row card-style pt-3">
       <div className="col-2">
@@ -39,7 +41,9 @@ const HeaderTableForm = ({
 
       <div className="col-lg-3">
         <div className="input-field-main">
-          <label>From Month</label>
+          <label>
+            From Month <span className="text-danger fs-3">*</span>
+          </label>
           <FormikInput
             classes="input-sm"
             value={values?.fromMonth}
@@ -73,7 +77,9 @@ const HeaderTableForm = ({
         </div>
       </div>
       <div className="col-lg-3">
-        <label>Select Type</label>
+        <label>
+          Salary Type <span className="text-danger fs-3">*</span>
+        </label>
         <FormikSelect
           classes="input-sm"
           styles={customStyles}
@@ -98,6 +104,7 @@ const HeaderTableForm = ({
             getAllAllowanceAndDeduction(
               orgId,
               buId,
+              wId,
               setAllowanceAndDeductionDDL,
               valueOption?.value === 1 ? true : false,
               setLoading
@@ -108,7 +115,9 @@ const HeaderTableForm = ({
         />
       </div>
       <div className="col-lg-3">
-        <label>Select Allowance/Deduction</label>
+        <label>
+          Select Allowance/Deduction <span className="text-danger fs-3">*</span>
+        </label>
         <FormikSelect
           classes="input-sm"
           styles={customStyles}
@@ -125,7 +134,9 @@ const HeaderTableForm = ({
         />
       </div>
       <div className="col-lg-3">
-        <label>Select Amount Dimension</label>
+        <label>
+          Select Amount Dimension <span className="text-danger fs-3">*</span>
+        </label>
         <FormikSelect
           classes="input-sm"
           placeholder={" "}
@@ -159,13 +170,15 @@ const HeaderTableForm = ({
           touched={touched}
         />
       </div>
+
       <div className="col-lg-3">
         <label>
           Enter Amount{" "}
           {(values?.amountDimension?.value === 1 ||
             values?.amountDimension?.value === 2) && <span>(%)</span>}
           {(values?.amountDimension?.value === 3 ||
-            values?.amountDimension?.value === 4) && <span>(BDT)</span>}
+            values?.amountDimension?.value === 4) && <span>(BDT)</span>}{" "}
+          <span className="text-danger fs-3">*</span>
         </label>
         <FormikInput
           classes="input-sm"
@@ -179,6 +192,112 @@ const HeaderTableForm = ({
           touched={touched}
         />
       </div>
+      <div className="col-lg-3">
+        <label>Allowance Duration</label>
+        <FormikSelect
+          classes="input-sm"
+          styles={customStyles}
+          placeholder={" "}
+          name="intAllowanceDuration"
+          options={
+            [
+              {
+                value: 1,
+                label: "Perday",
+              },
+              {
+                value: 2,
+                label: "Per Month",
+              },
+            ] || []
+
+            /* 
+            🔥 from backend -- 
+            public enum AllowanceDuration
+            {
+                [Description ("Perday") ]
+                PERDAY = 1,
+                [Description("Per Month")]
+                PER_MONTH = 2
+            }
+            */
+          }
+          value={values?.intAllowanceDuration}
+          onChange={(valueOption) => {
+            setFieldValue("maxAmount", "");
+            setFieldValue("intAllowanceAttendenceStatus", "");
+            setFieldValue("intAllowanceDuration", valueOption);
+          }}
+          errors={errors}
+          touched={touched}
+        />
+      </div>
+      {values?.intAllowanceDuration?.value === 1 ? (
+        <>
+          <div className="col-lg-3">
+            <label>
+              Max Amount <small>[ for a month ]  <span className="text-danger fs-3">*</span></small>
+            </label>
+            <FormikInput
+              classes="input-sm"
+              value={values?.maxAmount}
+              placeholder={" "}
+              name="maxAmount"
+              type="number"
+              min={0}
+              className="form-control"
+              onChange={(e) => setFieldValue("maxAmount", e.target.value)}
+              errors={errors}
+              touched={touched}
+            />
+          </div>
+          <div className="col-lg-3">
+            <label>Allowanc Attendence Status  <span className="text-danger fs-3">*</span></label>
+            <FormikSelect
+              classes="input-sm"
+              styles={customStyles}
+              placeholder={" "}
+              name="intAllowanceAttendenceStatus"
+              options={
+                [
+                  {
+                    value: 1,
+                    label: "Default",
+                  },
+                  {
+                    value: 2,
+                    label: "Based On InTime",
+                  },
+                  {
+                    value: 3,
+                    label: "Based On Attendence",
+                  },
+                ] || []
+                /* 
+            🔥 from backend -- 
+              public enum AllowanceAttendenceStatus
+              {
+              [Description("Default")] 
+              DEFAULT = 1,  //Default value is for all.No restiction
+              [Description("Based On InTime")]
+              BASED_ON_INTIME = 2, //Will be implemented on only attendence intime
+              [Description("Based On Attendence")]
+              BASED_ON_ATTENDENCE = 3  
+              }
+            */
+              }
+              value={values?.intAllowanceAttendenceStatus}
+              onChange={(valueOption) => {
+                setFieldValue("intAllowanceAttendenceStatus", valueOption);
+              }}
+              errors={errors}
+              touched={touched}
+            />
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

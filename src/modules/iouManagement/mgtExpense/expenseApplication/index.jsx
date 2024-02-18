@@ -89,7 +89,7 @@ const MgtExpenseApplication = () => {
     );
   };
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
@@ -101,8 +101,8 @@ const MgtExpenseApplication = () => {
     });
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+  const handleChangeRowsPerPage = (event) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData({
@@ -132,6 +132,7 @@ const MgtExpenseApplication = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Expense Application";
   }, []);
 
   return (

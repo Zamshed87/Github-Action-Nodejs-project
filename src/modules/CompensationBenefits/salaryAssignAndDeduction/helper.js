@@ -138,14 +138,12 @@ export const getSalaryAdditionAndDeductionById = async (
   setLoading
 ) => {
   setLoading && setLoading(true);
-  const payload = [
-    {
+  const payload = {
       strEntryType: "GetEmpSalaryAdditionNDeductionByEmployeeId",
       intBusinessUnitId: buId,
       intWorkplaceGroupId: wgId,
       intEmployeeId: empId,
-    },
-  ];
+    };
   try {
     const res = await axios.post(`/Employee/SalaryAdditonNDeduction`, payload);
     if (res?.data) {
@@ -162,6 +160,7 @@ export const getSalaryAdditionAndDeductionById = async (
 export const getAllAllowanceAndDeduction = async (
   orgId,
   buId,
+  wId,
   setter,
   AdditionAndDeduction,
   setLoading
@@ -169,7 +168,7 @@ export const getAllAllowanceAndDeduction = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/GetAllPayrollElementType?accountId=${orgId}&businessUnitId=${buId}`
+      `/Payroll/GetAllPayrollElementType?accountId=${orgId}&businessUnitId=${buId}&workplaceId=${wId}`
     );
     if (res?.data) {
       const additionDDL = res?.data

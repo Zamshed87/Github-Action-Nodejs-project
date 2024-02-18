@@ -1,12 +1,13 @@
+import { isDevServer } from "App";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import BackButton from "../../../common/BackButton";
+import PrimaryButton from "../../../common/PrimaryButton";
 import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import PrimaryButton from "../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { downloadFile } from "../../../utility/downloadFile";
@@ -26,7 +27,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const OvertimeBulkEntry = () => {
-  const { buId, employeeId, orgId } = useSelector(
+  const { buId, employeeId, orgId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -67,14 +68,15 @@ const OvertimeBulkEntry = () => {
         setIsLoading,
         buId,
         orgId,
-        employeeId
+        employeeId,
+        wgId
       );
     } catch (error) {
       toast.warn("Failed to process!");
     }
   };
 
-  const saveHandler = (values) => {
+  const saveHandler = () => {
     const callBack = () => {
       setData([]);
     };
@@ -99,23 +101,7 @@ const OvertimeBulkEntry = () => {
 
           <div className="card-style pb-0 mt-3 mb-2">
             <div className="row">
-              {/* <div className="col-3">
-                <div className="input-field-main">
-                  <label>Date</label>
-                  <DefaultInput
-                    classes="input-sm"
-                    value={values?.date}
-                    onChange={(val) => {
-                      setFieldValue("date", val.target.value);
-                    }}
-                    name="date"
-                    type="month"
-                    className="form-control"
-                    errors={errors}
-                    touched={touched}
-                  />
-                </div>
-              </div> */}
+
               <div className="col-6 d-flex align-items-center my-2">
                 <PrimaryButton
                   className="btn btn-default mr-1"
@@ -123,8 +109,8 @@ const OvertimeBulkEntry = () => {
                   onClick={() => {
                     downloadFile(
                       `${
-                        process.env.NODE_ENV === "development"
-                          ? "/document/downloadfile?id=44"
+                        isDevServer
+                          ? "/document/downloadfile?id=20"
                           : "/document/downloadfile?id=20"
                       }`,
                       "Overtime Bulk Upload",
@@ -176,7 +162,7 @@ const OvertimeBulkEntry = () => {
                   </thead>
                   <tbody>
                     {data.map((item, index) => (
-                      <tr>
+                      <tr key={item?.employeeCode}>
                         <td>
                           <div className="content tableBody-title">
                             {index + 1}

@@ -3,12 +3,14 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AntScrollTable from "../../../../common/AntScrollTable";
-import { paginationSize } from "../../../../common/AntTable";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import {
+  getPeopleDeskAllDDL,
+  getWorkplaceDetails,
+} from "../../../../common/api";
 import DefaultInput from "../../../../common/DefaultInput";
 import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
@@ -17,7 +19,6 @@ import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { generateExcelActionBeta } from "../../../../utility/createExcel";
 import {
   dateFormatter,
   monthFirstDate,
@@ -31,36 +32,33 @@ import {
   getRosterReport,
   rosterReportDtoCol,
 } from "../helper";
-import { generateExcelAction } from "../rosterReport/excel/excelConvert";
-import PopOverFilter from "../rosterReport/PopOverFilter";
 import "../rosterReport/rosterDetails.css";
 import { getTableDataMonthlyInOut, montlyInOutXlCol } from "./helper";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
+import { paginationSize } from "common/AntTable";
 
 const initData = {
   search: "",
-
   //  master filter
   businessUnit: "",
   workplace: "",
   workplaceGroup: "",
-
   date: "",
   fromDate: monthFirstDate(),
   toDate: todayDate(),
 };
 
-const customStyleObj = {
-  root: {
-    minWidth: "750px",
-  },
-};
+// const customStyleObj = {
+//   root: {
+//     minWidth: "750px",
+//   },
+// };
 
 export default function MonthlyInOutReport() {
   // redux
   const dispatch = useDispatch();
 
-  const { orgId, buId, buName, employeeId, wgId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -68,24 +66,23 @@ export default function MonthlyInOutReport() {
 
   // hooks
   const [loading, setLoading] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  // const [anchorEl, setAnchorEl] = useState(null);
   const [rowDto, setRowDto] = useState(null);
   const [buDetails, setBuDetails] = useState({});
-  const [pdfData, setPdfData] = useState(null);
+  // const [pdfData, setPdfData] = useState(null);
   // const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
   // const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
-  const [page, setPage] = useState(1);
-  const [paginationSize, setPaginationSize] = useState(15);
-  const [isFilter, setIsFilter] = useState({
-    workplace: "",
-    workplaceGroup: "",
-    department: "",
-    designation: "",
-    calendarType: "",
-    rosterGroupName: "",
-    date: "",
-  });
+
+  // const [isFilter, setIsFilter] = useState({
+  //   workplace: "",
+  //   workplaceGroup: "",
+  //   department: "",
+  //   designation: "",
+  //   calendarType: "",
+  //   rosterGroupName: "",
+  //   date: "",
+  // });
   const [tableRowDto, setTableRowDto] = useState([]);
   const [columnList, setColumnList] = useState([]);
   const [pages, setPages] = useState({
@@ -94,17 +91,9 @@ export default function MonthlyInOutReport() {
     total: 0,
   });
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
-  const saveHandler = (values) => {};
+  // const handleClick = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
   const getData = (fromDate, toDate) => {
     getRosterReport(
@@ -130,7 +119,8 @@ export default function MonthlyInOutReport() {
     setColumnList(
       fromToDateList(fromDate || initData?.fromDate, toDate || initData?.toDate)
     );
-    getBuDetails(buId, setBuDetails);
+    getWorkplaceDetails(wId, setBuDetails);
+
     // getRosterReport(orgId, buId, 0, 0, todayDate(), 0, setRowDto, setLoading);
   };
 
@@ -145,60 +135,62 @@ export default function MonthlyInOutReport() {
     //   "strBusinessUnit",
     //   setBusinessUnitDDL
     // );
+    setFieldValue("workplace", "");
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceId",
       "strWorkplace",
       setWorkplaceDDL
     );
-  }, [orgId, buId, employeeId]);
+  }, [orgId, buId, employeeId, wgId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Monthly IN-OUT Report";
   }, []);
 
-  const masterFilterHandler = ({
-    workplace,
-    workplaceGroup,
-    calendarType,
-    department,
-    designation,
-    rosterGroupName,
-    date,
-  }) => {
-    getRosterReport(
-      orgId,
-      buId,
-      workplace?.value || 0,
-      wgId || 0,
-      calendarType?.value || 0,
-      department?.value || 0,
-      designation?.value || 0,
-      date || todayDate(),
-      0,
-      rosterGroupName?.value || 0,
-      setRowDto,
-      setLoading
-    );
-    // getRosterReport(orgId, buId, workplace?.value || 0, calendarType?.value || 0, date, rosterGroupName?.value || 0, setRowDto, setLoading);
-    setAnchorEl(null);
-  };
+  // const masterFilterHandler = ({
+  //   workplace,
+  //   workplaceGroup,
+  //   calendarType,
+  //   department,
+  //   designation,
+  //   rosterGroupName,
+  //   date,
+  // }) => {
+  //   getRosterReport(
+  //     orgId,
+  //     buId,
+  //     workplace?.value || 0,
+  //     wgId || 0,
+  //     calendarType?.value || 0,
+  //     department?.value || 0,
+  //     designation?.value || 0,
+  //     date || todayDate(),
+  //     0,
+  //     rosterGroupName?.value || 0,
+  //     setRowDto,
+  //     setLoading
+  //   );
+  //   // getRosterReport(orgId, buId, workplace?.value || 0, calendarType?.value || 0, date, rosterGroupName?.value || 0, setRowDto, setLoading);
+  //   setAnchorEl(null);
+  // };
 
   // search
-  const filterData = (keywords) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = rowDto?.filter(
-        (item) =>
-          regex.test(item?.strEmployeeName?.toLowerCase()) ||
-          regex.test(item?.strDepartment?.toLowerCase()) ||
-          regex.test(item?.strDesignation?.toLowerCase())
-      );
-      setTableRowDto(newDta);
-    } catch (error) {
-      setRowDto([]);
-    }
-  };
+  // const filterData = (keywords) => {
+  //   try {
+  //     const regex = new RegExp(keywords?.toLowerCase());
+  //     let newDta = rowDto?.filter(
+  //       (item) =>
+  //         regex.test(item?.strEmployeeName?.toLowerCase()) ||
+  //         regex.test(item?.strDepartment?.toLowerCase()) ||
+  //         regex.test(item?.strDesignation?.toLowerCase())
+  //     );
+  //     setTableRowDto(newDta);
+  //   } catch (error) {
+  //     setRowDto([]);
+  //   }
+  // };
   // page
   const handleTableChange = (pagination, newRowDto, srcText) => {
     if (newRowDto?.action === "filter") {
@@ -271,11 +263,6 @@ export default function MonthlyInOutReport() {
   } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
-    onSubmit: (values, { resetForm }) => {
-      saveHandler(values, () => {
-        resetForm(initData);
-      });
-    },
   });
   return (
     <>
@@ -325,8 +312,8 @@ export default function MonthlyInOutReport() {
                                 )} to ${dateFormatter(values?.toDate)}`,
                                 fromDate: "",
                                 toDate: "",
-                                buAddress: buDetails?.strBusinessUnitAddress,
-                                businessUnit: buName,
+                                buAddress: buDetails?.strAddress,
+                                businessUnit: buDetails?.strWorkplace,
                                 tableHeader: montlyInOutXlCol(
                                   values?.fromDate,
                                   values?.toDate
@@ -395,15 +382,15 @@ export default function MonthlyInOutReport() {
                         }
                         onClick={() => {
                           getData();
-                          setIsFilter({
-                            rosterGroupName: "",
-                            calendarType: "",
-                            workplace: "",
-                            workplaceGroup: "",
-                            department: "",
-                            designation: "",
-                            date: "",
-                          });
+                          // setIsFilter({
+                          //   rosterGroupName: "",
+                          //   calendarType: "",
+                          //   workplace: "",
+                          //   workplaceGroup: "",
+                          //   department: "",
+                          //   designation: "",
+                          //   date: "",
+                          // });
                           resetForm(initData);
                           setFieldValue("search", "");
                         }}
@@ -470,16 +457,16 @@ export default function MonthlyInOutReport() {
                     cancelHandler={() => {
                       setFieldValue("search", "");
                       getData();
-                      setIsFilter({
-                        rosterGroupName: "",
-                        calendarType: "",
-                        workplace: "",
-                        workplaceGroup: "",
-                        department: "",
-                        designation: "",
-                      });
+                      // setIsFilter({
+                      //   rosterGroupName: "",
+                      //   calendarType: "",
+                      //   workplace: "",
+                      //   workplaceGroup: "",
+                      //   department: "",
+                      //   designation: "",
+                      // });
                     }}
-                    handleClick={handleClick}
+                    // handleClick={handleClick}
                   />
                 </div>
               </div>
@@ -535,6 +522,11 @@ export default function MonthlyInOutReport() {
                             workplaceGroup: valueOption,
                           }));
                           if (valueOption?.value) {
+                            getWorkplaceDetails(
+                              valueOption?.value,
+                              setBuDetails
+                            );
+
                             // getPeopleDeskAllDDL(
                             //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
                             //   "intWorkplaceId",
@@ -627,10 +619,11 @@ export default function MonthlyInOutReport() {
                       <AntScrollTable
                         data={values?.search ? tableRowDto : rowDto}
                         columnsData={rosterReportDtoCol(
-                          page,
-                          paginationSize,
+                          pages?.current,
+                          pages?.pageSize,
                           columnList
                         )}
+                        y={1000}
                         setColumnsData={(newRow) => setTableRowDto(newRow)}
                         handleTableChange={({ pagination, newRowDto }) =>
                           handleTableChange(
@@ -655,7 +648,7 @@ export default function MonthlyInOutReport() {
             <NotPermittedPage />
           )}
         </div>
-        <PopOverFilter
+        {/* <PopOverFilter
           propsObj={{
             customStyleObj,
             id,
@@ -673,8 +666,8 @@ export default function MonthlyInOutReport() {
           masterFilterHandler={masterFilterHandler}
           setIsFilter={setIsFilter}
           isFilter={isFilter}
-          setPdfData={setPdfData}
-        />
+          setPdfData={() => {console.log("no function created")}}
+        /> */}
       </>
     </>
   );

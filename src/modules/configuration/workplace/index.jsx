@@ -1,7 +1,7 @@
 import {
   AddOutlined,
   SearchOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ import AddEditFormComponent from "./addEditForm/index";
 import {
   adminWorkplaceDtoCol,
   filterData,
-  getWorkplaceLanding
+  getWorkplaceLanding,
 } from "./helper";
 import ViewFormComponent from "./viewForm/index";
 
@@ -31,7 +31,7 @@ const initData = {
 const validationSchema = Yup.object({});
 
 function Workplace() {
-  const { orgId, buId } = useSelector(
+  const { orgId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -68,13 +68,14 @@ function Workplace() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Workplace";
   }, []);
 
   useEffect(() => {
-    getWorkplaceLanding(orgId, buId, setRowDto, setAllData, setLoading);
+    getWorkplaceLanding(orgId, buId, wgId, setRowDto, setAllData, setLoading);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId]);
+  }, [orgId, buId, wgId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 

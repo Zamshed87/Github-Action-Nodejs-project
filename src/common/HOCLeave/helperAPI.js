@@ -1,3 +1,4 @@
+import { isDevServer } from "App";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -45,7 +46,34 @@ export const createLeaveApplication = async (payload, setLoading, cb) => {
     toast.success(res?.data?.Result?.Message || "Submitted Successfully");
     setLoading && setLoading(false);
   } catch (error) {
+    isDevServer && console.log(error?.response?.data);
     toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading && setLoading(false);
   }
 };
+export const deleteLeaveApplication = async (values, item, setLoading, cb) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `/LeaveMovement/RollbackLeaveApplication?EmployeeId=${values?.employee?.value}&ApplicationId=${item?.intApplicationId}&ApplicationDate=${item?.ApplicationDate}&FromDate=${item?.AppliedFromDate}&ToDate=${item?.AppliedToDate}&isHalfDay=${item?.HalfDay}`
+    );
+    cb && cb();
+    toast.success(res?.data?.Result?.Message || "Submitted Successfully");
+    setLoading && setLoading(false);
+  } catch (error) {
+    toast.warn(error?.response?.data?.message || "Something went wrong");
+    setLoading && setLoading(false);
+  }
+};
+// export const approveEditLeaveApplication = async (payload, setLoading, cb) => {
+//   setLoading && setLoading(true);
+//   try {
+//     const res = await axios.post(`/LeaveMovement/ApproveLeaveEdit`, payload);
+//     cb && cb();
+//     toast.success(res?.data?.result?.Message || "Submitted Successfully");
+//     setLoading && setLoading(false);
+//   } catch (error) {
+//     toast.warn(error?.response?.data?.message || "Something went wrong");
+//     setLoading && setLoading(false);
+//   }
+// };

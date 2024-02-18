@@ -13,7 +13,9 @@ import PopOverMasterFilter from "../../../common/PopoverMasterFilter";
 import ResetButton from "../../../common/ResetButton";
 import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import PeopleDeskTable, { paginationSize } from "../../../common/peopleDeskTable";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
@@ -80,26 +82,22 @@ export default function AdjustmentIOUReport() {
       return { ...prev, current: newPage };
     });
 
-    getData(
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: newPage,
+      pageSize: pages?.pageSize,
+      total: pages?.total,
+    });
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getData(
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      }
-    );
+    getData({
+      current: 1,
+      pageSize: +event.target.value,
+      total: pages?.total,
+    });
   };
 
   useEffect(() => {
@@ -123,6 +121,7 @@ export default function AdjustmentIOUReport() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "IOU-Adjustment Report";
   }, []);
 
   // filter
@@ -174,7 +173,7 @@ export default function AdjustmentIOUReport() {
   // useFormik
   const { resetForm, values, errors, touched, setFieldValue, dirty } =
     useFormik({
-      initialValues: initData
+      initialValues: initData,
     });
 
   // menu permission
@@ -191,16 +190,11 @@ export default function AdjustmentIOUReport() {
       {permission?.isView ? (
         <>
           <div className="table-card">
-            <div
-              className="table-card-heading"
-              style={{ marginBottom: "2px" }}
-            >
+            <div className="table-card-heading" style={{ marginBottom: "2px" }}>
               <div className="d-flex align-items-center">
                 {rowDto?.length > 0 ? (
                   <>
-                    <h6 className="count">
-                      Total {rowDto?.length} employees
-                    </h6>
+                    <h6 className="count">Total {rowDto?.length} employees</h6>
                   </>
                 ) : (
                   <>
@@ -309,10 +303,7 @@ export default function AdjustmentIOUReport() {
                 clearFilter,
               }}
             />
-            <div
-              className="card-style pb-0 mb-2"
-              style={{ marginTop: "12px" }}
-            >
+            <div className="card-style pb-0 mb-2" style={{ marginTop: "12px" }}>
               <div className="row">
                 <div className="col-lg-3">
                   <div className="input-field-main">
@@ -352,13 +343,11 @@ export default function AdjustmentIOUReport() {
                   <button
                     className="btn btn-green btn-green-disable mt-4"
                     type="button"
-                    disabled={
-                      !values?.filterFromDate || !values?.filterToDate
-                    }
+                    disabled={!values?.filterFromDate || !values?.filterToDate}
                     onClick={() => {
                       getData({
                         current: 1,
-                        pageSize: paginationSize
+                        pageSize: paginationSize,
                       });
                     }}
                   >
@@ -388,9 +377,7 @@ export default function AdjustmentIOUReport() {
                 isCheckBox={false}
                 isScrollAble={false}
                 onRowClick={(res) => {
-                  history.push(
-                    `/profile/iOU/adjustmentReport/${res?.iouId}`
-                  );
+                  history.push(`/profile/iOU/adjustmentReport/${res?.iouId}`);
                 }}
               />
             ) : (

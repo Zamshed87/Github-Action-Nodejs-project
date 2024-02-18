@@ -42,7 +42,7 @@ export default function JobConfirmationReport() {
 
   const dispatch = useDispatch();
   // eslint-disable-next-line no-unused-vars
-  const { intAccountId, intBusinessUnitId, buName, wgId } = useSelector(
+  const { intAccountId, intBusinessUnitId, buName, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -64,6 +64,7 @@ export default function JobConfirmationReport() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
+    document.title = "Need Confirmation";
   }, []);
 
   useEffect(() => {
@@ -81,9 +82,10 @@ export default function JobConfirmationReport() {
       wgId,
       "",
       pages,
-      setPages
+      setPages,
+      wId
     );
-  }, [wgId]);
+  }, [wgId, wId]);
 
   // search
   // const filterData = (keywords, allData, setRowDto) => {
@@ -123,7 +125,8 @@ export default function JobConfirmationReport() {
         wgId,
         srcText,
         pagination,
-        setPages
+        setPages,
+        wId
       );
     }
     if (pages?.current !== pagination?.current) {
@@ -141,7 +144,8 @@ export default function JobConfirmationReport() {
         wgId,
         srcText,
         pagination,
-        setPages
+        setPages,
+        wId
       );
     }
   };
@@ -274,7 +278,8 @@ export default function JobConfirmationReport() {
                               wgId,
                               "",
                               pages,
-                              setPages
+                              setPages,
+                              wId
                             );
                           }}
                           errors={errors}
@@ -330,7 +335,8 @@ export default function JobConfirmationReport() {
                                   wgId,
                                   e.target.value,
                                   { current: 1, pageSize: paginationSize },
-                                  setPages
+                                  setPages,
+                                  wId
                                 );
                               } else {
                                 getJobConfirmationInfo(
@@ -347,7 +353,8 @@ export default function JobConfirmationReport() {
                                   wgId,
                                   "",
                                   { current: 1, pageSize: paginationSize },
-                                  setPages
+                                  setPages,
+                                  wId
                                 );
                               }
                             }}

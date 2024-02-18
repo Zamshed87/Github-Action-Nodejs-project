@@ -130,5 +130,12 @@ export const employeesShiftInformationTableColumn = (page, paginationSize) => {
       filter: false,
       fieldType: "date",
     },
+    {
+      title: "Duration",
+      dataIndex: "duration",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
   ];
 };

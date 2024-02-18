@@ -20,6 +20,7 @@ const initState = {
   messageInfo: "",
   selectedUser: "",
   tokenData: "",
+  mostClickedMenuList: [], // this is for most clicked menu list]
 };
 
 export const authSlice = createSlice({
@@ -147,7 +148,7 @@ export const authSlice = createSlice({
       const { payload } = action;
       state.profileData.strProfileImageUrl = payload;
     },
-    setLogout: (state, action) => {
+    setLogout: (state) => {
       state.profileData = {
         isAuth: false,
         isLoggedInWithOtp: false,
@@ -174,5 +175,24 @@ export const authSlice = createSlice({
     setIsExpiredToken: (state, action) => {
       state.isExpiredToken = action.payload;
     },
+    // This is for most clicked menu list updataion and clear
+    updateMostClickedMenuList: (state, action) => {
+      const { payload } = action;
+      let newClickedMenu = JSON.parse(
+        JSON.stringify([...state.mostClickedMenuList])
+      );
+      let found = newClickedMenu.find((item) => item?.to === payload?.to);
+      if (found) {
+        found.totalClicked = found?.totalClicked + 1;
+      } else {
+        newClickedMenu.unshift({ ...payload, totalClicked: 1 });
+      }
+      state.mostClickedMenuList = newClickedMenu;
+    },
+    clearMoseClickedMenuList: (state) => {
+      state.mostClickedMenuList = [];
+    },
+    // most clicked menu list updataion and clear end  -----------  
+
   },
 });

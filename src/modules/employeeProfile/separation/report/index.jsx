@@ -19,6 +19,7 @@ import { getBuDetails, getEmployeeSeparationLanding } from "../helper";
 import FilterModal from "./component/FilterModal";
 import { generateExcelAction } from "./excel/excelConvert";
 import { empSeparationCol } from "./helper";
+import { getWorkplaceDetails } from "common/api";
 
 const initData = {
   search: "",
@@ -39,7 +40,7 @@ const SeparationReport = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, buName, wId } = useSelector(
+  const { buId, wgId, wName, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -127,6 +128,7 @@ const SeparationReport = () => {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Separation Report";
   }, []);
 
   useEffect(() => {
@@ -147,8 +149,8 @@ const SeparationReport = () => {
   }, [buId, wgId, wId]);
 
   useEffect(() => {
-    getBuDetails(buId, setBuDetails, setLoading);
-  }, [buId]);
+    getWorkplaceDetails(wId, setBuDetails);
+  }, [wId]);
 
   return (
     <>
@@ -181,12 +183,12 @@ const SeparationReport = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               generateExcelAction(
-                                "Separation Report",
+                                buDetails?.strWorkplace,
                                 "",
                                 "",
-                                buName,
+                                buDetails?.strWorkplace,
                                 rowDto,
-                                buDetails?.strBusinessUnitAddress
+                                buDetails?.strAddress
                               );
                             }}
                             style={{ cursor: "pointer" }}

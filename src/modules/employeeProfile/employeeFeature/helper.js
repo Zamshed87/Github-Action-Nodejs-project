@@ -2,22 +2,22 @@ import { EditOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Avatar } from "Components";
 import axios from "axios";
+import moment from "moment";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../utility/dateFormatter";
-import { todayDate } from "./../../../utility/todayDate";
 
-const getYearMonth2 = (value) => {
-  let splitMonth = value?.split("-");
-  let year2 = splitMonth?.[0];
-  let month2 = splitMonth?.[1];
-  return { year2, month2 };
-};
+// const getYearMonth2 = (value) => {
+//   let splitMonth = value?.split("-");
+//   let year2 = splitMonth?.[0];
+//   let month2 = splitMonth?.[1];
+//   return { year2, month2 };
+// };
 
-function getDaysInMonth2(year2, month2) {
-  return new Date(year2, month2, 0).getDate();
-}
+// function getDaysInMonth2(year2, month2) {
+//   return new Date(year2, month2, 0).getDate();
+// }
 
 export const getBuDetails = async (buId, setter, setLoading) => {
   setLoading && setLoading(true);
@@ -41,17 +41,22 @@ export const createEditEmpAction = async (
   intUrlId,
   setLoading,
   cb,
-  isEdit
+  isEdit,
+  intSignature = 0
 ) => {
-  let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
-
-  let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
-
+  // let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
+  // let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
+  // console.log("values?.dateofBirth", values?.dateofBirth)
+  // console.log({values})
   try {
     let payload = {
+      intPayscaleGradeId: values?.payScaleGrade?.value,
+      strPayscaleGradeName: values?.payScaleGrade?.label,
+      intSalaryTypeId: values?.salaryType?.value,
+      strSalaryTypeName: values?.salaryType?.label,
       intEmployeeBasicInfoId: values?.empId || 0,
-      strEmployeeCode: values?.employeeCode,
-      strCardNumber: values?.employeeCode,
+      strEmployeeCode: String(values?.employeeCode),
+      strCardNumber: String(values?.employeeCode),
       strEmployeeName: values?.fullName,
       intGenderId: values?.gender?.value,
       strGender: values?.gender?.label,
@@ -59,17 +64,29 @@ export const createEditEmpAction = async (
       strReligion: values?.religion?.label,
       strMaritalStatus: "",
       strBloodGroup: "",
+      IntSectionId: values?.section?.value || 0,
       intDepartmentId: values?.department?.value,
       intDesignationId: values?.designation?.value,
-      dteDateOfBirth: values?.dateofBirth,
-      dteJoiningDate: values?.joiningDate,
-      dteInternCloseDate: values?.dteInternCloseDate
-        ? values?.dteInternCloseDate + "-" + lastDaysInternCloseDate
+      dteDateOfBirth: moment(values?.dateofBirth).format("YYYY-MM-DD"),
+      dteJoiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
+      dteInternCloseDate:
+        values?.dteInternCloseDate & values?.lastDaysInternCloseDate
+          ? moment(values?.dteInternCloseDate).format("YYYY-MM-DD") +
+            "-" +
+            moment(values?.lastDaysInternCloseDate).format("YYYY-MM-DD")
+          : null,
+      dteProbationaryCloseDate: values?.dteProbationaryCloseDate
+        ? moment(values?.dteProbationaryCloseDate).format("YYYY-MM-DD")
         : null,
-      dteProbationaryCloseDate: values?.dteProbationaryCloseDate || null,
-      dteConfirmationDate: values?.dteConfirmationDate || null,
-      dteContactFromDate: values?.contractualFromDate || null,
-      dteContactToDate: values?.contractualToDate || null,
+      dteConfirmationDate: values?.dteConfirmationDate
+        ? moment(values?.dteConfirmationDate).format("YYYY-MM-DD")
+        : null,
+      dteContactFromDate: values?.contractualFromDate
+        ? moment(values?.contractualFromDate).format("YYYY-MM-DD")
+        : null,
+      dteContactToDate: values?.contractualToDate
+        ? moment(values?.contractualToDate).format("YYYY-MM-DD")
+        : null,
       intSupervisorId: values?.supervisor?.value,
       intLineManagerId: values?.lineManager?.value,
       intDottedSupervisorId: values?.dottedSupervisor?.value,
@@ -86,35 +103,42 @@ export const createEditEmpAction = async (
       // areaId: values?.area?.value || 0,
       // territoryId: values?.territory?.value || 0,
       intBusinessUnitId: buId,
-      dteCreatedAt: todayDate(),
+      dteCreatedAt: moment().format("YYYY-MM-DD"),
       intEmploymentTypeId: values?.employeeType?.value,
       strEmploymentType: values?.employeeType?.label,
-      intEmployeeStatusId: values?.employeeStatus?.value || 0,
-      strEmployeeStatus: values?.employeeStatus?.label || "",
+      intEmployeeStatusId: values?.employeeStatus?.value || 1,
+      strEmployeeStatus: values?.employeeStatus?.label || "Active",
       intCalenderId: 0,
       strCalenderName: "",
       intHrpositionId: values?.hrPosition?.value || 0,
       strHrpostionName: values?.hrPosition?.label || "",
-      strPersonalMail: "",
-      strOfficeMail: "",
-      strPersonalMobile: "",
-      strOfficeMobile: "",
+      strPersonalMail: values?.email || "",
+      strOfficeMail: values?.workMail || "",
+      strPersonalMobile: values?.phone || "",
+      strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
       calendarAssignViewModel: null,
+
+      intSignature: values?.intSignature,
+      intProbationayClosedByInDate: +values?.probationayClosedBy?.value,
+      strProbationayClosedByInDate: values?.probationayClosedBy?.label,
     };
     if (!isEdit) {
       payload = {
         ...payload,
         calendarAssignViewModel: {
           employeeId: 0,
-          joiningDate: values?.joiningDate,
-          generateStartDate: values?.generateDate,
+          joiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
+          generateStartDate: moment(values?.generateDate).format("YYYY-MM-DD"),
+          generateEndDate: null,
           runningCalendarId:
             values?.calenderType?.value === 2
               ? values?.startingCalender?.value
               : values?.calender?.value,
           calendarType: values?.calenderType?.label,
-          nextChangeDate: values?.nextChangeDate || null,
+          nextChangeDate: values?.nextChangeDate
+            ? moment(values?.nextChangeDate).format("YYYY-MM-DD")
+            : null,
           rosterGroupId:
             values?.calenderType?.value === 2 ? values?.calender?.value : 0,
           isAutoGenerate: false,
@@ -140,13 +164,13 @@ export const createEditEmpAction = async (
           intUrlId: intUrlId,
           intCountryId: 0,
           intOfficeMail: values?.email,
-          strContactNo: values?.phone,
-          dteCreatedAt: todayDate(),
+          strContactNo: values?.phone || "",
+          dteCreatedAt: moment().format("YYYY-MM-DD"),
         },
       };
     }
     setLoading(true);
-    let res = await axios.post(
+    const res = await axios.post(
       `/Employee/CreateNUpdateEmployeeBasicInfo`,
       payload
     );
@@ -154,6 +178,7 @@ export const createEditEmpAction = async (
     cb && cb();
     toast.success(res?.data?.message, { toastId: 1 });
   } catch (error) {
+    // console.log("Come Here 3");
     setLoading(false);
     toast.warn(error?.response?.data?.message, { toastId: 1 });
   }
@@ -332,11 +357,13 @@ export const getPeopleDeskWithoutAllDDL = async (
 
 export const userExistValidation = async (payload, setter, cb) => {
   try {
-    let res = await axios.post(`/Auth/UserIsExistsRemoteValidation`, payload);
-    cb && cb();
-    // toast.success(res?.data?.message);
-    setter(res?.data);
+    const res = await axios.post(`/Auth/UserIsExistsRemoteValidation`, payload);
+    cb && cb(res?.data);
+    setter((prev) => {
+      return { ...prev, ...res?.data };
+    });
   } catch (error) {
+    cb && cb(error?.response);
     setter(error?.response?.data);
   }
 };
@@ -719,24 +746,38 @@ export const newEmpListColumn = (
 export const getTableDataEmployee = (row, keys, totalKey) => {
   const data = row?.map((item, index) => {
     return keys?.map((key) => {
-      return new Cell(item[key], "center", "text").getCell();
+      const cellValue = item[key];
+      const formattedValue =
+        typeof cellValue === "string" && cellValue !== "" && !isNaN(cellValue)
+          ? parseFloat(cellValue)
+          : cellValue;
+
+      return new Cell(
+        formattedValue,
+        "center",
+        typeof formattedValue === "number" ? "amount" : "text"
+      ).getCell();
     });
   });
   return data;
 };
-
 // excel columns
 export const columnForHeadOffice = {
   sl: "SL",
-  strEmployeeCode: "Employee Id",
+  strWorkplaceGroup: "Work. Group/Location",
+  strWorkplace: "Workplace/Concern",
   strEmployeeName: "Employee Name",
+  strEmployeeCode: "Employee Id",
   strReferenceId: "Reference Id",
   strDesignation: "Designation",
   strDepartment: "Department",
+  sectionName: "Section",
   strSupervisorName: "Supervisor",
   strLinemanager: "Line Manager",
   strEmploymentType: "Employment Type",
+  contactNo: "Contact No",
   JoiningDate: "Joining Date",
+  strEmployeeStatus: "Status",
 };
 
 export const columnForMarketing = {

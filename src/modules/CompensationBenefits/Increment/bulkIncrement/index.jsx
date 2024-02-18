@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -12,8 +12,11 @@ import { downloadFile } from "../../../../utility/downloadFile";
 import { excelFileToArray } from "../../../../utility/excelFileToJSON";
 import {
   processBulkUploadIncrementAction,
-  saveBulkUploadIncrementAction
+  saveBulkUploadIncrementAction,
+  saveBulkUploadIncrementActionUpdate,
 } from "./helper";
+import { isDevServer } from "App";
+import BackButton from "common/BackButton";
 
 const initData = {
   files: "",
@@ -29,18 +32,23 @@ export default function BulkIncrementEntry() {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 
-  const { buId, orgId, employeeId } = useSelector(
+  const { buId, orgId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const saveHandler = (values) => {
+  const saveHandler = () => {
     const callBack = () => {
       history.push("/compensationAndBenefits/increment");
       setData([]);
     };
     data?.length > 0
-      ? saveBulkUploadIncrementAction(setIsLoading, data, callBack)
+      ? saveBulkUploadIncrementActionUpdate({
+          setLoading: setIsLoading,
+          data,
+          wgId,
+          callback: callBack,
+        })
       : toast.warn("Please Upload Excel File");
   };
 
@@ -75,35 +83,30 @@ export default function BulkIncrementEntry() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {isLoading && <Loading />}
               <div>
                 {permission?.isCreate ? (
                   <div className="table-card">
-                    <div className="table-card-heading justify-content-end">
-                      <PrimaryButton
-                        className="btn btn-green btn-green-disable"
-                        label="Save"
-                        type="submit"
-                      />
+                    <div className="d-flex justify-content-between">
+                      <BackButton title={"Bulk Increment"} />
+                      <div className="table-card-heading justify-content-end">
+                        <PrimaryButton
+                          className="btn btn-green btn-green-disable"
+                          label="Save"
+                          type="submit"
+                        />
+                      </div>
                     </div>
-                    <div className="row mt-3">
+                    <div className="row mt-1">
                       <div className="col-md-6 d-flex align-items-center">
                         <PrimaryButton
                           className="btn btn-default mr-1"
@@ -111,9 +114,9 @@ export default function BulkIncrementEntry() {
                           onClick={() => {
                             downloadFile(
                               `${
-                                process.env.NODE_ENV === "development"
-                                  ? "/document/downloadfile?id=80771"
-                                  : "/document/downloadfile?id=61686"
+                                isDevServer
+                                  ? "/document/downloadfile?id=104"
+                                  : "/document/downloadfile?id=120"
                               }`,
                               "Increment Bulk Upload",
                               "xlsx",
@@ -166,7 +169,7 @@ export default function BulkIncrementEntry() {
                             </thead>
                             <tbody>
                               {data.map((item, index) => (
-                                <tr>
+                                <tr key={item?.intEmployeeId}>
                                   <td>
                                     <div className="content tableBody-title">
                                       {index + 1}
@@ -199,7 +202,8 @@ export default function BulkIncrementEntry() {
                                   </td>
                                   <td>
                                     <div className="content tableBody-title">
-                                      {dateFormatter(item?.dteEffectiveDate)}
+                                      {/* {item?.dteEffectiveDate} */}
+                                     { dateFormatter(item?.dteEffectiveDate) }
                                     </div>
                                   </td>
                                 </tr>

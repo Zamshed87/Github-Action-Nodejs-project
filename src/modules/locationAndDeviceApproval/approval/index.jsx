@@ -40,7 +40,7 @@ const initData = {
 };
 
 export default function LocationAndDeviceApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -58,6 +58,7 @@ export default function LocationAndDeviceApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
+        workplaceId: wId,
         workplaceGroupId: 0,
         departmentId: 0,
         designationId: 0,
@@ -91,6 +92,7 @@ export default function LocationAndDeviceApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
+        workplaceId: wId,
         workplaceGroupId: 0,
         departmentId: 0,
         designationId: 0,
@@ -175,6 +177,7 @@ export default function LocationAndDeviceApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
+          workplaceId: wId,
           workplaceGroupId: 0,
           departmentId: 0,
           designationId: 0,
@@ -220,6 +223,7 @@ export default function LocationAndDeviceApproval() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
+    document.title = "Location & Device Approval";
   }, []);
 
   return (
@@ -252,11 +256,7 @@ export default function LocationAndDeviceApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton
-                            title={
-                              "Device Approval"
-                            }
-                          />
+                          <BackButton title={"Device Approval"} />
                           <div className="table-card-head-right">
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox

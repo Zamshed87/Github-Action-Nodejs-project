@@ -9,17 +9,14 @@ import BorderlessSelect from "../../../common/BorderlessSelect";
 import FormikInput from "../../../common/FormikInput";
 import Loading from "../../../common/loading/Loading";
 import { borderlessSelectStyle } from "../../../utility/BorderlessStyle";
-import {
-  createPosition,
-  organogramSaveUpdate
-} from "../helper";
+import { createPosition, organogramSaveUpdate } from "../helper";
 const initData = {
   position: "",
   employee: "",
   positionInput: "",
   positionGroup: "",
   positionGroupInput: "",
-  code: ""
+  code: "",
 };
 const AddChild = ({
   setAnchorEl,
@@ -29,7 +26,7 @@ const AddChild = ({
   getData,
   setAnchorElForAction,
 }) => {
-  const { buId, orgId, employeeId, wgId } = useSelector(
+  const { buId, orgId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -52,11 +49,21 @@ const AddChild = ({
   //   );
   // };
   const getPositionDDL = () => {
-    getPeopleDeskAllDDL(`/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`, "PositionId", "PositionName", setPosition);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${buId}&intId=0&WorkplaceGroupId=${wgId}`,
+      "PositionId",
+      "PositionName",
+      setPosition
+    );
   };
 
   useEffect(() => {
-    getPeopleDeskAllDDL(`/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfo&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`, "EmployeeId", "EmployeeName", setEmp);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfo&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
+      "EmployeeId",
+      "EmployeeName",
+      setEmp
+    );
     getPositionDDL();
     // getPositionGroup();
   }, [buId, orgId]);
@@ -82,7 +89,7 @@ const AddChild = ({
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => { }}
+        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
         {({
           handleSubmit,
@@ -260,6 +267,7 @@ const AddChild = ({
                           orgId,
                           employeeId,
                           buId,
+                          intWorkplaceId: wId,
                           positionName: values?.positionInput,
                           positionCode: values?.code,
                           setLoading,
