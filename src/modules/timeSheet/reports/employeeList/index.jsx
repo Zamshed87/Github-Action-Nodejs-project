@@ -1,33 +1,27 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import axios from "axios";
+import { getWorkplaceDetails } from "common/api";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import Loading from "../../../../common/loading/Loading";
-import MasterFilter from "../../../../common/MasterFilter";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../../common/ResetButton";
-import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import {
-  columnForExcel,
-  empReportListColumns,
-  getTableDataEmployeeReports,
-} from "./helper";
-import axios from "axios";
-import { gray900 } from "../../../../utility/customColor";
-import NoResult from "../../../../common/NoResult";
-import { todayDate } from "../../../../utility/todayDate";
-import { dateFormatter } from "../../../../utility/dateFormatter";
 import { paginationSize } from "../../../../common/AntTable";
-import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
+import MasterFilter from "../../../../common/MasterFilter";
+import NoResult from "../../../../common/NoResult";
+import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
 } from "../../../../common/peopleDeskTable/helper";
-import { toast } from "react-toastify";
-import { getWorkplaceDetails } from "common/api";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import { gray900 } from "../../../../utility/customColor";
 import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
+import { empReportListColumns } from "./helper";
+import FormikInput from "common/FormikInput";
+import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 
 const initData = {
   searchString: "",
@@ -45,6 +39,9 @@ const initData = {
   contractualFromDate: "",
   contractualToDate: "",
   employmentStatus: "",
+
+  fromDate:  monthFirstDate(),
+  toDate:  monthLastDate(),
 };
 
 const initHeaderList = {
@@ -114,7 +111,8 @@ export default function EmployeeList() {
     pagination,
     searchText,
     currentFilterSelection = -1,
-    checkedHeaderList
+    checkedHeaderList,
+    values
   ) => {
     try {
       const payload = {
@@ -126,6 +124,8 @@ export default function EmployeeList() {
         isPaginated: true,
         isHeaderNeed: true,
         searchTxt: searchText || "",
+        fromDate: values?.fromDate || monthFirstDate(),
+        toDate: values?.toDate || monthLastDate(),
       };
 
       const res = await axios.post(`/Employee/EmployeeReportWithFilter`, {
@@ -170,7 +170,8 @@ export default function EmployeeList() {
     searchText = "",
     currentFilterSelection = -1,
     filterOrderList = [],
-    checkedHeaderList = { ...initHeaderList }
+    checkedHeaderList = { ...initHeaderList },
+    values
   ) => {
     setLandingLoading(true);
 
@@ -186,11 +187,12 @@ export default function EmployeeList() {
       pagination,
       searchText,
       currentFilterSelection,
-      checkedHeaderList
+      checkedHeaderList,
+      values
     );
   };
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage, searchText, values) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
@@ -205,11 +207,12 @@ export default function EmployeeList() {
       searchText,
       -1,
       filterOrderList,
-      checkedHeaderList
+      checkedHeaderList,
+      values
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
+  const handleChangeRowsPerPage = (event, searchText, values) => {
     setPages({
       current: 1,
       total: pages?.total,
@@ -225,7 +228,8 @@ export default function EmployeeList() {
       searchText,
       -1,
       filterOrderList,
-      checkedHeaderList
+      checkedHeaderList,
+      values
     );
   };
   useEffect(() => {
@@ -351,7 +355,7 @@ export default function EmployeeList() {
                             //   }
                             // };
                             // excelLanding();
-                            let paylaod = {
+                            const paylaod = {
                               businessUnitId: 1,
                               workplaceGroupId: 1,
                               workplaceId: 1,
@@ -360,9 +364,11 @@ export default function EmployeeList() {
                               isPaginated: true,
                               isHeaderNeed: true,
                               searchTxt: "",
+                              fromDate: values?.fromDate || monthFirstDate(),
+                              toDate: values?.toDate || monthLastDate(),
                               ...checkedHeaderList,
                             };
-                            let url =
+                            const url =
                               "/PdfAndExcelReport/EmployeeReportWithFilter_RDLC";
                             downloadEmployeeCardFile(
                               url,
@@ -420,7 +426,8 @@ export default function EmployeeList() {
                                 "",
                                 -1,
                                 filterOrderList,
-                                checkedHeaderList
+                                checkedHeaderList,
+                                values
                               );
                             }}
                           />
@@ -441,7 +448,8 @@ export default function EmployeeList() {
                                 value,
                                 -1,
                                 filterOrderList,
-                                checkedHeaderList
+                                checkedHeaderList,
+                                values
                               );
                             } else {
                               getData(
@@ -450,7 +458,8 @@ export default function EmployeeList() {
                                 "",
                                 -1,
                                 filterOrderList,
-                                checkedHeaderList
+                                checkedHeaderList,
+                                values
                               );
                             }
                           }}
@@ -462,7 +471,8 @@ export default function EmployeeList() {
                               "",
                               -1,
                               filterOrderList,
-                              checkedHeaderList
+                              checkedHeaderList,
+                              values
                             );
                           }}
                         />
@@ -470,6 +480,68 @@ export default function EmployeeList() {
                     </ul>
                   </div>
                   <div className="table-card-body">
+                    <div
+                      className="card-style mb-3"
+                      // style={{ marginTop: "13px" }}
+                    >
+                      <div className="row">
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>From Joining Date</label>
+                            <FormikInput
+                              classes="input-sm"
+                              value={values?.fromDate}
+                              placeholder="From Joining Date"
+                              name="fromDate"
+                              type="date"
+                              className="form-control"
+                              onChange={(e) => {
+                                setFieldValue("fromDate", e.target.value);
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>To Joining Date</label>
+                            <FormikInput
+                              classes="input-sm"
+                              value={values?.toDate}
+                              placeholder="To Joining Date"
+                              name="toDate"
+                              type="date"
+                              className="form-control"
+                              onChange={(e) => {
+                                setFieldValue("toDate", e.target.value);
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="col-lg-1">
+                          <button
+                            // disabled={
+                            //   !values?.filterToDate || !values?.filterFromDate
+                            // }
+                            style={{ marginTop: "21px" }}
+                            className="btn btn-green"
+                            onClick={() => {
+                              getData(
+                                { current: 1, pageSize: paginationSize },
+                                "false",
+                                "",
+                                -1,
+                                filterOrderList,
+                                checkedHeaderList,
+                                values
+                              );
+                            }}
+                          >
+                            View
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                     {resEmpLanding.length > 0 ? (
                       <PeopleDeskTable
                         columnData={empReportListColumns(
@@ -484,10 +556,10 @@ export default function EmployeeList() {
                         checkedHeaderList={checkedHeaderList}
                         setCheckedHeaderList={setCheckedHeaderList}
                         handleChangePage={(e, newPage) =>
-                          handleChangePage(e, newPage, values?.searchString)
+                          handleChangePage(e, newPage, values?.searchString, values)
                         }
                         handleChangeRowsPerPage={(e) =>
-                          handleChangeRowsPerPage(e, values?.searchString)
+                          handleChangeRowsPerPage(e, values?.searchString, values)
                         }
                         filterOrderList={filterOrderList}
                         setFilterOrderList={setFilterOrderList}
@@ -507,7 +579,8 @@ export default function EmployeeList() {
                             "",
                             currentFilterSelection,
                             updatedFilterData,
-                            updatedCheckedHeaderData
+                            updatedCheckedHeaderData,
+                            values
                           );
                         }}
                         isCheckBox={false}
