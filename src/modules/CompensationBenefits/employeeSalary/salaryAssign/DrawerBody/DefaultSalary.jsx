@@ -576,9 +576,9 @@ const DefaultSalary = ({ propsObj }) => {
                           );
                         }
                         setFieldValue("totalGrossSalary", e.target.value);
-                        setFieldValue("bankPay", e.target.value);
+                        setFieldValue("bankPay", 0);
                         setFieldValue("digitalPay", 0);
-                        setFieldValue("netPay", 0);
+                        setFieldValue("netPay", e.target.value);
                       }}
                       errors={errors}
                       touched={touched}
@@ -753,6 +753,14 @@ const DefaultSalary = ({ propsObj }) => {
                           type="number"
                           className="form-control"
                           onChange={(e) => {
+
+                            const netPay =
+                              +values?.totalGrossSalary -
+                              +e.target.value -
+                              +values?.digitalPay;
+
+                            setFieldValue("netPay", netPay);
+
                             setFieldValue("bankPay", e.target.value);
                           }}
                           errors={errors}
@@ -800,10 +808,10 @@ const DefaultSalary = ({ propsObj }) => {
                           type="number"
                           className="form-control"
                           onChange={(e) => {
-                            const bank =
+                            const netPay =
                               +values?.totalGrossSalary - +e.target.value;
                             setFieldValue("digitalPay", e.target.value);
-                            setFieldValue("bankPay", bank);
+                            setFieldValue("netPay", netPay);
                           }}
                           errors={errors}
                           touched={touched}
@@ -847,12 +855,12 @@ const DefaultSalary = ({ propsObj }) => {
                           type="number"
                           className="form-control"
                           onChange={(e) => {
-                            const bank =
-                              +values?.totalGrossSalary -
-                              +e.target.value -
-                              +values?.digitalPay;
+                            // const bank =
+                            //   +values?.totalGrossSalary -
+                            //   +e.target.value -
+                            //   +values?.digitalPay;
 
-                            setFieldValue("bankPay", bank);
+                            // setFieldValue("bankPay", bank);
                             setFieldValue("netPay", e.target.value);
                           }}
                           errors={errors}
