@@ -26,6 +26,7 @@ import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import Workplace from "modules/configuration/workplace";
 import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
+import CreateAndEditEmploye from "modules/employeeProfile/employeeFeature/createEmployee";
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
@@ -2671,6 +2672,8 @@ export const routingList = [
     path: "/administration/payrollConfiguration/PFAndGratuity/edit/:id",
     component: PfGratuityPolicyForm,
   },
+  { path: "/profile/employee/create", component: CreateAndEditEmploye },
+  { path: "/profile/employee/edit/:empId", component: CreateAndEditEmploye },
   {
     path: "/administration/payrollConfiguration/PFAndGratuity/create",
     component: PfGratuityPolicyForm,
