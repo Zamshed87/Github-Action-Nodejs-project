@@ -65,7 +65,7 @@ function AttendanceRawDataProcess() {
       intWorkplaceId: wId,
       dteFromDate: values?.fromDate,
       dteToDate: values?.toDate,
-      strEmployeeId: String(values?.employee?.value || ""),
+      strEmployeeId: values?.employee?.value || 0,
       intCreatedBy: 0,
       dteCreatedAt: "2024-02-15T08:50:05.869Z",
     };
