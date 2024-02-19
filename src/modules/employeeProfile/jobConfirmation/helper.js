@@ -21,8 +21,8 @@ export const getJobConfirmationInfo = async (
   accId,
   busId,
   id,
-  MonthId,
-  YearId,
+  fromDate,
+  toDate,
   setter,
   setAllData,
   setLoading,
@@ -41,7 +41,7 @@ export const getJobConfirmationInfo = async (
 
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&WorkplaceGroupId=${WorkplaceGroupId}&PageNo=${pages.current}&PageSize=${pages.pageSize}${intId}${status}&MonthId=${MonthId}&YearId=${YearId}&WorkplaceId=${wId}${search}`
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&WorkplaceGroupId=${WorkplaceGroupId}&PageNo=${pages.current}&PageSize=${pages.pageSize}${intId}${status}&FromDate=${fromDate}&ToDate =${toDate}&WorkplaceId=${wId}${search}`
     );
     if (res?.data) {
       setter && setter(res?.data);

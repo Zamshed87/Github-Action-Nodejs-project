@@ -24,7 +24,7 @@ import { dateFormatter } from "utility/dateFormatter";
 import { CheckCircleOutlined, SyncOutlined } from "@ant-design/icons";
 
 function AttendanceRawDataProcess() {
-  const { orgId, buId, employeeId, wId } = useSelector(
+  const { orgId, buId, employeeId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,6 +77,7 @@ function AttendanceRawDataProcess() {
       cb: () => {
         onGetAttendanceResponse(
           wId,
+          wgId,
           pages?.pageSize,
           pages?.current,
           setRes,
@@ -101,21 +102,17 @@ function AttendanceRawDataProcess() {
       width: 20,
       fixed: "left",
     },
+
     {
-      title: "Employee Code",
-      dataIndex: "intEmployeeCode",
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroupName",
       sorter: true,
       fieldType: "string",
     },
+
     {
-      title: "Employee Name",
-      dataIndex: "strEmployeeName",
-      sorter: true,
-      fieldType: "string",
-    },
-    {
-      title: "Workplace Name",
-      dataIndex: "strWorkplaceName",
+      title: "Processing For",
+      dataIndex: "strProcessingFor",
       sorter: true,
       fieldType: "string",
     },
@@ -149,11 +146,6 @@ function AttendanceRawDataProcess() {
               processing
             </Tag>
           )}
-
-          {/* <Chips
-            label={record?.isProcessing ? "True" : "False"}
-            classess={record?.isProcessing ? "success" : "danger"}
-          /> */}
         </>
       ),
       sorter: true,
@@ -237,6 +229,7 @@ function AttendanceRawDataProcess() {
                       onClick={() => {
                         onGetAttendanceResponse(
                           wId,
+                          wgId,
                           pages?.pageSize,
                           pages?.current,
                           setRes,
