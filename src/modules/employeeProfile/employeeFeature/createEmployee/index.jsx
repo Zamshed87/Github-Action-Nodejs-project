@@ -103,7 +103,7 @@ const CreateAndEditEmploye = () => {
   };
 
   useEffect(() => {
-    getEmpData();
+    empId && getEmpData();
   }, []);
 
   // get ddls for reporters
