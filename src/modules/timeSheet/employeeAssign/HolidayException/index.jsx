@@ -131,6 +131,7 @@ const HolidayException = () => {
       });
 
       if (res?.data?.data) {
+        setLandingLoading(true);
         setEmpIDString(res?.data?.employeeList);
         setHeaderListDataDynamically({
           currentFilterSelection,
@@ -295,7 +296,6 @@ const HolidayException = () => {
       checkedHeaderList
     );
   };
-
   return (
     <>
       <Formik

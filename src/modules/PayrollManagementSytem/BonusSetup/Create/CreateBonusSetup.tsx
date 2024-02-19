@@ -12,6 +12,7 @@ import moment from "moment";
 import { PlusOutlined } from "@ant-design/icons";
 import { PModal } from "Components/Modal";
 import CreateBouns from "./Bonus/CreateBouns";
+import AddEditForm from "./Bonus/CreateBouns";
 type TCreateBonusSetup = unknown;
 const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   // Data From Store
@@ -452,10 +453,13 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       </PForm>
       <PModal
         open={open}
-        onCancel={() => {
-          setOpen(false);
-        }}
-        components={<CreateBouns />}
+        title="Create Bonus Setup"
+        width=""
+        onCancel={() => setOpen(false)}
+        maskClosable={false}
+        components={
+          <AddEditForm getBounsList={getBounsList} setOpen={setOpen} />
+        }
       />
     </>
   );

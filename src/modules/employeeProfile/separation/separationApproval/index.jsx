@@ -301,7 +301,7 @@ export default function SeparationApproval() {
                     <div className="table-card">
                       <div className="table-card-heading">
                         <BackButton title={"Separation Approval"} />
-                        <div className="table-card-head-right">
+                        <div>
                           {applicationListData?.listData?.filter(
                             (item) => item?.selectCheckbox
                           ).length > 0 && (
@@ -322,7 +322,9 @@ export default function SeparationApproval() {
                                       <CheckCircle
                                         sx={{
                                           color: successColor,
-                                          width: "16px",
+                                          width: "25px !important",
+                                          height: "35px !important",
+                                          fontSize: "20px !important",
                                         }}
                                       />
                                     }
@@ -345,7 +347,9 @@ export default function SeparationApproval() {
                                       <Cancel
                                         sx={{
                                           color: failColor,
-                                          width: "16px",
+                                          width: "25px !important",
+                                          height: "35px !important",
+                                          fontSize: "20px !important",
                                         }}
                                       />
                                     }
@@ -437,7 +441,7 @@ export default function SeparationApproval() {
                                 setFilterValues,
                                 setViewModal,
                                 setLoading,
-                                loading
+                                loading,
                               }}
                             ></CardTable>
                           </div>

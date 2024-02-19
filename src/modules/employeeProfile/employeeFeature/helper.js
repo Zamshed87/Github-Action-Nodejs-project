@@ -4,6 +4,7 @@ import { Avatar } from "Components";
 import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { probationCloseDateCustomDDL } from "utility/yearDDL";
 import AvatarComponent from "../../../common/AvatarComponent";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../utility/dateFormatter";
@@ -313,7 +314,8 @@ export const getEmployeeProfileViewData = async (
   setter,
   setLoading,
   buId,
-  wgId
+  wgId,
+  setForEdit
 ) => {
   setLoading && setLoading(true);
   try {
@@ -321,7 +323,253 @@ export const getEmployeeProfileViewData = async (
       `/Employee/EmployeeProfileView?employeeId=${id}&businessUnitId=${buId}&workplaceGroupId=${wgId}`
     );
     if (res?.data) {
+      const empBasic = res?.data;
       setter && setter(res?.data);
+      setForEdit &&
+        setForEdit({
+          empId: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
+          strReferenceId: empBasic?.employeeProfileLandingView?.strReferenceId,
+          fullName: empBasic?.employeeProfileLandingView?.strEmployeeName,
+          employeeCode:
+            empBasic?.employeeProfileLandingView?.strEmployeeCode || undefined,
+          religion: empBasic?.employeeProfileLandingView?.intReligionId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intReligionId,
+                label: empBasic?.employeeProfileLandingView?.strReligion,
+              }
+            : undefined,
+          gender: empBasic?.employeeProfileLandingView?.intGenderId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intGenderId,
+                label: empBasic?.employeeProfileLandingView?.strGender,
+              }
+            : undefined,
+          dateofBirth: empBasic?.employeeProfileLandingView?.dteDateOfBirth
+            ? moment(empBasic?.employeeProfileLandingView?.dteDateOfBirth)
+            : "",
+          joiningDate: empBasic?.employeeProfileLandingView?.dteJoiningDate
+            ? moment(empBasic?.employeeProfileLandingView?.dteJoiningDate)
+            : "",
+          dteInternCloseDate: empBasic?.employeeProfileLandingView
+            ?.dteInternCloseDate
+            ? moment(empBasic?.employeeProfileLandingView?.dteInternCloseDate)
+            : "",
+          dteProbationaryCloseDate: empBasic?.employeeProfileLandingView
+            ?.dteProbationaryCloseDate
+            ? moment(
+                empBasic?.employeeProfileLandingView?.dteProbationaryCloseDate
+              )
+            : "",
+          section: empBasic?.employeeProfileLandingView?.intSectionId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intSectionId,
+                label: empBasic?.employeeProfileLandingView?.strSectionName,
+              }
+            : undefined,
+          dteConfirmationDate: empBasic?.employeeProfileLandingView
+            ?.dteConfirmationDate
+            ? moment(empBasic?.employeeProfileLandingView?.dteConfirmationDate)
+            : "",
+          lastWorkingDay: empBasic?.employeeProfileLandingView
+            ?.dteLastWorkingDate
+            ? moment(empBasic?.employeeProfileLandingView?.dteLastWorkingDate)
+            : "",
+          employeeType: empBasic?.employeeProfileLandingView
+            ?.intEmploymentTypeId
+            ? {
+                value:
+                  empBasic?.employeeProfileLandingView?.intEmploymentTypeId,
+                label: empBasic?.employeeProfileLandingView?.strEmploymentType,
+                ParentId: empBasic?.employeeProfileLandingView?.intParentId,
+                isManual: empBasic?.employeeProfileLandingView?.isManual,
+              }
+            : undefined,
+          department: empBasic?.employeeProfileLandingView?.intDepartmentId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intDepartmentId,
+                label: empBasic?.employeeProfileLandingView?.strDepartment,
+              }
+            : undefined,
+          designation: empBasic?.employeeProfileLandingView?.intDesignationId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intDesignationId,
+                label: empBasic?.employeeProfileLandingView?.strDesignation,
+              }
+            : undefined,
+          hrPosition: empBasic?.employeeProfileLandingView?.intHrpositionId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intHrpositionId,
+                label: empBasic?.employeeProfileLandingView?.strHrpostionName,
+              }
+            : undefined,
+          workplaceGroup: empBasic?.employeeProfileLandingView
+            ?.intWorkplaceGroupId
+            ? {
+                value:
+                  empBasic?.employeeProfileLandingView?.intWorkplaceGroupId,
+                label:
+                  empBasic?.employeeProfileLandingView?.strWorkplaceGroupName,
+              }
+            : undefined,
+          workplace: empBasic?.employeeProfileLandingView?.intWorkplaceId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intWorkplaceId,
+                label: empBasic?.employeeProfileLandingView?.strWorkplaceName,
+              }
+            : undefined,
+          wing: empBasic?.employeeProfileLandingView?.wingId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.wingId,
+                label: empBasic?.employeeProfileLandingView?.wingName,
+              }
+            : undefined,
+          soleDepo: empBasic?.employeeProfileLandingView?.soleDepoId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.soleDepoId,
+                label: empBasic?.employeeProfileLandingView?.soleDepoName,
+              }
+            : undefined,
+          region: empBasic?.employeeProfileLandingView?.regionId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.regionId,
+                label: empBasic?.employeeProfileLandingView?.regionName,
+              }
+            : undefined,
+          area: empBasic?.employeeProfileLandingView?.areaId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.areaId,
+                label: empBasic?.employeeProfileLandingView?.areaName,
+              }
+            : undefined,
+          territory: empBasic?.employeeProfileLandingView?.territoryId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.territoryId,
+                label: empBasic?.employeeProfileLandingView?.territoryName,
+              }
+            : undefined,
+          payrollGroup: empBasic?.employeeProfileLandingView?.intPayrollGroupId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intPayrollGroupId,
+                label:
+                  empBasic?.employeeProfileLandingView?.strPayrollGroupName,
+              }
+            : undefined,
+          payscaleGrade: empBasic?.employeeProfileLandingView
+            ?.intPayscaleGradeId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intPayscaleGradeId,
+                label:
+                  empBasic?.employeeProfileLandingView?.strPayscaleGradeName,
+              }
+            : undefined,
+          employeeStatus: empBasic?.employeeProfileLandingView
+            ?.intEmployeeStatusId
+            ? {
+                value:
+                  empBasic?.employeeProfileLandingView?.intEmployeeStatusId,
+                label: empBasic?.employeeProfileLandingView?.strEmployeeStatus,
+              }
+            : undefined,
+          supervisor: empBasic?.employeeProfileLandingView?.intSupervisorId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intSupervisorId,
+                label:
+                  empBasic?.employeeProfileLandingView
+                    ?.strSupervisorNameWithCode,
+              }
+            : undefined,
+          lineManager: empBasic?.employeeProfileLandingView?.intLineManagerId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intLineManagerId,
+                label:
+                  empBasic?.employeeProfileLandingView
+                    ?.strLinemanagerNameWithCode,
+              }
+            : undefined,
+          dottedSupervisor: empBasic?.employeeProfileLandingView
+            ?.intDottedSupervisorId
+            ? {
+                value:
+                  empBasic?.employeeProfileLandingView?.intDottedSupervisorId,
+                label:
+                  empBasic?.employeeProfileLandingView
+                    ?.strDottedSupervisorNameWithCode,
+              }
+            : undefined,
+          isSalaryHold: empBasic?.employeeProfileLandingView?.isSalaryHold,
+          isTakeHomePay: empBasic?.employeeProfileLandingView?.isTakeHomePay,
+          contractualFromDate: empBasic?.employeeProfileLandingView
+            ?.dteContractFromDate
+            ? moment(empBasic?.employeeProfileLandingView?.dteContractFromDate)
+            : undefined,
+          contractualToDate: empBasic?.employeeProfileLandingView
+            ?.dteContractToDate
+            ? moment(empBasic?.employeeProfileLandingView?.dteContractToDate)
+            : undefined,
+          isCreateUser:
+            empBasic?.employeeProfileLandingView?.isCreateUser || false,
+          loginUserId:
+            empBasic?.employeeProfileLandingView?.loginId ||
+            empBasic?.employeeProfileLandingView?.strEmployeeCode ||
+            undefined,
+          payScaleGrade: empBasic?.employeeProfileLandingView
+            ?.intPayscaleGradeId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intPayscaleGradeId,
+                label:
+                  empBasic?.employeeProfileLandingView?.strPayscaleGradeName,
+              }
+            : undefined,
+
+          salaryType: empBasic?.employeeProfileLandingView?.intSalaryTypeId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intSalaryTypeId,
+                label: empBasic?.employeeProfileLandingView?.strSalaryTypeName,
+              }
+            : undefined,
+          password:
+            empBasic?.employeeProfileLandingView?.strPassword || "123456",
+          email: empBasic?.employeeProfileLandingView?.strPersonalMail,
+          workMail: empBasic?.employeeProfileLandingView?.strOfficeMail || "",
+          workPhone:
+            empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
+          phone: empBasic?.employeeProfileLandingView?.strPersonalMobile,
+          userType: empBasic?.employeeProfileLandingView?.userTypeId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.userTypeId,
+                label: empBasic?.employeeProfileLandingView?.strUserType,
+              }
+            : undefined,
+          isActive: empBasic?.employeeProfileLandingView?.userStatus,
+
+          probationayClosedBy:
+            probationCloseDateCustomDDL.find(
+              (dt) =>
+                dt?.value ===
+                empBasic?.employeeProfileLandingView
+                  ?.intProbationayClosedByInDate
+            ) || undefined,
+          // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo
+          // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
+          // calenderType: [{value: 1, label: "Calendar"},
+          //                { value: 2, label: "Roster" }].find(itm => itm.label === empBasic?.employeeProfileLandingView?.strCalenderType)  || undefined,
+          // calender: empBasic?.employeeProfileLandingView?.strCalenderType === "Roster" ?
+          // {
+          //   value: empBasic?.employeeProfileLandingView?.intRosterGroupId,
+          //   label: empBasic?.employeeProfileLandingView?.strRosterGroupName,
+          // } :
+          // {
+          //     value: empBasic?.employeeProfileLandingView?.intCalenderId,
+          //     label: empBasic?.employeeProfileLandingView?.strCalenderName,
+          //   } ,
+          // startingCalender: empBasic?.employeeProfileLandingView?.strCalenderType === "Roster" ?  {
+          //   value: empBasic?.employeeProfileLandingView?.intCalenderId,
+          //   label: empBasic?.employeeProfileLandingView?.strCalenderName,
+          // } : undefined,
+          // nextChangeDate: moment(empBasic?.employeeProfileLandingView?.dteNextChangeDate) || undefined,
+
+          // calender assigne
+        });
       setLoading && setLoading(false);
     }
   } catch (error) {

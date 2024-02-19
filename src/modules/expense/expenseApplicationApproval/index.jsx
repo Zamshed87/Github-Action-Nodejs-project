@@ -202,7 +202,7 @@ const ExpenseApplicationApproval = () => {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Expense Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -223,7 +223,9 @@ const ExpenseApplicationApproval = () => {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -246,7 +248,9 @@ const ExpenseApplicationApproval = () => {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
