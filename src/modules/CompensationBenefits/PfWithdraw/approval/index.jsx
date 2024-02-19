@@ -1,9 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Cancel,
-  CheckCircle,
-} from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -41,7 +38,6 @@ export default function PfWithdrawApproval() {
 
   //View Modal
   const [viewModal, setViewModal] = useState(false);
-
 
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -230,7 +226,7 @@ export default function PfWithdrawApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"PF Withdraw Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -251,7 +247,9 @@ export default function PfWithdrawApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -274,7 +272,9 @@ export default function PfWithdrawApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

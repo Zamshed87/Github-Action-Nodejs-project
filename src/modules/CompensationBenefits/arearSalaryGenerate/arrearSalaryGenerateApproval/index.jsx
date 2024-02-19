@@ -288,7 +288,7 @@ export default function ArrearSalaryGenerateApproval() {
                           <BackButton
                             title={"Arrear Salary Generate Approval"}
                           />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -309,7 +309,9 @@ export default function ArrearSalaryGenerateApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -332,7 +334,9 @@ export default function ArrearSalaryGenerateApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -365,7 +369,7 @@ export default function ArrearSalaryGenerateApproval() {
                               )}
                               {permission?.isCreate && (
                                 <li>
-                                  <MasterFilter
+                                  {/* <MasterFilter
                                     styles={{
                                       marginRight: "0px",
                                     }}
@@ -390,7 +394,7 @@ export default function ArrearSalaryGenerateApproval() {
                                     handleClick={(e) =>
                                       setfilterAnchorEl(e.currentTarget)
                                     }
-                                  />
+                                  /> */}
                                 </li>
                               )}
                             </ul>

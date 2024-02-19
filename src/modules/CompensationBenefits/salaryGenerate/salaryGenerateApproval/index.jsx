@@ -550,7 +550,7 @@ export default function SalaryGenerateApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Salary Generate Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -571,7 +571,9 @@ export default function SalaryGenerateApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -594,7 +596,9 @@ export default function SalaryGenerateApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -625,7 +629,7 @@ export default function SalaryGenerateApproval() {
                                   />
                                 </li>
                               )}
-                              {permission?.isCreate && (
+                              {/* {permission?.isCreate && (
                                 <li>
                                   <MasterFilter
                                     styles={{
@@ -654,7 +658,7 @@ export default function SalaryGenerateApproval() {
                                     }
                                   />
                                 </li>
-                              )}
+                              )} */}
                             </ul>
                           </div>
                         </div>
