@@ -14,6 +14,8 @@ import BackButton from "common/BackButton";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { toast } from "react-toastify";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import NoResult from "common/NoResult";
 // import { getSalaryDetailsReportRDLC } from "../reports/salaryDetailsReport/helper";
 
 const validationSchema = Yup.object({});
@@ -49,7 +51,15 @@ const EmpCheckList = () => {
       // saveHandler();
     },
   });
+  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
+  // menu permission
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 30408) {
+      permission = item;
+    }
+  });
   // let saveHandler = () => {};
   //   const getData = (param = "htmlView") => {
 
@@ -85,100 +95,110 @@ const EmpCheckList = () => {
   return (
     <form onSubmit={handleSubmit}>
       {(loading || detailsReportLoading) && <Loading />}
-      <div className="table-card">
-        <div className="table-card-heading" style={{ display: "flex" }}>
-          <h2>Employee CheckList Data</h2>
-        </div>
-        <div>
-          <ul
-            style={{ marginTop: "-27px" }}
-            className="d-flex flex-wrap align-items-center justify-content-end"
-          >
-            <li className="pr-2">
-              <Tooltip title="Download the salary report as Excel" arrow>
-                <button
-                  className="btn-save"
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-
-                    if (detailsData?.length <= 0) {
-                      return toast.warn("No Data Found");
-                    }
-
-                    downloadFile(
-                      `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}`,
-                      "Employee CheckList Report",
-                      "xlsx",
-                      setLoading
-                    );
-                  }}
-                  // disabled={resDetailsReport?.length <= 0}
-                  style={{
-                    border: "transparent",
-                    width: "30px",
-                    height: "30px",
-                    background: "#f2f2f7",
-                    borderRadius: "100px",
-                  }}
-                >
-                  <DownloadIcon
-                    sx={{
-                      color: "#101828",
-                      fontSize: "16px",
-                    }}
-                  />
-                </button>
-              </Tooltip>
-            </li>
-            <li>
-              <Tooltip title="Print as PDF" arrow>
-                <button
-                  className="btn-save"
-                  type="button"
-                  onClick={() => {
-                    if (detailsData?.length <= 0) {
-                      return toast.warn("No Data Found");
-                    } else {
-                      getPDFAction(
-                        `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}`,
-                        setLoading
-                      );
-                    }
-                  }}
-                  // disabled={resDetailsReport?.length <= 0}
-                  style={{
-                    border: "transparent",
-                    width: "30px",
-                    height: "30px",
-                    background: "#f2f2f7",
-                    borderRadius: "100px",
-                  }}
-                >
-                  <LocalPrintshopIcon
-                    sx={{
-                      color: "#101828",
-                      fontSize: "16px",
-                    }}
-                  />
-                </button>
-              </Tooltip>
-            </li>
-          </ul>
-        </div>
-        <div className="table-card-body mt-3" style={{ overflow: "hidden" }}>
-          <div>
+      {permission?.isView ? (
+        <div className="table-card">
+          <div className="table-card-heading" style={{ display: "flex" }}>
+            <h2>Employee CheckList Data</h2>
+          </div>
+          {detailsData?.length > 0 ? (
             <>
-              <div className="sme-scrollable-table">
-                <div
-                  className="scroll-table scroll-table-height"
-                  dangerouslySetInnerHTML={{ __html: detailsData }}
-                ></div>
+              <div>
+                <ul
+                  style={{ marginTop: "-27px" }}
+                  className="d-flex flex-wrap align-items-center justify-content-end"
+                >
+                  <li className="pr-2">
+                    <Tooltip title="Download the salary report as Excel" arrow>
+                      <button
+                        className="btn-save"
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+
+                          if (detailsData?.length <= 0) {
+                            return toast.warn("No Data Found");
+                          }
+
+                          downloadFile(
+                            `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}`,
+                            "Employee CheckList Report",
+                            "xlsx",
+                            setLoading
+                          );
+                        }}
+                        // disabled={resDetailsReport?.length <= 0}
+                        style={{
+                          border: "transparent",
+                          width: "30px",
+                          height: "30px",
+                          background: "#f2f2f7",
+                          borderRadius: "100px",
+                        }}
+                      >
+                        <DownloadIcon
+                          sx={{
+                            color: "#101828",
+                            fontSize: "16px",
+                          }}
+                        />
+                      </button>
+                    </Tooltip>
+                  </li>
+                  <li>
+                    <Tooltip title="Print as PDF" arrow>
+                      <button
+                        className="btn-save"
+                        type="button"
+                        onClick={() => {
+                          if (detailsData?.length <= 0) {
+                            return toast.warn("No Data Found");
+                          } else {
+                            getPDFAction(
+                              `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}`,
+                              setLoading
+                            );
+                          }
+                        }}
+                        // disabled={resDetailsReport?.length <= 0}
+                        style={{
+                          border: "transparent",
+                          width: "30px",
+                          height: "30px",
+                          background: "#f2f2f7",
+                          borderRadius: "100px",
+                        }}
+                      >
+                        <LocalPrintshopIcon
+                          sx={{
+                            color: "#101828",
+                            fontSize: "16px",
+                          }}
+                        />
+                      </button>
+                    </Tooltip>
+                  </li>
+                </ul>
               </div>
             </>
+          ) : (
+            <>{<NoResult title="No Result Found" para="" />}</>
+          )}
+          <div className="table-card-body mt-3" style={{ overflow: "hidden" }}>
+            <div>
+              <>
+                <div className="sme-scrollable-table">
+                  <div
+                    className="scroll-table scroll-table-height"
+                    dangerouslySetInnerHTML={{ __html: detailsData }}
+                  ></div>
+                </div>
+              </>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <NotPermittedPage />
+      )}
     </form>
   );
 };
