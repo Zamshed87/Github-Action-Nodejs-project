@@ -136,7 +136,8 @@ function AboutMeDetails() {
               }
               empId={empId}
               editBtnHandler={() => {
-                setIsAddEditForm(true);
+                // setIsAddEditForm(true);
+                history.push(`/profile/employee/edit/${empId}`);
               }}
               isOfficeAdmin={isOfficeAdmin || employeeFeature?.isEdit}
             />

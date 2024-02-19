@@ -54,7 +54,6 @@ const CreateAndEditEmploye = () => {
   // states
 
   const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
-  const [empBasic, setEmpBasic] = useState({});
   const [singleData, setSingleData] = useState({});
   const [empSignature, setEmpAuthSignature] = useState([]);
 
@@ -99,7 +98,14 @@ const CreateAndEditEmploye = () => {
   const userTypeDDL = useApiRequest([]);
 
   const getEmpData = () => {
-    getEmployeeProfileViewData(empId, setEmpBasic, setLoading, buId, wgId);
+    getEmployeeProfileViewData(
+      empId,
+      "",
+      setLoading,
+      buId,
+      wgId,
+      setSingleData
+    );
   };
 
   useEffect(() => {
@@ -581,7 +587,7 @@ const CreateAndEditEmploye = () => {
                   }
                 },
               },
-              {
+              !empId && {
                 type: "primary",
                 content: "Save & Create New",
                 icon: "plus",
@@ -1239,124 +1245,127 @@ const CreateAndEditEmploye = () => {
             </PCardBody>
           </div>
 
-          <div>
-            <h3 style={{ fontSize: "13px" }} className="my-2">
-              Employment Shift Info
-            </h3>
-            <PCardBody>
-              <Row gutter={[10, 2]}>
-                {/*  - // new requirment calender field will be editable @8-01-2024 🔥🔥 - */}
-                {!empId ? (
-                  <>
-                    <Form.Item shouldUpdate noStyle>
-                      {() => {
-                        const { workplaceGroup, calenderType } =
-                          form.getFieldsValue(true);
-                        return (
-                          <>
-                            <Col md={8} sm={24}>
-                              <PSelect
-                                options={[
-                                  {
-                                    value: 1,
-                                    label: "Calendar",
-                                  },
-                                  { value: 2, label: "Roster" },
-                                ]}
-                                type="date"
-                                name="calenderType"
-                                label="Calendar Type"
-                                placeholder="Calendar Type"
-                                disabled={!workplaceGroup}
-                                onChange={(value, op) => {
-                                  form.setFieldsValue({
-                                    calender: null,
-                                    calenderType: op,
-                                  });
-
-                                  value === 1
-                                    ? getCalendarDDL()
-                                    : getRosterGroupDDL();
-                                }}
-                              />
-                            </Col>
-                            <Col md={8} sm={24}>
-                              <PSelect
-                                options={
-                                  calenderType?.value === 2
-                                    ? rosterGroupDDL.data || []
-                                    : calendarDDL?.data || []
-                                }
-                                name="calender"
-                                label={
-                                  calenderType?.value === 2
-                                    ? `Roster Name`
-                                    : `Calendar Name`
-                                }
-                                placeholder={
-                                  calenderType?.value === 2
-                                    ? `Roster Name`
-                                    : `Calendar Name`
-                                }
-                                disabled={!workplaceGroup}
-                                onChange={(value, op) => {
-                                  form.setFieldsValue({
-                                    calender: op,
-                                  });
-
-                                  const { calenderType } =
-                                    form.getFieldsValue();
-                                  calenderType?.value === 2 &&
-                                    getCalendarByRosterDDL();
-                                }}
-                              />
-                            </Col>
-                            {calenderType?.value === 2 ? (
+          {!empId && (
+            <>
+              {" "}
+              <div>
+                <h3 style={{ fontSize: "13px" }} className="my-2">
+                  Employment Shift Info
+                </h3>
+                <PCardBody>
+                  <Row gutter={[10, 2]}>
+                    {/*  - // new requirment calender field will be editable @8-01-2024 🔥🔥 - */}
+                    {!empId ? (
+                      <>
+                        <Form.Item shouldUpdate noStyle>
+                          {() => {
+                            const { workplaceGroup, calenderType } =
+                              form.getFieldsValue(true);
+                            return (
                               <>
                                 <Col md={8} sm={24}>
                                   <PSelect
-                                    options={
-                                      calendarByRosterGroupDDL?.data || []
-                                    }
-                                    name="startingCalender"
-                                    label="Starting Calendar"
-                                    placeholder={"Starting Calendar"}
+                                    options={[
+                                      {
+                                        value: 1,
+                                        label: "Calendar",
+                                      },
+                                      { value: 2, label: "Roster" },
+                                    ]}
+                                    type="date"
+                                    name="calenderType"
+                                    label="Calendar Type"
+                                    placeholder="Calendar Type"
                                     disabled={!workplaceGroup}
                                     onChange={(value, op) => {
                                       form.setFieldsValue({
-                                        startingCalender: op,
+                                        calender: null,
+                                        calenderType: op,
                                       });
+
+                                      value === 1
+                                        ? getCalendarDDL()
+                                        : getRosterGroupDDL();
                                     }}
                                   />
                                 </Col>
                                 <Col md={8} sm={24}>
-                                  <PInput
-                                    type="date"
-                                    name="nextChangeDate"
-                                    label="Next Calendar Change"
-                                    placeholder={"Next Calendar Change"}
+                                  <PSelect
+                                    options={
+                                      calenderType?.value === 2
+                                        ? rosterGroupDDL.data || []
+                                        : calendarDDL?.data || []
+                                    }
+                                    name="calender"
+                                    label={
+                                      calenderType?.value === 2
+                                        ? `Roster Name`
+                                        : `Calendar Name`
+                                    }
+                                    placeholder={
+                                      calenderType?.value === 2
+                                        ? `Roster Name`
+                                        : `Calendar Name`
+                                    }
+                                    disabled={!workplaceGroup}
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        calender: op,
+                                      });
+
+                                      const { calenderType } =
+                                        form.getFieldsValue();
+                                      calenderType?.value === 2 &&
+                                        getCalendarByRosterDDL();
+                                    }}
                                   />
                                 </Col>
+                                {calenderType?.value === 2 ? (
+                                  <>
+                                    <Col md={8} sm={24}>
+                                      <PSelect
+                                        options={
+                                          calendarByRosterGroupDDL?.data || []
+                                        }
+                                        name="startingCalender"
+                                        label="Starting Calendar"
+                                        placeholder={"Starting Calendar"}
+                                        disabled={!workplaceGroup}
+                                        onChange={(value, op) => {
+                                          form.setFieldsValue({
+                                            startingCalender: op,
+                                          });
+                                        }}
+                                      />
+                                    </Col>
+                                    <Col md={8} sm={24}>
+                                      <PInput
+                                        type="date"
+                                        name="nextChangeDate"
+                                        label="Next Calendar Change"
+                                        placeholder={"Next Calendar Change"}
+                                      />
+                                    </Col>
+                                  </>
+                                ) : undefined}
                               </>
-                            ) : undefined}
-                          </>
-                        );
-                      }}
-                    </Form.Item>
-                    <Col md={8} sm={24}>
-                      <PInput
-                        type="date"
-                        name="generateDate"
-                        label="Calender Generate Date"
-                        placeholder="Generate Date"
-                        // disabled={params?.id}
-                      />
-                    </Col>
-                  </>
-                ) : undefined}
+                            );
+                          }}
+                        </Form.Item>
+                        <Col md={8} sm={24}>
+                          <PInput
+                            type="date"
+                            name="generateDate"
+                            label="Calender Generate Date"
+                            placeholder="Generate Date"
+                            // disabled={params?.id}
+                          />
+                        </Col>
+                      </>
+                    ) : undefined}
 
-                {/* Hold Salary */}
-                {/* {params?.id ? (
+                    {/* Hold Salary */}
+                    {/* {params?.id ? (
         <Col md={8} sm={24} style={{ marginTop: "20px" }}>
           <PInput
             label="Salary Hold"
@@ -1366,143 +1375,153 @@ const CreateAndEditEmploye = () => {
           />
         </Col>
       ) : null} */}
-              </Row>
-            </PCardBody>
-          </div>
+                  </Row>
+                </PCardBody>
+              </div>
+              <div>
+                <h2 style={{ fontSize: "13px" }} className="my-2">
+                  ESS(Employee Self Service) Portal
+                </h2>
+                <PCardBody>
+                  <Row gutter={[10, 2]}>
+                    {/* User Create */}
+                    <Form.Item noStyle shouldUpdate>
+                      {() => {
+                        const { isUsersection, employeeCode } =
+                          form.getFieldsValue();
 
-          <div>
-            <h2 style={{ fontSize: "13px" }} className="my-2">
-              ESS(Employee Self Service) Portal
-            </h2>
-            <PCardBody>
-              <Row gutter={[10, 2]}>
-                {/* User Create */}
-                <Form.Item noStyle shouldUpdate>
-                  {() => {
-                    const { isUsersection, employeeCode } =
-                      form.getFieldsValue();
-
-                    return !empId ? (
-                      <>
-                        <Col md={8} sm={24}>
-                          <PInput
-                            label="Do you want to create user?"
-                            type="checkbox"
-                            name="isUsersection"
-                            layout="horizontal"
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                form.setFieldsValue({
-                                  loginUserId: employeeCode,
-                                  password: "123456",
-                                });
-                              }
-                            }}
-                          />
-                        </Col>
-                        {isUsersection ? (
+                        return !empId ? (
                           <>
-                            <Divider style={{ margin: "3px 0" }} />
                             <Col md={8} sm={24}>
                               <PInput
-                                name="loginUserId"
-                                type="text"
-                                placeholder="User Id"
-                                label="User Id"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "User Id is required",
-                                  },
-                                  () => ({
-                                    validator(_, value) {
-                                      return new Promise((resolve, reject) => {
-                                        const payload = {
-                                          strLoginId: value,
-                                          intUrlId: intUrlId,
-                                          intAccountId: orgId,
-                                        };
-                                        userValidation(
-                                          payload,
-                                          setIsUserCheckMsg,
-                                          (data) => {
-                                            if (data.message === "Valid") {
-                                              setIsUserCheckMsg((prev) => {
-                                                return { ...prev, ...data };
-                                              });
-                                              resolve();
-                                            } else {
-                                              reject(
-                                                new Error(
-                                                  data.message ||
-                                                    "User is not valid"
-                                                )
-                                              );
-                                            }
-                                          }
-                                        );
-                                      });
-                                    },
-                                  }),
-                                ]}
-                              />
-                            </Col>
-                            <Col md={8} sm={24}>
-                              <PInput
-                                name="password"
-                                type="password"
-                                placeholder="Password"
-                                label="Password"
-                              />
-                            </Col>
-                            <Col md={8} sm={24}>
-                              <PInput
-                                name="email"
-                                type="email"
-                                placeholder="Office Email"
-                                label="Office Email"
-                              />
-                            </Col>
-                            <Col md={8} sm={24}>
-                              <PInput
-                                name="phone"
-                                type="text"
-                                placeholder="Contact No."
-                                label="Contact No."
-                              />
-                            </Col>
-                            <Col md={8} sm={24}>
-                              <PSelect
-                                options={userTypeDDL.data || []}
-                                name="userType"
-                                label="User Type"
-                                placeholder="User Type"
-                                onChange={(value, op) => {
-                                  form.setFieldsValue({
-                                    userType: op,
-                                  });
+                                label="Do you want to create user?"
+                                type="checkbox"
+                                name="isUsersection"
+                                layout="horizontal"
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    form.setFieldsValue({
+                                      loginUserId: employeeCode,
+                                      password: "123456",
+                                    });
+                                  }
                                 }}
                               />
                             </Col>
+                            {isUsersection ? (
+                              <>
+                                <Divider style={{ margin: "3px 0" }} />
+                                <Col md={8} sm={24}>
+                                  <PInput
+                                    name="loginUserId"
+                                    type="text"
+                                    placeholder="User Id"
+                                    label="User Id"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "User Id is required",
+                                      },
+                                      () => ({
+                                        validator(_, value) {
+                                          return new Promise(
+                                            (resolve, reject) => {
+                                              const payload = {
+                                                strLoginId: value,
+                                                intUrlId: intUrlId,
+                                                intAccountId: orgId,
+                                              };
+                                              userValidation(
+                                                payload,
+                                                setIsUserCheckMsg,
+                                                (data) => {
+                                                  if (
+                                                    data.message === "Valid"
+                                                  ) {
+                                                    setIsUserCheckMsg(
+                                                      (prev) => {
+                                                        return {
+                                                          ...prev,
+                                                          ...data,
+                                                        };
+                                                      }
+                                                    );
+                                                    resolve();
+                                                  } else {
+                                                    reject(
+                                                      new Error(
+                                                        data.message ||
+                                                          "User is not valid"
+                                                      )
+                                                    );
+                                                  }
+                                                }
+                                              );
+                                            }
+                                          );
+                                        },
+                                      }),
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={8} sm={24}>
+                                  <PInput
+                                    name="password"
+                                    type="password"
+                                    placeholder="Password"
+                                    label="Password"
+                                  />
+                                </Col>
+                                <Col md={8} sm={24}>
+                                  <PInput
+                                    name="email"
+                                    type="email"
+                                    placeholder="Office Email"
+                                    label="Office Email"
+                                  />
+                                </Col>
+                                <Col md={8} sm={24}>
+                                  <PInput
+                                    name="phone"
+                                    type="text"
+                                    placeholder="Contact No."
+                                    label="Contact No."
+                                  />
+                                </Col>
+                                <Col md={8} sm={24}>
+                                  <PSelect
+                                    options={userTypeDDL.data || []}
+                                    name="userType"
+                                    label="User Type"
+                                    placeholder="User Type"
+                                    onChange={(value, op) => {
+                                      form.setFieldsValue({
+                                        userType: op,
+                                      });
+                                    }}
+                                  />
+                                </Col>
+                              </>
+                            ) : undefined}
                           </>
-                        ) : undefined}
-                      </>
-                    ) : (
-                      <Col md={8} sm={24} style={{ marginTop: "20px" }}>
-                        {/* <PInput
+                        ) : (
+                          <Col md={8} sm={24} style={{ marginTop: "20px" }}>
+                            {/* <PInput
                 Label="Is Active"
                 name="isActive"
                 type="checkbox"
                 label="Is Active"
                 layout="horizontal"
               /> */}
-                      </Col>
-                    );
-                  }}
-                </Form.Item>
-              </Row>
-            </PCardBody>
-          </div>
+                          </Col>
+                        );
+                      }}
+                    </Form.Item>
+                  </Row>
+                </PCardBody>
+              </div>
+            </>
+          )}
         </PCard>
       </PForm>
     </div>

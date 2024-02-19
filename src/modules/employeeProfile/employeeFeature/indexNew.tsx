@@ -357,24 +357,24 @@ function EmployeeFeatureNew() {
                 icon: "plus",
                 onClick: () => {
                   if (employeeFeature?.isCreate) {
-                    setOpen(true);
-                  } else {
-                    toast.warn("You don't have permission");
-                  }
-                },
-              },
-              {
-                type: "primary",
-                content: "Create brand New ",
-                icon: "plus",
-                onClick: () => {
-                  if (employeeFeature?.isCreate) {
                     history.push("/profile/employee/create");
                   } else {
                     toast.warn("You don't have permission");
                   }
                 },
               },
+              // {
+              //   type: "primary",
+              //   content: "Create brand New ",
+              //   icon: "plus",
+              //   onClick: () => {
+              //     if (employeeFeature?.isCreate) {
+              //       history.push("/profile/employee/create");
+              //     } else {
+              //       toast.warn("You don't have permission");
+              //     }
+              //   },
+              // },
             ]}
             onExport={() => {
               const excelLanding = async () => {
