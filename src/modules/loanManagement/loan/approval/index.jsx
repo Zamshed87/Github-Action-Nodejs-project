@@ -97,7 +97,6 @@ export default function LoanApproval() {
   const [allData, setAllData] = useState();
   const [filterData, setFilterData] = useState([]);
 
-
   const dispatch = useDispatch();
 
   const handleOpen = () => {
@@ -729,14 +728,14 @@ export default function LoanApproval() {
                               </div> */}
                             </div>
 
-                            <div className="table-card-head-right">
+                            <div>
                               {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
                               ).length > 0 && (
                                 <div className="d-flex actionIcon mr-3">
                                   <Tooltip title="Approve">
                                     <div
-                                      className="muiIconHover success mr-2"
+                                      className="muiIconHover success "
                                       onClick={() => {
                                         demoPopup(
                                           "approve",
@@ -750,8 +749,9 @@ export default function LoanApproval() {
                                           <CheckCircle
                                             sx={{
                                               color: successColor,
-                                              width: "16px",
-                                              height: "16px",
+                                              width: "25px !important",
+                                              height: "35px !important",
+                                              fontSize: "20px !important",
                                             }}
                                           />
                                         }
@@ -760,7 +760,7 @@ export default function LoanApproval() {
                                   </Tooltip>
                                   <Tooltip title="Reject">
                                     <div
-                                      className="muiIconHover  danger"
+                                      className="muiIconHover  danger mx-2"
                                       onClick={() => {
                                         demoPopup(
                                           "reject",
@@ -774,8 +774,9 @@ export default function LoanApproval() {
                                           <Cancel
                                             sx={{
                                               color: failColor,
-                                              width: "16px",
-                                              height: "16px",
+                                              width: "25px !important",
+                                              height: "35px !important",
+                                              fontSize: "20px !important",
                                             }}
                                           />
                                         }

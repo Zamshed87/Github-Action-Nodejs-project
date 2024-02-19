@@ -537,7 +537,7 @@ export default function AssetTransferApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Asset Transfer Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -558,7 +558,9 @@ export default function AssetTransferApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -581,7 +583,9 @@ export default function AssetTransferApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -593,7 +597,7 @@ export default function AssetTransferApproval() {
                             <ul className="d-flex flex-wrap">
                               {isFilter && (
                                 <li>
-                                  <ResetButton
+                                  {/* <ResetButton
                                     title="reset"
                                     icon={
                                       <SettingsBackupRestoreOutlined
@@ -605,12 +609,12 @@ export default function AssetTransferApproval() {
                                       setFieldValue("search", "");
                                       getLandingData();
                                     }}
-                                  />
+                                  /> */}
                                 </li>
                               )}
                               {permission?.isCreate && (
                                 <li>
-                                  <MasterFilter
+                                  {/* <MasterFilter
                                     styles={{
                                       marginRight: "0px",
                                     }}
@@ -632,7 +636,7 @@ export default function AssetTransferApproval() {
                                       setFieldValue("search", "");
                                       getLandingData();
                                     }}
-                                  />
+                                  /> */}
                                 </li>
                               )}
                             </ul>

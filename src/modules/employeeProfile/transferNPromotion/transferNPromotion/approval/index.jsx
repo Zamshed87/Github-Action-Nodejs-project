@@ -42,7 +42,7 @@ const initData = {
 };
 
 export default function TransferNPromotionApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId} = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -760,7 +760,7 @@ export default function TransferNPromotionApproval() {
                           <BackButton
                             title={"Transfer And Promotion Approval"}
                           />
-                          <div className="table-card-head-right">
+                          <div>
                             {filterData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -781,7 +781,9 @@ export default function TransferNPromotionApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -804,7 +806,9 @@ export default function TransferNPromotionApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

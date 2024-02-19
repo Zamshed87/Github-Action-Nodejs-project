@@ -367,7 +367,7 @@ const MasterLocationRegistration = () => {
                     <div className="table-card">
                       <div className="table-card-heading">
                         <BackButton title={"Location Approval"} />
-                        <div className="table-card-head-right">
+                        <div>
                           {filteredData &&
                             filteredData?.listData?.filter(
                               (item) => item?.selectCheckbox
@@ -389,7 +389,9 @@ const MasterLocationRegistration = () => {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -412,7 +414,9 @@ const MasterLocationRegistration = () => {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

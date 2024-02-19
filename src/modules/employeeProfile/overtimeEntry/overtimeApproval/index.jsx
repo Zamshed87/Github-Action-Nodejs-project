@@ -588,7 +588,7 @@ export default function OvertimeApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Overtime Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -605,7 +605,9 @@ export default function OvertimeApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -624,7 +626,9 @@ export default function OvertimeApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
