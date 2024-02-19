@@ -74,6 +74,7 @@ export const onPostAttendanceResponse = async ({ setLoading, payload, cb }) => {
 
 export const onGetAttendanceResponse = async (
   wId,
+  wgId,
   pageSize,
   pageNo,
   setRes,
@@ -83,13 +84,13 @@ export const onGetAttendanceResponse = async (
 
   try {
     const res = await axios.get(
-      `/Employee/GetAttendenceRawDataProcessLog?intWorkplaceId=${wId}&pageSize=${pageSize}&pageNo=${pageNo}`
+      `/Employee/GetAttendenceRawDataProcessLog?intWorkplaceId=${wId}&intWorkplaceGroupId=${wgId}&pageSize=${pageSize}&pageNo=${pageNo}`
     );
 
     if (res?.data) {
-      setRes(res?.data)
+      setRes(res?.data);
     }
-    setLoading(false)
+    setLoading(false);
   } catch (error) {
     console.log(error);
     setLoading && setLoading(false);
