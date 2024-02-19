@@ -846,6 +846,7 @@ const CreateAndEditEmploye = () => {
                                     dteProbationaryCloseDate: moment(nextDate),
                                   });
                                 }}
+                                disabled={joiningDate ? false : true}
                               />
                             </Col>
                             <Col md={6} sm={24}>
