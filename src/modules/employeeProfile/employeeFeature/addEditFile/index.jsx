@@ -719,7 +719,6 @@ export default function AddEditForm({
                 <>
                   {empType === "Probationary" ? (
                     <>
-                    
                       <Col md={12} sm={24}>
                         <PInput
                           type="date"

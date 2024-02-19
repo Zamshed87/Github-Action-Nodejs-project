@@ -1358,6 +1358,9 @@ export const routingList = [
     component: GoForPrint,
   },
 
+  { path: "/profile/employee/create", component: CreateAndEditEmploye },
+
+  { path: "/profile/employee/edit/:empId", component: CreateAndEditEmploye },
   { path: "/profile/employee/:empId", component: AboutMeDetails },
   {
     path: "/profile/separation/release/:id",
@@ -2675,8 +2678,7 @@ export const routingList = [
     path: "/administration/payrollConfiguration/PFAndGratuity/edit/:id",
     component: PfGratuityPolicyForm,
   },
-  { path: "/profile/employee/create", component: CreateAndEditEmploye },
-  { path: "/profile/employee/edit/:empId", component: CreateAndEditEmploye },
+
   {
     path: "/administration/payrollConfiguration/PFAndGratuity/create",
     component: PfGratuityPolicyForm,

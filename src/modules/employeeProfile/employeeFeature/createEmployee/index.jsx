@@ -15,13 +15,21 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { calculateNextDate } from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
-import { getEmployeeProfileViewData, userExistValidation } from "../helper";
+import {
+  getEmployeeProfileViewData,
+  userExistValidation,
+  createEditEmpAction,
+} from "../helper";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import Loading from "common/loading/Loading";
-import { calculateProbationCloseDateByDateOrMonth } from "../addEditFile/helper";
+import {
+  calculateProbationCloseDateByDateOrMonth,
+  submitHandler,
+} from "../addEditFile/helper";
 import { probationCloseDateCustomDDL } from "utility/yearDDL";
+import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
 
 const CreateAndEditEmploye = () => {
   // router hooks
@@ -513,30 +521,6 @@ const CreateAndEditEmploye = () => {
       <PForm
         formName="empCreate"
         form={form}
-        onFinish={() => {
-          const values = form.getFieldsValue(true);
-          // submitHandler({
-          //   values,
-          //   getData,
-          //   // empBasic,
-          //   resetForm: form.resetFields,
-          //   pages,
-          //   setIsAddEditForm,
-          //   employeeId,
-          //   dispatch,
-          //   updateUerAndEmpNameAction,
-          //   isUserCheckMsg,
-          //   createEditEmpAction,
-          //   isEdit: params?.id ? true : false,
-          //   orgId,
-          //   buId,
-          //   intUrlId,
-          //   setLoading,
-          // intSignature:
-          // empSignature?.[0]?.response?.[0]?.globalFileUrlId || 0,
-
-          // });
-        }}
         initialValues={{
           generateDate: moment(todayDate()),
         }}
@@ -561,9 +545,37 @@ const CreateAndEditEmploye = () => {
                 type: "primary",
                 content: "Save",
                 icon: "plus",
-                onClick: () => {
+                onClick: async () => {
                   if (employeeFeature?.isCreate) {
-                    // setOpen(true);
+                    const values = form.getFieldsValue(true);
+
+                    await form
+                      .validateFields()
+                      .then(() => {
+                        submitHandler({
+                          values,
+                          // empBasic,
+                          resetForm: form.resetFields,
+                          employeeId,
+                          dispatch,
+                          updateUerAndEmpNameAction,
+                          isUserCheckMsg,
+                          createEditEmpAction,
+                          isEdit: empId ? true : false,
+                          orgId,
+                          buId,
+                          intUrlId,
+                          action: "save",
+                          history,
+                          setLoading,
+                          intSignature:
+                            empSignature?.[0]?.response?.[0]?.globalFileUrlId ||
+                            0,
+                        });
+                      })
+                      .catch(() => {
+                        console.log();
+                      });
                   } else {
                     toast.warn("You don't have permission");
                   }
@@ -573,9 +585,49 @@ const CreateAndEditEmploye = () => {
                 type: "primary",
                 content: "Save & Create New",
                 icon: "plus",
-                onClick: () => {
+                onClick: async () => {
                   if (employeeFeature?.isCreate) {
-                    history.push("/profile/employee/create");
+                    const values = form.getFieldsValue(true);
+
+                    await form
+                      .validateFields()
+                      .then(() => {
+                        submitHandler({
+                          values,
+                          // empBasic,
+                          resetForm: () => {
+                            form.setFieldValue("employeeCode", "");
+                            form.setFieldValue("fullName", "");
+                            form.setFieldValue("religion", "");
+                            form.setFieldValue("gender", "");
+                            form.setFieldValue("dteDateOfBirth", "");
+                            form.setFieldValue("loginUserId", "");
+                            form.setFieldValue("email", "");
+                            form.setFieldValue("phone", "");
+                            form.setFieldValue("userType", "");
+                            form.setFieldValue("intSignature", "");
+                            setEmpAuthSignature([]);
+                          },
+                          employeeId,
+                          dispatch,
+                          updateUerAndEmpNameAction,
+                          isUserCheckMsg,
+                          createEditEmpAction,
+                          isEdit: empId ? true : false,
+                          orgId,
+                          buId,
+                          intUrlId,
+                          action: "save and new",
+                          history,
+                          setLoading,
+                          intSignature:
+                            empSignature?.[0]?.response?.[0]?.globalFileUrlId ||
+                            0,
+                        });
+                      })
+                      .catch(() => {
+                        console.log();
+                      });
                   } else {
                     toast.warn("You don't have permission");
                   }
@@ -1127,7 +1179,7 @@ const CreateAndEditEmploye = () => {
                     );
                   }}
                 </Form.Item>
-                <Col md={12} sm={24}>
+                <Col md={6} sm={24}>
                   <PSelect
                     options={[
                       { value: 1, label: "Daily" },
@@ -1146,7 +1198,7 @@ const CreateAndEditEmploye = () => {
                     // rules={[{ required: true, message: "HR Position is required" }]}
                   />
                 </Col>
-                <Col md={12} sm={24}>
+                <Col md={6} sm={24}>
                   <PSelect
                     options={payScaleGradeDDL?.data || []}
                     name="payScaleGrade"

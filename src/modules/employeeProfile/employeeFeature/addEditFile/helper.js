@@ -326,25 +326,28 @@ export const submitHandler = ({
   buId,
   intUrlId,
   setLoading,
-  intSignature
+  intSignature,
+  action,
+  history,
 }) => {
   const cb = () => {
-    !isEdit && resetForm();
+    action === "save" ? history?.push("/profile/employee") : resetForm();
+    // !isEdit && resetForm();
     setIsAddEditForm(false);
-    getData({ current: 1, pageSize: pages?.pageSize }, "false");
+    getData && getData({ current: 1, pageSize: pages?.pageSize }, "false");
     if (values?.empId === employeeId) {
       dispatch(updateUerAndEmpNameAction(values?.fullName));
     }
   };
   if (
-    values?.employeeType.label ===
+    values?.employeeType?.label ===
       ("Contractual" || "contractual" || "contract" || "Contract") &&
     (!values?.contractualFromDate || !values?.contractualToDate)
   ) {
     return toast.warn("Please Select Contract Date");
   }
   if (
-    values?.employeeType.label === ("Permanent" || "permanent") &&
+    values?.employeeType?.label === ("Permanent" || "permanent") &&
     !values?.dteConfirmationDate
   ) {
     return toast.warn("Please Select Confirmation Date");
@@ -406,13 +409,19 @@ export const submitHandler = ({
   //   // }
   // }
 
-  createEditEmpAction({...values, intSignature}, buId, intUrlId, setLoading, cb, isEdit);
+  createEditEmpAction(
+    { ...values, intSignature },
+    buId,
+    intUrlId,
+    setLoading,
+    cb,
+    isEdit
+  );
 };
-
 
 function calculateDateAfterMonths(inputDate, month) {
   const currentDate = new Date(inputDate);
-  
+
   // Ensure the input is a valid date
   if (isNaN(currentDate.getTime())) {
     return "Invalid Date";
@@ -423,30 +432,33 @@ function calculateDateAfterMonths(inputDate, month) {
   const targetYear = currentDate.getFullYear() + Math.floor(targetMonth / 12);
 
   // Calculate the target day, considering varying days in each month
-  const targetDay = new Date(targetYear, targetMonth % 12, currentDate.getDate());
+  const targetDay = new Date(
+    targetYear,
+    targetMonth % 12,
+    currentDate.getDate()
+  );
 
   // Format the result to "YYYY-MM-DD"
   const formattedDate = targetDay.toISOString().split("T")[0];
 
   return formattedDate;
-} 
+}
 export const calculateProbationCloseDateByDateOrMonth = ({
-  inputDate= moment().format("YYYY-MM-DD"),
+  inputDate = moment().format("YYYY-MM-DD"),
   days = 15,
   month = 6,
 }) => {
-  // 
-  console.log({days, month, inputDate});
+  //
+  console.log({ days, month, inputDate });
 
   let date = null;
-  if(days) {
-    console.log("this is days")
+  if (days) {
+    console.log("this is days");
     date = calculateNextDate(inputDate, days);
-  }else if(month){
-    console.log("this is month..")
+  } else if (month) {
+    console.log("this is month..");
 
     date = calculateDateAfterMonths(inputDate, month);
   }
   return date;
-
 };
