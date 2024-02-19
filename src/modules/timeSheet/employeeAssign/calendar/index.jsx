@@ -144,7 +144,6 @@ function Calendar() {
     }
     // eslint-disable-next-line
   }, [singleShiftData]);
-
   return (
     <>
       <Formik
