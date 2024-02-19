@@ -1162,6 +1162,7 @@ const CreateAndEditEmploye = () => {
                     // rules={[{ required: true, message: "HR Position is required" }]}
                   />
                 </Col>
+
                 {!empId && (
                   <Col style={{ marginTop: "21px" }} md={6} sm={24}>
                     <div>

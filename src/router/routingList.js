@@ -26,7 +26,7 @@ import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import Workplace from "modules/configuration/workplace";
 import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
-import CreateAndEditEmploye from "modules/employeeProfile/employeeFeature/createEmployee";
+
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
@@ -35,6 +35,9 @@ import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
 import { lazy } from "react";
 
+const CreateAndEditEmploye = lazy(() =>
+  import("modules/employeeProfile/employeeFeature/createEmployee")
+);
 const MultiCalendarAssign = lazy(() =>
   import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
 );
