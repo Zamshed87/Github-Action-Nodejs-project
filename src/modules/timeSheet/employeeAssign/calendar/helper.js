@@ -437,6 +437,7 @@ export const getData = async (
   checkedHeaderList = { ...initHeaderList },
   isAssigned
 ) => {
+  setLandingLoading(true);
   const modifiedPayload = createPayloadStructure({
     initHeaderList,
     currentFilterSelection,
