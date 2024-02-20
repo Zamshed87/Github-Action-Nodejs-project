@@ -27,7 +27,6 @@ import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { todayDate } from "../../../../utility/todayDate";
 import {
   column,
-  earlyDtoCol,
   getLateData,
   getTableDataDailyAttendance,
   lateDtoCol,
@@ -223,7 +222,7 @@ const LateReport = () => {
                             <Tooltip title="Export CSV" arrow>
                               <IconButton
                                 style={{ color: "#101828" }}
-                                onClick={(e) => {
+                                onClick={() => {
                                   // e.stopPropagation();
                                   getExcelData(
                                     `/TimeSheetReport/GetLateReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&Date=${values?.date}&IsXls=true&PageNo=1&PageSize=10000`,
