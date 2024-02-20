@@ -341,7 +341,7 @@ const finalSettlementColumns = (
     {
       title: "Status",
       dataIndex: "status",
-      sort: true,
+      sorter: true,
       filter: false,
       render: (item, record) => (
         <>
@@ -353,7 +353,6 @@ const finalSettlementColumns = (
           )}
         </>
       ),
-      fieldType: "string",
       width: "100px",
       className: "text-center",
     },
