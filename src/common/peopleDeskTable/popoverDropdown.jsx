@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import MasterFilter from "../MasterFilter";
 import Checkbox from "./checkbox";
 import { uuid } from "./helper";
+import { isDevServer } from "App";
 
 const PopoverDropdown = ({
   id,
@@ -160,7 +161,8 @@ const PopoverDropdown = ({
   //     setRowDto([...columnData[currentFilterSelection]?.filterDropDownList]);
   //   }
   //   setCurrentHeaderListSelection(checkedHeaderList);
-  // }, [columnData]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [currentFilterSelection, columnData]);
 
   useEffect(() => {
     if (reset && currentFilterSelection !== -1) {
@@ -181,12 +183,16 @@ const PopoverDropdown = ({
   useEffect(() => {
     setCurrentHeaderListSelection(checkedHeaderList);
   }, [checkedHeaderList]);
+
   // console.log(columnData[currentFilterSelection]?.filterDropDownList);
   // useEffect(() => {
   //   setTemp((prev) => {
   //     return [...new Set([...prev, ...rowDto])];
   //   });
   // }, [rowDto]);
+
+ isDevServer && console.log({columnData, currentFilterSelection, temp, checkedHeaderList, rowDto })
+
   return (
     <Popover
       sx={{

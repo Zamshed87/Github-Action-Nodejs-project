@@ -413,8 +413,23 @@ export default function SalaryDrawer(props) {
             +values?.totalGrossSalary
           ).toFixed(6),
         };
+        const roundValue = roundAndAdjustPercentages({
+          numCashPayInPercent: +(
+            (+values?.netPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
+          numBankPayInPercent: +(
+            (+values?.bankPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6),
 
-        createEmployeeSalaryAssign(payload, setLoading, callback);
+          numDigitalPayInPercent: +(
+            (+values?.digitalPay * 100) /
+            +values?.totalGrossSalary
+          ).toFixed(6)
+        })
+        console.log({payload, roundValue, text: "defaultPayrollElement?.length > 0"})
+        // createEmployeeSalaryAssign(payload, setLoading, callback);
       } else {
         payload = {
           ...payload,
@@ -439,11 +454,47 @@ export default function SalaryDrawer(props) {
             +values?.totalGrossSalary
           ).toFixed(6),
         };
+        // const roundValue = roundAndAdjustPercentages({
+        //   numCashPayInPercent: +(
+        //     (+values?.netPay * 100) /
+        //     +values?.totalGrossSalary
+        //   ).toFixed(6),
+        //   numBankPayInPercent: +(
+        //     (+values?.bankPay * 100) /
+        //     +values?.totalGrossSalary
+        //   ).toFixed(6),
 
-        createEmployeeSalaryAssign(payload, setLoading, callback);
+        //   numDigitalPayInPercent: +(
+        //     (+values?.digitalPay * 100) /
+        //     +values?.totalGrossSalary
+        //   ).toFixed(6)
+        // })
+        // console.log({payload, roundValue})
+
+        createEmployeeSalaryAssign({...payload}, setLoading, callback);
       }
     }
   };
+  function roundAndAdjustPercentages(obj) {
+    const roundedBankPercentage = Math.round(obj.numBankPayInPercent * 100) / 100;
+  const roundedCashPercentage = Math.round(obj.numCashPayInPercent * 100) / 100;
+  const roundedDigitalPercentage = Math.round(obj.numDigitalPayInPercent * 100) / 100;
+
+  // Calculate the sum of the rounded percentages
+  const sum = roundedBankPercentage + roundedCashPercentage + roundedDigitalPercentage;
+
+  // Adjust all percentages proportionally to ensure the sum is 100%
+  const adjustedBankPercentage = (roundedBankPercentage / sum) * 100;
+  const adjustedCashPercentage = (roundedCashPercentage / sum) * 100;
+  const adjustedDigitalPercentage = (roundedDigitalPercentage / sum) * 100;
+
+  // Return the updated object
+  return {
+    numBankPayInPercent: adjustedBankPercentage,
+    numCashPayInPercent: adjustedCashPercentage,
+    numDigitalPayInPercent: adjustedDigitalPercentage,
+  };
+  }
 
   return (
     <>
