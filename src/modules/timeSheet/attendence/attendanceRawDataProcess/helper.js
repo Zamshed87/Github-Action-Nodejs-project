@@ -78,7 +78,8 @@ export const onGetAttendanceResponse = async (
   pageSize,
   pageNo,
   setRes,
-  setLoading
+  setLoading,
+  setPages
 ) => {
   setLoading && setLoading(true);
 
@@ -86,9 +87,14 @@ export const onGetAttendanceResponse = async (
     const res = await axios.get(
       `/Employee/GetAttendenceRawDataProcessLog?intWorkplaceId=${wId}&intWorkplaceGroupId=${wgId}&pageSize=${pageSize}&pageNo=${pageNo}`
     );
-
+console.log('response',res)
     if (res?.data) {
       setRes(res?.data);
+      setPages?.({
+        current: res?.data?.currentPage, 
+        pageSize: res?.data?.pageSize, // Page Size From Api Response
+        total: res?.data?.totalCount, 
+      })
     }
     setLoading(false);
   } catch (error) {

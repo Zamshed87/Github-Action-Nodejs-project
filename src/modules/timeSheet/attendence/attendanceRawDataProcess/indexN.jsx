@@ -22,6 +22,7 @@ import { DataTable } from "Components";
 import { Button, Tag } from "antd";
 import { dateFormatter } from "utility/dateFormatter";
 import { CheckCircleOutlined, SyncOutlined } from "@ant-design/icons";
+import { getSerial } from "Utils";
 
 function AttendanceRawDataProcess() {
   const { orgId, buId, employeeId, wId, wgId } = useSelector(
@@ -81,26 +82,45 @@ function AttendanceRawDataProcess() {
           pages?.pageSize,
           pages?.current,
           setRes,
-          setLoading
+          setLoading,
+          setPages
         );
       },
     });
   };
 
-  console.log("response", res);
-
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+console.log('res',res)
+  const landingApi = (pagination) => {
+    console.log(pagination)
+    onGetAttendanceResponse(
+      wId,
+      wgId,
+      pagination?.pageSize,
+      pagination?.current,
+      setRes,
+      setLoading,
+      setPages
+    );
+  };
+  console.log({pages})
 
   const header = [
+
     {
       title: "SL",
-      render: (value, row, index) => index + 1,
-      align: "center",
-      width: 20,
+      render: (_, rec, index) =>
+        getSerial({
+          currentPage: pages?.current,
+          pageSize: pages?.pageSize,
+          index,
+        }),
       fixed: "left",
+      width: 15,
+      align: "center",
     },
 
     {
@@ -233,7 +253,8 @@ function AttendanceRawDataProcess() {
                           pages?.pageSize,
                           pages?.current,
                           setRes,
-                          setLoading
+                          setLoading,
+                          setPages
                         );
                       }}
                     >
@@ -301,12 +322,17 @@ function AttendanceRawDataProcess() {
                 bordered
                 data={res?.data || []}
                 pagination={{
-                  current: res?.data?.currentPage, // Current Page From Api Response
-                  pageSize: res?.data?.pageSize, // Page Size From Api Response
-                  total: res?.data?.totalCount, // Total Count From Api Response
+                  current: pages?.current,
+                  pageSize: pages.pageSize, // Page Size From Api Response
+                  total: pages.total, // Total Count From Api Response
                 }}
                 loading={loading}
                 scroll={{ x: 1000 }}
+                onChange={(pagination, filters, sorter, extra) => {
+                  if (extra.action === "sort") return;
+                  landingApi(pagination);
+                }}
+
               />
             )}
           </div>
