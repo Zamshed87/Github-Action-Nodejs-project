@@ -27,9 +27,12 @@ import {
 } from "./../../../../utility/dateFormatter";
 import { PModal } from "Components/Modal";
 import ManagementSeparationHistoryView from "./viewForm/ManagementSeparationHistoryView";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
+import { statusDDL } from "./utils";
 
 const initData = {
-  status: "",
+  status: { value: 0, label: "All" },
   search: "",
   filterFromDate: monthFirstDate(),
   filterToDate: monthLastDate(),
@@ -76,6 +79,7 @@ export default function ManagementSeparation() {
       wgId,
       values?.filterFromDate || "",
       values?.filterToDate || "",
+      values?.status?.value || 0,
       searchText,
       setRowDto,
       setLoading,
@@ -116,7 +120,7 @@ export default function ManagementSeparation() {
   };
 
   // useFormik
-  const { setFieldValue, values, handleSubmit } = useFormik({
+  const { setFieldValue, values, handleSubmit, errors, touched } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
     // onSubmit: (values, { setSubmitting, resetForm }) => {},
@@ -135,6 +139,7 @@ export default function ManagementSeparation() {
       wgId,
       values?.filterFromDate || "",
       values?.filterToDate || "",
+      values?.status?.value || 0,
       "",
       setRowDto,
       setLoading,
@@ -179,6 +184,7 @@ export default function ManagementSeparation() {
                           wgId,
                           values?.filterFromDate || "",
                           values?.filterToDate || "",
+                          values?.status?.value || 0,
                           "",
                           setRowDto,
                           setLoading,
@@ -206,6 +212,7 @@ export default function ManagementSeparation() {
                           wgId,
                           values?.filterFromDate || "",
                           values?.filterToDate || "",
+                          values?.status?.value || 0,
                           value,
                           setRowDto,
                           setLoading,
@@ -221,6 +228,7 @@ export default function ManagementSeparation() {
                           wgId,
                           values?.filterFromDate || "",
                           values?.filterToDate || "",
+                          values?.status?.value || 0,
                           "",
                           setRowDto,
                           setLoading,
@@ -239,6 +247,7 @@ export default function ManagementSeparation() {
                         wgId,
                         values?.filterFromDate || "",
                         values?.filterToDate || "",
+                        values?.status?.value || 0,
                         "",
                         setRowDto,
                         setLoading,
@@ -269,6 +278,25 @@ export default function ManagementSeparation() {
 
             <div className="card-style pb-0 mb-2" style={{ marginTop: "12px" }}>
               <div className="row">
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Status</label>
+                    <FormikSelect
+                      classes="input-sm"
+                      name="status"
+                      options={statusDDL || []}
+                      value={values?.status}
+                      onChange={(valueOption) => {
+                        setFieldValue("status", valueOption);
+                      }}
+                      placeholder="Select Status"
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                      isClearable={true}
+                    />
+                  </div>
+                </div>
                 <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>From Date</label>
@@ -307,7 +335,7 @@ export default function ManagementSeparation() {
                   <button
                     className="btn btn-green btn-green-disable mt-4"
                     type="button"
-                    disabled={!values?.filterFromDate || !values?.filterToDate}
+                    disabled={!values?.filterFromDate || !values?.filterToDate || !values?.status}
                     onClick={() => {
                       getData(pages, values?.search);
                     }}

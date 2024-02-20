@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { MenuItem, Pagination, Select } from "@mui/material";
 import PopoverDropdown from "./popoverDropdown";
 import ScrollablePeopleDeskTable from "./scrollablePeopleDeskTable";
 import TableContent from "./tableContent";
+import { isDevServer } from "App";
 
 export const paginationSize = 25;
 
@@ -33,6 +34,7 @@ const PeopleDeskTable = ({
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+  isDevServer && console.log("rowDto", rowDto, "columnData", columnData)
 
   return (
     <>
@@ -139,4 +141,4 @@ const PeopleDeskTable = ({
   );
 };
 
-export default PeopleDeskTable;
+export default memo(PeopleDeskTable);
