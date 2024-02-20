@@ -529,6 +529,7 @@ const CreateAndEditEmploye = () => {
         form={form}
         initialValues={{
           generateDate: moment(todayDate()),
+          salaryType: { value: 2, label: "Hourly" },
         }}
       >
         <PCard>
@@ -1143,12 +1144,6 @@ const CreateAndEditEmploye = () => {
                             onSearch={(value) => {
                               getDottedSuperVisorDDL(value);
                             }}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Dotted Supervisor is required",
-                              },
-                            ]}
                           />
                         </Col>
                         <Col md={6} sm={24}>
