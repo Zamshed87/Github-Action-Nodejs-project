@@ -5,7 +5,6 @@ import { getWorkplaceDetails } from "common/api";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { paginationSize } from "../../../../common/AntTable";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
@@ -40,8 +39,8 @@ const initData = {
   contractualToDate: "",
   employmentStatus: "",
 
-  fromDate:  monthFirstDate(),
-  toDate:  monthLastDate(),
+  fromDate: monthFirstDate(),
+  toDate: monthLastDate(),
 };
 
 const initHeaderList = {
@@ -81,7 +80,7 @@ export default function EmployeeList() {
   const [status, setStatus] = useState("");
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: paginationSize,
+    pageSize: 100,
     total: 0,
   });
   const [resEmpLanding, setEmpLanding] = useState([]);
@@ -421,7 +420,7 @@ export default function EmployeeList() {
                               setStatus("");
                               setFieldValue("searchString", "");
                               getData(
-                                { current: 1, pageSize: paginationSize },
+                                { current: 1, pageSize: 100 },
                                 "false",
                                 "",
                                 -1,
@@ -443,7 +442,7 @@ export default function EmployeeList() {
                             setFieldValue("searchString", value);
                             if (value) {
                               getData(
-                                { current: 1, pageSize: paginationSize },
+                                { current: 1, pageSize: 100 },
                                 "false",
                                 value,
                                 -1,
@@ -453,7 +452,7 @@ export default function EmployeeList() {
                               );
                             } else {
                               getData(
-                                { current: 1, pageSize: paginationSize },
+                                { current: 1, pageSize: 100 },
                                 "false",
                                 "",
                                 -1,
@@ -466,7 +465,7 @@ export default function EmployeeList() {
                           cancelHandler={() => {
                             setFieldValue("searchString", "");
                             getData(
-                              { current: 1, pageSize: paginationSize },
+                              { current: 1, pageSize: 100 },
                               "false",
                               "",
                               -1,
@@ -527,7 +526,7 @@ export default function EmployeeList() {
                             className="btn btn-green"
                             onClick={() => {
                               getData(
-                                { current: 1, pageSize: paginationSize },
+                                { current: 1, pageSize: 100 },
                                 "false",
                                 "",
                                 -1,
@@ -556,10 +555,19 @@ export default function EmployeeList() {
                         checkedHeaderList={checkedHeaderList}
                         setCheckedHeaderList={setCheckedHeaderList}
                         handleChangePage={(e, newPage) =>
-                          handleChangePage(e, newPage, values?.searchString, values)
+                          handleChangePage(
+                            e,
+                            newPage,
+                            values?.searchString,
+                            values
+                          )
                         }
                         handleChangeRowsPerPage={(e) =>
-                          handleChangeRowsPerPage(e, values?.searchString, values)
+                          handleChangeRowsPerPage(
+                            e,
+                            values?.searchString,
+                            values
+                          )
                         }
                         filterOrderList={filterOrderList}
                         setFilterOrderList={setFilterOrderList}
@@ -572,7 +580,7 @@ export default function EmployeeList() {
                           getData(
                             {
                               current: 1,
-                              pageSize: paginationSize,
+                              pageSize: 100,
                               total: 0,
                             },
                             "false",
