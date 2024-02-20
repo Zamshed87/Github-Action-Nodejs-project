@@ -84,13 +84,12 @@ export const saveOvertime = async (paylaod, setLoading, cb) => {
 // overtime bulk entry
 export const saveBulkUploadOvertimeAction = async (setLoading, data, cb) => {
 
-  console.log(data)
+  // told me maruf bhai to make optional overtime hour
   try {
     let modifiedData = data.map((item) => {
       if (
         !item?.employeeCode ||
-        !item?.strDailyOrMonthly ||
-        !item?.numOverTimeHour
+        !item?.strDailyOrMonthly 
       ) {
         return toast.error("There are some missing or invalid fields");
       }
@@ -126,10 +125,10 @@ export const processBulkUploadOvertimeAction = async (
     let modifiedData = data.map((item) => ({
       employeeCode: `${item["Employee Id"]}`,
       dteOverTimeDate: dateFormatterForInput(item["Date(mm/dd/yyyy)"]),
-      numOverTimeHour: item["Overtime Hour"],
-      strReason: item["Reason"],
-      numOverTimeRate: item["OT Rate"],
-      numOverTimeAmount: item["OT Amount"],
+      numOverTimeHour: item["Overtime Hour"] || 0,
+      strReason: item["Reason"] || "",
+      numOverTimeRate: item["OT Rate"] || 0,
+      numOverTimeAmount: item["OT Amount"] || 0,
       intYear: +dateFormatterForInput(item["Date(mm/dd/yyyy)"]).split("-")[0],
       intMonth: +dateFormatterForInput(item["Date(mm/dd/yyyy)"]).split("-")[1],
       strDailyOrMonthly:
