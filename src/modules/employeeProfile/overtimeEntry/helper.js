@@ -83,6 +83,8 @@ export const saveOvertime = async (paylaod, setLoading, cb) => {
 
 // overtime bulk entry
 export const saveBulkUploadOvertimeAction = async (setLoading, data, cb) => {
+
+  console.log(data)
   try {
     let modifiedData = data.map((item) => {
       if (
@@ -96,7 +98,10 @@ export const saveBulkUploadOvertimeAction = async (setLoading, data, cb) => {
     });
 
     setLoading(true);
-    const res = await axios.post(`/Employee/InsertAllOvertimeBulk`, modifiedData);
+    const res = await axios.post(
+      `/Employee/InsertAllOvertimeBulk`,
+      modifiedData
+    );
     setLoading(false);
     toast.success(res?.data?.message || "Successful");
     cb && cb();
@@ -123,12 +128,14 @@ export const processBulkUploadOvertimeAction = async (
       dteOverTimeDate: dateFormatterForInput(item["Date(mm/dd/yyyy)"]),
       numOverTimeHour: item["Overtime Hour"],
       strReason: item["Reason"],
+      numOverTimeRate: item["OT Rate"],
+      numOverTimeAmount: item["OT Amount"],
       intYear: +dateFormatterForInput(item["Date(mm/dd/yyyy)"]).split("-")[0],
       intMonth: +dateFormatterForInput(item["Date(mm/dd/yyyy)"]).split("-")[1],
       strDailyOrMonthly:
-        item["Daily/Monthly"].trim().charAt(0).toLowerCase() === "m"
+        item["Daily/Monthly"]?.trim().charAt(0).toLowerCase() === "m"
           ? "Monthly"
-          : item["Daily/Monthly"].trim().charAt(0).toLowerCase() === "d"
+          : item["Daily/Monthly"]?.trim().charAt(0).toLowerCase() === "d"
           ? "Daily"
           : "",
       intAccountId: accId,

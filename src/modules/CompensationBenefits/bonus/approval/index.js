@@ -4,7 +4,6 @@ import {
   ArrowBack,
   Cancel,
   CheckCircle,
-  SearchOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -13,7 +12,6 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Chips from "../../../../common/Chips";
-import FormikInput from "../../../../common/FormikInput";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
@@ -24,7 +22,6 @@ import { failColor, successColor } from "../../../../utility/customColor";
 import ResetButton from "./../../../../common/ResetButton";
 import {
   bonusApproveRejectRequest,
-  filterData,
   getBonusGenerateRequestReport,
 } from "./helper";
 
@@ -190,7 +187,7 @@ const BonusApproval = () => {
                                   />
                                 </li>
                               )}
-                              {permission?.isCreate && (
+                              {/* {permission?.isCreate && (
                                 <li style={{ marginRight: "24px" }}>
                                   <FormikInput
                                     classes="search-input fixed-width mt-2 mt-md-0 mb-2 mb-md-0 tableCardHeaderSeach"
@@ -216,7 +213,7 @@ const BonusApproval = () => {
                                     touched={touched}
                                   />
                                 </li>
-                              )}
+                              )} */}
                             </ul>
                           </div>
                         </div>

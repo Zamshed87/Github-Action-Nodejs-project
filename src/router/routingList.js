@@ -31,6 +31,7 @@ import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
+import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
 import { lazy } from "react";
@@ -1440,6 +1441,10 @@ export const routingList = [
   {
     path: "/profile/reports/emloyeeIDCard",
     component: EmployeeIdCardLanding,
+  },
+  {
+    path: "/profile/reports/emloyeeDataChecklist",
+    component: EmpCheckList,
   },
   {
     path: "/administration/configuration/commonapprovalpipeline",
