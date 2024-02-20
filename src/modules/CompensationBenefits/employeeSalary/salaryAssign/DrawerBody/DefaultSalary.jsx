@@ -2,7 +2,13 @@
 import React, { useState } from "react";
 import { IconButton, Tooltip } from "@mui/material";
 import FormikSelect from "../../../../../common/FormikSelect";
-import { gray200, gray400, gray700 } from "../../../../../utility/customColor";
+import {
+  gray200,
+  gray400,
+  gray700,
+  gray900,
+  greenColor,
+} from "../../../../../utility/customColor";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { getBreakdownListDDL, getByIdBreakdownListDDL } from "../helper";
 import Loading from "../../../../../common/loading/Loading";
@@ -10,6 +16,7 @@ import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
 import axios from "axios";
 import { DeleteOutline } from "@mui/icons-material";
 import DefaultInput from "../../../../../common/DefaultInput";
+import FormikCheckBox from "common/FormikCheckbox";
 
 const DefaultSalary = ({ propsObj }) => {
   const {
@@ -753,7 +760,6 @@ const DefaultSalary = ({ propsObj }) => {
                           type="number"
                           className="form-control"
                           onChange={(e) => {
-
                             const netPay =
                               +values?.totalGrossSalary -
                               +e.target.value -
@@ -825,27 +831,132 @@ const DefaultSalary = ({ propsObj }) => {
                     >
                       <div className="col-12"></div>
                       <div className="col-lg-7">
-                        <h2
-                          style={{
-                            fontWeight: "500",
-                            fontSize: "14px",
-                            lineHeight: "20px",
-                            color: gray700,
-                            position: "relative",
-                            top: "-1px",
-                          }}
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ width: "100% !important", fontSize: "12px !important" }}
                         >
-                          {true
-                            ? `Cash (${
-                                values?.netPay === 0
-                                  ? 0
-                                  : (
-                                      (values?.netPay * 100) /
-                                      values?.totalGrossSalary
-                                    )?.toFixed(6)
-                              }%) Pay`
-                            : null}
-                        </h2>
+                          <h2
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                              lineHeight: "20px",
+                              color: gray700,
+                              position: "relative",
+                              top: "-1px",
+                              marginRight: "10px"
+                            }}
+                          >
+                            {true
+                              ? `Cash (${
+                                  values?.netPay === 0
+                                    ? 0
+                                    : (
+                                        (values?.netPay * 100) /
+                                        values?.totalGrossSalary
+                                      )?.toFixed(6)
+                                }%) Pay`
+                              : null}
+                          </h2>
+                          {/* <FormikCheckBox
+                            height="15px"
+                            styleObj={{
+                              color: gray900,
+                              checkedColor: greenColor,
+                              padding: "0px 0px 5px 5px",
+                              // marginLeft: "20px"
+                            }}
+                            checked={values?.roundCash}
+                            value={values?.roundCash}
+                            name="roundCash"
+                            type="checkbox"
+                            className="form-control"
+                            label={"Make Round Cash Pay"}
+                            onChange={(e) => {
+                              function roundAndAdjustPercentages(obj) {
+                                const roundedBankPercentage =
+                                  Math.round(obj.numBankPayInPercent * 100) /
+                                  100;
+                                const roundedCashPercentage =
+                                  Math.round(obj.numCashPayInPercent * 100) /
+                                  100;
+                                const roundedDigitalPercentage =
+                                  Math.round(obj.numDigitalPayInPercent * 100) /
+                                  100;
+
+                                // Calculate the sum of the rounded percentages
+                                const sum =
+                                  roundedBankPercentage +
+                                  roundedCashPercentage +
+                                  roundedDigitalPercentage;
+
+                                // Adjust all percentages proportionally to ensure the sum is 100%
+                                const adjustedBankPercentage =
+                                  (roundedBankPercentage / sum) * 100;
+                                const adjustedCashPercentage =
+                                  (roundedCashPercentage / sum) * 100;
+                                const adjustedDigitalPercentage =
+                                  (roundedDigitalPercentage / sum) * 100;
+
+                                // Return the updated object
+                                return {
+                                  numBankPayInPercent: adjustedBankPercentage,
+                                  numCashPayInPercent: adjustedCashPercentage,
+                                  numDigitalPayInPercent:
+                                    adjustedDigitalPercentage,
+                                };
+                              }
+                              const obj = {
+                                numCashPayInPercent: +(
+                                  (+values?.netPay * 100) /
+                                  +values?.totalGrossSalary
+                                ).toFixed(6),
+                                numBankPayInPercent: +(
+                                  (+values?.bankPay * 100) /
+                                  +values?.totalGrossSalary
+                                ).toFixed(6),
+
+                                numDigitalPayInPercent: +(
+                                  (+values?.digitalPay * 100) /
+                                  +values?.totalGrossSalary
+                                ).toFixed(6),
+                              };
+                              if (e.target.checked) {
+                                console.log("value");
+                                const {
+                                  numBankPayInPercent,
+                                  numCashPayInPercent,
+                                  numDigitalPayInPercent,
+                                } = roundAndAdjustPercentages(obj);
+                                setFieldValue("roundCash", e.target.checked);
+                                setFieldValue(
+                                  "netPay",
+                                  +values?.totalGrossSalary *
+                                    (numCashPayInPercent / 100)
+                                );
+                                setFieldValue(
+                                  "digitalPay",
+                                  +values?.totalGrossSalary *
+                                    (numDigitalPayInPercent / 100)
+                                );
+                                setFieldValue(
+                                  "bankPay",
+                                  +values?.totalGrossSalary *
+                                    (numBankPayInPercent / 100)
+                                );
+                              }
+                              // const bank =
+                              //   +values?.totalGrossSalary -
+                              //   +e.target.value -
+                              //   +values?.digitalPay;
+
+                              // setFieldValue("bankPay", bank);
+                              setFieldValue("roundCash", e.target.checked);
+                            }}
+                            errors={errors}
+                            touched={touched}
+                            // disabled={true}
+                          /> */}
+                        </div>
                       </div>
                       <div className="col-lg-5">
                         <DefaultInput
