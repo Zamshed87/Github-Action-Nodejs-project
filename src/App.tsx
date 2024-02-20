@@ -165,11 +165,12 @@ Axios.interceptors.response.use(
         }
       }
     }
-    if (!isDevServer) { // error block for response 
+    if (!isDevServer) {
+      // error block for response
       const data = _Ad_xcvbn_df__dfg_568_dfghfff_(error?.response?.data);
       const newError = { response: { data } };
       return Promise.reject(newError);
-    }else{
+    } else {
       return Promise.reject(error);
     }
   }
