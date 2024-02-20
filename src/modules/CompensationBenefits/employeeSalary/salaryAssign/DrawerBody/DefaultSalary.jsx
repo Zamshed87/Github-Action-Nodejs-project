@@ -950,7 +950,7 @@ const DefaultSalary = ({ propsObj }) => {
                               //   +values?.digitalPay;
 
                               // setFieldValue("bankPay", bank);
-                              setFieldValue("roundCash", e.target.value);
+                              setFieldValue("roundCash", e.target.checked);
                             }}
                             errors={errors}
                             touched={touched}
