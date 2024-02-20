@@ -34,7 +34,6 @@ const PeopleDeskTable = ({
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  isDevServer && console.log("rowDto", rowDto, "columnData", columnData)
 
   return (
     <>

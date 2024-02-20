@@ -13,6 +13,10 @@ export const policyType = [
     value: 3,
     label: "Salary Range",
   },
+  {
+    value: 4,
+    label: "Calendar Name",
+  },
 ];
 
 export const otDependsOn = [
@@ -44,16 +48,23 @@ type TOTPolicyGenerate = {
   values: any;
   commonData: any;
   matchingData: any;
+  state: any;
 };
 export const OTPolicyGenerate = ({
   commonData,
   values,
-  // matchingData,
-}: TOTPolicyGenerate) => {
-  const { policyType, hrPosition, employmentType } = values;
+}: // matchingData,
+TOTPolicyGenerate) => {
+  const {
+    policyType,
+    hrPosition,
+    employmentType,
+    calendarName,
+    intOtconfigId,
+  } = values;
 
   const policyInfo = {
-    intOtconfigId: values?.intOtconfigId || 0,
+    intOtconfigId: intOtconfigId || 0,
     intMaxOverTimeDaily: values?.maxOverTimeDaily || 0,
     intMaxOverTimeMonthly: values?.maxOverTimeMonthly || 0,
     intOtAmountShouldBe: values?.overtimeAmount,
@@ -64,7 +75,7 @@ export const OTPolicyGenerate = ({
     intOtdependOn: values?.overtimeDependsOn,
     intOverTimeCountFrom: values?.otStartDelay || 0,
     intWorkplaceId: values?.workplace?.value,
-    isOvertimeAutoCalculate: values?.calculateAutoAttendance || false,
+    isOvertimeAutoCalculate: values?.isOvertimeAutoCalculate || false,
     intDevidedWorkingDays: values?.workingDays || 0,
     numFixedAmount: values?.fixedAmount || 0,
     numFromSalary: values?.fromSalary || 0,
@@ -72,12 +83,22 @@ export const OTPolicyGenerate = ({
     strPolicyName: values?.policyName,
     numDevidedFixedHours: values?.fixedBenefitHours || 0,
     isCalendarTimeHours: values?.benefitHours === 1,
+    isHolidayCountAsFullDayOt: values?.count === 1 ? true : false,
+    isOffdayCountAsFullDayOt: values?.count === 2 ? true : false,
+    // intCalenderId: 0,
+    intOTHourShouldBeAboveInMin: values?.intOTHourShouldBeAboveInMin || 0,
   };
-  const payload: any = generateRows(policyType, hrPosition, employmentType, {
-    commonData,
-    policyInfo,
-  });
-
+  const payload: any = generateRows(
+    policyType,
+    hrPosition,
+    employmentType,
+    calendarName,
+    intOtconfigId,
+    {
+      commonData,
+      policyInfo,
+    }
+  );
   return payload;
 };
 
@@ -86,6 +107,8 @@ function generateRows(
   policyType: Option[],
   hrPosition: Option[],
   employmentType: Option[],
+  calendarName: Option[],
+  intOtconfigId: any,
   common: { commonData: any; policyInfo: any }
 ): Option[][] {
   const { commonData, policyInfo } = common;
@@ -126,7 +149,17 @@ function generateRows(
         ...policyInfo,
         intEmploymentTypeId: emp?.value,
         intHrPositionId: 0,
-        intOtconfigId: 0,
+        intOtconfigId: intOtconfigId || 0,
+      });
+    }
+  } else if (policyLabels.includes("Calendar Name")) {
+    for (const emp of calendarName) {
+      rows.push({
+        ...commonData,
+        ...policyInfo,
+        intCalenderId: emp?.value,
+        intHrPositionId: 0,
+        intOtconfigId: intOtconfigId || 0,
       });
     }
   } else {
@@ -228,6 +261,12 @@ export const initDataGenerate = (data: any) => {
       label: "Salary Range",
     });
   }
+  if (data?.intCalenderId) {
+    policyTypeInfo.push({
+      value: 4,
+      label: "Calendar Name",
+    });
+  }
   const formData = {
     policyType: policyTypeInfo,
     policyName: data?.strPolicyName,
@@ -245,6 +284,12 @@ export const initDataGenerate = (data: any) => {
       {
         value: data?.intEmploymentTypeId,
         label: data?.employmentType,
+      },
+    ],
+    calendarName: data?.intCalenderId && [
+      {
+        value: data?.intCalenderId,
+        label: data?.strCalenderName,
       },
     ],
     fromSalary: data?.numFromSalary,
@@ -270,8 +315,17 @@ export const initDataGenerate = (data: any) => {
       (ot) => ot.value === data?.intOtAmountShouldBe
     )?.value,
     calculateAutoAttendance: data?.isOvertimeAutoCalculate,
-
+    intOTHourShouldBeAboveInMin: data?.intOTHourShouldBeAboveInMin,
     intOtconfigId: data?.intOtconfigId,
+    isOvertimeAutoCalculate: data?.isOvertimeAutoCalculate,
+    isHolidayCountAsFullDayOt: data?.isHolidayCountAsFullDayOt,
+    isOffdayCountAsFullDayOt: data?.isOffdayCountAsFullDayOt,
+    count:
+      data?.isHolidayCountAsFullDayOt === true
+        ? 1
+        : data?.isOffdayCountAsFullDayOt === 2
+        ? true
+        : 2,
   };
   return formData;
 };
