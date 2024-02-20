@@ -3,7 +3,10 @@ import { toast } from "react-toastify";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import Chips from "../../../../common/Chips";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
-import { getByIdSalaryAssignDDL, getSalaryAssignDDL } from "./salaryAssignCal";
+import {
+  getByIdSalaryAssignDDLUpdate,
+  getSalaryAssignDDLUpdate,
+} from "./salaryAssignCal";
 
 export const reverseBasedOnBasicPercentage = (basicElement, payrollElement) => {
   let percentage = 0;
@@ -50,7 +53,9 @@ export const getBreakdownListDDL = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceId=${wId || 0}`
+      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceId=${
+        wId || 0
+      }`
     );
     if (res?.data) {
       try {
@@ -60,13 +65,18 @@ export const getBreakdownListDDL = async (
           }`
         );
         if (resBasicAllowance?.data) {
-          getSalaryAssignDDL(
-            accId,
-            res,
-            grossSalaryAmount,
-            setter,
-            resBasicAllowance?.data
-          );
+          // getSalaryAssignDDL(
+          //   accId,
+          //   res,
+          //   grossSalaryAmount,
+          //   setter,
+          //   resBasicAllowance?.data
+          // );
+          getSalaryAssignDDLUpdate({
+            breakDownList: res?.data,
+            grossSalaryAmount: grossSalaryAmount,
+            setBreakDownList: setter,
+          });
           setLoading && setLoading(false);
         }
       } catch (error) {
@@ -170,7 +180,9 @@ export const getByIdBreakdownListDDL = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntEmployeeId=${employeeId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceId=${wId || 0}`
+      `/Payroll/BreakdownNPolicyForSalaryAssign?StrReportType=${reportType}&IntAccountId=${accId}&IntEmployeeId=${employeeId}&IntSalaryBreakdownHeaderId=${id}&IntWorkplaceId=${
+        wId || 0
+      }`
     );
     if (res?.data) {
       try {
@@ -180,13 +192,14 @@ export const getByIdBreakdownListDDL = async (
           }`
         );
         if (resBasicAllowance?.data) {
-          getByIdSalaryAssignDDL(
-            accId,
-            res,
-            grossSalaryAmount,
-            setter,
-            resBasicAllowance?.data
-          );
+          // getByIdSalaryAssignDDL(
+          //   accId,
+          //   res,
+          //   grossSalaryAmount,
+          //   setter,
+          //   resBasicAllowance?.data
+          // );
+          getByIdSalaryAssignDDLUpdate(res, grossSalaryAmount, setter);
           setLoading && setLoading(false);
         }
       } catch (error) {
