@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import Drawer from "@mui/material/Drawer";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -15,10 +15,10 @@ import { toast } from "react-toastify";
 import Loading from "../../../../common/loading/Loading";
 
 // initial date
-let date = new Date();
-let initYear = date.getFullYear(); // 2022
-let initMonth = date.getMonth() + 1; // 6
-let modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
+const date = new Date();
+const initYear = date.getFullYear(); // 2022
+const initMonth = date.getMonth() + 1; // 6
+const modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
 
 export default function SalaryDrawer(props) {
   const {
@@ -60,32 +60,6 @@ export default function SalaryDrawer(props) {
   const [totalAmount, setTotalAmount] = useState(0);
   const [finalTotalAmount, setFinalTotalAmount] = useState(0);
 
-  // const closeHandler = () => {
-  //    let confirmObject = {
-  //       closeOnClickOutside: false,
-  //       message: `Are you sure?`,
-  //       yesAlertFunc: () => {
-  //          setIsOpen(false);
-  //          if (defaultPayrollElement?.length > 0) {
-  //             getBreakdownListDDL(
-  //                "BREAKDOWN ELEMENT BY ID",
-  //                orgId,
-  //                buId,
-  //                defaultPayrollElement[0]?.value,
-  //                defaultPayrollElement[0]?.isManually,
-  //                0,
-  //                setBreakDownList
-  //             );
-  //          } else {
-  //             setBreakDownList([]);
-  //          }
-  //       },
-  //       noAlertFunc: () => {
-
-  //       },
-  //    };
-  //    IConfirmModal(confirmObject);
-  // };
 
   const { handleSubmit, resetForm, values, errors, touched, setFieldValue } =
     useFormik({
@@ -168,7 +142,7 @@ export default function SalaryDrawer(props) {
 
   useEffect(() => {
     if (breakDownList?.length > 0) {
-      let amount = breakDownList
+      const amount = breakDownList
         .filter((itm) => itm?.strBasedOn === "Amount")
         .reduce((sum, itm) => sum + +itm?.numAmount, 0);
       setTotalAmount(amount);
@@ -186,7 +160,7 @@ export default function SalaryDrawer(props) {
   const addHandler = (values) => {
     if (!values?.employee) return toast.warn("Please select employee");
 
-    let existEmployee = selectedEmployee.filter(
+    const existEmployee = selectedEmployee.filter(
       (item) => item?.EmployeeCode === values?.employee?.EmployeeCode
     );
 
@@ -216,11 +190,11 @@ export default function SalaryDrawer(props) {
       };
     });
 
-    let filterArray = modifyArr.filter((itm) => itm?.strBasedOn === "Amount");
+    const filterArray = modifyArr.filter((itm) => itm?.strBasedOn === "Amount");
 
-    let amount = filterArray.reduce((sum, itm) => sum + itm?.numAmount, 0);
+    const amount = filterArray.reduce((sum, itm) => sum + itm?.numAmount, 0);
 
-    let amountTotal = modifyArr.reduce((sum, itm) => sum + itm?.numAmount, 0);
+    const amountTotal = modifyArr.reduce((sum, itm) => sum + itm?.numAmount, 0);
 
     setTotalAmount(amount);
 
@@ -233,7 +207,7 @@ export default function SalaryDrawer(props) {
     if (!values?.payrollElement) {
       return toast.warning("Payroll Element is required!!!");
     }
-    let grossCal = +values?.bankPay + +values?.netPay + +values?.digitalPay;
+    const grossCal = +values?.bankPay + +values?.netPay + +values?.digitalPay;
 
     if (
       !values?.payrollElement?.isPerday &&
@@ -407,11 +381,13 @@ export default function SalaryDrawer(props) {
             (+values?.bankPay * 100) /
             +values?.totalGrossSalary
           ).toFixed(6),
-
           numDigitalPayInPercent: +(
             (+values?.digitalPay * 100) /
             +values?.totalGrossSalary
           ).toFixed(6),
+          numCashPayInAmount: +values?.netPay,
+          numBankPayInAmount:+values?.bankPay,
+          numDigitalPayInAmount: +values?.digitalPay,
         };
         // const roundValue = roundAndAdjustPercentages({
         //   numCashPayInPercent: +(
@@ -453,6 +429,9 @@ export default function SalaryDrawer(props) {
             (+values?.digitalPay * 100) /
             +values?.totalGrossSalary
           ).toFixed(6),
+          numCashPayInAmount: +values?.netPay,
+          numBankPayInAmount:+values?.bankPay,
+          numDigitalPayInAmount: +values?.digitalPay,
         };
         // const roundValue = roundAndAdjustPercentages({
         //   numCashPayInPercent: +(

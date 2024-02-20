@@ -191,7 +191,6 @@ const PopoverDropdown = ({
   //   });
   // }, [rowDto]);
 
- isDevServer && console.log({columnData, currentFilterSelection, temp, checkedHeaderList, rowDto })
 
   return (
     <Popover
