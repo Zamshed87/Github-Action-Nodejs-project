@@ -123,6 +123,8 @@ export const setHeaderListDataDynamically = ({
   setEmpLanding = null,
   setPages,
 }) => {
+  const allHeadData = response?.[headerListKey];
+   
   if (currentFilterSelection !== -1) {
     if (
       currentFilterSelection !== -1 &&
@@ -130,7 +132,7 @@ export const setHeaderListDataDynamically = ({
     ) {
       const currentList = headerList[`${currentFilterSelection}List`];
       setHeaderList({
-        ...response[headerListKey],
+        ...allHeadData,
         [`${currentFilterSelection}List`]: currentList,
       });
     } else {
@@ -141,26 +143,31 @@ export const setHeaderListDataDynamically = ({
         setHeaderList({
           ...initialHeaderListData,
         });
+        const currentList2 = allHeadData?.[`${currentFilterSelection}List`]; // for reseting the column data 
+        setHeaderList({
+          ...allHeadData,
+          [`${currentFilterSelection}List`]: currentList2,
+        });
       } else if (index === 1) {
         setHeaderList({
-          ...response[headerListKey],
+          ...allHeadData,
           [`${filterOrderList[index - 1]}List`]:
             initialHeaderListData[`${filterOrderList[index - 1]}List`],
         });
       } else {
-        setHeaderList(response[headerListKey]);
+        setHeaderList(allHeadData);
       }
     }
   } else if (currentFilterSelection === -1) {
-    setInitialHeaderListData(response[headerListKey]);
-    setHeaderList(response[headerListKey]);
+    setInitialHeaderListData(allHeadData);
+    setHeaderList(allHeadData);
   }
 
   if (
     currentFilterSelection !== -1 &&
     checkedHeaderList[`${currentFilterSelection}List`]?.length === 0
   ) {
-    let updatedFilterOrderList = filterOrderList?.filter(
+    const updatedFilterOrderList = filterOrderList?.filter(
       (item) => item !== currentFilterSelection
     );
     setFilterOrderList(updatedFilterOrderList);
