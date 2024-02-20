@@ -7,10 +7,17 @@ import {
 import { Tooltip } from "@mui/material";
 import axios from "axios";
 import AvatarComponent from "common/AvatarComponent";
+import Chips from "common/Chips";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 import { getPDFAction } from "utility/downloadFile";
 import { numberWithCommas } from "utility/numberWithCommas";
+
+const statusDDL = [
+  { value: 0, label: "All" },
+  { value: 1, label: "Pending" },
+  { value: 2, label: "Done" },
+];
 
 const initData = {
   employee: "",
@@ -200,6 +207,7 @@ const updatePayrollElementByIndex = ({
 const getFinalSettlementLanding = async (
   accId,
   buId,
+  statusId,
   setter,
   setLoading,
   setAllData
@@ -207,7 +215,7 @@ const getFinalSettlementLanding = async (
   setLoading(true);
   try {
     const res = await axios.get(
-      `/SaasMasterData/GetEmpFinalSettlementLanding?AccountId=${accId}&intBusinessUnitId=${buId}`
+      `/SaasMasterData/GetEmpFinalSettlementLanding?AccountId=${accId}&intBusinessUnitId=${buId}&Status=${statusId}`
     );
     if (res?.data) {
       setter(res?.data);
@@ -331,37 +339,60 @@ const finalSettlementColumns = (
       width: "200px",
     },
     {
+      title: "Status",
+      dataIndex: "status",
+      sort: true,
+      filter: false,
+      render: (item, record) => (
+        <>
+          {record?.status === "Done" && (
+            <Chips label="Done" classess="success p-2" />
+          )}
+          {record?.status === "Pending" && (
+            <Chips label="Pending" classess="warning p-2" />
+          )}
+        </>
+      ),
+      fieldType: "string",
+      width: "100px",
+      className: "text-center",
+    },
+    {
       title: "Action",
       dataIndex: "Status",
       render: (data, record) => (
         <div className="d-flex align-items-center">
-          <Tooltip title="Edit" arrow>
-            <button
-              type="button"
-              className="iconButton"
-              onClick={(e) => {
-                e.stopPropagation();
-                history.push(
-                  `/profile/finalSettlement/edit/${record?.intFinalSettlementId}`,
-                  { employeeId: record?.intEmployeeId }
-                );
-              }}
-            >
-              <CreateOutlined />
-            </button>
-          </Tooltip>
-          <Tooltip title="Delete" arrow>
-            <button
-              type="button"
-              className="iconButton mt-0 mt-md-2 mt-lg-0"
-              onClick={(e) => {
-                e.stopPropagation();
-                demoPopup(record?.intFinalSettlementId);
-              }}
-            >
-              <DeleteOutlined />
-            </button>
-          </Tooltip>
+          {record?.status === "Pending" && (
+            <>
+              <Tooltip title="Edit" arrow>
+                <button
+                  type="button"
+                  className="iconButton"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    history.push(
+                      `/profile/finalSettlement/edit/${record?.intFinalSettlementId}`,
+                      { employeeId: record?.intEmployeeId }
+                    );
+                  }}
+                >
+                  <CreateOutlined />
+                </button>
+              </Tooltip>
+              <Tooltip title="Delete" arrow>
+                <button
+                  type="button"
+                  className="iconButton mt-0 mt-md-2 mt-lg-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    demoPopup(record?.intFinalSettlementId);
+                  }}
+                >
+                  <DeleteOutlined />
+                </button>
+              </Tooltip>
+            </>
+          )}
           <Tooltip title="View" arrow>
             <button
               type="button"
@@ -411,6 +442,7 @@ export {
   mapPayrollElementPaymentForFinalSattlement,
   saveEmpFinalSettlement,
   settlementData,
+  statusDDL,
   updatePayrollElementByIndex
 };
 
