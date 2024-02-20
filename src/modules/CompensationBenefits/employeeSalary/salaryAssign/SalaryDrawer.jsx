@@ -413,23 +413,23 @@ export default function SalaryDrawer(props) {
             +values?.totalGrossSalary
           ).toFixed(6),
         };
-        const roundValue = roundAndAdjustPercentages({
-          numCashPayInPercent: +(
-            (+values?.netPay * 100) /
-            +values?.totalGrossSalary
-          ).toFixed(6),
-          numBankPayInPercent: +(
-            (+values?.bankPay * 100) /
-            +values?.totalGrossSalary
-          ).toFixed(6),
+        // const roundValue = roundAndAdjustPercentages({
+        //   numCashPayInPercent: +(
+        //     (+values?.netPay * 100) /
+        //     +values?.totalGrossSalary
+        //   ).toFixed(6),
+        //   numBankPayInPercent: +(
+        //     (+values?.bankPay * 100) /
+        //     +values?.totalGrossSalary
+        //   ).toFixed(6),
 
-          numDigitalPayInPercent: +(
-            (+values?.digitalPay * 100) /
-            +values?.totalGrossSalary
-          ).toFixed(6)
-        })
-        console.log({payload, roundValue, text: "defaultPayrollElement?.length > 0"})
-        // createEmployeeSalaryAssign(payload, setLoading, callback);
+        //   numDigitalPayInPercent: +(
+        //     (+values?.digitalPay * 100) /
+        //     +values?.totalGrossSalary
+        //   ).toFixed(6)
+        // })
+        // console.log({payload, roundValue, text: "defaultPayrollElement?.length > 0"})
+        createEmployeeSalaryAssign(payload, setLoading, callback);
       } else {
         payload = {
           ...payload,

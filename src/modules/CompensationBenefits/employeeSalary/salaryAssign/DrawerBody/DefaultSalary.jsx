@@ -857,7 +857,7 @@ const DefaultSalary = ({ propsObj }) => {
                                 }%) Pay`
                               : null}
                           </h2>
-                          <FormikCheckBox
+                          {/* <FormikCheckBox
                             height="15px"
                             styleObj={{
                               color: gray900,
@@ -955,7 +955,7 @@ const DefaultSalary = ({ propsObj }) => {
                             errors={errors}
                             touched={touched}
                             // disabled={true}
-                          />
+                          /> */}
                         </div>
                       </div>
                       <div className="col-lg-5">
