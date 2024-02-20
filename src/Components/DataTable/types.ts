@@ -3,6 +3,7 @@ import type { ColumnsType } from "antd/es/table";
 import React from "react";
 
 export type TDataTableProps = {
+  customPaginationSize?: number;
   wrapperClassName?: string;
   customScrollBar?: "thin";
   title?: string | React.ReactElement;
