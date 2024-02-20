@@ -110,8 +110,8 @@ const OvertimeBulkEntry = () => {
                     downloadFile(
                       `${
                         isDevServer
-                          ? "/document/downloadfile?id=20"
-                          : "/document/downloadfile?id=20"
+                          ? "/document/downloadfile?id=143"
+                          : "/document/downloadfile?id=151"
                       }`,
                       "Overtime Bulk Upload",
                       "xlsx",
@@ -156,6 +156,12 @@ const OvertimeBulkEntry = () => {
                         <div>Overtime Hour</div>
                       </th>
                       <th>
+                        <div>OT Rate</div>
+                      </th>
+                      <th>
+                        <div>OT Amount</div>
+                      </th>
+                      <th>
                         <div>Reason</div>
                       </th>
                     </tr>
@@ -186,6 +192,16 @@ const OvertimeBulkEntry = () => {
                         <td>
                           <div className="content tableBody-title">
                             {item?.numOverTimeHour}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="content tableBody-title">
+                            {item?.numOverTimeRate}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="content tableBody-title">
+                            {item?.numOverTimeAmount}
                           </div>
                         </td>
                         <td>

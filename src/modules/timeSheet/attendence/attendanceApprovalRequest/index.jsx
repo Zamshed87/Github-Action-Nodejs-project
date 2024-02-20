@@ -259,49 +259,6 @@ export default function AttendanceApprovalRequest() {
                           errors={errors}
                           touched={touched}
                         />
-
-                        {/* <FormikSelect
-                          classes="input-sm"
-                          name="inputFieldType"
-                          options={monthAndYearDDL || []}
-                          value={values?.inputFieldType}
-                          onChange={(valueOption) => {
-                            getManualAttendanceApprovalList(
-                              "MonthlyAttendanceSummaryByEmployeeId",
-                              buId,
-                              employeeId,
-                              valueOption?.label?.split(" ")[1],
-                              valueOption?.value,
-                              setLoading,
-                              setTableData
-                            );
-                            setFieldValue("inputFieldType", valueOption);
-                            setDDLMonth(valueOption?.value);
-                            setDDLYear(valueOption?.label?.split(" ")[1]);
-                          }}
-                          placeholder=" "
-                          isClearable={false}
-                          styles={{
-                            ...customStyles,
-                            control: (provided, state) => ({
-                              ...provided,
-                              minHeight: "30px",
-                              height: "30px",
-                              borderRadius: "4px",
-                              border: `1px solid ${gray300}`,
-                              ":hover": {
-                                border: `1px solid ${gray600}!important`,
-                              },
-                              ":focus": {
-                                border: `1px solid ${success500}!important`,
-                              },
-                              boxShadow: `${success500}!important`,
-                              width: "175px",
-                            }),
-                          }}
-                          errors={errors}
-                          touched={touched}
-                        /> */}
                       </li>
                     </ul>
                   </div>
@@ -345,6 +302,8 @@ export default function AttendanceApprovalRequest() {
                           <th scope="col">Date</th>
                           <th>In-Time</th>
                           <th>Out-Time</th>
+                          <th>Manual In-Time</th>
+                          <th>Manual Out-Time</th>
                           <th className="text-center">Actual Attendence</th>
                           <th className="text-center">Request Attendence</th>
                           <th>Remarks</th>
