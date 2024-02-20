@@ -26,7 +26,7 @@ const initData = {
 };
 
 const ExpenseApplicationApproval = () => {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -49,7 +49,8 @@ const ExpenseApplicationApproval = () => {
         isLineManager: true,
         isUserGroup: true,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,

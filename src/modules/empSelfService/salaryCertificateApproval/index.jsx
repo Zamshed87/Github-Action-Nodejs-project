@@ -24,7 +24,7 @@ const initData = {
 };
 
 const SalaryCertificateApproval = () => {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -46,11 +46,11 @@ const SalaryCertificateApproval = () => {
         isLineManager: true,
         isUserGroup: true,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         workplaceId: wId,
-        businessUnitId: 0,
         applicantId: 0,
         accountId: orgId,
         intId: 0,

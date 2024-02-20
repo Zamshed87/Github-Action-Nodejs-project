@@ -34,7 +34,7 @@ const initData = {
 };
 
 export default function MarketVistApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -51,7 +51,8 @@ export default function MarketVistApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         workplaceId: wId,
         departmentId: 0,
         designationId: 0,
@@ -85,7 +86,8 @@ export default function MarketVistApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         workplaceId: wId,
         departmentId: 0,
         designationId: 0,
@@ -170,7 +172,8 @@ export default function MarketVistApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
           workplaceId: wId,
           departmentId: 0,
           designationId: 0,

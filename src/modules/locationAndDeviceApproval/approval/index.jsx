@@ -40,7 +40,7 @@ const initData = {
 };
 
 export default function LocationAndDeviceApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -59,7 +59,8 @@ export default function LocationAndDeviceApproval() {
         isSupOrLineManager: 0,
         approverId: employeeId,
         workplaceId: wId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
