@@ -12,12 +12,14 @@ export const getBonusSetupLanding = async (payload, setter, setLoading) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(`/Employee/BonusAllLanding`, payload);
-    if (res?.data) {
+    if (res?.data?.length > 0) {
       const modified = res?.data?.map((item) => ({
         ...item,
         statusValue: item?.isActive ? "Active" : "Inactive",
       }));
       modified?.length > 0 && setter(modified);
+    } else {
+      setter([]);
     }
 
     // setter(res?.data);

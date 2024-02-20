@@ -657,7 +657,7 @@ const CreateAndEditEmploye = () => {
                     ]}
                     // disabled={params?.id}
                     disabled={
-                      empId && (!employeeFeature?.isEdit || isOfficeAdmin)
+                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
                     }
                   />
                 </Col>
@@ -672,7 +672,7 @@ const CreateAndEditEmploye = () => {
                     ]}
                     // disabled={params?.id}
                     disabled={
-                      empId && (!employeeFeature?.isEdit || isOfficeAdmin)
+                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
                     }
                   />
                 </Col>
@@ -686,7 +686,7 @@ const CreateAndEditEmploye = () => {
                       // rules={[{ required: true, message: "Employee ID is required" }]}
                       // disabled={params?.id}
                       disabled={
-                        empId && (!employeeFeature?.isEdit || isOfficeAdmin)
+                        empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
                       }
                     />
                   </Col>
@@ -721,7 +721,7 @@ const CreateAndEditEmploye = () => {
                     ]}
                     // disabled={params?.id}
                     disabled={
-                      empId && (!employeeFeature?.isEdit || isOfficeAdmin)
+                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
                     }
                   />
                 </Col>
@@ -753,7 +753,7 @@ const CreateAndEditEmploye = () => {
                     ]}
                     // disabled={params?.id}
                     disabled={
-                      empId && (!employeeFeature?.isEdit || isOfficeAdmin)
+                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
                     }
                   />
                 </Col>
@@ -776,7 +776,7 @@ const CreateAndEditEmploye = () => {
                     ]}
                     // disabled={params?.id}
                     disabled={
-                      empId && (!employeeFeature?.isEdit || isOfficeAdmin)
+                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
                     }
                   />
                 </Col>
@@ -1012,7 +1012,7 @@ const CreateAndEditEmploye = () => {
                     ]}
                   />
                 </Col>
-                {empId && (!employeeFeature?.isEdit || !isOfficeAdmin) ? (
+                {empId && (employeeFeature?.isEdit || isOfficeAdmin) ? (
                   <Col className="mt-2" md={6} sm={24}>
                     <PSelect
                       options={employeeStatusDDL?.data || []}
@@ -1050,7 +1050,7 @@ const CreateAndEditEmploye = () => {
                     // ]}
                     // disabled={params?.id}
                     disabled={
-                      empId && (!employeeFeature?.isEdit || isOfficeAdmin)
+                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
                     }
                   />
                 </Col>
@@ -1067,9 +1067,7 @@ const CreateAndEditEmploye = () => {
                     }}
                     // rules={[{ required: true, message: "Gender is required" }]}
                     // disabled={params?.id}
-                    disabled={
-                      empId && (!employeeFeature?.isEdit || isOfficeAdmin)
-                    }
+                    disabled={empId && !isOfficeAdmin}
                   />
                 </Col>
                 <Col md={6} sm={24}>
