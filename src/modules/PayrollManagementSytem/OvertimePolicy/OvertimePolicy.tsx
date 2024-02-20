@@ -67,6 +67,10 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
       title: "Employment Type",
       dataIndex: "employmentType",
     },
+    {
+      title: "Calendar Name",
+      dataIndex: "strCalenderName",
+    },
 
     {
       title: "Action",
