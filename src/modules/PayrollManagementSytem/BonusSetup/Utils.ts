@@ -14,7 +14,7 @@ export const bounusDependsOnList = [
   { value: 2, label: "Basic" },
 ];
 
-export const payloadGenerate = (values: any) => {
+export const payloadGenerate = (values: any, wgId: number, wgName: string) => {
   const data = {
     intBonusSetupId: 0,
     strPartName: "BonusSetupCreate",
@@ -27,6 +27,8 @@ export const payloadGenerate = (values: any) => {
     isServiceLengthInDays: values?.serviceLengthType?.value === 1,
     workPlaceId: values?.workplace?.value,
     workPlaceName: values?.workplace?.label,
+    workPlaceGroupId: wgId,
+    workPlaceGroupName: wgName,
     employmentTypeList: values?.employmentType?.map((type: any) => ({
       intEmploymentTypeId: type?.value,
       strEmploymentType: type?.label,

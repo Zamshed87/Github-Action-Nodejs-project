@@ -28,7 +28,7 @@ export default function BonusSetupLanding() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -61,7 +61,8 @@ export default function BonusSetupLanding() {
         intBusinessUnitId: buId,
         intBonusId: 0,
         intPayrollGroupId: 0,
-        intWorkplaceGroupId: 0,
+        intWorkplaceGroupId: wgId,
+        intWorkplaceId: wId,
         intReligionId: 0,
         dteEffectedDate: todayDate(),
         intCreatedBy: employeeId,
@@ -80,7 +81,8 @@ export default function BonusSetupLanding() {
         intBusinessUnitId: buId,
         intBonusId: 0,
         intPayrollGroupId: 0,
-        intWorkplaceGroupId: 0,
+        intWorkplaceGroupId: wgId,
+        intWorkplaceId: wId,
         intReligionId: 0,
         dteEffectedDate: todayDate(),
         intCreatedBy: employeeId,
@@ -88,13 +90,13 @@ export default function BonusSetupLanding() {
       setRowDto,
       setLoading
     );
-  }, [orgId, buId, employeeId]);
+  }, [orgId, buId, employeeId, wId, wgId]);
 
   const { setFieldValue, handleSubmit } = useFormik({
     enableReinitialize: true,
     // validationSchema: validationSchema,
     initialValues: initData,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: (values, { resetForm }) => {
       resetForm(initData);
     },
   });
