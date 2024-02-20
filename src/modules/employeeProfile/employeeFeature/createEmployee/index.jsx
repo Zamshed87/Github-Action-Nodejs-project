@@ -529,6 +529,7 @@ const CreateAndEditEmploye = () => {
         form={form}
         initialValues={{
           generateDate: moment(todayDate()),
+          salaryType: { value: 2, label: "Hourly" },
         }}
       >
         <PCard>
