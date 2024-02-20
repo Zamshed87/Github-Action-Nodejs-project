@@ -31,7 +31,7 @@ const initData = {
 };
 
 export default function RequisitionApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -53,6 +53,8 @@ export default function RequisitionApproval() {
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
       },
 
       setApplicationListData,

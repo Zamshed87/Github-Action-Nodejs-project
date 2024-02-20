@@ -34,7 +34,7 @@ const initData = {
 };
 
 export default function RemoteAttendanceApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -52,7 +52,8 @@ export default function RemoteAttendanceApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,

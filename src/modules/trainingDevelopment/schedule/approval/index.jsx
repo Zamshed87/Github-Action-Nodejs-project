@@ -30,7 +30,7 @@ const initData = {
 };
 
 export default function TrainingScheduleApproval() {
-  const { employeeId, isOfficeAdmin, orgId, buId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, buId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -59,7 +59,7 @@ export default function TrainingScheduleApproval() {
         approverId: employeeId,
         workplaceId: wId,
         businessUnitId: buId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,

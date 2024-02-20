@@ -55,7 +55,7 @@ const initData = {
 };
 
 export default function SalaryGenerateApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -72,7 +72,8 @@ export default function SalaryGenerateApproval() {
       {
         approverId: employeeId,
         intId: 0,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,

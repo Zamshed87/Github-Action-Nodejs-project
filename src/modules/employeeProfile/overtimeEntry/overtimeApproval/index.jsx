@@ -50,7 +50,7 @@ const initData = {
 };
 
 export default function OvertimeApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -70,7 +70,8 @@ export default function OvertimeApproval() {
     const payload = {
       approverId: employeeId,
       intId: 0,
-      workplaceGroupId: 0,
+      workplaceGroupId: wgId,
+      businessUnitId: buId,
       departmentId: 0,
       designationId: 0,
       applicantId: 0,

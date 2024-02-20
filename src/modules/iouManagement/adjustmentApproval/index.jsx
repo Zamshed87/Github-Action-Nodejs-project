@@ -52,7 +52,7 @@ const initData = {
 };
 
 export default function AdjustmentIOUApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -90,7 +90,8 @@ export default function AdjustmentIOUApproval() {
         isLineManager: false,
         isUserGroup: false,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         workplaceId: wId,
         departmentId: 0,
         designationId: 0,
