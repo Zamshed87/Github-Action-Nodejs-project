@@ -70,7 +70,7 @@ function EmployeeFeatureNew() {
       workplaceGroupId: wgId,
       workplaceId: wId,
       pageNo: pagination?.current || 1,
-      pageSize: pagination?.pageSize || 25,
+      pageSize: pagination?.pageSize || 100,
       isPaginated: true,
       isHeaderNeed: true,
       searchTxt: searchText || "",
