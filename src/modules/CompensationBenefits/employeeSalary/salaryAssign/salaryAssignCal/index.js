@@ -118,7 +118,6 @@ export const getSalaryAssignDDL = (
         .split(" ")
         .join(""),
     };
-    console.log({ returnObj });
     return returnObj;
   });
 
@@ -186,7 +185,6 @@ export const getByIdSalaryAssignDDL = (
     if (itm?.strSalaryBreakdownTitle !== "Corporate") {
       // basic salary
       if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
-        console.log("basic dependcy");
 
         modifyObj = {
           [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
@@ -194,7 +192,6 @@ export const getByIdSalaryAssignDDL = (
           numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
           showPercentage: itm?.numNumberOfPercent,
         };
-        console.log({ modifyObj }, "basic");
       }
 
       // basic dependency
@@ -222,14 +219,12 @@ export const getByIdSalaryAssignDDL = (
         itm?.strDependOn === "Gross" &&
         !itm?.isBasicSalary
       ) {
-        console.log("gross dependcy");
         modifyObj = {
           [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
             (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
           numAmount: (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
           showPercentage: itm?.numNumberOfPercent,
         };
-        console.log({ modifyObj });
       }
       // Percentage && Percentage dependency 🔥🔥⚠ what is this ? 17/01/24
       // if (
@@ -264,7 +259,6 @@ export const getByIdSalaryAssignDDL = (
       intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
       levelVariable: itm?.strSalaryElement.toLowerCase().split(" ").join(""),
     };
-    console.log({ returnObj });
     return returnObj;
   });
   setter(modifyData);
@@ -276,13 +270,10 @@ export const getSalaryAssignDDLUpdate = ({
   setBreakDownList,
   salaryDependsOn = "",
 }) => {
-  console.log("getSalaryAssignDDLUpdate");
-  const list = [];
   const sorting = breakDownList
     ?.slice()
     ?.sort((a, b) => b?.numNumberOfPercent - a?.numNumberOfPercent);
   const modifyData = [];
-  console.log({ sorting, breakDownList });
   // modifyData = breakDownList?.map((itm) => {
   //   return {
   //     ...itm,
@@ -310,7 +301,6 @@ export const getSalaryAssignDDLUpdate = ({
       sorting?.[sorting?.length - 1]?.strPayrollElementName !==
       itm?.strPayrollElementName
     ) {
-      console.log("first checking..");
       const obj = {
         ...itm,
         [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
@@ -333,13 +323,11 @@ export const getSalaryAssignDDLUpdate = ({
       };
       modifyData.push(obj);
     } else {
-      console.log("else checking..");
       const totalAmountExcepLowElement = modifyData?.reduce(
         (acc, curr) => acc + +curr?.numAmount,
         0
       );
       const restAmount = grossSalaryAmount - totalAmountExcepLowElement;
-      console.log({totalAmountExcepLowElement, restAmount})
       const obj = {
         ...itm,
         [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
@@ -385,15 +373,11 @@ export const getByIdSalaryAssignDDLUpdate = (
   grossSalaryAmount,
   setter
 ) => {
-  console.log({ res, grossSalaryAmount });
   const list = [];
   const sorting = res?.data
     ?.slice()
     ?.sort((a, b) => b?.numNumberOfPercent - a?.numNumberOfPercent);
-  console.log({ sorting });
   res?.data?.forEach((itm) => {
-    console.log({ itm });
-
     if (
       sorting?.[sorting?.length - 1]?.strPayrollElementName !==
       itm?.strPayrollElementName
@@ -425,9 +409,7 @@ export const getByIdSalaryAssignDDLUpdate = (
         (acc, curr) => acc + +curr?.numAmount,
         0
       );
-      console.log({ totalAmountExcepLowElement });
       const restAmount = grossSalaryAmount - totalAmountExcepLowElement;
-
       const lowestObj = {
         ...itm,
         [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
@@ -470,6 +452,5 @@ export const getByIdSalaryAssignDDLUpdate = (
       list.push(lowestObj);
     }
   });
-  console.log({ list });
   setter(list);
 };
