@@ -15,7 +15,15 @@ import {
   deleteFinalSettlement,
   finalSettlementColumns,
   getFinalSettlementLanding,
+  statusDDL,
 } from "./utility/utils";
+import { customStyles } from "utility/selectCustomStyle";
+import FormikSelect from "common/FormikSelect";
+import { useFormik } from "formik";
+
+const initData = {
+  status: { value: 0, label: "All" },
+};
 
 const FinalSettlement = () => {
   const history = useHistory();
@@ -45,6 +53,13 @@ const FinalSettlement = () => {
   const [searchString, setSearchString] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // useFormik
+  const { setFieldValue, values, handleSubmit, errors, touched } = useFormik({
+    enableReinitialize: true,
+    initialValues: initData,
+    // onSubmit: (values, { setSubmitting, resetForm }) => {},
+  });
+
   const searchData = (keywords) => {
     try {
       if (!keywords) {
@@ -67,7 +82,7 @@ const FinalSettlement = () => {
   };
 
   const getData = () => {
-    getFinalSettlementLanding(orgId, buId, setRowDto, setLoading, setAllData);
+    getFinalSettlementLanding(orgId, buId, values?.status?.value || 0, setRowDto, setLoading, setAllData);
   };
 
   const demoPopup = (stlmntId) => {
@@ -102,82 +117,119 @@ const FinalSettlement = () => {
   return permission?.isView ? (
     <>
       {loading && <Loading />}
-      <div className="table-card">
-        <div className="table-card-heading" style={{ marginBottom: "2px" }}>
-          <div className="d-flex align-items-center">
-            {rowDto?.length > 0 ? (
-              <h6 className="count">Total {rowDto?.length} employees</h6>
-            ) : (
-              <h6 className="count">Total result 0</h6>
-            )}
+      <form onSubmit={handleSubmit}>
+        <div className="table-card">
+          <div className="table-card-heading" style={{ marginBottom: "2px" }}>
+            <div className="d-flex align-items-center">
+              {rowDto?.length > 0 ? (
+                <h6 className="count">Total {rowDto?.length} employees</h6>
+              ) : (
+                <h6 className="count">Total result 0</h6>
+              )}
+            </div>
+            <ul className="d-flex flex-wrap">
+              <li>
+                <MasterFilter
+                  styles={{
+                    marginRight: "10px",
+                  }}
+                  inputWidth="200px"
+                  width="200px"
+                  value={searchString}
+                  setValue={(value) => {
+                    setSearchString(value);
+                    searchData(value);
+                  }}
+                  cancelHandler={() => {
+                    setSearchString("");
+                  }}
+                  isHiddenFilter
+                  placeholder="Employee Name or ID"
+                />
+              </li>
+              <li>
+                <PrimaryButton
+                  customStyle={{ minWidth: "150px" }}
+                  type="button"
+                  className="btn btn-green flex-center"
+                  label={"Make Clearance"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!permission?.isCreate)
+                      return toast.warn("You don't have permission");
+                    history.push(`/profile/finalSettlement/create`);
+                  }}
+                />
+              </li>
+            </ul>
           </div>
-          <ul className="d-flex flex-wrap">
-            <li>
-              <MasterFilter
-                styles={{
-                  marginRight: "10px",
-                }}
-                inputWidth="200px"
-                width="200px"
-                value={searchString}
-                setValue={(value) => {
-                  setSearchString(value);
-                  searchData(value);
-                }}
-                cancelHandler={() => {
-                  setSearchString("");
-                }}
-                isHiddenFilter
-                placeholder="Employee Name or ID"
-              />
-            </li>
-            <li>
-              <PrimaryButton
-                customStyle={{ minWidth: "150px" }}
-                type="button"
-                className="btn btn-green flex-center"
-                label={"Make Clearance"}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  history.push(`/profile/finalSettlement/create`);  
-                }}
-              />
-            </li>
-          </ul>
-        </div>
-        <div className="table-card-body">
-          <div className="table-card-styled tableOne">
-            {rowDto?.length > 0 ? (
-              <>
-                <div className="table-card-styled employee-table-card tableOne">
-                  <AntTable
-                    data={rowDto}
-                    columnsData={finalSettlementColumns(
-                      demoPopup,
-                      history,
-                      orgId,
-                      buId,
-                      setLoading
-                    )}
-                    rowClassName="pointer"
-                    onRowClick={(record) => {
-                      history.push(
-                        `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
-                        { employeeId: record?.intEmployeeId }
-                      );
+          <div className="card-style pb-0 mb-2" style={{ marginTop: "12px" }}>
+            <div className="row">
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Status</label>
+                  <FormikSelect
+                    classes="input-sm"
+                    name="status"
+                    options={statusDDL || []}
+                    value={values?.status}
+                    onChange={(valueOption) => {
+                      setFieldValue("status", valueOption);
                     }}
-                    rowKey={(record) => record?.intFinalSettlementId}
+                    placeholder="Select Status"
+                    styles={customStyles}
+                    errors={errors}
+                    touched={touched}
+                    isClearable={true}
                   />
                 </div>
-              </>
-            ) : (
-              <>{!loading && <NoResult title="No Result Found" para="" />}</>
-            )}
+              </div>
+              <div className="col-lg-3">
+                <button
+                  className="btn btn-green btn-green-disable mt-4"
+                  type="button"
+                  disabled={!values?.status}
+                  onClick={() => {
+                    getData();
+                  }}
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="table-card-body">
+            <div className="table-card-styled tableOne">
+              {rowDto?.length > 0 ? (
+                <>
+                  <div className="table-card-styled employee-table-card tableOne">
+                    <AntTable
+                      data={rowDto}
+                      columnsData={finalSettlementColumns(
+                        demoPopup,
+                        history,
+                        orgId,
+                        buId,
+                        setLoading
+                      )}
+                      rowClassName="pointer"
+                      onRowClick={(record) => {
+                        history.push(
+                          `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
+                          { employeeId: record?.intEmployeeId }
+                        );
+                      }}
+                      rowKey={(record) => record?.intFinalSettlementId}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>{!loading && <NoResult title="No Result Found" para="" />}</>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </>
   ) : (
     <NotPermittedPage />

@@ -227,5 +227,13 @@ const rowDtoHandler = (name, value, sl, rowDto, setRowDto) => {
     },
   ];
 
-export { approvalListHeader, assetHeader, employmentHeader };
+const statusDDL = [
+  { value: 0, label: "All" },
+  { value: 1, label: "Pending" },
+  { value: 2, label: "Approved" },
+  { value: 3, label: "Rejected" },
+  { value: 4, label: "Released" },
+] 
+
+export { approvalListHeader, assetHeader, employmentHeader, statusDDL };
 

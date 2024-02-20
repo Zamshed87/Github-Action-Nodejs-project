@@ -33,6 +33,7 @@ import PeopleDeskTable, {
 
 import FormikSelect from "../../../../common/FormikSelect";
 import { customStyles } from "../../../../utility/selectCustomStyle";
+import { isDevServer } from "App";
 
 function Calendar() {
   // redux
@@ -144,6 +145,8 @@ function Calendar() {
     }
     // eslint-disable-next-line
   }, [singleShiftData]);
+  isDevServer && console.log({headerList, rowDto})
+
   return (
     <>
       <Formik

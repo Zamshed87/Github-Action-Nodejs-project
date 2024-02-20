@@ -32,7 +32,7 @@ const initData = {
 export default function ApprovalList() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { orgId, employeeId, isOfficeAdmin, wId } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, wId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -42,15 +42,19 @@ export default function ApprovalList() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getApprovalDashboardLanding(
-      orgId,
-      employeeId,
-      isOfficeAdmin,
-      setApprovalPermissions,
-      setLoading,
-      wId
-    );
-  }, [orgId, employeeId]);
+    if(wgId && wId){
+      getApprovalDashboardLanding(
+        orgId,
+        employeeId,
+        isOfficeAdmin,
+        setApprovalPermissions,
+        setLoading,
+        wId,
+        buId,
+        wgId
+      );
+    }
+  }, [orgId, employeeId, wId, buId, wgId]);
 
   useEffect(() => {
     const arr = [];
@@ -224,9 +228,7 @@ export default function ApprovalList() {
           // console.log(values);
         }}
       >
-        {({
-          handleSubmit
-        }) => (
+        {({ handleSubmit }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -245,7 +247,9 @@ export default function ApprovalList() {
                         <table className="table">
                           <tbody>
                             {newTableData
-                              ?.filter((item) => isDevServer ? true : item?.totalCount)
+                              ?.filter((item) =>
+                                isDevServer ? true : item?.totalCount
+                              )
                               .map((data, index) => (
                                 <tr
                                   className="hasEvent"
