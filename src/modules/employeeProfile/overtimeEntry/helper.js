@@ -316,6 +316,26 @@ export const columns = (values, permission, history, deleteHandler) => {
       sorter: false,
       isDate: true,
     },
+ 
+    {
+      title: "Over Time Rate",
+      dataIndex: "numOverTimeRate",
+      render: (data, record) => (
+        <div>{formatMoney(record?.numOverTimeRate)}</div>
+      ),
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Over Time Amount",
+      dataIndex: "numOverTimeAmount",
+      render: (data, record) => (
+        <div>{formatMoney(record?.numOverTimeAmount)}</div>
+      ),
+      sorter: true,
+      filter: true,
+    },
+    // need to discuss with maruf bhai
     {
       title: "Amount",
       dataIndex: "TotalAmount",
