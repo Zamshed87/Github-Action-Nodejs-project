@@ -50,7 +50,7 @@ const initData = {
 };
 
 export default function MovementApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -75,7 +75,8 @@ export default function MovementApproval() {
     const payload = {
       approverId: employeeId,
       movementTypeId: 0,
-      workplaceGroupId: 0,
+      workplaceGroupId: wgId,
+      businessUnitId: buId,
       departmentId: 0,
       designationId: 0,
       applicantId: 0,

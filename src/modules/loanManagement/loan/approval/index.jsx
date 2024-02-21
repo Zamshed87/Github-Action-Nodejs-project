@@ -72,7 +72,7 @@ const LightTooltip = styled(({ className, ...props }) => (
 }));
 
 export default function LoanApproval() {
-  const { orgId, employeeId, isOfficeAdmin, buId, wId } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, buId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -158,7 +158,7 @@ export default function LoanApproval() {
     getAllLoanApplicatonListDataForApproval(
       {
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,

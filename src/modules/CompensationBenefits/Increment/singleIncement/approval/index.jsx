@@ -24,7 +24,7 @@ const initData = {
 };
 
 export default function IncrementNPromotionApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -45,7 +45,8 @@ export default function IncrementNPromotionApproval() {
         isSupOrLineManager: 0,
         approverId: employeeId,
         workplaceId: wId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,

@@ -357,10 +357,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                         label="Min Service Length (Day)"
                         placeholder="Select Min Service Length in Days"
                         onChange={() => {
-                          const { maxServiceLengthMonth } =
-                            form.getFieldsValue();
-                          maxServiceLengthMonth &&
-                            form.validateFields(["maxServiceLengthMonth"]);
+                          const { maxServiceLengthDay } = form.getFieldsValue();
+                          maxServiceLengthDay &&
+                            form.validateFields(["maxServiceLengthDay"]);
                         }}
                         rules={[
                           {
@@ -369,7 +368,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                           },
                         ]}
                         min={0}
-                        max={12}
                       />
                     </Col>
                     <Col md={6} sm={12}>
@@ -398,7 +396,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                           }),
                         ]}
                         min={0}
-                        max={12}
                       />
                     </Col>
                   </>

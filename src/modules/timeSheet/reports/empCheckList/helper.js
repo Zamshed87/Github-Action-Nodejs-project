@@ -7,12 +7,14 @@ export const getAssignedSalaryDetailsReportRDLC = async (
   buId,
   wId,
   setLoading,
-  setterData
+  setterData,
+  fDate,
+  tDate
 ) => {
   setLoading?.(true);
   try {
     const res = await axios.get(
-      `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=${partName}&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}`
+      `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=${partName}&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}&dteFromDate=${fDate}&dteToDate=${tDate}`
     );
     if (res?.data) {
       setterData?.(res?.data);
