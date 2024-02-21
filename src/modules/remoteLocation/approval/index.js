@@ -25,7 +25,7 @@ import {
 } from "./helper";
 
 const MasterLocationRegistration = () => {
-  const { employeeId, isOfficeAdmin, orgId, buId, wId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, buId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,6 +77,8 @@ const MasterLocationRegistration = () => {
         approverId: employeeId,
         workplaceId: wId,
         busineessUnit: buId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
         accountId: orgId,
         applicantId: 0,
         intId: 0,
@@ -146,6 +148,8 @@ const MasterLocationRegistration = () => {
           applicantId: 0,
           accountId: orgId,
           intId: 0,
+          businessUnitId: buId,
+          workplaceGroupId: wgId,
         },
         setRowDto,
         setFilteredData,

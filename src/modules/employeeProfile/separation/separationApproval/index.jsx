@@ -43,7 +43,7 @@ const initData = {
 };
 
 export default function SeparationApproval() {
-  const { employeeId, isOfficeAdmin, orgId, buId, wId, strDisplayName } =
+  const { employeeId, isOfficeAdmin, orgId, buId, wId, strDisplayName, wgId } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
   // const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -77,7 +77,7 @@ export default function SeparationApproval() {
         isSupOrLineManager: 0,
         approverId: employeeId,
         businessUnitId: buId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
