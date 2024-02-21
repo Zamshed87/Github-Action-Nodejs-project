@@ -185,7 +185,6 @@ export const getByIdSalaryAssignDDL = (
     if (itm?.strSalaryBreakdownTitle !== "Corporate") {
       // basic salary
       if (itm?.isBasicSalary && itm?.strBasedOn === "Percentage") {
-
         modifyObj = {
           [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
             (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
@@ -274,28 +273,6 @@ export const getSalaryAssignDDLUpdate = ({
     ?.slice()
     ?.sort((a, b) => b?.numNumberOfPercent - a?.numNumberOfPercent);
   const modifyData = [];
-  // modifyData = breakDownList?.map((itm) => {
-  //   return {
-  //     ...itm,
-  //     [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-  //       itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-  //         ? Math.round(grossSalaryAmount)
-  //         : itm?.strBasedOn === "Amount"
-  //         ? Math.round(itm?.numAmount)
-  //         : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
-  //     numAmount:
-  //       itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-  //         ? Math.round(grossSalaryAmount)
-  //         : itm?.strBasedOn === "Amount"
-  //         ? Math.round(itm?.numAmount)
-  //         : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
-  //     showPercentage: itm?.numNumberOfPercent,
-  //     levelVariable: itm?.strPayrollElementName
-  //       .toLowerCase()
-  //       .split(" ")
-  //       .join(""),
-  //   };
-  // });
   breakDownList?.forEach((itm) => {
     if (
       sorting?.[sorting?.length - 1]?.strPayrollElementName !==
@@ -366,6 +343,56 @@ export const getSalaryAssignDDLUpdate = ({
     }
   });
   setBreakDownList(modifyData);
+};
+export const getSalaryAssignDDLUpdate2 = ({
+  breakDownList = [],
+  grossSalaryAmount,
+  setBreakDownList,
+  salaryDependsOn = "",
+}) => {
+  const modifyData = [];
+  breakDownList?.forEach((itm) => {
+    const obj = {
+      ...itm,
+      [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+        itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+          ? Math.ceil(grossSalaryAmount)
+          : itm?.strBasedOn === "Amount"
+          ? Math.ceil(itm?.numAmount)
+          : Math.ceil((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
+      numAmount:
+        itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+          ? Math.ceil(grossSalaryAmount)
+          : itm?.strBasedOn === "Amount"
+          ? Math.ceil(itm?.numAmount)
+          : Math.ceil((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
+      showPercentage: itm?.numNumberOfPercent,
+      levelVariable: itm?.strPayrollElementName
+        .toLowerCase()
+        .split(" ")
+        .join(""),
+    };
+    modifyData.push(obj);
+  });
+  const indexOfLowestAmount = modifyData.reduce(
+    (minIndex, currentObject, currentIndex, array) => {
+      return currentObject.numNumberOfPercent <
+        array[minIndex].numNumberOfPercent
+        ? currentIndex
+        : minIndex;
+    },
+    0
+  );
+  adjustOverFollowAmount(
+    modifyData,
+    grossSalaryAmount,
+    indexOfLowestAmount,
+    setBreakDownList,
+    `${modifyData[indexOfLowestAmount]?.strPayrollElementName
+      .toLowerCase()
+      .split(" ")
+      .join("")}`
+  );
 };
 
 export const getByIdSalaryAssignDDLUpdate = (
@@ -453,4 +480,91 @@ export const getByIdSalaryAssignDDLUpdate = (
     }
   });
   setter(list);
+};
+
+export const getByIdSalaryAssignDDLUpdate2 = (
+  res,
+  grossSalaryAmount,
+  setter
+) => {
+  const breakdownList = res?.data || [];
+  const demoList = [];
+  breakdownList.forEach((element) => {
+    const elemObj = {
+      ...element,
+      [element?.strSalaryElement.toLowerCase().split(" ").join("")]:
+        element?.strDependOn === "Basic" &&
+        element?.strSalaryElement === "Basic"
+          ? Math.ceil(grossSalaryAmount)
+          : element?.strBasedOn === "Amount"
+          ? Math.ceil(element?.numAmount)
+          : Math.ceil((element?.numNumberOfPercent * grossSalaryAmount) / 100), // (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+      numAmount:
+        element?.strDependOn === "Basic" &&
+        element?.strSalaryElement === "Basic"
+          ? Math.ceil(grossSalaryAmount)
+          : element?.strBasedOn === "Amount"
+          ? Math.ceil(element?.numAmount)
+          : Math.ceil((element?.numNumberOfPercent * grossSalaryAmount) / 100),
+      showPercentage: element?.numNumberOfPercent,
+      strPayrollElementName: element?.strSalaryElement,
+      intPayrollElementTypeId: element?.intSalaryElementId,
+      intSalaryBreakdownRowId: element?.intSalaryBreakdownRowId,
+      levelVariable: element?.strSalaryElement
+        .toLowerCase()
+        .split(" ")
+        .join(""),
+    };
+    demoList.push(elemObj);
+  });
+  const indexOfLowestAmount = demoList.reduce(
+    (minIndex, currentObject, currentIndex, array) => {
+      return currentObject.numNumberOfPercent <
+        array[minIndex].numNumberOfPercent
+        ? currentIndex
+        : minIndex;
+    },
+    0
+  );
+  adjustOverFollowAmount(
+    demoList,
+    grossSalaryAmount,
+    indexOfLowestAmount,
+    setter,
+    `${demoList[indexOfLowestAmount]?.strSalaryElement
+      .toLowerCase()
+      .split(" ")
+      .join("")}`
+  );
+};
+
+const adjustOverFollowAmount = (
+  array = [],
+  grossSalaryAmount,
+  indexOfLowestAmount,
+  setterFunc,
+  payrollElementName
+) => {
+  // console.log({ payrollElementName });
+  const totalAmount = array.reduce((acc, obj) => acc + obj.numAmount, 0);
+  const overFollowAmount = totalAmount - grossSalaryAmount;
+  // console.log({
+  //   totalAmount,
+  //   elementList: array,
+  //   grossSalaryAmount,
+  //   overFollowAmount,
+  // });
+  if (overFollowAmount > 0) {
+    console.log({ isOverFollow: overFollowAmount });
+    array[indexOfLowestAmount].numAmount =
+      array[indexOfLowestAmount]?.numAmount - overFollowAmount;
+    array[indexOfLowestAmount][payrollElementName] -= overFollowAmount;
+  } else {
+    console.log({ isNotOverFollow: overFollowAmount });
+
+    array[indexOfLowestAmount].numAmount =
+      array[indexOfLowestAmount]?.numAmount + overFollowAmount * -1;
+    array[indexOfLowestAmount][payrollElementName] += overFollowAmount * -1;
+  }
+  setterFunc(array);
 };
