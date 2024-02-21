@@ -301,7 +301,7 @@ export default function AddEditForm({
         }}
         initialValues={{
           orgName: { value: wgId, label: wgName },
-          workplace: { value: wId, label: wName },
+          // workplace: { value: wId, label: wName },
         }}
       >
         <Row gutter={[10, 2]}>
