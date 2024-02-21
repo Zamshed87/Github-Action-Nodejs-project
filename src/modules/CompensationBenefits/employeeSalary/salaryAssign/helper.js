@@ -4,8 +4,8 @@ import AvatarComponent from "../../../../common/AvatarComponent";
 import Chips from "../../../../common/Chips";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
 import {
-  getByIdSalaryAssignDDLUpdate,
-  getSalaryAssignDDLUpdate,
+  getByIdSalaryAssignDDLUpdate2,
+  getSalaryAssignDDLUpdate2
 } from "./salaryAssignCal";
 
 export const reverseBasedOnBasicPercentage = (basicElement, payrollElement) => {
@@ -72,7 +72,12 @@ export const getBreakdownListDDL = async (
           //   setter,
           //   resBasicAllowance?.data
           // );
-          getSalaryAssignDDLUpdate({
+          // getSalaryAssignDDLUpdate({
+          //   breakDownList: res?.data,
+          //   grossSalaryAmount: grossSalaryAmount,
+          //   setBreakDownList: setter,
+          // });
+          getSalaryAssignDDLUpdate2({
             breakDownList: res?.data,
             grossSalaryAmount: grossSalaryAmount,
             setBreakDownList: setter,
@@ -199,7 +204,8 @@ export const getByIdBreakdownListDDL = async (
           //   setter,
           //   resBasicAllowance?.data
           // );
-          getByIdSalaryAssignDDLUpdate(res, grossSalaryAmount, setter);
+          // getByIdSalaryAssignDDLUpdate(res, grossSalaryAmount, setter);
+          getByIdSalaryAssignDDLUpdate2(res, grossSalaryAmount, setter);
           setLoading && setLoading(false);
         }
       } catch (error) {
