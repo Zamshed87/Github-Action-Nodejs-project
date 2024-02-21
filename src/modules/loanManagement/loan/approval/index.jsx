@@ -197,7 +197,7 @@ export default function LoanApproval() {
     getAllLoanApplicatonListDataForApproval(
       {
         approverId: employeeId,
-        workplaceGroupId: values?.workplace?.id || 0,
+        workplaceGroupId: values?.workplace?.id || wgId,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
         applicantId: values?.employee?.id || 0,
@@ -258,7 +258,7 @@ export default function LoanApproval() {
       getAllLoanApplicatonListDataForApproval(
         {
           approverId: employeeId,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: filterValues?.workplace?.id || wgId,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -315,7 +315,7 @@ export default function LoanApproval() {
       getAllLoanApplicatonListDataForApproval(
         {
           approverId: employeeId,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: filterValues?.workplace?.id || wgId,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
