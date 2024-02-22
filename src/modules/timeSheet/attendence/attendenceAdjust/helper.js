@@ -1,10 +1,10 @@
-import { toast } from "react-toastify";
 import axios from "axios";
+import { toast } from "react-toastify";
 import AvatarComponent from "../../../../common/AvatarComponent";
+import Chips from "../../../../common/Chips";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import { gray900, greenColor } from "../../../../utility/customColor";
 import { dateFormatter } from "../../../../utility/dateFormatter";
-import Chips from "../../../../common/Chips";
 
 // search
 export const filterData = (keywords, allData, setRowDto) => {
@@ -95,7 +95,7 @@ export const attendenceAdjustColumns = (
       <div>
         <FormikCheckBox
           styleObj={{
-            margin: "0 auto!important",
+            margin: "0 5px !important",
             padding: "0 !important",
             color: gray900,
             checkedColor: greenColor,
