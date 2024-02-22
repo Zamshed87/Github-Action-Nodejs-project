@@ -186,9 +186,6 @@ const SalaryGenerateCreate = () => {
     // Joining the values into a string separated by commas
     const workplaceListFromValues = '"' + valueArray.join(",") + '"';
 
-    console.log("workplaceListFromValues", workplaceListFromValues);
-    console.log("valeus", values);
-
     const modifyRowDto = allData
       ?.filter((itm) => itm?.isSalaryGenerate === true)
       ?.map((itm) => {

@@ -3,7 +3,6 @@ import { MenuItem, Pagination, Select } from "@mui/material";
 import PopoverDropdown from "./popoverDropdown";
 import ScrollablePeopleDeskTable from "./scrollablePeopleDeskTable";
 import TableContent from "./tableContent";
-import { isDevServer } from "App";
 
 export const paginationSize = 25;
 
@@ -28,6 +27,7 @@ const PeopleDeskTable = ({
   isPagination = true,
   scrollCustomClass = "",
   customClass = "",
+  handleSortingData = null,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentFilterSelection, setCurrentFilterSelection] = useState(null);
@@ -61,6 +61,7 @@ const PeopleDeskTable = ({
               isCheckBox={isCheckBox}
               setAnchorEl={setAnchorEl}
               setCurrentFilterSelection={setCurrentFilterSelection}
+              handleSortingData={handleSortingData}
             />
           </ScrollablePeopleDeskTable>
         ) : (
@@ -86,6 +87,8 @@ const PeopleDeskTable = ({
                 isCheckBox={isCheckBox}
                 setAnchorEl={setAnchorEl}
                 setCurrentFilterSelection={setCurrentFilterSelection}
+                handleSortingData={handleSortingData}
+
               />
             </table>
           </div>

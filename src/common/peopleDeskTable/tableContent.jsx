@@ -26,6 +26,7 @@ const TableContent = ({
   isCheckBox,
   setAnchorEl,
   setCurrentFilterSelection,
+  handleSortingData = null,
 }) => {
   const [currentSortValue, setCurrentSortValue] = useState({
     current: undefined,
@@ -40,15 +41,18 @@ const TableContent = ({
         dataType: dataType,
         clickCount: 1,
       });
+      if (handleSortingData !== null || typeof handleSortingData === "function")
+        return;
       sortDataList(rowDto, state?.dataIndex, dataType);
     } else {
       const currentClickCount = (currentSortValue.clickCount + 1) % 3;
       setCurrentSortValue((prev) => ({
         ...prev,
-        current: currentClickCount !== 0 ? state?.dataIndex : undefined,
+        current: state?.dataIndex, // currentClickCount !== 0 ? state?.dataIndex : undefined,
         clickCount: currentClickCount,
       }));
-
+      if (handleSortingData !== null || typeof handleSortingData === "function")
+        return;
       if (currentClickCount === 1)
         sortDataList(rowDto, state?.dataIndex, dataType);
       else if (currentClickCount === 2)
@@ -102,6 +106,24 @@ const TableContent = ({
                   onClick={() => {
                     if (data?.sort) {
                       handleSorting(data, data?.fieldType);
+                      if (
+                        handleSortingData !== null ||
+                        typeof handleSortingData === "function"
+                      ) {
+                        const newIndex = !currentSortValue?.current
+                          ? data.dataIndex
+                          : currentSortValue.current;
+                        const orderMapping = { 1: "desc", 2: "asc" };
+                        const order =
+                          orderMapping[currentSortValue?.clickCount] || "asc";
+
+                        const obj = {
+                          ...currentSortValue,
+                          current: newIndex,
+                          order,
+                        };
+                        handleSortingData?.(obj);
+                      }
                     }
                   }}
                 >
