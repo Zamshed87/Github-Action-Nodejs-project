@@ -7,6 +7,8 @@ import {
   PInput,
   PSelect,
 } from "Components";
+import type { RangePickerProps } from "antd/es/date-picker";
+
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
@@ -336,7 +338,18 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       sorter: false,
     },
   ];
+  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
+    const { date } = form.getFieldsValue(true);
+    const fromDateMoment = moment(date, "MM/DD/YYYY");
+    const endDateMoment = fromDateMoment.clone().add(29, "days");
 
+    // Disable dates before fromDate and after next3daysForEmp
+    return (
+      current &&
+      (current < fromDateMoment.startOf("day") ||
+        current > endDateMoment.endOf("day"))
+    );
+  };
   return (
     <PForm
       form={form}
@@ -503,6 +516,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           },
                         ]}
                         max={30}
+                        disabledDate={disabledDate}
                       />
                     </Col>
                     <Col md={6} sm={12} xs={24}>
