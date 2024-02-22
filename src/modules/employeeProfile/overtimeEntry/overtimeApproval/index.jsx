@@ -421,6 +421,24 @@ export default function OvertimeApproval() {
         filter: true,
       },
       {
+        title: "Workplace Group",
+        dataIndex: "strWorkplaceGroupName",
+        sorter: true,
+        filter: true,
+      },
+      {
+        title: "Workplace",
+        dataIndex: "strWorkplaceName",
+        sorter: true,
+        filter: true,
+      },
+      {
+        title: "Employee ID",
+        dataIndex: "strEmployeeCode",
+        sorter: true,
+        filter: true,
+      },
+      {
         title: "Designation",
         dataIndex: "strDesignation",
         render: (_, record) => (
@@ -503,8 +521,15 @@ export default function OvertimeApproval() {
         sorter: false,
       },
       {
-        title: "Waiting Stage",
-        dataIndex: "currentStage",
+        title: "End Time",
+        dataIndex: "tmeEndTime",
+        render: (data) => <div>{data ? timeFormatter(data) : "-"}</div>,
+        filter: false,
+        sorter: false,
+      },
+      {
+        title: "OT Amount",
+        dataIndex: "numOverTimeAmount",
         filter: false,
         sorter: false,
       },
