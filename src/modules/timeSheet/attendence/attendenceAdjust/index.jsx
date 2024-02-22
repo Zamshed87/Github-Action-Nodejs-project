@@ -14,7 +14,6 @@ import FilterModal from "./component/FilterModal";
 // import MasterFilter from "../../../../common/MasterFilter";
 import { ModalFooter, PModal } from "Components/Modal";
 import FormikInput from "common/FormikInput";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
 import AntTable from "../../../../common/AntTable";
 import FilterBadgeComponent from "../../../../common/FilterBadgeComponent";
 import FormikSelectWithIcon from "../../../../common/FormikSelectWithIcon";
@@ -60,7 +59,6 @@ const initData = {
 export default function AttendenceAdjust() {
   const { userName, buId, employeeId, orgId, wgId, isOfficeAdmin } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
-  const [, getExistingCalenderByTime] = useAxiosGet();
 
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -93,9 +91,9 @@ export default function AttendenceAdjust() {
     document.title = "Attendence Adjust";
   }, []);
 
-  const getData = (values, initData) => {
-    let yearId = +values?.monthYear?.split("").slice(0, 4).join("");
-    let monthId = +values?.monthYear?.split("").slice(-2).join("");
+  const getData = (values) => {
+    const yearId = +values?.monthYear?.split("").slice(0, 4).join("");
+    const monthId = +values?.monthYear?.split("").slice(-2).join("");
     const payload = {
       employeeId:
         values?.employee?.value >= 0 ? values?.employee?.value : employeeId,
@@ -120,7 +118,7 @@ export default function AttendenceAdjust() {
 
   //  adjustStatushandler
   const adjustStatushandler = (values, setFieldValue, valueOption) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Are you sure?`,
       yesAlertFunc: () => {
@@ -261,7 +259,7 @@ export default function AttendenceAdjust() {
   const searchData = (keywords) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter((item) =>
+      const newDta = allData?.filter((item) =>
         regex.test(item?.EmployeeName?.toLowerCase())
       );
       setRowDto(newDta);
@@ -290,7 +288,7 @@ export default function AttendenceAdjust() {
             label: userName,
           },
         }}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -303,7 +301,6 @@ export default function AttendenceAdjust() {
           errors,
           touched,
           setFieldValue,
-          isValid,
           dirty,
         }) => (
           <>
