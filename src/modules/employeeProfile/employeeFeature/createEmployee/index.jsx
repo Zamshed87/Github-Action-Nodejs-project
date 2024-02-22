@@ -530,11 +530,15 @@ const CreateAndEditEmploye = () => {
         initialValues={{
           generateDate: moment(todayDate()),
           salaryType: { value: 2, label: "Hourly" },
+          otType: {
+            value: 1,
+            label: "Not Applicable",
+          },
         }}
       >
         <PCard>
           <PCardHeader
-            title={`Create Employee`}
+            title={empId ? "Edit Employee" : "Create Employee"}
             backButton={true}
             buttonList={[
               {
@@ -1200,6 +1204,30 @@ const CreateAndEditEmploye = () => {
                 </Col>
                 <Col md={6} sm={24}>
                   <PSelect
+                    options={[
+                      {
+                        value: 1,
+                        label: "Not Applicable",
+                      },
+                      { value: 2, label: "With Salary" },
+                      {
+                        value: 3,
+                        label: "Without Salary/Additional OT",
+                      },
+                    ]}
+                    name="otType"
+                    label="Overtime Type"
+                    placeholder={"Overtime Type"}
+                    // disabled={!calenderType}
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        otType: op,
+                      });
+                    }}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PSelect
                     options={payScaleGradeDDL?.data || []}
                     name="payScaleGrade"
                     showSearch
@@ -1274,6 +1302,7 @@ const CreateAndEditEmploye = () => {
                                     onChange={(value, op) => {
                                       form.setFieldsValue({
                                         calender: null,
+                                        // otType: null,
                                         calenderType: op,
                                       });
 
@@ -1314,6 +1343,7 @@ const CreateAndEditEmploye = () => {
                                     }}
                                   />
                                 </Col>
+
                                 {calenderType?.value === 2 ? (
                                   <>
                                     <Col md={8} sm={24}>
