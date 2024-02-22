@@ -290,7 +290,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     // change after that
     {
       title: "Total OT Hours",
-      dataIndex: "OverTime",
+      dataIndex: "OverTimeCalednder",
     },
     {
       title: "Actual Attendance",
