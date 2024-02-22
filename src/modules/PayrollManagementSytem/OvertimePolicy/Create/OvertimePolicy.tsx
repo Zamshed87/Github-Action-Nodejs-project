@@ -155,16 +155,16 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       matchingData,
       state,
     });
-    console.log({payload})
-    // SaveNUpdateOverTimeConfig?.action({
-    //   method: "POST",
-    //   urlKey: "SaveNUpdateOverTimeConfig",
-    //   payload: payload,
-    //   toast: true,
-    //   onSuccess: () => {
-    //     history?.goBack();
-    //   },
-    // });
+    // console.log({payload})
+    SaveNUpdateOverTimeConfig?.action({
+      method: "POST",
+      urlKey: "SaveNUpdateOverTimeConfig",
+      payload: payload,
+      toast: true,
+      onSuccess: () => {
+        history?.goBack();
+      },
+    });
   };
   return (
     <>
