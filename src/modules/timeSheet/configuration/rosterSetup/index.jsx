@@ -1,6 +1,5 @@
 import {
   AddOutlined,
-  SearchOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
@@ -10,7 +9,6 @@ import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import AntTable from "../../../../common/AntTable";
 import { getPeopleDeskAllLanding } from "../../../../common/api";
-import FormikInput from "../../../../common/FormikInput";
 import Loading from "../../../../common/loading/Loading";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
@@ -20,6 +18,7 @@ import ViewModal from "../../../../common/ViewModal";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import RosterSetupCreate from "./addEditForm";
 import "./styles.css";
+import MasterFilter from "common/MasterFilter";
 
 const initData = {
   search: "",
@@ -73,7 +72,7 @@ export default function RosterSetup() {
   const filterData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter((item) =>
+      const newDta = allData?.filter((item) =>
         regex.test(item?.RosterGroupName?.toLowerCase())
       );
       setRowDto(newDta);
@@ -81,8 +80,6 @@ export default function RosterSetup() {
       setRowDto([]);
     }
   };
-
-  const saveHandler = (values) => {};
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -132,24 +129,8 @@ export default function RosterSetup() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -182,7 +163,6 @@ export default function RosterSetup() {
                             icon={
                               <SettingsBackupRestoreOutlined
                                 sx={{
-                                  marginRight: "10px",
                                   fontSize: "18px",
                                 }}
                               />
@@ -194,8 +174,8 @@ export default function RosterSetup() {
                           />
                         </li>
                       )}
-                      <li style={{ marginRight: "24px" }}>
-                        <FormikInput
+                      <li>
+                        {/* <FormikInput
                           classes="search-input fixed-width"
                           inputClasses="search-inner-input"
                           placeholder="Search"
@@ -216,6 +196,20 @@ export default function RosterSetup() {
                           }}
                           errors={errors}
                           touched={touched}
+                        /> */}
+                        <MasterFilter
+                          isHiddenFilter
+                          width="200px"
+                          inputWidth="200px"
+                          value={values?.search}
+                          setValue={(value) => {
+                            filterData(value, allData, setRowDto);
+                            setFieldValue("search", value);
+                          }}
+                          cancelHandler={() => {
+                            filterData("", allData, setRowDto);
+                            setFieldValue("search", "");
+                          }}
                         />
                       </li>
                       <li>
