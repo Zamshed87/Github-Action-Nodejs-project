@@ -6,14 +6,12 @@ import PrimaryButton from "../../../../common/PrimaryButton";
 import {
   AddOutlined,
   SettingsBackupRestoreOutlined,
-  SearchOutlined,
   EditOutlined,
 } from "@mui/icons-material";
 import ViewModal from "../../../../common/ViewModal";
 import { useHistory } from "react-router";
 import HolidayGroupModal from "./addEditForm";
 import ResetButton from "./../../../../common/ResetButton";
-import FormikInput from "./../../../../common/FormikInput";
 import NoResult from "./../../../../common/NoResult";
 import "./styles.css";
 import { Tooltip } from "@mui/material";
@@ -22,6 +20,7 @@ import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { getHolidaySetupLanding } from "./helper";
 import AntTable from "../../../../common/AntTable";
+import MasterFilter from "common/MasterFilter";
 
 const initData = {
   search: "",
@@ -71,7 +70,7 @@ export default function HolidaySetup() {
   const filterData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter((item) =>
+      const newDta = allData?.filter((item) =>
         regex.test(item?.HolidayGroupName?.toLowerCase())
       );
       setRowDto(newDta);
@@ -79,8 +78,6 @@ export default function HolidaySetup() {
       setRowDto([]);
     }
   };
-
-  const saveHandler = (values) => {};
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -136,7 +133,7 @@ export default function HolidaySetup() {
           <div className="d-flex justify-content-center">
             <Tooltip title="Edit" arrow>
               <button className="iconButton" type="button">
-                <EditOutlined onClick={() => {}} />
+                <EditOutlined />
               </button>
             </Tooltip>
           </div>
@@ -147,24 +144,8 @@ export default function HolidaySetup() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -197,7 +178,6 @@ export default function HolidaySetup() {
                             icon={
                               <SettingsBackupRestoreOutlined
                                 sx={{
-                                  marginRight: "10px",
                                   fontSize: "18px",
                                 }}
                               />
@@ -209,28 +189,20 @@ export default function HolidaySetup() {
                           />
                         </li>
                       )}
-                      <li style={{ marginRight: "24px" }}>
-                        <FormikInput
-                          classes="search-input fixed-width"
-                          inputClasses="search-inner-input"
-                          placeholder="Search"
+                      <li>
+                        <MasterFilter
+                          isHiddenFilter
+                          width="200px"
+                          inputWidth="200px"
                           value={values?.search}
-                          name="search"
-                          type="text"
-                          trailicon={
-                            <SearchOutlined
-                              sx={{
-                                color: "#323232",
-                                fontSize: "18px",
-                              }}
-                            />
-                          }
-                          onChange={(e) => {
-                            filterData(e.target.value, allData, setRowDto);
-                            setFieldValue("search", e.target.value);
+                          setValue={(value) => {
+                            filterData(value, allData, setRowDto);
+                            setFieldValue("search", value);
                           }}
-                          errors={errors}
-                          touched={touched}
+                          cancelHandler={() => {
+                            filterData("", allData, setRowDto);
+                            setFieldValue("search", "");
+                          }}
                         />
                       </li>
                       <li>

@@ -175,28 +175,6 @@ export default function RosterSetup() {
                         </li>
                       )}
                       <li>
-                        {/* <FormikInput
-                          classes="search-input fixed-width"
-                          inputClasses="search-inner-input"
-                          placeholder="Search"
-                          value={values?.search}
-                          name="search"
-                          type="text"
-                          trailicon={
-                            <SearchOutlined
-                              sx={{
-                                color: "#323232",
-                                fontSize: "18px",
-                              }}
-                            />
-                          }
-                          onChange={(e) => {
-                            filterData(e.target.value, allData, setRowDto);
-                            setFieldValue("search", e.target.value);
-                          }}
-                          errors={errors}
-                          touched={touched}
-                        /> */}
                         <MasterFilter
                           isHiddenFilter
                           width="200px"
