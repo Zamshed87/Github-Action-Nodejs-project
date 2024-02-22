@@ -64,9 +64,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       departmentId: department?.value,
       attendanceStatus: attendanceStatus || "all",
       punchStatus: attendanceStatus || "all",
-      jobTypeId: 0,
       attendanceDate: moment(date).format("YYYY-MM-DD"),
-      attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
+      jobTypeId: 0,
       pageNo: 1,
       pageSize: 25,
     };
@@ -77,7 +76,14 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           ? "AttendanceAdjustmentFilter"
           : "AttendanceAdjustmentFilterbyDate",
       method: "post",
-      payload,
+      payload:
+        empSearchType === 1
+          ? payload
+          : {
+              ...payload,
+
+              attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
+            },
     });
   };
 
@@ -354,6 +360,14 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               value === 1 &&
                 form.setFieldsValue({
                   openModal: true,
+                  intime:
+                    selectedRow?.length === 1
+                      ? moment(selectedRow[0]?.InTime, "h:mma")
+                      : "",
+                  outtime:
+                    selectedRow?.length === 1
+                      ? moment(selectedRow[0]?.OutTime, "h:mma")
+                      : "",
                 });
 
               (value === 2 || value === 3) &&
