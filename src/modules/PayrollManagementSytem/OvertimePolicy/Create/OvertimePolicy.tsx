@@ -153,22 +153,21 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       values: form.getFieldsValue(true),
       commonData,
       matchingData,
-      state
+      state,
     });
-
-    SaveNUpdateOverTimeConfig?.action({
-      method: "POST",
-      urlKey: "SaveNUpdateOverTimeConfig",
-      payload: payload,
-      toast: true,
-      onSuccess: () => {
-        history?.goBack();
-      },
-    });
+    console.log({payload})
+    // SaveNUpdateOverTimeConfig?.action({
+    //   method: "POST",
+    //   urlKey: "SaveNUpdateOverTimeConfig",
+    //   payload: payload,
+    //   toast: true,
+    //   onSuccess: () => {
+    //     history?.goBack();
+    //   },
+    // });
   };
   return (
     <>
-    {console.log("values",form.getFieldsValue(true))}
       <PForm
         form={form}
         initialValues={{
@@ -253,8 +252,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       ]}
                     />
                   </Col>
-
-                  <Form.Item noStyle shouldUpdate>
+                  {/* change requirement 💥💥 */}
+                  {/* <Form.Item noStyle shouldUpdate>
                     {() => {
                       const { workplace } = form.getFieldsValue(true);
                       return (
@@ -286,9 +285,11 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         </Col>
                       );
                     }}
-                  </Form.Item>
+                  </Form.Item> */}
+                  {/* 💥💥 change requirement  */}
 
-                  {/* Fields Render Using Policy Type */}
+                  {/* 💥💥 change requirement  Fields Render Using Policy Type - 22/02/2024 */}
+                  <div className="d-none">
                   <Form.Item noStyle shouldUpdate>
                     {() => {
                       const { policyType } = form.getFieldsValue(true);
@@ -407,32 +408,156 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         if (item?.value === 4)
                           formElements.push(
                             <Col md={12} sm={24} key={idx}>
-                            <PSelect
-                              label="Calendar Name"
-                              name="calendarName"
-                              placeholder="Calendar Name"
-                              mode="multiple"
-                              disabled={state?.intOtconfigId}
-                              maxTagCount={"responsive"}
-                              options={calendarDDL || []}
-                              onChange={(value, option) => {
-                                form.setFieldsValue({
-                                  calendarName: option,
-                                });
-                              }}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please Select Calendar Name!",
-                                },
-                              ]}
-                            />
-                          </Col>
+                              <PSelect
+                                label="Calendar Name"
+                                name="calendarName"
+                                placeholder="Calendar Name"
+                                mode="multiple"
+                                disabled={state?.intOtconfigId}
+                                maxTagCount={"responsive"}
+                                options={calendarDDL || []}
+                                onChange={(value, option) => {
+                                  form.setFieldsValue({
+                                    calendarName: option,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please Select Calendar Name!",
+                                  },
+                                ]}
+                              />
+                            </Col>
                           );
                       });
                       return formElements;
                     }}
                   </Form.Item>
+                  </div>
+                   {/* 💥💥 change requirement  Fields Render Using Policy Type - 22/02/2024 */}
+
+                  {/* new requirement 💥💥 */}
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      label="HR Position"
+                      name="hrPosition"
+                      placeholder="HR Position"
+                      mode="multiple"
+                      maxTagCount={"responsive"}
+                      disabled={state?.intOtconfigId}
+                      options={HRPositionDDL?.data || []}
+                      onChange={(value, option) => {
+                        form.setFieldsValue({
+                          hrPosition: option,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please Select HR Position!",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      label="Employment Type"
+                      name="employmentType"
+                      placeholder="Employment Type"
+                      mode="multiple"
+                      disabled={state?.intOtconfigId}
+                      maxTagCount={"responsive"}
+                      options={EmploymentTypeDDL?.data || []}
+                      onChange={(value, option) => {
+                        form.setFieldsValue({
+                          employmentType: option,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please Select Employment Type!",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Form.Item noStyle shouldUpdate>
+                    {() => {
+                      return (
+                        <>
+                          <Col md={12} sm={24}>
+                            <PInput
+                              label="From Salary"
+                              placeholder="From Salary"
+                              type="number"
+                              name="fromSalary"
+                              // rules={[
+                              //   {
+                              //     required: true,
+                              //     message: "Please input From Salary!",
+                              //   },
+                              // ]}
+                            />
+                          </Col>
+                          <Col md={12} sm={24}>
+                            <PInput
+                              label="To Salary"
+                              placeholder="To Salary"
+                              type="number"
+                              name="toSalary"
+                              rules={[
+                                // {
+                                //   required: true,
+                                //   message: "Please input To Salary!",
+                                // },
+                                ({ getFieldValue }) => ({
+                                  validator(_, value) {
+                                    const fromSalary = parseFloat(
+                                      getFieldValue("fromSalary")
+                                    );
+                                    const toSalary = parseFloat(value);
+
+                                    if (!fromSalary || toSalary > fromSalary) {
+                                      return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                      new Error(
+                                        "To Salary cannot be less than From Salary!"
+                                      )
+                                    );
+                                  },
+                                }),
+                              ]}
+                            />
+                          </Col>
+                        </>
+                      );
+                    }}
+                  </Form.Item>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      label="Calendar Name"
+                      name="calendarName"
+                      placeholder="Calendar Name"
+                      mode="multiple"
+                      disabled={state?.intOtconfigId}
+                      maxTagCount={"responsive"}
+                      options={calendarDDL || []}
+                      onChange={(value, option) => {
+                        form.setFieldsValue({
+                          calendarName: option,
+                        });
+                      }}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Please Select Calendar Name!",
+                      //   },
+                      // ]}
+                    />
+                  </Col>
+                  {/* new requirement 💥💥 */}
 
                   {/* OT Depents on */}
                   <Divider
