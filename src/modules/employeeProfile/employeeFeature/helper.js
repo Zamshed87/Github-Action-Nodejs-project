@@ -119,7 +119,7 @@ export const createEditEmpAction = async (
       strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
       calendarAssignViewModel: null,
-
+      intOtType: values?.intOtType?.value,
       intSignature: values?.intSignature,
       intProbationayClosedByInDate: +values?.probationayClosedBy?.value,
       strProbationayClosedByInDate: values?.probationayClosedBy?.label,
@@ -143,6 +143,7 @@ export const createEditEmpAction = async (
           rosterGroupId:
             values?.calenderType?.value === 2 ? values?.calender?.value : 0,
           isAutoGenerate: false,
+          // intOtType: values?.intOtType?.value,
         },
       };
     }

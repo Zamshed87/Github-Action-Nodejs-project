@@ -125,8 +125,8 @@ export const onCreateCalendarSetupWithValidation = (
     dteUpdatedAt: "2023-08-30T09:23:42.542Z",
     isActive: true,
     isEmployeeUpdate: values?.isEmployeeUpdate,
-    dteEmployeeUpdateFromDate: values?.dteEmployeeUpdateFromDate,
-    dteEmployeeUpdateToDate: values?.dteEmployeeUpdateToDate,
+    // dteEmployeeUpdateFromDate: values?.dteEmployeeUpdateFromDate,
+    // dteEmployeeUpdateToDate: values?.dteEmployeeUpdateToDate,
     dteBreakStartTime: id
       ? moment(values?.breakStartTime, "HH:mm").format("HH:mm:ss")
       : `${values?.breakStartTime}:00` || "00:00:00",
@@ -142,12 +142,16 @@ export const onCreateCalendarSetupWithValidation = (
     isNightShift: values?.nightShift || false,
     timeSheetCalenderRows: id ? [...deleteList, ...editList] : userList,
   };
-
+  if(values?.isEmployeeUpdate){
+    payload.dteEmployeeUpdateFromDate = values?.dteEmployeeUpdateFromDate;
+    payload.dteEmployeeUpdateToDate = values?.dteEmployeeUpdateToDate;
+  }
   const callback = () => {
     cb();
     onHide();
     getLanding();
   };
+  console.log({payload})
   createTimeSheetActionForCalender(payload, setLoading, callback);
 };
 
