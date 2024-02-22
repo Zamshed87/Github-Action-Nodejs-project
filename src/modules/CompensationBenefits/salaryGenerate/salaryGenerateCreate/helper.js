@@ -38,8 +38,8 @@ export const columnsData = (
   offDaylanding,
   setOffDaylanding,
   modifyData,
-  setRowDto,
-  setFieldValue
+  // setRowDto,
+  // setFieldValue
 ) => {
   const columns = [
     {
@@ -107,7 +107,7 @@ export const columnsData = (
               //     setRowDto(copyRowDto);
               //   }}
               onChange={(e) => {
-                let data = offDaylanding?.map((item) => {
+                const data = offDaylanding?.map((item) => {
                   if (item?.intEmployeeId === record?.intEmployeeId) {
                     return {
                       ...item,
@@ -115,7 +115,7 @@ export const columnsData = (
                     };
                   } else return item;
                 });
-                let newAllData = allData?.map((item) => {
+                const newAllData = allData?.map((item) => {
                   if (item?.intEmployeeId === record?.intEmployeeId) {
                     return {
                       ...item,
@@ -225,7 +225,7 @@ export const salaryGenerateCreateEditTableColumn = (
               rowDto?.every((item) => item?.isSalaryGenerate)
             }
             onChange={(e) => {
-              let modifyRowDto = rowDto?.map((item) => ({
+              const modifyRowDto = rowDto?.map((item) => ({
                 ...item,
                 isSalaryGenerate: e.target.checked,
               }));

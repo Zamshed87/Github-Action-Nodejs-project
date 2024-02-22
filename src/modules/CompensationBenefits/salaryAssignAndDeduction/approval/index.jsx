@@ -168,7 +168,7 @@ export default function AllowanceNDeductionApproval() {
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter((item) =>
+      const newDta = allData?.listData?.filter((item) =>
         regex.test(item?.employeeName?.toLowerCase())
       );
       setRowDto({ listData: newDta });
@@ -249,7 +249,7 @@ export default function AllowanceNDeductionApproval() {
       );
     };
 
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -588,7 +588,7 @@ export default function AllowanceNDeductionApproval() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -596,14 +596,9 @@ export default function AllowanceNDeductionApproval() {
       >
         {({
           handleSubmit,
-          resetForm,
           values,
-          errors,
-          touched,
           setFieldValue,
-          isValid,
           setValues,
-          dirty,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -642,6 +637,7 @@ export default function AllowanceNDeductionApproval() {
                                             width: "25px !important",
                                             height: "35px !important",
                                             fontSize: "20px !important",
+                                            marginRight: "10px",
                                           }}
                                         />
                                       }
@@ -678,7 +674,7 @@ export default function AllowanceNDeductionApproval() {
                             )}
                             <ul className="d-flex flex-wrap">
                               {isFilter && (
-                                <li>
+                                <li className="d-none">
                                   <ResetButton
                                     title="reset"
                                     icon={
@@ -699,7 +695,7 @@ export default function AllowanceNDeductionApproval() {
                                 </li>
                               )}
                               {permission?.isCreate && (
-                                <li>
+                                <li className="d-none">
                                   <MasterFilter
                                     styles={{
                                       marginRight: "0px",
@@ -732,17 +728,6 @@ export default function AllowanceNDeductionApproval() {
                             </ul>
                           </div>
                         </div>
-                        {/* <FilterBadgeComponent
-                          propsObj={{
-                            filterBages,
-                            setFieldValue,
-                            clearBadge,
-                            values: filterValues,
-                            resetForm,
-                            initData,
-                            clearFilter,
-                          }}
-                        /> */}
                         {permission?.isCreate ? (
                           <div className="table-card-body">
                             <div className="table-card-styled tableOne">

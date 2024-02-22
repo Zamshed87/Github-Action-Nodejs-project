@@ -19,8 +19,8 @@ import { yearDDLAction } from "../../../../utility/yearDDL";
 import "../style.css";
 import { getYearlyPolicyLanding } from "./helper";
 
-let date = new Date();
-let currentYear = date.getFullYear();
+const date = new Date();
+const currentYear = date.getFullYear();
 
 const initData = {
   year: { value: currentYear, label: currentYear },
@@ -28,8 +28,6 @@ const initData = {
 
 const YearlyLeavePolicy = () => {
   const [allPolicy, setAllPolicy] = useState([]);
-  const [landingData, setLandingData] = useState([]);
-  const [sortType, setSortType] = useState("desc");
   const history = useHistory();
   const [pages, setPages] = useState({
     currentPage: 1,
@@ -38,7 +36,7 @@ const YearlyLeavePolicy = () => {
   });
   const [, setYear] = useState(null);
 
-  const saveHandler = (values, cb) => {};
+  // const saveHandler = (values, cb) => {};
   const [loading, setLoading] = useState(false);
 
   const { orgId, buId, wgId } = useSelector(
@@ -59,22 +57,22 @@ const YearlyLeavePolicy = () => {
   // };
 
   // eslint-disable-next-line no-unused-vars
-  const sortData = (sortBy, isNumber) => {
-    setSortType(sortType === "desc" ? "asc" : "desc");
-    let newData = [...landingData];
-    newData.sort((a, b) => {
-      if (sortType === "desc") {
-        return isNumber
-          ? b?.[sortBy] - a?.[sortBy]
-          : b?.[sortBy]?.localeCompare(a?.[sortBy]);
-      } else {
-        return isNumber
-          ? a?.[sortBy] - b?.[sortBy]
-          : a?.[sortBy]?.localeCompare(b?.[sortBy]);
-      }
-    });
-    setLandingData(newData);
-  };
+  // const sortData = (sortBy, isNumber) => {
+  //   setSortType(sortType === "desc" ? "asc" : "desc");
+  //   let newData = [...landingData];
+  //   newData.sort((a, b) => {
+  //     if (sortType === "desc") {
+  //       return isNumber
+  //         ? b?.[sortBy] - a?.[sortBy]
+  //         : b?.[sortBy]?.localeCompare(a?.[sortBy]);
+  //     } else {
+  //       return isNumber
+  //         ? a?.[sortBy] - b?.[sortBy]
+  //         : a?.[sortBy]?.localeCompare(b?.[sortBy]);
+  //     }
+  //   });
+  //   setLandingData(newData);
+  // };
   const getLanding = (page = pages, year = currentYear) => {
     getYearlyPolicyLanding(
       `/SaasMasterData/AllLeavePolicyLanding?businessUnitId=${buId}&workPlaceGroupId=${wgId}&PageNo=${page?.currentPage}&PageSize=${page?.pageSize}&IsForXl=false&intYear=${year}`,
@@ -129,21 +127,19 @@ const YearlyLeavePolicy = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={() => {
+          // saveHandler(values, () => {
+          //   resetForm(initData);
+          // });
         }}
         innerRef={formikRef}
       >
         {({
           handleSubmit,
-          resetForm,
           values,
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -190,7 +186,7 @@ const YearlyLeavePolicy = () => {
                               }}
                             />
                           }
-                          onClick={(e) => {
+                          onClick={() => {
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
                             // setShow(true);
