@@ -7,15 +7,18 @@ import {
   PInput,
   PSelect,
 } from "Components";
+import type { RangePickerProps } from "antd/es/date-picker";
+
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Modal, Row } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { AttendanceType, EmpFilterType } from "./utils/utils";
 import { convertTo12HourFormat } from "utility/timeFormatter";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
@@ -24,6 +27,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  const dispatch = useDispatch();
   // States
   const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
 
@@ -52,6 +56,12 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       attendanceStatus,
       department,
     } = form.getFieldsValue(true);
+
+    useEffect(() => {
+      dispatch(setFirstLevelNameAction("Employee Management"));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      document.title = "Attendence Adjust";
+    }, []);
 
     const payload = {
       employeeId: employee?.value || employeeId,
@@ -288,7 +298,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     // change after that
     {
       title: "Total OT Hours",
-      dataIndex: "OverTime",
+      dataIndex: "OverTimeCalednder",
     },
     {
       title: "Actual Attendance",
@@ -336,7 +346,18 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       sorter: false,
     },
   ];
+  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
+    const { date } = form.getFieldsValue(true);
+    const fromDateMoment = moment(date, "MM/DD/YYYY");
+    const endDateMoment = fromDateMoment.clone().add(29, "days");
 
+    // Disable dates before fromDate and after next3daysForEmp
+    return (
+      current &&
+      (current < fromDateMoment.startOf("day") ||
+        current > endDateMoment.endOf("day"))
+    );
+  };
   return (
     <PForm
       form={form}
@@ -503,6 +524,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           },
                         ]}
                         max={30}
+                        disabledDate={disabledDate}
                       />
                     </Col>
                     <Col md={6} sm={12} xs={24}>
