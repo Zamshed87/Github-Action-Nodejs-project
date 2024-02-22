@@ -495,6 +495,7 @@ export default function AddEditForm({
       isMenuEditPermission: isMenuEditPermission,
       isOfficeAdmin: isOfficeAdmin,
     });
+    console.log({singleData})
   return (
     <>
       <PForm

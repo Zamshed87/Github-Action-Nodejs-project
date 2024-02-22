@@ -119,7 +119,7 @@ export const createEditEmpAction = async (
       strOfficeMobile: values?.workPhone || "",
       isCreateUser: values?.isUsersection,
       calendarAssignViewModel: null,
-
+      intOtType: values?.otType?.value,
       intSignature: values?.intSignature,
       intProbationayClosedByInDate: +values?.probationayClosedBy?.value,
       strProbationayClosedByInDate: values?.probationayClosedBy?.label,
@@ -143,6 +143,7 @@ export const createEditEmpAction = async (
           rosterGroupId:
             values?.calenderType?.value === 2 ? values?.calender?.value : 0,
           isAutoGenerate: false,
+          // intOtType: values?.intOtType?.value,
         },
       };
     }
@@ -549,6 +550,26 @@ export const getEmployeeProfileViewData = async (
                 empBasic?.employeeProfileLandingView
                   ?.intProbationayClosedByInDate
             ) || undefined,
+            otType: empBasic?.employeeProfileLandingView?.intOtType
+            ? [
+                {
+                  value: 1,
+                  label: "Not Applicable",
+                },
+                { value: 2, label: "With Salary" },
+                {
+                  value: 3,
+                  label: "Without Salary/Additional OT",
+                },
+              ].find(
+                (ot) =>
+                  ot.value ===
+                  empBasic?.employeeProfileLandingView?.intOtType
+              )
+            : {
+                value: 1,
+                label: "Not Applicable",
+              }
           // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo
           // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
           // calenderType: [{value: 1, label: "Calendar"},
