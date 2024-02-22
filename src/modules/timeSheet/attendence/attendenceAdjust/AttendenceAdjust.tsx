@@ -15,9 +15,10 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Modal, Row } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { AttendanceType, EmpFilterType } from "./utils/utils";
 import { convertTo12HourFormat } from "utility/timeFormatter";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
@@ -26,6 +27,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  const dispatch = useDispatch();
   // States
   const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
 
@@ -54,6 +56,12 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       attendanceStatus,
       department,
     } = form.getFieldsValue(true);
+
+    useEffect(() => {
+      dispatch(setFirstLevelNameAction("Employee Management"));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      document.title = "Attendence Adjust";
+    }, []);
 
     const payload = {
       employeeId: employee?.value || employeeId,
@@ -290,7 +298,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     // change after that
     {
       title: "Total OT Hours",
-      dataIndex: "OverTime",
+      dataIndex: "OverTimeCalednder",
     },
     {
       title: "Actual Attendance",
