@@ -591,6 +591,9 @@ export default function EmployeeList() {
                         isCheckBox={false}
                         isScrollAble={true}
                         scrollCustomClass="emp-report-landing-table"
+                        handleSortingData={(obj) => {
+                          console.log(obj);
+                        }}
                       />
                     ) : (
                       <>
