@@ -2,10 +2,10 @@ import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Switch } from "antd";
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
 
 export default function AddEditForm({
@@ -24,8 +24,6 @@ export default function AddEditForm({
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
-  const [loading, setLoading] = useState(false);
 
   // states
 
@@ -63,7 +61,7 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       actionTypeId: singleData?.intDepartmentId ? 2 : 1,
       intDepartmentId: singleData?.intDepartmentId
         ? singleData?.intDepartmentId
@@ -72,6 +70,7 @@ export default function AddEditForm({
       strDepartmentCode: values?.strDepartmentCode,
       isActive: values?.isActive,
       isDeleted: true,
+      strCostCenterDivision: values?.strCostCenterDivision?.value,
       // intParentDepId: values?.sectionDepartment?.value,
       // strParentDepName: values?.sectionDepartment?.label,
       intBusinessUnitId: values?.bUnit?.value || 0,
@@ -157,6 +156,30 @@ export default function AddEditForm({
               // rules={[{ required: true, message: "District is required" }]}
             />
           </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={[
+                {
+                  label: "Sales",
+                  value: "Sales",
+                },
+                {
+                  label: "Admin",
+                  value: "Admin",
+                },
+              ]}
+              name="strCostCenterDivision"
+              label="Cost Center Division"
+              showSearch
+              filterOption={true}
+              placeholder="Cost Center Division"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  strCostCenterDivision: op,
+                });
+              }}
+            />
+          </Col>
 
           {isEdit && (
             <Col
@@ -200,11 +223,9 @@ export default function AddEditForm({
         <ModalFooter
           onCancel={() => {
             setId("");
-
             setIsAddEditForm(false);
           }}
           submitAction="submit"
-          loading={loading}
         />
       </PForm>
     </>

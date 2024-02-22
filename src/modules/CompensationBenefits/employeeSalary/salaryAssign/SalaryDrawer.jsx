@@ -60,7 +60,6 @@ export default function SalaryDrawer(props) {
   const [totalAmount, setTotalAmount] = useState(0);
   const [finalTotalAmount, setFinalTotalAmount] = useState(0);
 
-
   const { handleSubmit, resetForm, values, errors, touched, setFieldValue } =
     useFormik({
       enableReinitialize: true,
@@ -204,6 +203,13 @@ export default function SalaryDrawer(props) {
   };
 
   const saveHandler = (values, cb) => {
+    const totalPay =
+      +values?.netPay || 0 + +values?.bankPay || 0 + +values?.digitalPay || 0;
+    if (totalPay !== +values?.totalGrossSalary) {
+      return toast.warn(
+        "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
+      );
+    }
     if (!values?.payrollElement) {
       return toast.warning("Payroll Element is required!!!");
     }
@@ -329,6 +335,9 @@ export default function SalaryDrawer(props) {
           (+values?.digitalPay * 100) /
           +values?.perDaySalary
         ).toFixed(6),
+        numCashPayInAmount: +values?.netPay,
+        numBankPayInAmount: +values?.bankPay,
+        numDigitalPayInAmount: +values?.digitalPay,
       };
       createEmployeeSalaryAssign(payload, setLoading, callback);
     } else {
@@ -386,7 +395,7 @@ export default function SalaryDrawer(props) {
             +values?.totalGrossSalary
           ).toFixed(6),
           numCashPayInAmount: +values?.netPay,
-          numBankPayInAmount:+values?.bankPay,
+          numBankPayInAmount: +values?.bankPay,
           numDigitalPayInAmount: +values?.digitalPay,
         };
         // const roundValue = roundAndAdjustPercentages({
@@ -430,7 +439,7 @@ export default function SalaryDrawer(props) {
             +values?.totalGrossSalary
           ).toFixed(6),
           numCashPayInAmount: +values?.netPay,
-          numBankPayInAmount:+values?.bankPay,
+          numBankPayInAmount: +values?.bankPay,
           numDigitalPayInAmount: +values?.digitalPay,
         };
         // const roundValue = roundAndAdjustPercentages({
@@ -450,30 +459,10 @@ export default function SalaryDrawer(props) {
         // })
         // console.log({payload, roundValue})
 
-        createEmployeeSalaryAssign({...payload}, setLoading, callback);
+        createEmployeeSalaryAssign({ ...payload }, setLoading, callback);
       }
     }
   };
-  function roundAndAdjustPercentages(obj) {
-    const roundedBankPercentage = Math.round(obj.numBankPayInPercent * 100) / 100;
-  const roundedCashPercentage = Math.round(obj.numCashPayInPercent * 100) / 100;
-  const roundedDigitalPercentage = Math.round(obj.numDigitalPayInPercent * 100) / 100;
-
-  // Calculate the sum of the rounded percentages
-  const sum = roundedBankPercentage + roundedCashPercentage + roundedDigitalPercentage;
-
-  // Adjust all percentages proportionally to ensure the sum is 100%
-  const adjustedBankPercentage = (roundedBankPercentage / sum) * 100;
-  const adjustedCashPercentage = (roundedCashPercentage / sum) * 100;
-  const adjustedDigitalPercentage = (roundedDigitalPercentage / sum) * 100;
-
-  // Return the updated object
-  return {
-    numBankPayInPercent: adjustedBankPercentage,
-    numCashPayInPercent: adjustedCashPercentage,
-    numDigitalPayInPercent: adjustedDigitalPercentage,
-  };
-  }
 
   return (
     <>

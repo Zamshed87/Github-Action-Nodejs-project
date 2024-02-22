@@ -468,7 +468,26 @@ function AboutMeDetails() {
                   }
                 : undefined,
               isActive: empBasic?.employeeProfileLandingView?.userStatus,
-
+              otType: empBasic?.employeeProfileLandingView?.intOtType
+                ? [
+                    {
+                      value: 1,
+                      label: "Not Applicable",
+                    },
+                    { value: 2, label: "With Salary" },
+                    {
+                      value: 3,
+                      label: "Without Salary/Additional OT",
+                    },
+                  ].find(
+                    (ot) =>
+                      ot.value ===
+                      empBasic?.employeeProfileLandingView?.intOtType
+                  )
+                : {
+                    value: 1,
+                    label: "Not Applicable",
+                  },
               probationayClosedBy:
                 probationCloseDateCustomDDL.find(
                   (dt) =>

@@ -1,22 +1,15 @@
 /* eslint-disable array-callback-return */
-import React, { useState } from "react";
+import { DeleteOutline } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
+import axios from "axios";
+import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
+import DefaultInput from "../../../../../common/DefaultInput";
 import FormikSelect from "../../../../../common/FormikSelect";
-import {
-  gray200,
-  gray400,
-  gray700,
-  gray900,
-  greenColor,
-} from "../../../../../utility/customColor";
+import Loading from "../../../../../common/loading/Loading";
+import { gray200, gray400, gray700 } from "../../../../../utility/customColor";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { getBreakdownListDDL, getByIdBreakdownListDDL } from "../helper";
-import Loading from "../../../../../common/loading/Loading";
-import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
-import axios from "axios";
-import { DeleteOutline } from "@mui/icons-material";
-import DefaultInput from "../../../../../common/DefaultInput";
-import FormikCheckBox from "common/FormikCheckbox";
+import { adjustPaymentFiledFun } from "./utils";
 
 const DefaultSalary = ({ propsObj }) => {
   const {
@@ -765,9 +758,16 @@ const DefaultSalary = ({ propsObj }) => {
                               +e.target.value -
                               +values?.digitalPay;
 
-                            setFieldValue("netPay", netPay);
+                            // setFieldValue("netPay", netPay); -- removed
 
                             setFieldValue("bankPay", e.target.value);
+                            adjustPaymentFiledFun(
+                              +e.target.value,
+                              "bankPay",
+                              +values?.totalGrossSalary,
+                              values,
+                              setFieldValue
+                            );
                           }}
                           errors={errors}
                           touched={touched}
@@ -817,7 +817,15 @@ const DefaultSalary = ({ propsObj }) => {
                             const netPay =
                               +values?.totalGrossSalary - +e.target.value;
                             setFieldValue("digitalPay", e.target.value);
-                            setFieldValue("netPay", netPay);
+                            adjustPaymentFiledFun(
+                              +e.target.value,
+                              "digitalPay",
+                              +values?.totalGrossSalary,
+                              values,
+                              setFieldValue
+                            );
+
+                            // setFieldValue("netPay", netPay); -- removed
                           }}
                           errors={errors}
                           touched={touched}
@@ -833,7 +841,10 @@ const DefaultSalary = ({ propsObj }) => {
                       <div className="col-lg-7">
                         <div
                           className="d-flex align-items-center"
-                          style={{ width: "100% !important", fontSize: "12px !important" }}
+                          style={{
+                            width: "100% !important",
+                            fontSize: "12px !important",
+                          }}
                         >
                           <h2
                             style={{
@@ -843,7 +854,7 @@ const DefaultSalary = ({ propsObj }) => {
                               color: gray700,
                               position: "relative",
                               top: "-1px",
-                              marginRight: "10px"
+                              marginRight: "10px",
                             }}
                           >
                             {true
@@ -857,105 +868,6 @@ const DefaultSalary = ({ propsObj }) => {
                                 }%) Pay`
                               : null}
                           </h2>
-                          {/* <FormikCheckBox
-                            height="15px"
-                            styleObj={{
-                              color: gray900,
-                              checkedColor: greenColor,
-                              padding: "0px 0px 5px 5px",
-                              // marginLeft: "20px"
-                            }}
-                            checked={values?.roundCash}
-                            value={values?.roundCash}
-                            name="roundCash"
-                            type="checkbox"
-                            className="form-control"
-                            label={"Make Round Cash Pay"}
-                            onChange={(e) => {
-                              function roundAndAdjustPercentages(obj) {
-                                const roundedBankPercentage =
-                                  Math.round(obj.numBankPayInPercent * 100) /
-                                  100;
-                                const roundedCashPercentage =
-                                  Math.round(obj.numCashPayInPercent * 100) /
-                                  100;
-                                const roundedDigitalPercentage =
-                                  Math.round(obj.numDigitalPayInPercent * 100) /
-                                  100;
-
-                                // Calculate the sum of the rounded percentages
-                                const sum =
-                                  roundedBankPercentage +
-                                  roundedCashPercentage +
-                                  roundedDigitalPercentage;
-
-                                // Adjust all percentages proportionally to ensure the sum is 100%
-                                const adjustedBankPercentage =
-                                  (roundedBankPercentage / sum) * 100;
-                                const adjustedCashPercentage =
-                                  (roundedCashPercentage / sum) * 100;
-                                const adjustedDigitalPercentage =
-                                  (roundedDigitalPercentage / sum) * 100;
-
-                                // Return the updated object
-                                return {
-                                  numBankPayInPercent: adjustedBankPercentage,
-                                  numCashPayInPercent: adjustedCashPercentage,
-                                  numDigitalPayInPercent:
-                                    adjustedDigitalPercentage,
-                                };
-                              }
-                              const obj = {
-                                numCashPayInPercent: +(
-                                  (+values?.netPay * 100) /
-                                  +values?.totalGrossSalary
-                                ).toFixed(6),
-                                numBankPayInPercent: +(
-                                  (+values?.bankPay * 100) /
-                                  +values?.totalGrossSalary
-                                ).toFixed(6),
-
-                                numDigitalPayInPercent: +(
-                                  (+values?.digitalPay * 100) /
-                                  +values?.totalGrossSalary
-                                ).toFixed(6),
-                              };
-                              if (e.target.checked) {
-                                console.log("value");
-                                const {
-                                  numBankPayInPercent,
-                                  numCashPayInPercent,
-                                  numDigitalPayInPercent,
-                                } = roundAndAdjustPercentages(obj);
-                                setFieldValue("roundCash", e.target.checked);
-                                setFieldValue(
-                                  "netPay",
-                                  +values?.totalGrossSalary *
-                                    (numCashPayInPercent / 100)
-                                );
-                                setFieldValue(
-                                  "digitalPay",
-                                  +values?.totalGrossSalary *
-                                    (numDigitalPayInPercent / 100)
-                                );
-                                setFieldValue(
-                                  "bankPay",
-                                  +values?.totalGrossSalary *
-                                    (numBankPayInPercent / 100)
-                                );
-                              }
-                              // const bank =
-                              //   +values?.totalGrossSalary -
-                              //   +e.target.value -
-                              //   +values?.digitalPay;
-
-                              // setFieldValue("bankPay", bank);
-                              setFieldValue("roundCash", e.target.checked);
-                            }}
-                            errors={errors}
-                            touched={touched}
-                            // disabled={true}
-                          /> */}
                         </div>
                       </div>
                       <div className="col-lg-5">
@@ -972,6 +884,14 @@ const DefaultSalary = ({ propsObj }) => {
                             //   +values?.digitalPay;
 
                             // setFieldValue("bankPay", bank);
+
+                            adjustPaymentFiledFun(
+                              +e.target.value,
+                              "netPay",
+                              +values?.totalGrossSalary,
+                              values,
+                              setFieldValue
+                            );
                             setFieldValue("netPay", e.target.value);
                           }}
                           errors={errors}

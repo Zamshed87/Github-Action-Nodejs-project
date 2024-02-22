@@ -188,6 +188,7 @@ export default function LeaveApproval() {
       {
         approverId: employeeId,
         workplaceGroupId: wgId || 0,
+        businessUnitId: buId,
         workplaceId: wId,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
@@ -247,6 +248,7 @@ export default function LeaveApproval() {
         {
           approverId: employeeId,
           workplaceGroupId: wgId || 0,
+          businessUnitId: buId,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -317,6 +319,7 @@ export default function LeaveApproval() {
           isSupOrLineManager: 0,
           accountId: orgId,
           workplaceId: wId,
+          businessUnitId: buId,
         },
 
         setAllLeaveApplicatonData,
