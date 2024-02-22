@@ -106,19 +106,24 @@ const TableContent = ({
                   onClick={() => {
                     if (data?.sort) {
                       handleSorting(data, data?.fieldType);
-                      const newIndex = !currentSortValue?.current
-                        ? data.dataIndex
-                        : currentSortValue.current;
-                      const orderMapping = { 1: "desc", 2: "asc" };
-                      const order =
-                        orderMapping[currentSortValue?.clickCount] || "asc";
+                      if (
+                        handleSortingData !== null ||
+                        typeof handleSortingData === "function"
+                      ) {
+                        const newIndex = !currentSortValue?.current
+                          ? data.dataIndex
+                          : currentSortValue.current;
+                        const orderMapping = { 1: "desc", 2: "asc" };
+                        const order =
+                          orderMapping[currentSortValue?.clickCount] || "asc";
 
-                      const obj = {
-                        ...currentSortValue,
-                        current: newIndex,
-                        order,
-                      };
-                      handleSortingData(obj);
+                        const obj = {
+                          ...currentSortValue,
+                          current: newIndex,
+                          order,
+                        };
+                        handleSortingData?.(obj);
+                      }
                     }
                   }}
                 >
