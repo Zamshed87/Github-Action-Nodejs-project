@@ -468,7 +468,7 @@ function AboutMeDetails() {
                   }
                 : undefined,
               isActive: empBasic?.employeeProfileLandingView?.userStatus,
-              intOtType: empBasic?.employeeProfileLandingView?.intOtType
+              otType: empBasic?.employeeProfileLandingView?.intOtType
                 ? [
                     {
                       value: 1,

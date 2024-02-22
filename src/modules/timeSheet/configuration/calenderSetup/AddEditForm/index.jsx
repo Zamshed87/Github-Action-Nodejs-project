@@ -196,10 +196,6 @@ const CalendarSetupModal = ({
         }) => (
           <>
             <Box sx={style} className="calenderSetupModal">
-              {
-                  console.log({isEmployeeUpdate: values?.isEmployeeUpdate})
-
-              }
               <Form>
                 <div className="modalBody p-0">
                   <div className="row mx-0">
