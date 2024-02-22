@@ -85,7 +85,7 @@ TOTPolicyGenerate) => {
     isCalendarTimeHours: values?.benefitHours === 1,
     isHolidayCountAsFullDayOt: values?.count === 1 ? true : false,
     isOffdayCountAsFullDayOt: values?.count === 2 ? true : false,
-    // intCalenderId: 0,
+    intCalenderId: 0,
     intOTHourShouldBeAboveInMin: values?.intOTHourShouldBeAboveInMin || 0,
   };
   const payload: any = generateRows(
@@ -132,7 +132,22 @@ function generateRows(
         });
       }
     }
-  } else if (policyLabels.includes("HR Position")) {
+  } else if (
+    policyLabels.includes("HR Position") &&
+    policyLabels.includes("Calendar Name")
+  ) {
+    for (const hr of hrPosition) {
+      for  (const cl of calendarName) {
+        rows.push({
+          ...commonData,
+          ...policyInfo,
+          intCalenderId: cl?.value,
+          intHrPositionId: hr?.value,
+          // intOtconfigId: 0,
+        });
+      }
+    }
+  }else if (policyLabels.includes("HR Position")) {
     for (const hr of hrPosition) {
       rows.push({
         ...commonData,
