@@ -78,7 +78,7 @@ TOTPolicyGenerate) => {
   const policy = policyConditions
     .filter((condition) => condition.condition)
     .map(({ value, label }) => ({ value, label }));
-  console.log({ policy });
+  // console.log({ policy });
 
   const policyInfo = {
     intOtconfigId: intOtconfigId || 0,

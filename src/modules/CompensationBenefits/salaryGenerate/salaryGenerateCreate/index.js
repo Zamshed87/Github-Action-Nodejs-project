@@ -904,77 +904,6 @@ const SalaryGenerateCreate = () => {
               >
                 Employee Salary Generate List
               </h2>
-
-              <ul className="d-flex flex-wrap">
-                {values?.search && (
-                  <li>
-                    {/* <ResetButton
-                      classes="btn-filter-reset"
-                      title="reset"
-                      icon={
-                        <SettingsBackupRestoreOutlined
-                          sx={{
-                            marginRight: "10px",
-                            fontSize: "16px",
-                          }}
-                        />
-                      }
-                      styles={{
-                        marginRight: "16px",
-                      }}
-                      onClick={() => {
-                        setRowDto(allData);
-                        setFieldValue("search", "");
-                      }}
-                    /> */}
-                  </li>
-                )}
-                <li>
-                  {/* <MasterFilter
-                    isHiddenFilter
-                    value={searchKeyWord}
-                    setValue={(value) => {
-                      if (value === "") {
-                        setSearchKeyWord("");
-                        setAllData(allLanding);
-                        setRowDto(allLanding);
-                      } else {
-                        setSearchKeyWord(value);
-                        filterData(value);
-                      }
-                    }}
-                    cancelHandler={() => {
-                      setSearchKeyWord("");
-                      getData();
-                    }}
-                    handleClick={() => {}}
-                    width="200px"
-                    inputWidth="200px"
-                  /> */}
-                  {/* <DefaultInput
-                    classes="search-input"
-                    inputClasses="search-inner-input"
-                    placeholder="Search"
-                    value={values?.search}
-                    name="search"
-                    type="text"
-                    trailicon={
-                      <SearchOutlined
-                        sx={{
-                          color: "#323232",
-                          fontSize: "18px",
-                        }}
-                      />
-                    }
-                    onChange={(e) => {
-                      filterData(e.target.value);
-                      setFieldValue("search", e.target.value);
-                    }}
-                    errors={errors}
-                    touched={touched}
-                  /> */}
-                </li>
-              </ul>
             </div>
             <div>
               {allData?.length > 0 ? (
@@ -991,16 +920,16 @@ const SalaryGenerateCreate = () => {
                       setColumnsData={(newRow) => {
                         setAllData(newRow);
                       }}
-                      removePagination={true}
-                      // handleTableChange={({ pagination, newRowDto }) =>
-                      //   handleTableChange(
-                      //     pagination,
-                      //     newRowDto,
-                      //     values?.search || ""
-                      //   )
-                      // }
-                      // pages={pages?.pageSize}
-                      // pagination={pages}
+                      // removePagination={true}
+                      handleTableChange={({ pagination, newRowDto }) =>
+                        handleTableChange(
+                          pagination,
+                          newRowDto,
+                          values?.search || ""
+                        )
+                      }
+                      pages={pages?.pageSize}
+                      pagination={pages}
                     />
                   </div>
                 </>
