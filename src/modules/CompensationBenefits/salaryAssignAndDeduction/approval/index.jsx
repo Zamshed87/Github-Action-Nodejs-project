@@ -62,6 +62,8 @@ export default function AllowanceNDeductionApproval() {
   const [applicationData, setApplicationData] = useState([]);
   const [allData, setAllData] = useState();
   const [isFilter, setIsFilter] = useState(false);
+  const [filterData, setFilterData] = useState({});
+
   // const [isSupOrLineManager, setIsSupOrLineManager] = useState({
   //   value: 1,
   //   label: "Supervisor",
@@ -86,6 +88,7 @@ export default function AllowanceNDeductionApproval() {
 
       setApplicationListData,
       setAllData,
+      setFilterData,
       setLoading
     );
   };
@@ -123,30 +126,20 @@ export default function AllowanceNDeductionApproval() {
 
       setApplicationListData,
       setAllData,
+      setFilterData,
       setLoading
     );
     // setFilterBages(values);
     // setfilterAnchorEl(null);
   };
-  const clearFilter = () => {
-    // setFilterBages({});
-    // setFilterValues("");
-    getLandingData();
-  };
-  const clearBadge = (values, name) => {
-    const data = values;
-    data[name] = "";
-    // setFilterBages(data);
-    // setFilterValues(data);
-    handleSearch(data);
-  };
+
   // const getFilterValues = (name, value) => {
   //   setFilterValues((prev) => ({ ...prev, [name]: value }));
   // };
 
   useEffect(() => {
     const array = [];
-    applicationListData?.listData?.forEach((data) => {
+    filterData?.listData?.forEach((data) => {
       if (data?.selectCheckbox) {
         array.push({
           applicationId: data?.application?.intSalaryAdditionAndDeductionId,
@@ -157,7 +150,7 @@ export default function AllowanceNDeductionApproval() {
       }
       setApplicationData(array);
     });
-  }, [applicationListData]);
+  }, [filterData]);
 
   const [appliedStatus, setAppliedStatus] = useState({
     value: 1,
@@ -203,31 +196,7 @@ export default function AllowanceNDeductionApproval() {
         isAdmin: isOfficeAdmin,
       });
     }
-    // let newArray = [];
-    // let payload = [
-    //   {
-    //     applicationId: array?.application?.intSalaryAdditionAndDeductionId,
-    //     fromDate: array?.application?.dteCreatedAt || null,
-    //     toDate: array?.application?.dteUpdatedAt || null,
-    //     approverEmployeeId: employeeId,
-    //     isReject: text === "Approve" ? false : true,
-    //     accountId: orgId,
-    //     isAdmin: isOfficeAdmin,
-    //   },
-    // ];
-
-    // if (array.length > 0) {
-    //   array.forEach((item) => {
-    //     if (text === "isReject") {
-    //       item.isReject = true;
-    //       newArray.push(item);
-    //     } else {
-    //       item.isReject = false;
-    //       newArray.push(item);
-    //     }
-    //   });
-    // }
-
+  
     const callback = () => {
       getAllAdditionNDeductionListDataForApproval(
         {
@@ -245,6 +214,7 @@ export default function AllowanceNDeductionApproval() {
         },
         setApplicationListData,
         setAllData,
+        setFilterData,
         setLoading
       );
     };
@@ -305,10 +275,8 @@ export default function AllowanceNDeductionApproval() {
             }}
             name="allSelected"
             checked={
-              applicationListData?.listData?.length > 0 &&
-              applicationListData?.listData?.every(
-                (item) => item?.selectCheckbox
-              )
+              filterData?.listData?.length > 0 &&
+              filterData?.listData?.every((item) => item?.selectCheckbox)
             }
             onChange={(e) => {
               setApplicationListData({
@@ -317,6 +285,13 @@ export default function AllowanceNDeductionApproval() {
                   selectCheckbox: e.target.checked,
                 })),
               });
+              setFilterData({
+                listData: filterData?.listData?.map((item) => ({
+                  ...item,
+                  selectCheckbox: e.target.checked,
+                })),
+              });
+              setFieldValue("allSelected", e.target.checked);
             }}
           />
         ),
@@ -335,7 +310,7 @@ export default function AllowanceNDeductionApproval() {
                 color={greenColor}
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
-                  let data = applicationListData?.listData?.map((item) => {
+                  const data = applicationListData?.listData?.map((item) => {
                     if (
                       item?.application?.intSalaryAdditionAndDeductionId ===
                       record?.application?.intSalaryAdditionAndDeductionId
@@ -346,6 +321,19 @@ export default function AllowanceNDeductionApproval() {
                       };
                     } else return item;
                   });
+                  const data2 = filterData?.listData?.map((item) => {
+                    if (
+                      item?.application?.intSalaryAdditionAndDeductionId ===
+                      record?.application?.intSalaryAdditionAndDeductionId
+                    ) {
+                      return {
+                        ...item,
+                        selectCheckbox: e.target.checked,
+                      };
+                    } else return item;
+                  });
+                  // console.log({data2})
+                  setFilterData({ listData: [...data2] });
                   setApplicationListData({ listData: [...data] });
                 }}
               />
@@ -594,12 +582,7 @@ export default function AllowanceNDeductionApproval() {
           });
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          setFieldValue,
-          setValues,
-        }) => (
+        {({ handleSubmit, values, setFieldValue, setValues }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -613,7 +596,7 @@ export default function AllowanceNDeductionApproval() {
                             title={"Allowance & Deduction Approval"}
                           />
                           <div>
-                            {applicationListData?.listData?.filter(
+                            {filterData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
                               <div className="d-flex actionIcon mr-3">
@@ -625,7 +608,7 @@ export default function AllowanceNDeductionApproval() {
                                         "approve",
                                         "Approved",
                                         // applicationData
-                                        applicationListData?.listData
+                                        filterData?.listData
                                       );
                                     }}
                                   >
@@ -652,7 +635,7 @@ export default function AllowanceNDeductionApproval() {
                                         "reject",
                                         "Reject",
                                         // applicationData
-                                        applicationListData?.listData
+                                        filterData?.listData
                                       );
                                     }}
                                   >
@@ -739,8 +722,14 @@ export default function AllowanceNDeductionApproval() {
                                     page,
                                     paginationSize
                                   )}
+                                  setColumnsData={(dataRow) => {
+                                    setFilterData({ listData: dataRow });
+                                  }}
                                   setPage={setPage}
                                   setPaginationSize={setPaginationSize}
+                                  // handleTableChange={({pagination, filters, sorter, newRowDto}) => {
+                                  //     console.log({pagination, filters, sorter, newRowDto})
+                                  // }}
                                 />
                               ) : (
                                 <NoResult />
