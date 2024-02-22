@@ -61,7 +61,24 @@ TOTPolicyGenerate) => {
     employmentType,
     calendarName,
     intOtconfigId,
+    fromSalary,
+    toSalary,
   } = values;
+  const policyConditions = [
+    { condition: hrPosition?.length > 0, value: 1, label: "HR Position" },
+    {
+      condition: employmentType?.length > 0,
+      value: 2,
+      label: "Employment Type",
+    },
+    { condition: calendarName?.length > 0, value: 4, label: "Calendar Name" },
+    { condition: fromSalary && toSalary, value: 3, label: "Salary Range" },
+  ];
+
+  const policy = policyConditions
+    .filter((condition) => condition.condition)
+    .map(({ value, label }) => ({ value, label }));
+  console.log({ policy });
 
   const policyInfo = {
     intOtconfigId: intOtconfigId || 0,
@@ -89,7 +106,7 @@ TOTPolicyGenerate) => {
     intOTHourShouldBeAboveInMin: values?.intOTHourShouldBeAboveInMin || 0,
   };
   const payload: any = generateRows(
-    policyType,
+    policy, // policyType
     hrPosition,
     employmentType,
     calendarName,
@@ -116,8 +133,25 @@ function generateRows(
   const rows: Option[][] = [];
 
   const policyLabels = policyType.map((pt) => pt.label);
-
   if (
+    policyLabels.includes("HR Position") &&
+    policyLabels.includes("Employment Type") &&
+    policyLabels.includes("Calendar Name")
+  ) {
+    for (const hr of hrPosition) {
+      for (const emp of employmentType) {
+        for (const cl of calendarName) {
+          rows.push({
+            ...commonData,
+            ...policyInfo,
+            intEmploymentTypeId: emp?.value,
+            intHrPositionId: hr?.value,
+            intCalenderId: cl?.value,
+          });
+        }
+      }
+    }
+  } else if (
     policyLabels.includes("HR Position") &&
     policyLabels.includes("Employment Type")
   ) {
@@ -137,7 +171,7 @@ function generateRows(
     policyLabels.includes("Calendar Name")
   ) {
     for (const hr of hrPosition) {
-      for  (const cl of calendarName) {
+      for (const cl of calendarName) {
         rows.push({
           ...commonData,
           ...policyInfo,
@@ -147,7 +181,7 @@ function generateRows(
         });
       }
     }
-  }else if (policyLabels.includes("HR Position")) {
+  } else if (policyLabels.includes("HR Position")) {
     for (const hr of hrPosition) {
       rows.push({
         ...commonData,

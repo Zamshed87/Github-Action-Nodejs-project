@@ -1,7 +1,6 @@
 import axios from "axios";
 import IConfirmModal from "../../../../common/IConfirmModal";
 
-import { paginationSize } from "common/peopleDeskTable";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -66,7 +65,7 @@ const SalaryGenerateCreate = () => {
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: paginationSize,
+    pageSize: 2000,
     total: 0,
   });
   const [allEmployeeString, setAllEmployeeString] = useState("");
