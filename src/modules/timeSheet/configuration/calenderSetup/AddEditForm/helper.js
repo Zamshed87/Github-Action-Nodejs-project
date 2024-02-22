@@ -37,14 +37,16 @@ export const onCreateCalendarSetupWithValidation = (
   setLoading,
   wgId,
   tableData,
-  deleteRowData,
-  setDeleteRowData
+  deleteRowData
 ) => {
-  let demoStartTime = moment(values?.startTime, "HH:mm").subtract(12, "hours");
-  let demoEndTime = moment(values?.endTime, "HH:mm").add(12, "hours");
+  const demoStartTime = moment(values?.startTime, "HH:mm").subtract(
+    12,
+    "hours"
+  );
+  const demoEndTime = moment(values?.endTime, "HH:mm").add(12, "hours");
 
   if (moment.duration(values?.startTime) > moment.duration(values?.endTime)) {
-    let demoWorkHour = moment
+    const demoWorkHour = moment
       .duration(demoEndTime.diff(demoStartTime))
       .asHours();
     if (parseInt(values?.minWork) > demoWorkHour) {
@@ -63,7 +65,7 @@ export const onCreateCalendarSetupWithValidation = (
       return;
     }
   }
-  let userList = tableData?.map((item) => {
+  const userList = tableData?.map((item) => {
     return {
       calendarId: id || 0,
       calenderName: values?.calendarName || "",
@@ -78,7 +80,7 @@ export const onCreateCalendarSetupWithValidation = (
     };
   });
 
-  let deleteList = deleteRowData?.map((item) => {
+  const deleteList = deleteRowData?.map((item) => {
     return {
       calendarId: id || 0,
       calenderName: values?.calendarName || "",
@@ -93,7 +95,7 @@ export const onCreateCalendarSetupWithValidation = (
     };
   });
 
-  let editList = [];
+  const editList = [];
 
   userList.map((itm) => {
     if (itm?.intCalenderRowId <= 0) {
@@ -120,6 +122,7 @@ export const onCreateCalendarSetupWithValidation = (
     intAccountId: orgId,
     intBusinessUnitId: buId,
     intCreatedBy: employeeId,
+    isLunchBreakCalculateAsWorkingHour: values?.isLunchBreakAsWorkingHour,
     dteCreatedAt: "2023-08-30T09:23:42.542Z",
     intUpdatedBy: employeeId,
     dteUpdatedAt: "2023-08-30T09:23:42.542Z",
@@ -142,7 +145,7 @@ export const onCreateCalendarSetupWithValidation = (
     isNightShift: values?.nightShift || false,
     timeSheetCalenderRows: id ? [...deleteList, ...editList] : userList,
   };
-  if(values?.isEmployeeUpdate){
+  if (values?.isEmployeeUpdate) {
     payload.dteEmployeeUpdateFromDate = values?.dteEmployeeUpdateFromDate;
     payload.dteEmployeeUpdateToDate = values?.dteEmployeeUpdateToDate;
   }
