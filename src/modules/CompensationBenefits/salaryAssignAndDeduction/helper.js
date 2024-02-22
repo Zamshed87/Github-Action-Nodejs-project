@@ -309,6 +309,7 @@ export const getAllAdditionNDeductionListDataForApproval = async (
   payload,
   setter,
   setAllData,
+  setFilterData,
   setLoading,
   cb
 ) => {
@@ -320,12 +321,14 @@ export const getAllAdditionNDeductionListDataForApproval = async (
     );
     if (res?.data) {
       setAllData && setAllData(res?.data);
+      setFilterData && setFilterData(res?.data);
       setter(res?.data);
     }
     cb && cb();
     setLoading && setLoading(false);
   } catch (error) {
     setter([]);
+    setFilterData && setFilterData({});
     setLoading && setLoading(false);
   }
 };
