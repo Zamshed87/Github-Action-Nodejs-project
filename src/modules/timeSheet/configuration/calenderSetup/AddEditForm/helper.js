@@ -151,7 +151,6 @@ export const onCreateCalendarSetupWithValidation = (
     onHide();
     getLanding();
   };
-  console.log({payload})
   createTimeSheetActionForCalender(payload, setLoading, callback);
 };
 
