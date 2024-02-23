@@ -67,7 +67,7 @@ const AntTable = ({
     };
   });
 
-  const handleChange = (pagination, filters, sorter, newRowDto) => {
+  const handleChange = (pagination, filters, sorter, newRowDto, action) => {
     setFilteredInfo(filters);
     setSortedInfo(sorter);
     setColumnsData?.(newRowDto?.currentDataSource);

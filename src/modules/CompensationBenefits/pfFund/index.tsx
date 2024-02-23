@@ -15,13 +15,16 @@ import { getSerial } from "Utils";
 import { Col, Form, Row } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import CreateInvestment from "./Create/CreateInvestment";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import PFFundModalView from "./view/PFFundModalView";
+import RefundEarning from "./Create/RefundEarning";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 type TPfFundLanding = {};
 const PfFundLanding: React.FC<TPfFundLanding> = () => {
+  const dispatch = useDispatch();
   // Data From Store
   const { buId, wgId, wId, orgId, intEmployeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
@@ -40,6 +43,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
 
   // state
   const [open, setOpen] = useState(false);
+  const [refundEarningModalOpen, setRefundEarningModalOpen] = useState(false);
   const [viewModal, setViewModal] = useState(false);
   const [selectedRows, setsSelectedRows] = useState<any>([]);
   const [checkedRowKeys, setCheckRowKeys] = useState<any>([]);
@@ -113,6 +117,11 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Table Header
   const header: any = [
     {
@@ -134,8 +143,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
     {
       title: "Fund Date",
       dataIndex: "dteTransactionDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
+      render: (data: any) => moment(data).format("DD-MMM-YYYY"),
     },
     {
       title: "Type",
@@ -150,7 +158,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
       title: "Invst. Status",
       dataIndex: "status",
       align: "center",
-      render: (data: any, record: any, index: number) =>
+      render: (data: any, record: any) =>
         // Write condition to check status
         record?.status === "Incomplete" ? (
           <PBadge type="warning" text={record?.status} />
@@ -162,13 +170,12 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
     {
       title: "Invst. Date",
       dataIndex: "investmentDate",
-      render: (data: any, record: any, index: number) =>
-        data ? moment(data).format("DD-MMM-YYYY") : "",
+      render: (data: any) => (data ? moment(data).format("DD-MMM-YYYY") : ""),
     },
     {
       title: "Action",
       align: "center",
-      render: (data: any, record: any, index: number) => {
+      render: (data: any, record: any) => {
         return (
           <TableButton
             buttonsList={[
@@ -188,20 +195,24 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 prompt: "Investment",
                 isActive:
                   record?.status === "Complete" ||
-                  record?.status === "" ||
-                  record?.intTypeId === 1
+                  record?.intTypeId === 1 ||
+                  record?.intTypeId === 5
                     ? false
                     : true,
               },
               {
                 type: "reload",
-                onClick: () => {},
-                prompt: "Refund",
-              },
-              {
-                type: "dollar",
-                onClick: () => {},
-                prompt: "Earning",
+                onClick: () => {
+                  setsSelectedRows([record]);
+                  setRefundEarningModalOpen(true);
+                },
+                prompt: "Refund/Earning",
+                isActive:
+                  record?.strType === "Fund" ||
+                  record?.strType === "Refund" ||
+                  record?.status === "Complete"
+                    ? false
+                    : true,
               },
             ]}
           />
@@ -283,7 +294,9 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
               },
               getCheckboxProps: (record) => ({
                 disabled:
-                  record?.status === "Complete" || record?.status === "",
+                  record?.status === "Complete" ||
+                  record?.strType === "Investment" ||
+                  record?.strType === "Earning",
               }),
             }}
             bordered
@@ -316,6 +329,24 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
         components={
           <CreateInvestment
             setOpen={setOpen}
+            data={selectedRows}
+            landingApi={landingApi}
+            setsSelectedRows={setsSelectedRows}
+            setCheckRowKeys={setCheckRowKeys}
+          />
+        }
+      />
+      <PModal
+        title="Refund/Earning"
+        open={refundEarningModalOpen}
+        onCancel={() => {
+          setsSelectedRows([]);
+          setCheckRowKeys([]);
+          setRefundEarningModalOpen(false);
+        }}
+        components={
+          <RefundEarning
+            setOpen={setRefundEarningModalOpen}
             data={selectedRows}
             landingApi={landingApi}
             setsSelectedRows={setsSelectedRows}

@@ -41,7 +41,7 @@ const initData = {
 };
 
 export default function ArrearSalaryGenerateApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -57,7 +57,9 @@ export default function ArrearSalaryGenerateApproval() {
       {
         approverId: employeeId,
         intId: 0,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -78,8 +80,10 @@ export default function ArrearSalaryGenerateApproval() {
     getAllSalaryGenerateListDataForApproval(
       {
         approverId: employeeId,
+        workplaceId: wId,
         intId: 0,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -111,7 +115,8 @@ export default function ArrearSalaryGenerateApproval() {
       {
         approverId: employeeId,
         intId: values?.intId || 0,
-        workplaceGroupId: values?.workplace?.id || 0,
+        workplaceGroupId: values?.workplace?.id || wgId,
+        businessUnitId: buId,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
         applicantId: values?.employee?.id || 0,
@@ -122,6 +127,7 @@ export default function ArrearSalaryGenerateApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         accountId: orgId,
+        workplaceId: wId,
       },
       setApplicationListData,
       setAllData,
@@ -202,7 +208,8 @@ export default function ArrearSalaryGenerateApproval() {
         {
           approverId: employeeId,
           intId: filterValues?.applicationStatus || 0,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: filterValues?.workplace?.id || wgId,
+          businessUnitId: buId,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -213,6 +220,7 @@ export default function ArrearSalaryGenerateApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           accountId: orgId,
+          workplaceId: wId,
         },
         setApplicationListData,
         setAllData,
@@ -284,7 +292,7 @@ export default function ArrearSalaryGenerateApproval() {
                           <BackButton
                             title={"Arrear Salary Generate Approval"}
                           />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -305,7 +313,9 @@ export default function ArrearSalaryGenerateApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -328,7 +338,9 @@ export default function ArrearSalaryGenerateApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -361,7 +373,7 @@ export default function ArrearSalaryGenerateApproval() {
                               )}
                               {permission?.isCreate && (
                                 <li>
-                                  <MasterFilter
+                                  {/* <MasterFilter
                                     styles={{
                                       marginRight: "0px",
                                     }}
@@ -386,7 +398,7 @@ export default function ArrearSalaryGenerateApproval() {
                                     handleClick={(e) =>
                                       setfilterAnchorEl(e.currentTarget)
                                     }
-                                  />
+                                  /> */}
                                 </li>
                               )}
                             </ul>

@@ -29,12 +29,16 @@ import {
 } from "./helper";
 import "./jobConfirmation.css";
 import { createCommonExcelFile } from "../../../utility/customExcel/generateExcelAction";
+import DefaultInput from "common/DefaultInput";
+import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 
 const initData = {
   search: "",
   monthYear: moment().format("YYYY-MM"),
-  monthId: new Date().getMonth() + 1,
-  yearId: new Date().getFullYear(),
+  // monthId: new Date().getMonth() + 1,
+  // yearId: new Date().getFullYear(),
+  fromDate: monthFirstDate(),
+  toDate: monthLastDate(),
 };
 
 export default function JobConfirmationReport() {
@@ -46,6 +50,7 @@ export default function JobConfirmationReport() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   // hooks
   const [loading, setLoading] = useState(false);
@@ -64,7 +69,7 @@ export default function JobConfirmationReport() {
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Job Confirmation";
+    document.title = "Need Confirmation";
   }, []);
 
   useEffect(() => {
@@ -73,8 +78,8 @@ export default function JobConfirmationReport() {
       intAccountId,
       intBusinessUnitId,
       "",
-      new Date().getMonth() + 1,
-      new Date().getFullYear(),
+      monthFirstDate(),
+      monthLastDate(),
       setRowDto,
       setAllData,
       setLoading,
@@ -87,22 +92,6 @@ export default function JobConfirmationReport() {
     );
   }, [wgId, wId]);
 
-  // search
-  // const filterData = (keywords, allData, setRowDto) => {
-  //   try {
-  //     const regex = new RegExp(keywords?.toLowerCase());
-  //     let newDta = allData?.filter(
-  //       (item) =>
-  //         regex.test(item?.EmployeeName?.toLowerCase()) ||
-  //         regex.test(item?.DepartmentName?.toLowerCase()) ||
-  //         regex.test(dateFormatter(item?.dteJoiningDate)?.toLowerCase()) ||
-  //         regex.test(dateFormatter(item?.SupervisorName)?.toLowerCase())
-  //     );
-  //     setRowDto(newDta);
-  //   } catch {
-  //     setRowDto([]);
-  //   }
-  // };
   const handleTableChange = (pagination, newRowDto, srcText) => {
     if (newRowDto?.action === "filter") {
       return;
@@ -116,8 +105,8 @@ export default function JobConfirmationReport() {
         intAccountId,
         intBusinessUnitId,
         "",
-        new Date().getMonth() + 1,
-        new Date().getFullYear(),
+        monthFirstDate(),
+        monthLastDate(),
         setRowDto,
         setAllData,
         setLoading,
@@ -135,8 +124,8 @@ export default function JobConfirmationReport() {
         intAccountId,
         intBusinessUnitId,
         "",
-        new Date().getMonth() + 1,
-        new Date().getFullYear(),
+        monthFirstDate(),
+        monthLastDate(),
         setRowDto,
         setAllData,
         setLoading,
@@ -243,7 +232,7 @@ export default function JobConfirmationReport() {
                         </div>
                       </Tooltip>
 
-                      <div className="input-field-main pt-1">
+                      {/* <div className="input-field-main pt-1">
                         <FormikInput
                           classes="input-sm month-picker"
                           value={values?.monthYear}
@@ -285,7 +274,7 @@ export default function JobConfirmationReport() {
                           errors={errors}
                           touched={touched}
                         />
-                      </div>
+                      </div> */}
                     </div>
                     <div className="table-card-head-right">
                       <ul className="d-flex">
@@ -326,8 +315,8 @@ export default function JobConfirmationReport() {
                                   intAccountId,
                                   intBusinessUnitId,
                                   "",
-                                  new Date().getMonth() + 1,
-                                  new Date().getFullYear(),
+                                  values?.fromDate,
+                                  values?.toDate,
                                   setRowDto,
                                   setAllData,
                                   setLoading,
@@ -344,8 +333,8 @@ export default function JobConfirmationReport() {
                                   intAccountId,
                                   intBusinessUnitId,
                                   "",
-                                  new Date().getMonth() + 1,
-                                  new Date().getFullYear(),
+                                  values?.fromDate,
+                                  values?.toDate,
                                   setRowDto,
                                   setAllData,
                                   setLoading,
@@ -363,6 +352,75 @@ export default function JobConfirmationReport() {
                           />
                         </li>
                       </ul>
+                    </div>
+                  </div>
+                  <div
+                    className="card-style "
+                    style={{ margin: "14px 0px 12px 0px" }}
+                  >
+                    <div className="row">
+                      {/* bu */}
+                      <div className="col-lg-2">
+                        <div className="input-field-main">
+                          <label>From Date</label>
+                          <DefaultInput
+                            classes="input-sm"
+                            placeholder=""
+                            value={values?.fromDate}
+                            name="fromDate"
+                            type="date"
+                            onChange={(e) => {
+                              setFieldValue("fromDate", e.target.value);
+                            }}
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-2">
+                        <div className="input-field-main">
+                          <label>To Date</label>
+                          <DefaultInput
+                            classes="input-sm"
+                            placeholder=""
+                            value={values?.toDate}
+                            name="toDate"
+                            type="date"
+                            onChange={(e) => {
+                              setFieldValue("toDate", e.target.value);
+                            }}
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-1">
+                        <button
+                          style={{ marginTop: "21px" }}
+                          className="btn btn-green"
+                          onClick={() => {
+                            getJobConfirmationInfo(
+                              "EmployeeBasicForJobConfirmationReport",
+                              intAccountId,
+                              intBusinessUnitId,
+                              "",
+                              values?.fromDate,
+                              values?.toDate,
+                              setRowDto,
+                              setAllData,
+                              setLoading,
+                              2,
+                              wgId,
+                              "",
+                              pages,
+                              setPages,
+                              wId
+                            );
+                          }}
+                        >
+                          View
+                        </button>
+                      </div>
                     </div>
                   </div>
                   {rowDto?.length > 0 ? (

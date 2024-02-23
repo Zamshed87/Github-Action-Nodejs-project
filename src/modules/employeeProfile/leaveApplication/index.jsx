@@ -23,6 +23,7 @@ import { yearDDLAction } from "../../../utility/yearDDL";
 import "./leaveApplication.css";
 import { getSearchEmployeeList } from "../../../common/api";
 import AsyncFormikSelect from "../../../common/AsyncFormikSelect";
+import { dateFormatter } from "utility/dateFormatter";
 
 function EmLeaveApplication(props) {
   const {
@@ -66,6 +67,8 @@ function EmLeaveApplication(props) {
     setAllData,
     wgId,
     permission,
+    isOfficeAdmin,
+    // demoPopupForDeleteAdmin,
   } = props?.propjObj;
 
   const dispatch = useDispatch();
@@ -75,6 +78,7 @@ function EmLeaveApplication(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Leave Application";
   }, []);
+
   return (
     <>
       <Formik
@@ -161,7 +165,14 @@ function EmLeaveApplication(props) {
                         </p>
                         <p className="employeePosition">
                           {!loadingForInfo && employeeInfo?.[0]?.DesignationName
-                            ? employeeInfo?.[0]?.DesignationName
+                            ? `${employeeInfo?.[0]?.DesignationName}, ${employeeInfo?.[0]?.EmployeeCode}`
+                            : ""}
+                        </p>
+                        <p className="employeePosition">
+                          {!loadingForInfo && employeeInfo?.[0]?.DesignationName
+                            ? `Joining Date:  ${dateFormatter(
+                                employeeInfo?.[0]?.JoiningDate
+                              )}`
                             : ""}
                         </p>
                       </div>
@@ -287,7 +298,8 @@ function EmLeaveApplication(props) {
                           isEdit,
                           setIsEdit,
                           setSingleData,
-                          leaveTypeDDL: leaveBalanceData?.length > 0 ? leaveTypeDDL : [],
+                          leaveTypeDDL:
+                            leaveBalanceData?.length > 0 ? leaveTypeDDL : [],
                           setLoading,
                           loading,
                           editPermission: permission?.isEdit,
@@ -342,7 +354,9 @@ function EmLeaveApplication(props) {
                                 scrollRef,
                                 setSingleData,
                                 setImageFile,
-                                demoPopupForDelete
+                                demoPopupForDelete,
+                                isOfficeAdmin
+                                // demoPopupForDeleteAdmin
                               )}
                               onRowClick={(item) => {
                                 setSingleData(item);

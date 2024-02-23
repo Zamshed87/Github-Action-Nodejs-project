@@ -1,10 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Cancel,
-  CheckCircle,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -13,15 +9,12 @@ import AntTable from "../../../../common/AntTable";
 import BackButton from "../../../../common/BackButton";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import Loading from "../../../../common/loading/Loading";
-import MasterFilter from "../../../../common/MasterFilter";
 import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { failColor, successColor } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
-import CardTable from "./component/CardTable";
 import {
   getWithdrawalListDataForApproval,
   pfWithdrawApprovalLandingTableColumn,
@@ -33,7 +26,7 @@ const initData = {
 };
 
 export default function PfWithdrawApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -42,12 +35,9 @@ export default function PfWithdrawApproval() {
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
   const [allData, setAllData] = useState();
-  const [isFilter, setIsFilter] = useState(false);
 
   //View Modal
   const [viewModal, setViewModal] = useState(false);
-  const [createModal, setCreateModal] = useState(false);
-  const [singleData, setSingleData] = useState("");
 
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -66,7 +56,9 @@ export default function PfWithdrawApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -92,7 +84,9 @@ export default function PfWithdrawApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -159,7 +153,9 @@ export default function PfWithdrawApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -233,7 +229,7 @@ export default function PfWithdrawApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"PF Withdraw Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -254,7 +250,9 @@ export default function PfWithdrawApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -277,7 +275,9 @@ export default function PfWithdrawApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

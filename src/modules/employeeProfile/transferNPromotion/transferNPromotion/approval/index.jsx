@@ -15,7 +15,6 @@ import BackButton from "../../../../../common/BackButton";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import IConfirmModal from "../../../../../common/IConfirmModal";
 import Loading from "../../../../../common/loading/Loading";
-import MasterFilter from "../../../../../common/MasterFilter";
 import MuiIcon from "../../../../../common/MuiIcon";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../../common/ResetButton";
@@ -28,7 +27,6 @@ import {
 } from "../../../../../utility/customColor";
 import useDebounce from "../../../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
-import CardTable from "./component/CardTable";
 import {
   getAllTransferAndPromotionListDataForApproval,
   transferNPromotionApproveReject,
@@ -44,11 +42,10 @@ const initData = {
 };
 
 export default function TransferNPromotionApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-  // const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
@@ -56,8 +53,6 @@ export default function TransferNPromotionApproval() {
 
   //View Modal
   const [viewModal, setViewModal] = useState(false);
-  const [imageFile, setImageFile] = useState("");
-  const [createModal, setCreateModal] = useState(false);
   const [singleData, setSingleData] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [page, setPage] = useState(1);
@@ -82,7 +77,9 @@ export default function TransferNPromotionApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -108,7 +105,9 @@ export default function TransferNPromotionApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -175,7 +174,9 @@ export default function TransferNPromotionApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -221,7 +222,9 @@ export default function TransferNPromotionApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -761,7 +764,7 @@ export default function TransferNPromotionApproval() {
                           <BackButton
                             title={"Transfer And Promotion Approval"}
                           />
-                          <div className="table-card-head-right">
+                          <div>
                             {filterData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -782,7 +785,9 @@ export default function TransferNPromotionApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -805,7 +810,9 @@ export default function TransferNPromotionApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

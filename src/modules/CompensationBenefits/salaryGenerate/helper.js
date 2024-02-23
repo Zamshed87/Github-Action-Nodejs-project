@@ -42,13 +42,21 @@ export const getSalaryGenerateRequestLanding = async (
   setter,
   setAllData,
   setLoading,
+  pages,
+  setPages,
+  setAllEmployeeString,
   wing = 0,
   soleDepo = 0,
   region = 0,
   area = 0,
-  territory = 0
+  territory = 0,
+  values
 ) => {
   setLoading && setLoading(true);
+  const valueArray = values?.workplace?.map(obj => obj?.intWorkplaceId) || [];
+// Joining the values into a string separated by commas
+const workplaceListFromValues =valueArray.join(',');
+// const workplaceListFromValues ='"' + valueArray.join(',') + '"';
 
   let fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
   let toDateParams = toDate ? `&GenerateToDate=${toDate}` : "";
@@ -66,7 +74,11 @@ export const getSalaryGenerateRequestLanding = async (
         monthId || +currentMonth()
       }&intYearId=${
         yearId || currentYear
-      }&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId || 0}&intBankOrWalletType=0${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+      }&intWorkplaceGroupId=${wgId}&strWorkplaceIdList=${
+        workplaceListFromValues || wId
+      }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
+        pages?.pageSize
+      }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
     );
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
@@ -75,11 +87,15 @@ export const getSalaryGenerateRequestLanding = async (
           isSalaryGenerate: false,
         };
       });
+      setPages({ ...pages, total: res?.data?.[0]?.totalCount });
+      setAllEmployeeString?.(res?.data?.[0]?.listOfEmployeeId || "");
+     
       setAllData && setAllData(modifyRowData);
       setter && setter(modifyRowData);
       setLoading && setLoading(false);
     }
   } catch (error) {
+    console.log(error)
     setLoading && setLoading(false);
   }
 };
@@ -187,6 +203,9 @@ export const getSalaryGenerateRequestLandingById = async (
   setAllData,
   setLoading,
   wId,
+  pages,
+  setPages,
+  setAllEmployeeString,
   wing = 0,
   soleDepo = 0,
   region = 0,
@@ -207,11 +226,15 @@ export const getSalaryGenerateRequestLandingById = async (
   let soleDepoParams = soleDepo ? `&SoleDepoId=${soleDepo}` : "";
   let regionParams = region ? `&RegionId=${region}` : "";
   let areaParams = area ? `&AreaId=${area}` : "";
-  let territoryParams = territory ? `&TerritoryId=${territory}` : "";
+  let territoryParams = "";
 
   try {
     const res = await axios.get(
-      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId || 0}${salaryRequestIdParams}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&IntPageSize=${
+        pages?.pageSize
+      }&intWorkplaceId=${
+        wId || 0
+      }${salaryRequestIdParams}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
     );
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
@@ -221,14 +244,16 @@ export const getSalaryGenerateRequestLandingById = async (
             itm?.intSalaryGenerateRequestRowId > 0 ? true : false,
         };
       });
-
+      let empString = res?.data?.[0]?.listOfEmployeeId || "";
       // new employee load
       if (isMarge) {
         setLoading && setLoading(true);
         try {
           setLoading && setLoading(false);
           const secondRes = await axios.get(
-            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId || 0}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}&intWorkplaceId=${
+              wId || 0
+            }${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
           );
 
           if (secondRes?.data) {
@@ -238,6 +263,15 @@ export const getSalaryGenerateRequestLandingById = async (
                 isSalaryGenerate: false,
               };
             });
+            setPages({
+              ...pages,
+              total:
+                (secondRes?.data?.[0]?.totalCount || 0) +
+                (res?.data?.[0]?.totalCount || 0),
+            });
+            empString += `,${secondRes?.data?.[0]?.listOfEmployeeId || ""}`;
+
+            setAllEmployeeString(empString);
             setAllData && setAllData([...modifyRowData, ...modifyNewRowData]);
             setter([...modifyRowData, ...modifyNewRowData]);
             setLoading && setLoading(false);
@@ -246,6 +280,7 @@ export const getSalaryGenerateRequestLandingById = async (
           setLoading && setLoading(false);
         }
       } else {
+        setAllEmployeeString(empString);
         setAllData && setAllData(modifyRowData);
         setter(modifyRowData);
       }
@@ -336,7 +371,9 @@ export const getSalaryGenerateRequestRowId = async (
   setAllData,
   setLoading,
   wgId,
-  buId
+  buId,
+  pages,
+  setPages
 ) => {
   setLoading && setLoading(true);
 
@@ -347,6 +384,7 @@ export const getSalaryGenerateRequestRowId = async (
       `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${idParams}`
     );
     if (res?.data) {
+      setPages({ ...pages, total: res?.data?.[0]?.totalCount });
       const modifyRowData = res?.data?.map((itm) => {
         return {
           ...itm,

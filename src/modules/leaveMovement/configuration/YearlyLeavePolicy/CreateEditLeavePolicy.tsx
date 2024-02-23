@@ -654,7 +654,7 @@ const CreateEditLeavePolicy = () => {
                               rules={[
                                 {
                                   required: true,
-                                  message: "Employment Type is required",
+                                  message: "Workplace is required",
                                 },
                               ]}
                             />
@@ -1199,6 +1199,30 @@ const CreateEditLeavePolicy = () => {
                                 type="checkbox"
                                 layout="horizontal"
                                 name="isEarnLveIncludeHoliday"
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PInput
+                                label="Earn Leave Include Absent"
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isEarnLveIncludeAbsent"
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PInput
+                                label="Earn Leave Include Movement"
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isEarnLveIncludeLeaveMovement"
+                              />
+                            </Col>
+                            <Col md={24} sm={24}>
+                              <PInput
+                                label="Earn Leave Count From Confirmation Date"
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isEarnLveCountFromConfirmationDate"
                               />
                             </Col>
                             <Col md={12} sm={24}>
@@ -1816,9 +1840,10 @@ const CreateEditLeavePolicy = () => {
                                         item?.value !==
                                         existingPolicies[index]?.intWorkplace
                                     );
-                                    form.setFieldsValue({
-                                      intWorkplaceList: temp,
-                                    });
+                                    // requirement from habiba apu🔥🔥🔥
+                                    // form.setFieldsValue({
+                                    //   intWorkplaceList: temp,
+                                    // });
                                     // deleteRow(item?.intWorkplaceId);
                                   }}
                                 >

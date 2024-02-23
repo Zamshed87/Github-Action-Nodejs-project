@@ -52,7 +52,7 @@ const initData = {
 };
 
 export default function AdjustmentIOUApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -90,7 +90,9 @@ export default function AdjustmentIOUApproval() {
         isLineManager: false,
         isUserGroup: false,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -115,6 +117,7 @@ export default function AdjustmentIOUApproval() {
         approverId: employeeId,
         workplaceGroupId: 0,
         departmentId: 0,
+        workplaceId: wId,
         designationId: 0,
         applicantId: 0,
         accountId: orgId,
@@ -144,6 +147,7 @@ export default function AdjustmentIOUApproval() {
         isSupervisor: false,
         isLineManager: false,
         isUserGroup: false,
+        workplaceId: wId,
         approverId: employeeId,
         workplaceGroupId: 0,
         departmentId: 0,
@@ -228,6 +232,7 @@ export default function AdjustmentIOUApproval() {
         {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
+          workplaceId: wId,
           isSupOrLineManager: 0,
           isSupervisor: false,
           isLineManager: false,
@@ -291,6 +296,7 @@ export default function AdjustmentIOUApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
+          workplaceId: wId,
           isSupervisor: false,
           isLineManager: false,
           isUserGroup: false,
@@ -656,7 +662,7 @@ export default function AdjustmentIOUApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Adjustment IOU Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -677,7 +683,9 @@ export default function AdjustmentIOUApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -700,7 +708,9 @@ export default function AdjustmentIOUApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

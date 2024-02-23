@@ -6,7 +6,7 @@ import {
   ModeEditOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
 import ActionMenu from "../../../../../../common/ActionMenu";
@@ -16,7 +16,7 @@ import { gray900, success500 } from "../../../../../../utility/customColor";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { updateEmployeeProfile } from "./helper";
+import { updateEmployeeProfile } from "../../helper";
 const initData = {
   workEmail: "",
 };
@@ -179,7 +179,7 @@ function WorkEmail({ empId, buId, wgId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = (setFieldsValue) => {
     const payload = {
       partType: "OfficialEmail",
       employeeId: empId,
@@ -241,6 +241,7 @@ function WorkEmail({ empId, buId, wgId }) {
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
+      setFieldsValue("workEmail", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -254,21 +255,13 @@ function WorkEmail({ empId, buId, wgId }) {
           workEmail: singleData ? singleData : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -296,7 +289,6 @@ function WorkEmail({ empId, buId, wgId }) {
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -310,7 +302,6 @@ function WorkEmail({ empId, buId, wgId }) {
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={!values.workEmail}
@@ -411,7 +402,7 @@ function WorkEmail({ empId, buId, wgId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(setFieldValue);
                                       },
                                     },
                                   ]}

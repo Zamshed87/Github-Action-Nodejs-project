@@ -30,7 +30,7 @@ const initData = {
 };
 
 export default function TrainingScheduleApproval() {
-  const { employeeId, isOfficeAdmin, orgId, buId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, buId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -57,9 +57,9 @@ export default function TrainingScheduleApproval() {
         isLineManager: true,
         isUserGroup: true,
         approverId: employeeId,
-        workplaceId: 0,
+        workplaceId: wId,
         businessUnitId: buId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -92,7 +92,7 @@ export default function TrainingScheduleApproval() {
   };
   useEffect(() => {
     getLandingData();
-  }, [employeeId]);
+  }, [employeeId, wId]);
 
   // const searchData = (keywords, allData, setRowDto) => {
   //   try {
@@ -205,7 +205,7 @@ export default function TrainingScheduleApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Training Schedule Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -226,7 +226,9 @@ export default function TrainingScheduleApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -249,7 +251,9 @@ export default function TrainingScheduleApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

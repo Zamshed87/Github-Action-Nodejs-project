@@ -7,28 +7,36 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
 import { createEditEmpAction, userExistValidation } from "../helper";
-import { submitHandler } from "./helper";
+import {
+  calculateProbationCloseDateByDateOrMonth,
+  submitHandler,
+} from "./helper";
 import { todayDate } from "utility/todayDate";
 import moment from "moment";
+import { calculateNextDate } from "utility/dateFormatter";
+import { isDevServer } from "App";
+import { probationCloseDateCustomDDL } from "utility/yearDDL";
+import FileUploadComponents from "utility/Upload/FileUploadComponents";
 
 export default function AddEditForm({
   setIsAddEditForm,
   getData,
   // empBasic,
-  isEdit,
+  isEdit = false,
   singleData,
   pages,
+  isMenuEditPermission = false,
+  isOfficeAdmin = false,
 }) {
   const dispatch = useDispatch();
   // const debounce = useDebounce();
-
   const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const [loading, setLoading] = useState(false);
 
   // states
-
+  const [empSignature, setEmpAuthSignature] = useState([]);
   const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
 
   // Pages Start From Here code from above will be removed soon
@@ -53,13 +61,14 @@ export default function AddEditForm({
   const empDesignationDDL = useApiRequest([]);
   const employeeStatusDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
+  const payScaleGradeDDL = useApiRequest([]);
   const userTypeDDL = useApiRequest([]);
   const generateEmpCode = useApiRequest([]);
 
   // Api Functions
   const getSuperVisorDDL = debounce((value) => {
     if (value?.length < 2) return supervisorDDL?.reset();
-    const { workplaceGroup } = form.getFieldsValue(true);
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
     supervisorDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -69,6 +78,7 @@ export default function AddEditForm({
         BusinessUnitId: buId,
         intId: employeeId,
         workplaceGroupId: workplaceGroup?.value,
+        strWorkplaceIdList: workplace?.value.toString(),
         searchTxt: value || "",
       },
       onSuccess: (res) => {
@@ -92,6 +102,7 @@ export default function AddEditForm({
         BusinessUnitId: buId,
         intId: employeeId,
         workplaceGroupId: wgId,
+        strWorkplaceIdList: wId.toString(),
         searchTxt: value || "",
       },
       onSuccess: (res) => {
@@ -115,6 +126,7 @@ export default function AddEditForm({
         BusinessUnitId: buId,
         intId: employeeId,
         workplaceGroupId: wgId,
+        strWorkplaceIdList: wId.toString(),
         searchTxt: value || "",
       },
       onSuccess: (res) => {
@@ -360,6 +372,9 @@ export default function AddEditForm({
     });
   };
 
+  // const getPayScaleGradeDDL = () => {
+  //   const { workplaceGroup, workplace } = form.getFieldsValue(true);
+  // };
   const getEmployeePosition = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
@@ -399,7 +414,22 @@ export default function AddEditForm({
         });
       },
     });
-
+    payScaleGradeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "PayscaleGrade",
+        BusinessUnitId: buId,
+        AccountId: intAccountId,
+        WorkplaceGroupId: wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.PayscaleGradeName;
+          res[i].value = item?.PayscaleGradeId;
+        });
+      },
+    });
     genderDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -448,6 +478,7 @@ export default function AddEditForm({
       getUserTypeDDL();
       getEmployeDepartment();
       getEmployeDesignation();
+      // getPayScaleGradeDDL();
       getEmployeeStatus();
       getEmployeePosition();
       getEmployeeSection();
@@ -459,6 +490,12 @@ export default function AddEditForm({
     }
   }, [orgId, buId, singleData, employeeId]);
 
+  isDevServer &&
+    console.log({
+      isMenuEditPermission: isMenuEditPermission,
+      isOfficeAdmin: isOfficeAdmin,
+    });
+    console.log({singleData})
   return (
     <>
       <PForm
@@ -483,15 +520,17 @@ export default function AddEditForm({
             buId,
             intUrlId,
             setLoading,
+            intSignature:
+              empSignature?.[0]?.response?.[0]?.globalFileUrlId || 0,
           });
         }}
         initialValues={{
           generateDate: moment(todayDate()),
         }}
         onValuesChange={(changedFields, allFields) => {
-          if (allFields?.workplaceGroup && changedFields?.workplaceGroup) {
-            setTimeout(autoGenerateEmployeeCode, 500);
-          }
+          // if (allFields?.workplaceGroup && changedFields?.workplaceGroup) {
+          //   setTimeout(autoGenerateEmployeeCode, 500);
+          // }
         }}
       >
         <Row gutter={[10, 2]}>
@@ -502,7 +541,8 @@ export default function AddEditForm({
               label="Employee ID"
               placeholder="Employee ID"
               rules={[{ required: true, message: "Employee ID is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -512,7 +552,8 @@ export default function AddEditForm({
               label="Full Name"
               placeholder="Full Name"
               rules={[{ required: true, message: "Full Name is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
 
@@ -541,7 +582,8 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Workplace Group is required" },
               ]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -568,7 +610,8 @@ export default function AddEditForm({
                 }
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -585,7 +628,8 @@ export default function AddEditForm({
               rules={[
                 { required: true, message: "Employment Type is required" },
               ]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
 
@@ -597,7 +641,8 @@ export default function AddEditForm({
                 label="Reference ID"
                 placeholder="Reference ID"
                 // rules={[{ required: true, message: "Employee ID is required" }]}
-                disabled={isEdit}
+                // disabled={isEdit}
+                disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
               />
             </Col>
           )}
@@ -613,7 +658,8 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Religion is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -628,7 +674,8 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Gender is required" }]}
-              disabled={isEdit}
+              // disabled={isEdit}
+              disabled={isEdit && (isMenuEditPermission || isOfficeAdmin)}
             />
           </Col>
           <Col md={12} sm={24}>
@@ -648,12 +695,24 @@ export default function AddEditForm({
               label="Joining Date"
               placeholder="Joining Date"
               rules={[{ required: true, message: "Joining Date is required" }]}
+              onChange={(value) => {
+                // const next180Days = calculateNextDate(
+                //   moment(value).format("YYYY-MM-DD"),
+                //   180
+                // );
+                form.setFieldsValue({
+                  joiningDate: value,
+                  probationayClosedBy: null,
+                  dteProbationaryCloseDate: null,
+                  // dteProbationaryCloseDate: moment(next180Days),
+                });
+              }}
               // disabled={isEdit}
             />
           </Col>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { employeeType } = form.getFieldsValue();
+              const { employeeType, joiningDate } = form.getFieldsValue();
 
               const empType = employeeType?.label;
 
@@ -667,6 +726,35 @@ export default function AddEditForm({
                           name="joiningDate"
                           label={`Probation Start Date`}
                           disabled={true}
+                        />
+                      </Col>
+                      <Col md={12} sm={24}>
+                        <PSelect
+                          options={probationCloseDateCustomDDL || []}
+                          name="probationayClosedBy"
+                          label="Probation Period"
+                          placeholder="Probation Period"
+                          onChange={(value, op) => {
+                            const nextDate =
+                              calculateProbationCloseDateByDateOrMonth({
+                                inputDate: moment(
+                                  joiningDate,
+                                  "YYYY-MM-DD"
+                                ).format("YYYY-MM-DD"), // Use moment to parse the joiningDate
+                                days:
+                                  op?.count?.length > 3
+                                    ? null
+                                    : parseInt(op?.count),
+                                month:
+                                  op?.count?.length > 3
+                                    ? parseInt(op?.count?.split(" ")[0])
+                                    : null,
+                              });
+                            form.setFieldsValue({
+                              probationayClosedBy: op,
+                              dteProbationaryCloseDate: moment(nextDate),
+                            });
+                          }}
                         />
                       </Col>
                       <Col md={12} sm={24}>
@@ -826,7 +914,9 @@ export default function AddEditForm({
               rules={[{ required: true, message: "HR Position is required" }]}
             />
           </Col>
-          {isEdit ? (
+          {/* {isEdit ? ( */}
+          {/* {isEdit && (isMenuEditPermission || isOfficeAdmin) ? ( */}
+          {isEdit && (!isMenuEditPermission || !isOfficeAdmin) ? (
             <Col md={12} sm={24}>
               <PSelect
                 options={employeeStatusDDL?.data || []}
@@ -1069,6 +1159,62 @@ export default function AddEditForm({
               />
             </Col>
           ) : null} */}
+          <Col md={12} sm={24}>
+            <PSelect
+              options={[
+                { value: 1, label: "Daily" },
+                { value: 2, label: "Hourly" },
+              ]}
+              name="salaryType"
+              showSearch
+              filterOption={true}
+              label="Salary Type"
+              placeholder="Salary Type"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  salaryType: op,
+                });
+              }}
+              // rules={[{ required: true, message: "HR Position is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={payScaleGradeDDL?.data || []}
+              name="payScaleGrade"
+              showSearch
+              filterOption={true}
+              label="Pay Scale Grade"
+              placeholder="Pay Scale Grade"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  payScaleGrade: op,
+                });
+              }}
+              // rules={[{ required: true, message: "HR Position is required" }]}
+            />
+          </Col>
+          {!isEdit && (
+            <Col md={12} sm={24}>
+              <div className="mt-4">
+                <FileUploadComponents
+                  propsObj={{
+                    title: "Employee Signature",
+                    attachmentList: empSignature,
+                    setAttachmentList: setEmpAuthSignature,
+                    accountId: orgId,
+                    tableReferrence: "LeaveAndMovement",
+                    documentTypeId: 15,
+                    userId: employeeId,
+                    buId,
+                    maxCount: 1,
+                    accept: "image/png, image/jpeg, image/jpg",
+                  }}
+                />
+              </div>
+            </Col>
+          )}
+
           {/* User Create */}
           <Form.Item noStyle shouldUpdate>
             {() => {
@@ -1116,6 +1262,9 @@ export default function AddEditForm({
                                     setIsUserCheckMsg,
                                     (data) => {
                                       if (data.message === "Valid") {
+                                        setIsUserCheckMsg((prev) => {
+                                          return { ...prev, ...data };
+                                        });
                                         resolve();
                                       } else {
                                         reject(

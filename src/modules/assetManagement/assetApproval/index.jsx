@@ -45,7 +45,7 @@ const initData = {
 };
 
 export default function AssetApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -65,12 +65,14 @@ export default function AssetApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
       setApplicationListData,
       setAllData,
@@ -85,12 +87,14 @@ export default function AssetApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        workplaceId: wId,
       },
       setApplicationListData,
       setAllData,
@@ -148,12 +152,14 @@ export default function AssetApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
           accountId: orgId,
           intId: 0,
+          workplaceId: wId,
         },
         setApplicationListData,
         setAllData,
@@ -193,12 +199,14 @@ export default function AssetApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
           accountId: orgId,
           intId: 0,
+          workplaceId: wId,
         },
         setApplicationListData,
         setAllData,
@@ -512,7 +520,7 @@ export default function AssetApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Asset Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -533,7 +541,9 @@ export default function AssetApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -556,7 +566,9 @@ export default function AssetApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -585,7 +597,7 @@ export default function AssetApproval() {
                               )}
                               {permission?.isCreate && (
                                 <li>
-                                  <MasterFilter
+                                  {/* <MasterFilter
                                     styles={{
                                       marginRight: "0px",
                                     }}
@@ -607,7 +619,7 @@ export default function AssetApproval() {
                                       setFieldValue("search", "");
                                       getLandingData();
                                     }}
-                                  />
+                                  /> */}
                                 </li>
                               )}
                             </ul>

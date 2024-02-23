@@ -50,7 +50,7 @@ const initData = {
 };
 
 export default function OvertimeApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -70,7 +70,8 @@ export default function OvertimeApproval() {
     const payload = {
       approverId: employeeId,
       intId: 0,
-      workplaceGroupId: 0,
+      workplaceGroupId: wgId,
+      businessUnitId: buId,
       departmentId: 0,
       designationId: 0,
       applicantId: 0,
@@ -80,13 +81,9 @@ export default function OvertimeApproval() {
       isAdmin: isOfficeAdmin,
       isSupOrLineManager: 0,
       accountId: orgId,
+      workplaceId: wId,
     };
-    // getAllOvertimeApplicationListDataForApproval(
-    //   payload,
-    //   setApplicationListData,
-    //   setAllData,
-    //   setLoading
-    // );
+
     getOvertimeApproval("/ApprovalPipeline/OverTimeLanding", payload, (res) => {
       setOvertimeApproval(res?.listData);
       setFilterLanding(res?.listData);
@@ -95,7 +92,7 @@ export default function OvertimeApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [employeeId]);
+  }, [employeeId, wId]);
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);
@@ -424,6 +421,24 @@ export default function OvertimeApproval() {
         filter: true,
       },
       {
+        title: "Workplace Group",
+        dataIndex: "strWorkplaceGroupName",
+        sorter: true,
+        filter: true,
+      },
+      {
+        title: "Workplace",
+        dataIndex: "strWorkplaceName",
+        sorter: true,
+        filter: true,
+      },
+      {
+        title: "Employee ID",
+        dataIndex: "strEmployeeCode",
+        sorter: true,
+        filter: true,
+      },
+      {
         title: "Designation",
         dataIndex: "strDesignation",
         render: (_, record) => (
@@ -506,8 +521,15 @@ export default function OvertimeApproval() {
         sorter: false,
       },
       {
-        title: "Waiting Stage",
-        dataIndex: "currentStage",
+        title: "End Time",
+        dataIndex: "tmeEndTime",
+        render: (data) => <div>{data ? timeFormatter(data) : "-"}</div>,
+        filter: false,
+        sorter: false,
+      },
+      {
+        title: "OT Amount",
+        dataIndex: "numOverTimeAmount",
         filter: false,
         sorter: false,
       },
@@ -592,7 +614,7 @@ export default function OvertimeApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Overtime Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -609,7 +631,9 @@ export default function OvertimeApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -628,7 +652,9 @@ export default function OvertimeApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

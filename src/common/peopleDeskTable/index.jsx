@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { MenuItem, Pagination, Select } from "@mui/material";
 import PopoverDropdown from "./popoverDropdown";
 import ScrollablePeopleDeskTable from "./scrollablePeopleDeskTable";
@@ -27,6 +27,7 @@ const PeopleDeskTable = ({
   isPagination = true,
   scrollCustomClass = "",
   customClass = "",
+  handleSortingData = null,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentFilterSelection, setCurrentFilterSelection] = useState(null);
@@ -60,6 +61,7 @@ const PeopleDeskTable = ({
               isCheckBox={isCheckBox}
               setAnchorEl={setAnchorEl}
               setCurrentFilterSelection={setCurrentFilterSelection}
+              handleSortingData={handleSortingData}
             />
           </ScrollablePeopleDeskTable>
         ) : (
@@ -85,6 +87,8 @@ const PeopleDeskTable = ({
                 isCheckBox={isCheckBox}
                 setAnchorEl={setAnchorEl}
                 setCurrentFilterSelection={setCurrentFilterSelection}
+                handleSortingData={handleSortingData}
+
               />
             </table>
           </div>
@@ -139,4 +143,4 @@ const PeopleDeskTable = ({
   );
 };
 
-export default PeopleDeskTable;
+export default memo(PeopleDeskTable);

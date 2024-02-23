@@ -165,7 +165,7 @@ export default function AddEditForm({
       intAccountId: orgId,
       intBusinessUnitId: buId,
       intWorkplaceGroupId: values?.orgName?.value || wgId,
-      intWorkplaceId: values?.workplace?.value || wId,
+      intWorkplaceId: values?.workplace?.value ? values?.workplace?.value : 0, //  || wId,
       isValidate: true,
       approvalPipelineRowViewModelList: [...tableData, ...deletedRow],
     };
@@ -176,6 +176,7 @@ export default function AddEditForm({
       onSuccess: () => {
         cb();
       },
+      toast: true,
     });
   };
 
@@ -300,7 +301,7 @@ export default function AddEditForm({
         }}
         initialValues={{
           orgName: { value: wgId, label: wgName },
-          workplace: { value: wId, label: wName },
+          // workplace: { value: wId, label: wName },
         }}
       >
         <Row gutter={[10, 2]}>
@@ -354,7 +355,7 @@ export default function AddEditForm({
                   workplace: op,
                 });
               }}
-              rules={[{ required: true, message: "Workplace is required" }]}
+              // rules={[{ required: true, message: "Workplace is required" }]}
             />
           </Col>
           <Col md={12} sm={24}>

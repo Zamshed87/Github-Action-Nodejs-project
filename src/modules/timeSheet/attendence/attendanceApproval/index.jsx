@@ -22,8 +22,15 @@ const initData = {
 };
 
 export default function AttendanceApproval() {
-  const { buId, orgId, employeeId, isSupNLMORManagement, isOfficeAdmin } =
-    useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const {
+    buId,
+    orgId,
+    employeeId,
+    isSupNLMORManagement,
+    isOfficeAdmin,
+    wId,
+    wgId,
+  } = useSelector((state) => state?.auth?.profileData, shallowEqual);
   const [anchorEl, setAnchorEl] = useState(null);
   // const handleClick = (event) => {
   //   setAnchorEl(event.currentTarget);
@@ -50,14 +57,14 @@ export default function AttendanceApproval() {
       isAdmin: isOfficeAdmin,
       isSupOrLineManager: isSupNLMORManagement,
       approverId: employeeId,
-      workplaceId: 0,
       businessUnitId: buId,
-      workplaceGroupId: 0,
       departmentId: 0,
       designationId: 0,
       applicantId: 0,
       accountId: orgId,
       intId: 0,
+      workplaceId: wId,
+      workplaceGroupId: wgId,
     };
     getAttendanceApprovalLanding(
       payload,
@@ -70,7 +77,7 @@ export default function AttendanceApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [orgId, buId]);
+  }, [orgId, buId, wId]);
 
   useEffect(() => {
     const modifyData = allData?.map((item) => ({ ...item, isSelect: false }));
@@ -180,7 +187,7 @@ export default function AttendanceApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Attendance Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -201,7 +208,9 @@ export default function AttendanceApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -224,7 +233,9 @@ export default function AttendanceApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

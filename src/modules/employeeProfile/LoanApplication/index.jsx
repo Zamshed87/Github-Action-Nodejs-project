@@ -49,6 +49,7 @@ const EmLoanApplication = () => {
   const [view, setView] = useState(false);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
+  const [loading, setLoading] = useState(false)
 
   const { orgId, buId, intProfileImageUrl, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -236,7 +237,8 @@ const EmLoanApplication = () => {
                       page,
                       paginationSize,
                       buId,
-                      wgId
+                      wgId,
+                      setLoading
                     )}
                     onRowClick={(rowData) => {
                       setSingleLoanApplication(
@@ -266,7 +268,7 @@ const EmLoanApplication = () => {
       </>
 
       <ViewModal
-        size="lg"
+        size="xl"
         title={
           singleData === null
             ? "Create Loan Application"

@@ -10,7 +10,7 @@ import {
 import { useApiRequest } from "Hooks";
 import { Col, Divider, Form, Row } from "antd";
 import moment from "moment";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -24,6 +24,7 @@ import {
   policyType,
 } from "../Utils";
 import "../style.scss";
+import { getPeopleDeskAllDDL } from "common/api";
 
 type TOvertimePolicy = unknown;
 const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
@@ -57,6 +58,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
   const AccountWiseGetOverTimeConfig = useApiRequest([]);
   const SaveNUpdateOverTimeConfig = useApiRequest([]);
   const GetOverTimeConfigById = useApiRequest([]);
+  const [calendarDDL, setCalendarDDL] = useState([]);
 
   // Life Cycle Hooks
 
@@ -151,8 +153,9 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       values: form.getFieldsValue(true),
       commonData,
       matchingData,
+      state,
     });
-
+    // console.log({payload})
     SaveNUpdateOverTimeConfig?.action({
       method: "POST",
       urlKey: "SaveNUpdateOverTimeConfig",
@@ -173,6 +176,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
           overtimeCount: 1,
           overtimeAmount: 1,
           benefitHours: 1,
+          count: 1,
         }}
         onFinish={onFinish}
         onValuesChange={(changedFields) => {
@@ -232,6 +236,12 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         });
                         getHRPositionDDL();
                         getEmploymentTypeDDL();
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Calender&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${value}`,
+                          "CalenderId",
+                          "CalenderName",
+                          setCalendarDDL
+                        );
                       }}
                       disabled={state?.intOtconfigId}
                       rules={[
@@ -242,7 +252,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       ]}
                     />
                   </Col>
-                  <Form.Item noStyle shouldUpdate>
+                  {/* change requirement 💥💥 */}
+                  {/* <Form.Item noStyle shouldUpdate>
                     {() => {
                       const { workplace } = form.getFieldsValue(true);
                       return (
@@ -274,9 +285,11 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                         </Col>
                       );
                     }}
-                  </Form.Item>
+                  </Form.Item> */}
+                  {/* 💥💥 change requirement  */}
 
-                  {/* Fields Render Using Policy Type */}
+                  {/* 💥💥 change requirement  Fields Render Using Policy Type - 22/02/2024 */}
+                  <div className="d-none">
                   <Form.Item noStyle shouldUpdate>
                     {() => {
                       const { policyType } = form.getFieldsValue(true);
@@ -392,10 +405,159 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                               </Col>
                             </>
                           );
+                        if (item?.value === 4)
+                          formElements.push(
+                            <Col md={12} sm={24} key={idx}>
+                              <PSelect
+                                label="Calendar Name"
+                                name="calendarName"
+                                placeholder="Calendar Name"
+                                mode="multiple"
+                                disabled={state?.intOtconfigId}
+                                maxTagCount={"responsive"}
+                                options={calendarDDL || []}
+                                onChange={(value, option) => {
+                                  form.setFieldsValue({
+                                    calendarName: option,
+                                  });
+                                }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please Select Calendar Name!",
+                                  },
+                                ]}
+                              />
+                            </Col>
+                          );
                       });
                       return formElements;
                     }}
                   </Form.Item>
+                  </div>
+                   {/* 💥💥 change requirement  Fields Render Using Policy Type - 22/02/2024 */}
+
+                  {/* new requirement 💥💥 */}
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      label="HR Position"
+                      name="hrPosition"
+                      placeholder="HR Position"
+                      mode="multiple"
+                      maxTagCount={"responsive"}
+                      disabled={state?.intOtconfigId}
+                      options={HRPositionDDL?.data || []}
+                      onChange={(value, option) => {
+                        form.setFieldsValue({
+                          hrPosition: option,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please Select HR Position!",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      label="Employment Type"
+                      name="employmentType"
+                      placeholder="Employment Type"
+                      mode="multiple"
+                      disabled={state?.intOtconfigId}
+                      maxTagCount={"responsive"}
+                      options={EmploymentTypeDDL?.data || []}
+                      onChange={(value, option) => {
+                        form.setFieldsValue({
+                          employmentType: option,
+                        });
+                      }}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please Select Employment Type!",
+                        },
+                      ]}
+                    />
+                  </Col>
+                  <Form.Item noStyle shouldUpdate>
+                    {() => {
+                      return (
+                        <>
+                          <Col md={12} sm={24}>
+                            <PInput
+                              label="From Salary"
+                              placeholder="From Salary"
+                              type="number"
+                              name="fromSalary"
+                              // rules={[
+                              //   {
+                              //     required: true,
+                              //     message: "Please input From Salary!",
+                              //   },
+                              // ]}
+                            />
+                          </Col>
+                          <Col md={12} sm={24}>
+                            <PInput
+                              label="To Salary"
+                              placeholder="To Salary"
+                              type="number"
+                              name="toSalary"
+                              rules={[
+                                // {
+                                //   required: true,
+                                //   message: "Please input To Salary!",
+                                // },
+                                ({ getFieldValue }) => ({
+                                  validator(_, value) {
+                                    const fromSalary = parseFloat(
+                                      getFieldValue("fromSalary")
+                                    );
+                                    const toSalary = parseFloat(value);
+
+                                    if (!fromSalary || toSalary > fromSalary) {
+                                      return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                      new Error(
+                                        "To Salary cannot be less than From Salary!"
+                                      )
+                                    );
+                                  },
+                                }),
+                              ]}
+                            />
+                          </Col>
+                        </>
+                      );
+                    }}
+                  </Form.Item>
+                  <Col md={12} sm={24}>
+                    <PSelect
+                      label="Calendar Name"
+                      name="calendarName"
+                      placeholder="Calendar Name"
+                      mode="multiple"
+                      disabled={state?.intOtconfigId}
+                      maxTagCount={"responsive"}
+                      options={calendarDDL || []}
+                      onChange={(value, option) => {
+                        form.setFieldsValue({
+                          calendarName: option,
+                        });
+                      }}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Please Select Calendar Name!",
+                      //   },
+                      // ]}
+                    />
+                  </Col>
+                  {/* new requirement 💥💥 */}
 
                   {/* OT Depents on */}
                   <Divider
@@ -539,6 +701,35 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                     }}
                   </Form.Item>
 
+                  {/* Benefit Hour */}
+                  <Divider
+                    style={{ margin: "3px 0", fontSize: 12 }}
+                    orientation="left"
+                  >
+                    Count Holiday or Offday
+                  </Divider>
+                  <Col md={14} sm={24}>
+                    <PRadio
+                      type="group"
+                      name="count"
+                      onChange={() => {
+                        // form.setFieldsValue({
+                        //   fixedBenefitHours: undefined,
+                        // });
+                      }}
+                      options={[
+                        {
+                          label: "Holiday Count As Full Day",
+                          value: 1,
+                        },
+                        {
+                          label: "Off Day Count As Full Day",
+                          value: 2,
+                        },
+                      ]}
+                    />
+                  </Col>
+
                   <Divider
                     style={{ margin: "3px 0", fontSize: 12 }}
                     orientation="left"
@@ -630,6 +821,20 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       ]}
                     />
                   </Col>
+                  <Col md={12} sm={24}>
+                    <PInput
+                      label="OT Hour Above (Min)"
+                      placeholder="OT Hour Above"
+                      type="number"
+                      name="intOTHourShouldBeAboveInMin"
+                      rules={[
+                        {
+                          required: true,
+                          message: "OT Hour must be above min",
+                        },
+                      ]}
+                    />
+                  </Col>
                   <Divider
                     style={{ margin: "3px 0", fontSize: 12 }}
                     orientation="left"
@@ -656,10 +861,11 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       options={OTCountFrom}
                     />
                   </Col>
+                  {/* tousif told me to replace this name  */}
                   <Col md={24} sm={24}>
                     <PInput
                       type="checkbox"
-                      name="calculateAutoAttendance"
+                      name="isOvertimeAutoCalculate"
                       label="Do you want to calculate overtime automatically from attendance?"
                       layout="horizontal"
                     />

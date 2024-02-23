@@ -40,7 +40,7 @@ const initData = {
 };
 
 export default function LocationAndDeviceApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -58,7 +58,9 @@ export default function LocationAndDeviceApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceId: wId,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -91,7 +93,9 @@ export default function LocationAndDeviceApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceId: wId,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -175,7 +179,9 @@ export default function LocationAndDeviceApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceId: wId,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -254,7 +260,7 @@ export default function LocationAndDeviceApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Device Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -275,7 +281,9 @@ export default function LocationAndDeviceApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -298,7 +306,9 @@ export default function LocationAndDeviceApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -331,7 +341,7 @@ export default function LocationAndDeviceApproval() {
                               )}
                               {permission?.isCreate && (
                                 <li>
-                                  <MasterFilter
+                                  {/* <MasterFilter
                                     styles={{
                                       marginRight: "0px",
                                     }}
@@ -356,7 +366,7 @@ export default function LocationAndDeviceApproval() {
                                     handleClick={(e) =>
                                       setfilterAnchorEl(e.currentTarget)
                                     }
-                                  />
+                                  /> */}
                                 </li>
                               )}
                             </ul>

@@ -127,6 +127,7 @@ type BaseProps = FormItemProps & {
   min?: number;
   max?: number;
   format?: string;
+  disabledDate?: (currentDate: Moment) => boolean;
 };
 
 type InputTypeMapping = {

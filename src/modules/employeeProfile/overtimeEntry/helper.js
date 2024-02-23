@@ -83,12 +83,13 @@ export const saveOvertime = async (paylaod, setLoading, cb) => {
 
 // overtime bulk entry
 export const saveBulkUploadOvertimeAction = async (setLoading, data, cb) => {
+
+  // told me maruf bhai to make optional overtime hour
   try {
     let modifiedData = data.map((item) => {
       if (
         !item?.employeeCode ||
-        !item?.strDailyOrMonthly ||
-        !item?.numOverTimeHour
+        !item?.strDailyOrMonthly 
       ) {
         return toast.error("There are some missing or invalid fields");
       }
@@ -96,7 +97,10 @@ export const saveBulkUploadOvertimeAction = async (setLoading, data, cb) => {
     });
 
     setLoading(true);
-    const res = await axios.post(`/Employee/InsertAllOvertime`, modifiedData);
+    const res = await axios.post(
+      `/Employee/InsertAllOvertimeBulk`,
+      modifiedData
+    );
     setLoading(false);
     toast.success(res?.data?.message || "Successful");
     cb && cb();
@@ -113,24 +117,28 @@ export const processBulkUploadOvertimeAction = async (
   setLoading,
   buId,
   accId,
-  empId
+  empId,
+  wgId
 ) => {
   try {
     setLoading(true);
     let modifiedData = data.map((item) => ({
       employeeCode: `${item["Employee Id"]}`,
       dteOverTimeDate: dateFormatterForInput(item["Date(mm/dd/yyyy)"]),
-      numOverTimeHour: item["Overtime Hour"],
-      strReason: item["Reason"],
+      numOverTimeHour: item["Overtime Hour"] || 0,
+      strReason: item["Reason"] || "",
+      numOverTimeRate: item["OT Rate"] || 0,
+      numOverTimeAmount: item["OT Amount"] || 0,
       intYear: +dateFormatterForInput(item["Date(mm/dd/yyyy)"]).split("-")[0],
       intMonth: +dateFormatterForInput(item["Date(mm/dd/yyyy)"]).split("-")[1],
       strDailyOrMonthly:
-        item["Daily/Monthly"].trim().charAt(0).toLowerCase() === "m"
+        item["Daily/Monthly"]?.trim().charAt(0).toLowerCase() === "m"
           ? "Monthly"
-          : item["Daily/Monthly"].trim().charAt(0).toLowerCase() === "d"
+          : item["Daily/Monthly"]?.trim().charAt(0).toLowerCase() === "d"
           ? "Daily"
           : "",
       intAccountId: accId,
+      intWorkplaceGroupId: wgId,
       intBusinessUnitId: buId,
       isActive: true,
       intCreatedBy: empId,
@@ -308,6 +316,26 @@ export const columns = (values, permission, history, deleteHandler) => {
       sorter: false,
       isDate: true,
     },
+ 
+    {
+      title: "Over Time Rate",
+      dataIndex: "numOverTimeRate",
+      render: (data, record) => (
+        <div>{formatMoney(record?.numOverTimeRate)}</div>
+      ),
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Over Time Amount",
+      dataIndex: "numOverTimeAmount",
+      render: (data, record) => (
+        <div>{formatMoney(record?.numOverTimeAmount)}</div>
+      ),
+      sorter: true,
+      filter: true,
+    },
+    // need to discuss with maruf bhai
     {
       title: "Amount",
       dataIndex: "TotalAmount",

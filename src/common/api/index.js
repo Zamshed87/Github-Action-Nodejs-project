@@ -165,6 +165,20 @@ export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
   } catch (error) {}
 };
 
+export const getPeopleDeskAllDDLWithCode = async (apiUrl, value, label, setter, cb) => {
+  try {
+    const res = await axios.get(apiUrl);
+    console.log("res", res?.data)
+    const newDDL = res?.data?.map((itm) => ({
+      ...itm,
+      value: itm?.intEmployeeBasicInfoId,
+      label: `${itm?.strEmployeeName} - ${itm?.strEmployeeCode}`,
+    }));
+    setter(newDDL);
+    cb && cb();
+  } catch (error) {}
+};
+
 export const getPeopleDeskAllDDLWithoutAllItem = async (
   apiUrl,
   value,
@@ -563,6 +577,25 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
     })
     .catch((err) => []);
 };
+
+export const getSearchEmployeeListNew = (buId, intAccountId, v) => {
+  if (v?.length < 2) return [];
+
+  return axios
+    .get(`/Employee/AllEmployeeDDL?intAccountId=${intAccountId}&strSearch=${v}`)
+    .then((res) => {
+      const modifiedData = res?.data?.map((item) => {
+        return {
+          ...item,
+          value: item?.value,
+          label: item?.label,
+        };
+      });
+      return modifiedData;
+    })
+    .catch((err) => []);
+};
+
 export const getSearchEmployeeListForEmp = (
   buId,
   wgId,

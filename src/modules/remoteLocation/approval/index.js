@@ -25,7 +25,7 @@ import {
 } from "./helper";
 
 const MasterLocationRegistration = () => {
-  const { employeeId, isOfficeAdmin, orgId, buId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, buId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -75,7 +75,10 @@ const MasterLocationRegistration = () => {
         applicationStatus: "pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
+        workplaceId: wId,
         busineessUnit: buId,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
         accountId: orgId,
         applicantId: 0,
         intId: 0,
@@ -141,9 +144,12 @@ const MasterLocationRegistration = () => {
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
           busineessUnit: 0,
+          workplaceId: wId,
           applicantId: 0,
           accountId: orgId,
           intId: 0,
+          businessUnitId: buId,
+          workplaceGroupId: wgId,
         },
         setRowDto,
         setFilteredData,
@@ -174,8 +180,7 @@ const MasterLocationRegistration = () => {
 
   useEffect(() => {
     getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [wId]);
 
   const columns = (setFieldValue, page, paginationSize) => {
     return [
@@ -366,7 +371,7 @@ const MasterLocationRegistration = () => {
                     <div className="table-card">
                       <div className="table-card-heading">
                         <BackButton title={"Location Approval"} />
-                        <div className="table-card-head-right">
+                        <div>
                           {filteredData &&
                             filteredData?.listData?.filter(
                               (item) => item?.selectCheckbox
@@ -388,7 +393,9 @@ const MasterLocationRegistration = () => {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -411,7 +418,9 @@ const MasterLocationRegistration = () => {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

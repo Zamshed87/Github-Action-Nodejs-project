@@ -1,9 +1,9 @@
+import { CreateOutlined, InfoOutlined } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { todayDate } from "../../../../utility/todayDate";
-import { CreateOutlined, InfoOutlined } from "@mui/icons-material";
 import { LightTooltip } from "../../../../common/LightTooltip";
 import { dateFormatterForInput } from "../../../../utility/dateFormatter";
+import { todayDate } from "../../../../utility/todayDate";
 
 // search
 export const filterData = (
@@ -248,6 +248,14 @@ export const columns = (
       sort: true,
       filter: true,
       filterDropDownList: headerList[`departmentList`],
+      fieldType: "string",
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
+      sort: true,
+      filter: true,
+      filterDropDownList: headerList[`sectionList`],
       fieldType: "string",
     },
     {

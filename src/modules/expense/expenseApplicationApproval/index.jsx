@@ -26,7 +26,7 @@ const initData = {
 };
 
 const ExpenseApplicationApproval = () => {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -43,12 +43,14 @@ const ExpenseApplicationApproval = () => {
       {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
+        workplaceId: wId,
         isSupOrLineManager: 0,
         isSupervisor: true,
         isLineManager: true,
         isUserGroup: true,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -120,11 +122,13 @@ const ExpenseApplicationApproval = () => {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
+          workplaceId: wId,
           isSupervisor: true,
           isLineManager: true,
           isUserGroup: true,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -200,7 +204,7 @@ const ExpenseApplicationApproval = () => {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Expense Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -221,7 +225,9 @@ const ExpenseApplicationApproval = () => {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -244,7 +250,9 @@ const ExpenseApplicationApproval = () => {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

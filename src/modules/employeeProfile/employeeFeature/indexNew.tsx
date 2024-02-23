@@ -1,4 +1,3 @@
-import { AddOutlined } from "@mui/icons-material";
 import {
   Avatar,
   DataTable,
@@ -16,17 +15,14 @@ import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import AddEditForm from "./addEditFile";
-import {
-  columnForHeadOffice,
-  getTableDataEmployee,
-} from "./helper";
+import { columnForHeadOffice, getTableDataEmployee } from "./helper";
 import "./styles.css";
-import { toast } from "react-toastify";
 
 function EmployeeFeatureNew() {
   // hook
@@ -46,6 +42,7 @@ function EmployeeFeatureNew() {
 
   // state
   const [open, setOpen] = useState(false);
+  const [filterList, setFilterList] = useState<any>({});
 
   // Form Instance
   const [form] = Form.useForm();
@@ -73,7 +70,7 @@ function EmployeeFeatureNew() {
       workplaceGroupId: wgId,
       workplaceId: wId,
       pageNo: pagination?.current || 1,
-      pageSize: pagination?.pageSize || 25,
+      pageSize: pagination?.pageSize || 100,
       isPaginated: true,
       isHeaderNeed: true,
       searchTxt: searchText || "",
@@ -136,7 +133,10 @@ function EmployeeFeatureNew() {
   }, []);
 
   const searchFunc = debounce((value) => {
-    landingApiCall({ searchText: value });
+    landingApiCall({
+      filerList: filterList,
+      searchText: value,
+    });
   }, 500);
 
   // Header
@@ -235,6 +235,8 @@ function EmployeeFeatureNew() {
       dataIndex: "strSupervisorName",
       sorter: true,
       filter: true,
+      filterSearch: true,
+
       filterKey: "strSupervisorNameList",
       width: 60,
     },
@@ -243,6 +245,7 @@ function EmployeeFeatureNew() {
       dataIndex: "strLinemanager",
       sorter: true,
       filter: true,
+      filterSearch: true,
       filterKey: "strLinemanagerList",
       width: 60,
     },
@@ -257,6 +260,7 @@ function EmployeeFeatureNew() {
       dataIndex: "strEmploymentType",
       sorter: true,
       filter: true,
+      filterSearch: true,
       filterKey: "strEmploymentTypeList",
       width: 28,
     },
@@ -289,7 +293,7 @@ function EmployeeFeatureNew() {
       sorter: true,
       filter: true,
       filterKey: "strEmployeeStatusList",
-
+      filterSearch: true,
       width: 35,
     },
     {
@@ -320,7 +324,7 @@ function EmployeeFeatureNew() {
       <PForm
         form={form}
         onFinish={() => {
-          setOpen(true);
+          // setOpen(true);
         }}
       >
         <PCard>
@@ -329,9 +333,12 @@ function EmployeeFeatureNew() {
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
+              form.setFieldsValue({
+                search: e?.target?.value,
+              });
             }}
-            submitText="Create New"
-            submitIcon={<AddOutlined />}
+            // submitText="Create New"
+            // submitIcon={<AddOutlined />}
             buttonList={[
               {
                 type: "primary",
@@ -344,6 +351,30 @@ function EmployeeFeatureNew() {
                   }
                 },
               },
+              {
+                type: "primary",
+                content: "Create New",
+                icon: "plus",
+                onClick: () => {
+                  if (employeeFeature?.isCreate) {
+                    history.push("/profile/employee/create");
+                  } else {
+                    toast.warn("You don't have permission");
+                  }
+                },
+              },
+              // {
+              //   type: "primary",
+              //   content: "Create brand New ",
+              //   icon: "plus",
+              //   onClick: () => {
+              //     if (employeeFeature?.isCreate) {
+              //       history.push("/profile/employee/create");
+              //     } else {
+              //       toast.warn("You don't have permission");
+              //     }
+              //   },
+              // },
             ]}
             onExport={() => {
               const excelLanding = async () => {
@@ -358,20 +389,24 @@ function EmployeeFeatureNew() {
                     isPaginated: false,
                     isHeaderNeed: false,
                     searchTxt: search || "",
-                    strDepartmentList: [],
-                    strDesignationList: [],
-                    strSupervisorNameList: [],
-                    strEmploymentTypeList: [],
-                    strLinemanagerList: [],
+                    strDepartmentList: filterList?.strDepartment || [],
+                    strWorkplaceGroupList: filterList?.strWorkplaceGroup || [],
+                    strWorkplaceList: filterList?.strWorkplace || [],
+                    strDivisionList: filterList?.strDivision || [],
+                    strDesignationList: filterList?.strDesignation || [],
+                    strSupervisorNameList: filterList?.strSupervisorName || [],
+                    strEmploymentTypeList: filterList?.strEmploymentType || [],
+                    strLinemanagerList: filterList?.strLinemanager || [],
+                    strSectionList: filterList?.sectionName || [],
+                    strHrPositionList: filterList?.sectionName || [],
+                    strDottedSupervisorNameList:
+                      filterList?.strDottedSupervisorName || [],
+                    strEmployeeStatusList: filterList?.strEmployeeStatus || [],
                     wingNameList: [],
                     soleDepoNameList: [],
                     regionNameList: [],
                     areaNameList: [],
                     territoryNameList: [],
-                    strSectionList: [],
-                    strWorkplaceList: [],
-                    strWorkplaceGroupList: [],
-                    strEmployeeStatusList: [],
                   };
                   const res = await axios.post(
                     `/Employee/EmployeeProfileLandingPaginationWithMasterFilter`,
@@ -513,6 +548,7 @@ function EmployeeFeatureNew() {
               // Return if sort function is called
               if (extra.action === "sort") return;
               const { search } = form.getFieldsValue(true);
+              setFilterList(filters);
               landingApiCall({
                 pagination,
                 filerList: filters,
@@ -549,6 +585,8 @@ function EmployeeFeatureNew() {
               isEdit={false}
               pages={undefined}
               singleData={undefined}
+              // isMenuEditPermission={employeeFeature?.isEdit}
+              // isOfficeAdmin={isOfficeAdmin}
             />
           </>
         }

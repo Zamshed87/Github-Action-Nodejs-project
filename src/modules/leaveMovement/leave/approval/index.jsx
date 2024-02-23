@@ -5,27 +5,28 @@ import {
   Cancel,
   CheckCircle,
   EditOutlined,
+  InfoOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { Tooltip, tooltipClasses } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { styled } from "@mui/styles";
-import { InfoOutlined } from "@mui/icons-material";
 import AntTable from "../../../../common/AntTable";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import BackButton from "../../../../common/BackButton";
+import Chips from "../../../../common/Chips";
 import FilterBadgeComponent from "../../../../common/FilterBadgeComponent";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import IConfirmModal from "../../../../common/IConfirmModal";
-import MasterFilter from "../../../../common/MasterFilter";
+import { LightTooltip } from "../../../../common/LightTooltip";
 import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../../common/PopoverMasterFilter";
 import ResetButton from "../../../../common/ResetButton";
-import SortingIcon from "../../../../common/SortingIcon";
+import ViewModal from "../../../../common/ViewModal";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   blackColor90,
@@ -35,25 +36,19 @@ import {
   successColor,
 } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
+import { dateFormatter } from "../../../../utility/dateFormatter";
 import {
   getAllAnnouncement,
   getAllLeaveApplicatonListDataForApproval,
   leaveApproveReject,
 } from "../helper";
 import Loading from "./../../../../common/loading/Loading";
-import FilterModal from "./component/FilterModal";
-import LeaveApprovalTable from "./component/LeaveApprovalTable";
 import CreateModal from "./CreateFormModal/CreateModal";
+import FilterModal from "./component/FilterModal";
+import SingleNotice from "./component/SingleNotice";
+import LeaveApprovalEditForm from "./component/editForm";
 import "./leaveApproval.css";
 import ViewFormComponent from "./view-form";
-import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
-import { dateFormatter } from "../../../../utility/dateFormatter";
-import Chips from "../../../../common/Chips";
-import { LightTooltip } from "../../../../common/LightTooltip";
-import ViewModal from "../../../../common/ViewModal";
-import LeaveApprovalEditForm from "./component/editForm";
-import SingleNotice from "./component/SingleNotice";
-import NoticeBoard from "./component/NoticeBoard";
 
 const initData = {
   searchString: "",
@@ -69,7 +64,7 @@ const initData = {
 };
 
 export default function LeaveApproval() {
-  const { orgId, employeeId, isOfficeAdmin, wgId } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, wgId, wId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -98,10 +93,6 @@ export default function LeaveApproval() {
   const [ApplicationId, setApplicationId] = useState(0);
   const [allNoticeData, setAllNoticeData] = useState([]);
   // filter
-  const [empOrder, setEmpOrder] = useState("desc");
-  const [designationOrder, setDesignationOrder] = useState("desc");
-  const [deptOrder, setDeptOrder] = useState("desc");
-  const [dateRangeOrder, setDateRangeOrder] = useState("desc");
 
   const debounce = useDebounce();
   const dispatch = useDispatch();
@@ -149,24 +140,15 @@ export default function LeaveApproval() {
     });
   }, [filterData]);
 
-  const searchData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter((item) =>
-        regex.test(item?.employeeName?.toLowerCase())
-      );
-      setRowDto({ listData: newDta });
-    } catch {
-      setRowDto([]);
-    }
-  };
   const getLandingData = (/* isSupOrLineManager = 1 */) => {
     getAllAnnouncement(ApplicationId, setAllNoticeData);
     getAllLeaveApplicatonListDataForApproval(
       {
         approverId: employeeId,
-        // workplaceGroupId: wgId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        // workplaceGroupId: 0,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -187,7 +169,7 @@ export default function LeaveApproval() {
 
   useEffect(() => {
     getLandingData();
-  }, [employeeId, orgId, wgId, ApplicationId]);
+  }, [employeeId, orgId, wgId, ApplicationId, wId]);
 
   // advance filter
   const [filterAnchorEl, setfilterAnchorEl] = useState(null);
@@ -206,6 +188,8 @@ export default function LeaveApproval() {
       {
         approverId: employeeId,
         workplaceGroupId: wgId || 0,
+        businessUnitId: buId,
+        workplaceId: wId,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
         applicantId: values?.employee?.id || 0,
@@ -264,6 +248,7 @@ export default function LeaveApproval() {
         {
           approverId: employeeId,
           workplaceGroupId: wgId || 0,
+          businessUnitId: buId,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -277,6 +262,7 @@ export default function LeaveApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           accountId: orgId,
+          workplaceId: wId,
         },
         setAllLeaveApplicatonData,
         setAllData,
@@ -302,7 +288,7 @@ export default function LeaveApproval() {
   };
 
   const singlePopup = (action, text, item) => {
-    let payload = [
+    const payload = [
       {
         applicationId: item?.leaveApplication?.intApplicationId,
         fromDate: item?.leaveApplication?.dteFromDate,
@@ -332,6 +318,8 @@ export default function LeaveApproval() {
           isAdmin: isOfficeAdmin,
           isSupOrLineManager: 0,
           accountId: orgId,
+          workplaceId: wId,
+          businessUnitId: buId,
         },
 
         setAllLeaveApplicatonData,
@@ -340,7 +328,7 @@ export default function LeaveApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
@@ -542,7 +530,10 @@ export default function LeaveApproval() {
             >
               <InfoOutlined sx={{ color: gray900 }} />
             </LightTooltip>
-            <div className="ml-2">{leaveType}</div>
+            <div className="ml-2">
+              {leaveType}{" "}
+              {record?.leaveApplication?.isHalfDay ? "(Half Day)" : ""}
+            </div>
 
             {record?.intDocumentFileId && (
               <div
@@ -705,7 +696,9 @@ export default function LeaveApproval() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
+        onSubmit={() => {
+          //
+        }}
       >
         {({
           handleSubmit,
@@ -714,7 +707,6 @@ export default function LeaveApproval() {
           errors,
           touched,
           setFieldValue,
-          isValid,
           dirty,
         }) => (
           <>
@@ -729,46 +721,16 @@ export default function LeaveApproval() {
                           <div className="heading mt-2">
                             <div className="d-flex align-items-center">
                               <BackButton title={"Leave Approval"} />
-                              {/* <div className="ml-3">
-                                <Tooltip title="Print">
-                                  <button
-                                    className="btn-save"
-                                    type="button"
-                                    style={{
-                                      border: "transparent",
-                                      width: "30px",
-                                      height: "30px",
-                                      background: "#f2f2f7",
-                                      borderRadius: "100px",
-                                    }}
-                                    onClick={() => {
-                                      // getPDFAction(
-                                      //   `/emp/PdfAndExcelReport/PdfAllLeaveApplicatonListForApprove?ViewType=${viewType}&EmployeeId=${employeeId}&WorkplaceGroupId=${workplaceGroupId}&DepartmentId=${departmentId}&DesignationId=${designationId}&ApplicantId=${
-                                      //     applicantId || 0
-                                      //   }&LeaveTypeId=${leaveTypeId}&FromDate=${fromDate}&ToDate=${toDate}&ApplicationId=${0}`,
-                                      //   setLoading
-                                      // );
-                                    }}
-                                  >
-                                    <PrintIcon
-                                      sx={{
-                                        color: "#637381",
-                                        fontSize: "16px",
-                                      }}
-                                    />
-                                  </button>
-                                </Tooltip>
-                              </div> */}
                             </div>
 
-                            <div className="table-card-head-right">
+                            <div>
                               {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
                               ).length > 0 && (
                                 <div className="d-flex actionIcon mr-3">
                                   <Tooltip title="Approve">
                                     <div
-                                      className="muiIconHover success mr-2"
+                                      className="muiIconHover success mr-3"
                                       onClick={() => {
                                         demoPopup(
                                           "approve",
@@ -782,8 +744,9 @@ export default function LeaveApproval() {
                                           <CheckCircle
                                             sx={{
                                               color: successColor,
-                                              width: "16px",
-                                              height: "16px",
+                                              width: "25px !important",
+                                              height: "35px !important",
+                                              fontSize: "20px !important",
                                             }}
                                           />
                                         }
@@ -806,8 +769,9 @@ export default function LeaveApproval() {
                                           <Cancel
                                             sx={{
                                               color: failColor,
-                                              width: "16px",
-                                              height: "16px",
+                                              width: "25px !important",
+                                              height: "35px !important",
+                                              fontSize: "20px !important",
                                             }}
                                           />
                                         }

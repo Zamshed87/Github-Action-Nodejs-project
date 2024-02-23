@@ -18,6 +18,8 @@ import OverviewTab from "../../employeeOverview/components/OverviewTab";
 import AddEditForm from "../addEditFile";
 import { getEmployeeProfileViewData } from "../helper";
 import "./aboutMeCommon.css";
+import { isDevServer } from "App";
+import { probationCloseDateCustomDDL } from "utility/yearDDL";
 
 function AboutMeDetails() {
   const dispatch = useDispatch();
@@ -73,10 +75,12 @@ function AboutMeDetails() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
+
+  isDevServer && console.log({ isOfficeAdmin, employeeFeature });
   return (
     <>
       {loading && <Loading />}
-      {employeeFeature?.isEdit ? (
+      {employeeFeature?.isView ? (
         <div className="about-info-main" style={{ paddingTop: "46px" }}>
           <div className="container-about-info">
             <div className="card-about-info-main">
@@ -86,7 +90,7 @@ function AboutMeDetails() {
               >
                 <BackButton title={"Employee Details"} />
                 <div>
-                  {isOfficeAdmin && (
+                  {(isOfficeAdmin || employeeFeature?.isEdit) && (
                     <Button
                       onClick={() => {
                         history.push(
@@ -132,22 +136,23 @@ function AboutMeDetails() {
               }
               empId={empId}
               editBtnHandler={() => {
-                setIsAddEditForm(true);
+                // setIsAddEditForm(true);
+                history.push(`/profile/employee/edit/${empId}`);
               }}
-              isOfficeAdmin={isOfficeAdmin}
+              isOfficeAdmin={isOfficeAdmin || employeeFeature?.isEdit}
             />
-            {isOfficeAdmin && (
-              <>
-                <div className="bankDetailsCard about-info-card pb-0">
-                  <div className="about-info-card-heading">
-                    <p className="bankCard-title">Overview</p>
-                  </div>
-                  <div className="card-body p-0">
-                    <OverviewTab empId={empId} wgId={wgId} buId={buId} />
-                  </div>
+            {/* {(isOfficeAdmin || employeeFeature?.isEdit) && ( */}
+            <>
+              <div className="bankDetailsCard about-info-card pb-0">
+                <div className="about-info-card-heading">
+                  <p className="bankCard-title">Overview</p>
                 </div>
-              </>
-            )}
+                <div className="card-body p-0">
+                  <OverviewTab empId={empId} wgId={wgId} buId={buId} />
+                </div>
+              </div>
+            </>
+
             <BankDetails
               objProps={{
                 empBasic: empBasic?.empEmployeeBankDetail,
@@ -164,7 +169,7 @@ function AboutMeDetails() {
                 setBankData,
                 bankData,
                 getEmpData,
-                isOfficeAdmin,
+                isOfficeAdmin: employeeFeature?.isEdit || isOfficeAdmin,
               }}
               editBtnHandler={() => {
                 setBankData("create");
@@ -201,211 +206,6 @@ function AboutMeDetails() {
         <NotPermittedPage />
       )}
 
-      {/* <ViewModal
-        show={isAddEditForm}
-        title={`Edit Employee(${empBasic?.employeeProfileLandingView?.strEmployeeName})`}
-        onHide={() => setIsAddEditForm(false)}
-        size="lg"
-        backdrop="static"
-        classes="default-modal form-modal"
-      >
-        <AddEditForm
-          isEdit={true}
-          singleData={{
-            empId: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
-            fullName: empBasic?.employeeProfileLandingView?.strEmployeeName,
-            employeeCode:
-              empBasic?.employeeProfileLandingView?.strEmployeeCode || "",
-            religion: {
-              value: empBasic?.employeeProfileLandingView?.intReligionId || "",
-              label: empBasic?.employeeProfileLandingView?.strReligion || "",
-            },
-            gender: {
-              value: empBasic?.employeeProfileLandingView?.intGenderId || "",
-              label: empBasic?.employeeProfileLandingView?.strGender || "",
-            },
-            dateofBirth: empBasic?.employeeProfileLandingView?.dteDateOfBirth
-              ? dateFormatterForInput(
-                  empBasic?.employeeProfileLandingView?.dteDateOfBirth
-                )
-              : "",
-            joiningDate: empBasic?.employeeProfileLandingView?.dteJoiningDate
-              ? dateFormatterForInput(
-                  empBasic?.employeeProfileLandingView?.dteJoiningDate
-                )
-              : "",
-            dteInternCloseDate: empBasic?.employeeProfileLandingView
-              ?.dteInternCloseDate
-              ? dateFormatterForInput(
-                  empBasic?.employeeProfileLandingView?.dteInternCloseDate
-                )
-              : "",
-            // dteInternCloseDate: empBasic?.employeeProfileLandingView
-            //   ?.dteInternCloseDate
-            //   ? moment(
-            //     empBasic?.employeeProfileLandingView?.dteInternCloseDate
-            //   ).format("YYYY-MM")
-            //   : "",
-            dteProbationaryCloseDate: empBasic?.employeeProfileLandingView
-              ?.dteProbationaryCloseDate
-              ? dateFormatterForInput(
-                  empBasic?.employeeProfileLandingView?.dteProbationaryCloseDate
-                )
-              : "",
-            // dteProbationaryCloseDate: empBasic?.employeeProfileLandingView
-            //   ?.dteProbationaryCloseDate
-            //   ? moment(
-            //     empBasic?.employeeProfileLandingView?.dteProbationaryCloseDate
-            //   ).format("YYYY-MM")
-            //   : "",
-            dteConfirmationDate: empBasic?.employeeProfileLandingView
-              ?.dteConfirmationDate
-              ? dateFormatterForInput(
-                  empBasic?.employeeProfileLandingView?.dteConfirmationDate
-                )
-              : "",
-            lastWorkingDay: empBasic?.employeeProfileLandingView
-              ?.dteLastWorkingDate
-              ? dateFormatterForInput(
-                  empBasic?.employeeProfileLandingView?.dteLastWorkingDate
-                )
-              : "",
-            employeeType: {
-              value:
-                empBasic?.employeeProfileLandingView?.intEmploymentTypeId || "",
-              label:
-                empBasic?.employeeProfileLandingView?.strEmploymentType || "",
-              ParentId: empBasic?.employeeProfileLandingView?.intParentId || "",
-              isManual: empBasic?.employeeProfileLandingView?.isManual || "",
-            },
-            department: {
-              value:
-                empBasic?.employeeProfileLandingView?.intDepartmentId || "",
-              label: empBasic?.employeeProfileLandingView?.strDepartment || "",
-            },
-            designation: {
-              value:
-                empBasic?.employeeProfileLandingView?.intDesignationId || "",
-              label: empBasic?.employeeProfileLandingView?.strDesignation || "",
-            },
-            hrPosition: {
-              value:
-                empBasic?.employeeProfileLandingView?.intHrpositionId || "",
-              label:
-                empBasic?.employeeProfileLandingView?.strHrpostionName || "",
-            },
-            workplaceGroup: {
-              value:
-                empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || "",
-              label:
-                empBasic?.employeeProfileLandingView?.strWorkplaceGroupName ||
-                "",
-            },
-            workplace: {
-              value: empBasic?.employeeProfileLandingView?.intWorkplaceId || "",
-              label:
-                empBasic?.employeeProfileLandingView?.strWorkplaceName || "",
-            },
-            wing: {
-              value: empBasic?.employeeProfileLandingView?.wingId || "",
-              label: empBasic?.employeeProfileLandingView?.wingName || "",
-            },
-            soleDepo: {
-              value: empBasic?.employeeProfileLandingView?.soleDepoId || "",
-              label: empBasic?.employeeProfileLandingView?.soleDepoName || "",
-            },
-            region: {
-              value: empBasic?.employeeProfileLandingView?.regionId || "",
-              label: empBasic?.employeeProfileLandingView?.regionName || "",
-            },
-            area: {
-              value: empBasic?.employeeProfileLandingView?.areaId || "",
-              label: empBasic?.employeeProfileLandingView?.areaName || "",
-            },
-            territory: {
-              value: empBasic?.employeeProfileLandingView?.territoryId || "",
-              label: empBasic?.employeeProfileLandingView?.territoryName || "",
-            },
-
-            payrollGroup: {
-              value:
-                empBasic?.employeeProfileLandingView?.intPayrollGroupId || "",
-              label:
-                empBasic?.employeeProfileLandingView?.strPayrollGroupName || "",
-            },
-            payscaleGrade: {
-              value:
-                empBasic?.employeeProfileLandingView?.intPayscaleGradeId || "",
-              label:
-                empBasic?.employeeProfileLandingView?.strPayscaleGradeName ||
-                "",
-            },
-            employeeStatus: {
-              value:
-                empBasic?.employeeProfileLandingView?.intEmployeeStatusId || "",
-              label:
-                empBasic?.employeeProfileLandingView?.strEmployeeStatus || "",
-            },
-
-            supervisor: {
-              value:
-                empBasic?.employeeProfileLandingView?.intSupervisorId || "",
-              label:
-                empBasic?.employeeProfileLandingView?.strSupervisorName || "",
-            },
-            lineManager: {
-              value:
-                empBasic?.employeeProfileLandingView?.intLineManagerId || "",
-              label: empBasic?.employeeProfileLandingView?.strLinemanager || "",
-            },
-            dottedSupervisor: {
-              value:
-                empBasic?.employeeProfileLandingView?.intDottedSupervisorId ||
-                "",
-              label:
-                empBasic?.employeeProfileLandingView?.strDottedSupervisorName ||
-                "",
-            },
-            isSalaryHold: empBasic?.employeeProfileLandingView?.isSalaryHold,
-            isTakeHomePay: empBasic?.employeeProfileLandingView?.isTakeHomePay,
-            contractualFromDate: empBasic?.employeeProfileLandingView
-              ?.dteContractFromDate
-              ? dateFormatterForInput(
-                  empBasic?.employeeProfileLandingView?.dteContractFromDate
-                )
-              : "",
-            contractualToDate: empBasic?.employeeProfileLandingView
-              ?.dteContractToDate
-              ? dateFormatterForInput(
-                  empBasic?.employeeProfileLandingView?.dteContractToDate
-                )
-              : "",
-            isCreateUser:
-              empBasic?.employeeProfileLandingView?.isCreateUser || false,
-
-            //User Info
-            loginUserId:
-              empBasic?.userVM?.loginId ||
-              empBasic?.employeeProfileLandingView?.strEmployeeCode ||
-              "",
-            password: empBasic?.userVM?.strPassword || "123456",
-            email: empBasic?.userVM?.officeMail,
-            phone: empBasic?.userVM?.strPersonalMobile,
-            userType: empBasic?.userVM?.userTypeId
-              ? {
-                  value: empBasic?.userVM?.userTypeId,
-                  label: empBasic?.userVM?.strUserType,
-                }
-              : null,
-            isActive: empBasic?.userVM?.userStatus,
-
-            // calender assigne
-          }}
-          getData={getEmpData}
-          setIsAddEditForm={setIsAddEditForm}
-        />
-      </ViewModal> */}
-
       <PModal
         open={isAddEditForm}
         title={`Edit Employee(${empBasic?.employeeProfileLandingView?.strEmployeeName})`}
@@ -414,6 +214,8 @@ function AboutMeDetails() {
         components={
           <AddEditForm
             isEdit={true}
+            isMenuEditPermission={!employeeFeature?.isEdit}
+            isOfficeAdmin={!isOfficeAdmin}
             singleData={{
               empId:
                 empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
@@ -586,7 +388,8 @@ function AboutMeDetails() {
                     value:
                       empBasic?.employeeProfileLandingView?.intSupervisorId,
                     label:
-                      empBasic?.employeeProfileLandingView?.strSupervisorName,
+                      empBasic?.employeeProfileLandingView
+                        ?.strSupervisorNameWithCode,
                   }
                 : undefined,
               lineManager: empBasic?.employeeProfileLandingView
@@ -594,7 +397,9 @@ function AboutMeDetails() {
                 ? {
                     value:
                       empBasic?.employeeProfileLandingView?.intLineManagerId,
-                    label: empBasic?.employeeProfileLandingView?.strLinemanager,
+                    label:
+                      empBasic?.employeeProfileLandingView
+                        ?.strLinemanagerNameWithCode,
                   }
                 : undefined,
               dottedSupervisor: empBasic?.employeeProfileLandingView
@@ -605,7 +410,7 @@ function AboutMeDetails() {
                         ?.intDottedSupervisorId,
                     label:
                       empBasic?.employeeProfileLandingView
-                        ?.strDottedSupervisorName,
+                        ?.strDottedSupervisorNameWithCode,
                   }
                 : undefined,
               isSalaryHold: empBasic?.employeeProfileLandingView?.isSalaryHold,
@@ -629,6 +434,25 @@ function AboutMeDetails() {
                 empBasic?.employeeProfileLandingView?.loginId ||
                 empBasic?.employeeProfileLandingView?.strEmployeeCode ||
                 undefined,
+              payScaleGrade: empBasic?.employeeProfileLandingView
+                ?.intPayscaleGradeId
+                ? {
+                    value:
+                      empBasic?.employeeProfileLandingView?.intPayscaleGradeId,
+                    label:
+                      empBasic?.employeeProfileLandingView
+                        ?.strPayscaleGradeName,
+                  }
+                : undefined,
+
+              salaryType: empBasic?.employeeProfileLandingView?.intSalaryTypeId
+                ? {
+                    value:
+                      empBasic?.employeeProfileLandingView?.intSalaryTypeId,
+                    label:
+                      empBasic?.employeeProfileLandingView?.strSalaryTypeName,
+                  }
+                : undefined,
               password:
                 empBasic?.employeeProfileLandingView?.strPassword || "123456",
               email: empBasic?.employeeProfileLandingView?.strPersonalMail,
@@ -644,7 +468,34 @@ function AboutMeDetails() {
                   }
                 : undefined,
               isActive: empBasic?.employeeProfileLandingView?.userStatus,
-              // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo 
+              otType: empBasic?.employeeProfileLandingView?.intOtType
+                ? [
+                    {
+                      value: 1,
+                      label: "Not Applicable",
+                    },
+                    { value: 2, label: "With Salary" },
+                    {
+                      value: 3,
+                      label: "Without Salary/Additional OT",
+                    },
+                  ].find(
+                    (ot) =>
+                      ot.value ===
+                      empBasic?.employeeProfileLandingView?.intOtType
+                  )
+                : {
+                    value: 1,
+                    label: "Not Applicable",
+                  },
+              probationayClosedBy:
+                probationCloseDateCustomDDL.find(
+                  (dt) =>
+                    dt?.value ===
+                    empBasic?.employeeProfileLandingView
+                      ?.intProbationayClosedByInDate
+                ) || undefined,
+              // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo
               // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
               // calenderType: [{value: 1, label: "Calendar"},
               //                { value: 2, label: "Roster" }].find(itm => itm.label === empBasic?.employeeProfileLandingView?.strCalenderType)  || undefined,

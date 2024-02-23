@@ -33,6 +33,7 @@ import PeopleDeskTable, {
 
 import FormikSelect from "../../../../common/FormikSelect";
 import { customStyles } from "../../../../utility/selectCustomStyle";
+import { isDevServer } from "App";
 
 function Calendar() {
   // redux
@@ -130,8 +131,8 @@ function Calendar() {
       const data = [
         ...new Set(singleShiftData.map((item) => item.strCalendarName)),
       ];
-      let colorData = {};
-      let colorDataBg = {};
+      const colorData = {};
+      const colorDataBg = {};
       data.forEach((status, index) => {
         colorData[status] = colors[index % colors.length];
       });
@@ -144,6 +145,7 @@ function Calendar() {
     }
     // eslint-disable-next-line
   }, [singleShiftData]);
+  isDevServer && console.log({headerList, rowDto})
 
   return (
     <>

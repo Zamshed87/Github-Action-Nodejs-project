@@ -24,7 +24,6 @@ import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../../common/PopoverMasterFilter";
 import ResetButton from "../../../../common/ResetButton";
-import SortingIcon from "../../../../common/SortingIcon";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   failColor,
@@ -32,11 +31,9 @@ import {
   greenColor,
   successColor,
 } from "../../../../utility/customColor";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import CreateModal from "../common/CreateModal";
 import FilterModal from "./component/FilterModal";
-import LoanApprovalTable from "./component/LoanApprovalTable";
 import {
   getAllLoanApplicatonListDataForApproval,
   loanApproveReject,
@@ -75,7 +72,7 @@ const LightTooltip = styled(({ className, ...props }) => (
 }));
 
 export default function LoanApproval() {
-  const { orgId, employeeId, isOfficeAdmin, buId } = useSelector(
+  const { orgId, employeeId, isOfficeAdmin, buId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -100,12 +97,6 @@ export default function LoanApproval() {
   const [allData, setAllData] = useState();
   const [filterData, setFilterData] = useState([]);
 
-  // filter
-  const [empOrder, setEmpOrder] = useState("desc");
-  const [designationOrder, setDesignationOrder] = useState("desc");
-  const [deptOrder, setDeptOrder] = useState("desc");
-
-  const debounce = useDebounce();
   const dispatch = useDispatch();
 
   const handleOpen = () => {
@@ -167,7 +158,7 @@ export default function LoanApproval() {
     getAllLoanApplicatonListDataForApproval(
       {
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -179,6 +170,7 @@ export default function LoanApproval() {
         isSupOrLineManager: 0,
         accountId: orgId,
         businessUnitId: buId,
+        workplaceId: wId,
       },
       setAllLoanApplicatonData,
       setAllData,
@@ -205,7 +197,7 @@ export default function LoanApproval() {
     getAllLoanApplicatonListDataForApproval(
       {
         approverId: employeeId,
-        workplaceGroupId: values?.workplace?.id || 0,
+        workplaceGroupId: values?.workplace?.id || wgId,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
         applicantId: values?.employee?.id || 0,
@@ -220,6 +212,7 @@ export default function LoanApproval() {
         isSupOrLineManager: 0,
         accountId: orgId,
         businessUnitId: buId,
+        workplaceId: wId,
       },
 
       setAllLoanApplicatonData,
@@ -265,7 +258,7 @@ export default function LoanApproval() {
       getAllLoanApplicatonListDataForApproval(
         {
           approverId: employeeId,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: filterValues?.workplace?.id || wgId,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -280,6 +273,7 @@ export default function LoanApproval() {
           isSupOrLineManager: 0,
           accountId: orgId,
           businessUnitId: buId,
+          workplaceId: wId,
         },
         setAllLoanApplicatonData,
         setAllData,
@@ -321,7 +315,7 @@ export default function LoanApproval() {
       getAllLoanApplicatonListDataForApproval(
         {
           approverId: employeeId,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: filterValues?.workplace?.id || wgId,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -336,6 +330,7 @@ export default function LoanApproval() {
           isSupOrLineManager: 0,
           accountId: orgId,
           businessUnitId: buId,
+          workplaceId: wId,
         },
 
         setAllLoanApplicatonData,
@@ -733,14 +728,14 @@ export default function LoanApproval() {
                               </div> */}
                             </div>
 
-                            <div className="table-card-head-right">
+                            <div>
                               {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
                               ).length > 0 && (
                                 <div className="d-flex actionIcon mr-3">
                                   <Tooltip title="Approve">
                                     <div
-                                      className="muiIconHover success mr-2"
+                                      className="muiIconHover success "
                                       onClick={() => {
                                         demoPopup(
                                           "approve",
@@ -754,8 +749,9 @@ export default function LoanApproval() {
                                           <CheckCircle
                                             sx={{
                                               color: successColor,
-                                              width: "16px",
-                                              height: "16px",
+                                              width: "25px !important",
+                                              height: "35px !important",
+                                              fontSize: "20px !important",
                                             }}
                                           />
                                         }
@@ -764,7 +760,7 @@ export default function LoanApproval() {
                                   </Tooltip>
                                   <Tooltip title="Reject">
                                     <div
-                                      className="muiIconHover  danger"
+                                      className="muiIconHover  danger mx-2"
                                       onClick={() => {
                                         demoPopup(
                                           "reject",
@@ -778,8 +774,9 @@ export default function LoanApproval() {
                                           <Cancel
                                             sx={{
                                               color: failColor,
-                                              width: "16px",
-                                              height: "16px",
+                                              width: "25px !important",
+                                              height: "35px !important",
+                                              fontSize: "20px !important",
                                             }}
                                           />
                                         }

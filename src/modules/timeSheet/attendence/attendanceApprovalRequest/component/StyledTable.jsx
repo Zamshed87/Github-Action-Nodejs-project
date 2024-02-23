@@ -75,6 +75,8 @@ const StyledTable = (props) => {
           </td>
           <td>{data?.InTime ? data?.InTime : "-"}</td>
           <td>{data?.OutTime ? data?.OutTime : "-"}</td>
+          <td>{data?.ManulInTime ? data?.ManulInTime : "-"}</td>
+          <td>{data?.ManulOutTime ? data?.ManulOutTime : "-"}</td>
           <td className="text-center">
             {data?.isPresent && data?.isLate ? (
               <Chips label="Late" classess="warning" />

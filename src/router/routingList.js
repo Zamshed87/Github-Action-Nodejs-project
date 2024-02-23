@@ -5,6 +5,7 @@ import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/Overt
 import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/PayrollElement";
 import PayrollGroupCreate from "modules/PayrollManagementSytem/SalaryBreakdown/Create/PayrollGroupCreate";
 import SalaryBreakdownN from "modules/PayrollManagementSytem/SalaryBreakdown/indexN";
+import SeparationSetupLanding from "modules/PayrollManagementSytem/SeparationSetup";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BankBranch from "modules/configuration/bankBranch";
 import BusinessUnit from "modules/configuration/busisnessUnit";
@@ -26,13 +27,19 @@ import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import Workplace from "modules/configuration/workplace";
 import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
+
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
+import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
+import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
 import { lazy } from "react";
 
+const CreateAndEditEmploye = lazy(() =>
+  import("modules/employeeProfile/employeeFeature/createEmployee")
+);
 const MultiCalendarAssign = lazy(() =>
   import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
 );
@@ -742,6 +749,15 @@ const ManagementApplicationSeparationForm = lazy(() =>
 const ManagementSeparation = lazy(() =>
   import("../modules/employeeProfile/separation/mgmApplication/index.jsx")
 );
+const FinalSettlementLanding = lazy(() =>
+  import("../modules/employeeProfile/finalSettlement/index.jsx")
+);
+const FinalSettlementAddEditView = lazy(() =>
+  import(
+    "../modules/employeeProfile/finalSettlement/create/CreateEditFinalSettlement.jsx"
+  )
+);
+
 const ManagementReleaseSeparationForm = lazy(() =>
   import(
     "../modules/employeeProfile/separation/mgmApplication/releaseForm/index.jsx"
@@ -1157,8 +1173,11 @@ const GorForPrint = lazy(() =>
 const AttendanceReport = lazy(() =>
   import("../modules/timeSheet/reports/attendanceReport/index.jsx")
 );
+// const AttendanceRawDataProcess = lazy(() =>
+//   import("../modules/timeSheet/attendence/attendanceRawDataProcess/index.jsx")
+// );
 const AttendanceRawDataProcess = lazy(() =>
-  import("../modules/timeSheet/attendence/attendanceRawDataProcess/index.jsx")
+  import("../modules/timeSheet/attendence/attendanceRawDataProcess/indexN.jsx")
 );
 const EmployeeList = lazy(() =>
   import("../modules/timeSheet/reports/employeeList/index.jsx")
@@ -1329,6 +1348,10 @@ export const routingList = [
     component: ActiveInactiveEmployeeReport,
   },
   {
+    path: "/administration/configuration/bulkReporterChange",
+    component: ReporterUpdation,
+  },
+  {
     path: "/profile/employee/go-for-print/print-preview",
     component: PrintPreview,
   },
@@ -1337,6 +1360,9 @@ export const routingList = [
     component: GoForPrint,
   },
 
+  { path: "/profile/employee/create", component: CreateAndEditEmploye },
+
+  { path: "/profile/employee/edit/:empId", component: CreateAndEditEmploye },
   { path: "/profile/employee/:empId", component: AboutMeDetails },
   {
     path: "/profile/separation/release/:id",
@@ -1357,6 +1383,18 @@ export const routingList = [
   {
     path: "/profile/separation",
     component: ManagementSeparation,
+  },
+  {
+    path: "/profile/finalSettlement",
+    component: FinalSettlementLanding,
+  },
+  {
+    path: "/profile/finalSettlement/create",
+    component: FinalSettlementAddEditView,
+  },
+  {
+    path: "/profile/finalSettlement/:type/:id",
+    component: FinalSettlementAddEditView,
   },
   { path: "/profile/reports/separationReport", component: SeparationReport },
   {
@@ -1404,6 +1442,10 @@ export const routingList = [
   {
     path: "/profile/reports/emloyeeIDCard",
     component: EmployeeIdCardLanding,
+  },
+  {
+    path: "/profile/reports/emloyeeDataChecklist",
+    component: EmpCheckList,
   },
   {
     path: "/administration/configuration/commonapprovalpipeline",
@@ -2646,6 +2688,7 @@ export const routingList = [
     path: "/administration/payrollConfiguration/PFAndGratuity/edit/:id",
     component: PfGratuityPolicyForm,
   },
+
   {
     path: "/administration/payrollConfiguration/PFAndGratuity/create",
     component: PfGratuityPolicyForm,
@@ -2659,6 +2702,10 @@ export const routingList = [
     component: OvertimePolicy,
   },
   // Policy Create/Landing
+  {
+    path: "/administration/payrollConfiguration/separationSetup",
+    component: SeparationSetupLanding,
+  },
   {
     path: "/administration/payrollConfiguration/overtimePolicy",
     component: OvertimePolicyN,

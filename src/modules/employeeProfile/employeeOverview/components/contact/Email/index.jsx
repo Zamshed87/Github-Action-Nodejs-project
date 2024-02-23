@@ -6,7 +6,7 @@ import {
   ModeEditOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
 import ActionMenu from "../../../../../../common/ActionMenu";
@@ -15,8 +15,8 @@ import Loading from "../../../../../../common/loading/Loading";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
-import { updateEmployeeProfile } from "../helper";
 import { todayDate } from "./../../../../../../utility/todayDate";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   email: "",
@@ -44,7 +44,7 @@ function Emails({ empId, buId, wgId }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const saveHandler = (values) => {
+  const saveHandler = (values, cb) => {
     if (singleData) {
       const payload = {
         partType: "Email",
@@ -108,6 +108,7 @@ function Emails({ empId, buId, wgId }) {
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
+        cb?.()
       };
       updateEmployeeProfile(payload, setLoading, callback);
     } else {
@@ -173,19 +174,20 @@ function Emails({ empId, buId, wgId }) {
         setStatus("empty");
         setSingleData("");
         setIsCreateForm(false);
+        cb?.()
       };
       updateEmployeeProfile(payload, setLoading, callback);
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = (values, setFieldValue) => {
     const payload = {
       partType: "Email",
       employeeId: empId,
       autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -240,6 +242,7 @@ function Emails({ empId, buId, wgId }) {
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
+      setFieldValue("email", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -253,7 +256,7 @@ function Emails({ empId, buId, wgId }) {
           email: singleData ? singleData : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -261,12 +264,10 @@ function Emails({ empId, buId, wgId }) {
       >
         {({
           handleSubmit,
-          resetForm,
           values,
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -295,7 +296,6 @@ function Emails({ empId, buId, wgId }) {
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -309,7 +309,6 @@ function Emails({ empId, buId, wgId }) {
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={!values.email}
@@ -413,7 +412,7 @@ function Emails({ empId, buId, wgId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(values, setFieldValue);
                                       },
                                     },
                                   ]}

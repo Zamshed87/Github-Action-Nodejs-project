@@ -6,18 +6,18 @@ import {
 } from "@mui/icons-material";
 import DesignServicesIcon from "@mui/icons-material/DesignServices";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { APIUrl } from "../../../../../../App";
 import ActionMenu from "../../../../../../common/ActionMenu";
 import Loading from "../../../../../../common/loading/Loading";
+import FileUploadComponents from "../../../../../../utility/Upload/FileUploadComponents";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import "../../../employeeOverview.css";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { updateEmployeeProfile } from "../helper";
-import FileUploadComponents from "../../../../../../utility/Upload/FileUploadComponents";
-import { toast } from "react-toastify";
-import { APIUrl } from "../../../../../../App";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   bloodGroup: "",
@@ -76,7 +76,7 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     );
   }, [buId, wgId, empId, businessUnit, workplaceGroup]);
 
-  const saveHandler = (values) => {
+  const saveHandler = () => {
     if (!authSignatureImage?.length)
       return toast.warn("Please upload Emplployee signature image");
 
@@ -234,7 +234,7 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = () => {
     const payload = {
       partType: "EmployeeSignature",
       employeeId:
@@ -242,7 +242,7 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
       autoId: rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -316,21 +316,13 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
           ...initData,
         }}
         // validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -361,7 +353,6 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -375,7 +366,6 @@ function EmpSignature({ empId, buId: businessUnit, wgId: workplaceGroup }) {
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                           >

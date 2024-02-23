@@ -31,6 +31,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       min,
       max,
       format,
+      disabledDate,
     } = property;
 
     const Components =
@@ -44,6 +45,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           style={{ width: "100%" }}
           format={format || "DD/MM/YYYY"}
           allowClear={allowClear}
+          disabledDate={disabledDate}
           picker={picker as "date" | "week" | "month" | "year"}
         />
       ) : type === "checkbox" ? (

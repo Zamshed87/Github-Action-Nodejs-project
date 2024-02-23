@@ -4,7 +4,9 @@ import DefaultInput from "../../../../common/DefaultInput";
 import { useState } from "react";
 import PrimaryButton from "../../../../common/PrimaryButton";
 import { useEffect } from "react";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import {
+  getSearchEmployeeListNew,
+} from "../../../../common/api";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   ErrorLinearProgress,
@@ -19,9 +21,8 @@ import moment from "moment";
 import ResetButton from "../../../../common/ResetButton";
 import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import FormikSelect from "../../../../common/FormikSelect";
-import { customStyles } from "../../../../utility/selectCustomStyle";
 import Loading from "../../../../common/loading/Loading";
+import AsyncFormikSelect from "common/AsyncFormikSelect";
 
 function AttendanceRawDataProcess() {
   const { orgId, buId, employeeId } = useSelector(
@@ -43,14 +44,13 @@ function AttendanceRawDataProcess() {
   //   the api response will throw only a string either success or server error
   const [res, setRes] = useState("");
   const [loading, setLoading] = useState(false);
-  const [empDDL, setEmpDDL] = useState([]);
 
   const { handleSubmit, values, setFieldValue, errors, touched, resetForm } =
     useFormik({
       enableReinitialize: true,
       initialValues,
       validationSchema,
-      onSubmit: (values, { setSubmitting, resetForm }) => {
+      onSubmit: (values) => {
         saveHandler(values);
       },
     });
@@ -71,14 +71,14 @@ function AttendanceRawDataProcess() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfo&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
-      "EmployeeId",
-      "EmployeeName",
-      setEmpDDL
-    );
-  }, [orgId, buId, employeeId]);
+  // useEffect(() => {
+  //   getPeopleDeskAllDDL(
+  //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmployeeBasicInfo&AccountId=${orgId}&BusinessUnitId=${buId}&intId=${employeeId}`,
+  //     "EmployeeId",
+  //     "EmployeeName",
+  //     setEmpDDL
+  //   );
+  // }, [orgId, buId, employeeId]);
 
   return permission?.isView ? (
     <form onSubmit={handleSubmit}>
@@ -113,10 +113,10 @@ function AttendanceRawDataProcess() {
                   type="date"
                   min={values?.fromDate}
                   max={
-                    calcDateDiff(values?.fromDate, today) < 10
+                    calcDateDiff(values?.fromDate, today) < 3
                       ? today
                       : moment(values?.fromDate)
-                          .add(10, "days")
+                          .add(2, "days")
                           .format("YYYY-MM-DD")
                   }
                   className="form-control"
@@ -127,23 +127,21 @@ function AttendanceRawDataProcess() {
                   touched={touched}
                 />
               </div>
+
               <div className="input-field-main col-lg-3">
                 <label>Employee</label>
-                <FormikSelect
-                  classes="input-sm"
-                  name="employee"
-                  options={empDDL || []}
-                  value={values?.employee}
-                  onChange={(valueOption) => {
+                <AsyncFormikSelect
+                  selectedValue={values?.employee}
+                  isSearchIcon={true}
+                  handleChange={(valueOption) => {
                     setFieldValue("employee", valueOption);
                   }}
-                  placeholder=" "
-                  styles={customStyles}
-                  errors={errors}
-                  touched={touched}
-                  menuPosition="fixed"
+                  placeholder="Search (min 3 letter)"
+                  loadOptions={(v) => getSearchEmployeeListNew(buId, orgId, v)}
+                  // isDisabled={!values?.workplaceGroup}
                 />
               </div>
+
               <div style={{ marginTop: "21px" }} className="col-lg-3">
                 <PrimaryButton
                   type="submit"
@@ -179,7 +177,7 @@ function AttendanceRawDataProcess() {
                   <h3 className="mb-2">Processing</h3>
                   <LinearProgress
                     color="success"
-                    sx={{ height: "16px", width: "50%" }}
+                    sx={{ height: "16px", width: "90%" }}
                   />
                 </>
               )}
@@ -189,7 +187,7 @@ function AttendanceRawDataProcess() {
                     <h3 className="mb-2">Processing Completed</h3>
                     <LinearProgress
                       color="success"
-                      sx={{ height: "16px", width: "50%" }}
+                      sx={{ height: "16px", width: "90%" }}
                       variant="determinate"
                       value={100}
                     />

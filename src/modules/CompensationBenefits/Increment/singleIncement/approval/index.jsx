@@ -1,10 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Cancel,
-  CheckCircle,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -12,10 +8,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import BackButton from "../../../../../common/BackButton";
 import IConfirmModal from "../../../../../common/IConfirmModal";
 import Loading from "../../../../../common/loading/Loading";
-import MasterFilter from "../../../../../common/MasterFilter";
 import MuiIcon from "../../../../../common/MuiIcon";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../../commonRedux/reduxForLocalStorage/actions";
 import { failColor, successColor } from "../../../../../utility/customColor";
 import useDebounce from "../../../../../utility/customHooks/useDebounce";
@@ -30,7 +24,7 @@ const initData = {
 };
 
 export default function IncrementNPromotionApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -39,7 +33,6 @@ export default function IncrementNPromotionApproval() {
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
   const [allData, setAllData] = useState();
-  const [isFilter, setIsFilter] = useState(false);
 
   //View Modal
   const [singleData, setSingleData] = useState("");
@@ -51,7 +44,9 @@ export default function IncrementNPromotionApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceId: wId,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -77,7 +72,9 @@ export default function IncrementNPromotionApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceId: wId,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -144,7 +141,9 @@ export default function IncrementNPromotionApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceId: wId,
+          workplaceGroupId: wgId,
+        businessUnitId: buId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -217,7 +216,7 @@ export default function IncrementNPromotionApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Increment Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -238,7 +237,9 @@ export default function IncrementNPromotionApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -261,7 +262,9 @@ export default function IncrementNPromotionApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

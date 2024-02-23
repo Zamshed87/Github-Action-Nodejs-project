@@ -78,6 +78,12 @@ export default function ResourcesDropdown() {
         filterData?.[0]?.WorkplaceGroupName
       )
     );
+    dispatch(
+      updateWAction(
+        0,
+        ""
+      )
+    );
   };
   const handleWResources = (event) => {
     const filterData = workplaceDDL?.filter(

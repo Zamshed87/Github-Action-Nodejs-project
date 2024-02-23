@@ -15,7 +15,7 @@ import {
 import ActionMenu from "../../../../../../common/ActionMenu";
 import FormikInput from "../../../../../../common/FormikInput";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { attachment_action, updateEmployeeProfile } from "./../helper";
+import { attachment_action } from "./../helper";
 import {
   dateFormatter,
   dateFormatterForInput,
@@ -26,6 +26,7 @@ import { getDownlloadFileView_Action } from "../../../../../../commonRedux/auth/
 import { getEmployeeProfileViewData } from "../../../../employeeFeature/helper";
 import { fromDateToDateDiff } from "../../../../../../utility/fromDateToDateDiff";
 import { gray900, success500 } from "../../../../../../utility/customColor";
+import { updateEmployeeProfile } from "../../helper";
 
 const initData = {
   trainingTitle: "",
@@ -249,12 +250,12 @@ function TrainingDevelopment({
 
   const deleteHandler = (id, item) => {
     const payload = {
-      partType: "TrainingAndDevelopment",
+      partType: "TrainingAndDevelopmentDelete",
       employeeId: empId,
       autoId: id,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -368,26 +369,28 @@ function TrainingDevelopment({
               {loading && <Loading />}
               <div>
                 <h5>Training</h5>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ marginBottom: "25px", cursor: "pointer" }}
-                  onClick={() => {
-                    setStatus("input");
-                    setIsCreateForm(true);
-                  }}
-                >
+                {1 && (
                   <div
-                    className="item"
-                    style={{ position: "relative", top: "-3px" }}
+                    className="d-flex align-items-center"
+                    style={{ marginBottom: "25px", cursor: "pointer" }}
+                    onClick={() => {
+                      setStatus("input");
+                      setIsCreateForm(true);
+                    }}
                   >
-                    <ControlPoint
-                      sx={{ color: success500, fontSize: "16px" }}
-                    />
+                    <div
+                      className="item"
+                      style={{ position: "relative", top: "-3px" }}
+                    >
+                      <ControlPoint
+                        sx={{ color: success500, fontSize: "16px" }}
+                      />
+                    </div>
+                    <div className="item">
+                      <p>Add your training</p>
+                    </div>
                   </div>
-                  <div className="item">
-                    <p>Add your training</p>
-                  </div>
-                </div>
+                )}
               </div>
               {isCreateForm ? (
                 <>
@@ -660,6 +663,7 @@ function TrainingDevelopment({
                                     </div>
                                   )}
                                 </div>
+
                                 <div className="col-lg-1">
                                   <ActionMenu
                                     color={gray900}

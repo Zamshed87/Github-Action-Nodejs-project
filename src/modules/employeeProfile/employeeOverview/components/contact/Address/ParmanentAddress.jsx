@@ -16,10 +16,9 @@ import Loading from "../../../../../../common/loading/Loading";
 import { gray900, success500 } from "../../../../../../utility/customColor";
 import { customStyles } from "../../../../../../utility/selectCustomStyle";
 import { getEmployeeProfileViewDataForAddress } from "../../../../employeeFeature/helper";
-import { DDLForAddress } from "../../helper";
+import { DDLForAddress, updateEmployeeProfile } from "../../helper";
 import FormikSelect from "./../../../../../../common/FormikSelect";
 import { todayDate } from "./../../../../../../utility/todayDate";
-import { updateEmployeeProfile } from "./../helper";
 
 const initData = {
   country: "",
@@ -266,15 +265,15 @@ function ParmanentAddress({ getData, empId }) {
     }
   };
 
-  const deleteHandler = (values) => {
+  const deleteHandler = (values, cb) => {
     const payload = {
-      partType: "Address",
+      partType: "AddressDelete",
       employeeId:
         rowDto?.employeeProfileLandingView?.intEmployeeBasicInfoId || empId,
       autoId: rowDto?.permanentAddress[0]?.intEmployeeAddressId || 0,
       value: "",
       insertByEmpId: employeeId,
-      isActive: false,
+      isActive: true,
       bankId: 0,
       bankName: "",
       branchName: "",
@@ -341,6 +340,7 @@ function ParmanentAddress({ getData, empId }) {
       setStatus("empty");
       setSingleData("");
       getData();
+      cb?.();
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -812,7 +812,9 @@ function ParmanentAddress({ getData, empId }) {
                                         />
                                       ),
                                       onClick: () => {
-                                        deleteHandler(values);
+                                        deleteHandler(values, () =>
+                                          resetForm(initData)
+                                        );
                                       },
                                     },
                                   ]}

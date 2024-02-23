@@ -31,7 +31,7 @@ const initData = {
 };
 
 export default function RequisitionApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -48,10 +48,13 @@ export default function RequisitionApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         approverId: employeeId,
-        busineessUnit: 0,
+        workplaceId: wId,
+        busineessUnit: buId,
         applicantId: 0,
         accountId: orgId,
         intId: 0,
+        businessUnitId: buId,
+        workplaceGroupId: wgId,
       },
 
       setApplicationListData,
@@ -63,7 +66,7 @@ export default function RequisitionApproval() {
   useEffect(() => {
     getLandingData(/* isSupOrLineManager?.value */);
     // eslint-disable-next-line
-  }, [employeeId]);
+  }, [employeeId, wId]);
 
   // advance filter
   const [filterBages, setFilterBages] = useState({});
@@ -146,7 +149,9 @@ export default function RequisitionApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceId: wId,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -225,7 +230,7 @@ export default function RequisitionApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Requisition Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -246,7 +251,9 @@ export default function RequisitionApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -269,7 +276,9 @@ export default function RequisitionApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

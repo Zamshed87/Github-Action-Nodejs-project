@@ -2,6 +2,7 @@ import {
   EditOutlined,
   FilePresentOutlined,
   InfoOutlined,
+  VisibilityOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import axios from "axios";
@@ -50,6 +51,7 @@ export const getSeparationLanding = async (
   wgId,
   fromDate,
   toDate,
+  status,
   search,
   setter,
   setLoading,
@@ -61,7 +63,7 @@ export const getSeparationLanding = async (
   try {
     setLoading && setLoading(true);
 
-    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}`;
+    let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&status=${status}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}`;
 
     search && (apiUrl += `&searchTxt=${search}`);
 
@@ -95,7 +97,9 @@ export const separationApplicationLandingTableColumn = (
   paginationSize,
   history,
   dispatch,
-  permission
+  setOpenModal,
+  permission,
+  setId,
 ) => {
   return [
     {
@@ -255,14 +259,10 @@ export const separationApplicationLandingTableColumn = (
             <Chips label="Process" classess="primary p-2" />
           )}
           {item?.approvalStatus === "Reject" && (
-            <>
-              <Chips label="Rejected" classess="danger p-2 mr-2" />
-            </>
+            <Chips label="Rejected" classess="danger p-2 mr-2" />
           )}
           {item?.approvalStatus === "Released" && (
-            <>
-              <Chips label="Released" classess=" p-2 mr-2" />
-            </>
+            <Chips label="Released" classess="indigo p-2 mr-2" />
           )}
         </>
       ),
@@ -273,6 +273,17 @@ export const separationApplicationLandingTableColumn = (
       dataIndex: "approvalStatus",
       render: (item) => (
         <div className="d-flex">
+          <Tooltip title="View" arrow>
+            <button className="iconButton" type="button">
+              <VisibilityOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setId(item?.separationId);
+                  setOpenModal(true);
+                }}
+              />
+            </button>
+          </Tooltip>
           {item?.approvalStatus === "Pending" && (
             <Tooltip title="Edit" arrow>
               <button className="iconButton" type="button">

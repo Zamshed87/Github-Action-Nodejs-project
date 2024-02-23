@@ -25,4 +25,11 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/GetRDLCSalaryReportExcell",
   "/PdfAndExcelReport/GetSalaryLandingData",
   "/PdfAndExcelReport/IdCardPdf",
+  "/PdfAndExcelReport/GetSalaryLandingData_Matador",
+  "/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel",
+  "/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF",
+  "/PdfAndExcelReport/EmployeeReportWithFilter_RDLC",
+  "/PdfAndExcelReport/OffdayLandingFilter_RDLC",
+  "/PdfAndExcelReport/GetAllEmployeeForTaxAssign_RDLC",
+  "/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador",
 ];

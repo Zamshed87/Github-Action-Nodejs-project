@@ -1,10 +1,11 @@
-import axios from "axios";
-import moment from "moment";
-import * as Yup from "yup";
-import { styled } from "@mui/material/styles";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
+import { styled } from "@mui/material/styles";
+import axios from "axios";
+import moment from "moment";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
 
 export const initialValues = {
   fromDate: "",
@@ -28,26 +29,75 @@ export const validationSchema = Yup.object().shape({
   toDate: Yup.string().required("To date is required"),
 });
 
-export const onGetAttendanceResponse = async ({
-  setRes,
-  orgId,
-  employeeId,
-  fromDate,
-  toDate,
-  setLoading,
-}) => {
+// export const onGetAttendanceResponse = async ({
+//   setRes,
+//   orgId,
+//   employeeId,
+//   fromDate,
+//   toDate,
+//   setLoading,
+// }) => {
+//   setLoading && setLoading(true);
+//   try {
+//     const res = await axios.get(
+//       `/Employee/GetAttendanceProcessData?accountId=${orgId}&employeeId=${employeeId}&fromDate=${fromDate}&toDate=${toDate}`
+//     );
+//     if (res?.data) {
+//       setRes(res?.data?.message);
+//       setLoading && setLoading(false);
+//     }
+//   } catch (error) {
+//     // to track error linear progress, the value should not be blank in res state
+//     setRes("failed");
+//     setLoading && setLoading(false);
+//   }
+// };
+
+// new from business requirement
+export const onPostAttendanceResponse = async ({ setLoading, payload, cb }) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(
-      `/Employee/GetAttendanceProcessData?accountId=${orgId}&employeeId=${employeeId}&fromDate=${fromDate}&toDate=${toDate}`
+    const res = await axios.post(
+      `/Employee/AttendenceRawDataProcessLog`,
+      payload
     );
     if (res?.data) {
-      setRes(res?.data?.message);
+      toast.success(res?.data?.message);
       setLoading && setLoading(false);
     }
+    cb?.();
   } catch (error) {
-    // to track error linear progress, the value should not be blank in res state
-    setRes("failed");
+    toast.warn("failed");
+    setLoading && setLoading(false);
+  }
+};
+
+export const onGetAttendanceResponse = async (
+  wId,
+  wgId,
+  pageSize,
+  pageNo,
+  setRes,
+  setLoading,
+  setPages
+) => {
+  setLoading && setLoading(true);
+
+  try {
+    const res = await axios.get(
+      `/Employee/GetAttendenceRawDataProcessLog?intWorkplaceId=${wId}&intWorkplaceGroupId=${wgId}&pageSize=${pageSize}&pageNo=${pageNo}`
+    );
+    if (res?.data) {
+      setRes(res?.data);
+      setPages?.({
+        current: res?.data?.currentPage, 
+        pageSize: res?.data?.pageSize, // Page Size From Api Response
+        total: res?.data?.totalCount, 
+      })
+    }
+    setLoading(false);
+  } catch (error) {
+    console.log(error);
     setLoading && setLoading(false);
   }
 };

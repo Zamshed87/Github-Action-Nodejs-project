@@ -6,7 +6,7 @@ import {
 } from "@mui/icons-material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useFormik } from "formik";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -16,6 +16,7 @@ import {
   getPeopleDeskAllDDL,
   getPeopleDeskWithoutAllDDL,
   getSearchEmployeeList,
+  getSearchEmployeeListNew,
   PeopleDeskSaasDDL,
 } from "../../../../../common/api";
 import BackButton from "../../../../../common/BackButton";
@@ -26,6 +27,13 @@ import NoResult from "../../../../../common/NoResult";
 import PrimaryButton from "../../../../../common/PrimaryButton";
 import ResetButton from "../../../../../common/ResetButton";
 import SortingIcon from "../../../../../common/SortingIcon";
+// import {
+//   PeopleDeskSaasDDL,
+//   attachment_action,
+//   getPeopleDeskAllDDL,
+//   getPeopleDeskWithoutAllDDL,
+//   getSearchEmployeeList,
+// } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { setFirstLevelNameAction } from "../../../../../commonRedux/reduxForLocalStorage/actions";
 import {
@@ -50,7 +58,7 @@ import {
 } from "../helper";
 import "../styles.css";
 import HistoryTransferTable from "./HistoryTransferTable";
-import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
+import AsyncFormikSelect from "common/AsyncFormikSelect";
 
 const initialValues = {
   employee: "",
@@ -159,7 +167,7 @@ function CreateTransferPromotion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wgId, wId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -482,6 +490,8 @@ function CreateTransferPromotion() {
         : state?.singleData?.intTransferNpromotionId,
       intEmployeeId: values?.employee?.value,
       strEmployeeName: values?.employee?.label,
+      employmentTypeId: values?.employee?.employmentTypeId,
+      hrPositionId: values?.employee?.hrPositionId,
       StrTransferNpromotionType: values?.transferNPromotionType?.label,
       intAccountId: orgId,
       intBusinessUnitId: values?.businessUnit?.value,
@@ -891,7 +901,7 @@ function CreateTransferPromotion() {
                       }));
                       getPeopleDeskAllDDL(
                         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
-                          valueOption?.value
+                          values?.businessUnit?.value
                         }&WorkplaceGroupId=${
                           values?.workplaceGroup?.value || wgId
                         }&intWorkplaceId=${valueOption?.value || 0}`,
@@ -1172,9 +1182,9 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeList(
+                      getSearchEmployeeListNew(
                         buId,
-                        values?.workplaceGroup?.value || 0,
+                        intAccountId,
                         v
                       )
                     }
@@ -1196,9 +1206,9 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeList(
+                      getSearchEmployeeListNew(
                         buId,
-                        values?.workplaceGroup?.value || 0,
+                        intAccountId,
                         v
                       )
                     }

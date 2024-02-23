@@ -48,7 +48,7 @@ const initData = {
 };
 
 export default function AssetTransferApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -67,8 +67,10 @@ export default function AssetTransferApproval() {
         applicationStatus: "Pending",
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
+        workplaceId: wId,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -88,7 +90,9 @@ export default function AssetTransferApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
+        workplaceId: wId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -99,7 +103,7 @@ export default function AssetTransferApproval() {
       setAllData,
       setLoading
     );
-  }, [employeeId, orgId, isOfficeAdmin]);
+  }, [employeeId, orgId, isOfficeAdmin, wId]);
 
   const debounce = useDebounce();
 
@@ -151,7 +155,9 @@ export default function AssetTransferApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
+          workplaceId: wId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -196,9 +202,11 @@ export default function AssetTransferApproval() {
           applicationStatus: "Pending",
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
           departmentId: 0,
           designationId: 0,
+          workplaceId: wId,
           applicantId: 0,
           accountId: orgId,
           intId: 0,
@@ -533,7 +541,7 @@ export default function AssetTransferApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Asset Transfer Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -554,7 +562,9 @@ export default function AssetTransferApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -577,7 +587,9 @@ export default function AssetTransferApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -589,7 +601,7 @@ export default function AssetTransferApproval() {
                             <ul className="d-flex flex-wrap">
                               {isFilter && (
                                 <li>
-                                  <ResetButton
+                                  {/* <ResetButton
                                     title="reset"
                                     icon={
                                       <SettingsBackupRestoreOutlined
@@ -601,12 +613,12 @@ export default function AssetTransferApproval() {
                                       setFieldValue("search", "");
                                       getLandingData();
                                     }}
-                                  />
+                                  /> */}
                                 </li>
                               )}
                               {permission?.isCreate && (
                                 <li>
-                                  <MasterFilter
+                                  {/* <MasterFilter
                                     styles={{
                                       marginRight: "0px",
                                     }}
@@ -628,7 +640,7 @@ export default function AssetTransferApproval() {
                                       setFieldValue("search", "");
                                       getLandingData();
                                     }}
-                                  />
+                                  /> */}
                                 </li>
                               )}
                             </ul>

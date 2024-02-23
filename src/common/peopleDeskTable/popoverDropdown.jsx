@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import MasterFilter from "../MasterFilter";
 import Checkbox from "./checkbox";
 import { uuid } from "./helper";
+import { isDevServer } from "App";
 
 const PopoverDropdown = ({
   id,
@@ -18,24 +19,31 @@ const PopoverDropdown = ({
   getFilteredData,
 }) => {
   const [rowDto, setRowDto] = useState([]);
+  const [temp, setTemp] = useState(checkedHeaderList);
   const [searchKey, setSearchKey] = useState("");
   const [reset, setReset] = useState(false);
   const [currentHeaderListSelection, setCurrentHeaderListSelection] =
     useState(checkedHeaderList);
 
   const handleSearch = (keywords) => {
+    let v = `${columnData[currentFilterSelection]?.dataIndex}List`;
     if (!keywords) {
-      setRowDto(columnData[currentFilterSelection]?.filterDropDownList);
+      setRowDto(temp[v]);
       return;
     }
 
     const regex = new RegExp(keywords?.toLowerCase());
-    let newData = columnData[
-      currentFilterSelection
-    ]?.filterDropDownList?.filter(({ label }) =>
+    // let newData = columnData[
+    //   currentFilterSelection
+    // ]?.filterDropDownList?.filter(({ label }) =>
+    //   regex.test(label.toLowerCase())
+    // );
+    // setRowDto(newData, columnData, checkedHeaderList);
+    // let v = `${columnData[currentFilterSelection]?.dataIndex}List`;
+    let newData = temp[v]?.filter(({ label }) =>
       regex.test(label.toLowerCase())
     );
-    setRowDto(newData);
+    setRowDto(newData, columnData, checkedHeaderList);
   };
 
   const allDisable = () => {
@@ -129,10 +137,32 @@ const PopoverDropdown = ({
   useEffect(() => {
     if (currentFilterSelection) {
       setRowDto([...columnData[currentFilterSelection]?.filterDropDownList]);
+      setTemp((prev) => {
+        let v = `${columnData[currentFilterSelection]?.dataIndex}List`;
+        return {
+          ...prev,
+          [`${columnData[currentFilterSelection]?.dataIndex}List`]: [
+            ...new Set(
+              [
+                ...prev[v],
+                ...columnData[currentFilterSelection]?.filterDropDownList,
+              ].map((item) => JSON.stringify(item))
+            ),
+          ]?.map((obj) => JSON.parse(obj)),
+        };
+      });
     }
     setCurrentHeaderListSelection(checkedHeaderList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFilterSelection]);
+  }, [currentFilterSelection, columnData[currentFilterSelection]?.filterDropDownList]);
+
+  // useEffect(() => {
+  //   if (currentFilterSelection) {
+  //     setRowDto([...columnData[currentFilterSelection]?.filterDropDownList]);
+  //   }
+  //   setCurrentHeaderListSelection(checkedHeaderList);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [currentFilterSelection, columnData]);
 
   useEffect(() => {
     if (reset && currentFilterSelection !== -1) {
@@ -153,6 +183,14 @@ const PopoverDropdown = ({
   useEffect(() => {
     setCurrentHeaderListSelection(checkedHeaderList);
   }, [checkedHeaderList]);
+
+  // console.log(columnData[currentFilterSelection]?.filterDropDownList);
+  // useEffect(() => {
+  //   setTemp((prev) => {
+  //     return [...new Set([...prev, ...rowDto])];
+  //   });
+  // }, [rowDto]);
+
 
   return (
     <Popover
@@ -258,6 +296,12 @@ const PopoverDropdown = ({
                       [],
                   }));
                   setReset(true);
+                  let v = `${columnData[currentFilterSelection]?.dataIndex}List`;
+
+                  setRowDto(temp[v]);
+                  // setRowDto([
+                  //   `${columnData[currentFilterSelection]?.dataIndex}List`,
+                  // ]);
                   // handleOkResetButtonClick();
                 }
               }}

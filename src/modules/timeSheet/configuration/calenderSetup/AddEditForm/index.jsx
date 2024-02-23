@@ -5,10 +5,7 @@ import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
-import {
-  getPeopleDeskAllDDL,
-  getPeopleDeskAllLanding,
-} from "../../../../../common/api";
+import { getPeopleDeskAllDDL } from "../../../../../common/api";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import FormikInput from "../../../../../common/FormikInput";
 import { gray900, greenColor } from "../../../../../utility/customColor";
@@ -22,6 +19,7 @@ import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { isUniq } from "../../../../../utility/uniqChecker";
 import { IconButton, Tooltip } from "@mui/material";
 import { DeleteOutline, InfoOutlined } from "@mui/icons-material";
+import { calculateNextDate } from "utility/dateFormatter";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -41,7 +39,11 @@ const initData = {
   breakEndTime: "",
   officeStartTime: "",
   officeCloseTime: "",
+  isLunchBreakAsWorkingHour: true,
   nightShift: false,
+  isEmployeeUpdate: false,
+  dteEmployeeUpdateFromDate: "",
+  dteEmployeeUpdateToDate: "",
 };
 
 const validationSchema = Yup.object({
@@ -71,12 +73,13 @@ const CalendarSetupModal = ({
     shallowEqual
   );
   // eslint-disable-next-line no-unused-vars
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const [modifySingleData, setModifySingleData] = useState("");
   const [workPlaceDDL, setWorkPlaceDDL] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [deleteRowData, setDeleteRowData] = useState([]);
+  const [next3daysForEmp, setNext3daysForEmp] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -88,6 +91,8 @@ const CalendarSetupModal = ({
     if (singleData) {
       const newRowData = {
         calendarName: singleData?.strCalenderName,
+        isLunchBreakAsWorkingHour:
+          singleData?.isLunchBreakCalculateAsWorkingHour || true,
         startTime: singleData?.dteStartTime,
         endTime: singleData?.dteEndTime,
         minWork: singleData?.numMinWorkHour,
@@ -133,7 +138,7 @@ const CalendarSetupModal = ({
   };
 
   const deleteRow = (payload) => {
-    let deleteRow = [];
+    const deleteRow = [];
     if (payload > 0) {
       const filterArr = tableData.filter(
         (itm) => itm.intWorkplaceId === payload
@@ -170,7 +175,7 @@ const CalendarSetupModal = ({
         enableReinitialize={true}
         initialValues={id ? modifySingleData : initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             if (id) {
               resetForm(modifySingleData);
@@ -180,15 +185,7 @@ const CalendarSetupModal = ({
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Box sx={style} className="calenderSetupModal">
               <Form>
@@ -269,7 +266,7 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                    <label>
+                      <label>
                         Extended Start Time
                         <small>
                           <span>
@@ -301,12 +298,11 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                    <label>
+                      <label>
                         Last Start Time
                         <small>
                           {" "}
                           <span>
-                            {" "}
                             {" "}
                             <InfoOutlined
                               sx={{
@@ -409,10 +405,107 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-12">
+                      <FormikCheckBox
+                        name="isLunchBreakAsWorkingHour"
+                        styleObj={{
+                          color: greenColor,
+                        }}
+                        label="Is lunch break is calculated as working hour?"
+                        checked={values?.isLunchBreakAsWorkingHour}
+                        onChange={(e) => {
+                          setFieldValue(
+                            "isLunchBreakAsWorkingHour",
+                            e.target.checked
+                          );
+                        }}
+                      />
+                    </div>
+                    {singleData?.strCalenderName ? (
+                      <div className="col-12">
+                        <FormikCheckBox
+                          name="isEmployeeUpdate"
+                          styleObj={{
+                            color: greenColor,
+                          }}
+                          label="is Employee Update"
+                          checked={values?.isEmployeeUpdate}
+                          onChange={(e) => {
+                            setFieldValue("isEmployeeUpdate", e.target.checked);
+                          }}
+                        />
+                      </div>
+                    ) : null}
+                    {values?.isEmployeeUpdate ? (
+                      <>
+                        <div className="col-6 mt-3">
+                          <label className="mr-2">
+                            Employee Generate From Date
+                          </label>
+                          <FormikInput
+                            classes="input-sm"
+                            type="date"
+                            value={values?.dteEmployeeUpdateFromDate}
+                            name="dteEmployeeUpdateFromDate"
+                            onChange={(e) => {
+                              setFieldValue(
+                                "dteEmployeeUpdateFromDate",
+                                e.target.value
+                              );
+                              setNext3daysForEmp(
+                                calculateNextDate(e?.target?.value, 35)
+                              );
+                              setFieldValue(
+                                "dteEmployeeUpdateToDate",
+                                e.target.value
+                              );
+                            }}
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                        <div className="col-6 mt-3">
+                          <label className="mr-2">
+                            Employee Generate To Date
+                          </label>
+                          <FormikInput
+                            classes="input-sm"
+                            type="date"
+                            disabled={!values?.dteEmployeeUpdateFromDate}
+                            min={values?.dteEmployeeUpdateFromDate}
+                            max={next3daysForEmp}
+                            value={values?.dteEmployeeUpdateToDate}
+                            name="dteEmployeeUpdateToDate"
+                            onChange={(e) => {
+                              setFieldValue(
+                                "dteEmployeeUpdateToDate",
+                                e.target.value
+                              );
+                            }}
+                            errors={errors}
+                            touched={touched}
+                          />
+                        </div>
+                      </>
+                    ) : null}
+
+                    <div className="col-12">
                       <hr
                         style={{
                           borderTop: "1px solid #ccc",
                           margin: "10px 0",
+                        }}
+                      />
+                    </div>
+                    <div className="col-12 mt-3">
+                      <FormikCheckBox
+                        name="nightShift"
+                        styleObj={{
+                          color: greenColor,
+                        }}
+                        label="Is Night Shift"
+                        checked={values?.nightShift}
+                        onChange={(e) => {
+                          setFieldValue("nightShift", e.target.checked);
                         }}
                       />
                     </div>
@@ -450,19 +543,7 @@ const CalendarSetupModal = ({
                         Add
                       </button>
                     </div>
-                    <div className="col-3 mt-3">
-                      <FormikCheckBox
-                        name="nightShift"
-                        styleObj={{
-                          color: greenColor,
-                        }}
-                        label="Is Night Shift"
-                        checked={values?.nightShift}
-                        onChange={(e) => {
-                          setFieldValue("nightShift", e.target.checked);
-                        }}
-                      />
-                    </div>
+
                     <div className="table-card-body pt-3">
                       <div
                         className=" table-card-styled tableOne"

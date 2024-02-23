@@ -50,7 +50,7 @@ export default function Joining() {
     total: 0,
   });
 
-  const { buId, wgId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -87,7 +87,8 @@ export default function Joining() {
       pagination?.current,
       pagination?.pageSize,
       setPages,
-      srcTxt
+      srcTxt,
+      wId
     );
   };
 
@@ -353,8 +354,7 @@ export default function Joining() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group, Wing, Sole Depo,
-                                    Region, Area, Territory
+                                    B.Unit, Workplace Group
                                   </div>
                                 </td>
                                 <td
@@ -372,8 +372,7 @@ export default function Joining() {
                                   }}
                                 >
                                   <div>
-                                    B.Unit, Workplace Group, Wing, Sole Depo,
-                                    Region, Area, Territory
+                                    B.Unit, Workplace Group
                                   </div>
                                 </td>
                                 <td

@@ -24,7 +24,7 @@ const initData = {
 };
 
 const SalaryCertificateApproval = () => {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -46,11 +46,11 @@ const SalaryCertificateApproval = () => {
         isLineManager: true,
         isUserGroup: true,
         approverId: employeeId,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
-        workplaceId: 0,
-        businessUnitId: 0,
+        workplaceId: wId,
         applicantId: 0,
         accountId: orgId,
         intId: 0,
@@ -123,11 +123,11 @@ const SalaryCertificateApproval = () => {
           isLineManager: true,
           isUserGroup: true,
           approverId: employeeId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
+          businessUnitId: buId,
           departmentId: 0,
           designationId: 0,
-          workplaceId: 0,
-          businessUnitId: 0,
+          workplaceId: wId,
           applicantId: 0,
           accountId: orgId,
           intId: 0,
@@ -199,7 +199,7 @@ const SalaryCertificateApproval = () => {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Salary Certificate Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -220,7 +220,9 @@ const SalaryCertificateApproval = () => {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -243,7 +245,9 @@ const SalaryCertificateApproval = () => {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }

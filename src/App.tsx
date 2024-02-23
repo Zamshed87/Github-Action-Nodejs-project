@@ -165,13 +165,14 @@ Axios.interceptors.response.use(
         }
       }
     }
-    let decryptedData = error?.response?.data;
     if (!isDevServer) {
-      const data = _Ad_xcvbn_df__dfg_568_dfghfff_(JSON.stringify(error));
-      decryptedData = data?.response?.data;
+      // error block for response
+      const data = _Ad_xcvbn_df__dfg_568_dfghfff_(error?.response?.data);
+      const newError = { response: { data } };
+      return Promise.reject(newError);
+    } else {
+      return Promise.reject(error);
     }
-    const newError = { response: { data: decryptedData } };
-    return Promise.reject(newError);
   }
 );
 

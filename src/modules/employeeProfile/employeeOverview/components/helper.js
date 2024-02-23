@@ -1,16 +1,26 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const commonUpdateEmployeeProfileAction = async (
-  payload,
-  setLoading,
-  cb
-) => {
+// 🔥 this is common emp profile update function with api call
+/**
+ * Updates the employee profile with the given payload.
+ * @param {Object} payload - The payload containing the updated employee profile data.
+ * @param {Function} setLoading - The function to set the loading state.
+ * @param {Function} cb - The callback function to be called after the update is complete.
+ * @returns {Promise<void>} - A promise that resolves when the update is complete.
+ */
+export const updateEmployeeProfile = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(`/Employee/UpdateEmployeeProfile`, payload);
-    cb && cb();
-    toast.success(res.data?.message || "Successfully");
+    cb?.(res.data);
+     // if api is calling for delete then it will show the message
+    if (!payload?.value) { // "" , 0, false, null, undefined
+      const message = `${payload?.partType || "Information"} deleted successfully`;
+      toast.success(message);
+    } else {
+      toast.success(res.data?.message || "Successfully");
+    }
     setLoading && setLoading(false);
   } catch (error) {
     toast.warn(error?.response?.data?.Message || "Something went wrong");

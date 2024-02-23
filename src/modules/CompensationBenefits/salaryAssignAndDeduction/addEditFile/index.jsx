@@ -49,7 +49,7 @@ const initData = {
   amount: "",
   intAllowanceDuration: "",
   intAllowanceAttendenceStatus: "",
-  maxAmount: ""
+  maxAmount: "",
 };
 
 const validationSchema = Yup.object({
@@ -239,38 +239,37 @@ function AddEditForm() {
         getAdditionAndDeductionById()
       );
     }
-    const obj = 
-      {
-        strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
-        intSalaryAdditionAndDeductionId: singleData
-          ? singleData?.intSalaryAdditionAndDeductionId
-          : 0,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
-        intWorkplaceGroupId: wgId,
-        intEmployeeId: values?.employee?.value,
-        isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
-        intYear: +values?.fromMonth?.split("-")[0] || null,
-        intMonth: +values?.fromMonth?.split("-")[1] || null,
-        strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
-        isAddition: values?.salaryType?.value === "Addition" ? true : false,
-        strAdditionNDeduction: values?.allowanceAndDeduction?.label,
-        intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
-        intAmountWillBeId: values?.amountDimension?.value,
-        strAmountWillBe: values?.amountDimension?.label,
-        numAmount: +values?.amount,
-        isActive: true,
-        isReject: false,
-        intActionBy: employeeId,
-        intToYear: +values?.toMonth?.split("-")[0] || null,
-        intToMonth: +values?.toMonth?.split("-")[1] || null,
-        strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
+    const obj = {
+      strEntryType: isView && !isEdit ? "ENTRY" : "EDIT",
+      intSalaryAdditionAndDeductionId: singleData
+        ? singleData?.intSalaryAdditionAndDeductionId
+        : 0,
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intWorkplaceGroupId: wgId,
+      intEmployeeId: values?.employee?.value,
+      isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
+      intYear: +values?.fromMonth?.split("-")[0] || null,
+      intMonth: +values?.fromMonth?.split("-")[1] || null,
+      strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
+      isAddition: values?.salaryType?.value === "Addition" ? true : false,
+      strAdditionNDeduction: values?.allowanceAndDeduction?.label,
+      intAdditionNDeductionTypeId: values?.allowanceAndDeduction?.value,
+      intAmountWillBeId: values?.amountDimension?.value,
+      strAmountWillBe: values?.amountDimension?.label,
+      numAmount: +values?.amount,
+      isActive: true,
+      isReject: false,
+      intActionBy: employeeId,
+      intToYear: +values?.toMonth?.split("-")[0] || null,
+      intToMonth: +values?.toMonth?.split("-")[1] || null,
+      strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
 
-        // new requirement 🔥
-        intAllowanceDuration: values?.intAllowanceDuration?.value,
-        numMaxLimit: +values?.maxAmount,
-        intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
-      };
+      // new requirement 🔥
+      intAllowanceDuration: values?.intAllowanceDuration?.value,
+      numMaxLimit: +values?.maxAmount,
+      intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
+    };
     createEditAllowanceAndDeduction(obj, setLoading, cb);
   };
 
@@ -720,18 +719,23 @@ function AddEditForm() {
                                 ] || []
 
                                 /* 
-                                  🔥 from backend -- 
-                                  public enum AllowanceDuration
-                                  {
-                                      [Description ("Perday") ]
-                                      PERDAY = 1,
-                                      [Description("Per Month")]
-                                      PER_MONTH = 2
-                                  }
-                                  */
+            🔥 from backend -- 
+            public enum AllowanceDuration
+            {
+                [Description ("Perday") ]
+                PERDAY = 1,
+                [Description("Per Month")]
+                PER_MONTH = 2
+            }
+            */
                               }
                               value={values?.intAllowanceDuration}
                               onChange={(valueOption) => {
+                                setFieldValue("maxAmount", "");
+                                setFieldValue(
+                                  "intAllowanceAttendenceStatus",
+                                  ""
+                                );
                                 setFieldValue(
                                   "intAllowanceDuration",
                                   valueOption
@@ -741,72 +745,88 @@ function AddEditForm() {
                               touched={touched}
                             />
                           </div>
-                          <div className="col-lg-3">
-                            <label>Max Amount </label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.maxAmount}
-                              placeholder={" "}
-                              name="maxAmount"
-                              type="number"
-                              min={0}
-                              className="form-control"
-                              onChange={(e) =>
-                                setFieldValue("maxAmount", e.target.value)
-                              }
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
-                          <div className="col-lg-3">
-                            <label>AllowanceAttendenceStatus</label>
-                            <FormikSelect
-                              classes="input-sm"
-                              styles={customStyles}
-                              placeholder={" "}
-                              name="intAllowanceAttendenceStatus"
-                              options={
-                                [
-                                  {
-                                    value: 1,
-                                    label: "Default",
-                                  },
-                                  {
-                                    value: 2,
-                                    label: "Based On InTime",
-                                  },
-                                  {
-                                    value: 3,
-                                    label: "Based On Attendence",
-                                  },
-                                ] || []
-                                /* 
-                                🔥 from backend -- 
-                                  public enum AllowanceAttendenceStatus
-                                  {
-                                  [Description("Default")] 
-                                  DEFAULT = 1,  //Default value is for all.No restiction
-                                  [Description("Based On InTime")]
-                                  BASED_ON_INTIME = 2, //Will be implemented on only attendence intime
-                                  [Description("Based On Attendence")]
-                                  BASED_ON_ATTENDENCE = 3  
+                          {values?.intAllowanceDuration?.value === 1 ? (
+                            <>
+                              <div className="col-lg-3">
+                                <label>
+                                  Max Amount{" "}
+                                  <small>
+                                    [ for a month ]{" "}
+                                    <span className="text-danger fs-3">*</span>
+                                  </small>
+                                </label>
+                                <FormikInput
+                                  classes="input-sm"
+                                  value={values?.maxAmount}
+                                  placeholder={" "}
+                                  name="maxAmount"
+                                  type="number"
+                                  min={0}
+                                  className="form-control"
+                                  onChange={(e) =>
+                                    setFieldValue("maxAmount", e.target.value)
                                   }
-                                */
-                              }
-                              value={values?.intAllowanceAttendenceStatus}
-                              onChange={(valueOption) => {
-                                setFieldValue(
-                                  "intAllowanceAttendenceStatus",
-                                  valueOption
-                                );
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
+                                  errors={errors}
+                                  touched={touched}
+                                />
+                              </div>
+                              <div className="col-lg-3">
+                                <label>
+                                  Allowanc Attendence Status{" "}
+                                  <span className="text-danger fs-3">*</span>
+                                </label>
+                                <FormikSelect
+                                  classes="input-sm"
+                                  styles={customStyles}
+                                  placeholder={" "}
+                                  name="intAllowanceAttendenceStatus"
+                                  options={
+                                    [
+                                      {
+                                        value: 1,
+                                        label: "Default",
+                                      },
+                                      {
+                                        value: 2,
+                                        label: "Based On InTime",
+                                      },
+                                      {
+                                        value: 3,
+                                        label: "Based On Attendence",
+                                      },
+                                    ] || []
+                                    /* 
+            🔥 from backend -- 
+              public enum AllowanceAttendenceStatus
+              {
+              [Description("Default")] 
+              DEFAULT = 1,  //Default value is for all.No restiction
+              [Description("Based On InTime")]
+              BASED_ON_INTIME = 2, //Will be implemented on only attendence intime
+              [Description("Based On Attendence")]
+              BASED_ON_ATTENDENCE = 3  
+              }
+            */
+                                  }
+                                  value={values?.intAllowanceAttendenceStatus}
+                                  onChange={(valueOption) => {
+                                    setFieldValue(
+                                      "intAllowanceAttendenceStatus",
+                                      valueOption
+                                    );
+                                  }}
+                                  errors={errors}
+                                  touched={touched}
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                           <div
                             style={{
                               marginTop: "22px",
+                              marginBottom: "22px",
                             }}
                             className="col-md-6 d-flex align-items-center-justify-content-center"
                           >
@@ -926,7 +946,7 @@ function AddEditForm() {
                                 <th>Auto Renewal</th>
                                 <th>Applicable Month</th>
                                 <th>Dimension</th>
-                                <th>Amount</th>
+                                <th>Amount/Percentage</th>
                                 {isView && (
                                   <th className="text-center">Status</th>
                                 )}
@@ -955,7 +975,12 @@ function AddEditForm() {
                                     {!item?.intToYear && "Continue"}
                                   </td>
                                   <td>{item?.strAmountWillBe}</td>
-                                  <td>{item?.numAmount}</td>
+                                  <td>
+                                    {item?.numAmount}
+                                    {item?.strAmountWillBe !== "Fixed Amount"
+                                      ? "%"
+                                      : ""}
+                                  </td>
                                   <td className="text-center">
                                     {item?.strStatus === "Approved" && (
                                       <Chips
@@ -1045,31 +1070,43 @@ function AddEditForm() {
                                                       item?.strAmountWillBe,
                                                   },
                                                   amount: item?.numAmount,
-                                                  intAllowanceDuration: [
-                                                    {
-                                                      value: 1,
-                                                      label: "Perday",
-                                                    },
-                                                    {
-                                                      value: 2,
-                                                      label: "Per Month",
-                                                    },
-                                                  ].find(el => el.value === item?.intAllowanceDuration ) || "",
+                                                  intAllowanceDuration:
+                                                    [
+                                                      {
+                                                        value: 1,
+                                                        label: "Perday",
+                                                      },
+                                                      {
+                                                        value: 2,
+                                                        label: "Per Month",
+                                                      },
+                                                    ].find(
+                                                      (el) =>
+                                                        el.value ===
+                                                        item?.intAllowanceDuration
+                                                    ) || "",
                                                   maxAmount: item?.intMaxLimit,
-                                                  intAllowanceAttendenceStatus: [
-                                                    {
-                                                      value: 1,
-                                                      label: "Default",
-                                                    },
-                                                    {
-                                                      value: 2,
-                                                      label: "Based On InTime",
-                                                    },
-                                                    {
-                                                      value: 3,
-                                                      label: "Based On Attendence",
-                                                    },
-                                                  ].find(el => el.value === item?.intAllowanceAttendenceStatus) || "",
+                                                  intAllowanceAttendenceStatus:
+                                                    [
+                                                      {
+                                                        value: 1,
+                                                        label: "Default",
+                                                      },
+                                                      {
+                                                        value: 2,
+                                                        label:
+                                                          "Based On InTime",
+                                                      },
+                                                      {
+                                                        value: 3,
+                                                        label:
+                                                          "Based On Attendence",
+                                                      },
+                                                    ].find(
+                                                      (el) =>
+                                                        el.value ===
+                                                        item?.intAllowanceAttendenceStatus
+                                                    ) || "",
                                                 });
                                                 !isFromOpen &&
                                                   setIsFormOpen(!isFromOpen);

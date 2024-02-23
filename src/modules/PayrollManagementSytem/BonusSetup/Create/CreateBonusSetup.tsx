@@ -2,7 +2,7 @@ import { PCard, PCardHeader, PForm, PInput, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   bounusDependsOnList,
   payloadGenerate,
@@ -11,16 +11,19 @@ import {
 import moment from "moment";
 import { PlusOutlined } from "@ant-design/icons";
 import { PModal } from "Components/Modal";
-import CreateBouns from "./Bonus/CreateBouns";
+import AddEditForm from "./Bonus/CreateBouns";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 type TCreateBonusSetup = unknown;
 const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   // Data From Store
-  const { orgId, buId, wgId, employeeId } = useSelector(
+  const { orgId, buId, wgId, employeeId, wId, wgName } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
   // Form Instance
   const [form] = Form.useForm();
+
+  const dispatch = useDispatch();
 
   // Api Actions
   const ReligionDDL = useApiRequest([]);
@@ -81,6 +84,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
         intCreatedBy: 1,
         dteEffectedDate: moment().format("YYYY-MM-DD"),
         intWorkplaceGroupId: wgId,
+        intWorkplaceId: wId,
         intBonusHeaderId: 0,
         intBonusId: 0,
         intPayrollGroupId: 0,
@@ -122,7 +126,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
 
   const submitHandler = () => {
     const values = form.getFieldsValue(true);
-    const payload = payloadGenerate(values);
+    const payload = payloadGenerate(values, wgId, wgName);
     const commonData = {
       intAccountId: orgId,
       intBusinessUnitId: buId,
@@ -143,6 +147,12 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
     });
   };
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Administration"));
+    document.title = "Bonus Setup";
+  }, [dispatch]);
+
   return (
     <>
       <PForm
@@ -221,6 +231,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 options={WorkplaceDDL?.data || []}
                 onChange={(value: number, op: any) => {
                   form.setFieldsValue({ workplace: op });
+                  form.setFieldsValue({ employmentType: [] });
                   getEmploymentTypeDDL();
                 }}
                 rules={[
@@ -346,10 +357,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                         label="Min Service Length (Day)"
                         placeholder="Select Min Service Length in Days"
                         onChange={() => {
-                          const { maxServiceLengthMonth } =
-                            form.getFieldsValue();
-                          maxServiceLengthMonth &&
-                            form.validateFields(["maxServiceLengthMonth"]);
+                          const { maxServiceLengthDay } = form.getFieldsValue();
+                          maxServiceLengthDay &&
+                            form.validateFields(["maxServiceLengthDay"]);
                         }}
                         rules={[
                           {
@@ -358,7 +368,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                           },
                         ]}
                         min={0}
-                        max={12}
                       />
                     </Col>
                     <Col md={6} sm={12}>
@@ -387,7 +396,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                           }),
                         ]}
                         min={0}
-                        max={12}
                       />
                     </Col>
                   </>
@@ -452,10 +460,13 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       </PForm>
       <PModal
         open={open}
-        onCancel={() => {
-          setOpen(false);
-        }}
-        components={<CreateBouns />}
+        title="Create Bonus Setup"
+        width=""
+        onCancel={() => setOpen(false)}
+        maskClosable={false}
+        components={
+          <AddEditForm getBounsList={getBounsList} setOpen={setOpen} />
+        }
       />
     </>
   );

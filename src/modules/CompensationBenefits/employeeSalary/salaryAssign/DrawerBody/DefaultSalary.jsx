@@ -1,15 +1,15 @@
 /* eslint-disable array-callback-return */
-import React, { useState } from "react";
+import { DeleteOutline } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
+import axios from "axios";
+import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
+import DefaultInput from "../../../../../common/DefaultInput";
 import FormikSelect from "../../../../../common/FormikSelect";
+import Loading from "../../../../../common/loading/Loading";
 import { gray200, gray400, gray700 } from "../../../../../utility/customColor";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { getBreakdownListDDL, getByIdBreakdownListDDL } from "../helper";
-import Loading from "../../../../../common/loading/Loading";
-import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
-import axios from "axios";
-import { DeleteOutline } from "@mui/icons-material";
-import DefaultInput from "../../../../../common/DefaultInput";
+import { adjustPaymentFiledFun } from "./utils";
 
 const DefaultSalary = ({ propsObj }) => {
   const {
@@ -168,20 +168,10 @@ const DefaultSalary = ({ propsObj }) => {
                           <th className="sortable" style={{ width: "30px" }}>
                             SL
                           </th>
-                          <th>Code</th>
+                          <th>Employee ID</th>
                           <th>Employee</th>
                           <th>Designation</th>
                           <th>Workplace Group</th>
-                          {wgId === 3 ? (
-                            <>
-                              <th>Wing</th>
-                              <th>Sole Depo</th>
-                              <th>Region</th>
-                              <th>Area</th>
-                              <th>Territory</th>
-                            </>
-                          ) : null}
-
                           <th>Department</th>
                           <th>Status</th>
                         </tr>
@@ -215,35 +205,7 @@ const DefaultSalary = ({ propsObj }) => {
                                   {item?.WorkplaceGroupName}
                                 </div>
                               </td>
-                              {wgId === 3 ? (
-                                <>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.wingName}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.soleDepoName}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.regionName}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.areaName}
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="content tableBody-title">
-                                      {item?.TerritoryName}
-                                    </div>
-                                  </td>
-                                </>
-                              ) : null}
+
                               <td>
                                 <div className="content tableBody-title">
                                   {item?.DepartmentName}
@@ -614,9 +576,9 @@ const DefaultSalary = ({ propsObj }) => {
                           );
                         }
                         setFieldValue("totalGrossSalary", e.target.value);
-                        setFieldValue("bankPay", e.target.value);
+                        setFieldValue("bankPay", 0);
                         setFieldValue("digitalPay", 0);
-                        setFieldValue("netPay", 0);
+                        setFieldValue("netPay", e.target.value);
                       }}
                       errors={errors}
                       touched={touched}
@@ -791,7 +753,21 @@ const DefaultSalary = ({ propsObj }) => {
                           type="number"
                           className="form-control"
                           onChange={(e) => {
+                            const netPay =
+                              +values?.totalGrossSalary -
+                              +e.target.value -
+                              +values?.digitalPay;
+
+                            // setFieldValue("netPay", netPay); -- removed
+
                             setFieldValue("bankPay", e.target.value);
+                            adjustPaymentFiledFun(
+                              +e.target.value,
+                              "bankPay",
+                              +values?.totalGrossSalary,
+                              values,
+                              setFieldValue
+                            );
                           }}
                           errors={errors}
                           touched={touched}
@@ -838,10 +814,18 @@ const DefaultSalary = ({ propsObj }) => {
                           type="number"
                           className="form-control"
                           onChange={(e) => {
-                            const bank =
+                            const netPay =
                               +values?.totalGrossSalary - +e.target.value;
                             setFieldValue("digitalPay", e.target.value);
-                            setFieldValue("bankPay", bank);
+                            adjustPaymentFiledFun(
+                              +e.target.value,
+                              "digitalPay",
+                              +values?.totalGrossSalary,
+                              values,
+                              setFieldValue
+                            );
+
+                            // setFieldValue("netPay", netPay); -- removed
                           }}
                           errors={errors}
                           touched={touched}
@@ -855,27 +839,36 @@ const DefaultSalary = ({ propsObj }) => {
                     >
                       <div className="col-12"></div>
                       <div className="col-lg-7">
-                        <h2
+                        <div
+                          className="d-flex align-items-center"
                           style={{
-                            fontWeight: "500",
-                            fontSize: "14px",
-                            lineHeight: "20px",
-                            color: gray700,
-                            position: "relative",
-                            top: "-1px",
+                            width: "100% !important",
+                            fontSize: "12px !important",
                           }}
                         >
-                          {true
-                            ? `Cash (${
-                                values?.netPay === 0
-                                  ? 0
-                                  : (
-                                      (values?.netPay * 100) /
-                                      values?.totalGrossSalary
-                                    )?.toFixed(6)
-                              }%) Pay`
-                            : null}
-                        </h2>
+                          <h2
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                              lineHeight: "20px",
+                              color: gray700,
+                              position: "relative",
+                              top: "-1px",
+                              marginRight: "10px",
+                            }}
+                          >
+                            {true
+                              ? `Cash (${
+                                  values?.netPay === 0
+                                    ? 0
+                                    : (
+                                        (values?.netPay * 100) /
+                                        values?.totalGrossSalary
+                                      )?.toFixed(6)
+                                }%) Pay`
+                              : null}
+                          </h2>
+                        </div>
                       </div>
                       <div className="col-lg-5">
                         <DefaultInput
@@ -885,12 +878,20 @@ const DefaultSalary = ({ propsObj }) => {
                           type="number"
                           className="form-control"
                           onChange={(e) => {
-                            const bank =
-                              +values?.totalGrossSalary -
-                              +e.target.value -
-                              +values?.digitalPay;
+                            // const bank =
+                            //   +values?.totalGrossSalary -
+                            //   +e.target.value -
+                            //   +values?.digitalPay;
 
-                            setFieldValue("bankPay", bank);
+                            // setFieldValue("bankPay", bank);
+
+                            adjustPaymentFiledFun(
+                              +e.target.value,
+                              "netPay",
+                              +values?.totalGrossSalary,
+                              values,
+                              setFieldValue
+                            );
                             setFieldValue("netPay", e.target.value);
                           }}
                           errors={errors}

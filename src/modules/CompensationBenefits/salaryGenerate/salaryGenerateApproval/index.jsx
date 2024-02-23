@@ -55,7 +55,7 @@ const initData = {
 };
 
 export default function SalaryGenerateApproval() {
-  const { employeeId, isOfficeAdmin, orgId } = useSelector(
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -72,7 +72,8 @@ export default function SalaryGenerateApproval() {
       {
         approverId: employeeId,
         intId: 0,
-        workplaceGroupId: 0,
+        workplaceGroupId: wgId,
+        businessUnitId: buId,
         departmentId: 0,
         designationId: 0,
         applicantId: 0,
@@ -82,6 +83,7 @@ export default function SalaryGenerateApproval() {
         isAdmin: isOfficeAdmin,
         isSupOrLineManager: 0,
         accountId: orgId,
+        workplaceId: wId,
       },
       setApplicationListData,
       setAllData,
@@ -112,7 +114,8 @@ export default function SalaryGenerateApproval() {
       {
         approverId: employeeId,
         intId: values?.intSalaryGenerateRequestId || 0,
-        workplaceGroupId: values?.workplace?.id || 0,
+        workplaceGroupId: values?.workplace?.id || wgId,
+        businessUnitId: buId,
         departmentId: values?.department?.id || 0,
         designationId: values?.designation?.id || 0,
         applicantId: values?.employee?.id || 0,
@@ -212,7 +215,8 @@ export default function SalaryGenerateApproval() {
         {
           approverId: employeeId,
           intId: filterValues?.applicationStatus || 0,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: filterValues?.workplace?.id || wgId,
+          businessUnitId: buId,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -261,7 +265,8 @@ export default function SalaryGenerateApproval() {
         {
           approverId: employeeId,
           intId: filterValues?.applicationStatus || 0,
-          workplaceGroupId: filterValues?.workplace?.id || 0,
+          workplaceGroupId: filterValues?.workplace?.id || wgId,
+          businessUnitId: buId,
           departmentId: filterValues?.department?.id || 0,
           designationId: filterValues?.designation?.id || 0,
           applicantId: filterValues?.employee?.id || 0,
@@ -549,7 +554,7 @@ export default function SalaryGenerateApproval() {
                       <div className="table-card">
                         <div className="table-card-heading">
                           <BackButton title={"Salary Generate Approval"} />
-                          <div className="table-card-head-right">
+                          <div>
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
@@ -570,7 +575,9 @@ export default function SalaryGenerateApproval() {
                                         <CheckCircle
                                           sx={{
                                             color: successColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -593,7 +600,9 @@ export default function SalaryGenerateApproval() {
                                         <Cancel
                                           sx={{
                                             color: failColor,
-                                            width: "16px",
+                                            width: "25px !important",
+                                            height: "35px !important",
+                                            fontSize: "20px !important",
                                           }}
                                         />
                                       }
@@ -624,7 +633,7 @@ export default function SalaryGenerateApproval() {
                                   />
                                 </li>
                               )}
-                              {permission?.isCreate && (
+                              {/* {permission?.isCreate && (
                                 <li>
                                   <MasterFilter
                                     styles={{
@@ -653,7 +662,7 @@ export default function SalaryGenerateApproval() {
                                     }
                                   />
                                 </li>
-                              )}
+                              )} */}
                             </ul>
                           </div>
                         </div>
