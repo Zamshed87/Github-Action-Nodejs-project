@@ -339,13 +339,13 @@ const SalaryGenerateLanding = () => {
         filter: true,
         width: 120,
       },
-      {
-        title: "Workplace Name",
-        dataIndex: "strWorkplace",
-        sorter: true,
-        filter: true,
-        width: 120,
-      },
+      // {
+      //   title: "Workplace Name",
+      //   dataIndex: "strWorkplace",
+      //   sorter: true,
+      //   filter: true,
+      //   width: 120,
+      // },
       /*     {
         title: "Wing",
         dataIndex: "wingName",
