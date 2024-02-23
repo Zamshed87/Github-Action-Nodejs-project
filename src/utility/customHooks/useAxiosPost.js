@@ -2,8 +2,8 @@ import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-const useAxiosPost = () => {
-  const [res, setRes] = useState([]);
+const useAxiosPost = (initValue) => {
+  const [res, setRes] = useState(initValue || []);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 

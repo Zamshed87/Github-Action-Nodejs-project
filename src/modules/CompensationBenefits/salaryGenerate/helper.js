@@ -53,32 +53,42 @@ export const getSalaryGenerateRequestLanding = async (
   values
 ) => {
   setLoading && setLoading(true);
-  const valueArray = values?.workplace?.map(obj => obj?.intWorkplaceId) || [];
-// Joining the values into a string separated by commas
-const workplaceListFromValues =valueArray.join(',');
-// const workplaceListFromValues ='"' + valueArray.join(',') + '"';
+  // const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+  // Joining the values into a string separated by commas
+  // const workplaceListFromValues = valueArray.join(",");
+  // const workplaceListFromValues ='"' + valueArray.join(',') + '"';
 
-  let fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
-  let toDateParams = toDate ? `&GenerateToDate=${toDate}` : "";
+  const fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
+  const toDateParams = toDate ? `&GenerateToDate=${toDate}` : "";
 
   // DDL
-  let wingParams = wing ? `&WingId=${wing}` : "";
-  let soleDepoParams = soleDepo ? `&SoleDepoId=${soleDepo}` : "";
-  let regionParams = region ? `&RegionId=${region}` : "";
-  let areaParams = area ? `&AreaId=${area}` : "";
-  let territoryParams = territory ? `&TerritoryId=${territory}` : "";
+  const wingParams = wing ? `&WingId=${wing}` : "";
+  const soleDepoParams = soleDepo ? `&SoleDepoId=${soleDepo}` : "";
+  const regionParams = region ? `&RegionId=${region}` : "";
+  const areaParams = area ? `&AreaId=${area}` : "";
+  const territoryParams = territory ? `&TerritoryId=${territory}` : "";
 
+  const api = `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
+    monthId || +currentMonth()
+  }&intYearId=${
+    yearId || currentYear
+  }&intWorkplaceGroupId=${wgId}&strSalaryCode=${
+    values?.salaryCode?.label
+  }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
+    pages?.pageSize
+  }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`;
   try {
     const res = await axios.get(
-      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
-        monthId || +currentMonth()
-      }&intYearId=${
-        yearId || currentYear
-      }&intWorkplaceGroupId=${wgId}&strWorkplaceIdList=${
-        workplaceListFromValues || wId
-      }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
-        pages?.pageSize
-      }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+      api
+      // `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
+      //   monthId || +currentMonth()
+      // }&intYearId=${
+      //   yearId || currentYear
+      // }&intWorkplaceGroupId=${wgId}&strWorkplaceIdList=${
+      //   workplaceListFromValues || wId
+      // }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
+      //   pages?.pageSize
+      // }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
     );
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
@@ -89,13 +99,13 @@ const workplaceListFromValues =valueArray.join(',');
       });
       setPages({ ...pages, total: res?.data?.[0]?.totalCount });
       setAllEmployeeString?.(res?.data?.[0]?.listOfEmployeeId || "");
-     
+
       setAllData && setAllData(modifyRowData);
       setter && setter(modifyRowData);
       setLoading && setLoading(false);
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     setLoading && setLoading(false);
   }
 };

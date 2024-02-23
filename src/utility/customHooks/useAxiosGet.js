@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
 
-const useAxiosGet = () => {
-  const [res, setRes] = useState([]);
+const useAxiosGet = (initValue) => {
+  console.log("initValue", initValue)
+  const [res, setRes] = useState(initValue || []);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
