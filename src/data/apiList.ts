@@ -101,4 +101,5 @@ export const apiList = {
   GetSeparationSetupLanding: "/SaasMasterData/GetPyrSeparationPolicySetup",
   GetLandingForBulkReporter: "/Employee/SupervisorLineManagerChangeLanding",
   ChangeReporter: "/Employee/SupervisorLineManagerChange",
+  BulkSalaryAssignLanding: "/Payroll/BulkSalaryAssignLanding",
 };

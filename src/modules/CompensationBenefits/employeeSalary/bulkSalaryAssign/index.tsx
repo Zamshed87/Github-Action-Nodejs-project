@@ -21,7 +21,6 @@ import {
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-// import { AttendanceType, EmpFilterType } from "./utils/utils";
 
 type TAttendenceAdjust = unknown;
 const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
@@ -37,93 +36,100 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
   );
   // States
   const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
+  const [rowDto, setRowDto] = React.useState<any[]>([]);
+  const [dynamicHeader, setDynamicHeader] = React.useState<any[]>([]);
 
   // Form Instance
   const [form] = Form.useForm();
 
   // Api Actions
-  const CommonEmployeeDDL = useApiRequest([]);
-  const AttendanceAdjustmentFilter = useApiRequest([]);
+  const bulkLandingAPI = useApiRequest([]);
   const employmentTypeDDL = useApiRequest([]);
   const empDepartmentDDL = useApiRequest([]);
+  const workG = useApiRequest([]);
+  const workP = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   const empDesignationDDL = useApiRequest([]);
   const payrollGroupDDL = useApiRequest([]);
 
-  const ManualAttendance = useApiRequest({});
   const dispatch = useDispatch();
 
   // Life Cycle Hooks
-  useEffect(() => {
-    const { empSearchType, date, employee } = form.getFieldsValue(true);
-    empSearchType && date && employee && getAttendanceFilterData();
-  }, [buId, wgId, wId]);
+  // useEffect(() => {}, [buId, wgId, wId]);
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Bulk Salary Assign";
   }, []);
 
-  const getAttendanceFilterData = () => {
-    const { empSearchType, date, employee, attendanceStatus } =
-      form.getFieldsValue(true);
+  const getSalaryLanding = () => {
+    const {
+      payrollGroup,
+      designation,
+      department,
+      employeeType,
+      joiningDateTo,
+      joiningDateFrom,
+      hrPosition,
+      wp,
+    } = form.getFieldsValue(true);
 
-    const payload = {
-      employeeId: employee?.value || employeeId,
-      workplaceGroupId: wgId,
-      accountId: orgId,
-      businessUnitId: buId,
-      yearId: parseInt(moment(date).format("YYYY")),
-      monthId: parseInt(moment(date).format("MM")),
-      applicationDate: null,
-      departmentId: 0,
-      attendanceStatus: attendanceStatus || "all",
-      punchStatus: attendanceStatus || "all",
-      jobTypeId: 0,
-      attendanceDate: moment(date).format("YYYY-MM-DD"),
-      pageNo: 1,
-      pageSize: 10,
-    };
-
-    AttendanceAdjustmentFilter?.action({
-      urlKey:
-        empSearchType === 1
-          ? "AttendanceAdjustmentFilter"
-          : "AttendanceAdjustmentFilterbyDate",
+    bulkLandingAPI?.action({
+      urlKey: "BulkSalaryAssignLanding",
       method: "post",
-      payload,
-    });
-  };
-
-  const getEmployee = (value: any) => {
-    if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
-    CommonEmployeeDDL?.action({
-      urlKey: "CommonEmployeeDDL",
-      method: "GET",
       params: {
-        businessUnitId: buId,
-        workplaceGroupId: wgId,
-        // workplaceId: wId,
-        searchText: value,
+        accountId: orgId,
+        workplaceId: wp?.value,
+        payrollGroupId: payrollGroup?.value,
+        empTypeId: employeeType?.value,
+        hrPositionId: hrPosition?.value,
+        departmentId: department?.value,
+        designationId: designation?.value,
+        fromDate: joiningDateFrom
+          ? moment(joiningDateFrom).format("YYYY-MM-DD")
+          : undefined,
+        toDate: joiningDateTo
+          ? moment(joiningDateTo).format("YYYY-MM-DD")
+          : undefined,
       },
       onSuccess: (res) => {
-        res.forEach((item: any, i: number) => {
-          res[i].label = item?.employeeName;
-          res[i].value = item?.employeeId;
+        console.log({ res });
+
+        setRowDto(res?.result);
+        const updatedHeader: any[] = [];
+
+        // Loop through each object in 'data' and generate dynamic columns
+        res?.result.forEach((item: any, index: any) => {
+          // ... your existing columns
+
+          // Add the "Total Gross Salary" object
+
+          // Generate dynamic columns based on the 'salaryElementsBreakdowns' array
+          item.salaryElementsBreakdowns.forEach((element: any) => {
+            updatedHeader.push({
+              title: `${element.strPayrollElementName}(${element.numNumberOfPercentage})`,
+              dataIndex: `salaryElementsBreakdowns_${element.intSalaryElemenetRowId}_${index}`,
+              render: (value: any, row: any, rowIndex: number) =>
+                row[rowIndex]?.TGS * (element.numNumberOfPercentage / 100),
+            });
+          });
+          setDynamicHeader(updatedHeader);
         });
       },
     });
   };
+
   const getEmploymentType = () => {
+    const { workplaceGroup, wp } = form.getFieldsValue(true);
+
     employmentTypeDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "EmploymentType",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: wp?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -135,15 +141,54 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
     });
   };
   // workplace wise
+  const getWorkplaceGroup = () => {
+    workG?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "WorkplaceGroup",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId, // This should be removed
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strWorkplaceGroup;
+          res[i].value = item?.intWorkplaceGroupId;
+        });
+      },
+    });
+  };
+  const getWorkplace = () => {
+    const { workplaceGroup } = form.getFieldsValue(true);
+    workP?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Workplace",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        intId: employeeId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.strWorkplace;
+          res[i].value = item?.intWorkplaceId;
+        });
+      },
+    });
+  };
   const getEmployeDepartment = () => {
+    const { workplaceGroup, wp } = form.getFieldsValue(true);
+
     empDepartmentDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "EmpDepartment",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: wp?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -155,6 +200,8 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
     });
   };
   const getEmployeDesignation = () => {
+    const { workplaceGroup, wp } = form.getFieldsValue(true);
+
     empDesignationDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -162,8 +209,8 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
         DDLType: "EmpDesignation",
         AccountId: orgId,
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: wp?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -175,14 +222,16 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
     });
   };
   const getEmployeePosition = () => {
+    const { workplaceGroup, wp } = form.getFieldsValue(true);
+
     positionDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Position",
         BusinessUnitId: buId,
-        WorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: wp?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -196,6 +245,8 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
   //   export const getBreakdownPolicyDDL = async (
 
   const getPayrollGroupDDL = () => {
+    const { workplaceGroup, wp } = form.getFieldsValue(true);
+
     payrollGroupDDL?.action({
       urlKey: "BreakdownNPolicyForSalaryAssign",
       method: "GET",
@@ -205,8 +256,8 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
         IntAccountId: orgId,
         IntSalaryBreakdownHeaderId: 0,
         IntBusinessUnitId: buId,
-        IntWorkplaceGroupId: wgId,
-        IntWorkplaceId: wId,
+        IntWorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: wp?.value,
         intId: 0,
       },
       onSuccess: (res) => {
@@ -221,7 +272,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
     await form
       .validateFields()
       .then(() => {
-        getAttendanceFilterData();
+        getSalaryLanding();
       })
       .catch(() => {
         // console.error("Validate Failed:", info);
@@ -238,49 +289,48 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
     await form
       .validateFields(["intime", "outtime"])
       .then(() => {
-        const values = form.getFieldsValue(true);
-        const payload = selectedRow.map((item) => {
-          return {
-            id: item?.ManualAttendanceId || 0,
-            accountId: orgId,
-            attendanceSummaryId: item?.AutoId,
-            employeeId: item?.EmployeeId,
-            attendanceDate: item?.AttendanceDate,
-            inTime: values?.inTime || item?.StartTime,
-            outTime: values?.outTime || item?.EndTime,
-            status: item?.isPresent
-              ? "Present"
-              : item?.isLeave
-              ? "Leave"
-              : "Absent",
-            requestStatus: values?.attendanceAdujust?.label,
-            remarks: values?.strReason || "By HR",
-            isApproved: true,
-            isActive: true,
-            isManagement: true,
-            insertUserId: employeeId,
-            insertDateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
-            workPlaceGroup: wgId,
-            businessUnitId: buId,
-          };
-        });
-
-        ManualAttendance?.action({
-          method: "post",
-          urlKey: "ManualAttendance",
-          payload,
-          toast: true,
-          onSuccess: () => {
-            form.setFieldsValue({
-              openModal: false,
-              attendanceAdujust: undefined,
-              intime: "",
-              outtime: "",
-            });
-            setSelectedRow([]);
-            getAttendanceFilterData();
-          },
-        });
+        // const values = form.getFieldsValue(true);
+        // const payload = selectedRow.map((item) => {
+        //   return {
+        //     id: item?.ManualAttendanceId || 0,
+        //     accountId: orgId,
+        //     attendanceSummaryId: item?.AutoId,
+        //     employeeId: item?.EmployeeId,
+        //     attendanceDate: item?.AttendanceDate,
+        //     inTime: values?.inTime || item?.StartTime,
+        //     outTime: values?.outTime || item?.EndTime,
+        //     status: item?.isPresent
+        //       ? "Present"
+        //       : item?.isLeave
+        //       ? "Leave"
+        //       : "Absent",
+        //     requestStatus: values?.attendanceAdujust?.label,
+        //     remarks: values?.strReason || "By HR",
+        //     isApproved: true,
+        //     isActive: true,
+        //     isManagement: true,
+        //     insertUserId: employeeId,
+        //     insertDateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+        //     workPlaceGroup: wgId,
+        //     businessUnitId: buId,
+        //   };
+        // });
+        // ManualAttendance?.action({
+        //   method: "post",
+        //   urlKey: "ManualAttendance",
+        //   payload,
+        //   toast: true,
+        //   onSuccess: () => {
+        //     form.setFieldsValue({
+        //       openModal: false,
+        //       attendanceAdujust: undefined,
+        //       intime: "",
+        //       outtime: "",
+        //     });
+        //     setSelectedRow([]);
+        //     getAttendanceFilterData();
+        //   },
+        // });
       })
       .catch(() => {
         // console.error("Validate Failed:", info);
@@ -288,128 +338,171 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
   };
 
   // Table Header
+  const handleIsPerDayChange = (
+    value: number,
+    rowIndex: number,
+    property: string
+  ) => {
+    setRowDto((prevRows) => {
+      const updatedRows = [...prevRows];
+      updatedRows[rowIndex][property] = value;
+      return updatedRows;
+    });
+  };
   const header: any = [
     {
       title: "SL",
       render: (value: any, row: any, index: number) => index + 1,
       align: "center",
       width: 20,
-      fixed: "left",
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "EmployeeName",
-      fixed: "left",
+      // fixed: "left",
     },
     {
       title: "Employee ID",
-      dataIndex: "EmployeeCode",
+      dataIndex: "strEmployeeCode",
+      // fixed: "left",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "strEmployeeName",
       fixed: "left",
     },
     {
-      title: "Department",
-      dataIndex: "DepartmentName",
-      sorter: true,
-      filter: true,
-      filterKey: "departmentList",
-    },
-    {
       title: "Designation",
-      dataIndex: "DesignationName",
-      sorter: true,
-      filter: true,
-      filterKey: "designationList",
+      dataIndex: "strDesignationName",
+      // sorter: true,
+      // filter: true,
+      // filterKey: "designationList",
     },
     {
-      title: "Section",
-      dataIndex: "strSectionName",
-      sorter: true,
-      filter: true,
+      title: "Department",
+      dataIndex: "strDepartmentName",
+      // sorter: true,
+      // filter: true,
+      // filterKey: "departmentList",
+    },
+
+    {
+      title: "Per Day Salary",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PSelect
+            name={`isPerDay_${index}`}
+            options={[
+              { value: 1, label: "Yes" },
+              { value: 0, label: "No" },
+            ]}
+            onChange={(value, op) =>
+              handleIsPerDayChange(value, index, "isPerDay")
+            }
+            defaultValue={row.isPerDay}
+            rules={[{ required: true, message: "Per Day Salary is required" }]}
+          />
+        </>
+      ),
     },
     {
-      title: "Attendance Date",
-      dataIndex: "AttendanceDate",
-      render: (data: any) => moment(data).format("DD-MMM-YYYY"),
+      title: "Total Gross Salary",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`TGS_${index}`}
+            placeholder="Amount"
+            rules={[{ required: true, message: "Amount Is Required" }]}
+            // disabled={true}
+            onChange={(e: any) => handleIsPerDayChange(e, index, "TGS")}
+          />
+        </>
+      ),
     },
-    {
-      title: "In-Time",
-      dataIndex: "InTime",
-    },
-    {
-      title: "Out-Time",
-      dataIndex: "OutTime",
-    },
-    {
-      title: "Total Working Hours",
-      dataIndex: "WorkingHours",
-    },
-    {
-      title: "Actual Attendance",
-      dataIndex: "actualAttendanceStatus",
-      align: "center",
-      // render: (data: any, record: any, index: number) => {
-      //   return (record?.isPresent && record?.isLate) || record?.isLate ? (
-      //     <PBadge type="warning" text="Late" />
-      //   ) : record?.isPresent ? (
-      //     <PBadge type="success" text="Present" />
-      //   ) : record?.isHoliday === true ? (
-      //     <PBadge type="secondary" text="Holiday" />
-      //   ) : record?.isOffday === true ? (
-      //     <PBadge type="dark" text="Offday" />
-      //   ) : record?.isLeave ? (
-      //     <PBadge type="light" text="Leave" />
-      //   ) : record?.isMovement ? (
-      //     <PBadge type="dark" text="Movement" />
-      //   ) : record?.isAbsent ? (
-      //     <PBadge type="danger" text="Absent" />
-      //   ) : (
-      //     ""
-      //   );
-      // },
-    },
-    {
-      title: "Request Attendance",
-      dataIndex: "RequestStatus",
-      width: 100,
-      filter: true,
-      sorter: false,
-    },
-    {
-      title: "Approval Status",
-      dataIndex: "ApplicationStatus",
-      render: (_: any, record: any) =>
-        record?.ApplicationStatus === "Approved" ? (
-          <PBadge text="Approved" type="success" />
-        ) : record?.ApplicationStatus === "Pending" ? (
-          <PBadge text="Pending" type="warning" />
-        ) : record?.ApplicationStatus === "Process" ? (
-          <PBadge text="Process" type="primary" />
-        ) : record?.ApplicationStatus === "Rejected" ? (
-          <PBadge text="Rejected" type="danger" />
-        ) : (
-          ""
-        ),
-      align: "center",
-      filter: true,
-      sorter: false,
-    },
+    ...dynamicHeader.map((element: any) => {
+      return {
+        title: element.title,
+        dataIndex: element.dataIndex,
+        render: (value: any, row: any, index: number) => {
+          const salaryBreakdowns = row?.salaryElementsBreakdowns || [];
+          const matchingBreakdown = salaryBreakdowns.find(
+            (breakdown: any) =>
+              breakdown.intSalaryElemenetRowId ===
+              element.intSalaryElemenetRowId
+          );
+          return matchingBreakdown
+            ? matchingBreakdown.numNumberOfPercentage
+            : null;
+        },
+      };
+    }),
+    // {
+    //   title: "In-Time",
+    //   dataIndex: "InTime",
+    // },
+    // {
+    //   title: "Out-Time",
+    //   dataIndex: "OutTime",
+    // },
+    // {
+    //   title: "Total Working Hours",
+    //   dataIndex: "WorkingHours",
+    // },
+    // {
+    //   title: "Actual Attendance",
+    //   dataIndex: "actualAttendanceStatus",
+    //   align: "center",
+    //   // render: (data: any, record: any, index: number) => {
+    //   //   return (record?.isPresent && record?.isLate) || record?.isLate ? (
+    //   //     <PBadge type="warning" text="Late" />
+    //   //   ) : record?.isPresent ? (
+    //   //     <PBadge type="success" text="Present" />
+    //   //   ) : record?.isHoliday === true ? (
+    //   //     <PBadge type="secondary" text="Holiday" />
+    //   //   ) : record?.isOffday === true ? (
+    //   //     <PBadge type="dark" text="Offday" />
+    //   //   ) : record?.isLeave ? (
+    //   //     <PBadge type="light" text="Leave" />
+    //   //   ) : record?.isMovement ? (
+    //   //     <PBadge type="dark" text="Movement" />
+    //   //   ) : record?.isAbsent ? (
+    //   //     <PBadge type="danger" text="Absent" />
+    //   //   ) : (
+    //   //     ""
+    //   //   );
+    //   // },
+    // },
+    // {
+    //   title: "Request Attendance",
+    //   dataIndex: "RequestStatus",
+    //   width: 100,
+    //   filter: true,
+    //   sorter: false,
+    // },
+    // {
+    //   title: "Approval Status",
+    //   dataIndex: "ApplicationStatus",
+    //   render: (_: any, record: any) =>
+    //     record?.ApplicationStatus === "Approved" ? (
+    //       <PBadge text="Approved" type="success" />
+    //     ) : record?.ApplicationStatus === "Pending" ? (
+    //       <PBadge text="Pending" type="warning" />
+    //     ) : record?.ApplicationStatus === "Process" ? (
+    //       <PBadge text="Process" type="primary" />
+    //     ) : record?.ApplicationStatus === "Rejected" ? (
+    //       <PBadge text="Rejected" type="danger" />
+    //     ) : (
+    //       ""
+    //     ),
+    //   align: "center",
+    //   filter: true,
+    //   sorter: false,
+    // },
   ];
   useEffect(() => {
-    getEmploymentType();
-    getEmployeDepartment();
-    getEmployeDesignation();
-    getEmployeePosition();
-    getPayrollGroupDDL();
+    getWorkplaceGroup();
   }, [wgId, buId, wId]);
+  console.log({ rowDto });
 
   return employeeFeature?.isView ? (
-    <PForm
-      form={form}
-      initialValues={{
-        empSearchType: 1,
-        date: moment(),
-      }}
-    >
+    <PForm form={form} initialValues={{}}>
       <PCard>
         <PCardHeader
           title="Bulk Salary Assign"
@@ -435,6 +528,42 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
           ]}
         ></PCardHeader>
         <Row gutter={[10, 2]} className="mb-3">
+          <Col md={6} sm={12} xs={24}>
+            <PSelect
+              options={workG?.data || []}
+              name="workplaceGroup"
+              label="Workplace Group"
+              placeholder="Workplace Group"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplaceGroup: op,
+                });
+                getWorkplace();
+              }}
+              rules={[
+                { required: true, message: "Workplace Group is required" },
+              ]}
+            />
+          </Col>
+          <Col md={6} sm={12} xs={24}>
+            <PSelect
+              options={workP?.data || []}
+              name="wp"
+              label="Workplace"
+              placeholder="Workplace"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  wp: op,
+                });
+                getEmploymentType();
+                getEmployeDepartment();
+                getEmployeDesignation();
+                getEmployeePosition();
+                getPayrollGroupDDL();
+              }}
+              rules={[{ required: true, message: "Workplace is required" }]}
+            />
+          </Col>
           <Col md={6} sm={12} xs={24}>
             <PSelect
               options={payrollGroupDDL?.data || []}
@@ -534,129 +663,6 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
               // disabled={isEdit}
             />
           </Col>
-          {/* <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={EmpFilterType}
-              name="empSearchType"
-              label="Employee Search Type"
-              placeholder="Employee Search Type"
-              onChange={() => {
-                form.resetFields(["date", "employee"]);
-                setSelectedRow([]);
-                AttendanceAdjustmentFilter?.reset();
-              }}
-              rules={[
-                {
-                  required: true,
-                  message: "Please Select Employee Search Type",
-                },
-              ]}
-            />
-          </Col>
-          <Form.Item shouldUpdate noStyle>
-            {() => {
-              const { empSearchType } = form.getFieldsValue();
-              return empSearchType === 1 ? (
-                <>
-                  <Col md={6} sm={12} xs={24}>
-                    <PInput
-                      type="date"
-                      picker="month"
-                      name="date"
-                      label="Select a month"
-                      placeholder="Select a month"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please Select a month",
-                        },
-                      ]}
-                      onChange={() => {
-                        AttendanceAdjustmentFilter?.reset();
-                        setSelectedRow([]);
-                      }}
-                      format={"MMMM-YYYY"}
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
-                      name="employee"
-                      label="Select a Employee"
-                      placeholder="Search Min 2 char"
-                      options={CommonEmployeeDDL?.data || []}
-                      loading={CommonEmployeeDDL?.loading}
-                      onChange={(value, op) => {
-                        AttendanceAdjustmentFilter?.reset();
-                        setSelectedRow([]);
-                        form.setFieldsValue({
-                          employee: op,
-                        });
-                      }}
-                      onSearch={(value) => {
-                        getEmployee(value);
-                      }}
-                      showSearch
-                      filterOption={false}
-                    />
-                  </Col>
-                </>
-              ) : empSearchType === 2 ? (
-                <>
-                  <Col md={6} sm={12} xs={24}>
-                    <PInput
-                      type="date"
-                      name="date"
-                      label="Select a date"
-                      placeholder="Select a date"
-                      onChange={() => {
-                        AttendanceAdjustmentFilter?.reset();
-                        setSelectedRow([]);
-                      }}
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
-                      name="attendanceStatus"
-                      label="Select Attendance Status"
-                      placeholder="Select Attendance Status"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please Select Attendance Status",
-                        },
-                      ]}
-                      options={[
-                        {
-                          value: "Present",
-                          label: "Present",
-                        },
-                        {
-                          value: "Absent",
-                          label: "Absent",
-                        },
-                        {
-                          label: "Late",
-                          value: "Late",
-                        },
-                        {
-                          value: "Leave",
-                          label: "Leave",
-                        },
-                        {
-                          label: "Movement",
-                          value: "Movement",
-                        },
-                      ]}
-                      onChange={() => {
-                        AttendanceAdjustmentFilter?.reset();
-                        setSelectedRow([]);
-                      }}
-                    />
-                  </Col>
-                </>
-              ) : undefined;
-            }}
-          </Form.Item> */}
 
           <Col
             style={{
@@ -666,11 +672,11 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             <PButton type="primary" content="View" onClick={viewHandler} />
           </Col>
         </Row>
-        {/* <DataTable
+        <DataTable
           header={header}
           bordered
-          data={AttendanceAdjustmentFilter?.data || []}
-          loading={AttendanceAdjustmentFilter?.loading}
+          data={rowDto || []}
+          loading={bulkLandingAPI?.loading}
           scroll={{ x: 1500 }}
           rowSelection={{
             type: "checkbox",
@@ -680,99 +686,99 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             },
             getCheckboxProps: (rec) => {
               console.log(rec);
-              return {
-                disabled: rec?.ApplicationStatus === "Approved",
-              };
+              // return {
+              //   disabled: rec?.ApplicationStatus === "Approved",
+              // };
             },
           }}
-        /> */}
+        />
       </PCard>
 
       {/* Confirmation Modal */}
-      <Form.Item shouldUpdate noStyle>
-        {() => {
-          const { openModal, attendanceAdujust } = form.getFieldsValue(true);
-          return (
-            <PModal
-              width={500}
-              open={openModal}
-              onCancel={() => {
-                form.setFieldsValue({
-                  openModal: false,
-                  attendanceAdujust: undefined,
-                  intime: "",
-                  outtime: "",
-                });
-              }}
-              title="Are you sure to update attendance?"
-              components={
-                <PForm form={form}>
-                  <>
-                    <div>
-                      <p>Request Status: {attendanceAdujust?.label}</p>
-                      <Row gutter={[10, 2]}>
-                        <Col span={12}>
-                          <PInput
-                            type="date"
-                            name="intime"
-                            picker="time"
-                            label="Select In time"
-                            placeholder="Select Intime"
-                            format={"hh:mm A"}
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "Please Select Intime",
-                            //   },
-                            // ]}
-                          />
-                        </Col>
-                        <Col span={12}>
-                          <PInput
-                            type="date"
-                            name="outtime"
-                            picker="time"
-                            label="Select Out-Time"
-                            placeholder="Select Out-Time"
-                            format={"hh:mm A"}
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "Please Select Out-Time",
-                            //   },
-                            // ]}
-                          />
-                        </Col>
-                        <Col span={24}>
-                          <PInput
-                            label="Reason"
-                            name={"reason"}
-                            type="text"
-                            placeholder="Write reason"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                    <ModalFooter
-                      submitText="Yes"
-                      cancelText="No"
-                      onCancel={() => {
-                        form.setFieldsValue({
-                          openModal: false,
-                          attendanceAdujust: undefined,
-                          intime: "",
-                          outtime: "",
-                        });
-                      }}
-                      onSubmit={submitHandler}
-                    />
-                  </>
-                </PForm>
-              }
-            />
-          );
-        }}
-      </Form.Item>
+      {/* <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { openModal, attendanceAdujust } = form.getFieldsValue(true);
+            return (
+              <PModal
+                width={500}
+                open={openModal}
+                onCancel={() => {
+                  form.setFieldsValue({
+                    openModal: false,
+                    attendanceAdujust: undefined,
+                    intime: "",
+                    outtime: "",
+                  });
+                }}
+                title="Are you sure to update attendance?"
+                components={
+                  <PForm form={form}>
+                    <>
+                      <div>
+                        <p>Request Status: {attendanceAdujust?.label}</p>
+                        <Row gutter={[10, 2]}>
+                          <Col span={12}>
+                            <PInput
+                              type="date"
+                              name="intime"
+                              picker="time"
+                              label="Select In time"
+                              placeholder="Select Intime"
+                              format={"hh:mm A"}
+                              // rules={[
+                              //   {
+                              //     required: true,
+                              //     message: "Please Select Intime",
+                              //   },
+                              // ]}
+                            />
+                          </Col>
+                          <Col span={12}>
+                            <PInput
+                              type="date"
+                              name="outtime"
+                              picker="time"
+                              label="Select Out-Time"
+                              placeholder="Select Out-Time"
+                              format={"hh:mm A"}
+                              // rules={[
+                              //   {
+                              //     required: true,
+                              //     message: "Please Select Out-Time",
+                              //   },
+                              // ]}
+                            />
+                          </Col>
+                          <Col span={24}>
+                            <PInput
+                              label="Reason"
+                              name={"reason"}
+                              type="text"
+                              placeholder="Write reason"
+                            />
+                          </Col>
+                        </Row>
+                      </div>
+                      <ModalFooter
+                        submitText="Yes"
+                        cancelText="No"
+                        onCancel={() => {
+                          form.setFieldsValue({
+                            openModal: false,
+                            attendanceAdujust: undefined,
+                            intime: "",
+                            outtime: "",
+                          });
+                        }}
+                        onSubmit={submitHandler}
+                      />
+                    </>
+                  </PForm>
+                }
+              />
+            );
+          }}
+        </Form.Item> */}
     </PForm>
   ) : (
     <NotPermittedPage />
