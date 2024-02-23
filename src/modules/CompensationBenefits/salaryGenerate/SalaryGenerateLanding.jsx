@@ -38,6 +38,8 @@ import "./salaryGenerate.css";
 import AntScrollTable from "../../../common/AntScrollTable";
 import FormikSelect from "common/FormikSelect";
 import { getPeopleDeskAllDDL } from "common/api";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 const initialValues = {
   salaryTpe: {
@@ -57,6 +59,7 @@ const initialValues = {
   search: "",
   filterFromDate: monthFirstDate(),
   filterToDate: monthLastDate(),
+  salaryCode: ""
 };
 
 const validationSchema = Yup.object().shape({
@@ -92,6 +95,9 @@ const SalaryGenerateLanding = () => {
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [salaryCodeDDL, getSalaryCodeAPI, , setSalaryCodeDDL] = useAxiosPost(
+    []
+  );
 
   // for create state
   const [open, setOpen] = useState(false);
@@ -104,10 +110,9 @@ const SalaryGenerateLanding = () => {
     setOpen(false);
   };
 
-  const { orgId, buId, buName, employeeId, wgId, wId, wName } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    profileData: { orgId, buId, buName, employeeId, wgId, wId, wName },
+  } = useSelector((state) => state?.auth, shallowEqual);
 
   // LS data compensationBenefits
   const { compensationBenefits } = useSelector((state) => {
@@ -172,7 +177,7 @@ const SalaryGenerateLanding = () => {
   const filterData = (keywords) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter(
+      const newDta = allData?.filter(
         (item) =>
           regex.test(item?.strBusinessUnit?.toLowerCase()) ||
           regex.test(item?.strSalaryCode?.toLowerCase()) ||
@@ -185,9 +190,10 @@ const SalaryGenerateLanding = () => {
     }
   };
 
-  console.log("rowDto", rowDto);
   // for initial
   useEffect(() => {
+    setWorkplaceDDL([]);
+    setSalaryCodeDDL([]);
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceId",
@@ -333,13 +339,13 @@ const SalaryGenerateLanding = () => {
         filter: true,
         width: 120,
       },
-      {
-        title: "Workplace Name",
-        dataIndex: "strWorkplace",
-        sorter: true,
-        filter: true,
-        width: 120,
-      },
+      // {
+      //   title: "Workplace Name",
+      //   dataIndex: "strWorkplace",
+      //   sorter: true,
+      //   filter: true,
+      //   width: 120,
+      // },
       /*     {
         title: "Wing",
         dataIndex: "wingName",
@@ -539,6 +545,21 @@ const SalaryGenerateLanding = () => {
       },
     ];
   };
+  const getSalaryCodeByFromDateAndWId = (fromDate, toDate) => {
+    getSalaryCodeAPI(`/Payroll/GetSalaryCode`, {
+      fromDate: fromDate,
+      toDate: toDate,
+      workPlaceId: (workplaceDDL || []).map((w) => w?.intWorkplaceId),
+    });
+  };
+  useEffect(() => {
+    if (workplaceDDL?.length > 0) {
+      getSalaryCodeByFromDateAndWId(
+        values?.filterFromDate,
+        values?.filterToDate
+      );
+    }
+  }, [workplaceDDL]);
 
   return (
     <>
@@ -632,6 +653,15 @@ const SalaryGenerateLanding = () => {
                       className="form-control"
                       onChange={(e) => {
                         setFieldValue("filterFromDate", e.target.value);
+                        setSalaryCodeDDL([]);
+                        if (e.target.value && values?.filterToDate && wId) {
+                          getSalaryCodeByFromDateAndWId(
+                            e.target.value,
+                            values?.filterToDate,
+                            wId
+                          );
+                        }
+                        // for saving date to local storage
                         dispatch(
                           compensationBenefitsLSAction({
                             ...compensationBenefits,
@@ -658,6 +688,15 @@ const SalaryGenerateLanding = () => {
                       className="form-control"
                       onChange={(e) => {
                         setFieldValue("filterToDate", e.target.value);
+                        setSalaryCodeDDL([]);
+                        if (e.target.value && values?.filterToDate && wId) {
+                          getSalaryCodeByFromDateAndWId(
+                            values?.filterFromDate,
+                            e.target.value,
+                            wId
+                          );
+                        }
+                        // for saving date to local storage
                         dispatch(
                           compensationBenefitsLSAction({
                             ...compensationBenefits,
@@ -672,6 +711,25 @@ const SalaryGenerateLanding = () => {
                   </div>
                 </div>
                 <div className="col-md-3">
+                  <div className="input-field-main">
+                    <label>Salary Code</label>
+                    <FormikSelect
+                      name="salaryCode"
+                      options={salaryCodeDDL || []}
+                      value={values?.salaryCode}
+                      onChange={(valueOption) => {
+                        setFieldValue("salaryCode", valueOption);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                      isDisabled={singleData}
+                    />
+                  </div>
+                </div>
+                {/* removed for requiremnt change....... */}
+                <div className="col-md-3 d-none">
                   <div className="input-field-main">
                     <label>Workplace</label>
                     <FormikSelect
@@ -724,12 +782,12 @@ const SalaryGenerateLanding = () => {
                     />
                   </div>
                 </div>
-                {console.log("valuessss", values)}
+
                 <div className="col-lg-3">
                   <button
                     className="btn btn-green btn-green-disable mt-4"
                     type="button"
-                    disabled={!values?.filterFromDate || !values?.filterToDate}
+                    disabled={!values?.filterFromDate || !values?.filterToDate || !values?.salaryCode}
                     onClick={(e) => {
                       e.stopPropagation();
                       getSalaryGenerateRequestLanding(

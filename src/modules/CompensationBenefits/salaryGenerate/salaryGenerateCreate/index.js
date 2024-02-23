@@ -15,11 +15,7 @@ import { getPeopleDeskAllDDL } from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import {
-  gray500,
-  gray600,
-  success500
-} from "../../../../utility/customColor";
+import { gray500, gray600, success500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import TaxAssignCheckerModal from "../components/taxAssignChekerModal";
 import {
@@ -217,7 +213,7 @@ const SalaryGenerateCreate = () => {
       intWorkplaceGroupId: wgId,
       strWorkplaceGroup: wgName,
       // intWorkplaceId: wId,
-      strWorkplaceIdList: valueArray.join(","),
+      // strWorkplaceIdList: valueArray.join(","), --- removed today
       strWorkplace: wName,
       intWingId: values?.wing?.value || 0,
       intSoleDepoId: values?.soleDepo?.value || 0,
@@ -613,23 +609,7 @@ const SalaryGenerateCreate = () => {
                       </div>
                     </>
                   )}
-                  <div className="col-md-3">
-                    <div className="input-field-main">
-                      <label>Description</label>
-                      <DefaultInput
-                        classes="input-sm "
-                        placeholder=" "
-                        value={values?.description}
-                        name="description"
-                        type="text"
-                        onChange={(e) => {
-                          setFieldValue("description", e.target.value);
-                        }}
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                  </div>
+
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Workplace</label>
@@ -679,6 +659,23 @@ const SalaryGenerateCreate = () => {
                         // isDisabled={singleData}
                         errors={errors}
                         placeholder="Workplace"
+                        touched={touched}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>Description</label>
+                      <DefaultInput
+                        classes="input-sm "
+                        placeholder=" "
+                        value={values?.description}
+                        name="description"
+                        type="text"
+                        onChange={(e) => {
+                          setFieldValue("description", e.target.value);
+                        }}
+                        errors={errors}
                         touched={touched}
                       />
                     </div>
@@ -917,16 +914,16 @@ const SalaryGenerateCreate = () => {
                       setColumnsData={(newRow) => {
                         setAllData(newRow);
                       }}
-                      // removePagination={true}
-                      handleTableChange={({ pagination, newRowDto }) =>
-                        handleTableChange(
-                          pagination,
-                          newRowDto,
-                          values?.search || ""
-                        )
-                      }
-                      pages={pages?.pageSize}
-                      pagination={pages}
+                      removePagination={true}
+                      // handleTableChange={({ pagination, newRowDto }) =>
+                      //   handleTableChange(
+                      //     pagination,
+                      //     newRowDto,
+                      //     values?.search || ""
+                      //   )
+                      // }
+                      // pages={pages?.pageSize}
+                      // pagination={pages}
                     />
                   </div>
                 </>
