@@ -53,9 +53,9 @@ export const getSalaryGenerateRequestLanding = async (
   values
 ) => {
   setLoading && setLoading(true);
-  // const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+  const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
   // Joining the values into a string separated by commas
-  // const workplaceListFromValues = valueArray.join(",");
+  const workplaceListFromValues = valueArray.join(",");
   // const workplaceListFromValues ='"' + valueArray.join(',') + '"';
 
   const fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
@@ -68,27 +68,27 @@ export const getSalaryGenerateRequestLanding = async (
   const areaParams = area ? `&AreaId=${area}` : "";
   const territoryParams = territory ? `&TerritoryId=${territory}` : "";
 
-  const api = `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
-    monthId || +currentMonth()
-  }&intYearId=${
-    yearId || currentYear
-  }&intWorkplaceGroupId=${wgId}&strSalaryCode=${
-    values?.salaryCode?.label
-  }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
-    pages?.pageSize
-  }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`;
+  // const api = `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
+  //   monthId || +currentMonth()
+  // }&intYearId=${
+  //   yearId || currentYear
+  // }&intWorkplaceGroupId=${wgId}&strSalaryCode=${
+  //   values?.salaryCode?.label
+  // }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
+  //   pages?.pageSize
+  // }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`;
   try {
     const res = await axios.get(
-      api
-      // `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
-      //   monthId || +currentMonth()
-      // }&intYearId=${
-      //   yearId || currentYear
-      // }&intWorkplaceGroupId=${wgId}&strWorkplaceIdList=${
-      //   workplaceListFromValues || wId
-      // }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
-      //   pages?.pageSize
-      // }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+      // api
+      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
+        monthId || +currentMonth()
+      }&intYearId=${
+        yearId || currentYear
+      }&intWorkplaceGroupId=${wgId}&strWorkplaceIdList=${
+        workplaceListFromValues || wId
+      }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
+        pages?.pageSize
+      }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
     );
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
