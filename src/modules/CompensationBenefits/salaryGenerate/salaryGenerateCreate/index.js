@@ -914,16 +914,16 @@ const SalaryGenerateCreate = () => {
                       setColumnsData={(newRow) => {
                         setAllData(newRow);
                       }}
-                      // removePagination={true}
-                      handleTableChange={({ pagination, newRowDto }) =>
-                        handleTableChange(
-                          pagination,
-                          newRowDto,
-                          values?.search || ""
-                        )
-                      }
-                      pages={pages?.pageSize}
-                      pagination={pages}
+                      removePagination={true}
+                      // handleTableChange={({ pagination, newRowDto }) =>
+                      //   handleTableChange(
+                      //     pagination,
+                      //     newRowDto,
+                      //     values?.search || ""
+                      //   )
+                      // }
+                      // pages={pages?.pageSize}
+                      // pagination={pages}
                     />
                   </div>
                 </>
