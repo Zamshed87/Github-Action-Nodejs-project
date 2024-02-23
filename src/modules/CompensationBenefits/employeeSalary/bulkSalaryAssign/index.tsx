@@ -14,6 +14,7 @@ import { useApiRequest } from "Hooks";
 import { Col, Form, Modal, Row } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { getLandingData } from "modules/assetManagement/itemRegistration/helper";
 import {
   AttendanceType,
   EmpFilterType,
@@ -93,28 +94,17 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
           : undefined,
       },
       onSuccess: (res) => {
-        console.log({ res });
+        // console.log({ res });
 
         setRowDto(res?.result);
         const updatedHeader: any[] = [];
-
-        // Loop through each object in 'data' and generate dynamic columns
-        res?.result.forEach((item: any, index: any) => {
-          // ... your existing columns
-
-          // Add the "Total Gross Salary" object
-
-          // Generate dynamic columns based on the 'salaryElementsBreakdowns' array
-          item.salaryElementsBreakdowns.forEach((element: any) => {
-            updatedHeader.push({
-              title: `${element.strPayrollElementName}(${element.numNumberOfPercentage})`,
-              dataIndex: `salaryElementsBreakdowns_${element.intSalaryElemenetRowId}_${index}`,
-              render: (value: any, row: any, rowIndex: number) =>
-                row[rowIndex]?.TGS * (element.numNumberOfPercentage / 100),
-            });
+        res?.result[0]?.salaryElementsBreakdowns?.forEach((element: any) => {
+          updatedHeader.push({
+            title: `${element.strPayrollElementName}(${element.numNumberOfPercentage})`,
+            dataIndex: element.strPayrollElementName,
           });
-          setDynamicHeader(updatedHeader);
         });
+        setDynamicHeader(updatedHeader);
       },
     });
   };
@@ -336,18 +326,44 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
         // console.error("Validate Failed:", info);
       });
   };
+  const calculateDynamicFields = (row: any) => {
+    const dynamicFields = {} as any;
 
+    // Add your logic here based on TGS
+    // Example: Calculate each dynamic field based on TGS
+    row.salaryElementsBreakdowns?.forEach((element: any) => {
+      dynamicFields[element.strPayrollElementName] = (
+        row.TGS *
+        (element.numNumberOfPercentage / 100)
+      ).toFixed(2);
+    });
+    // console.log({ dynamicFields });
+
+    return dynamicFields;
+  };
   // Table Header
   const handleIsPerDayChange = (
     value: number,
     rowIndex: number,
     property: string
   ) => {
-    setRowDto((prevRows) => {
-      const updatedRows = [...prevRows];
-      updatedRows[rowIndex][property] = value;
-      return updatedRows;
-    });
+    if (property === "TGS") {
+      setRowDto((prevRows) => {
+        const updatedRows = [...prevRows];
+        updatedRows[rowIndex][property] = value;
+
+        const data = calculateDynamicFields(updatedRows[rowIndex]);
+        const newOB = { ...updatedRows[rowIndex], ...data };
+        updatedRows[rowIndex] = newOB;
+        return updatedRows;
+      });
+    } else {
+      setRowDto((prevRows) => {
+        const updatedRows = [...prevRows];
+        updatedRows[rowIndex][property] = value;
+        return updatedRows;
+      });
+    }
   };
   const header: any = [
     {
@@ -411,95 +427,113 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             placeholder="Amount"
             rules={[{ required: true, message: "Amount Is Required" }]}
             // disabled={true}
-            onChange={(e: any) => handleIsPerDayChange(e, index, "TGS")}
+            onChange={(e: any) => {
+              handleIsPerDayChange(e, index, "TGS");
+              handleIsPerDayChange(e, index, "CA");
+              handleIsPerDayChange(0, index, "BA");
+              handleIsPerDayChange(0, index, "MFS");
+              const property = `CA_${index}`;
+              const property2 = `BA_${index}`;
+              const property3 = `MFS_${index}`;
+              form.setFieldsValue({
+                [property]: e,
+                [property2]: 0,
+                [property3]: 0,
+              });
+            }}
           />
         </>
       ),
     },
-    ...dynamicHeader.map((element: any) => {
-      return {
-        title: element.title,
-        dataIndex: element.dataIndex,
-        render: (value: any, row: any, index: number) => {
-          const salaryBreakdowns = row?.salaryElementsBreakdowns || [];
-          const matchingBreakdown = salaryBreakdowns.find(
-            (breakdown: any) =>
-              breakdown.intSalaryElemenetRowId ===
-              element.intSalaryElemenetRowId
-          );
-          return matchingBreakdown
-            ? matchingBreakdown.numNumberOfPercentage
-            : null;
-        },
-      };
-    }),
-    // {
-    //   title: "In-Time",
-    //   dataIndex: "InTime",
-    // },
-    // {
-    //   title: "Out-Time",
-    //   dataIndex: "OutTime",
-    // },
-    // {
-    //   title: "Total Working Hours",
-    //   dataIndex: "WorkingHours",
-    // },
-    // {
-    //   title: "Actual Attendance",
-    //   dataIndex: "actualAttendanceStatus",
-    //   align: "center",
-    //   // render: (data: any, record: any, index: number) => {
-    //   //   return (record?.isPresent && record?.isLate) || record?.isLate ? (
-    //   //     <PBadge type="warning" text="Late" />
-    //   //   ) : record?.isPresent ? (
-    //   //     <PBadge type="success" text="Present" />
-    //   //   ) : record?.isHoliday === true ? (
-    //   //     <PBadge type="secondary" text="Holiday" />
-    //   //   ) : record?.isOffday === true ? (
-    //   //     <PBadge type="dark" text="Offday" />
-    //   //   ) : record?.isLeave ? (
-    //   //     <PBadge type="light" text="Leave" />
-    //   //   ) : record?.isMovement ? (
-    //   //     <PBadge type="dark" text="Movement" />
-    //   //   ) : record?.isAbsent ? (
-    //   //     <PBadge type="danger" text="Absent" />
-    //   //   ) : (
-    //   //     ""
-    //   //   );
-    //   // },
-    // },
-    // {
-    //   title: "Request Attendance",
-    //   dataIndex: "RequestStatus",
-    //   width: 100,
-    //   filter: true,
-    //   sorter: false,
-    // },
-    // {
-    //   title: "Approval Status",
-    //   dataIndex: "ApplicationStatus",
-    //   render: (_: any, record: any) =>
-    //     record?.ApplicationStatus === "Approved" ? (
-    //       <PBadge text="Approved" type="success" />
-    //     ) : record?.ApplicationStatus === "Pending" ? (
-    //       <PBadge text="Pending" type="warning" />
-    //     ) : record?.ApplicationStatus === "Process" ? (
-    //       <PBadge text="Process" type="primary" />
-    //     ) : record?.ApplicationStatus === "Rejected" ? (
-    //       <PBadge text="Rejected" type="danger" />
-    //     ) : (
-    //       ""
-    //     ),
-    //   align: "center",
-    //   filter: true,
-    //   sorter: false,
-    // },
+    ...dynamicHeader,
+    {
+      title: "Net Salary Amount",
+      dataIndex: "TGS",
+    },
+    {
+      title: "Bank Amount",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`BA_${index}`}
+            placeholder="Amount"
+            rules={[{ required: true, message: "Amount Is Required" }]}
+            // disabled={true}
+            onChange={(e: any) => {
+              // const property1 = `MFS_${index}`;
+              handleIsPerDayChange(e, index, "BA");
+
+              handleIsPerDayChange(row?.TGS - e - row?.MFS, index, "CA");
+              // handleIsPerDayChange(e, index, "BA");
+              // handleIsPerDayChange(row?.TGS - e, index, "CA");
+              const property2 = `CA_${index}`;
+              form.setFieldsValue({
+                // [property1]: row?.TGS - e,
+                [property2]: row?.TGS - e - row?.MFS,
+              });
+            }}
+          />
+        </>
+      ),
+    },
+    {
+      title: "MFS Amount     ",
+      render: (_: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`MFS_${index}`}
+            placeholder="Amount"
+            rules={[{ required: true, message: "Amount Is Required" }]}
+            // disabled={true}
+            onChange={(e: any) => {
+              handleIsPerDayChange(e, index, "MFS");
+
+              handleIsPerDayChange(row?.TGS - e - row?.BA, index, "CA");
+              // handleIsPerDayChange(row?.TGS - row?.CA, index, "BA");
+              // const property1 = `BA_${index}`;
+              const property2 = `CA_${index}`;
+              form.setFieldsValue({
+                [property2]: row?.TGS - e - row?.BA,
+                // [property1]: row?.TGS - row?.CA,
+              });
+            }}
+          />
+        </>
+      ),
+    },
+    {
+      title: "Cash Amount",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`CA_${index}`}
+            placeholder="Amount"
+            rules={[{ required: true, message: "Amount Is Required" }]}
+            // disabled={true}
+            onChange={(e: any) => {
+              handleIsPerDayChange(e, index, "CA");
+              handleIsPerDayChange(0, index, "BA");
+              handleIsPerDayChange(0, index, "MFS");
+
+              const property1 = `BA_${index}`;
+              const property2 = `MFS_${index}`;
+              form.setFieldsValue({
+                [property1]: 0,
+                [property2]: 0,
+              });
+            }}
+          />
+        </>
+      ),
+    },
   ];
   useEffect(() => {
     getWorkplaceGroup();
   }, [wgId, buId, wId]);
-  console.log({ rowDto });
+  // console.log({ rowDto });
 
   return employeeFeature?.isView ? (
     <PForm form={form} initialValues={{}}>
@@ -513,16 +547,22 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
               onClick: () => {
                 console.log("first");
               },
-              disabled: true,
+              disabled: selectedRow?.length > 0 ? false : true,
               //   icon: <AddOutlined />,
             },
             {
               type: "primary-outline",
               content: "Cancel",
               onClick: () => {
-                console.log("first");
+                form.resetFields();
+                setSelectedRow([]);
+                setRowDto((prev) => {
+                  prev = [];
+                  return prev;
+                });
+                // getSalaryLanding();
               },
-              disabled: true,
+              // disabled: true,
               //   icon: <AddOutlined />,
             },
           ]}
@@ -682,10 +722,12 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             type: "checkbox",
             selectedRowKeys: selectedRow.map((item) => item?.key),
             onChange: (selectedRowKeys, selectedRows) => {
+              console.log(selectedRows);
+
               setSelectedRow(selectedRows);
             },
             getCheckboxProps: (rec) => {
-              console.log(rec);
+              // console.log(rec);
               // return {
               //   disabled: rec?.ApplicationStatus === "Approved",
               // };
