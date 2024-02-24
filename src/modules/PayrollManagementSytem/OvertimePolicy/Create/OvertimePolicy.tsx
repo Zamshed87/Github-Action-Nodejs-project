@@ -134,6 +134,12 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
         form.setFieldsValue(initialData);
         getHRPositionDDL();
         getEmploymentTypeDDL();
+        getPeopleDeskAllDDL(
+          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Calender&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${data?.intWorkplaceId}`,
+          "CalenderId",
+          "CalenderName",
+          setCalendarDDL
+        );
       },
     });
   };
@@ -736,7 +742,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       ]}
                     />
                   </Col> */}
-                  <Col md={8} sm={24}>
+                  <Col md={14} sm={24}>
                     <PInput
                       label="Holiday Count As Full Day?"
                       type="checkbox"
@@ -751,7 +757,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       }}
                     />
                   </Col>
-                  <Col md={8} sm={24}>
+                  <Col md={14} sm={24}>
                     <PInput
                       label="Off Day Count As Full Day?"
                       type="checkbox"
