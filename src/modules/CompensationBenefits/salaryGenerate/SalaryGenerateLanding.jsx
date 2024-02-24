@@ -3,20 +3,23 @@ import {
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import axios from "axios";
+import FormikSelect from "common/FormikSelect";
+import { getPeopleDeskAllDDL } from "common/api";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 import * as Yup from "yup";
+import AntScrollTable from "../../../common/AntScrollTable";
 import Chips from "../../../common/Chips";
 import DefaultInput from "../../../common/DefaultInput";
-import Loading from "../../../common/loading/Loading";
-import { customStyles } from "../../../utility/selectCustomStyle";
 import NoResult from "../../../common/NoResult";
-import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../common/ResetButton";
+import Loading from "../../../common/loading/Loading";
+import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import {
   compensationBenefitsLSAction,
   setFirstLevelNameAction,
@@ -29,17 +32,13 @@ import {
 } from "../../../utility/dateFormatter";
 import { getMonthName } from "../../../utility/monthUtility";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
+import { customStyles } from "../../../utility/selectCustomStyle";
 import TaxAssignCheckerModal from "./components/taxAssignChekerModal";
 import {
   createSalaryGenerateRequest,
   getSalaryGenerateRequestLanding,
 } from "./helper";
 import "./salaryGenerate.css";
-import AntScrollTable from "../../../common/AntScrollTable";
-import FormikSelect from "common/FormikSelect";
-import { getPeopleDeskAllDDL } from "common/api";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import useAxiosPost from "utility/customHooks/useAxiosPost";
 
 const initialValues = {
   salaryTpe: {

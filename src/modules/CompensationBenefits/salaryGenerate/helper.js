@@ -1,3 +1,4 @@
+import { isDevServer } from "App";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Cell } from "../../../utility/customExcel/createExcelHelper";
@@ -83,7 +84,6 @@ export const getSalaryGenerateRequestLanding = async (
   } else if (partName === `SalaryGenerateRequestRowByRequestId`) {
     //
   }
-  console.log({ api });
   try {
     const res = await axios.get(api);
     if (res?.data) {
@@ -101,7 +101,7 @@ export const getSalaryGenerateRequestLanding = async (
       setLoading && setLoading(false);
     }
   } catch (error) {
-    console.log(error);
+    isDevServer && console.log(error);
     setLoading && setLoading(false);
   }
 };
@@ -216,7 +216,7 @@ export const getSalaryGenerateRequestLandingById = async (
   soleDepo = 0,
   region = 0,
   area = 0,
-  territory = 0
+  // territory = 0
 ) => {
   setLoading && setLoading(true);
 
@@ -308,7 +308,7 @@ export const getSalaryGenerateRequestHeaderId = async (
 ) => {
   setLoading && setLoading(true);
 
-  let idParams = id ? `&intSalaryGenerateRequestId=${id}` : "";
+  const idParams = id ? `&intSalaryGenerateRequestId=${id}` : "";
 
   try {
     const res = await axios.get(
@@ -316,11 +316,11 @@ export const getSalaryGenerateRequestHeaderId = async (
     );
     if (res?.data) {
       // month default
-      let initYear = res?.data[0]?.intYear; // 2022
-      let initMonth = res?.data[0]?.intMonth; // 6
-      let modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
+      const initYear = res?.data[0]?.intYear; // 2022
+      const initMonth = res?.data[0]?.intMonth; // 6
+      const modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
 
-      let modifyObj = {
+      const modifyObj = {
         ...res?.data[0],
         businessUnit: {
           value: res?.data[0]?.intBusinessUnitId,
@@ -383,7 +383,7 @@ export const getSalaryGenerateRequestRowId = async (
 ) => {
   setLoading && setLoading(true);
 
-  let idParams = id ? `&intSalaryGenerateRequestId=${id}` : "";
+  const idParams = id ? `&intSalaryGenerateRequestId=${id}` : "";
 
   try {
     const res = await axios.get(
@@ -605,7 +605,7 @@ const getTableDataForExcel = (
   tableAllowanceHead,
   tableDeductionHead
 ) => {
-  const data = row?.map((item, index) => {
+  const data = row?.map((item) => {
     return [
       new Cell(
         item?.DeptName?.trim()
