@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 // import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { getPlaceDDL, PeopleDeskSaasDDL } from "../../../common/api";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 // import PrimaryButton from "../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
@@ -21,6 +20,8 @@ import {
   getPendingAndConsumeMealReport,
 } from "./helper";
 import "./style.css";
+import { PeopleDeskSaasDDL } from "common/api";
+import { getPlaceDDL } from "../foodCorner/helper";
 
 const initData = {
   search: "",

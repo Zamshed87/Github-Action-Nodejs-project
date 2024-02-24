@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import {
-  getAsyncEmployeeCommonApi,
   getPeopleDeskAllLanding,
+  getSearchEmployeeList,
 } from "../../../../common/api";
 import FormikInput from "../../../../common/FormikInput";
 import FormikRadio from "../../../../common/FormikRadio";
@@ -13,6 +13,7 @@ import { greenColor } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { getPendingAndConsumeMealReport } from "../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+import { shallowEqual, useSelector } from "react-redux";
 
 const FormCard = ({ propsObj }) => {
   const {
@@ -30,6 +31,11 @@ const FormCard = ({ propsObj }) => {
   } = propsObj;
   const [loading, setLoading] = useState(false);
 
+  const { wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+
   return (
     <>
       {loading && <Loading />}
@@ -37,9 +43,9 @@ const FormCard = ({ propsObj }) => {
         <div className="row m-0">
           <div className="col-md-6 input-field-main">
             <label>Employee Name</label>
+
             <AsyncFormikSelect
               selectedValue={values?.employeeName}
-              isClear
               isSearchIcon={true}
               handleChange={(valueOption) => {
                 setFieldValue("employee", valueOption);
@@ -75,63 +81,10 @@ const FormCard = ({ propsObj }) => {
                   );
                 }
               }}
-              loadOptions={async (value) => {
-                return getAsyncEmployeeCommonApi({
-                  orgId,
-                  buId: 0,
-                  intId: 0,
-                  value,
-                });
-              }}
+              placeholder="Search (min 3 letter)"
+              loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
             />
           </div>
-          {/* <div className="col-lg-6">
-              <div className="input-field-main">
-                <label htmlFor="">Employee Name</label>
-                <FormikSelect
-                  name="employee"
-                  options={employeeDDL || []}
-                  value={values?.employee}
-                  onChange={(valueOption) => {
-                    setFieldValue("employee", valueOption);
-                    if (!valueOption) {
-                      setEmployeeInfo("");
-                      setScheduleMeal([]);
-                      setConsumeMeal([]);
-                    }
-                    getPeopleDeskAllLanding(
-                      "EmployeeBasicById",
-                      orgId,
-                      buId,
-                      valueOption?.value,
-                      setEmployeeInfo,
-                      "",
-                      "",
-                      ""
-                    );
-                    getPendingAndConsumeMealReport(
-                      1,
-                      valueOption?.value,
-                      setScheduleMeal,
-                      setLoading,
-                      ""
-                    );
-                    getPendingAndConsumeMealReport(
-                      2,
-                      valueOption?.value,
-                      setConsumeMeal,
-                      setLoading,
-                      ""
-                    );
-                  }}
-                  placeholder=" "
-                  styles={customStyles}
-                  errors={errors}
-                  touched={touched}
-                  isDisabled={false}
-                />
-              </div>
-            </div> */}
           <div className="col-lg-6">
             <div className="input-field-main">
               <label htmlFor="">Date</label>

@@ -92,30 +92,6 @@ const FormCard = ({ propsObj }) => {
                     if (!valueOption) {
                       setFieldValue("place", valueOption);
                     }
-                    // getPeopleDeskAllLanding(
-                    //   "EmployeeBasicById",
-                    //   orgId,
-                    //   buId,
-                    //   valueOption?.value,
-                    //   setEmployeeInfo,
-                    //   "",
-                    //   "",
-                    //   ""
-                    // );
-                    // getPendingAndConsumeMealReport(
-                    //   1,
-                    //   valueOption?.value,
-                    //   setScheduleMeal,
-                    //   setLoading,
-                    //   ""
-                    // );
-                    // getPendingAndConsumeMealReport(
-                    //   2,
-                    //   valueOption?.value,
-                    //   setConsumeMeal,
-                    //   setLoading,
-                    //   ""
-                    // );
                   }}
                   placeholder=" "
                   styles={customStyles}
