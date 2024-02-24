@@ -717,7 +717,7 @@ const SalaryGenerateCreate = () => {
                               wId,
                               {
                                 current: pages?.current,
-                                pageSize: 500,
+                                pageSize: 2000,
                               },
                               setPages,
                               setAllEmployeeString,

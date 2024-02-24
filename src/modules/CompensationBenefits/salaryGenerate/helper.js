@@ -259,7 +259,7 @@ export const getSalaryGenerateRequestLandingById = async (
         try {
           setLoading && setLoading(false);
           const secondRes = await axios.get(
-            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}&strWorkplaceIdList=${workplaceListFromValues || wId}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}&IntPageSize=${pages?.pageSize}&strWorkplaceIdList=${workplaceListFromValues || wId}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
           );
 
           if (secondRes?.data) {
@@ -387,7 +387,7 @@ export const getSalaryGenerateRequestRowId = async (
 
   try {
     const res = await axios.get(
-      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${idParams}`
+      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${idParams}&IntPageSize=${2000}`
     );
     if (res?.data) {
       setPages({ ...pages, total: res?.data?.[0]?.totalCount });
