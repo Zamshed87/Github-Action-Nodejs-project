@@ -20,7 +20,9 @@ export default function SiderDrawer(props) {
             ...styles,
           },
           "& .MuiDrawer-paperAnchorRight": {
-            overflowY: "visible",
+            // overflowY: "visible",
+            overflowX: "hidden",
+            overflowY: "scroll !important",
           },
         }}
       >
