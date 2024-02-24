@@ -178,7 +178,7 @@ const SalaryGenerateCreate = () => {
   };
   const salaryGeneratepayloadHandler = (values, allData, isAllAssign) => {
     const valueArray =
-      values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+      (values?.workplace || [])?.map((obj) => obj?.intWorkplaceId) || [];
     // Joining the values into a string separated by commas
     const workplaceListFromValues = '"' + valueArray.join(",") + '"';
 
@@ -237,6 +237,8 @@ const SalaryGenerateCreate = () => {
       strEmpIdList: isAllAssign ? allEmployeeString : empIdList.join(","),
     };
     const callback = () => {
+      setAllEmployeeString("")
+      setFieldValue("workplace", []);
       setAllAssign(false);
       if (+params?.id) {
         getSalaryGenerateRequestLandingById(
@@ -273,10 +275,12 @@ const SalaryGenerateCreate = () => {
         resetForm(salaryGenerateInitialValues);
         setIsEdit(false);
         setRowDto([]);
+        setAllEmployeeString("")
       }
     };
     return { empIdList, payload, callback };
   };
+  console.log({allEmployeeString})
   const allBulkSalaryGenerateHandler = (values, allData) => {
     const { payload, callback } = salaryGeneratepayloadHandler(
       values,
@@ -390,6 +394,7 @@ const SalaryGenerateCreate = () => {
     initialValues: params?.id
       ? {
           ...singleData,
+          workplace: [],
           wing:
             +params?.id &&
             isSameMaketingAreaHandler(
@@ -759,7 +764,7 @@ const SalaryGenerateCreate = () => {
                           !values?.monthYear ||
                           !values?.fromDate ||
                           !values?.toDate ||
-                          !values?.workplace
+                          !values?.workplace?.length > 0
                         }
                       >
                         Show
@@ -832,7 +837,7 @@ const SalaryGenerateCreate = () => {
                         disabled={
                           !values?.salaryTpe ||
                           !values?.monthYear ||
-                          !values?.workplace
+                          !values?.workplace?.length > 0
                         }
                       >
                         Show
