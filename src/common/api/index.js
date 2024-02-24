@@ -165,10 +165,16 @@ export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
   } catch (error) {}
 };
 
-export const getPeopleDeskAllDDLWithCode = async (apiUrl, value, label, setter, cb) => {
+export const getPeopleDeskAllDDLWithCode = async (
+  apiUrl,
+  value,
+  label,
+  setter,
+  cb
+) => {
   try {
     const res = await axios.get(apiUrl);
-    console.log("res", res?.data)
+    console.log("res", res?.data);
     const newDDL = res?.data?.map((itm) => ({
       ...itm,
       value: itm?.intEmployeeBasicInfoId,
@@ -594,6 +600,30 @@ export const getSearchEmployeeListNew = (buId, intAccountId, v) => {
       return modifiedData;
     })
     .catch((err) => []);
+};
+
+export const getSuperVisorLineMangerDottedByWorkplace = async ({
+  params,
+  cb,
+}) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `/PeopleDeskDDL/PeopleDeskAllDDL`,
+      data: {},
+      params: params,
+    });
+    const modified = (response?.data || []).map((item) => ({
+      label: item?.EmployeeOnlyName,
+      value: item?.EmployeeId,
+    }));
+    cb?.(modified);
+    return modified;
+  } catch (error) {
+    toast.warn(
+      error?.response?.data?.message || error?.message || "Something went wrong"
+    );
+  }
 };
 
 export const getSearchEmployeeListForEmp = (
