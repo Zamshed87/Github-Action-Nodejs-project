@@ -141,7 +141,7 @@ export default function FoodCornerForAll() {
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm, setFieldValue }) => {
+        onSubmit={(values, { setFieldValue }) => {
           saveHandler(values, () => {
             // resetForm(initData);
             getLandingData(values);
@@ -160,7 +160,6 @@ export default function FoodCornerForAll() {
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>

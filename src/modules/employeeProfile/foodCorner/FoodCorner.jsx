@@ -111,7 +111,7 @@ export default function FoodCorner() {
           employeeName: strDisplayName,
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
             getLandingData();
@@ -125,7 +125,6 @@ export default function FoodCorner() {
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
