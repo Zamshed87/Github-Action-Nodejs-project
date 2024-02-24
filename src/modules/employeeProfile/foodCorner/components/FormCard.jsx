@@ -5,16 +5,21 @@ import FormikInput from "../../../../common/FormikInput";
 import FormikRadio from "../../../../common/FormikRadio";
 import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
+import PrimaryButton from "../../../../common/PrimaryButton";
 import { greenColor } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 
 const FormCard = ({ propsObj }) => {
-  const { values, setFieldValue, errors, touched, loading } = propsObj;
-  const { strDesignation, buName } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { values, setFieldValue, errors, touched, loading, placeDDL } =
+    propsObj;
+  const { strDesignation, buName } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   return (
     <>
       {loading && <Loading />}
-      <div className="card-style mt-3" style={{padding:"3px 0px 10px"}}>
+      <div className="card-style mt-3" style={{ padding: "3px 0px 10px" }}>
         <div className="card-body p-0">
           <div className="row m-0">
             {/* <div className="col-lg-12">
@@ -71,8 +76,54 @@ const FormCard = ({ propsObj }) => {
             </div>
             <div className="col-lg-12">
               <p>
-                <strong>Designation: </strong>{strDesignation} <strong>Unit: </strong> {buName}
+                <strong>Designation: </strong>
+                {strDesignation} <strong>Unit: </strong> {buName}
               </p>
+            </div>
+            <div className="col-lg-6">
+              <div className="input-field-main">
+                <label htmlFor="">Place</label>
+                <FormikSelect
+                  name="place"
+                  options={placeDDL || []}
+                  value={values?.place}
+                  onChange={(valueOption) => {
+                    setFieldValue("place", valueOption);
+                    if (!valueOption) {
+                      setFieldValue("place", valueOption);
+                    }
+                    // getPeopleDeskAllLanding(
+                    //   "EmployeeBasicById",
+                    //   orgId,
+                    //   buId,
+                    //   valueOption?.value,
+                    //   setEmployeeInfo,
+                    //   "",
+                    //   "",
+                    //   ""
+                    // );
+                    // getPendingAndConsumeMealReport(
+                    //   1,
+                    //   valueOption?.value,
+                    //   setScheduleMeal,
+                    //   setLoading,
+                    //   ""
+                    // );
+                    // getPendingAndConsumeMealReport(
+                    //   2,
+                    //   valueOption?.value,
+                    //   setConsumeMeal,
+                    //   setLoading,
+                    //   ""
+                    // );
+                  }}
+                  placeholder=" "
+                  styles={customStyles}
+                  errors={errors}
+                  touched={touched}
+                  isDisabled={false}
+                />
+              </div>
             </div>
             <div className="col-lg-6">
               <div className="input-field-main">
@@ -151,9 +202,14 @@ const FormCard = ({ propsObj }) => {
             </div>
             <div className="col-lg-6 align-content-end">
               <div className="d-flex justify-content-between">
-                <button className="btn button w-100 mt-3" type="submit">
+                {/* <button className="btn button w-100 mt-3" type="submit">
                   Save
-                </button>
+                </button> */}
+                <PrimaryButton
+                  type="submit"
+                  className="btn mt-3 w-100 btn-default flex-center"
+                  label={"Save"}
+                />
               </div>
             </div>
           </div>
