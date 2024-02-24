@@ -317,7 +317,8 @@ function CreateTransferPromotion() {
         orgId,
         state?.singleData?.intEmployeeId,
         setHistoryData,
-        setLoading < buId,
+        setLoading,
+        buId,
         wgId
       );
       getPeopleDeskAllDDL(
@@ -777,33 +778,22 @@ function CreateTransferPromotion() {
                         "label",
                         0
                       );
-
-                      getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
-                          valueOption?.value
-                        }&WorkplaceGroupId=${
-                          values?.workplaceGroup?.value || wgId
-                        }&intWorkplaceId=${wId || 0}`,
-                        "DesignationId",
-                        "DesignationName",
-                        setDesignationDDL
-                      );
                       // wing DDL
-                      if (
-                        valueOption?.value &&
-                        values?.workplaceGroup?.label === "Marketing"
-                      ) {
-                        getPeopleDeskWithoutAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${
-                            valueOption?.value
-                          }&WorkplaceGroupId=${
-                            values?.workplaceGroup?.value || wgId
-                          }&ParentTerritoryId=0`,
-                          "WingId",
-                          "WingName",
-                          setWingDDL
-                        );
-                      }
+                      // if (
+                      //   valueOption?.value &&
+                      //   values?.workplaceGroup?.label === "Marketing"
+                      // ) {
+                      //   getPeopleDeskWithoutAllDDL(
+                      //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${
+                      //       valueOption?.value
+                      //     }&WorkplaceGroupId=${
+                      //       values?.workplaceGroup?.value || wgId
+                      //     }&ParentTerritoryId=0`,
+                      //     "WingId",
+                      //     "WingName",
+                      //     setWingDDL
+                      //   );
+                      // }
                       setValues((prev) => ({
                         ...prev,
                         businessUnit: valueOption,
@@ -909,6 +899,22 @@ function CreateTransferPromotion() {
                         "DepartmentName",
                         setDepartmentDDL
                       );
+                      if (
+                        values?.businessUnit?.value &&
+                        values?.workplaceGroup?.value &&
+                        valueOption?.value
+                      ) {
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
+                            values?.businessUnit?.value
+                          }&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || wgId
+                          }&intWorkplaceId=${valueOption?.value || 0}`,
+                          "DesignationId",
+                          "DesignationName",
+                          setDesignationDDL
+                        );
+                      }
                     }}
                     placeholder=""
                     styles={customStyles}
@@ -1182,11 +1188,7 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeListNew(
-                        buId,
-                        intAccountId,
-                        v
-                      )
+                      getSearchEmployeeListNew(buId, intAccountId, v)
                     }
                     isDisabled={!values?.workplaceGroup}
                   />
@@ -1206,11 +1208,7 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeListNew(
-                        buId,
-                        intAccountId,
-                        v
-                      )
+                      getSearchEmployeeListNew(buId, intAccountId, v)
                     }
                     isDisabled={!values?.workplaceGroup}
                   />
@@ -1224,7 +1222,7 @@ function CreateTransferPromotion() {
                     placeholder=""
                     styles={{
                       ...customStyles,
-                      control: (provided, state) => ({
+                      control: (provided) => ({
                         ...provided,
                         minHeight: "auto",
                         height:
@@ -1238,7 +1236,7 @@ function CreateTransferPromotion() {
                           borderColor: `${gray600}!important`,
                         },
                       }),
-                      valueContainer: (provided, state) => ({
+                      valueContainer: (provided) => ({
                         ...provided,
                         height:
                           values?.businessUnit?.length > 2 ? "auto" : "30px",
@@ -1344,7 +1342,7 @@ function CreateTransferPromotion() {
                           .then((data) => {
                             setFileId(data?.[0]);
                           })
-                          .catch((error) => {
+                          .catch(() => {
                             setFileId("");
                           });
                       }
