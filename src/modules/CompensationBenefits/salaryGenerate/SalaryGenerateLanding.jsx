@@ -194,6 +194,7 @@ const SalaryGenerateLanding = () => {
   useEffect(() => {
     setWorkplaceDDL([]);
     setSalaryCodeDDL([]);
+    setFieldValue("salaryCode", "");
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceId",
@@ -710,7 +711,7 @@ const SalaryGenerateLanding = () => {
                     />
                   </div>
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-4">
                   <div className="input-field-main">
                     <label>Salary Code</label>
                     <FormikSelect
@@ -783,7 +784,7 @@ const SalaryGenerateLanding = () => {
                   </div>
                 </div>
 
-                <div className="col-lg-3">
+                <div className="col-lg-2">
                   <button
                     className="btn btn-green btn-green-disable mt-4"
                     type="button"

@@ -68,28 +68,24 @@ export const getSalaryGenerateRequestLanding = async (
   const areaParams = area ? `&AreaId=${area}` : "";
   const territoryParams = territory ? `&TerritoryId=${territory}` : "";
 
-  // const api = `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
-  //   monthId || +currentMonth()
-  // }&intYearId=${
-  //   yearId || currentYear
-  // }&intWorkplaceGroupId=${wgId}&strSalaryCode=${
-  //   values?.salaryCode?.label
-  // }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
-  //   pages?.pageSize
-  // }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`;
+  let api = `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
+    monthId || +currentMonth()
+  }&intYearId=${
+    yearId || currentYear
+  }&intWorkplaceGroupId=${wgId}&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
+    pages?.pageSize
+  }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`;
+
+  if (partName === `EmployeeListForSalaryGenerateRequest`) {
+    api += `&strWorkplaceIdList=${workplaceListFromValues || wId}`;
+  } else if (partName === `SalaryGenerateRequestLanding`) {
+    api += `&strSalaryCode=${values?.salaryCode?.strSalaryCode || ""}`;
+  } else if (partName === `SalaryGenerateRequestRowByRequestId`) {
+    //
+  }
+  console.log({ api });
   try {
-    const res = await axios.get(
-      // api
-      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intMonthId=${
-        monthId || +currentMonth()
-      }&intYearId=${
-        yearId || currentYear
-      }&intWorkplaceGroupId=${wgId}&strWorkplaceIdList=${
-        workplaceListFromValues || wId
-      }&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
-        pages?.pageSize
-      }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
-    );
+    const res = await axios.get(api);
     if (res?.data) {
       const modifyRowData = res?.data?.map((itm) => {
         return {
@@ -97,7 +93,7 @@ export const getSalaryGenerateRequestLanding = async (
           isSalaryGenerate: false,
         };
       });
-      setPages({ ...pages, total: res?.data?.[0]?.totalCount });
+      setPages?.({ ...pages, total: res?.data?.[0]?.totalCount });
       setAllEmployeeString?.(res?.data?.[0]?.listOfEmployeeId || "");
 
       setAllData && setAllData(modifyRowData);
@@ -200,7 +196,7 @@ export const salaryGenerateApproveReject = async (payload, setLoading, cb) => {
 // get salary generate landing by id
 export const getSalaryGenerateRequestLandingById = async (
   partName,
-  orgId,
+  values,
   buId,
   wgId,
   requestId,
@@ -224,19 +220,18 @@ export const getSalaryGenerateRequestLandingById = async (
 ) => {
   setLoading && setLoading(true);
 
-  let salaryRequestIdParams = requestId
+  const salaryRequestIdParams = requestId
     ? `&intSalaryGenerateRequestId=${requestId}`
     : "";
 
-  let fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
-  let toDateParams = toDate ? `&GenerateToDate=${toDate}` : "";
-
+  const fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
+  const toDateParams = toDate ? `&GenerateToDate=${toDate}` : "";
   // DDL
-  let wingParams = wing ? `&WingId=${wing}` : "";
-  let soleDepoParams = soleDepo ? `&SoleDepoId=${soleDepo}` : "";
-  let regionParams = region ? `&RegionId=${region}` : "";
-  let areaParams = area ? `&AreaId=${area}` : "";
-  let territoryParams = "";
+  const wingParams = wing ? `&WingId=${wing}` : "";
+  const soleDepoParams = soleDepo ? `&SoleDepoId=${soleDepo}` : "";
+  const regionParams = region ? `&RegionId=${region}` : "";
+  const areaParams = area ? `&AreaId=${area}` : "";
+  const territoryParams = "";
 
   try {
     const res = await axios.get(
@@ -258,12 +253,13 @@ export const getSalaryGenerateRequestLandingById = async (
       // new employee load
       if (isMarge) {
         setLoading && setLoading(true);
+        const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+        // Joining the values into a string separated by commas
+        const workplaceListFromValues = valueArray.join(",");
         try {
           setLoading && setLoading(false);
           const secondRes = await axios.get(
-            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}&intWorkplaceId=${
-              wId || 0
-            }${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}&strWorkplaceIdList=${workplaceListFromValues || wId}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
           );
 
           if (secondRes?.data) {
