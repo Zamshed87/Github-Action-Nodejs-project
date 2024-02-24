@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { getCafeteriaMenuListReport } from "../helper";
 
 const MenuList = ({ objProps }) => {
-  const { setLoading, isEdit, setIsEdit, menuList, setMenuList } = objProps;
+  const { setLoading, isEdit, menuList, setMenuList } = objProps;
   const { orgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -22,7 +21,7 @@ const MenuList = ({ objProps }) => {
 
   return (
     <>
-      <div className="card">
+      <div className="card" style={{margintTop:"110px"}}>
         <div className="card-body">
           <div className="table-card-styled">
             <table className="table">

@@ -27,9 +27,9 @@ export default function LocationAssignDrawer(props) {
             ...styles,
           },
           "& .MuiDrawer-paperAnchorRight": {
-              // overflowY: "visible",
-              overflowX: "hidden",
-              overflowY: "scroll !important",
+              overflowY: "visible",
+              // overflowX: "hidden",
+              // overflowY: "scroll !important",
           },
         }}
       >
