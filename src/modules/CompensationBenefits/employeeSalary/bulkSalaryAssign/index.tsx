@@ -12,6 +12,7 @@ import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Modal, Row } from "antd";
+import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { getLandingData } from "modules/assetManagement/itemRegistration/helper";
@@ -96,7 +97,9 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
       onSuccess: (res) => {
         // console.log({ res });
 
-        setRowDto(res?.result);
+        setRowDto((prev: any) => {
+          return [...prev, ...res?.result];
+        });
         const updatedHeader: any[] = [];
         res?.result[0]?.salaryElementsBreakdowns?.forEach((element: any) => {
           updatedHeader.push({
@@ -259,6 +262,10 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
     });
   };
   const viewHandler = async () => {
+    setRowDto((prev: any) => {
+      prev = [];
+      return prev;
+    });
     await form
       .validateFields()
       .then(() => {
@@ -467,7 +474,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
       ),
     },
     {
-      title: "MFS Amount     ",
+      title: "MFS Amount",
       render: (_: any, row: any, index: number) => (
         <>
           <PInput
@@ -518,7 +525,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             name={`CA_${index}`}
             placeholder="Amount"
             rules={[
-              { required: true, message: "Amount Is Required" },
+              // { required: true, message: "Amount Is Required" },
               {
                 validator: (_, value, callback) => {
                   const isExit = selectedRow.find(
@@ -532,7 +539,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
                   const TGS = parseFloat(form.getFieldValue(`TGS_${index}`));
                   if (isExit) {
                     if (isNaN(CA) || CA < 0) {
-                      callback("CA cannot be negative");
+                      callback("Amount Is Required");
                     } else if (CA + BA + MFS !== TGS) {
                       callback("CA + BA + MFS must equal TGS");
                     } else {
@@ -607,6 +614,8 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
               onChange={(value, op) => {
                 form.setFieldsValue({
                   workplaceGroup: op,
+                  wp: undefined,
+                  payrollGroup: undefined,
                 });
                 getWorkplace();
               }}
@@ -742,26 +751,30 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             <PButton type="primary" content="View" onClick={viewHandler} />
           </Col>
         </Row>
-        <DataTable
-          header={header}
-          bordered
-          data={rowDto || []}
-          loading={bulkLandingAPI?.loading}
-          scroll={{ x: 1500 }}
-          rowSelection={{
-            type: "checkbox",
-            selectedRowKeys: selectedRow.map((item) => item?.key),
-            onChange: (selectedRowKeys, selectedRows) => {
-              setSelectedRow(selectedRows);
-            },
-            getCheckboxProps: (rec) => {
-              // console.log(rec);
-              // return {
-              //   disabled: rec?.ApplicationStatus === "Approved",
-              // };
-            },
-          }}
-        />
+        {bulkLandingAPI?.data ? (
+          <DataTable
+            header={header}
+            bordered
+            data={rowDto || []}
+            loading={bulkLandingAPI?.loading}
+            scroll={{ x: 1500 }}
+            rowSelection={{
+              type: "checkbox",
+              selectedRowKeys: selectedRow.map((item) => item?.key),
+              onChange: (selectedRowKeys, selectedRows) => {
+                setSelectedRow(selectedRows);
+              },
+              getCheckboxProps: (rec) => {
+                // console.log(rec);
+                // return {
+                //   disabled: rec?.ApplicationStatus === "Approved",
+                // };
+              },
+            }}
+          />
+        ) : (
+          <NoResult title="No Result Found" para="" />
+        )}
       </PCard>
     </PForm>
   ) : (
