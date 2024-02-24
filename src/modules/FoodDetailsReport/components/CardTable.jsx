@@ -1,84 +1,47 @@
-import React,{useMemo} from "react";
-import AvatarComponent from "../../../common/AvatarComponent";
+import React from 'react';
+import { useState } from 'react';
+import AntTable from '../../../common/AntTable';
+// import AvatarComponent from "../../../common/AvatarComponent";
+import NoResult from '../../../common/NoResult';
+import { mealColumns, mealColumnsType2 } from '../helper';
+import AntScrollTable from '../../../common/AntScrollTable';
 
-const CardTable = ({ propsObj }) => {
-  const {rowDto} = propsObj;
+const CardTable = ({ propsObj, viewType }) => {
+   const { rowDto } = propsObj;
 
-  const total = useMemo(
-    () => rowDto.reduce((acc, item) => acc + +item?.mealCount, 0),
-    [rowDto]
-  );
-
-  return (
-    <div className="table-card-styled tableOne pr-1">
-      <div className="text-right mr-3 mb-2">Total Meal <b>{total}</b></div>
-      <table className="table">
-        <thead>
-          <tr>
-            <th style={{width:"40px"}}>
-              SL
-            </th>
-            <th>
-              <div className="d-flex align-items-center">
-                Employee
-              </div>
-            </th>
-            <th>
-              <div className="d-flex align-items-center">
-                Designation
-              </div>
-            </th>
-            <th>
-              <div className="d-flex align-items-center">
-                Department
-              </div>
-            </th>
-            <th>
-              <div className="d-flex align-items-center justify-content-center">
-                Meal Count
-              </div>
-            </th>
-            <th>
-              <div className="d-flex align-items-center justify-content-center">
-                Meal Date
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rowDto?.map((data, i) => (
-            <tr key={i}>
-              <td className="text-center">
-                <div>{i + 1}</div>
-              </td>
-              <td>
-                <div className="employeeInfo d-flex align-items-center">
-                <AvatarComponent letterCount={1} label={data?.employeeFullName} />
-                  <div className="employeeTitle ml-2">
-                    <p className="employeeName">
-                      {data?.employeeFullName} [{data?.employeeCode}]
-                    </p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                {data?.designationName}
-              </td>
-              <td>
-                {data?.departmentName}
-              </td>
-              <td className="text-center">
-               {data?.mealCount}
-              </td>
-              <td className="text-center">
-                {data?.mealDate}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+   const [page, setPage] = useState(1);
+   const [paginationSize, setPaginationSize] = useState(15);
+   return (
+     <>
+       {rowDto?.length > 0 ? (
+         <>
+           {viewType === 2 ? (
+             <div className="table-card-styled employee-table-card table-responsive ant-scrolling-Table">
+               <AntScrollTable
+                 data={rowDto}
+                 columnsData={mealColumnsType2(page, paginationSize)}
+                 setPage={setPage}
+                 setPaginationSize={setPaginationSize}
+               />
+             </div>
+           ) : (
+             <div className="table-card-styled tableOne">
+               <AntTable
+                 data={rowDto}
+                 columnsData={mealColumns(page, paginationSize)}
+                 setPage={setPage}
+                 setPaginationSize={setPaginationSize}
+               />
+             </div>
+           )}
+         </>
+       ) : (
+         <>
+           <NoResult title="No Result Found" para="" />
+         </>
+       )}
+     </>
+   );
 };
 
 export default CardTable;

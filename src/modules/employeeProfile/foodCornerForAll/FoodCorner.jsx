@@ -1,31 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { PeopleDeskSaasDDL } from "../../../common/api";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import PrimaryButton from "../../../common/PrimaryButton";
+// import PrimaryButton from "../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { todayDate } from "../../../utility/todayDate";
 import Loading from "./../../../common/loading/Loading";
 import ConsumeMeal from "./components/ConsumeMeal";
 import FormCard from "./components/FormCard";
-import MenuList from "./components/MenuList";
+// import MenuList from "./components/MenuList";
 import ScheduleMeal from "./components/ScheduleMeal";
 import {
   createCafeteriaEntry,
-  editMenuList,
-  getCafeteriaMenuListReport,
+  // editMenuList,
+  // getCafeteriaMenuListReport,
   getPendingAndConsumeMealReport,
 } from "./helper";
 import "./style.css";
+import { PeopleDeskSaasDDL } from "common/api";
+import { getPlaceDDL } from "../foodCorner/helper";
 
 const initData = {
   search: "",
   radioType: "private",
   employee: "",
+  place: "",
   date: todayDate(),
   meal: 1,
   type: { value: 2, label: "Irregular" },
@@ -40,6 +42,12 @@ const validationSchema = Yup.object().shape({
       value: Yup.string().required("Employee is required"),
     })
     .typeError("Employee is required"),
+  place: Yup.object()
+    .shape({
+      label: Yup.string().required("place is required"),
+      value: Yup.string().required("place is required"),
+    })
+    .typeError("place is required"),
   date: Yup.date().required("Date is required"),
   meal: Yup.string().required("No of meal is required"),
   type: Yup.object()
@@ -55,18 +63,19 @@ export default function FoodCornerForAll() {
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
-  const { orgId, buId, employeeId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    profileData: { orgId, buId, employeeId },
+    permissionList,
+  } = useSelector((state) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
   const [scheduleMeal, setScheduleMeal] = useState([]);
   const [consumeMeal, setConsumeMeal] = useState([]);
   const [employeeDDL, setEmployeeDDL] = useState([]);
+  const [placeDDL, setPlaceDDL] = useState([]);
   const [employeeInfo, setEmployeeInfo] = useState("");
-  const [isEdit, setIsEdit] = useState(false);
-  const [menuList, setMenuList] = useState([]);
-  const saveHandler = (values, cb) => {
+  // const [isEdit, setIsEdit] = useState(false);
+  // const [menuList, setMenuList] = useState([]);
+    const saveHandler = (values, cb) => {
     const payload = {
       PartId: 1,
       ToDate: values?.date || todayDate(),
@@ -79,6 +88,7 @@ export default function FoodCornerForAll() {
       isPayable: 1,
       Narration: values?.remarks || "",
       ActionBy: employeeId,
+      MealConsumePlaceId:values?.place?.value || 0,
     };
     createCafeteriaEntry(
       1,
@@ -94,7 +104,8 @@ export default function FoodCornerForAll() {
       employeeId,
       payload,
       setLoading,
-      cb
+      cb,
+      +values?.place?.value
     );
     // (partId, date, enrollId, typeId, mealOption, mealFor, countMeal, ownGuest, payable, narration, userId, payload, setLoading, cb)
   };
@@ -118,22 +129,28 @@ export default function FoodCornerForAll() {
   useEffect(() => {
     PeopleDeskSaasDDL(
       "EmployeeBasicInfo",
-      wgId,
-      buId,
+      orgId,
+      0,
       setEmployeeDDL,
       "EmployeeId",
-      "EmployeeName"
+      "EmployeeName",
+      0
+
     );
-  }, [wgId, buId]);
+  }, [orgId, buId]);
+  // placeDDL
+  useEffect(() => {
+    getPlaceDDL(
+      "mealConsume",
+      orgId,
+      setPlaceDDL,
+    );
+  }, [orgId, buId]);
 
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-
-  let permission = null;
-  permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 144) {
-      permission = item;
-    }
-  });
+  const permission = useMemo(
+    () => permissionList?.find((item) => item?.menuReferenceId === 144),
+    []
+  );
 
   return (
     <>
@@ -146,6 +163,7 @@ export default function FoodCornerForAll() {
             // resetForm(initData);
             getLandingData(values);
             setFieldValue("remarks", "");
+            // setFieldValue("place", "");
             setFieldValue("type", { value: 2, label: "Irregular" });
             setFieldValue("meal", 1);
             setFieldValue("date", todayDate());
@@ -167,9 +185,10 @@ export default function FoodCornerForAll() {
               <div className="food-corner">
                 {permission?.isView ? (
                   <div className="table-card">
-                    <div className="table-card-heading mt-3">
+                    <div className="table-card-heading mt-1">
                       <div className="row">
-                        <div className="col-lg-7">
+                        <div className="mx-3">
+                        {/* <div className="col-lg-7"> */}
                           <div className="leave-movement-FormCard">
                             <h6
                               style={{
@@ -190,6 +209,7 @@ export default function FoodCornerForAll() {
                                 resetForm,
                                 initData,
                                 employeeDDL,
+                                placeDDL,
                                 setEmployeeInfo,
                                 orgId,
                                 buId,
@@ -200,7 +220,7 @@ export default function FoodCornerForAll() {
                             ></FormCard>
                           </div>
                         </div>
-                        <div className="col-lg-5">
+                        {/* <div className="col-lg-5" style={{marginTop:"-3px"}} >
                           <div className="leave-movement-FormCard">
                             <div
                               style={{ marginTop: "-6px" }}
@@ -272,18 +292,19 @@ export default function FoodCornerForAll() {
                               }}
                             />
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
-                    <div className="table-card-body">
+                    <div className="table-card-body mt-3">
                       <div className="row">
-                        <div className="col-lg-4">
+                        <div className="col-lg-6">
                           <h6
                             style={{
                               color: "rgba(0, 0, 0, 0.6)",
                               fontSize: "14px",
                               lineHeight: "18px",
                               fontWeight: "600",
+                              marginBottom:"8px"
                             }}
                           >
                             Schedule Meal
@@ -292,15 +313,17 @@ export default function FoodCornerForAll() {
                             getLandingData={getLandingData}
                             scheduleMeal={scheduleMeal}
                             values={values}
+                            employeeId={employeeId}
                           />
                         </div>
-                        <div className="col-lg-3">
+                        <div className="col-lg-6">
                           <h6
                             style={{
                               color: "rgba(0, 0, 0, 0.6)",
                               fontSize: "14px",
                               lineHeight: "18px",
                               fontWeight: "600",
+                              marginBottom:"8px"
                             }}
                           >
                             Consume Meal
