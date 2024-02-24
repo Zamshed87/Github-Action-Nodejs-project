@@ -295,9 +295,9 @@ export default function IFarmerSalaryDrawer(props) {
             ...styles,
           },
           "& .MuiDrawer-paperAnchorRight": {
-              // overflowY: "visible",
-              overflowX: "hidden",
-              overflowY: "scroll !important",
+              overflowY: "visible",
+              // overflowX: "hidden",
+              // overflowY: "scroll !important",
           },
         }}
       >
