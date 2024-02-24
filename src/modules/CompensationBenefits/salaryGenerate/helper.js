@@ -250,6 +250,10 @@ export const getSalaryGenerateRequestLandingById = async (
         };
       });
       let empString = res?.data?.[0]?.listOfEmployeeId || "";
+      setPages({
+        ...pages,
+        total: res?.data?.[0]?.totalCount || 0,
+      });
       // new employee load
       if (isMarge) {
         setLoading && setLoading(true);

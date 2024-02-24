@@ -22,7 +22,7 @@ export const salaryGenerateInitialValues = {
   toDate: "",
   search: "",
   allSelected: false,
-
+  workplace: [],
   // marketing
   wing: "",
   soleDepo: "",
