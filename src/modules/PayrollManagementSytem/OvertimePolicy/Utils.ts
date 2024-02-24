@@ -100,8 +100,10 @@ TOTPolicyGenerate) => {
     strPolicyName: values?.policyName,
     numDevidedFixedHours: values?.fixedBenefitHours || 0,
     isCalendarTimeHours: values?.benefitHours === 1,
-    isHolidayCountAsFullDayOt: values?.count === 1 ? true : false,
-    isOffdayCountAsFullDayOt: values?.count === 2 ? true : false,
+    // isHolidayCountAsFullDayOt: values?.count === 1 ? true : false,
+    // isOffdayCountAsFullDayOt: values?.count === 2 ? true : false,
+    isHolidayCountAsFullDayOt: values?.isHolidayCountAsFullDayOt ? true : false,
+    isOffdayCountAsFullDayOt: values?.isOffdayCountAsFullDayOt ? true : false,
     intCalenderId: 0,
     intOTHourShouldBeAboveInMin: values?.intOTHourShouldBeAboveInMin || 0,
   };
@@ -335,12 +337,12 @@ export const initDataGenerate = (data: any) => {
         label: data?.employmentType,
       },
     ],
-    calendarName: data?.intCalenderId && [
+    calendarName: data?.intCalenderId ? [
       {
         value: data?.intCalenderId,
         label: data?.strCalenderName,
       },
-    ],
+    ] : undefined,
     fromSalary: data?.numFromSalary,
     toSalary: data?.numToSalary,
     overtimeDependsOn: otDependsOn?.find(

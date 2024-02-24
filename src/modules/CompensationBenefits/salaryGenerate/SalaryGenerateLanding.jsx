@@ -119,7 +119,7 @@ const SalaryGenerateLanding = () => {
   }, shallowEqual);
 
   //get landing data
-  const getLandingData = () => {
+  const getLandingData = (values) => {
     getSalaryGenerateRequestLanding(
       "SalaryGenerateRequestLanding",
       orgId,
@@ -146,29 +146,7 @@ const SalaryGenerateLanding = () => {
   };
 
   useEffect(() => {
-    getSalaryGenerateRequestLanding(
-      "SalaryGenerateRequestLanding",
-      orgId,
-      buId,
-      wgId,
-      wId,
-      "",
-      "",
-      values?.filterFromDate,
-      values?.filterToDate,
-      setRowDto,
-      setAllData,
-      setLoading,
-      pages,
-      setPages,
-      undefined,
-      "",
-      "",
-      "",
-      "",
-      "",
-      values
-    );
+    getLandingData(values)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId, wgId]);
 
@@ -253,7 +231,7 @@ const SalaryGenerateLanding = () => {
     const callback = () => {
       resetForm(initialValues);
       setIsEdit(false);
-      getLandingData();
+      getLandingData(values);
     };
     const res = await axios.get(
       `/Payroll/EmployeeTakeHomePayNotAssignForTax?partName=EmployeeTaxNotAssignListForTakeHomePay&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplacegroupId=${values?.workplaceGroup?.value}&intWorkPlaceId=${values?.workplace?.value}&intPayrollGroupId=${values?.payrollGroup?.value}`
@@ -282,7 +260,7 @@ const SalaryGenerateLanding = () => {
       intCreatedBy: employeeId,
     };
     const callback = () => {
-      getLandingData();
+      getLandingData(values);
     };
     createSalaryGenerateRequest(payload, setLoading, callback);
   };
@@ -742,7 +720,7 @@ const SalaryGenerateLanding = () => {
                       }}
                       styles={{
                         ...customStyles,
-                        control: (provided, state) => ({
+                        control: (provided) => ({
                           ...provided,
                           minHeight: "auto",
                           height:
@@ -756,7 +734,7 @@ const SalaryGenerateLanding = () => {
                             borderColor: `${gray600}!important`,
                           },
                         }),
-                        valueContainer: (provided, state) => ({
+                        valueContainer: (provided) => ({
                           ...provided,
                           height:
                             values?.workplace?.length > 1 ? "auto" : "auto",
@@ -787,32 +765,10 @@ const SalaryGenerateLanding = () => {
                   <button
                     className="btn btn-green btn-green-disable mt-4"
                     type="button"
-                    disabled={!values?.filterFromDate || !values?.filterToDate || !values?.salaryCode}
+                    disabled={!values?.filterFromDate || !values?.filterToDate}
                     onClick={(e) => {
                       e.stopPropagation();
-                      getSalaryGenerateRequestLanding(
-                        "SalaryGenerateRequestLanding",
-                        orgId,
-                        buId,
-                        wgId,
-                        wId,
-                        "",
-                        "",
-                        values?.filterFromDate,
-                        values?.filterToDate,
-                        setRowDto,
-                        setAllData,
-                        setLoading,
-                        pages,
-                        setPages,
-                        undefined,
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        values
-                      );
+                      getLandingData(values)
                     }}
                   >
                     View
@@ -879,7 +835,7 @@ const SalaryGenerateLanding = () => {
           resetForm={resetForm}
           initialValues={initialValues}
           setIsEdit={setIsEdit}
-          getLandingData={getLandingData}
+          getLandingData={() => getLandingData(values)}
           setLoading={setLoading}
           loading={loading}
         />

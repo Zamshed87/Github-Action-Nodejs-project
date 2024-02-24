@@ -21,7 +21,7 @@ import {
   initDataGenerate,
   otCountFrom,
   otDependsOn,
-  policyType,
+  // policyType,
 } from "../Utils";
 import "../style.scss";
 import { getPeopleDeskAllDDL } from "common/api";
@@ -162,7 +162,14 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       payload: payload,
       toast: true,
       onSuccess: () => {
-        history?.goBack();
+        form.setFieldsValue({
+          hrPosition: undefined,
+          policyName: undefined,
+          workplace: undefined,
+          employmentType: undefined,
+          calendarName: undefined,
+        });
+        // history?.goBack();
       },
     });
   };
@@ -290,152 +297,152 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
 
                   {/* 💥💥 change requirement  Fields Render Using Policy Type - 22/02/2024 */}
                   <div className="d-none">
-                  <Form.Item noStyle shouldUpdate>
-                    {() => {
-                      const { policyType } = form.getFieldsValue(true);
-                      const formElements: React.ReactNode[] = [];
+                    <Form.Item noStyle shouldUpdate>
+                      {() => {
+                        const { policyType } = form.getFieldsValue(true);
+                        const formElements: React.ReactNode[] = [];
 
-                      // Sort the policyType array based on the 'value' property
-                      const sortedPolicyType = policyType
-                        ?.slice()
-                        .sort((a: any, b: any) => a.value - b.value);
+                        // Sort the policyType array based on the 'value' property
+                        const sortedPolicyType = policyType
+                          ?.slice()
+                          .sort((a: any, b: any) => a.value - b.value);
 
-                      sortedPolicyType?.forEach((item: any, idx: number) => {
-                        if (item?.value === 1)
-                          formElements.push(
-                            <Col md={12} sm={24} key={idx}>
-                              <PSelect
-                                label="HR Position"
-                                name="hrPosition"
-                                placeholder="HR Position"
-                                mode="multiple"
-                                maxTagCount={"responsive"}
-                                disabled={state?.intOtconfigId}
-                                options={HRPositionDDL?.data || []}
-                                onChange={(value, option) => {
-                                  form.setFieldsValue({
-                                    hrPosition: option,
-                                  });
-                                }}
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please Select HR Position!",
-                                  },
-                                ]}
-                              />
-                            </Col>
-                          );
-
-                        if (item?.value === 2)
-                          formElements.push(
-                            <Col md={12} sm={24} key={idx}>
-                              <PSelect
-                                label="Employment Type"
-                                name="employmentType"
-                                placeholder="Employment Type"
-                                mode="multiple"
-                                disabled={state?.intOtconfigId}
-                                maxTagCount={"responsive"}
-                                options={EmploymentTypeDDL?.data || []}
-                                onChange={(value, option) => {
-                                  form.setFieldsValue({
-                                    employmentType: option,
-                                  });
-                                }}
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please Select Employment Type!",
-                                  },
-                                ]}
-                              />
-                            </Col>
-                          );
-                        if (item?.value === 3)
-                          formElements.push(
-                            <>
+                        sortedPolicyType?.forEach((item: any, idx: number) => {
+                          if (item?.value === 1)
+                            formElements.push(
                               <Col md={12} sm={24} key={idx}>
-                                <PInput
-                                  label="From Salary"
-                                  placeholder="From Salary"
-                                  type="number"
-                                  name="fromSalary"
+                                <PSelect
+                                  label="HR Position"
+                                  name="hrPosition"
+                                  placeholder="HR Position"
+                                  mode="multiple"
+                                  maxTagCount={"responsive"}
+                                  disabled={state?.intOtconfigId}
+                                  options={HRPositionDDL?.data || []}
+                                  onChange={(value, option) => {
+                                    form.setFieldsValue({
+                                      hrPosition: option,
+                                    });
+                                  }}
                                   rules={[
                                     {
                                       required: true,
-                                      message: "Please input From Salary!",
+                                      message: "Please Select HR Position!",
                                     },
                                   ]}
                                 />
                               </Col>
-                              <Col md={12} sm={24} key={idx + 1}>
-                                <PInput
-                                  label="To Salary"
-                                  placeholder="To Salary"
-                                  type="number"
-                                  name="toSalary"
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: "Please input To Salary!",
-                                    },
-                                    ({ getFieldValue }) => ({
-                                      validator(_, value) {
-                                        const fromSalary = parseFloat(
-                                          getFieldValue("fromSalary")
-                                        );
-                                        const toSalary = parseFloat(value);
+                            );
 
-                                        if (
-                                          !fromSalary ||
-                                          toSalary > fromSalary
-                                        ) {
-                                          return Promise.resolve();
-                                        }
-                                        return Promise.reject(
-                                          new Error(
-                                            "To Salary cannot be less than From Salary!"
-                                          )
-                                        );
-                                      },
-                                    }),
+                          if (item?.value === 2)
+                            formElements.push(
+                              <Col md={12} sm={24} key={idx}>
+                                <PSelect
+                                  label="Employment Type"
+                                  name="employmentType"
+                                  placeholder="Employment Type"
+                                  mode="multiple"
+                                  disabled={state?.intOtconfigId}
+                                  maxTagCount={"responsive"}
+                                  options={EmploymentTypeDDL?.data || []}
+                                  onChange={(value, option) => {
+                                    form.setFieldsValue({
+                                      employmentType: option,
+                                    });
+                                  }}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please Select Employment Type!",
+                                    },
                                   ]}
                                 />
                               </Col>
-                            </>
-                          );
-                        if (item?.value === 4)
-                          formElements.push(
-                            <Col md={12} sm={24} key={idx}>
-                              <PSelect
-                                label="Calendar Name"
-                                name="calendarName"
-                                placeholder="Calendar Name"
-                                mode="multiple"
-                                disabled={state?.intOtconfigId}
-                                maxTagCount={"responsive"}
-                                options={calendarDDL || []}
-                                onChange={(value, option) => {
-                                  form.setFieldsValue({
-                                    calendarName: option,
-                                  });
-                                }}
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please Select Calendar Name!",
-                                  },
-                                ]}
-                              />
-                            </Col>
-                          );
-                      });
-                      return formElements;
-                    }}
-                  </Form.Item>
+                            );
+                          if (item?.value === 3)
+                            formElements.push(
+                              <>
+                                <Col md={12} sm={24} key={idx}>
+                                  <PInput
+                                    label="From Salary"
+                                    placeholder="From Salary"
+                                    type="number"
+                                    name="fromSalary"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please input From Salary!",
+                                      },
+                                    ]}
+                                  />
+                                </Col>
+                                <Col md={12} sm={24} key={idx + 1}>
+                                  <PInput
+                                    label="To Salary"
+                                    placeholder="To Salary"
+                                    type="number"
+                                    name="toSalary"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Please input To Salary!",
+                                      },
+                                      ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                          const fromSalary = parseFloat(
+                                            getFieldValue("fromSalary")
+                                          );
+                                          const toSalary = parseFloat(value);
+
+                                          if (
+                                            !fromSalary ||
+                                            toSalary > fromSalary
+                                          ) {
+                                            return Promise.resolve();
+                                          }
+                                          return Promise.reject(
+                                            new Error(
+                                              "To Salary cannot be less than From Salary!"
+                                            )
+                                          );
+                                        },
+                                      }),
+                                    ]}
+                                  />
+                                </Col>
+                              </>
+                            );
+                          if (item?.value === 4)
+                            formElements.push(
+                              <Col md={12} sm={24} key={idx}>
+                                <PSelect
+                                  label="Calendar Name"
+                                  name="calendarName"
+                                  placeholder="Calendar Name"
+                                  mode="multiple"
+                                  // disabled={state?.intOtconfigId}
+                                  maxTagCount={"responsive"}
+                                  options={calendarDDL || []}
+                                  onChange={(value, option) => {
+                                    form.setFieldsValue({
+                                      calendarName: option,
+                                    });
+                                  }}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please Select Calendar Name!",
+                                    },
+                                  ]}
+                                />
+                              </Col>
+                            );
+                        });
+                        return formElements;
+                      }}
+                    </Form.Item>
                   </div>
-                   {/* 💥💥 change requirement  Fields Render Using Policy Type - 22/02/2024 */}
+                  {/* 💥💥 change requirement  Fields Render Using Policy Type - 22/02/2024 */}
 
                   {/* new requirement 💥💥 */}
                   <Col md={12} sm={24}>
@@ -541,7 +548,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       name="calendarName"
                       placeholder="Calendar Name"
                       mode="multiple"
-                      disabled={state?.intOtconfigId}
+                      // disabled={state?.intOtconfigId}
                       maxTagCount={"responsive"}
                       options={calendarDDL || []}
                       onChange={(value, option) => {
@@ -708,7 +715,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   >
                     Count Holiday or Offday
                   </Divider>
-                  <Col md={14} sm={24}>
+                  {/* <Col md={14} sm={24}>
                     <PRadio
                       type="group"
                       name="count"
@@ -727,6 +734,36 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                           value: 2,
                         },
                       ]}
+                    />
+                  </Col> */}
+                  <Col md={8} sm={24}>
+                    <PInput
+                      label="Holiday Count As Full Day?"
+                      type="checkbox"
+                      name="isHolidayCountAsFullDayOt"
+                      layout="horizontal"
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          form.setFieldsValue({
+                            isHolidayCountAsFullDayOt: e.target.checked,
+                          });
+                        }
+                      }}
+                    />
+                  </Col>
+                  <Col md={8} sm={24}>
+                    <PInput
+                      label="Off Day Count As Full Day?"
+                      type="checkbox"
+                      name="isOffdayCountAsFullDayOt"
+                      layout="horizontal"
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          form.setFieldsValue({
+                            isOffdayCountAsFullDayOt: e.target.checked,
+                          });
+                        }
+                      }}
                     />
                   </Col>
 

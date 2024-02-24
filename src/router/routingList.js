@@ -1,3 +1,4 @@
+import BulkSalaryAssign from "modules/CompensationBenefits/employeeSalary/bulkSalaryAssign";
 import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/CreateBonusSetup";
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
@@ -2279,6 +2280,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/employeeSalary/salaryAssign",
     component: SalaryAssign,
+  },
+  {
+    path: "/compensationAndBenefits/employeeSalary/bulkSalaryAssign",
+    component: BulkSalaryAssign,
   },
   {
     path: "/compensationAndBenefits/employeeSalary/additionDeduction",
