@@ -400,8 +400,6 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             ]}
             // disabled={true}
             onChange={(e: any) => {
-              console.log(row);
-
               handleIsPerDayChange(e, index, "TGS");
               handleIsPerDayChange(e, index, "CA");
               handleIsPerDayChange(0, index, "BA");
@@ -532,7 +530,6 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
                     form.getFieldValue(`MFS_${index}`) || 0
                   );
                   const TGS = parseFloat(form.getFieldValue(`TGS_${index}`));
-                  console.log({ CA, BA, MFS, TGS });
                   if (isExit) {
                     if (isNaN(CA) || CA < 0) {
                       callback("CA cannot be negative");
@@ -755,8 +752,6 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             type: "checkbox",
             selectedRowKeys: selectedRow.map((item) => item?.key),
             onChange: (selectedRowKeys, selectedRows) => {
-              console.log(selectedRows);
-
               setSelectedRow(selectedRows);
             },
             getCheckboxProps: (rec) => {
