@@ -11,14 +11,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import {
-  attachment_action,
-  getPeopleDeskAllDDL,
-  getPeopleDeskWithoutAllDDL,
-  getSearchEmployeeList,
-  getSearchEmployeeListNew,
-  PeopleDeskSaasDDL,
-} from "../../../../../common/api";
 import BackButton from "../../../../../common/BackButton";
 import DefaultInput from "../../../../../common/DefaultInput";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
@@ -27,6 +19,14 @@ import NoResult from "../../../../../common/NoResult";
 import PrimaryButton from "../../../../../common/PrimaryButton";
 import ResetButton from "../../../../../common/ResetButton";
 import SortingIcon from "../../../../../common/SortingIcon";
+import {
+  PeopleDeskSaasDDL,
+  attachment_action,
+  getPeopleDeskAllDDL,
+  getPeopleDeskWithoutAllDDL,
+  getSearchEmployeeList,
+  getSuperVisorLineMangerDottedByWorkplace
+} from "../../../../../common/api";
 // import {
 //   PeopleDeskSaasDDL,
 //   attachment_action,
@@ -34,6 +34,7 @@ import SortingIcon from "../../../../../common/SortingIcon";
 //   getPeopleDeskWithoutAllDDL,
 //   getSearchEmployeeList,
 // } from "../../../../../common/api";
+import AsyncFormikSelect from "common/AsyncFormikSelect";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
 import { setFirstLevelNameAction } from "../../../../../commonRedux/reduxForLocalStorage/actions";
 import {
@@ -58,7 +59,6 @@ import {
 } from "../helper";
 import "../styles.css";
 import HistoryTransferTable from "./HistoryTransferTable";
-import AsyncFormikSelect from "common/AsyncFormikSelect";
 
 const initialValues = {
   employee: "",
@@ -317,7 +317,8 @@ function CreateTransferPromotion() {
         orgId,
         state?.singleData?.intEmployeeId,
         setHistoryData,
-        setLoading < buId,
+        setLoading,
+        buId,
         wgId
       );
       getPeopleDeskAllDDL(
@@ -749,7 +750,8 @@ function CreateTransferPromotion() {
                     fontWeight: "500",
                   }}
                 >
-                  Employee administrative information
+                  {/* Employee administrative information */}
+                  Transfer To Information
                 </h3>
               </div>
 
@@ -777,33 +779,22 @@ function CreateTransferPromotion() {
                         "label",
                         0
                       );
-
-                      getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
-                          valueOption?.value
-                        }&WorkplaceGroupId=${
-                          values?.workplaceGroup?.value || wgId
-                        }&intWorkplaceId=${wId || 0}`,
-                        "DesignationId",
-                        "DesignationName",
-                        setDesignationDDL
-                      );
                       // wing DDL
-                      if (
-                        valueOption?.value &&
-                        values?.workplaceGroup?.label === "Marketing"
-                      ) {
-                        getPeopleDeskWithoutAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${
-                            valueOption?.value
-                          }&WorkplaceGroupId=${
-                            values?.workplaceGroup?.value || wgId
-                          }&ParentTerritoryId=0`,
-                          "WingId",
-                          "WingName",
-                          setWingDDL
-                        );
-                      }
+                      // if (
+                      //   valueOption?.value &&
+                      //   values?.workplaceGroup?.label === "Marketing"
+                      // ) {
+                      //   getPeopleDeskWithoutAllDDL(
+                      //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${
+                      //       valueOption?.value
+                      //     }&WorkplaceGroupId=${
+                      //       values?.workplaceGroup?.value || wgId
+                      //     }&ParentTerritoryId=0`,
+                      //     "WingId",
+                      //     "WingName",
+                      //     setWingDDL
+                      //   );
+                      // }
                       setValues((prev) => ({
                         ...prev,
                         businessUnit: valueOption,
@@ -899,16 +890,35 @@ function CreateTransferPromotion() {
                         lineManager: "",
                         section: "",
                       }));
-                      getPeopleDeskAllDDL(
-                        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
-                          values?.businessUnit?.value
-                        }&WorkplaceGroupId=${
-                          values?.workplaceGroup?.value || wgId
-                        }&intWorkplaceId=${valueOption?.value || 0}`,
-                        "DepartmentId",
-                        "DepartmentName",
-                        setDepartmentDDL
-                      );
+                      if (valueOption) {
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment_All&BusinessUnitId=${
+                            values?.businessUnit?.value
+                          }&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || wgId
+                          }&intWorkplaceId=${valueOption?.value || 0}`,
+                          "DepartmentId",
+                          "DepartmentName",
+                          setDepartmentDDL
+                        );
+                      }
+
+                      if (
+                        values?.businessUnit?.value &&
+                        values?.workplaceGroup?.value &&
+                        valueOption?.value
+                      ) {
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDesignation_All&BusinessUnitId=${
+                            values?.businessUnit?.value
+                          }&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || wgId
+                          }&intWorkplaceId=${valueOption?.value || 0}`,
+                          "DesignationId",
+                          "DesignationName",
+                          setDesignationDDL
+                        );
+                      }
                     }}
                     placeholder=""
                     styles={customStyles}
@@ -1182,13 +1192,29 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeListNew(
-                        buId,
-                        intAccountId,
-                        v
-                      )
+                      // getSearchEmployeeListNew(buId, intAccountId, v)
+                      {
+                        if (
+                          values?.workplaceGroup?.value &&
+                          values?.workplace?.value
+                        ) {
+                          return getSuperVisorLineMangerDottedByWorkplace({
+                            params: {
+                              DDLType: "EmployeeBasicInfoForEmpMgmt",
+                              AccountId: intAccountId,
+                              BusinessUnitId: buId,
+                              intId: employeeId,
+                              workplaceGroupId:
+                                values?.workplaceGroup?.value || wgId,
+                              strWorkplaceIdList:
+                                values?.workplace?.value || wId,
+                              searchTxt: v || "",
+                            },
+                          });
+                        }
+                      }
                     }
-                    isDisabled={!values?.workplaceGroup}
+                    isDisabled={!values?.workplaceGroup || !values?.workplace}
                   />
                 </div>
               </div>
@@ -1206,13 +1232,38 @@ function CreateTransferPromotion() {
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) =>
-                      getSearchEmployeeListNew(
-                        buId,
-                        intAccountId,
-                        v
-                      )
+                      // getSearchEmployeeListNew(buId, intAccountId, v, {
+                      //     DDLType: "EmployeeBasicInfoForEmpMgmt",
+                      //     AccountId: intAccountId,
+                      //     BusinessUnitId: buId,
+                      //     intId: employeeId,
+                      //     workplaceGroupId: values?.workplaceGroup?.value,
+                      //     strWorkplaceIdList: values?.workplace?.value,
+                      //     searchTxt: v || "",
+                      //   }
+                      // )
+                      {
+                        if (
+                          values?.workplaceGroup?.value &&
+                          values?.workplace?.value
+                        ) {
+                          return getSuperVisorLineMangerDottedByWorkplace({
+                            params: {
+                              DDLType: "EmployeeBasicInfoForEmpMgmt",
+                              AccountId: intAccountId,
+                              BusinessUnitId: buId,
+                              intId: employeeId,
+                              workplaceGroupId:
+                                values?.workplaceGroup?.value || wgId,
+                              strWorkplaceIdList:
+                                values?.workplace?.value || wId,
+                              searchTxt: v || "",
+                            },
+                          });
+                        }
+                      }
                     }
-                    isDisabled={!values?.workplaceGroup}
+                    isDisabled={!values?.workplaceGroup || !values?.workplace}
                   />
                 </div>
               </div>
@@ -1224,7 +1275,7 @@ function CreateTransferPromotion() {
                     placeholder=""
                     styles={{
                       ...customStyles,
-                      control: (provided, state) => ({
+                      control: (provided) => ({
                         ...provided,
                         minHeight: "auto",
                         height:
@@ -1238,7 +1289,7 @@ function CreateTransferPromotion() {
                           borderColor: `${gray600}!important`,
                         },
                       }),
-                      valueContainer: (provided, state) => ({
+                      valueContainer: (provided) => ({
                         ...provided,
                         height:
                           values?.businessUnit?.length > 2 ? "auto" : "30px",
@@ -1344,7 +1395,7 @@ function CreateTransferPromotion() {
                           .then((data) => {
                             setFileId(data?.[0]);
                           })
-                          .catch((error) => {
+                          .catch(() => {
                             setFileId("");
                           });
                       }
@@ -1493,7 +1544,7 @@ function CreateTransferPromotion() {
                       style={{ marginTop: "23px" }}
                       type="button"
                       onClick={() => {
-                        let roleExist = rowDto?.some(
+                        const roleExist = rowDto?.some(
                           (item) =>
                             item?.intOrganizationTypeId ===
                               values?.orgType?.value &&
@@ -1534,7 +1585,7 @@ function CreateTransferPromotion() {
                                   <th>SL</th>
                                   <th>
                                     <div
-                                      onClick={(e) => {
+                                      onClick={() => {
                                         setOrgTypeOrder(
                                           orgTypeOrder === "desc"
                                             ? "asc"
@@ -1553,7 +1604,7 @@ function CreateTransferPromotion() {
                                   </th>
                                   <th>
                                     <div
-                                      onClick={(e) => {
+                                      onClick={() => {
                                         setOrgOrder(
                                           orgOrder === "desc" ? "asc" : "desc"
                                         );

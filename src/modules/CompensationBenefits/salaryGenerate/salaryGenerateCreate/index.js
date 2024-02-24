@@ -213,7 +213,7 @@ const SalaryGenerateCreate = () => {
       intWorkplaceGroupId: wgId,
       strWorkplaceGroup: wgName,
       // intWorkplaceId: wId,
-      // strWorkplaceIdList: valueArray.join(","), --- removed today
+      // strWorkplaceIdList: valueArray.join(","), // --- removed today
       strWorkplace: wName,
       intWingId: values?.wing?.value || 0,
       intSoleDepoId: values?.soleDepo?.value || 0,
@@ -241,7 +241,7 @@ const SalaryGenerateCreate = () => {
       if (+params?.id) {
         getSalaryGenerateRequestLandingById(
           "SalaryGenerateRequestRowByRequestId",
-          orgId,
+          values,
           buId,
           wgId,
           +params?.id,
@@ -702,7 +702,7 @@ const SalaryGenerateCreate = () => {
 
                             getSalaryGenerateRequestLandingById(
                               "SalaryGenerateRequestRowByRequestId",
-                              orgId,
+                              values,
                               buId,
                               wgId,
                               +params?.id,
@@ -717,7 +717,7 @@ const SalaryGenerateCreate = () => {
                               wId,
                               {
                                 current: pages?.current,
-                                pageSize: 500,
+                                pageSize: 2000,
                               },
                               setPages,
                               setAllEmployeeString,
@@ -781,7 +781,7 @@ const SalaryGenerateCreate = () => {
 
                             getSalaryGenerateRequestLandingById(
                               "SalaryGenerateRequestRowByRequestId",
-                              orgId,
+                              values,
                               buId,
                               wgId,
                               +params?.id,
