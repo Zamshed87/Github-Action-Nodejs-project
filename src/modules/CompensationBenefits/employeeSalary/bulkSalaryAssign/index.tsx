@@ -361,6 +361,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
       setRowDto((prevRows) => {
         const updatedRows = [...prevRows];
         updatedRows[rowIndex][property] = value;
+
         return updatedRows;
       });
     }
@@ -393,9 +394,6 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Department",
       dataIndex: "strDepartmentName",
-      // sorter: true,
-      // filter: true,
-      // filterKey: "departmentList",
     },
 
     {
@@ -735,92 +733,6 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
           }}
         />
       </PCard>
-
-      {/* Confirmation Modal */}
-      {/* <Form.Item shouldUpdate noStyle>
-          {() => {
-            const { openModal, attendanceAdujust } = form.getFieldsValue(true);
-            return (
-              <PModal
-                width={500}
-                open={openModal}
-                onCancel={() => {
-                  form.setFieldsValue({
-                    openModal: false,
-                    attendanceAdujust: undefined,
-                    intime: "",
-                    outtime: "",
-                  });
-                }}
-                title="Are you sure to update attendance?"
-                components={
-                  <PForm form={form}>
-                    <>
-                      <div>
-                        <p>Request Status: {attendanceAdujust?.label}</p>
-                        <Row gutter={[10, 2]}>
-                          <Col span={12}>
-                            <PInput
-                              type="date"
-                              name="intime"
-                              picker="time"
-                              label="Select In time"
-                              placeholder="Select Intime"
-                              format={"hh:mm A"}
-                              // rules={[
-                              //   {
-                              //     required: true,
-                              //     message: "Please Select Intime",
-                              //   },
-                              // ]}
-                            />
-                          </Col>
-                          <Col span={12}>
-                            <PInput
-                              type="date"
-                              name="outtime"
-                              picker="time"
-                              label="Select Out-Time"
-                              placeholder="Select Out-Time"
-                              format={"hh:mm A"}
-                              // rules={[
-                              //   {
-                              //     required: true,
-                              //     message: "Please Select Out-Time",
-                              //   },
-                              // ]}
-                            />
-                          </Col>
-                          <Col span={24}>
-                            <PInput
-                              label="Reason"
-                              name={"reason"}
-                              type="text"
-                              placeholder="Write reason"
-                            />
-                          </Col>
-                        </Row>
-                      </div>
-                      <ModalFooter
-                        submitText="Yes"
-                        cancelText="No"
-                        onCancel={() => {
-                          form.setFieldsValue({
-                            openModal: false,
-                            attendanceAdujust: undefined,
-                            intime: "",
-                            outtime: "",
-                          });
-                        }}
-                        onSubmit={submitHandler}
-                      />
-                    </>
-                  </PForm>
-                }
-              />
-            );
-          }}
-        </Form.Item> */}
     </PForm>
   ) : (
     <NotPermittedPage />
