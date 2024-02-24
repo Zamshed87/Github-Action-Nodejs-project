@@ -82,7 +82,7 @@ export default function TaxAssignCheckerModal({
       if (+params?.id) {
         getSalaryGenerateRequestLandingById(
           "SalaryGenerateRequestById",
-          orgId,
+          values,
           values?.businessUnit?.value,
           +params?.id,
           false,
@@ -97,7 +97,7 @@ export default function TaxAssignCheckerModal({
         );
         getSalaryGenerateRequestLandingById(
           "SalaryGenerateRequestById",
-          orgId,
+          values,
           values?.businessUnit?.value,
           +params?.id,
           false,
