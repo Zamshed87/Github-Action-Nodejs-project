@@ -277,50 +277,9 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
 
   const submitHandler = async () => {
     await form
-      .validateFields(["intime", "outtime"])
+      .validateFields()
       .then(() => {
-        // const values = form.getFieldsValue(true);
-        // const payload = selectedRow.map((item) => {
-        //   return {
-        //     id: item?.ManualAttendanceId || 0,
-        //     accountId: orgId,
-        //     attendanceSummaryId: item?.AutoId,
-        //     employeeId: item?.EmployeeId,
-        //     attendanceDate: item?.AttendanceDate,
-        //     inTime: values?.inTime || item?.StartTime,
-        //     outTime: values?.outTime || item?.EndTime,
-        //     status: item?.isPresent
-        //       ? "Present"
-        //       : item?.isLeave
-        //       ? "Leave"
-        //       : "Absent",
-        //     requestStatus: values?.attendanceAdujust?.label,
-        //     remarks: values?.strReason || "By HR",
-        //     isApproved: true,
-        //     isActive: true,
-        //     isManagement: true,
-        //     insertUserId: employeeId,
-        //     insertDateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
-        //     workPlaceGroup: wgId,
-        //     businessUnitId: buId,
-        //   };
-        // });
-        // ManualAttendance?.action({
-        //   method: "post",
-        //   urlKey: "ManualAttendance",
-        //   payload,
-        //   toast: true,
-        //   onSuccess: () => {
-        //     form.setFieldsValue({
-        //       openModal: false,
-        //       attendanceAdujust: undefined,
-        //       intime: "",
-        //       outtime: "",
-        //     });
-        //     setSelectedRow([]);
-        //     getAttendanceFilterData();
-        //   },
-        // });
+        console.log("first");
       })
       .catch(() => {
         // console.error("Validate Failed:", info);
@@ -366,6 +325,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
       });
     }
   };
+
   const header: any = [
     {
       title: "SL",
@@ -387,9 +347,6 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Designation",
       dataIndex: "strDesignationName",
-      // sorter: true,
-      // filter: true,
-      // filterKey: "designationList",
     },
     {
       title: "Department",
@@ -409,8 +366,8 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             onChange={(value, op) =>
               handleIsPerDayChange(value, index, "isPerDay")
             }
-            defaultValue={row.isPerDay}
-            rules={[{ required: true, message: "Per Day Salary is required" }]}
+            defaultValue={{ value: 1, label: "Yes" }}
+            // rules={[{ required: true, message: "Per Day Salary is required" }]}
           />
         </>
       ),
@@ -423,9 +380,28 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             type="number"
             name={`TGS_${index}`}
             placeholder="Amount"
-            rules={[{ required: true, message: "Amount Is Required" }]}
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const TGS = parseFloat(value);
+                  const isExit = selectedRow.find(
+                    (item: any) => item?.intEmployeeId === row?.intEmployeeId
+                  );
+                  if (isExit && isNaN(TGS)) {
+                    callback("Amount Is Required");
+                  } else if (TGS < 0) {
+                    callback("Cant be Negative");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
             // disabled={true}
             onChange={(e: any) => {
+              console.log(row);
+
               handleIsPerDayChange(e, index, "TGS");
               handleIsPerDayChange(e, index, "CA");
               handleIsPerDayChange(0, index, "BA");
@@ -456,7 +432,24 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             type="number"
             name={`BA_${index}`}
             placeholder="Amount"
-            rules={[{ required: true, message: "Amount Is Required" }]}
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const BA = parseFloat(value);
+                  const isExit = selectedRow.find(
+                    (item: any) => item?.intEmployeeId === row?.intEmployeeId
+                  );
+                  if (isExit && isNaN(BA)) {
+                    callback("Amount Is Required");
+                  } else if (BA < 0) {
+                    callback("Cant be Negative");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
             // disabled={true}
             onChange={(e: any) => {
               // const property1 = `MFS_${index}`;
@@ -483,7 +476,24 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             type="number"
             name={`MFS_${index}`}
             placeholder="Amount"
-            rules={[{ required: true, message: "Amount Is Required" }]}
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const MFS = parseFloat(value);
+                  const isExit = selectedRow.find(
+                    (item: any) => item?.intEmployeeId === row?.intEmployeeId
+                  );
+                  if (isExit && isNaN(MFS)) {
+                    callback("Amount Is Required");
+                  } else if (MFS < 0) {
+                    callback("Cant be Negative");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
             // disabled={true}
             onChange={(e: any) => {
               handleIsPerDayChange(e, index, "MFS");
@@ -509,7 +519,32 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
             type="number"
             name={`CA_${index}`}
             placeholder="Amount"
-            rules={[{ required: true, message: "Amount Is Required" }]}
+            rules={[
+              { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const isExit = selectedRow.find(
+                    (item: any) => item?.intEmployeeId === row?.intEmployeeId
+                  );
+                  const CA = parseFloat(value);
+                  const BA = parseFloat(form.getFieldValue(`BA_${index}`) || 0);
+                  const MFS = parseFloat(
+                    form.getFieldValue(`MFS_${index}`) || 0
+                  );
+                  const TGS = parseFloat(form.getFieldValue(`TGS_${index}`));
+                  console.log({ CA, BA, MFS, TGS });
+                  if (isExit) {
+                    if (isNaN(CA) || CA < 0) {
+                      callback("CA cannot be negative");
+                    } else if (CA + BA + MFS !== TGS) {
+                      callback("CA + BA + MFS must equal TGS");
+                    } else {
+                      callback();
+                    }
+                  }
+                },
+              },
+            ]}
             // disabled={true}
             onChange={(e: any) => {
               handleIsPerDayChange(e, index, "CA");
@@ -543,7 +578,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
               type: "primary",
               content: "Save",
               onClick: () => {
-                console.log("first");
+                submitHandler();
               },
               disabled: selectedRow?.length > 0 ? false : true,
               //   icon: <AddOutlined />,
