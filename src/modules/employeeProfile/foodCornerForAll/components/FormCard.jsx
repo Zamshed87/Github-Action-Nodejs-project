@@ -5,11 +5,9 @@ import {
   getSearchEmployeeList,
 } from "../../../../common/api";
 import FormikInput from "../../../../common/FormikInput";
-import FormikRadio from "../../../../common/FormikRadio";
 import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
 import PrimaryButton from "../../../../common/PrimaryButton";
-import { greenColor } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { getPendingAndConsumeMealReport } from "../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
@@ -218,7 +216,8 @@ const FormCard = ({ propsObj }) => {
               />
             </div>
           </div>
-          <div className="col-lg-6">
+          {/* meal is not required instructed from ikbal vai */}
+          {/* <div className="col-lg-6">
             <div className="input-feild-maint mt-3">
               <label htmlFor="" className="pr-2">
                 Meal Status
@@ -244,7 +243,7 @@ const FormCard = ({ propsObj }) => {
                 checked={values?.mealStatus === "guest"}
               />
             </div>
-          </div>
+          </div> */}
           <div className="col-lg-6 align-content-end">
             <div className="d-flex justify-content-between">
               {/* <button className="btn button w-100 mt-3" type="submit">
