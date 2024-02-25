@@ -42,8 +42,7 @@ const AntTable = ({
                 new Date(dateFormatter(b?.[item?.dataIndex]))
               );
             }
-          : (a, b) =>
-              a?.[item?.dataIndex]?.length - b?.[item?.dataIndex]?.length
+          : (a, b) => a?.[item?.dataIndex]?.length - b?.[item?.dataIndex]?.length
         : "",
       filters: item?.filter
         ? item?.isDate
@@ -58,7 +57,7 @@ const AntTable = ({
               _.isEqual
             )
         : "",
-      filteredValue: filteredInfo?.[item?.dataIndex] || null,
+      filteredValue: item?.resetFilter ? null : filteredInfo?.[item?.dataIndex] || null,
       onFilter: (value, record) =>
         item?.isDate
           ? dateFormatter(record?.[item?.dataIndex]) === value
