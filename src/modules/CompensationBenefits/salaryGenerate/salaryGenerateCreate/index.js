@@ -121,6 +121,7 @@ const SalaryGenerateCreate = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    setFieldValue("workplace", []);
     setRowDto([]);
   }, [wgId]);
 
@@ -152,6 +153,7 @@ const SalaryGenerateCreate = () => {
         setPages
       );
     }
+    setFieldValue("workplace", []);
   }, [params, orgId, wgId, buId]);
   const saveHandler = async (values) => {
     const { empIdList, payload, callback } = salaryGeneratepayloadHandler(
