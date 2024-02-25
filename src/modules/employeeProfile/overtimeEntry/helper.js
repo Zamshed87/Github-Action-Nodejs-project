@@ -336,15 +336,15 @@ export const columns = (values, permission, history, deleteHandler) => {
       filter: true,
     },
     // need to discuss with maruf bhai
-    {
-      title: "Amount",
-      dataIndex: "TotalAmount",
-      render: (data, record) => (
-        <div>{formatMoney(record?.perMinutes * record?.OvertimeHour * 60)}</div>
-      ),
-      sorter: true,
-      filter: true,
-    },
+    // {
+    //   title: "Amount",
+    //   dataIndex: "TotalAmount",
+    //   render: (data, record) => (
+    //     <div>{formatMoney(record?.perMinutes * record?.OvertimeHour * 60)}</div>
+    //   ),
+    //   sorter: true,
+    //   filter: true,
+    // },
     {
       title: "Status",
       dataIndex: "ApprovalStatus",
