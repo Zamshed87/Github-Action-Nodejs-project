@@ -61,9 +61,11 @@ const FormCard = ({ propsObj }) => {
                     buId,
                     valueOption?.value,
                     setEmployeeInfo,
+                    null,
                     "",
-                    "",
-                    ""
+                    null,
+                    null,
+                    wgId
                   );
                   getPendingAndConsumeMealReport(
                     1,
@@ -106,9 +108,9 @@ const FormCard = ({ propsObj }) => {
           <div className="col-lg-12">
             {employeeInfo && (
               <p>
-                <strong>Designation: </strong>{" "}
-                {employeeInfo[0]?.DesignationName} <strong>Unit: </strong>{" "}
-                {employeeInfo[0]?.BusinessUnitName}
+                Designation:&nbsp;
+                <strong>{employeeInfo[0]?.DesignationName}</strong> Unit:&nbsp;
+                <strong>{employeeInfo[0]?.BusinessUnitName}</strong>{" "}
               </p>
             )}
           </div>
