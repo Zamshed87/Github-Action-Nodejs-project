@@ -63,7 +63,7 @@ export default function BulkEmployeeTaxAssign() {
 
     const modifyData = data?.map((itm) => {
       return {
-        strEmployeeCode: itm?.strEmployeeCode,
+        strEmployeeCode: `${itm?.strEmployeeCode}`,
         numTaxAmount: itm?.numTaxAmount,
       };
     });
@@ -121,11 +121,7 @@ export default function BulkEmployeeTaxAssign() {
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-        }) => (
+        {({ handleSubmit, resetForm, values }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
