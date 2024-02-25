@@ -57,12 +57,6 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       department,
     } = form.getFieldsValue(true);
 
-    useEffect(() => {
-      dispatch(setFirstLevelNameAction("Employee Management"));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      document.title = "Attendence Adjust";
-    }, []);
-
     const payload = {
       employeeId: employee?.value || employeeId,
       workplaceGroupId: wgId,
@@ -96,6 +90,12 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             },
     });
   };
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Attendence Adjust";
+  }, []);
 
   const getEmployee = (value: any) => {
     if (value?.length < 2) return CommonEmployeeDDL?.reset();
@@ -146,7 +146,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         getAttendanceFilterData();
       })
       .catch(() => {
-        // console.error("Validate Failed:", info);
+        // console.error("Validate Failed:", info?.message);
       });
   };
 
@@ -365,6 +365,16 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         empSearchType: 1,
         date: moment(),
       }}
+      // onFinish={() => {
+      //   const values = form.getFieldsValue(true);
+      //   // submitHandler({
+      //   //   values,
+      //   //   getData,
+      //   //   resetForm: form.resetFields,
+      //   //   setIsAddEditForm,
+      //   //   isEdit,
+      //   // });
+      // }}
     >
       <PCard>
         <PCardHeader title="Adjust Attendance">
@@ -423,7 +433,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             </Col>
             <Form.Item shouldUpdate noStyle>
               {() => {
-                const { empSearchType } = form.getFieldsValue();
+                const { empSearchType } = form.getFieldsValue(true);
                 return empSearchType === 1 ? (
                   <>
                     <Col md={6} sm={12} xs={24}>
@@ -576,7 +586,13 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 marginTop: "23px",
               }}
             >
-              <PButton type="primary" content="View" onClick={viewHandler} />
+              <PButton
+                type="primary"
+                content="View"
+                onClick={() => {
+                  viewHandler();
+                }}
+              />
             </Col>
           </Row>
         </div>
