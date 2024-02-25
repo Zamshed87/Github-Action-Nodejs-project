@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
-import { timeFormatter } from "../../../utility/timeFormatter";
 
 export const getEmpOvertimeLandingData = async (
   org,
@@ -51,6 +50,8 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       filter: false,
       className: "text-center",
       key: "sl",
+      width: "50px",
+      fixed: "left",
     },
     {
       title: "Employee ID",
@@ -58,6 +59,8 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       sorter: true,
       filter: true,
       key: "strEmployeeCode",
+      width: "120px",
+      fixed: "left",
     },
     {
       title: "Employee Name",
@@ -75,20 +78,41 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       sorter: true,
       filter: true,
       key: "strEmployeeName",
+      width: "200px",
+      fixed: "left",
     },
     {
       title: "Designation",
-      dataIndex: "strDesignationName",
+      dataIndex: "strDesignation",
       sorter: true,
       filter: true,
-      key: "strDesignationName",
+      key: "strDesignation",
+      width: "150px",
+      fixed: "left",
     },
     {
       title: "Department",
-      dataIndex: "strDepartmentName",
+      dataIndex: "strDepartment",
       sorter: true,
       filter: true,
-      key: "strDepartmentName",
+      key: "strDepartment",
+      width: "150px",
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "strWorkplaceGroup",
+      sorter: true,
+      filter: true,
+      key: "strWorkplaceGroup",
+      width: "180px",
+    },
+    {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      filter: true,
+      key: "strWorkplace",
+      width: "180px",
     },
     {
       title: "Date",
@@ -98,77 +122,106 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       key: "dteAttendanceDate",
       sorter: true,
       filter: true,
+      width: "100px",
     },
     {
-      title: "Start Time",
-      dataIndex: "timeStartTime",
-      filter: false,
-      sorter: false,
-      key: "timeStartTime",
-      className: "text-center",
-      render: (_, record) => {
-        if (record?.timeStartTime !== record?.timeEndTime) {
-          return <div>{timeFormatter(record?.timeStartTime)}</div>;
-        }
-        return <div>-</div>;
+      title: "Calendar Name",
+      dataIndex: "strCalendarName",
+      // render: (data) => dateFormatter(data),
+      // isDate: true,
+      key: "strCalendarName",
+      sorter: true,
+      filter: true,
+      width: "150px",
+    },
+    {
+      title: "Policy Name",
+      dataIndex: "strPolicyName",
+      // render: (data) => dateFormatter(data),
+      // isDate: true,
+      key: "strPolicyName",
+      sorter: true,
+      filter: true,
+      width: "150px",
+    },
+    // {
+    //   title: "Start Time",
+    //   dataIndex: "timeStartTime",
+    //   filter: false,
+    //   sorter: false,
+    //   key: "timeStartTime",
+    //   className: "text-center",
+    //   render: (_, record) => {
+    //     if (record?.timeStartTime !== record?.timeEndTime) {
+    //       return <div>{timeFormatter(record?.timeStartTime)}</div>;
+    //     }
+    //     return <div>-</div>;
+    //   },
+    //   width: "100px",
+    // },
+    // {
+    //   title: "End Time",
+    //   dataIndex: "timeEndTime",
+    //   className: "text-center",
+    //   render: (_, data) => {
+    //     if (data?.timeStartTime !== data?.timeEndTime) {
+    //       return <div>{timeFormatter(data?.timeEndTime)}</div>;
+    //     }
+    //     return <div>-</div>;
+    //   },
+    //   filter: false,
+    //   sorter: false,
+    //   key: "timeEndTime",
+    //   width: "100px",
+    // },
+    {
+      title: "Overtime Minuets",
+      key: "perMinunits",
+      dataIndex: "perMinunits",
+      render: (_, item, index) => {
+        console.log("per minutes")
+        return (
+          <div>
+            <input
+              style={{
+                height: "25px",
+                width: "100px",
+                fontSize: "12px",
+              }}
+              className="form-control"
+              value={item?.perMinunits}
+              name={item?.perMinunits}
+              type="number"
+              onChange={(e) => {
+                // if(e.target.value){
+                rowDtoHandler("perMinunits", index, e.target.value);
+              }}
+            />
+          </div>
+        );
       },
-    },
-    {
-      title: "End Time",
-      dataIndex: "timeEndTime",
-      className: "text-center",
-      render: (_, data) => {
-        if (data?.timeStartTime !== data?.timeEndTime) {
-          return <div>{timeFormatter(data?.timeEndTime)}</div>;
-        }
-        return <div>-</div>;
-      },
       filter: false,
       sorter: false,
-      key: "timeEndTime",
-    },
-    {
-      title: "Overtime Hour",
-      key: "EndTime",
-      dataIndex: "EndTime",
-      render: (_, item, index) => (
-        <div>
-          <input
-            style={{
-              height: "25px",
-              width: "100px",
-              fontSize: "12px",
-            }}
-            className="form-control"
-            value={item?.numHours}
-            name={item?.numHours}
-            type="number"
-            onChange={(e) => {
-              // if(e.target.value){
-              rowDtoHandler("numHours", index, e.target.value);
-            }}
-          />
-        </div>
-      ),
-      filter: false,
-      sorter: false,
+      width: "120px",
     },
     {
       title: "Per Min.Rate",
       dataIndex: "numPerMinunitRate",
-      render: (_, item, index) => (
+      render: (_, item) => (
         <div className="pr-2">{item?.numPerMinunitRate}</div>
       ),
+      width: "120px",
     },
     {
-      title: "Amount",
+      title: "Amount (BDT)",
       dataIndex: "numTotalAmount",
-      render: (_, item, index) => (
+      render: (_, item) => (
         <div className="text-right pr-2">
           {numberWithCommas(item?.numTotalAmount)}
         </div>
       ),
       key: "numTotalAmount",
+      width: "80px",
     },
   ];
 };
