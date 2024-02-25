@@ -282,7 +282,6 @@ const SalaryGenerateCreate = () => {
     };
     return { empIdList, payload, callback };
   };
-  console.log({allEmployeeString})
   const allBulkSalaryGenerateHandler = (values, allData) => {
     const { payload, callback } = salaryGeneratepayloadHandler(
       values,
