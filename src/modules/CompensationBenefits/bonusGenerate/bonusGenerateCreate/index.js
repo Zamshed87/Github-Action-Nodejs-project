@@ -6,20 +6,25 @@ import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useHistory, useLocation, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 import AntTable from "../../../../common/AntTable";
+import BackButton from "../../../../common/BackButton";
+import DefaultInput from "../../../../common/DefaultInput";
+import FormikSelect from "../../../../common/FormikSelect";
+import NoResult from "../../../../common/NoResult";
+import ResetButton from "../../../../common/ResetButton";
 import {
   getPeopleDeskAllDDL,
   getPeopleDeskWithoutAllDDL,
 } from "../../../../common/api";
-import DefaultInput from "../../../../common/DefaultInput";
-import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
-import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../../utility/customColor";
+import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import {
@@ -28,18 +33,13 @@ import {
   // getBonusGenerateLanding,
   getBonusNameDDL,
 } from "../helper";
-import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
-import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
-import { useLocation, useHistory, useParams } from "react-router-dom";
 import "../salaryGenerate.css";
-import BackButton from "../../../../common/BackButton";
 import {
   getBonusInformationOnRegenerate,
   getEditDDLs,
   getEmployeeListForBonusGenerateOrRegenerate,
   onGenerateOrReGenerateBonus,
 } from "./helper";
-import { toast } from "react-toastify";
 
 const initialValues = {
   bonusSystemType: { value: 1, label: "Bonus Generator" },
@@ -795,7 +795,7 @@ const BonusGenerateCreate = () => {
                           }
                         }}
                       >
-                        Show
+                        View
                       </button>
                     </div>
                   </div>

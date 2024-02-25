@@ -768,7 +768,7 @@ const SalaryGenerateCreate = () => {
                           !values?.workplace?.length > 0
                         }
                       >
-                        Show
+                        View
                       </button>
                     ) : (
                       <button
@@ -841,7 +841,7 @@ const SalaryGenerateCreate = () => {
                           !values?.workplace?.length > 0
                         }
                       >
-                        Show
+                        View
                       </button>
                     )}
                     {allData?.filter((itm) => itm?.isSalaryGenerate === true)
