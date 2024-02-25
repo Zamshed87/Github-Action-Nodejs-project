@@ -64,7 +64,7 @@ export default function FoodCornerForAll() {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
   const {
-    profileData: { orgId, buId, employeeId },
+    profileData: { orgId, buId, employeeId, wgId },
     permissionList,
   } = useSelector((state) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
@@ -75,7 +75,7 @@ export default function FoodCornerForAll() {
   const [employeeInfo, setEmployeeInfo] = useState("");
   // const [isEdit, setIsEdit] = useState(false);
   // const [menuList, setMenuList] = useState([]);
-    const saveHandler = (values, cb) => {
+  const saveHandler = (values, cb) => {
     const payload = {
       PartId: 1,
       ToDate: values?.date || todayDate(),
@@ -88,7 +88,7 @@ export default function FoodCornerForAll() {
       isPayable: 1,
       Narration: values?.remarks || "",
       ActionBy: employeeId,
-      MealConsumePlaceId:values?.place?.value || 0,
+      MealConsumePlaceId: values?.place?.value || 0,
     };
     createCafeteriaEntry(
       1,
@@ -135,16 +135,11 @@ export default function FoodCornerForAll() {
       "EmployeeId",
       "EmployeeName",
       0
-
     );
   }, [orgId, buId]);
   // placeDDL
   useEffect(() => {
-    getPlaceDDL(
-      "mealConsume",
-      orgId,
-      setPlaceDDL,
-    );
+    getPlaceDDL("mealConsume", orgId, setPlaceDDL, buId, wgId);
   }, [orgId, buId]);
 
   const permission = useMemo(
@@ -188,7 +183,7 @@ export default function FoodCornerForAll() {
                     <div className="table-card-heading mt-1">
                       <div className="row">
                         <div className="mx-3">
-                        {/* <div className="col-lg-7"> */}
+                          {/* <div className="col-lg-7"> */}
                           <div className="leave-movement-FormCard">
                             <h6
                               style={{
@@ -304,7 +299,7 @@ export default function FoodCornerForAll() {
                               fontSize: "14px",
                               lineHeight: "18px",
                               fontWeight: "600",
-                              marginBottom:"8px"
+                              marginBottom: "8px",
                             }}
                           >
                             Schedule Meal
@@ -323,7 +318,7 @@ export default function FoodCornerForAll() {
                               fontSize: "14px",
                               lineHeight: "18px",
                               fontWeight: "600",
-                              marginBottom:"8px"
+                              marginBottom: "8px",
                             }}
                           >
                             Consume Meal

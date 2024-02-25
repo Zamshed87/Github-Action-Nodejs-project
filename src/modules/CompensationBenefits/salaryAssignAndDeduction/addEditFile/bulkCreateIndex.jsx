@@ -214,13 +214,13 @@ function BulkAddEditForm() {
     if (!values?.isAutoRenew && !values?.toMonth) {
       return toast.warn("To Month must be selected");
     }
-    if(values?.intAllowanceDuration?.value === 1){
-     if(!values?.intAllowanceAttendenceStatus){
-      return toast.warn("Allowance Attendence Status Required");
-     }
-     if(!values?.maxAmount){
-      return toast.warn("Max Amount Required");
-     }
+    if (values?.intAllowanceDuration?.value === 1) {
+      if (!values?.intAllowanceAttendenceStatus) {
+        return toast.warn("Allowance Attendence Status Required");
+      }
+      if (!values?.maxAmount) {
+        return toast.warn("Max Amount Required");
+      }
     }
     var months = [
       "January",
@@ -358,7 +358,7 @@ function BulkAddEditForm() {
   const [bulkEmpString, setBulkEmpString] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
   const formikRef = useRef();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getPeopleDeskAllDDL(

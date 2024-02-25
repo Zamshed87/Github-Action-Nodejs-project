@@ -13,7 +13,7 @@ export const getDailyCafeteriaReport = async (
   setIsLoading(true);
   try {
     const res = await axios.get(
-      `/Cafeteria/GetDailyCafeteriaReport?accountId=${accId}&mealDate=${mealDate}&isDownload=${isDownload}&MealConsumePlaceId=${mealPlace }`
+      `/Cafeteria/GetDailyCafeteriaReport?accountId=${accId}&mealDate=${mealDate}&isDownload=${isDownload}&MealConsumePlaceId=${mealPlace}`
     );
     setIsLoading(false);
     setter(res?.data);
@@ -45,20 +45,13 @@ export const getMonthlyCafeteriaReport = async (
     setter([]);
   }
 };
-export const getPlaceDDL = async (
-  ddlType,
-  accId,
-  setter,
-  id
-) => {
+export const getPlaceDDL = async (ddlType, accId, setter, buId, wgId) => {
   try {
     const res = await axios.get(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&AccountId=${accId}&intId=${
-        id || 0
-      }`
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&AccountId=${accId}&intId=0&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`
     );
 
-    setter(res?.data)
+    setter(res?.data);
   } catch (error) {}
 };
 export const mealColumns = (page, paginationSize) => {
@@ -75,7 +68,7 @@ export const mealColumns = (page, paginationSize) => {
       title: "Enroll",
       sorter: true,
       filter: true,
-      dataIndex:"employeeId"
+      dataIndex: "employeeId",
     },
     {
       title: "Employee Name",
@@ -142,16 +135,16 @@ export const mealColumnsType2 = (page, paginationSize) => {
       sorter: false,
       filter: false,
       className: "text-center",
-      fixed:"left", 
+      fixed: "left",
       width: 60,
     },
     {
       title: "Enroll",
       sorter: true,
       filter: true,
-      dataIndex:"employeeId",
+      dataIndex: "employeeId",
       width: 100,
-      fixed:"left", 
+      fixed: "left",
     },
     {
       title: "Employee Name",
@@ -170,8 +163,8 @@ export const mealColumnsType2 = (page, paginationSize) => {
       },
       sorter: true,
       filter: true,
-      width:150,
-      fixed:"left", 
+      width: 150,
+      fixed: "left",
     },
     {
       title: "Designation",
@@ -205,49 +198,49 @@ export const mealColumnsType2 = (page, paginationSize) => {
       title: "Rate",
       dataIndex: "rate",
       sorter: true,
-      width:100
+      width: 100,
     },
     {
       title: "Own Meal",
       dataIndex: "own",
       sorter: true,
-      width:100,
+      width: 100,
     },
     {
       title: "Guest Meal",
       dataIndex: "guest",
       sorter: true,
-      width:100,
+      width: 100,
     },
     {
       title: "Total Meal",
       dataIndex: "total",
       sorter: true,
-      width:100,
+      width: 100,
     },
     {
       title: "Own Tk",
       dataIndex: "ownTk",
       sorter: true,
-      width:100,
+      width: 100,
     },
     {
       title: "Company Tk",
       dataIndex: "companyPay",
       sorter: true,
-      width:100,
+      width: 100,
     },
     {
       title: "Guest Tk",
       dataIndex: "guestTk",
       sorter: true,
-      width:100,
+      width: 100,
     },
     {
       title: "Total Tk",
       dataIndex: "totalTk",
       sorter: true,
-      width:100,
+      width: 100,
     },
   ];
 };

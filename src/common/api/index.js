@@ -219,9 +219,9 @@ export const getPeopleDeskAllLanding = async (
 ) => {
   setLoading && setLoading(true);
 
-  let status = statusId ? `&intStatusId=${statusId}` : "";
-  let yearFilter = year ? `&YearId=${year}` : "";
-  let workplace = wId ? `&workplaceId=${wId}` : "";
+  const status = statusId ? `&intStatusId=${statusId}` : "";
+  const yearFilter = year ? `&YearId=${year}` : "";
+  const workplace = wId ? `&workplaceId=${wId}` : "";
   try {
     const res = await axios.get(
       `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}${workplace}&WorkplaceGroupId=${wgId}&intId=${id}`

@@ -9,7 +9,11 @@ import ConsumeMeal from "./components/ConsumeMeal";
 import FormCard from "./components/FormCard";
 // import MenuList from "./components/MenuList";
 import ScheduleMeal from "./components/ScheduleMeal";
-import { createCafeteriaEntry, getPendingAndConsumeMealReport, getPlaceDDL } from "./helper";
+import {
+  createCafeteriaEntry,
+  getPendingAndConsumeMealReport,
+  getPlaceDDL,
+} from "./helper";
 import "./style.css";
 
 const initData = {
@@ -48,7 +52,7 @@ export default function FoodCorner() {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
   }, []);
 
-  const { orgId, buId, employeeId, strDisplayName } = useSelector(
+  const { orgId, buId, employeeId, strDisplayName, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -108,14 +112,10 @@ export default function FoodCorner() {
   useEffect(() => {
     getLandingData();
   }, [orgId, buId]);
- // placeDDL
- useEffect(() => {
-  getPlaceDDL(
-    "mealConsume",
-    orgId,
-    setPlaceDDL,
-  );
-}, [orgId]);
+  // placeDDL
+  useEffect(() => {
+    getPlaceDDL("mealConsume", orgId, setPlaceDDL, buId, wgId);
+  }, [orgId]);
   return (
     <>
       <Formik
@@ -186,11 +186,10 @@ export default function FoodCorner() {
                             Menu List
                           </h6>
                           {/* <PrimaryButton type="button" className="btn btn-default flex-center" label={"Edit Menu"} onClick={(e) => {}} /> */}
-                        {/* </div> */}
-                        {/* <MenuList setLoading={setLoading} /> */}
-                      {/* </div> */}
-                    {/* </div> */} 
-                    
+                    {/* </div> */}
+                    {/* <MenuList setLoading={setLoading} /> */}
+                    {/* </div> */}
+                    {/* </div> */}
                   </div>
                 </div>
                 <div className="table-card-body mt-3">
