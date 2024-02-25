@@ -64,13 +64,8 @@ export default function JoiningReport() {
   };
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
-  const { buName } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
   // hooks
   const [rowDto, setRowDto] = useState([]);
-  const [tempLoading, setTempLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
@@ -141,7 +136,7 @@ export default function JoiningReport() {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        {(loading || tempLoading) && <Loading />}
+        {loading && <Loading />}
         <div>
           {permission?.isView ? (
             <div className="table-card">
