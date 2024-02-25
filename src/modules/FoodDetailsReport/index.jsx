@@ -37,7 +37,7 @@ export default function FoodDetailsReport() {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
   const {
-    profileData: { orgId, buId },
+    profileData: { orgId, buId, wgId },
     permissionList,
   } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -96,7 +96,7 @@ export default function FoodDetailsReport() {
     []
   );
   useEffect(() => {
-    getPlaceDDL("mealConsume", orgId, setPlaceDDL);
+    getPlaceDDL("mealConsume", orgId, setPlaceDDL, buId, wgId);
   }, [orgId, buId]);
 
   return (
