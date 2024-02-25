@@ -358,6 +358,16 @@ const SalaryDetailsReport = lazy(() =>
     "../modules/CompensationBenefits/reports/salaryDetailsReport/index.jsx"
   )
 );
+const SalaryRequisitionReport = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/reports/salaryRequisitionReport/index.jsx"
+  )
+);
+const SalaryCostCenterReport = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/reports/SalaryCostCenterReport/index.jsx"
+  )
+);
 const SalaryPaySlip = lazy(() =>
   import("../modules/CompensationBenefits/reports/salaryPaySlip/index.js")
 );
@@ -2435,6 +2445,14 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/reports/salaryDetailsReport",
     component: SalaryDetailsReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/salaryRequisitionReport",
+    component: SalaryRequisitionReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/salary&AllowenceCostCenterReport",
+    component: SalaryCostCenterReport,
   },
   {
     path: "/compensationAndBenefits/reports/cashDisbursementRegister",
