@@ -7,7 +7,6 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import { paginationSize } from "../../../../common/AntTable";
 import DefaultInput from "../../../../common/DefaultInput";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
@@ -30,6 +29,8 @@ import ManagementSeparationHistoryView from "./viewForm/ManagementSeparationHist
 import FormikSelect from "common/FormikSelect";
 import { customStyles } from "utility/selectCustomStyle";
 import { statusDDL } from "./utils";
+
+const paginationSize = 100;
 
 const initData = {
   status: { value: 0, label: "All" },
@@ -335,7 +336,11 @@ export default function ManagementSeparation() {
                   <button
                     className="btn btn-green btn-green-disable mt-4"
                     type="button"
-                    disabled={!values?.filterFromDate || !values?.filterToDate || !values?.status}
+                    disabled={
+                      !values?.filterFromDate ||
+                      !values?.filterToDate ||
+                      !values?.status
+                    }
                     onClick={() => {
                       getData(pages, values?.search);
                     }}

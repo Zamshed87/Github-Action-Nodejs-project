@@ -14,9 +14,7 @@ import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
 import Loading from "../../../../common/loading/Loading";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../../common/peopleDeskTable";
+import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
@@ -34,6 +32,8 @@ import {
   validationSchema2,
 } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+
+const paginationSize = 100;
 
 const initHeaderList = {
   strDepartmentList: [],
