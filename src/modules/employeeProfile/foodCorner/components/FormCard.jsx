@@ -119,7 +119,8 @@ const FormCard = ({ propsObj }) => {
                 />
               </div>
             </div>
-            <div className="col-lg-6">
+            {/* meal is not required instructed from ikbal vai */}
+            {/* <div className="col-lg-6">
               <div className="input-field-main">
                 <label htmlFor="">Type</label>
                 <FormikSelect
@@ -140,7 +141,7 @@ const FormCard = ({ propsObj }) => {
                   isDisabled={false}
                 />
               </div>
-            </div>
+            </div> */}
             <div className="col-lg-6">
               <div className="input-field-main">
                 <label htmlFor="">Remarks</label>
