@@ -106,6 +106,7 @@ TOTPolicyGenerate) => {
     isOffdayCountAsFullDayOt: values?.isOffdayCountAsFullDayOt ? true : false,
     intCalenderId: 0,
     intOTHourShouldBeAboveInMin: values?.intOTHourShouldBeAboveInMin || 0,
+    numOTRateForBasedOnSalaryRange: values?.otRatePerMin || 0,
   };
   const payload: any = generateRows(
     policy, // policyType
