@@ -489,7 +489,7 @@ const MgmtDailyAttendance = () => {
                             setFieldValue("search", "");
                             getData(
                               { current: 1, pageSize: paginationSize },
-                              "false",
+                              false,
                               "",
                               -1,
                               filterOrderList,
