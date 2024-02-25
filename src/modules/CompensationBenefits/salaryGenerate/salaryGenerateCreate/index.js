@@ -282,7 +282,6 @@ const SalaryGenerateCreate = () => {
     };
     return { empIdList, payload, callback };
   };
-  console.log({allEmployeeString})
   const allBulkSalaryGenerateHandler = (values, allData) => {
     const { payload, callback } = salaryGeneratepayloadHandler(
       values,
@@ -769,7 +768,7 @@ const SalaryGenerateCreate = () => {
                           !values?.workplace?.length > 0
                         }
                       >
-                        Show
+                        View
                       </button>
                     ) : (
                       <button
@@ -842,7 +841,7 @@ const SalaryGenerateCreate = () => {
                           !values?.workplace?.length > 0
                         }
                       >
-                        Show
+                        View
                       </button>
                     )}
                     {allData?.filter((itm) => itm?.isSalaryGenerate === true)
