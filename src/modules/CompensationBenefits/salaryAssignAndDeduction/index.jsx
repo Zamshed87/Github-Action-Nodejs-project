@@ -1,12 +1,10 @@
-import { AddCircle, AddOutlined } from "@mui/icons-material";
-import PlaylistAddCircleIcon from "@mui/icons-material/PlaylistAddCircle";
+import { AddOutlined } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import BtnActionMenu from "../../../common/BtnActionMenu";
 import FilterBadgeComponent from "../../../common/FilterBadgeComponent";
 import Loading from "../../../common/loading/Loading";
 import MasterFilter from "../../../common/MasterFilter";
@@ -14,7 +12,6 @@ import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../common/PopoverMasterFilter";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500 } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import FilterModal from "./components/FilterModal";
 import {
@@ -23,15 +20,13 @@ import {
 } from "./helper";
 import "./styles.css";
 import DefaultInput from "../../../common/DefaultInput";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../common/peopleDeskTable";
+import PeopleDeskTable from "../../../common/peopleDeskTable";
 import PrimaryButton from "common/PrimaryButton";
 
-let date = new Date();
-let initYear = date.getFullYear(); // 2022
-let initMonth = date.getMonth() + 1; // 6
-let modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
+const date = new Date();
+const initYear = date.getFullYear(); // 2022
+const initMonth = date.getMonth() + 1; // 6
+const modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
 
 const initData = {
   searchString: "",
@@ -98,7 +93,7 @@ function SalaryAssignAndDeduction() {
 
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: paginationSize,
+    pageSize: 100,
     total: 0,
   });
 
