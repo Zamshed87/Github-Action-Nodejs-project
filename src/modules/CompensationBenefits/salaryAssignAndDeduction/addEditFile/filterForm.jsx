@@ -275,7 +275,7 @@ const FilterForm = ({
                   type="button"
                   className="btn btn-green btn-green-disable"
                   style={{ width: "auto" }}
-                  label="Show"
+                  label="View"
                   disabled={
                     !values?.businessUnit ||
                     !values?.workplaceGroup ||
@@ -291,7 +291,7 @@ const FilterForm = ({
                     setIsFormOpen(true);
                   }}
                 >
-                  Show
+                  View
                 </button>
               </div>
             </div>

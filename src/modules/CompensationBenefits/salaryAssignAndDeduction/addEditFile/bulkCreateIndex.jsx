@@ -779,12 +779,12 @@ function BulkAddEditForm() {
                         type="button"
                         className="btn btn-green btn-green-disable"
                         style={{ width: "auto" }}
-                        label="Show"
+                        label="View"
                         onClick={() => {
                           getLandingBulkAssignEmpListHandler(values, pages);
                         }}
                       >
-                        Show
+                        View
                       </button>
                     </div>
                   </div>
