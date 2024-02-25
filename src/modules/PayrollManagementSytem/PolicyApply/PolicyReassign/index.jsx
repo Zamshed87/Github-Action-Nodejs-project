@@ -492,7 +492,7 @@ const PolicyReAssign = () => {
                         type="button"
                         className="btn btn-green btn-green-disable"
                         style={{ width: "auto" }}
-                        label="Show"
+                        label="View"
                         disabled={
                           !values?.businessUnit ||
                           !values?.workplaceGroup ||
@@ -505,7 +505,7 @@ const PolicyReAssign = () => {
                           addHandler(values);
                         }}
                       >
-                        Show
+                        View
                       </button>
                     </div>
                   </div>

@@ -261,7 +261,7 @@ export default function FoodDetailsReport() {
                           <PrimaryButton
                             type="submit"
                             className="btn btn-default flex-center"
-                            label={"Show"}
+                            label={"View"}
                             onClick={() => {
                               setIsFilter(true);
                               // getDailyCafeteriaReport(
