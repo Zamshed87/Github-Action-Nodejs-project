@@ -388,7 +388,7 @@ export default function ArearSalaryGenerateForm() {
                         !values?.payrollPolicy
                       }
                     >
-                      Show
+                      View
                     </button>
                   </div>
                 </div>

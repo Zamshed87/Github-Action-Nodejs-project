@@ -1,11 +1,29 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const createCafeteriaEntry = async (partId, date, enrollId, typeId, mealOption, mealFor, countMeal, ownGuest, payable, narration, userId, payload, setLoading, cb,placeId) => {
+export const createCafeteriaEntry = async (
+  partId,
+  date,
+  enrollId,
+  typeId,
+  mealOption,
+  mealFor,
+  countMeal,
+  ownGuest,
+  payable,
+  narration,
+  userId,
+  payload,
+  setLoading,
+  cb,
+  placeId
+) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(
-      `/Cafeteria/CafeteriaEntry?PartId=${partId}&ToDate=${date}&EnrollId=${enrollId}&TypeId=${typeId}&MealOption=${mealOption}&MealFor=${mealFor}&CountMeal=${countMeal}&isOwnGuest=${ownGuest}&isPayable=${payable}&Narration=${narration}&ActionBy=${userId}&MealConsumePlaceId=${placeId || 0}`,
+      `/Cafeteria/CafeteriaEntry?PartId=${partId}&ToDate=${date}&EnrollId=${enrollId}&TypeId=${typeId}&MealOption=${mealOption}&MealFor=${mealFor}&CountMeal=${countMeal}&isOwnGuest=${ownGuest}&isPayable=${payable}&Narration=${narration}&ActionBy=${userId}&MealConsumePlaceId=${
+        placeId || 0
+      }`,
       payload
     );
     cb && cb();
@@ -58,17 +76,10 @@ export const getCafeteriaMenuListReport = async (
   }
 };
 
-export const getPlaceDDL = async (
-  ddlType,
-  accId,
-  setter,
-  id
-) => {
+export const getPlaceDDL = async (ddlType, accId, setter, buId, wgId) => {
   try {
     const res = await axios.get(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&AccountId=${accId}&intId=${
-        id || 0
-      }`
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=${ddlType}&AccountId=${accId}&intId=0&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}`
     );
     // if (res?.data) {
     //   const newDDL = res?.data?.map((itm) => {
@@ -80,6 +91,6 @@ export const getPlaceDDL = async (
     //   });
     //   setter(newDDL);
     // }
-    setter(res?.data)
+    setter(res?.data);
   } catch (error) {}
 };

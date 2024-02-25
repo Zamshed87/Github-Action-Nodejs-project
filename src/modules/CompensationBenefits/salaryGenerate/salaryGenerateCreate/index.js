@@ -121,6 +121,7 @@ const SalaryGenerateCreate = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    setFieldValue("workplace", []);
     setRowDto([]);
   }, [wgId]);
 
@@ -152,6 +153,7 @@ const SalaryGenerateCreate = () => {
         setPages
       );
     }
+    setFieldValue("workplace", []);
   }, [params, orgId, wgId, buId]);
   const saveHandler = async (values) => {
     const { empIdList, payload, callback } = salaryGeneratepayloadHandler(
@@ -280,7 +282,6 @@ const SalaryGenerateCreate = () => {
     };
     return { empIdList, payload, callback };
   };
-  console.log({allEmployeeString})
   const allBulkSalaryGenerateHandler = (values, allData) => {
     const { payload, callback } = salaryGeneratepayloadHandler(
       values,
@@ -767,7 +768,7 @@ const SalaryGenerateCreate = () => {
                           !values?.workplace?.length > 0
                         }
                       >
-                        Show
+                        View
                       </button>
                     ) : (
                       <button
@@ -840,7 +841,7 @@ const SalaryGenerateCreate = () => {
                           !values?.workplace?.length > 0
                         }
                       >
-                        Show
+                        View
                       </button>
                     )}
                     {allData?.filter((itm) => itm?.isSalaryGenerate === true)

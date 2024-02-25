@@ -107,7 +107,7 @@ export default function AdditionDeduction() {
                                 <div className="col-lg-1 align-content-end">
                                   <div className="d-flex justify-content-between">
                                     <button className="btn button btn-green w-100 mt-3" type="submit">
-                                      Show
+                                      View
                                     </button>
                                   </div>
                                 </div>

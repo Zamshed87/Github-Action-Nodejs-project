@@ -484,7 +484,7 @@ const PolicyApplyBulk = () => {
                         type="button"
                         className="btn btn-green btn-green-disable"
                         style={{ width: "auto" }}
-                        label="Show"
+                        label="View"
                         disabled={
                           !values?.businessUnit ||
                           !values?.workplaceGroup ||
@@ -497,7 +497,7 @@ const PolicyApplyBulk = () => {
                           addHandler(values);
                         }}
                       >
-                        Show
+                        View
                       </button>
                     </div>
                   </div>

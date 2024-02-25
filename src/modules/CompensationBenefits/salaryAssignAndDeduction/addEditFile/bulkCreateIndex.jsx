@@ -14,9 +14,7 @@ import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
 import Loading from "../../../../common/loading/Loading";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../../common/peopleDeskTable";
+import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
@@ -34,6 +32,8 @@ import {
   validationSchema2,
 } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+
+const paginationSize = 100;
 
 const initHeaderList = {
   strDepartmentList: [],
@@ -214,13 +214,13 @@ function BulkAddEditForm() {
     if (!values?.isAutoRenew && !values?.toMonth) {
       return toast.warn("To Month must be selected");
     }
-    if(values?.intAllowanceDuration?.value === 1){
-     if(!values?.intAllowanceAttendenceStatus){
-      return toast.warn("Allowance Attendence Status Required");
-     }
-     if(!values?.maxAmount){
-      return toast.warn("Max Amount Required");
-     }
+    if (values?.intAllowanceDuration?.value === 1) {
+      if (!values?.intAllowanceAttendenceStatus) {
+        return toast.warn("Allowance Attendence Status Required");
+      }
+      if (!values?.maxAmount) {
+        return toast.warn("Max Amount Required");
+      }
     }
     var months = [
       "January",
@@ -358,7 +358,7 @@ function BulkAddEditForm() {
   const [bulkEmpString, setBulkEmpString] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
   const formikRef = useRef();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -779,12 +779,12 @@ function BulkAddEditForm() {
                         type="button"
                         className="btn btn-green btn-green-disable"
                         style={{ width: "auto" }}
-                        label="Show"
+                        label="View"
                         onClick={() => {
                           getLandingBulkAssignEmpListHandler(values, pages);
                         }}
                       >
-                        Show
+                        View
                       </button>
                     </div>
                   </div>

@@ -3,10 +3,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 
-let date = new Date();
-let initYear = date.getFullYear(); // 2022
-let initMonth = date.getMonth() + 1; // 6
-let modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
+const date = new Date();
+const initYear = date.getFullYear(); // 2022
+const initMonth = date.getMonth() + 1; // 6
+const modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
 
 export const allowanceAndDeductionColumn = (page, paginationSize) => {
   return [
@@ -119,7 +119,7 @@ export const createEditAllowanceAndDeduction = async (
 ) => {
   try {
     setLoading(true);
-    let res = await axios.post(`/Employee/SalaryAdditonNDeduction`, payload);
+    const res = await axios.post(`/Employee/SalaryAdditonNDeduction`, payload);
     setLoading(false);
     cb && cb();
     toast.success(res?.data?.message);
@@ -139,11 +139,11 @@ export const getSalaryAdditionAndDeductionById = async (
 ) => {
   setLoading && setLoading(true);
   const payload = {
-      strEntryType: "GetEmpSalaryAdditionNDeductionByEmployeeId",
-      intBusinessUnitId: buId,
-      intWorkplaceGroupId: wgId,
-      intEmployeeId: empId,
-    };
+    strEntryType: "GetEmpSalaryAdditionNDeductionByEmployeeId",
+    intBusinessUnitId: buId,
+    intWorkplaceGroupId: wgId,
+    intEmployeeId: empId,
+  };
   try {
     const res = await axios.post(`/Employee/SalaryAdditonNDeduction`, payload);
     if (res?.data) {
@@ -232,7 +232,7 @@ export const getEmployeeProfileLanding = async (
   search
 ) => {
   setLoading && setLoading(true);
-  let searchTxt = search ? `&searchTxt=${search}` : "";
+  const searchTxt = search ? `&searchTxt=${search}` : "";
   try {
     const res = await axios.get(
       `/Employee/EmployeeProfileLandingPagination?accountId=${accId}&businessUnitId=${buId}${searchTxt}&pageNo=${pageNo}&pageSize=${pageSize}`
@@ -349,7 +349,7 @@ export const AdditionNDeductionApproveReject = async (payload, cb) => {
 export const filterData = (keywords, allData, setRowDto) => {
   try {
     const regex = new RegExp(keywords?.toLowerCase());
-    let newDta = allData?.filter((item) =>
+    const newDta = allData?.filter((item) =>
       regex.test(item?.EmployeeName?.toLowerCase())
     );
     setRowDto(newDta);
@@ -406,7 +406,10 @@ export const getAttendanceAdjustmentFilter = async (
 ) => {
   setIsLoading(true);
   try {
-    let res = await axios.post(`/Employee/AttendanceAdjustmentFilter`, payload);
+    const res = await axios.post(
+      `/Employee/AttendanceAdjustmentFilter`,
+      payload
+    );
     setIsLoading(false);
     const newList = res?.data?.map((item) => ({
       ...item,

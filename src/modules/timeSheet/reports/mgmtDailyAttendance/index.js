@@ -219,7 +219,7 @@ const MgmtDailyAttendance = () => {
         pageSize: pages?.pageSize,
         total: pages?.total,
       },
-      "false",
+      false,
       searchText,
       -1,
       filterOrderList,
@@ -240,7 +240,7 @@ const MgmtDailyAttendance = () => {
         pageSize: +event.target.value,
         total: pages?.total,
       },
-      "false",
+      false,
       searchText,
       -1,
       filterOrderList,
@@ -489,7 +489,7 @@ const MgmtDailyAttendance = () => {
                             setFieldValue("search", "");
                             getData(
                               { current: 1, pageSize: paginationSize },
-                              "false",
+                              false,
                               "",
                               -1,
                               filterOrderList,

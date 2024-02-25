@@ -11,15 +11,12 @@ export const processBulkUploadEmployeeAction = async (
 ) => {
   setLoading && setLoading(true);
   try {
-    let modifiedData = data.map((item) => ({
+    const modifiedData = data.map((item) => ({
       strEmployeeCode: item["Employee Code"] || "",
       employeeName: item["Employee Name"] || "",
       strDesignation: item["Designation"] || "",
       strDepartment: item["Department"] || "",
-      isTakeHomePay:
-        item["Take Home Pay"] ||
-        JSON.parse(item["Take Home Pay"].toLowerCase()) ||
-        false,
+      isTakeHomePay: item["Take Home Pay"],
       numGrossSalary: item["Gross Salary"] || "",
       numTaxAmount: item["Tax Amount"] || "",
       intAccountId: orgId,
