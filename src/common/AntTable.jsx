@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Table } from "antd";
 import _ from "lodash";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { antFilterData } from "../utility/AntFIlterData";
 import { dateFormatter } from "../utility/dateFormatter";
 
@@ -42,7 +42,8 @@ const AntTable = ({
                 new Date(dateFormatter(b?.[item?.dataIndex]))
               );
             }
-          : (a, b) => a?.[item?.dataIndex]?.length - b?.[item?.dataIndex]?.length
+          : (a, b) =>
+              a?.[item?.dataIndex]?.length - b?.[item?.dataIndex]?.length
         : "",
       filters: item?.filter
         ? item?.isDate
@@ -57,7 +58,7 @@ const AntTable = ({
               _.isEqual
             )
         : "",
-      filteredValue: item?.resetFilter ? null : filteredInfo?.[item?.dataIndex] || null,
+      filteredValue: filteredInfo?.[item?.dataIndex] || null,
       onFilter: (value, record) =>
         item?.isDate
           ? dateFormatter(record?.[item?.dataIndex]) === value
@@ -73,6 +74,12 @@ const AntTable = ({
     setFIlterList?.(newRowDto?.currentDataSource);
     handleTableChange?.({ pagination, filters, sorter, newRowDto });
   };
+  useEffect(()=> {
+    console.log("columnsData", columnsData)
+  }, [columnsData])
+  useEffect(()=> {
+    console.log("data", data)
+  }, [data])
   return (
     <div>
       <Table

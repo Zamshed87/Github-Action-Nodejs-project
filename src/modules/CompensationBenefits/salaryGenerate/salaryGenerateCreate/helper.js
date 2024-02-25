@@ -309,12 +309,12 @@ export const salaryGenerateCreateEditTableColumn = (
     sorter: true,
     filter: true,
   },
-  {
-    title: "Workplace Group",
-    dataIndex: "strWorkplaceGroup",
-    sorter: true,
-    filter: true,
-  },
+  // {
+  //   title: "Workplace Group",
+  //   dataIndex: "strWorkplaceGroup",
+  //   sorter: true,
+  //   filter: true,
+  // },
   {
     title: "Payroll Group",
     dataIndex: "strPayrollGroup",

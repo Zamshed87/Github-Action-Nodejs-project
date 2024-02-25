@@ -20,6 +20,7 @@ import { isUniq } from "../../../../../utility/uniqChecker";
 import { IconButton, Tooltip } from "@mui/material";
 import { DeleteOutline, InfoOutlined } from "@mui/icons-material";
 import { calculateNextDate } from "utility/dateFormatter";
+import { toast } from "react-toastify";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -169,6 +170,7 @@ const CalendarSetupModal = ({
       setDeleteRowData
     );
   };
+  console.log({id})
   return (
     <>
       <Formik
@@ -176,13 +178,20 @@ const CalendarSetupModal = ({
         initialValues={id ? modifySingleData : initData}
         validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
+          if (id && !values?.isEmployeeUpdate) {
+            return toast.warn("Please select is Employee Update Checkbox");
+          }
+          if (id && values?.isEmployeeUpdate && (!values?.dteEmployeeUpdateFromDate || !values?.dteEmployeeUpdateToDate)) {
+            return toast.warn("Please select Employee Generate From Date and Employee Generate To Date");
+          }
           saveHandler(values, () => {
-            if (id) {
-              resetForm(modifySingleData);
-            } else {
-              resetForm(initData);
-            }
+              if (id) {
+                resetForm(modifySingleData);
+              } else {
+                resetForm(initData);
+              }
           });
+          
         }}
       >
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
@@ -427,7 +436,12 @@ const CalendarSetupModal = ({
                           styleObj={{
                             color: greenColor,
                           }}
-                          label="is Employee Update"
+                          label={
+                            <span>
+                              is Employee Update{" "}
+                              <span style={{ color: "red" }}>*</span>
+                            </span>
+                          }
                           checked={values?.isEmployeeUpdate}
                           onChange={(e) => {
                             setFieldValue("isEmployeeUpdate", e.target.checked);

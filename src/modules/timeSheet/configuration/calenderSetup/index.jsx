@@ -66,6 +66,7 @@ export default function CalendarSetup() {
   const handleClose = () => {
     setViewModal(false);
     setOpen(false);
+    setId("");
   };
 
   // for view Modal
@@ -77,6 +78,7 @@ export default function CalendarSetup() {
   const handleViewClose = () => {
     setViewModal(false);
     setOpen(false);
+    setId("");
   };
 
   const [loading, setLoading] = useState(false);

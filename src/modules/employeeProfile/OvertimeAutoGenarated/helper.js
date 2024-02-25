@@ -54,6 +54,15 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       fixed: "left",
     },
     {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      filter: true,
+      key: "strWorkplace",
+      width: "180px",
+      fixed: "left",
+    },
+    {
       title: "Employee ID",
       dataIndex: "strEmployeeCode",
       sorter: true,
@@ -98,22 +107,15 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       key: "strDepartment",
       width: "150px",
     },
-    {
-      title: "Workplace Group",
-      dataIndex: "strWorkplaceGroup",
-      sorter: true,
-      filter: true,
-      key: "strWorkplaceGroup",
-      width: "180px",
-    },
-    {
-      title: "Workplace",
-      dataIndex: "strWorkplace",
-      sorter: true,
-      filter: true,
-      key: "strWorkplace",
-      width: "180px",
-    },
+    // {
+    //   title: "Workplace Group",
+    //   dataIndex: "strWorkplaceGroup",
+    //   sorter: true,
+    //   filter: true,
+    //   key: "strWorkplaceGroup",
+    //   width: "180px",
+    // },
+ 
     {
       title: "Date",
       dataIndex: "dteAttendanceDate",
@@ -175,9 +177,9 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
     //   width: "100px",
     // },
     {
-      title: "Overtime Minuets",
-      key: "perMinunits",
-      dataIndex: "perMinunits",
+      title: "Overtime Minutes",
+      key: "numMinutes",
+      dataIndex: "numMinutes",
       render: (_, item, index) => {
         console.log("per minutes")
         return (
@@ -189,12 +191,12 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
                 fontSize: "12px",
               }}
               className="form-control"
-              value={item?.perMinunits}
-              name={item?.perMinunits}
+              value={item?.numMinutes}
+              name={item?.numMinutes}
               type="number"
               onChange={(e) => {
                 // if(e.target.value){
-                rowDtoHandler("perMinunits", index, e.target.value);
+                rowDtoHandler("numMinutes", index, e.target.value);
               }}
             />
           </div>
