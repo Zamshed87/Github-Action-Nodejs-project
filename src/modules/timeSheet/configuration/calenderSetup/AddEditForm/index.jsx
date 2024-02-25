@@ -104,6 +104,7 @@ const CalendarSetupModal = ({
         officeStartTime: singleData?.dteOfficeStartTime || "",
         officeCloseTime: singleData?.dteOfficeCloseTime || "",
         nightShift: singleData?.isNightShift || "",
+        isEmployeeUpdate: true,
       };
       const tableData = singleData?.timeSheetCalenderRows?.map((item) => ({
         intCalenderRowId: item?.intCalenderRowId,
@@ -415,6 +416,19 @@ const CalendarSetupModal = ({
                     </div>
                     <div className="col-12">
                       <FormikCheckBox
+                        name="nightShift"
+                        styleObj={{
+                          color: greenColor,
+                        }}
+                        label="Is Night Shift"
+                        checked={values?.nightShift}
+                        onChange={(e) => {
+                          setFieldValue("nightShift", e.target.checked);
+                        }}
+                      />
+                    </div>
+                    <div className="col-12">
+                      <FormikCheckBox
                         name="isLunchBreakAsWorkingHour"
                         styleObj={{
                           color: greenColor,
@@ -438,7 +452,7 @@ const CalendarSetupModal = ({
                           }}
                           label={
                             <span>
-                              is Employee Update{" "}
+                              Sync Employee Attendance Data{" "}
                               <span style={{ color: "red" }}>*</span>
                             </span>
                           }
@@ -501,28 +515,6 @@ const CalendarSetupModal = ({
                         </div>
                       </>
                     ) : null}
-
-                    <div className="col-12">
-                      <hr
-                        style={{
-                          borderTop: "1px solid #ccc",
-                          margin: "10px 0",
-                        }}
-                      />
-                    </div>
-                    <div className="col-12 mt-3">
-                      <FormikCheckBox
-                        name="nightShift"
-                        styleObj={{
-                          color: greenColor,
-                        }}
-                        label="Is Night Shift"
-                        checked={values?.nightShift}
-                        onChange={(e) => {
-                          setFieldValue("nightShift", e.target.checked);
-                        }}
-                      />
-                    </div>
                     <div className="col-6">
                       <label>Workplace </label>
                       <FormikSelect
