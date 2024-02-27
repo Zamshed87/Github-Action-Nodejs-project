@@ -379,7 +379,7 @@ export const initDataGenerate = (data: any) => {
         : data?.isOffdayCountAsFullDayOt === 2
         ? true
         : 2,
-    otRatePerMin: Math.round((data?.numOTRateForBasedOnSalaryRange ?? 0) / 60),
+    otRatePerMin: (data?.numOTRateForBasedOnSalaryRange ?? 0) / 60,
   };
   return formData;
 };
