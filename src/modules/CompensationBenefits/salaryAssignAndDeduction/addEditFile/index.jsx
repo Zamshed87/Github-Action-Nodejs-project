@@ -221,7 +221,7 @@ function AddEditForm() {
       intToYear: +values?.toMonth?.split("-")[0] || null,
       intToMonth: +values?.toMonth?.split("-")[1] || null,
       strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
-      // intWorkplaceId: wId,
+      intWorkplaceId: wId,
     };
     data.push(obj);
     setRowDto(data);
