@@ -12,6 +12,8 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import { getPendingAndConsumeMealReport } from "../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import { shallowEqual, useSelector } from "react-redux";
+import FormikRadio from "common/FormikRadio";
+import { greenColor } from "utility/customColor";
 
 const FormCard = ({ propsObj }) => {
   const {
@@ -176,7 +178,8 @@ const FormCard = ({ propsObj }) => {
               />
             </div>
           </div>
-          <div className="col-lg-6">
+          {/* meal is not required instructed from ikbal vai */}
+          {/* <div className="col-lg-6">
             <div className="input-field-main">
               <label htmlFor="">Type</label>
               <FormikSelect
@@ -197,7 +200,7 @@ const FormCard = ({ propsObj }) => {
                 isDisabled={false}
               />
             </div>
-          </div>
+          </div> */}
           <div className="col-lg-6">
             <div className="input-field-main">
               <label htmlFor="">Remarks</label>
@@ -216,8 +219,8 @@ const FormCard = ({ propsObj }) => {
               />
             </div>
           </div>
-          {/* meal is not required instructed from ikbal vai */}
-          {/* <div className="col-lg-6">
+
+          <div className="col-lg-6">
             <div className="input-feild-maint mt-3">
               <label htmlFor="" className="pr-2">
                 Meal Status
@@ -243,7 +246,7 @@ const FormCard = ({ propsObj }) => {
                 checked={values?.mealStatus === "guest"}
               />
             </div>
-          </div> */}
+          </div>
           <div className="col-lg-6 align-content-end">
             <div className="d-flex justify-content-between">
               {/* <button className="btn button w-100 mt-3" type="submit">
