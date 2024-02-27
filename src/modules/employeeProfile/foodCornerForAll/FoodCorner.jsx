@@ -159,7 +159,7 @@ export default function FoodCornerForAll() {
             getLandingData(values);
             setFieldValue("remarks", "");
             // setFieldValue("place", "");
-            setFieldValue("type", { value: 2, label: "Irregular" });
+            setFieldValue("type", { value: 1, label: "Regular" });
             setFieldValue("meal", 1);
             setFieldValue("date", todayDate());
             setFieldValue("mealStatus", "own");
