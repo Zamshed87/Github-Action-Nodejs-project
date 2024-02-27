@@ -397,6 +397,11 @@ const BulkAddEditForm = lazy(() =>
     "../modules/CompensationBenefits/salaryAssignAndDeduction/addEditFile/bulkCreateIndex.jsx"
   )
 );
+const BulkAddEditFormCreate = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/salaryAssignAndDeduction/addEditFile/bulkAssignCreate.jsx"
+  )
+);
 const AddEditForm = lazy(() =>
   import(
     "../modules/CompensationBenefits/salaryAssignAndDeduction/addEditFile/index.jsx"
@@ -2777,6 +2782,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssign/create",
     component: BulkAddEditForm,
+  },
+  {
+    path: "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssignCreate",
+    component: BulkAddEditFormCreate,
   },
   // report for salary certificate
   {

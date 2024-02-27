@@ -1,4 +1,4 @@
-import { AddOutlined } from "@mui/icons-material";
+import { AddCircle, AddOutlined } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import FilterBadgeComponent from "../../../common/FilterBadgeComponent";
 import Loading from "../../../common/loading/Loading";
 import MasterFilter from "../../../common/MasterFilter";
 import NoResult from "../../../common/NoResult";
+import PlaylistAddCircleIcon from "@mui/icons-material/PlaylistAddCircle";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../common/PopoverMasterFilter";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
@@ -22,6 +23,8 @@ import "./styles.css";
 import DefaultInput from "../../../common/DefaultInput";
 import PeopleDeskTable from "../../../common/peopleDeskTable";
 import PrimaryButton from "common/PrimaryButton";
+import BtnActionMenu from "common/BtnActionMenu";
+import { gray500 } from "utility/customColor";
 
 const date = new Date();
 const initYear = date.getFullYear(); // 2022
@@ -288,7 +291,7 @@ function SalaryAssignAndDeduction() {
                       handleClick={(e) => setFilterAnchorEl(e.currentTarget)}
                     />
                   </li>
-                  <li>
+                  {/* <li>
                     <PrimaryButton
                       type="button"
                       className="btn btn-default flex-center"
@@ -312,7 +315,7 @@ function SalaryAssignAndDeduction() {
                         }
                       }}
                     />
-                    {/* <BtnActionMenu
+                    <BtnActionMenu
                       className="btn btn-default flex-center btn-deafult-create-job"
                       icon={
                         <AddOutlined
@@ -323,56 +326,118 @@ function SalaryAssignAndDeduction() {
                         />
                       }
                       label="Assign"
-                      // options={[
-                      //   {
-                      //     value: 1,
-                      //     label: "Single Assign",
-                      //     icon: (
-                      //       <AddCircle
-                      //         sx={{
-                      //           marginRight: "10px",
-                      //           color: gray500,
-                      //           fontSize: "16px",
-                      //         }}
-                      //       />
-                      //     ),
-                      //     onClick: () => {
-                      //       if (employeeFeature?.isCreate) {
-                      //         history.push(
-                      //           "/compensationAndBenefits/employeeSalary/allowanceNDeduction/singleAssign/create",
-                      //           { state: { isCreate: true } }
-                      //         );
-                      //       } else {
-                      //         toast.warn("You don't have permission");
-                      //       }
-                      //     },
-                      //   },
-                      //   {
-                      //     value: 2,
-                      //     label: "Bulk Assign",
-                      //     icon: (
-                      //       <PlaylistAddCircleIcon
-                      //         sx={{
-                      //           marginRight: "10px",
-                      //           color: gray500,
-                      //           fontSize: "16px",
-                      //         }}
-                      //       />
-                      //     ),
-                      //     onClick: () => {
-                      //       if (employeeFeature?.isCreate) {
-                      //         history.push(
-                      //           "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssign/create",
-                      //           { state: { isCreate: true } }
-                      //         );
-                      //       } else {
-                      //         toast.warn("You don't have permission");
-                      //       }
-                      //     },
-                      //   },
-                      // ]}
+                      options={[
+                        {
+                          value: 1,
+                          label: "Single Assign",
+                          icon: (
+                            <AddCircle
+                              sx={{
+                                marginRight: "10px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (employeeFeature?.isCreate) {
+                              history.push(
+                                "/compensationAndBenefits/employeeSalary/allowanceNDeduction/singleAssign/create",
+                                { state: { isCreate: true } }
+                              );
+                            } else {
+                              toast.warn("You don't have permission");
+                            }
+                          },
+                        },
+                        {
+                          value: 2,
+                          label: "Bulk Assign",
+                          icon: (
+                            <PlaylistAddCircleIcon
+                              sx={{
+                                marginRight: "10px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (employeeFeature?.isCreate) {
+                              history.push(
+                                "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssign/create",
+                                { state: { isCreate: true } }
+                              );
+                            } else {
+                              toast.warn("You don't have permission");
+                            }
+                          },
+                        },
+                      ]}
                       onClick
-                    /> */}
+                    />
+                  </li> */}
+                  <li>
+                    <BtnActionMenu
+                      className="btn btn-default flex-center btn-deafult-create-job"
+                      icon={
+                        <AddOutlined
+                          sx={{
+                            marginRight: "0px",
+                            fontSize: "15px",
+                          }}
+                        />
+                      }
+                      label="Assign"
+                      options={[
+                        {
+                          value: 1,
+                          label: "Manual Assign",
+                          icon: (
+                            <AddCircle
+                              sx={{
+                                marginRight: "10px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (employeeFeature?.isCreate) {
+                              history.push(
+                                "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssign/create",
+                                { state: { isCreate: true } }
+                              );
+                            } else {
+                              toast.warn("You don't have permission");
+                            }
+                          },
+                        },
+                        {
+                          value: 2,
+                          label: "Bulk Assign",
+                          icon: (
+                            <PlaylistAddCircleIcon
+                              sx={{
+                                marginRight: "10px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (employeeFeature?.isCreate) {
+                              history.push(
+                                "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssignCreate",
+                                { state: { isCreate: true } }
+                              );
+                            } else {
+                              toast.warn("You don't have permission");
+                            }
+                          },
+                        },
+                      ]}
+                    />
                   </li>
                 </ul>
               </div>
