@@ -177,7 +177,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
     //   width: "100px",
     // },
     {
-      title: "Overtime Minutes",
+      title: "Overtime Hours",
       key: "numMinutes",
       dataIndex: "numMinutes",
       render: (_, item, index) => {
@@ -207,10 +207,12 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       width: "120px",
     },
     {
-      title: "Per Min.Rate",
+      title: "Per Hours.Rate",
       dataIndex: "numPerMinunitRate",
       render: (_, item) => (
-        <div className="pr-2">{item?.numPerMinunitRate}</div>
+        // <div className="pr-2">{item?.numPerMinunitRate}</div>
+        <div className="pr-2">{(item?.numPerMinunitRate * 60).toFixed(2)}</div>
+        // <div className="pr-2">{Math.round((item?.numPerMinunitRate / 60) * 1000) / 1000}</div>
       ),
       width: "120px",
     },

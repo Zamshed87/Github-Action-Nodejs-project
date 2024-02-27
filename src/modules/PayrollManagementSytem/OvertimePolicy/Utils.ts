@@ -106,7 +106,8 @@ TOTPolicyGenerate) => {
     isOffdayCountAsFullDayOt: values?.isOffdayCountAsFullDayOt ? true : false,
     intCalenderId: 0,
     intOTHourShouldBeAboveInMin: values?.intOTHourShouldBeAboveInMin || 0,
-    numOTRateForBasedOnSalaryRange: values?.otRatePerMin || 0,
+    // numOTRateForBasedOnSalaryRange: values?.otRatePerMin || 0,
+    numOTRateForBasedOnSalaryRange: Math.round((values?.otRatePerMin || 0) * 60), // convert hours to min (user input as hours but we need to save as min)
   };
   const payload: any = generateRows(
     policy, // policyType
@@ -378,6 +379,7 @@ export const initDataGenerate = (data: any) => {
         : data?.isOffdayCountAsFullDayOt === 2
         ? true
         : 2,
+    otRatePerMin: (data?.numOTRateForBasedOnSalaryRange ?? 0) / 60,
   };
   return formData;
 };
