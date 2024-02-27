@@ -136,7 +136,6 @@ export const processDataFromExcelInAllowanceNDeduction = async (
       file,
       "BulkAddition and Deduction"
     );
-    console.log("processData",processData)
     if (processData.length < 1) return toast.warn("No data found!");
     setIsBulkAssign(true);
     processBulkUploadAllowanceNDeduction(
@@ -176,8 +175,24 @@ const processBulkUploadAllowanceNDeduction = (
       } else {
         isBool = Boolean(item?.IsAddition);
       }
+      let obj = { attendenceStatusRequired: false, maxAmountRequired: false };
+      if (item?.["Allowance Duration"].toLowerCase() === "perday") {
+        if (!item?.["Allowance Attendence Status"]) {
+          obj = {
+            ...obj,
+            attendenceStatusRequired: true,
+          };
+        }
+        if (!item?.["Max Amount"]) {
+          obj = {
+            ...obj,
+            maxAmountRequired: true,
+          };
+        }
+      }
       return {
         ...item,
+        ...obj,
         intSalaryAdditionAndDeductionId: 0,
         intAccountId: orgId,
         intBusinessUnitId: buId,
@@ -191,6 +206,9 @@ const processBulkUploadAllowanceNDeduction = (
         //   item?.IsAddition?.trim()?.toLowerCase() === "true" ? true : false,
         isAddition: isBool,
         strAdditionNDeduction: item?.["AllowanceOrDeduction Type"] || "",
+        strDuration: item?.["Allowance Duration"] || "",
+        maxAmount: item?.["Max Amount"] || 0,
+        attendenceStatus: item?.["Allowance Attendence Status"] || "",
         intAmountWillBeId: 3,
         strAmountWillBe: item?.["Depend On"] || "",
         numAmount: item?.["Amount/Percentage"] || 0,
@@ -205,7 +223,6 @@ const processBulkUploadAllowanceNDeduction = (
     setBulkLanding?.(modifiedData);
     setIsLoadingBulk?.(false);
   } catch (error) {
-    console.log({ error });
     setBulkLanding([]);
     setIsLoadingBulk?.(false);
     toast.warn("Failed to process!");
@@ -297,6 +314,59 @@ export const bulkLandingTbCol = (page, paginationSize) => {
       filter: false,
       className: "text-start",
       dataIndex: "strAdditionNDeduction",
+    },
+    {
+      title: "Allowance Duration",
+      sorter: false,
+      filter: false,
+      className: "text-start",
+      render: (text, record, index) => record?.strDuration || "N/A",
+    },
+    {
+      title: "Max Amount",
+      sorter: false,
+      filter: false,
+      className: "text-right",
+      dataIndex: "maxAmount",
+      render: (text, record, index) => {
+        return (
+          <div style={{ width: "100%" }}>
+            {record?.maxAmountRequired ? (
+              <p
+                className="px-2"
+                style={{ backgroundColor: "red", color: "white" }}
+              >
+                Required
+              </p>
+            ) : (
+              numberWithCommas(record?.maxAmount)
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Allowance Attendence Status",
+      sorter: false,
+      filter: false,
+      className: "text-start",
+      dataIndex: "attendenceStatus",
+      render: (text, record, index) => {
+        return (
+          <div style={{ width: "100%" }}>
+            {record?.attendenceStatusRequired ? (
+              <p
+                className="px-2"
+                style={{ backgroundColor: "red", color: "white" }}
+              >
+                Required
+              </p>
+            ) : (
+              numberWithCommas(record?.attendenceStatus)
+            )}
+          </div>
+        );
+      },
     },
     {
       title: "Amount Dimension",
@@ -394,6 +464,7 @@ export const assignedBulkTbleCol = (page, paginationSize) => {
   ];
 };
 
+
 export const saveBulkUploadAction = async (
   bulkLandingRowDto,
   setLoading,
@@ -403,33 +474,50 @@ export const saveBulkUploadAction = async (
   isSkipNAssign = false,
   cb
 ) => {
-  const bulkSalaryAdditionNDeductions = bulkLandingRowDto?.map((item) => ({
-    intSalaryAdditionAndDeductionId: item?.intSalaryAdditionAndDeductionId || 0,
-    intAccountId: item?.intAccountId,
-    intBusinessUnitId: item?.intBusinessUnitId,
-    intWorkplaceGroupId: item?.intWorkplaceGroupId,
-    employeeCode: `${item?.employeeCode}` || 0,
-    isAutoRenew: item?.IsAutoRenew,
-    intYear: item?.intYear || 0,
-    intMonth: item?.intMonth || 0,
-    strMonth: item?.strMonth || "",
-    isAddition: item?.isAddition,
-    strAdditionNDeduction: item?.["AllowanceOrDeduction Type"] || "",
-    intAmountWillBeId: 0,
-    strAmountWillBe: item?.strAmountWillBe || item?.strAmountWillBe || "",
-    numAmount: item?.numAmount || 0,
-    isActive: true,
-    isReject: false,
-    intActionBy: item?.intActionBy,
-    intToYear: item?.intToYear || null,
-    intToMonth: item?.intToMonth || null,
-    strToMonth: item?.strToMonth || null,
-  }));
+  const error = bulkLandingRowDto?.some(
+    (item) => item?.attendenceStatusRequired || item?.maxAmountRequired
+  );
+  if (error) {
+    return toast.warn(
+      `Please provide maxAmount and attendenceStatus for items with Allowance Duration 'perday'`
+    );
+  }
+  const bulkSalaryAdditionNDeductions = bulkLandingRowDto?.map((item) => {
+
+    return {
+      intSalaryAdditionAndDeductionId:
+        item?.intSalaryAdditionAndDeductionId || 0,
+      intAccountId: item?.intAccountId,
+      intBusinessUnitId: item?.intBusinessUnitId,
+      intWorkplaceGroupId: item?.intWorkplaceGroupId,
+      employeeCode: `${item?.employeeCode}` || 0,
+      isAutoRenew: item?.IsAutoRenew,
+      intYear: item?.intYear || 0,
+      intMonth: item?.intMonth || 0,
+      strMonth: item?.strMonth || "",
+      isAddition: item?.isAddition,
+      strAdditionNDeduction: item?.["AllowanceOrDeduction Type"] || "",
+      intAmountWillBeId: 0,
+      strAmountWillBe: item?.strAmountWillBe || item?.strAmountWillBe || "",
+      numAmount: item?.numAmount || 0,
+      strDuration: item?.strDuration || "",
+      maxAmount: +item?.maxAmount || 0,
+      attendenceStatus: item?.attendenceStatus || "",
+      isActive: true,
+      isReject: false,
+      intActionBy: item?.intActionBy,
+      intToYear: item?.intToYear || null,
+      intToMonth: item?.intToMonth || null,
+      strToMonth: item?.strToMonth || null,
+    };
+  });
+
   const payload = {
     isForceAssign: isForceAssign,
     isSkipNAssign: isSkipNAssign,
     bulkSalaryAdditionNDeductions,
   };
+
   try {
     setLoading(true);
     const res = await axios.post(
@@ -440,7 +528,6 @@ export const saveBulkUploadAction = async (
     cb?.();
     toast.success(res?.data?.message || "Bulk Submitted successfully");
   } catch (error) {
-    // console.log(error);
     const res = error?.response?.data;
     if (res?.message === "Exists" && !isForceAssign && !isSkipNAssign) {
       setLoading?.(false);
