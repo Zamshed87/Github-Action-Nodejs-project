@@ -196,7 +196,7 @@ export default function SalaryDetailsReport() {
                         type="submit"
                         disabled={!values?.payrollPolicy}
                       >
-                        Show
+                        View
                       </button>
                       {requisitionData?.length > 0 && (
                         <button

@@ -5,15 +5,15 @@ import {
   getSearchEmployeeList,
 } from "../../../../common/api";
 import FormikInput from "../../../../common/FormikInput";
-import FormikRadio from "../../../../common/FormikRadio";
 import FormikSelect from "../../../../common/FormikSelect";
 import Loading from "../../../../common/loading/Loading";
 import PrimaryButton from "../../../../common/PrimaryButton";
-import { greenColor } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { getPendingAndConsumeMealReport } from "../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import { shallowEqual, useSelector } from "react-redux";
+import FormikRadio from "common/FormikRadio";
+import { greenColor } from "utility/customColor";
 
 const FormCard = ({ propsObj }) => {
   const {
@@ -178,7 +178,8 @@ const FormCard = ({ propsObj }) => {
               />
             </div>
           </div>
-          <div className="col-lg-6">
+          {/* meal is not required instructed from ikbal vai */}
+          {/* <div className="col-lg-6">
             <div className="input-field-main">
               <label htmlFor="">Type</label>
               <FormikSelect
@@ -199,7 +200,7 @@ const FormCard = ({ propsObj }) => {
                 isDisabled={false}
               />
             </div>
-          </div>
+          </div> */}
           <div className="col-lg-6">
             <div className="input-field-main">
               <label htmlFor="">Remarks</label>
@@ -218,6 +219,7 @@ const FormCard = ({ propsObj }) => {
               />
             </div>
           </div>
+
           <div className="col-lg-6">
             <div className="input-feild-maint mt-3">
               <label htmlFor="" className="pr-2">

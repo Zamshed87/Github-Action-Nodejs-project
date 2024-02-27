@@ -15,7 +15,6 @@ import ResetButton from "../../../../common/ResetButton";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
-import { getBuDetails } from "../helper";
 import { generateExcelAction } from "./excel/excelConvert";
 import {
   getfromToDateList,
@@ -24,7 +23,7 @@ import {
 } from "./helper";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { getWorkplaceDetails, getWorkplaceGroupDetails } from "common/api";
+import { getWorkplaceDetails } from "common/api";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 const initialValues = {
@@ -38,7 +37,7 @@ const initialValues = {
 const RosterReport = () => {
   const {
     permissionList,
-    profileData: { orgId, buId, buName, wgId, wId, wName },
+    profileData: { orgId, wgId, wId },
   } = useSelector((state) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
 
@@ -144,6 +143,7 @@ const RosterReport = () => {
                 <button
                   className="btn-save "
                   onClick={(e) => {
+                    e.stopPropagation();
                     const excelLanding = async () => {
                       setLoading(true);
                       try {
