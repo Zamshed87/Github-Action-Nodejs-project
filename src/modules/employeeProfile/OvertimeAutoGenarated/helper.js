@@ -181,7 +181,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       key: "numMinutes",
       dataIndex: "numMinutes",
       render: (_, item, index) => {
-        console.log("per minutes")
+        // console.log("per minutes")
         return (
           <div>
             <input
@@ -195,8 +195,14 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
               name={item?.numMinutes}
               type="number"
               onChange={(e) => {
+                console.log({ e })
+                if(e.target.value){
+                  rowDtoHandler("numMinutes", index, e.target.value);
+                }else{
+                  rowDtoHandler("numMinutes", index, "");
+                }
                 // if(e.target.value){
-                rowDtoHandler("numMinutes", index, e.target.value);
+                // rowDtoHandler("numMinutes", index, e.target.value);
               }}
             />
           </div>
