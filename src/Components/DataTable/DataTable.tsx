@@ -34,6 +34,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
     summary,
     expandable,
     footer,
+    checkBoxColWidth = 15,
   } = property;
   // Pagination Default Value
   const pageSize = paginationSize || 25;
@@ -120,7 +121,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
             rowSelection={
               rowSelection &&
               (rowSelection?.isActive || rowSelection?.isActive === undefined)
-                ? { ...rowSelection, columnWidth: 15 }
+                ? { ...rowSelection, columnWidth: checkBoxColWidth || 15 }
                 : undefined
             }
             scroll={{
