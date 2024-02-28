@@ -70,6 +70,20 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
       filter: false,
       fieldType: "string",
     },
+    {
+      title: "Total Allowance",
+      dataIndex: "totalAllowance",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
+      title: "Total Deduction",
+      dataIndex: "totalDeduction",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
   ];
 };
 
