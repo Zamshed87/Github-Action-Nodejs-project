@@ -166,8 +166,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             // inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
             // outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
             // `${data?.InTime} - ${data?.OutTime}`,
-            inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.InTime,
-            outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.OutTime,
+            inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.InTime || null,
+            outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.OutTime || null,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
