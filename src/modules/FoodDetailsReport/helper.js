@@ -237,7 +237,7 @@ export const mealColumnsType2 = (page, paginationSize) => {
       width: 100,
     },
     {
-      title: "Total Tk",
+      title: "Total Bill (BDT)",
       dataIndex: "totalTk",
       sorter: true,
       width: 100,
