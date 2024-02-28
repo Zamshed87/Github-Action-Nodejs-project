@@ -22,7 +22,6 @@ import {
 import "./styles.css";
 import DefaultInput from "../../../common/DefaultInput";
 import PeopleDeskTable from "../../../common/peopleDeskTable";
-import PrimaryButton from "common/PrimaryButton";
 import BtnActionMenu from "common/BtnActionMenu";
 import { gray500 } from "utility/customColor";
 
@@ -34,7 +33,6 @@ const modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
 const initData = {
   searchString: "",
   fromMonth: `${initYear}-${modifyMonthResult}`,
-  // master filter
   workplace: "",
   department: "",
   employee: "",

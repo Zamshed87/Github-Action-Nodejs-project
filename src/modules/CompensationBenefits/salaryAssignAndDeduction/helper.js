@@ -18,6 +18,13 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
       className: "text-center",
     },
     {
+      title: "Workplace",
+      dataIndex: "strWorkplace",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
       title: "Employee Name",
       dataIndex: "strEmployeeName",
       render: (record) => {
@@ -49,27 +56,21 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
       filter: false,
       fieldType: "string",
     },
-    {
-      title: "Workplace",
-      dataIndex: "strWorkplace",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-    {
-      title: "Workplace Group",
-      dataIndex: "strWorkplaceGroup",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
-    {
-      title: "Business Unit",
-      dataIndex: "businessUnit",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
+    // instruction from maruf bhai
+    // {
+    //   title: "Workplace Group",
+    //   dataIndex: "strWorkplaceGroup",
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Business Unit",
+    //   dataIndex: "businessUnit",
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "string",
+    // },
   ];
 };
 
