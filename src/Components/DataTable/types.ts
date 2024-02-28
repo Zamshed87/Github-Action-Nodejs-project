@@ -81,6 +81,7 @@ export type TDataTableProps = {
   pagination?: TablePaginationConfig;
   bordered?: boolean;
   loading?: boolean;
+  checkBoxColWidth?: number;
 };
 
 // Table Button Types

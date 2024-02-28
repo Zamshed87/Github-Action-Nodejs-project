@@ -572,6 +572,17 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   </Col>
                   <Col md={12} sm={24}>
                     <PInput
+                      label={`OT Rate hour(s)`}
+                      placeholder="Enter OT rate hour(s)"
+                      type="number"
+                      name="otRatePerMin"
+                      // rules={[
+                      
+                      // ]}
+                    />
+                  </Col>
+                  {/* <Col md={12} sm={24}>
+                    <PInput
                       label="OT Rate per min"
                       placeholder="OT Rate per min"
                       type="number"
@@ -580,7 +591,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       
                       // ]}
                     />
-                  </Col>
+                  </Col> */}
                   {/* new requirement 💥💥 */}
 
                   {/* OT Depents on */}

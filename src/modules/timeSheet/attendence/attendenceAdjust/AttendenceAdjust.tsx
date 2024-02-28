@@ -617,6 +617,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               //   };
               // },
             }}
+            checkBoxColWidth={50}
           />
         </div>
       </PCard>
