@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { dateFormatterForInput } from "utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 
 export const processBulkUploadEmployeeAction = async (
@@ -33,8 +34,12 @@ export const processBulkUploadEmployeeAction = async (
         ? JSON.parse(item["Salary Hold"]?.toLowerCase())
         : false,
       strReligionName: item["Religion Name"] || "",
-      dteDateOfBirth: item["DateOfBirth"] || null,
-      dteJoiningDate: item["Joining Date"] || null,
+      dteDateOfBirth: item["DateOfBirth"]
+        ? dateFormatterForInput(item["DateOfBirth"])
+        : null,
+      dteJoiningDate: item["Joining Date"]
+        ? dateFormatterForInput(item["Joining Date"])
+        : null,
       dteConfirmationDate: item["Confirmation Date"] || null,
       dteInternCloseDate: item["InternCloseDate"] || null,
       dteProbationaryCloseDate: item["ProbationaryCloseDate"] || null,
@@ -46,7 +51,12 @@ export const processBulkUploadEmployeeAction = async (
       strLoginId: item["Login ID"] + "" || "",
       strPassword: item["Password"] + "" || "",
       strEmailAddress: item["Email"]?.text || "",
-      strPhoneNumber: item["Phone Number"] ? item["Phone Number"] : "-",
+      // strPhoneNumber: item["Phone Number"] ? item["Phone Number"] : "-",
+      strPhoneNumber: item["Phone Number"]
+        ? String(item["Phone Number"]).trim().charAt(0) !== "0"
+          ? "0" + String(item["Phone Number"]).trim()
+          : String(item["Phone Number"]).trim()
+        : "-",
       strDisplayName: item["Display Name"] || "",
       strUserType: item["User Type"] || "",
       strWingName: item["Wing"] || "",
