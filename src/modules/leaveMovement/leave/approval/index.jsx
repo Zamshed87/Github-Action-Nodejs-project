@@ -271,7 +271,7 @@ export default function LeaveApproval() {
       );
     };
 
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
@@ -398,7 +398,7 @@ export default function LeaveApproval() {
                 }}
               />
             </div>
-            <div>Employee Id</div>
+            <div>Emp Id</div>
           </div>
         ),
         dataIndex: "employeeCode",
@@ -581,7 +581,7 @@ export default function LeaveApproval() {
       {
         title: "Waiting Stage",
         dataIndex: "currentStage",
-        render: (currentStage, record) => (
+        render: (currentStage) => (
           <div className="d-flex align-items-center">
             <div>{currentStage}</div>
           </div>
@@ -687,6 +687,7 @@ export default function LeaveApproval() {
         ),
         filter: true,
         sorter: true,
+        width: 120,
       },
     ];
   };
