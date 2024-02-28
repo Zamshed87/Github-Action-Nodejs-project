@@ -195,7 +195,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
               name={item?.numMinutes}
               type="number"
               onChange={(e) => {
-                console.log({ e })
+                // console.log({ e })
                 if(e.target.value){
                   rowDtoHandler("numMinutes", index, e.target.value);
                 }else{
