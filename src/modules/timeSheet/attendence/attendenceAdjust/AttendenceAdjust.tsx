@@ -162,10 +162,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
-            inTime:
-              moment(values?.intime).format("HH:mm:ss") || item?.StartTime,
-            outTime:
-              moment(values?.outtime).format("HH:mm:ss") || item?.EndTime,
+            inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
+            outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
@@ -640,7 +638,14 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               }}
               title="Are you sure to update attendance?"
               components={
-                <PForm form={form}>
+                <PForm form={form}
+                // initialValues={{
+                //   openModal: false,
+                //   attendanceAdujust: undefined,
+                //   intime: "",
+                //   outtime: "",
+                // }}
+                >
                   <>
                     <div>
                       <p>Request Status: {attendanceAdujust?.label}</p>
