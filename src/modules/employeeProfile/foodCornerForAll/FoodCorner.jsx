@@ -50,12 +50,12 @@ const validationSchema = Yup.object().shape({
     .typeError("place is required"),
   date: Yup.date().required("Date is required"),
   meal: Yup.string().required("No of meal is required"),
-  type: Yup.object()
-    .shape({
-      label: Yup.string().required("Type is required"),
-      value: Yup.string().required("Type is required"),
-    })
-    .typeError("Type is required"),
+  // type: Yup.object()
+  //   .shape({
+  //     label: Yup.string().required("Type is required"),
+  //     value: Yup.string().required("Type is required"),
+  //   })
+  //   .typeError("Type is required"),
 });
 
 export default function FoodCornerForAll() {

@@ -219,19 +219,19 @@ export const mealColumnsType2 = (page, paginationSize) => {
       width: 100,
     },
     {
-      title: "Own Tk",
+      title: "Own Bill (BDT)",
       dataIndex: "ownTk",
       sorter: true,
       width: 100,
     },
     {
-      title: "Company Tk",
+      title: "Company Contribution (BDT)",
       dataIndex: "companyPay",
       sorter: true,
       width: 100,
     },
     {
-      title: "Guest Tk",
+      title: "Guest Bill (BDT)",
       dataIndex: "guestTk",
       sorter: true,
       width: 100,
