@@ -156,14 +156,18 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       .then(() => {
         const values = form.getFieldsValue(true);
         const payload = selectedRow.map((item) => {
+          // console.log({item})
           return {
             id: item?.ManualAttendanceId || 0,
             accountId: orgId,
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
-            inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
-            outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
+            // inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
+            // outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
+            // `${data?.InTime} - ${data?.OutTime}`,
+            inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.InTime,
+            outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.OutTime,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
@@ -180,6 +184,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             businessUnitId: buId,
           };
         });
+        // console.log({payload})
 
         ManualAttendance?.action({
           method: "post",
