@@ -168,7 +168,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       payload: payload,
       toast: true,
       onSuccess: () => {
-        form.setFieldsValue({
+        !state?.intOtconfigId && form.setFieldsValue({
           hrPosition: undefined,
           policyName: undefined,
           workplace: undefined,
@@ -572,8 +572,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   </Col>
                   <Col md={12} sm={24}>
                     <PInput
-                      label={`OT Rate hour(s)`}
-                      placeholder="Enter OT rate hour(s)"
+                      label={`OT Rate Per hour(s)`}
+                      placeholder="Enter OT rate Per hour(s)"
                       type="number"
                       name="otRatePerMin"
                       // rules={[
