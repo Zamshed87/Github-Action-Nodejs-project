@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AddOutlined } from "@mui/icons-material";
 import { Form, Formik } from "formik";
@@ -30,7 +30,6 @@ export default function AccountCreateLanding() {
   );
 
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const getAccountLanding = () => {
@@ -40,7 +39,7 @@ export default function AccountCreateLanding() {
       buId,
       "",
       setRowDto,
-      setAllData,
+      "",
       setLoading
     );
   };
@@ -65,7 +64,7 @@ export default function AccountCreateLanding() {
 
   // popup handler
   const popupHandler = () => {
-    let confirmObject = {
+    const confirmObject = {
       title: "Are you sure?",
       closeOnClickOutside: false,
       yesAlertFunc: () => {},
