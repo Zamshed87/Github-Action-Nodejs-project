@@ -151,12 +151,14 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   };
 
   const submitHandler = async () => {
+    // console.log({selectedRow})
     await form
       .validateFields(["intime", "outtime"])
       .then(() => {
         const values = form.getFieldsValue(true);
         const payload = selectedRow.map((item) => {
           // console.log({item})
+          // console.log("values?.outtime", values?.outtime)
           return {
             id: item?.ManualAttendanceId || 0,
             accountId: orgId,
@@ -166,8 +168,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             // inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
             // outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
             // `${data?.InTime} - ${data?.OutTime}`,
-            inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.InTime || null,
-            outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.OutTime || null,
+            inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : moment(moment(item?.InTime, "h:mma")).format("HH:mm:ss")  || null,
+            outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : moment(moment(item?.OutTime, "h:mma")).format("HH:mm:ss")  || null,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
