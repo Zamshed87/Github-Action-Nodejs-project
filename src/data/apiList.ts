@@ -94,10 +94,12 @@ export const apiList = {
   GetPFRegisterTypeById: "/SaasMasterData/GetPFRegisterTypeById",
   PFRegisterTypeDDL: "/SaasMasterData/PFRegisterTypeDDL",
   SavePFInvestment: "/SaasMasterData/SavePFInvestment",
+  BreakdownNPolicyForSalaryAssign: "/Payroll/BreakdownNPolicyForSalaryAssign",
   PFInvestmentById: "/SaasMasterData/PFInvestmentById",
   SavePFRefundEarning: "/EmployeeIncrement/RefundOrEarning",
   SaveSeparationSetup: "/SaasMasterData/SavePyrSeparationPolicySetup",
   GetSeparationSetupLanding: "/SaasMasterData/GetPyrSeparationPolicySetup",
   GetLandingForBulkReporter: "/Employee/SupervisorLineManagerChangeLanding",
   ChangeReporter: "/Employee/SupervisorLineManagerChange",
+  BulkSalaryAssignLanding: "/Payroll/BulkSalaryAssignLanding",
 };

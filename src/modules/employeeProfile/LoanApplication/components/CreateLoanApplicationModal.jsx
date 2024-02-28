@@ -480,7 +480,7 @@ const CreateLoanApplicationModal = ({
                     />
                   </div>
 
-                  <div className="col-4">
+                  {/* <div className="col-4">
                     <label>Closing Date</label>
                     <FormikInput
                       classes="input-sm"
@@ -497,7 +497,7 @@ const CreateLoanApplicationModal = ({
                       errors={errors}
                       touched={touched}
                     />
-                  </div>
+                  </div> */}
 
                   <div className="col-4">
                     <label>

@@ -158,6 +158,7 @@ const MonthlyAttendanceReport = () => {
                 <button
                   className="btn-save "
                   onClick={(e) => {
+                    e.stopPropagation();
                     setLoading(true);
                     const excelLanding = async () => {
                       try {

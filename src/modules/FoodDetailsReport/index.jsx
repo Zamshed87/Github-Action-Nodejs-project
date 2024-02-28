@@ -1,53 +1,65 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
+import { SaveAlt } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import FormikInput from "../../common/FormikInput";
 import FormikSelect from "../../common/FormikSelect";
 import Loading from "../../common/loading/Loading";
 import NotPermittedPage from "../../common/notPermitted/NotPermittedPage";
 import PrimaryButton from "../../common/PrimaryButton";
-import ResetButton from "../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../commonRedux/reduxForLocalStorage/actions";
+import { gray600 } from "../../utility/customColor";
 import { monthFirstDate, monthLastDate } from "../../utility/dateFormatter";
 import { downloadFile } from "../../utility/downloadFile";
 import { customStyles } from "../../utility/selectCustomStyle";
 import { todayDate } from "../../utility/todayDate";
 import CardTable from "./components/CardTable";
-import { getDailyCafeteriaReport, getMonthlyCafeteriaReport } from "./helper";
+import {
+  getDailyCafeteriaReport,
+  getMonthlyCafeteriaReport,
+  getPlaceDDL,
+} from "./helper";
 
 const initData = {
   search: "",
   reportType: { value: 1, label: "Daily" },
+  place: "",
   date: todayDate(),
   fromDate: monthFirstDate(),
   toDate: monthLastDate(),
 };
 
 export default function FoodDetailsReport() {
+  const [viewType, setViewType] = useState(1);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
   }, []);
-  const { orgId, buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    profileData: { orgId, buId, wgId },
+    permissionList,
+  } = useSelector((state) => state?.auth, shallowEqual);
 
   const saveHandler = (values) => {
     if (values?.reportType?.value === 1) {
-      getDailyCafeteriaReport(buId, values?.date, false, setRowDto, setLoading);
+      getDailyCafeteriaReport(
+        orgId,
+        values?.place?.value,
+        values?.date,
+        false,
+        setRowDto,
+        setLoading
+      );
     } else {
       getMonthlyCafeteriaReport(
-        buId,
         orgId,
         values?.fromDate,
         values?.toDate,
         false,
         setRowDto,
-        setLoading
+        setLoading,
+        values?.place?.value
       );
     }
   };
@@ -55,44 +67,53 @@ export default function FoodDetailsReport() {
   const [loading, setLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [rowDto, setRowDto] = useState([]);
+  const [placeDDL, setPlaceDDL] = useState([]);
 
   const getData = () => {
-    getDailyCafeteriaReport(buId, todayDate(), false, setRowDto, setLoading);
+    getDailyCafeteriaReport(
+      orgId,
+      0,
+      todayDate(),
+      false,
+      setRowDto,
+      setLoading
+    );
   };
-
+  const total = useMemo(
+    () =>
+      rowDto.reduce(
+        (acc, item) => acc + +item?.mealCount || acc + +item?.total,
+        0
+      ),
+    [rowDto]
+  );
   useEffect(() => {
     getData();
   }, [buId, orgId]);
 
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-
-  let permission = null;
-  permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 145) {
-      permission = item;
-    }
-  });
+  const permission = useMemo(
+    () => permissionList?.find((item) => item?.menuReferenceId === 145),
+    []
+  );
+  useEffect(() => {
+    getPlaceDDL("mealConsume", orgId, setPlaceDDL, buId, wgId);
+  }, [orgId, buId]);
 
   return (
     <>
       <Formik
         enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        initialValues={{
+          ...initData,
+          place: { value: 0, label: "All" },
+        }}
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -102,26 +123,33 @@ export default function FoodDetailsReport() {
                     <div className="d-flex">
                       <Tooltip title="Export CSV" arrow>
                         <button
-                          className="btn-save ml-3"
+                          className="btn-save"
                           type="button"
                           style={{
                             border: "transparent",
-                            width: "30px",
-                            height: "30px",
-                            background: "#f2f2f7",
-                            borderRadius: "100px",
+                            cursor: "pointer",
                           }}
                           onClick={() => {
                             if (values?.reportType?.value === 1) {
                               downloadFile(
-                                `/Cafeteria/GetDailyCafeteriaReport?businessUnitId=${buId}&mealDate=${values?.date}&isDownload=true`,
+                                `/PdfAndExcelReport/GetDailyCafeteriaReport?accountId=${orgId}&mealDate=${
+                                  values?.date
+                                }&isDownload=true&MealConsumePlaceId=${
+                                  values?.place?.value || 0
+                                }`,
                                 "Daily Cafeteria Details Report",
                                 "xlsx",
                                 setLoading
                               );
                             } else {
                               downloadFile(
-                                `/Cafeteria/MonthlyCafeteriaReport?businessUnitId=${buId}&workPlaceId=${orgId}&fromDate=${values?.fromDate}&toDate=${values?.toDate}&isDownload=true`,
+                                `/PdfAndExcelReport/GetCafeteriaReportExcell?PartId=1&FromDate=${
+                                  values?.fromDate
+                                }&ToDate=${
+                                  values?.toDate
+                                }&ReportType=0&LoginBy=0&BusinessUnitId=0&MealConsumePlaceId=${
+                                  values?.place?.value || 0
+                                }`,
                                 "Monthly Cafeteria Details Report",
                                 "xlsx",
                                 setLoading
@@ -129,87 +157,112 @@ export default function FoodDetailsReport() {
                             }
                           }}
                         >
-                          <SaveAlt
-                            sx={{ color: "#637381", fontSize: "16px" }}
-                          />
+                          <SaveAlt sx={{ color: gray600, fontSize: "16px" }} />
                         </button>
                       </Tooltip>
+                      <div className="ml-2 ">
+                        {rowDto?.length > 0 ? (
+                          <>
+                            <h6 className="count">Total {total} Meals</h6>
+                          </>
+                        ) : (
+                          <>
+                            <h6 className="count">Total meal 0</h6>
+                          </>
+                        )}
+                      </div>
                     </div>
                     <div className="table-card-head-right">
-                      <div
-                        className="d-flex align-items-end"
-                        style={{ paddingBottom: "23px" }}
-                      >
-                        {isFilter && (
+                      <div className="d-flex align-items-end">
+                        {/* {isFilter && (
                           <div>
-                            <ResetButton
-                              title="reset"
-                              icon={
-                                <SettingsBackupRestoreOutlined
-                                  sx={{ marginRight: "10px" }}
-                                />
-                              }
-                              onClick={() => {
-                                getDailyCafeteriaReport(
-                                  buId,
-                                  todayDate(),
-                                  false,
-                                  setRowDto,
-                                  setLoading
-                                );
-                                setFieldValue("date", todayDate());
-                                setFieldValue("reportType", {
-                                  value: 1,
-                                  label: "Daily",
-                                });
-                                setIsFilter(false);
+                            <div style={{ marginTop: "-30px" }}>
+                              <ResetButton
+                                title="reset"
+                                icon={
+                                  <SettingsBackupRestoreOutlined
+                                    sx={{ marginRight: "7px" }}
+                                  />
+                                }
+                                onClick={() => {
+                                  setViewType(1);
+                                  getDailyCafeteriaReport(
+                                    orgId,
+                                    0,
+                                    todayDate(),
+                                    false,
+                                    setRowDto,
+                                    setLoading
+                                  );
+                                  setFieldValue("date", todayDate());
+                                  setFieldValue("place", {
+                                    value: 0,
+                                    label: "All",
+                                  });
+                                  setFieldValue("reportType", {
+                                    value: 1,
+                                    label: "Daily",
+                                  });
+                                  setIsFilter(false);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )} */}
+                        <div className="mr-3 d-flex align-items-center">
+                          <label className="mr-2">Report Type</label>
+                          <div style={{ width: "100px" }}>
+                            <FormikSelect
+                              name="reportType"
+                              isClearable={false}
+                              options={[
+                                { value: 1, label: "Daily" },
+                                { value: 2, label: "Monthly" },
+                              ]}
+                              value={values?.reportType}
+                              onChange={(valueOption) => {
+                                setFieldValue("reportType", valueOption);
+                                setRowDto([]);
+                                setViewType(valueOption?.value);
+                                setIsFilter(!isFilter);
                               }}
+                              placeholder=""
+                              styles={customStyles}
+                              errors={errors}
+                              touched={touched}
                             />
                           </div>
-                        )}
-                        <div style={{ marginRight: "15px", width: "250px" }}>
-                          <FormikSelect
-                            name="reportType"
-                            isClearable={false}
-                            options={[
-                              { value: 1, label: "Daily" },
-                              { value: 2, label: "Monthly" },
-                            ]}
-                            value={values?.reportType}
-                            label="Report Type"
-                            onChange={(valueOption) => {
-                              setFieldValue("reportType", valueOption);
-                              if (valueOption?.value === 1) {
-                                getDailyCafeteriaReport(
-                                  buId,
-                                  todayDate(),
-                                  false,
-                                  setRowDto,
-                                  setLoading
-                                );
-                              } else {
-                                getMonthlyCafeteriaReport(
-                                  buId,
-                                  orgId,
-                                  values?.fromDate,
-                                  values?.toDate,
-                                  false,
-                                  setRowDto,
-                                  setLoading
-                                );
+                        </div>
+                        <div className="mr-3 d-flex align-items-center">
+                          <label className="mr-2">Place</label>
+                          <div style={{ width: "150px" }}>
+                            <FormikSelect
+                              name="place"
+                              isClearable={true}
+                              options={
+                                [{ value: 0, label: "All" }, ...placeDDL] || []
                               }
-                            }}
-                            placeholder=""
-                            styles={customStyles}
-                            errors={errors}
-                            touched={touched}
-                            // isDisabled={true}
-                          />
+                              value={values?.place}
+                              onChange={(valueOption) => {
+                                if (valueOption) {
+                                  setFieldValue("place", valueOption);
+                                  setRowDto([]);
+                                } else {
+                                  setFieldValue("place", "");
+                                  setRowDto([]);
+                                }
+                              }}
+                              placeholder=""
+                              styles={customStyles}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
                         </div>
 
                         {values?.reportType?.value === 1 && (
-                          <div className="mr-3">
-                            <small style={{color: "rgba(0, 0, 0, 0.87)"}}>Date</small>
+                          <div className="mr-3 d-flex align-items-center">
+                            <label className="mr-2">Date</label>
                             <FormikInput
                               classes="input-sm"
                               type="date"
@@ -226,8 +279,8 @@ export default function FoodDetailsReport() {
 
                         {values?.reportType?.value === 2 && (
                           <>
-                            <div className="mr-3">
-                              <small>To Date</small>
+                            <div className="mr-3 d-flex align-items-center">
+                              <label className="mr-2">From Date</label>
                               <FormikInput
                                 classes="input-sm"
                                 type="date"
@@ -240,8 +293,8 @@ export default function FoodDetailsReport() {
                                 touched={touched}
                               />
                             </div>
-                            <div className="mr-3">
-                              <small>To Date</small>
+                            <div className="mr-3 d-flex align-items-center">
+                              <label className="mr-2">To Date</label>
                               <FormikInput
                                 classes="input-sm"
                                 type="date"
@@ -261,24 +314,24 @@ export default function FoodDetailsReport() {
                           <PrimaryButton
                             type="submit"
                             className="btn btn-default flex-center"
-                            label={"Show"}
+                            label={"View"}
                             onClick={() => {
                               setIsFilter(true);
-                              // getDailyCafeteriaReport(
-                              //   buId,
-                              //   values?.date,
-                              //   false,
-                              //   setRowDto,
-                              //   setLoading
-                              // );
                             }}
+                            disabled={
+                              !values?.reportType?.value ||
+                              !values?.date ||
+                              !values?.fromDate ||
+                              !values?.toDate ||
+                              !values?.place
+                            }
                           />
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="table-card-body mt-0">
-                    <CardTable propsObj={{ rowDto }} />
+                    <CardTable propsObj={{ rowDto }} viewType={viewType} />
                   </div>
                 </div>
               ) : (

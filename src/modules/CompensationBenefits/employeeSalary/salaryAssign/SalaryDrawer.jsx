@@ -513,7 +513,9 @@ export default function SalaryDrawer(props) {
               ...styles,
             },
             "& .MuiDrawer-paperAnchorRight": {
-              overflowY: "visible",
+                // overflowY: "visible",
+                overflowX: "hidden",
+                overflowY: "scroll !important",
             },
           }}
         >

@@ -241,8 +241,7 @@ const MgtExpenseApplicationCreate = () => {
           errors,
           touched,
           setFieldValue,
-          isValid,
-          setValues,
+          
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -415,7 +414,7 @@ const MgtExpenseApplicationCreate = () => {
                             .then((data) => {
                               setImageFile(data);
                             })
-                            .catch((error) => {
+                            .catch(() => {
                               setImageFile("");
                             });
                         }

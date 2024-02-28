@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Table } from "antd";
 import _ from "lodash";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { antFilterData } from "../utility/AntFIlterData";
 import { dateFormatter } from "../utility/dateFormatter";
 
@@ -67,13 +67,19 @@ const AntTable = ({
     };
   });
 
-  const handleChange = (pagination, filters, sorter, newRowDto) => {
+  const handleChange = (pagination, filters, sorter, newRowDto, action) => {
     setFilteredInfo(filters);
     setSortedInfo(sorter);
     setColumnsData?.(newRowDto?.currentDataSource);
     setFIlterList?.(newRowDto?.currentDataSource);
     handleTableChange?.({ pagination, filters, sorter, newRowDto });
   };
+  useEffect(()=> {
+    console.log("columnsData", columnsData)
+  }, [columnsData])
+  useEffect(()=> {
+    console.log("data", data)
+  }, [data])
   return (
     <div>
       <Table

@@ -1,20 +1,18 @@
 import { AddCircle, AddOutlined } from "@mui/icons-material";
-import PlaylistAddCircleIcon from "@mui/icons-material/PlaylistAddCircle";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import BtnActionMenu from "../../../common/BtnActionMenu";
 import FilterBadgeComponent from "../../../common/FilterBadgeComponent";
 import Loading from "../../../common/loading/Loading";
 import MasterFilter from "../../../common/MasterFilter";
 import NoResult from "../../../common/NoResult";
+import PlaylistAddCircleIcon from "@mui/icons-material/PlaylistAddCircle";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../common/PopoverMasterFilter";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500 } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import FilterModal from "./components/FilterModal";
 import {
@@ -23,20 +21,18 @@ import {
 } from "./helper";
 import "./styles.css";
 import DefaultInput from "../../../common/DefaultInput";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../common/peopleDeskTable";
-import PrimaryButton from "common/PrimaryButton";
+import PeopleDeskTable from "../../../common/peopleDeskTable";
+import BtnActionMenu from "common/BtnActionMenu";
+import { gray500 } from "utility/customColor";
 
-let date = new Date();
-let initYear = date.getFullYear(); // 2022
-let initMonth = date.getMonth() + 1; // 6
-let modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
+const date = new Date();
+const initYear = date.getFullYear(); // 2022
+const initMonth = date.getMonth() + 1; // 6
+const modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
 
 const initData = {
   searchString: "",
   fromMonth: `${initYear}-${modifyMonthResult}`,
-  // master filter
   workplace: "",
   department: "",
   employee: "",
@@ -98,7 +94,7 @@ function SalaryAssignAndDeduction() {
 
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: paginationSize,
+    pageSize: 100,
     total: 0,
   });
 
@@ -293,7 +289,7 @@ function SalaryAssignAndDeduction() {
                       handleClick={(e) => setFilterAnchorEl(e.currentTarget)}
                     />
                   </li>
-                  <li>
+                  {/* <li>
                     <PrimaryButton
                       type="button"
                       className="btn btn-default flex-center"
@@ -317,7 +313,7 @@ function SalaryAssignAndDeduction() {
                         }
                       }}
                     />
-                    {/* <BtnActionMenu
+                    <BtnActionMenu
                       className="btn btn-default flex-center btn-deafult-create-job"
                       icon={
                         <AddOutlined
@@ -328,56 +324,118 @@ function SalaryAssignAndDeduction() {
                         />
                       }
                       label="Assign"
-                      // options={[
-                      //   {
-                      //     value: 1,
-                      //     label: "Single Assign",
-                      //     icon: (
-                      //       <AddCircle
-                      //         sx={{
-                      //           marginRight: "10px",
-                      //           color: gray500,
-                      //           fontSize: "16px",
-                      //         }}
-                      //       />
-                      //     ),
-                      //     onClick: () => {
-                      //       if (employeeFeature?.isCreate) {
-                      //         history.push(
-                      //           "/compensationAndBenefits/employeeSalary/allowanceNDeduction/singleAssign/create",
-                      //           { state: { isCreate: true } }
-                      //         );
-                      //       } else {
-                      //         toast.warn("You don't have permission");
-                      //       }
-                      //     },
-                      //   },
-                      //   {
-                      //     value: 2,
-                      //     label: "Bulk Assign",
-                      //     icon: (
-                      //       <PlaylistAddCircleIcon
-                      //         sx={{
-                      //           marginRight: "10px",
-                      //           color: gray500,
-                      //           fontSize: "16px",
-                      //         }}
-                      //       />
-                      //     ),
-                      //     onClick: () => {
-                      //       if (employeeFeature?.isCreate) {
-                      //         history.push(
-                      //           "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssign/create",
-                      //           { state: { isCreate: true } }
-                      //         );
-                      //       } else {
-                      //         toast.warn("You don't have permission");
-                      //       }
-                      //     },
-                      //   },
-                      // ]}
+                      options={[
+                        {
+                          value: 1,
+                          label: "Single Assign",
+                          icon: (
+                            <AddCircle
+                              sx={{
+                                marginRight: "10px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (employeeFeature?.isCreate) {
+                              history.push(
+                                "/compensationAndBenefits/employeeSalary/allowanceNDeduction/singleAssign/create",
+                                { state: { isCreate: true } }
+                              );
+                            } else {
+                              toast.warn("You don't have permission");
+                            }
+                          },
+                        },
+                        {
+                          value: 2,
+                          label: "Bulk Assign",
+                          icon: (
+                            <PlaylistAddCircleIcon
+                              sx={{
+                                marginRight: "10px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (employeeFeature?.isCreate) {
+                              history.push(
+                                "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssign/create",
+                                { state: { isCreate: true } }
+                              );
+                            } else {
+                              toast.warn("You don't have permission");
+                            }
+                          },
+                        },
+                      ]}
                       onClick
-                    /> */}
+                    />
+                  </li> */}
+                  <li>
+                    <BtnActionMenu
+                      className="btn btn-default flex-center btn-deafult-create-job"
+                      icon={
+                        <AddOutlined
+                          sx={{
+                            marginRight: "0px",
+                            fontSize: "15px",
+                          }}
+                        />
+                      }
+                      label="Assign"
+                      options={[
+                        {
+                          value: 1,
+                          label: "Manual Assign",
+                          icon: (
+                            <AddCircle
+                              sx={{
+                                marginRight: "10px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (employeeFeature?.isCreate) {
+                              history.push(
+                                "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssign/create",
+                                { state: { isCreate: true } }
+                              );
+                            } else {
+                              toast.warn("You don't have permission");
+                            }
+                          },
+                        },
+                        {
+                          value: 2,
+                          label: "Bulk Assign",
+                          icon: (
+                            <PlaylistAddCircleIcon
+                              sx={{
+                                marginRight: "10px",
+                                color: gray500,
+                                fontSize: "16px",
+                              }}
+                            />
+                          ),
+                          onClick: () => {
+                            if (employeeFeature?.isCreate) {
+                              history.push(
+                                "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssignCreate",
+                                { state: { isCreate: true } }
+                              );
+                            } else {
+                              toast.warn("You don't have permission");
+                            }
+                          },
+                        },
+                      ]}
+                    />
                   </li>
                 </ul>
               </div>

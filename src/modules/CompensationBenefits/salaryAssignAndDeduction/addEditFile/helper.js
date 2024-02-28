@@ -82,6 +82,13 @@ export const empListColumn = (page, paginationSize, headerList) => {
       fieldType: "string",
     },
     {
+      title: "Employee ID",
+      dataIndex: "strEmployeeCode",
+      sort: true,
+      // filterDropDownList: headerList[`strDepartmentList`],
+      fieldType: "string",
+    },
+    {
       title: "Department",
       dataIndex: "strDepartment",
       sort: true,
@@ -95,6 +102,13 @@ export const empListColumn = (page, paginationSize, headerList) => {
       sort: true,
       filter: true,
       filterDropDownList: headerList[`strDesignationList`],
+      fieldType: "string",
+    },
+    {
+      title: "Section",
+      dataIndex: "sectionName",
+      sort: true,
+      // filterDropDownList: headerList[`strDepartmentList`],
       fieldType: "string",
     },
     {
@@ -156,6 +170,13 @@ export const bulkAssignEmpListTableColumn = (pages) => {
       filter: true,
     },
     {
+      title: "Employee ID",
+      dataIndex: "strEmployeeCode",
+      sort: true,
+      // filterDropDownList: headerList[`strDepartmentList`],
+      fieldType: "string",
+    },
+    {
       title: "Department",
       dataIndex: "strDepartment",
       sorter: true,
@@ -165,6 +186,13 @@ export const bulkAssignEmpListTableColumn = (pages) => {
     {
       title: "Designation",
       dataIndex: "strDesignation",
+      sorter: true,
+      width: 50,
+      filter: true,
+    },
+    {
+      title: "Section",
+      dataIndex: "sectionName",
       sorter: true,
       width: 50,
       filter: true,

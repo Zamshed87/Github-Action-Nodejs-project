@@ -5,7 +5,7 @@ import FormikSelect from "common/FormikSelect";
 import { getPeopleDeskAllDDL } from "common/api";
 import { Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
@@ -14,9 +14,7 @@ import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
 import Loading from "../../../../common/loading/Loading";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../../common/peopleDeskTable";
+import PeopleDeskTable from "../../../../common/peopleDeskTable";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
@@ -33,6 +31,9 @@ import {
   validationSchema,
   validationSchema2,
 } from "./helper";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+
+const paginationSize = 100;
 
 const initHeaderList = {
   strDepartmentList: [],
@@ -213,13 +214,13 @@ function BulkAddEditForm() {
     if (!values?.isAutoRenew && !values?.toMonth) {
       return toast.warn("To Month must be selected");
     }
-    if(values?.intAllowanceDuration?.value === 1){
-     if(!values?.intAllowanceAttendenceStatus){
-      return toast.warn("Allowance Attendence Status Required");
-     }
-     if(!values?.maxAmount){
-      return toast.warn("Max Amount Required");
-     }
+    if (values?.intAllowanceDuration?.value === 1) {
+      if (!values?.intAllowanceAttendenceStatus) {
+        return toast.warn("Allowance Attendence Status Required");
+      }
+      if (!values?.maxAmount) {
+        return toast.warn("Max Amount Required");
+      }
     }
     var months = [
       "January",
@@ -357,6 +358,7 @@ function BulkAddEditForm() {
   const [bulkEmpString, setBulkEmpString] = useState("");
   const [selectedRow, setSelectedRow] = useState([]);
   const formikRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -452,6 +454,11 @@ function BulkAddEditForm() {
     );
   };
 
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Compensation & Benefits"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <Formik
@@ -524,7 +531,7 @@ function BulkAddEditForm() {
                     )}
                   </div>
                   <div className="row card-style pt-3 mb-3">
-                    <div className="col-lg-4">
+                    <div className="col-lg-2">
                       <div>
                         <label>Employment Type</label>
                         <FormikSelect
@@ -579,7 +586,7 @@ function BulkAddEditForm() {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-2">
                       <div>
                         <label>HR Position</label>
                         <FormikSelect
@@ -640,7 +647,7 @@ function BulkAddEditForm() {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-2">
                       <div>
                         <label>Department</label>
                         <FormikSelect
@@ -701,7 +708,7 @@ function BulkAddEditForm() {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-2">
                       <div>
                         <label>Designation</label>
                         <FormikSelect
@@ -766,18 +773,18 @@ function BulkAddEditForm() {
                       style={{
                         marginTop: "23px",
                       }}
-                      className="col-md-6"
+                      className="col-md-2"
                     >
                       <button
                         type="button"
                         className="btn btn-green btn-green-disable"
                         style={{ width: "auto" }}
-                        label="Show"
+                        label="View"
                         onClick={() => {
                           getLandingBulkAssignEmpListHandler(values, pages);
                         }}
                       >
-                        Show
+                        View
                       </button>
                     </div>
                   </div>
@@ -889,7 +896,7 @@ function BulkAddEditForm() {
                               );
                             }, 500);
                           }}
-                          cancelHandler={(e) => {
+                          cancelHandler={() => {
                             setFieldValue("searchString", "");
                             getData(
                               { current: 1, pageSize: paginationSize },
@@ -900,7 +907,7 @@ function BulkAddEditForm() {
                               checkedHeaderList
                             );
                           }}
-                          handleClick={(e) => {
+                          handleClick={() => {
                             setFieldValue("searchString", "");
                             getData(
                               { current: 1, pageSize: paginationSize },

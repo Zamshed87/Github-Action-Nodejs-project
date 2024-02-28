@@ -3,24 +3,28 @@ import {
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import axios from "axios";
+import FormikSelect from "common/FormikSelect";
+import { getPeopleDeskAllDDL } from "common/api";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
 import * as Yup from "yup";
+import AntScrollTable from "../../../common/AntScrollTable";
 import Chips from "../../../common/Chips";
 import DefaultInput from "../../../common/DefaultInput";
-import Loading from "../../../common/loading/Loading";
 import NoResult from "../../../common/NoResult";
-import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../common/ResetButton";
+import Loading from "../../../common/loading/Loading";
+import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import {
   compensationBenefitsLSAction,
   setFirstLevelNameAction,
 } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500 } from "../../../utility/customColor";
+import { gray500, gray600, success500 } from "../../../utility/customColor";
 import {
   dateFormatter,
   monthFirstDate,
@@ -28,13 +32,13 @@ import {
 } from "../../../utility/dateFormatter";
 import { getMonthName } from "../../../utility/monthUtility";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
+import { customStyles } from "../../../utility/selectCustomStyle";
 import TaxAssignCheckerModal from "./components/taxAssignChekerModal";
 import {
   createSalaryGenerateRequest,
   getSalaryGenerateRequestLanding,
 } from "./helper";
 import "./salaryGenerate.css";
-import AntScrollTable from "../../../common/AntScrollTable";
 
 const initialValues = {
   salaryTpe: {
@@ -43,7 +47,7 @@ const initialValues = {
   },
   businessUnit: "",
   workplaceGroup: "",
-  workplace: "",
+  // workplace: "",
   description: "",
   monthYear: moment().format("YYYY-MM"),
   payrollGroup: "",
@@ -54,6 +58,7 @@ const initialValues = {
   search: "",
   filterFromDate: monthFirstDate(),
   filterToDate: monthLastDate(),
+  salaryCode: ""
 };
 
 const validationSchema = Yup.object().shape({
@@ -88,6 +93,10 @@ const SalaryGenerateLanding = () => {
 
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [salaryCodeDDL, getSalaryCodeAPI, , setSalaryCodeDDL] = useAxiosPost(
+    []
+  );
 
   // for create state
   const [open, setOpen] = useState(false);
@@ -100,10 +109,9 @@ const SalaryGenerateLanding = () => {
     setOpen(false);
   };
 
-  const { orgId, buId, buName, employeeId, wgId, wId, wName } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    profileData: { orgId, buId, buName, employeeId, wgId, wId, wName },
+  } = useSelector((state) => state?.auth, shallowEqual);
 
   // LS data compensationBenefits
   const { compensationBenefits } = useSelector((state) => {
@@ -111,7 +119,7 @@ const SalaryGenerateLanding = () => {
   }, shallowEqual);
 
   //get landing data
-  const getLandingData = () => {
+  const getLandingData = (values) => {
     getSalaryGenerateRequestLanding(
       "SalaryGenerateRequestLanding",
       orgId,
@@ -126,27 +134,19 @@ const SalaryGenerateLanding = () => {
       setAllData,
       setLoading,
       pages,
-      setPages
+      setPages,
+      undefined,
+      "",
+      "",
+      "",
+      "",
+      "",
+      values
     );
   };
 
   useEffect(() => {
-    getSalaryGenerateRequestLanding(
-      "SalaryGenerateRequestLanding",
-      orgId,
-      buId,
-      wgId,
-      wId,
-      "",
-      "",
-      values?.filterFromDate,
-      values?.filterToDate,
-      setRowDto,
-      setAllData,
-      setLoading,
-      pages,
-      setPages
-    );
+    getLandingData(values)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId, wgId]);
 
@@ -154,7 +154,7 @@ const SalaryGenerateLanding = () => {
   const filterData = (keywords) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter(
+      const newDta = allData?.filter(
         (item) =>
           regex.test(item?.strBusinessUnit?.toLowerCase()) ||
           regex.test(item?.strSalaryCode?.toLowerCase()) ||
@@ -166,6 +166,19 @@ const SalaryGenerateLanding = () => {
       setRowDto([]);
     }
   };
+
+  // for initial
+  useEffect(() => {
+    setWorkplaceDDL([]);
+    setSalaryCodeDDL([]);
+    setFieldValue("salaryCode", "");
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
+    );
+  }, [orgId, buId, employeeId, wgId]);
 
   // useFormik hooks
   const {
@@ -218,7 +231,7 @@ const SalaryGenerateLanding = () => {
     const callback = () => {
       resetForm(initialValues);
       setIsEdit(false);
-      getLandingData();
+      getLandingData(values);
     };
     const res = await axios.get(
       `/Payroll/EmployeeTakeHomePayNotAssignForTax?partName=EmployeeTaxNotAssignListForTakeHomePay&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplacegroupId=${values?.workplaceGroup?.value}&intWorkPlaceId=${values?.workplace?.value}&intPayrollGroupId=${values?.payrollGroup?.value}`
@@ -247,7 +260,7 @@ const SalaryGenerateLanding = () => {
       intCreatedBy: employeeId,
     };
     const callback = () => {
-      getLandingData();
+      getLandingData(values);
     };
     createSalaryGenerateRequest(payload, setLoading, callback);
   };
@@ -304,6 +317,13 @@ const SalaryGenerateLanding = () => {
         filter: true,
         width: 120,
       },
+      // {
+      //   title: "Workplace Name",
+      //   dataIndex: "strWorkplace",
+      //   sorter: true,
+      //   filter: true,
+      //   width: 120,
+      // },
       /*     {
         title: "Wing",
         dataIndex: "wingName",
@@ -503,6 +523,21 @@ const SalaryGenerateLanding = () => {
       },
     ];
   };
+  const getSalaryCodeByFromDateAndWId = (fromDate, toDate) => {
+    getSalaryCodeAPI(`/Payroll/GetSalaryCode`, {
+      fromDate: fromDate,
+      toDate: toDate,
+      workPlaceId: (workplaceDDL || []).map((w) => w?.intWorkplaceId),
+    });
+  };
+  useEffect(() => {
+    if (workplaceDDL?.length > 0) {
+      getSalaryCodeByFromDateAndWId(
+        values?.filterFromDate,
+        values?.filterToDate
+      );
+    }
+  }, [workplaceDDL]);
 
   return (
     <>
@@ -596,6 +631,15 @@ const SalaryGenerateLanding = () => {
                       className="form-control"
                       onChange={(e) => {
                         setFieldValue("filterFromDate", e.target.value);
+                        setSalaryCodeDDL([]);
+                        if (e.target.value && values?.filterToDate && wId) {
+                          getSalaryCodeByFromDateAndWId(
+                            e.target.value,
+                            values?.filterToDate,
+                            wId
+                          );
+                        }
+                        // for saving date to local storage
                         dispatch(
                           compensationBenefitsLSAction({
                             ...compensationBenefits,
@@ -622,6 +666,15 @@ const SalaryGenerateLanding = () => {
                       className="form-control"
                       onChange={(e) => {
                         setFieldValue("filterToDate", e.target.value);
+                        setSalaryCodeDDL([]);
+                        if (e.target.value && values?.filterToDate && wId) {
+                          getSalaryCodeByFromDateAndWId(
+                            values?.filterFromDate,
+                            e.target.value,
+                            wId
+                          );
+                        }
+                        // for saving date to local storage
                         dispatch(
                           compensationBenefitsLSAction({
                             ...compensationBenefits,
@@ -635,29 +688,87 @@ const SalaryGenerateLanding = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3">
+                <div className="col-md-4">
+                  <div className="input-field-main">
+                    <label>Salary Code</label>
+                    <FormikSelect
+                      name="salaryCode"
+                      options={salaryCodeDDL || []}
+                      value={values?.salaryCode}
+                      onChange={(valueOption) => {
+                        setFieldValue("salaryCode", valueOption);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                      isDisabled={singleData}
+                    />
+                  </div>
+                </div>
+                {/* removed for requiremnt change....... */}
+                <div className="col-md-3 d-none">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+                    <FormikSelect
+                      name="workplace"
+                      isClearable={false}
+                      options={workplaceDDL || []}
+                      value={values?.workplace}
+                      onChange={(valueOption) => {
+                        setFieldValue("workplace", valueOption);
+                      }}
+                      styles={{
+                        ...customStyles,
+                        control: (provided) => ({
+                          ...provided,
+                          minHeight: "auto",
+                          height:
+                            values?.workplace?.length > 1 ? "auto" : "auto",
+                          borderRadius: "4px",
+                          boxShadow: `${success500}!important`,
+                          ":hover": {
+                            borderColor: `${gray600}!important`,
+                          },
+                          ":focus": {
+                            borderColor: `${gray600}!important`,
+                          },
+                        }),
+                        valueContainer: (provided) => ({
+                          ...provided,
+                          height:
+                            values?.workplace?.length > 1 ? "auto" : "auto",
+                          padding: "0 6px",
+                        }),
+                        multiValue: (styles) => {
+                          return {
+                            ...styles,
+                            position: "relative",
+                            top: "-1px",
+                          };
+                        },
+                        multiValueLabel: (styles) => ({
+                          ...styles,
+                          padding: "0",
+                        }),
+                      }}
+                      isMulti
+                      // isDisabled={singleData}
+                      errors={errors}
+                      placeholder="Workplace"
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+
+                <div className="col-lg-2">
                   <button
                     className="btn btn-green btn-green-disable mt-4"
                     type="button"
                     disabled={!values?.filterFromDate || !values?.filterToDate}
                     onClick={(e) => {
                       e.stopPropagation();
-                      getSalaryGenerateRequestLanding(
-                        "SalaryGenerateRequestLanding",
-                        orgId,
-                        buId,
-                        wgId,
-                        wId,
-                        "",
-                        "",
-                        values?.filterFromDate,
-                        values?.filterToDate,
-                        setRowDto,
-                        setAllData,
-                        setLoading,
-                        pages,
-                        setPages
-                      );
+                      getLandingData(values)
                     }}
                   >
                     View
@@ -724,7 +835,7 @@ const SalaryGenerateLanding = () => {
           resetForm={resetForm}
           initialValues={initialValues}
           setIsEdit={setIsEdit}
-          getLandingData={getLandingData}
+          getLandingData={() => getLandingData(values)}
           setLoading={setLoading}
           loading={loading}
         />

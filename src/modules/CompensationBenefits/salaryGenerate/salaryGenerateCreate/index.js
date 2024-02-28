@@ -1,24 +1,21 @@
 import axios from "axios";
 import IConfirmModal from "../../../../common/IConfirmModal";
 
-import { paginationSize } from "common/peopleDeskTable";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import AntTable from "../../../../common/AntTable";
-import AvatarComponent from "../../../../common/AvatarComponent";
 import BackButton from "../../../../common/BackButton";
 import DefaultInput from "../../../../common/DefaultInput";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
 import FormikSelect from "../../../../common/FormikSelect";
 import NoResult from "../../../../common/NoResult";
 import { getPeopleDeskAllDDL } from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500, gray900, greenColor } from "../../../../utility/customColor";
+import { gray500, gray600, success500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import TaxAssignCheckerModal from "../components/taxAssignChekerModal";
 import {
@@ -61,9 +58,10 @@ const SalaryGenerateCreate = () => {
   const [allData, setAllData] = useState([]);
   const [takeHomePayTax, setTakeHomePayTax] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: paginationSize,
+    pageSize: 2000,
     total: 0,
   });
   const [allEmployeeString, setAllEmployeeString] = useState("");
@@ -86,7 +84,7 @@ const SalaryGenerateCreate = () => {
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
 
   //get landing data
-  const getLandingData = (pages = pages, values) => {
+  const getLandingData = (pages = pages) => {
     getSalaryGenerateRequestLanding(
       "EmployeeListForSalaryGenerateRequest",
       orgId,
@@ -105,27 +103,25 @@ const SalaryGenerateCreate = () => {
   // for initial
   useEffect(() => {
     getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
+    );
+    getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
       "intBusinessUnitId",
       "strBusinessUnit",
       setBusinessUnitDDL
     );
-  }, [orgId, buId, employeeId]);
-
-  // useEffect(() => {
-  //   getPeopleDeskWithoutAllDDL(
-  //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=0`,
-  //     "WingId",
-  //     "WingName",
-  //     setWingDDL
-  //   );
-  // }, [orgId, buId, wgId]);
+  }, [orgId, buId, employeeId, wgId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
   }, [dispatch]);
 
   useEffect(() => {
+    setFieldValue("workplace", []);
     setRowDto([]);
   }, [wgId]);
 
@@ -157,127 +153,15 @@ const SalaryGenerateCreate = () => {
         setPages
       );
     }
+    setFieldValue("workplace", []);
   }, [params, orgId, wgId, buId]);
-
-  // useEffect(() => {
-  //   if (+params?.id) {
-  //     getEditDDLs({
-  //       singleData,
-  //       getPeopleDeskWithoutAllDDL,
-  //       orgId,
-  //       buId,
-  //       wgId,
-  //       setWingDDL,
-  //       setSoleDepoDDL,
-  //       setRegionDDL,
-  //       setAreaDDL,
-  //       setTerritoryDDL,
-  //     });
-  //   }
-  // }, [orgId, buId, wgId, singleData, params]);
-
-  // on form submit
-  // const saveHandler = async (values) => {
-  //   const modifyRowDto = rowDto
-  //     ?.filter((itm) => itm?.isSalaryGenerate === true)
-  //     ?.map((itm) => {
-  //       return {
-  //         intEmployeeId: itm?.intEmployeeId,
-  //         strEmployeeName: itm?.strEmployeeName,
-  //         intPayrollGroupId: itm?.intPayrollGroupId,
-  //         strPayrollGroup: itm?.strPayrollGroup,
-  //       };
-  //     });
-
-  //   const notTaxAssignList = modifyRowDto?.map((itm) => {
-  //     return {
-  //       intEmployeeId: itm?.intEmployeeId,
-  //     };
-  //   });
-  //   const payload = {
-  //     strPartName: "SalaryGenerateNReGenerateRequest",
-  //     intSalaryGenerateRequestId: +params?.id
-  //       ? state?.intSalaryGenerateRequestId
-  //       : 0,
-  //     strSalaryCode: " ",
-  //     intAccountId: orgId,
-  //     intBusinessUnitId: buId,
-  //     strBusinessUnit: buName,
-  //     intWorkplaceGroupId: wgId,
-  //     strWorkplaceGroup: wgName,
-  //     intWorkplaceId: wId,
-  //     strWorkplace: wName,
-  //     intWingId: values?.wing?.value || 0,
-  //     intSoleDepoId: values?.soleDepo?.value || 0,
-  //     intRegionId: values?.region?.value || 0,
-  //     intAreaId: values?.area?.value || 0,
-  //     intTerritoryId: values?.territory?.value || 0,
-  //     intMonthId: values?.monthId,
-  //     intYearId: values?.yearId,
-  //     strDescription: values?.description,
-  //     intCreatedBy: employeeId,
-  //     strSalryType: values?.salaryTpe?.value,
-  //     dteFromDate:
-  //       values?.fromDate ||
-  //       `${values?.yearId}-${
-  //         values?.monthId <= 9 ? `0${values?.monthId}` : values?.monthId
-  //       }-01`,
-  //     dteToDate:
-  //       values?.toDate || lastDayOfMonth(values?.monthId, values?.yearId),
-  //     generateRequestRows: modifyRowDto,
-  //   };
-  //   const callback = () => {
-  //     if (+params?.id) {
-  //       getSalaryGenerateRequestLandingById(
-  //         "SalaryGenerateRequestById",
-  //         orgId,
-  //         buId,
-  //         wgId,
-  //         +params?.id,
-  //         false,
-  //         values?.intMonth,
-  //         values?.intYear,
-  //         values?.fromDate,
-  //         values?.toDate,
-  //         setRowDto,
-  //         setAllData,
-  //         setLoading,
-  //         wId,
-  //         pages,
-  //         setPages,
-  //         setAllEmployeeString
-  //       );
-  //       resetForm(salaryGenerateInitialValues);
-  //       setIsEdit(true);
-  //       // searchKeyWord("")
-  //     } else {
-  //       resetForm(salaryGenerateInitialValues);
-  //       setIsEdit(false);
-  //       setRowDto([]);
-  //     }
-  //   };
-  //   const res = await axios.post(
-  //     `/Payroll/EmployeeTakeHomePayNotAssignForTax`,
-  //     {
-  //       partName: "EmployeeTaxNotAssignListForTakeHomePay",
-  //       intAccountId: orgId,
-  //       intBusinessUnitId: buId,
-  //       listOfEmployeeId: notTaxAssignList,
-  //     }
-  //   );
-  //   if (res?.data) {
-  //     setTakeHomePayTax(res?.data);
-  //     res?.data?.length > 0
-  //       ? setOpen(true)
-  //       : createSalaryGenerateRequest(payload, setLoading, callback);
-  //   }
-  // };
   const saveHandler = async (values) => {
     const { empIdList, payload, callback } = salaryGeneratepayloadHandler(
       values,
       allData,
       false
     );
+
     const res = await axios.post(
       `/Payroll/EmployeeTakeHomePayNotAssignForTax`,
       {
@@ -295,6 +179,11 @@ const SalaryGenerateCreate = () => {
     }
   };
   const salaryGeneratepayloadHandler = (values, allData, isAllAssign) => {
+    const valueArray =
+      (values?.workplace || [])?.map((obj) => obj?.intWorkplaceId) || [];
+    // Joining the values into a string separated by commas
+    const workplaceListFromValues = '"' + valueArray.join(",") + '"';
+
     const modifyRowDto = allData
       ?.filter((itm) => itm?.isSalaryGenerate === true)
       ?.map((itm) => {
@@ -325,7 +214,8 @@ const SalaryGenerateCreate = () => {
       strBusinessUnit: buName,
       intWorkplaceGroupId: wgId,
       strWorkplaceGroup: wgName,
-      intWorkplaceId: wId,
+      // intWorkplaceId: wId,
+      // strWorkplaceIdList: valueArray.join(","), // --- removed today
       strWorkplace: wName,
       intWingId: values?.wing?.value || 0,
       intSoleDepoId: values?.soleDepo?.value || 0,
@@ -349,11 +239,13 @@ const SalaryGenerateCreate = () => {
       strEmpIdList: isAllAssign ? allEmployeeString : empIdList.join(","),
     };
     const callback = () => {
+      setAllEmployeeString("")
+      setFieldValue("workplace", []);
       setAllAssign(false);
       if (+params?.id) {
         getSalaryGenerateRequestLandingById(
           "SalaryGenerateRequestRowByRequestId",
-          orgId,
+          values,
           buId,
           wgId,
           +params?.id,
@@ -385,6 +277,7 @@ const SalaryGenerateCreate = () => {
         resetForm(salaryGenerateInitialValues);
         setIsEdit(false);
         setRowDto([]);
+        setAllEmployeeString("")
       }
     };
     return { empIdList, payload, callback };
@@ -415,131 +308,12 @@ const SalaryGenerateCreate = () => {
             : createSalaryGenerateRequest(payload, setLoading, callback);
         }
       },
-      noAlertFunc: () => {},
+      noAlertFunc: () => {
+        //
+      },
     };
     IConfirmModal(confirmObject);
   };
-  const columns = [
-    {
-      title: "SL",
-      render: (text, record, index) => <div>{index + 1}</div>,
-      sorter: false,
-      filter: false,
-    },
-    {
-      title: () => (
-        <div className="d-flex align-items-center">
-          <div className="mr-2">
-            <FormikCheckBox
-              styleObj={{
-                margin: "0 auto!important",
-                padding: "0 !important",
-                color: gray900,
-                checkedColor: greenColor,
-              }}
-              name="allSelected"
-              checked={
-                rowDto?.length > 0 &&
-                rowDto?.every((item) => item?.isSalaryGenerate)
-              }
-              onChange={(e) => {
-                let modifyRowDto = rowDto?.map((item) => ({
-                  ...item,
-                  isSalaryGenerate: e.target.checked,
-                }));
-                setRowDto(modifyRowDto);
-                setFieldValue("allSelected", e.target.checked);
-              }}
-            />
-          </div>
-          <div>Employee Name</div>
-        </div>
-      ),
-      dataIndex: "strEmployeeName",
-      render: (strEmployeeName, record, index) => (
-        <div className="d-flex align-items-center">
-          <div className="mr-2" onClick={(e) => e.stopPropagation()}>
-            <FormikCheckBox
-              styleObj={{
-                margin: "0 auto!important",
-                color: gray900,
-                checkedColor: greenColor,
-                padding: "0px",
-              }}
-              name="isSalaryGenerate"
-              color={greenColor}
-              checked={rowDto[index]?.isSalaryGenerate}
-              onChange={() => {
-                const copyRowDto = [...rowDto];
-                copyRowDto[index].isSalaryGenerate =
-                  !copyRowDto[index].isSalaryGenerate;
-                setRowDto(copyRowDto);
-              }}
-              // disabled={item?.ApplicationStatus === "Approved"}
-            />
-          </div>
-          <div className="d-flex align-items-center">
-            <AvatarComponent
-              classess=""
-              letterCount={1}
-              label={strEmployeeName}
-            />
-            <span className="ml-2">{strEmployeeName}</span>
-          </div>
-        </div>
-      ),
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Employee ID",
-      dataIndex: "strEmployeeCode",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Type",
-      dataIndex: "strEmploymentType",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Designation",
-      dataIndex: "strDesignation",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Department Section",
-      dataIndex: "strDepartmentSection",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Workplace",
-      dataIndex: "strWorkplace",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Workplace Group",
-      dataIndex: "strWorkplaceGroup",
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "Payroll Group",
-      dataIndex: "strPayrollGroup",
-      sorter: true,
-      filter: true,
-    },
-  ];
 
   // marketingEmployee
   const isSameWgEmployee = rowDto.every(
@@ -621,6 +395,7 @@ const SalaryGenerateCreate = () => {
     initialValues: params?.id
       ? {
           ...singleData,
+          workplace: [],
           wing:
             +params?.id &&
             isSameMaketingAreaHandler(
@@ -840,6 +615,60 @@ const SalaryGenerateCreate = () => {
                       </div>
                     </>
                   )}
+
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>Workplace</label>
+                      <FormikSelect
+                        name="workplace"
+                        isClearable={false}
+                        options={workplaceDDL || []}
+                        value={values?.workplace}
+                        onChange={(valueOption) => {
+                          setFieldValue("workplace", valueOption);
+                        }}
+                        styles={{
+                          ...customStyles,
+                          control: (provided, state) => ({
+                            ...provided,
+                            minHeight: "auto",
+                            height:
+                              values?.workplace?.length > 1 ? "auto" : "auto",
+                            borderRadius: "4px",
+                            boxShadow: `${success500}!important`,
+                            ":hover": {
+                              borderColor: `${gray600}!important`,
+                            },
+                            ":focus": {
+                              borderColor: `${gray600}!important`,
+                            },
+                          }),
+                          valueContainer: (provided, state) => ({
+                            ...provided,
+                            height:
+                              values?.workplace?.length > 1 ? "auto" : "auto",
+                            padding: "0 6px",
+                          }),
+                          multiValue: (styles) => {
+                            return {
+                              ...styles,
+                              position: "relative",
+                              top: "-1px",
+                            };
+                          },
+                          multiValueLabel: (styles) => ({
+                            ...styles,
+                            padding: "0",
+                          }),
+                        }}
+                        isMulti
+                        // isDisabled={singleData}
+                        errors={errors}
+                        placeholder="Workplace"
+                        touched={touched}
+                      />
+                    </div>
+                  </div>
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Description</label>
@@ -863,9 +692,9 @@ const SalaryGenerateCreate = () => {
                         style={{
                           padding: "0px 10px",
                           marginTop:
-                          values?.salaryTpe?.value === "PartialSalary"
-                            ? "21px"
-                            : "0px",
+                            values?.salaryTpe?.value === "PartialSalary"
+                              ? "21px"
+                              : "0px",
                         }}
                         className="btn btn-default mr-2"
                         type="button"
@@ -879,7 +708,7 @@ const SalaryGenerateCreate = () => {
 
                             getSalaryGenerateRequestLandingById(
                               "SalaryGenerateRequestRowByRequestId",
-                              orgId,
+                              values,
                               buId,
                               wgId,
                               +params?.id,
@@ -894,7 +723,7 @@ const SalaryGenerateCreate = () => {
                               wId,
                               {
                                 current: pages?.current,
-                                pageSize: 500,
+                                pageSize: 2000,
                               },
                               setPages,
                               setAllEmployeeString,
@@ -925,7 +754,8 @@ const SalaryGenerateCreate = () => {
                               values?.soleDepo?.value,
                               values?.region?.value,
                               values?.area?.value,
-                              values?.territory?.value
+                              values?.territory?.value,
+                              values
                             );
                           }
                         }}
@@ -934,10 +764,11 @@ const SalaryGenerateCreate = () => {
                           // !values?.businessUnit ||
                           !values?.monthYear ||
                           !values?.fromDate ||
-                          !values?.toDate
+                          !values?.toDate ||
+                          !values?.workplace?.length > 0
                         }
                       >
-                        Show
+                        View
                       </button>
                     ) : (
                       <button
@@ -956,7 +787,7 @@ const SalaryGenerateCreate = () => {
 
                             getSalaryGenerateRequestLandingById(
                               "SalaryGenerateRequestRowByRequestId",
-                              orgId,
+                              values,
                               buId,
                               wgId,
                               +params?.id,
@@ -999,13 +830,18 @@ const SalaryGenerateCreate = () => {
                               values?.soleDepo?.value,
                               values?.region?.value,
                               values?.area?.value,
-                              values?.territory?.value
+                              values?.territory?.value,
+                              values
                             );
                           }
                         }}
-                        disabled={!values?.salaryTpe || !values?.monthYear}
+                        disabled={
+                          !values?.salaryTpe ||
+                          !values?.monthYear ||
+                          !values?.workplace?.length > 0
+                        }
                       >
-                        Show
+                        View
                       </button>
                     )}
                     {allData?.filter((itm) => itm?.isSalaryGenerate === true)
@@ -1068,77 +904,6 @@ const SalaryGenerateCreate = () => {
               >
                 Employee Salary Generate List
               </h2>
-
-              <ul className="d-flex flex-wrap">
-                {values?.search && (
-                  <li>
-                    {/* <ResetButton
-                      classes="btn-filter-reset"
-                      title="reset"
-                      icon={
-                        <SettingsBackupRestoreOutlined
-                          sx={{
-                            marginRight: "10px",
-                            fontSize: "16px",
-                          }}
-                        />
-                      }
-                      styles={{
-                        marginRight: "16px",
-                      }}
-                      onClick={() => {
-                        setRowDto(allData);
-                        setFieldValue("search", "");
-                      }}
-                    /> */}
-                  </li>
-                )}
-                <li>
-                  {/* <MasterFilter
-                    isHiddenFilter
-                    value={searchKeyWord}
-                    setValue={(value) => {
-                      if (value === "") {
-                        setSearchKeyWord("");
-                        setAllData(allLanding);
-                        setRowDto(allLanding);
-                      } else {
-                        setSearchKeyWord(value);
-                        filterData(value);
-                      }
-                    }}
-                    cancelHandler={() => {
-                      setSearchKeyWord("");
-                      getData();
-                    }}
-                    handleClick={() => {}}
-                    width="200px"
-                    inputWidth="200px"
-                  /> */}
-                  {/* <DefaultInput
-                    classes="search-input"
-                    inputClasses="search-inner-input"
-                    placeholder="Search"
-                    value={values?.search}
-                    name="search"
-                    type="text"
-                    trailicon={
-                      <SearchOutlined
-                        sx={{
-                          color: "#323232",
-                          fontSize: "18px",
-                        }}
-                      />
-                    }
-                    onChange={(e) => {
-                      filterData(e.target.value);
-                      setFieldValue("search", e.target.value);
-                    }}
-                    errors={errors}
-                    touched={touched}
-                  /> */}
-                </li>
-              </ul>
             </div>
             <div>
               {allData?.length > 0 ? (
@@ -1155,15 +920,16 @@ const SalaryGenerateCreate = () => {
                       setColumnsData={(newRow) => {
                         setAllData(newRow);
                       }}
-                      handleTableChange={({ pagination, newRowDto }) =>
-                        handleTableChange(
-                          pagination,
-                          newRowDto,
-                          values?.search || ""
-                        )
-                      }
-                      pages={pages?.pageSize}
-                      pagination={pages}
+                      removePagination={true}
+                      // handleTableChange={({ pagination, newRowDto }) =>
+                      //   handleTableChange(
+                      //     pagination,
+                      //     newRowDto,
+                      //     values?.search || ""
+                      //   )
+                      // }
+                      // pages={pages?.pageSize}
+                      // pagination={pages}
                     />
                   </div>
                 </>

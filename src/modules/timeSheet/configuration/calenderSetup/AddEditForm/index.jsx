@@ -5,10 +5,7 @@ import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import * as Yup from "yup";
-import {
-  getPeopleDeskAllDDL,
-  getPeopleDeskAllLanding,
-} from "../../../../../common/api";
+import { getPeopleDeskAllDDL } from "../../../../../common/api";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import FormikInput from "../../../../../common/FormikInput";
 import { gray900, greenColor } from "../../../../../utility/customColor";
@@ -23,6 +20,7 @@ import { isUniq } from "../../../../../utility/uniqChecker";
 import { IconButton, Tooltip } from "@mui/material";
 import { DeleteOutline, InfoOutlined } from "@mui/icons-material";
 import { calculateNextDate } from "utility/dateFormatter";
+import { toast } from "react-toastify";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -42,6 +40,7 @@ const initData = {
   breakEndTime: "",
   officeStartTime: "",
   officeCloseTime: "",
+  isLunchBreakAsWorkingHour: true,
   nightShift: false,
   isEmployeeUpdate: false,
   dteEmployeeUpdateFromDate: "",
@@ -75,7 +74,7 @@ const CalendarSetupModal = ({
     shallowEqual
   );
   // eslint-disable-next-line no-unused-vars
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const [modifySingleData, setModifySingleData] = useState("");
   const [workPlaceDDL, setWorkPlaceDDL] = useState([]);
@@ -93,6 +92,8 @@ const CalendarSetupModal = ({
     if (singleData) {
       const newRowData = {
         calendarName: singleData?.strCalenderName,
+        isLunchBreakAsWorkingHour:
+          singleData?.isLunchBreakCalculateAsWorkingHour || true,
         startTime: singleData?.dteStartTime,
         endTime: singleData?.dteEndTime,
         minWork: singleData?.numMinWorkHour,
@@ -103,6 +104,7 @@ const CalendarSetupModal = ({
         officeStartTime: singleData?.dteOfficeStartTime || "",
         officeCloseTime: singleData?.dteOfficeCloseTime || "",
         nightShift: singleData?.isNightShift || "",
+        isEmployeeUpdate: true,
       };
       const tableData = singleData?.timeSheetCalenderRows?.map((item) => ({
         intCalenderRowId: item?.intCalenderRowId,
@@ -138,7 +140,7 @@ const CalendarSetupModal = ({
   };
 
   const deleteRow = (payload) => {
-    let deleteRow = [];
+    const deleteRow = [];
     if (payload > 0) {
       const filterArr = tableData.filter(
         (itm) => itm.intWorkplaceId === payload
@@ -169,31 +171,31 @@ const CalendarSetupModal = ({
       setDeleteRowData
     );
   };
+  console.log({id})
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={id ? modifySingleData : initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
+          if (id && !values?.isEmployeeUpdate) {
+            return toast.warn("Please select is Employee Update Checkbox");
+          }
+          if (id && values?.isEmployeeUpdate && (!values?.dteEmployeeUpdateFromDate || !values?.dteEmployeeUpdateToDate)) {
+            return toast.warn("Please select Employee Generate From Date and Employee Generate To Date");
+          }
           saveHandler(values, () => {
-            if (id) {
-              resetForm(modifySingleData);
-            } else {
-              resetForm(initData);
-            }
+              if (id) {
+                resetForm(modifySingleData);
+              } else {
+                resetForm(initData);
+              }
           });
+          
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Box sx={style} className="calenderSetupModal">
               <Form>
@@ -412,14 +414,48 @@ const CalendarSetupModal = ({
                         touched={touched}
                       />
                     </div>
+                    <div className="col-12">
+                      <FormikCheckBox
+                        name="nightShift"
+                        styleObj={{
+                          color: greenColor,
+                        }}
+                        label="Is Night Shift"
+                        checked={values?.nightShift}
+                        onChange={(e) => {
+                          setFieldValue("nightShift", e.target.checked);
+                        }}
+                      />
+                    </div>
+                    <div className="col-12">
+                      <FormikCheckBox
+                        name="isLunchBreakAsWorkingHour"
+                        styleObj={{
+                          color: greenColor,
+                        }}
+                        label="Is lunch break is calculated as working hour?"
+                        checked={values?.isLunchBreakAsWorkingHour}
+                        onChange={(e) => {
+                          setFieldValue(
+                            "isLunchBreakAsWorkingHour",
+                            e.target.checked
+                          );
+                        }}
+                      />
+                    </div>
                     {singleData?.strCalenderName ? (
-                      <div className="col-12 mt-3">
+                      <div className="col-12">
                         <FormikCheckBox
                           name="isEmployeeUpdate"
                           styleObj={{
                             color: greenColor,
                           }}
-                          label="is Employee Update"
+                          label={
+                            <span>
+                              Sync Employee Attendance Data{" "}
+                              <span style={{ color: "red" }}>*</span>
+                            </span>
+                          }
                           checked={values?.isEmployeeUpdate}
                           onChange={(e) => {
                             setFieldValue("isEmployeeUpdate", e.target.checked);
@@ -479,15 +515,6 @@ const CalendarSetupModal = ({
                         </div>
                       </>
                     ) : null}
-
-                    <div className="col-12">
-                      <hr
-                        style={{
-                          borderTop: "1px solid #ccc",
-                          margin: "10px 0",
-                        }}
-                      />
-                    </div>
                     <div className="col-6">
                       <label>Workplace </label>
                       <FormikSelect
@@ -522,19 +549,7 @@ const CalendarSetupModal = ({
                         Add
                       </button>
                     </div>
-                    <div className="col-3 mt-3">
-                      <FormikCheckBox
-                        name="nightShift"
-                        styleObj={{
-                          color: greenColor,
-                        }}
-                        label="Is Night Shift"
-                        checked={values?.nightShift}
-                        onChange={(e) => {
-                          setFieldValue("nightShift", e.target.checked);
-                        }}
-                      />
-                    </div>
+
                     <div className="table-card-body pt-3">
                       <div
                         className=" table-card-styled tableOne"

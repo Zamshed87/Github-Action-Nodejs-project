@@ -61,7 +61,24 @@ TOTPolicyGenerate) => {
     employmentType,
     calendarName,
     intOtconfigId,
+    fromSalary,
+    toSalary,
   } = values;
+  const policyConditions = [
+    { condition: hrPosition?.length > 0, value: 1, label: "HR Position" },
+    {
+      condition: employmentType?.length > 0,
+      value: 2,
+      label: "Employment Type",
+    },
+    { condition: calendarName?.length > 0, value: 4, label: "Calendar Name" },
+    { condition: fromSalary && toSalary, value: 3, label: "Salary Range" },
+  ];
+
+  const policy = policyConditions
+    .filter((condition) => condition.condition)
+    .map(({ value, label }) => ({ value, label }));
+  // console.log({ policy });
 
   const policyInfo = {
     intOtconfigId: intOtconfigId || 0,
@@ -83,13 +100,17 @@ TOTPolicyGenerate) => {
     strPolicyName: values?.policyName,
     numDevidedFixedHours: values?.fixedBenefitHours || 0,
     isCalendarTimeHours: values?.benefitHours === 1,
-    isHolidayCountAsFullDayOt: values?.count === 1 ? true : false,
-    isOffdayCountAsFullDayOt: values?.count === 2 ? true : false,
-    // intCalenderId: 0,
+    // isHolidayCountAsFullDayOt: values?.count === 1 ? true : false,
+    // isOffdayCountAsFullDayOt: values?.count === 2 ? true : false,
+    isHolidayCountAsFullDayOt: values?.isHolidayCountAsFullDayOt ? true : false,
+    isOffdayCountAsFullDayOt: values?.isOffdayCountAsFullDayOt ? true : false,
+    intCalenderId: 0,
     intOTHourShouldBeAboveInMin: values?.intOTHourShouldBeAboveInMin || 0,
+    // numOTRateForBasedOnSalaryRange: values?.otRatePerMin || 0,
+    numOTRateForBasedOnSalaryRange: +((values?.otRatePerMin || 0) / 60).toFixed(6), // convert hours to min (user input as hours but we need to save as min)
   };
   const payload: any = generateRows(
-    policyType,
+    policy, // policyType
     hrPosition,
     employmentType,
     calendarName,
@@ -116,8 +137,25 @@ function generateRows(
   const rows: Option[][] = [];
 
   const policyLabels = policyType.map((pt) => pt.label);
-
   if (
+    policyLabels.includes("HR Position") &&
+    policyLabels.includes("Employment Type") &&
+    policyLabels.includes("Calendar Name")
+  ) {
+    for (const hr of hrPosition) {
+      for (const emp of employmentType) {
+        for (const cl of calendarName) {
+          rows.push({
+            ...commonData,
+            ...policyInfo,
+            intEmploymentTypeId: emp?.value,
+            intHrPositionId: hr?.value,
+            intCalenderId: cl?.value,
+          });
+        }
+      }
+    }
+  } else if (
     policyLabels.includes("HR Position") &&
     policyLabels.includes("Employment Type")
   ) {
@@ -127,6 +165,21 @@ function generateRows(
           ...commonData,
           ...policyInfo,
           intEmploymentTypeId: emp?.value,
+          intHrPositionId: hr?.value,
+          // intOtconfigId: 0,
+        });
+      }
+    }
+  } else if (
+    policyLabels.includes("HR Position") &&
+    policyLabels.includes("Calendar Name")
+  ) {
+    for (const hr of hrPosition) {
+      for (const cl of calendarName) {
+        rows.push({
+          ...commonData,
+          ...policyInfo,
+          intCalenderId: cl?.value,
           intHrPositionId: hr?.value,
           // intOtconfigId: 0,
         });
@@ -286,12 +339,12 @@ export const initDataGenerate = (data: any) => {
         label: data?.employmentType,
       },
     ],
-    calendarName: data?.intCalenderId && [
+    calendarName: data?.intCalenderId ? [
       {
         value: data?.intCalenderId,
         label: data?.strCalenderName,
       },
-    ],
+    ] : undefined,
     fromSalary: data?.numFromSalary,
     toSalary: data?.numToSalary,
     overtimeDependsOn: otDependsOn?.find(
@@ -326,6 +379,7 @@ export const initDataGenerate = (data: any) => {
         : data?.isOffdayCountAsFullDayOt === 2
         ? true
         : 2,
+    otRatePerMin: ((data?.numOTRateForBasedOnSalaryRange ?? 0) * 60).toFixed(2),
   };
   return formData;
 };

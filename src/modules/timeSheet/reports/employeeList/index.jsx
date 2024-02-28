@@ -20,7 +20,6 @@ import { gray900 } from "../../../../utility/customColor";
 import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { empReportListColumns } from "./helper";
 import FormikInput from "common/FormikInput";
-import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 
 const initData = {
   searchString: "",
@@ -39,8 +38,8 @@ const initData = {
   contractualToDate: "",
   employmentStatus: "",
 
-  fromDate: monthFirstDate(),
-  toDate: monthLastDate(),
+  fromDate: null,
+  toDate: null,
 };
 
 const initHeaderList = {
@@ -123,8 +122,8 @@ export default function EmployeeList() {
         isPaginated: true,
         isHeaderNeed: true,
         searchTxt: searchText || "",
-        fromDate: values?.fromDate || monthFirstDate(),
-        toDate: values?.toDate || monthLastDate(),
+        fromDate: values?.fromDate || null,
+        toDate: values?.toDate || null,
       };
 
       const res = await axios.post(`/Employee/EmployeeReportWithFilter`, {
@@ -363,8 +362,8 @@ export default function EmployeeList() {
                               isPaginated: true,
                               isHeaderNeed: true,
                               searchTxt: "",
-                              fromDate: values?.fromDate || monthFirstDate(),
-                              toDate: values?.toDate || monthLastDate(),
+                              fromDate: values?.fromDate || null,
+                              toDate: values?.toDate || null,
                               ...checkedHeaderList,
                             };
                             const url =
@@ -519,9 +518,7 @@ export default function EmployeeList() {
 
                         <div className="col-lg-1">
                           <button
-                            // disabled={
-                            //   !values?.filterToDate || !values?.filterFromDate
-                            // }
+                            disabled={!values?.fromDate || !values?.toDate}
                             style={{ marginTop: "21px" }}
                             className="btn btn-green"
                             onClick={() => {
@@ -594,6 +591,9 @@ export default function EmployeeList() {
                         isCheckBox={false}
                         isScrollAble={true}
                         scrollCustomClass="emp-report-landing-table"
+                        handleSortingData={(obj) => {
+                          console.log(obj);
+                        }}
                       />
                     ) : (
                       <>

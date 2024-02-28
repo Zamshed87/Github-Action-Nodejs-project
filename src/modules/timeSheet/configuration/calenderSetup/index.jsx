@@ -1,7 +1,6 @@
 import {
   AddOutlined,
   InfoOutlined,
-  SearchOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
@@ -17,7 +16,6 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import { gray600 } from "../../../../utility/customColor";
 import { timeFormatter } from "../../../../utility/timeFormatter";
 import { getPeopleDeskAllLandingForCalender } from "../../helper";
-import FormikInput from "./../../../../common/FormikInput";
 import NoResult from "./../../../../common/NoResult";
 import ResetButton from "./../../../../common/ResetButton";
 import Loading from "./../../../../common/loading/Loading";
@@ -25,6 +23,7 @@ import CalendarSetupModal from "./AddEditForm";
 import ViewCalendarSetup from "./ViewDetails";
 import "./calendarSetup.css";
 import { LightTooltip } from "common/LightTooltip";
+import MasterFilter from "common/MasterFilter";
 
 const initData = {
   search: "",
@@ -51,7 +50,7 @@ export default function CalendarSetup() {
     document.title = "Calendar Setup";
   }, []);
 
-  const [pages, setPages] = useState({
+  const [pages] = useState({
     current: 1,
     // pageSize: paginationSize,
     pageSize: 50,
@@ -67,6 +66,7 @@ export default function CalendarSetup() {
   const handleClose = () => {
     setViewModal(false);
     setOpen(false);
+    setId("");
   };
 
   // for view Modal
@@ -78,6 +78,7 @@ export default function CalendarSetup() {
   const handleViewClose = () => {
     setViewModal(false);
     setOpen(false);
+    setId("");
   };
 
   const [loading, setLoading] = useState(false);
@@ -85,7 +86,7 @@ export default function CalendarSetup() {
   // single Data
   const [id, setId] = useState("");
 
-  const { orgId, buId, wgId, wId } = useSelector(
+  const { orgId, buId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -123,7 +124,7 @@ export default function CalendarSetup() {
   const filterData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter((item) =>
+      const newDta = allData?.filter((item) =>
         regex.test(item?.strCalenderName?.toLowerCase())
       );
       setRowDto(newDta);
@@ -131,8 +132,6 @@ export default function CalendarSetup() {
       setRowDto([]);
     }
   };
-
-  const saveHandler = (values) => {};
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -221,6 +220,18 @@ export default function CalendarSetup() {
       },
       {
         title: () => (
+          <span style={{ color: gray600 }}>
+            Lunch break is calculated as working hour
+          </span>
+        ),
+        render: (_, record) => (
+          <span>
+            {record?.isLunchBreakCalculateAsWorkingHour ? "Yes" : "No" || "N/A"}
+          </span>
+        ),
+      },
+      {
+        title: () => (
           <span style={{ color: gray600 }}>Office Closing Time</span>
         ),
         dataIndex: "dteOfficeCloseTime",
@@ -238,8 +249,13 @@ export default function CalendarSetup() {
                     <table className="table table-borderless mb-0">
                       With each calendar setup modification, you must Re-assign
                       the calendar{" "}
-                      <a href="/administration/timeManagement/calendarAssign" rel="noopener noreferrer">
-                        <span style={{fontSize:'13px', color:'blue'}}>here</span>
+                      <a
+                        href="/administration/timeManagement/calendarAssign"
+                        rel="noopener noreferrer"
+                      >
+                        <span style={{ fontSize: "13px", color: "blue" }}>
+                          here
+                        </span>
                       </a>
                       .
                     </table>
@@ -247,7 +263,7 @@ export default function CalendarSetup() {
                 }
                 arrow
               >
-                <InfoOutlined style={{ color: 'red' }}  />
+                <InfoOutlined style={{ color: "red" }} />
               </LightTooltip>
             </span>
           </>
@@ -262,21 +278,8 @@ export default function CalendarSetup() {
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -306,11 +309,7 @@ export default function CalendarSetup() {
                         <li>
                           <ResetButton
                             title="reset"
-                            icon={
-                              <SettingsBackupRestoreOutlined
-                                sx={{ marginRight: "8px" }}
-                              />
-                            }
+                            icon={<SettingsBackupRestoreOutlined />}
                             onClick={() => {
                               getLanding();
                               setRowDto(allData);
@@ -319,24 +318,15 @@ export default function CalendarSetup() {
                           />
                         </li>
                       )}
-                      <li style={{ marginRight: "24px" }}>
-                        <FormikInput
-                          classes="search-input fixed-width"
-                          inputClasses="search-inner-input"
-                          placeholder="Search"
+                      <li>
+                        <MasterFilter
+                          isHiddenFilter
+                          width="200px"
+                          inputWidth="200px"
                           value={values?.search}
-                          name="search"
-                          type="text"
-                          trailicon={
-                            <SearchOutlined
-                              sx={{
-                                color: "#323232",
-                                fontSize: "18px",
-                              }}
-                            />
-                          }
-                          onChange={(e) => {
-                            if (e.target.value) {
+                          setValue={(value) => {
+                            setFieldValue("search", value);
+                            if (value) {
                               getPeopleDeskAllLandingForCalender(
                                 wId,
                                 buId,
@@ -345,16 +335,18 @@ export default function CalendarSetup() {
                                 setLoading,
                                 pages?.current,
                                 pages?.pageSize,
-                                e.target.value || ""
+                                value || ""
                               );
                             } else {
                               getLanding();
                             }
-                            filterData(e.target.value, allData, setRowDto);
-                            setFieldValue("search", e.target.value);
+                            filterData(value, allData, setRowDto);
+                            setFieldValue("search", value);
                           }}
-                          errors={errors}
-                          touched={touched}
+                          cancelHandler={() => {
+                            getLanding();
+                            setFieldValue("search", "");
+                          }}
                         />
                       </li>
                       <li>

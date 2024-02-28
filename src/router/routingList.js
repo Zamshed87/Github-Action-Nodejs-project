@@ -1,3 +1,4 @@
+import BulkSalaryAssign from "modules/CompensationBenefits/employeeSalary/bulkSalaryAssign";
 import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/CreateBonusSetup";
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
 import OvertimePolicyN from "modules/PayrollManagementSytem/OvertimePolicy/OvertimePolicy";
@@ -357,6 +358,16 @@ const SalaryDetailsReport = lazy(() =>
     "../modules/CompensationBenefits/reports/salaryDetailsReport/index.jsx"
   )
 );
+const SalaryRequisitionReport = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/reports/salaryRequisitionReport/index.jsx"
+  )
+);
+const SalaryCostCenterReport = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/reports/SalaryCostCenterReport/index.jsx"
+  )
+);
 const SalaryPaySlip = lazy(() =>
   import("../modules/CompensationBenefits/reports/salaryPaySlip/index.js")
 );
@@ -384,6 +395,11 @@ const TaxSlip = lazy(() =>
 const BulkAddEditForm = lazy(() =>
   import(
     "../modules/CompensationBenefits/salaryAssignAndDeduction/addEditFile/bulkCreateIndex.jsx"
+  )
+);
+const BulkAddEditFormCreate = lazy(() =>
+  import(
+    "../modules/CompensationBenefits/salaryAssignAndDeduction/addEditFile/bulkAssignCreate.jsx"
   )
 );
 const AddEditForm = lazy(() =>
@@ -2281,6 +2297,10 @@ export const routingList = [
     component: SalaryAssign,
   },
   {
+    path: "/compensationAndBenefits/employeeSalary/bulkSalaryAssign",
+    component: BulkSalaryAssign,
+  },
+  {
     path: "/compensationAndBenefits/employeeSalary/additionDeduction",
     component: AdditionDeduction,
   },
@@ -2430,6 +2450,14 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/reports/salaryDetailsReport",
     component: SalaryDetailsReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/salaryRequisitionReport",
+    component: SalaryRequisitionReport,
+  },
+  {
+    path: "/compensationAndBenefits/reports/salary&AllowenceCostCenterReport",
+    component: SalaryCostCenterReport,
   },
   {
     path: "/compensationAndBenefits/reports/cashDisbursementRegister",
@@ -2754,6 +2782,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssign/create",
     component: BulkAddEditForm,
+  },
+  {
+    path: "/compensationAndBenefits/employeeSalary/allowanceNDeduction/bulkAssignCreate",
+    component: BulkAddEditFormCreate,
   },
   // report for salary certificate
   {

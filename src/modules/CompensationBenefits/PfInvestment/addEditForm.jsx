@@ -358,7 +358,7 @@ export default function PFInvestmentForm() {
                         }}
                         disabled={!values?.businessUnit}
                       >
-                        Show
+                        View
                       </button>
                       {rowDto?.length > 0 && (
                         <button

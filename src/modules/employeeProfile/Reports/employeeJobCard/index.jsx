@@ -117,12 +117,20 @@ export default function EmployeeJobCard() {
         dataIndex: "LateMin",
       },
       {
+        title: "Start Time",
+        dataIndex: "StartTime",
+      },
+      {
         title: "Break Start",
         dataIndex: "breakStartTime",
       },
       {
         title: "Break End",
         dataIndex: "breakEndTime",
+      },
+      {
+        title: "End Time",
+        dataIndex: "EndTime",
       },
       {
         title: "Early Out",
@@ -532,6 +540,104 @@ export default function EmployeeJobCard() {
                         </div>
                       </div>
                     </div>
+                    {/* employee totatl late, leave, absent, late, present section card here ....  */}
+
+                    {rowDto?.length > 0 ? (
+                      <div
+                        className="row"
+                        style={{
+                          border: "1px solid rgba(0, 0, 0, 0.12)",
+                          borderRadius: "6px",
+                          padding: "10px",
+                          marginRight: "0",
+                          marginLeft: "0",
+                          marginTop: "15px",
+                        }}
+                      >
+                        <div className="col-md-4">
+                          <div
+                            className="card-des"
+                            style={{
+                              borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+                              fontSize: "17px",
+                            }}
+                          >
+                            <p>
+                              Total Present:{" "}
+                              <strong>{rowDto?.[0]?.totalPresent} Days</strong>{" "}
+                            </p>
+                            <p>
+                              Total Manual Present: :{" "}
+                              <strong>
+                                {rowDto?.[0]?.totalManualPresent} Days
+                              </strong>{" "}
+                            </p>
+                            <p>
+                              Total Leave: :{" "}
+                              <strong>{rowDto?.[0]?.totalLeave} Days</strong>{" "}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div
+                            className="card-des"
+                            style={{
+                              borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+                              fontSize: "17px",
+                            }}
+                          >
+                            <p>
+                              Total Late:{" "}
+                              <strong>{rowDto?.[0]?.totalLate} Days</strong>{" "}
+                            </p>
+                            <p>
+                              Total Manual late: :{" "}
+                              <strong>
+                                {rowDto?.[0]?.totalManualLate} Days
+                              </strong>{" "}
+                            </p>
+                            <p>
+                              Total Absent: :{" "}
+                              <strong>{rowDto?.[0]?.totalAbsent} Days</strong>{" "}
+                            </p>
+                            <p>
+                              Total Manual Absent: :{" "}
+                              <strong>
+                                {rowDto?.[0]?.totalManualAbsent} Days
+                              </strong>{" "}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div
+                            className="card-des"
+                            style={{
+                              // borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+                              fontSize: "17px",
+                            }}
+                          >
+                            <p>
+                              Total Early Out:{" "}
+                              <strong>{rowDto?.[0]?.totalEarlyOut} Days</strong>{" "}
+                            </p>
+                            <p>
+                              Total Holiday: :{" "}
+                              <strong>{rowDto?.[0]?.totalHoliday} Days</strong>{" "}
+                            </p>
+                            <p>
+                              Total Movement: :{" "}
+                              <strong>{rowDto?.[0]?.totalMovement} Days</strong>{" "}
+                            </p>
+                            <p>
+                              Total Off day: :{" "}
+                              <strong>{rowDto?.[0]?.totalOffday} Days</strong>{" "}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   <div className="table-card-body">
                     <div className="table-card-styled tableOne">

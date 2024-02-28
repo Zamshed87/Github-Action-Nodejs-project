@@ -15,16 +15,19 @@ export const createCafeteriaEntry = async (
   userId,
   payload,
   setLoading,
-  cb
+  cb,
+  placeID
 ) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(
-      `/Cafeteria/CafeteriaEntry?PartId=${partId}&ToDate=${date}&EnrollId=${enrollId}&TypeId=${typeId}&MealOption=${mealOption}&MealFor=${mealFor}&CountMeal=${countMeal}&isOwnGuest=${ownGuest}&isPayable=${payable}&Narration=${narration}&ActionBy=${userId}`,
+      `/Cafeteria/CafeteriaEntry?PartId=${partId}&ToDate=${date}&EnrollId=${enrollId}&TypeId=${typeId}&MealOption=${mealOption}&MealFor=${mealFor}&CountMeal=${countMeal}&isOwnGuest=${ownGuest}&isPayable=${payable}&Narration=${narration}&ActionBy=${userId}&MealConsumePlaceId=${
+        placeID || 0
+      }`,
       payload
     );
     cb && cb();
-    toast.success(res.data?.message || " Create Successfully");
+    toast.success(res?.Message || "Updated Successfully");
     setLoading && setLoading(false);
   } catch (error) {
     toast.warn(error?.response?.data?.Message || "Something went wrong");
@@ -41,7 +44,7 @@ export const getPendingAndConsumeMealReport = async (
 ) => {
   setIsLoading && setIsLoading(true);
   try {
-    let res = await axios.get(
+    const res = await axios.get(
       `/Cafeteria/GetPendingAndConsumeMealReport?PartId=${partId}&EnrollId=${enrollId}`
     );
     setIsLoading && setIsLoading(false);
@@ -61,7 +64,7 @@ export const getCafeteriaMenuListReport = async (
 ) => {
   setIsLoading && setIsLoading(true);
   try {
-    let res = await axios.get(
+    const res = await axios.get(
       `/Cafeteria/GetCafeteriaMenuListReport?LoginBy=${loginId}`
     );
     setIsLoading && setIsLoading(false);
@@ -73,13 +76,9 @@ export const getCafeteriaMenuListReport = async (
   }
 };
 
-
 export const editMenuList = async (payload, cb) => {
   try {
-    const res = await axios.post(
-      `/Cafeteria/EditCafeteriaMenuList`,
-      payload
-    );
+    const res = await axios.post(`/Cafeteria/EditCafeteriaMenuList`, payload);
     cb && cb();
     toast.success(res.data?.message || " Edit Successfully");
   } catch (error) {

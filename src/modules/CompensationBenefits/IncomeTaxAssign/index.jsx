@@ -20,9 +20,7 @@ import { createTaxAssign, incomeTaxColumnData } from "./helper";
 import ResetButton from "../../../common/ResetButton";
 import { toast } from "react-toastify";
 import AsyncFormikSelect from "../../../common/AsyncFormikSelect";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../common/peopleDeskTable";
+import PeopleDeskTable from "../../../common/peopleDeskTable";
 import axios from "axios";
 import {
   createPayloadStructure,
@@ -30,6 +28,8 @@ import {
 } from "common/peopleDeskTable/helper";
 import { downloadEmployeeCardFile } from "modules/timeSheet/reports/employeeIDCard/helper";
 import { gray900 } from "utility/customColor";
+
+const paginationSize = 100;
 
 const initData = {
   search: "",

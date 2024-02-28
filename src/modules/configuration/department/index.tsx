@@ -39,20 +39,7 @@ function Department() {
   // Api Instance
   const landingApi = useApiRequest({});
 
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any;
-    searchText?: string;
-    excelDownload?: boolean;
-  };
-  const landingApiCall = ({
-    pagination = {},
-    filerList,
-    searchText = "",
-  }: TLandingApi = {}) => {
+  const landingApiCall = () => {
     landingApi.action({
       urlKey: "GetAllEmpDepartment",
       method: "GET",
@@ -123,6 +110,15 @@ function Department() {
       //   fixed: "left",
     },
     {
+      title: "Cost Center Division",
+      dataIndex: "strCostCenterDivision",
+      sorter: true,
+      align: "center",
+      width: 20,
+
+      //   fixed: "left",
+    },
+    {
       title: "Status",
       dataIndex: "isActive",
       align: "center",
@@ -181,7 +177,6 @@ function Department() {
             submitText="Department"
             submitIcon={<AddOutlined />}
             buttonList={[]}
-            onExport={() => {}}
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
@@ -193,12 +188,7 @@ function Department() {
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
               if (extra.action === "sort") return;
-              const { search } = form.getFieldsValue(true);
-              landingApiCall({
-                pagination,
-                filerList: filters,
-                searchText: search,
-              });
+              landingApiCall();
             }}
             // scroll={{ x: 2000 }}
             onRow={(record) => ({

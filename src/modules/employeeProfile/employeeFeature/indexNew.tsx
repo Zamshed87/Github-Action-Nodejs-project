@@ -42,7 +42,7 @@ function EmployeeFeatureNew() {
 
   // state
   const [open, setOpen] = useState(false);
-  const [filterList, setFilterList] = useState({});
+  const [filterList, setFilterList] = useState<any>({});
 
   // Form Instance
   const [form] = Form.useForm();
@@ -389,20 +389,24 @@ function EmployeeFeatureNew() {
                     isPaginated: false,
                     isHeaderNeed: false,
                     searchTxt: search || "",
-                    strDepartmentList: [],
-                    strDesignationList: [],
-                    strSupervisorNameList: [],
-                    strEmploymentTypeList: [],
-                    strLinemanagerList: [],
+                    strDepartmentList: filterList?.strDepartment || [],
+                    strWorkplaceGroupList: filterList?.strWorkplaceGroup || [],
+                    strWorkplaceList: filterList?.strWorkplace || [],
+                    strDivisionList: filterList?.strDivision || [],
+                    strDesignationList: filterList?.strDesignation || [],
+                    strSupervisorNameList: filterList?.strSupervisorName || [],
+                    strEmploymentTypeList: filterList?.strEmploymentType || [],
+                    strLinemanagerList: filterList?.strLinemanager || [],
+                    strSectionList: filterList?.sectionName || [],
+                    strHrPositionList: filterList?.sectionName || [],
+                    strDottedSupervisorNameList:
+                      filterList?.strDottedSupervisorName || [],
+                    strEmployeeStatusList: filterList?.strEmployeeStatus || [],
                     wingNameList: [],
                     soleDepoNameList: [],
                     regionNameList: [],
                     areaNameList: [],
                     territoryNameList: [],
-                    strSectionList: [],
-                    strWorkplaceList: [],
-                    strWorkplaceGroupList: [],
-                    strEmployeeStatusList: [],
                   };
                   const res = await axios.post(
                     `/Employee/EmployeeProfileLandingPaginationWithMasterFilter`,

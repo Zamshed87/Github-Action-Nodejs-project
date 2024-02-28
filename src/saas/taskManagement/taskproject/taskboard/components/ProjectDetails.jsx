@@ -360,7 +360,9 @@ export default function ProjectDetails() {
               width: "556px",
             },
             "& .MuiDrawer-paperAnchorRight": {
-              overflowY: "visible",
+                overflowY: "visible",
+              // overflowX: "hidden",
+              // overflowY: "scroll !important",
             },
           }}
         >

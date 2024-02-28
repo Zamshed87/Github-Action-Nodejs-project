@@ -165,10 +165,16 @@ export const getPeopleDeskAllDDL = async (apiUrl, value, label, setter, cb) => {
   } catch (error) {}
 };
 
-export const getPeopleDeskAllDDLWithCode = async (apiUrl, value, label, setter, cb) => {
+export const getPeopleDeskAllDDLWithCode = async (
+  apiUrl,
+  value,
+  label,
+  setter,
+  cb
+) => {
   try {
     const res = await axios.get(apiUrl);
-    console.log("res", res?.data)
+    console.log("res", res?.data);
     const newDDL = res?.data?.map((itm) => ({
       ...itm,
       value: itm?.intEmployeeBasicInfoId,
@@ -213,9 +219,9 @@ export const getPeopleDeskAllLanding = async (
 ) => {
   setLoading && setLoading(true);
 
-  let status = statusId ? `&intStatusId=${statusId}` : "";
-  let yearFilter = year ? `&YearId=${year}` : "";
-  let workplace = wId ? `&workplaceId=${wId}` : "";
+  const status = statusId ? `&intStatusId=${statusId}` : "";
+  const yearFilter = year ? `&YearId=${year}` : "";
+  const workplace = wId ? `&workplaceId=${wId}` : "";
   try {
     const res = await axios.get(
       `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}${workplace}&WorkplaceGroupId=${wgId}&intId=${id}`
@@ -594,6 +600,30 @@ export const getSearchEmployeeListNew = (buId, intAccountId, v) => {
       return modifiedData;
     })
     .catch((err) => []);
+};
+
+export const getSuperVisorLineMangerDottedByWorkplace = async ({
+  params,
+  cb,
+}) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `/PeopleDeskDDL/PeopleDeskAllDDL`,
+      data: {},
+      params: params,
+    });
+    const modified = (response?.data || []).map((item) => ({
+      label: item?.EmployeeOnlyName,
+      value: item?.EmployeeId,
+    }));
+    cb?.(modified);
+    return modified;
+  } catch (error) {
+    toast.warn(
+      error?.response?.data?.message || error?.message || "Something went wrong"
+    );
+  }
 };
 
 export const getSearchEmployeeListForEmp = (

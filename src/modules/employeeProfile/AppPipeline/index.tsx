@@ -12,7 +12,6 @@ import { debounce } from "lodash";
 import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
 import { getSerial } from "Utils";
 import { dateFormatter } from "utility/dateFormatter";

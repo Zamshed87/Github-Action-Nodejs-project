@@ -7,15 +7,18 @@ import {
   PInput,
   PSelect,
 } from "Components";
+import type { RangePickerProps } from "antd/es/date-picker";
+
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Modal, Row } from "antd";
 import moment from "moment";
 import React, { useEffect } from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { AttendanceType, EmpFilterType } from "./utils/utils";
 import { convertTo12HourFormat } from "utility/timeFormatter";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
@@ -24,6 +27,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
+  const dispatch = useDispatch();
   // States
   const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
 
@@ -34,16 +38,24 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   const CommonEmployeeDDL = useApiRequest([]);
   const AttendanceAdjustmentFilter = useApiRequest([]);
   const ManualAttendance = useApiRequest({});
+  const empDepartmentDDL = useApiRequest([]);
 
   // Life Cycle Hooks
   useEffect(() => {
     const { empSearchType, date, employee } = form.getFieldsValue(true);
     empSearchType && date && employee && getAttendanceFilterData();
+    getEmployeDepartment();
   }, [buId, wgId, wId]);
 
   const getAttendanceFilterData = () => {
-    const { empSearchType, date, employee, attendanceStatus } =
-      form.getFieldsValue(true);
+    const {
+      empSearchType,
+      date,
+      tdate,
+      employee,
+      attendanceStatus,
+      department,
+    } = form.getFieldsValue(true);
 
     const payload = {
       employeeId: employee?.value || employeeId,
@@ -53,13 +65,13 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       yearId: parseInt(moment(date).format("YYYY")),
       monthId: parseInt(moment(date).format("MM")),
       applicationDate: null,
-      departmentId: 0,
+      departmentId: department?.value,
       attendanceStatus: attendanceStatus || "all",
       punchStatus: attendanceStatus || "all",
-      jobTypeId: 0,
       attendanceDate: moment(date).format("YYYY-MM-DD"),
+      jobTypeId: 0,
       pageNo: 1,
-      pageSize: 10,
+      pageSize: 25,
     };
 
     AttendanceAdjustmentFilter?.action({
@@ -68,9 +80,22 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           ? "AttendanceAdjustmentFilter"
           : "AttendanceAdjustmentFilterbyDate",
       method: "post",
-      payload,
+      payload:
+        empSearchType === 1
+          ? payload
+          : {
+              ...payload,
+
+              attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
+            },
     });
   };
+
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = "Attendence Adjust";
+  }, []);
 
   const getEmployee = (value: any) => {
     if (value?.length < 2) return CommonEmployeeDDL?.reset();
@@ -93,6 +118,27 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     });
   };
 
+  // workplace wise
+  const getEmployeDepartment = () => {
+    empDepartmentDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDepartment",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        IntWorkplaceId: wId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.DepartmentName;
+          res[i].value = item?.DepartmentId;
+        });
+      },
+    });
+  };
+
   const viewHandler = async () => {
     await form
       .validateFields()
@@ -100,7 +146,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         getAttendanceFilterData();
       })
       .catch(() => {
-        // console.error("Validate Failed:", info);
+        // console.error("Validate Failed:", info?.message);
       });
   };
 
@@ -116,10 +162,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
-            inTime:
-              moment(values?.intime).format("HH:mm:ss") || item?.StartTime,
-            outTime:
-              moment(values?.outtime).format("HH:mm:ss") || item?.EndTime,
+            inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
+            outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
@@ -183,9 +227,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Department",
       dataIndex: "DepartmentName",
-      sorter: true,
-      filter: true,
-      filterKey: "departmentList",
+      width: 100,
     },
     {
       title: "Designation",
@@ -193,12 +235,14 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       sorter: true,
       filter: true,
       filterKey: "designationList",
+      width: 120,
     },
     {
       title: "Section",
       dataIndex: "strSectionName",
       sorter: true,
       filter: true,
+      width: 120,
     },
     {
       title: "Calender Name",
@@ -249,10 +293,10 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       title: "Total Working Hours",
       dataIndex: "WorkingHours",
     },
-    // change after that 
+    // change after that
     {
       title: "Total OT Hours",
-      dataIndex: "OverTime",
+      dataIndex: "OverTimeCalednder",
     },
     {
       title: "Actual Attendance",
@@ -300,7 +344,18 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       sorter: false,
     },
   ];
+  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
+    const { date } = form.getFieldsValue(true);
+    const fromDateMoment = moment(date, "MM/DD/YYYY");
+    const endDateMoment = fromDateMoment.clone().add(29, "days");
 
+    // Disable dates before fromDate and after next3daysForEmp
+    return (
+      current &&
+      (current < fromDateMoment.startOf("day") ||
+        current > endDateMoment.endOf("day"))
+    );
+  };
   return (
     <PForm
       form={form}
@@ -308,6 +363,16 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         empSearchType: 1,
         date: moment(),
       }}
+      // onFinish={() => {
+      //   const values = form.getFieldsValue(true);
+      //   // submitHandler({
+      //   //   values,
+      //   //   getData,
+      //   //   resetForm: form.resetFields,
+      //   //   setIsAddEditForm,
+      //   //   isEdit,
+      //   // });
+      // }}
     >
       <PCard>
         <PCardHeader title="Adjust Attendance">
@@ -324,6 +389,14 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               value === 1 &&
                 form.setFieldsValue({
                   openModal: true,
+                  intime:
+                    selectedRow?.length === 1
+                      ? moment(selectedRow[0]?.InTime, "h:mma")
+                      : "",
+                  outtime:
+                    selectedRow?.length === 1
+                      ? moment(selectedRow[0]?.OutTime, "h:mma")
+                      : "",
                 });
 
               (value === 2 || value === 3) &&
@@ -335,158 +408,216 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             disabled={!selectedRow.length}
           />
         </PCardHeader>
-        <Row gutter={[10, 2]} className="mb-3">
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={EmpFilterType}
-              name="empSearchType"
-              label="Employee Search Type"
-              placeholder="Employee Search Type"
-              onChange={() => {
-                form.resetFields(["date", "employee"]);
-                setSelectedRow([]);
-                AttendanceAdjustmentFilter?.reset();
+        <div className="card-style">
+          <Row gutter={[10, 2]} className="mb-3">
+            <Col md={6} sm={12} xs={24}>
+              <PSelect
+                options={EmpFilterType}
+                name="empSearchType"
+                label="Employee Search Type"
+                placeholder="Employee Search Type"
+                onChange={() => {
+                  form.resetFields(["date", "employee"]);
+                  setSelectedRow([]);
+                  AttendanceAdjustmentFilter?.reset();
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please Select Employee Search Type",
+                  },
+                ]}
+              />
+            </Col>
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const { empSearchType } = form.getFieldsValue(true);
+                return empSearchType === 1 ? (
+                  <>
+                    <Col md={6} sm={12} xs={24}>
+                      <PInput
+                        type="date"
+                        picker="month"
+                        name="date"
+                        label="Select a month"
+                        placeholder="Select a month"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please Select a month",
+                          },
+                        ]}
+                        onChange={() => {
+                          AttendanceAdjustmentFilter?.reset();
+                          setSelectedRow([]);
+                        }}
+                        format={"MMMM-YYYY"}
+                      />
+                    </Col>
+                    <Col md={6} sm={12} xs={24}>
+                      <PSelect
+                        name="employee"
+                        label="Select a Employee"
+                        placeholder="Search Min 2 char"
+                        options={CommonEmployeeDDL?.data || []}
+                        loading={CommonEmployeeDDL?.loading}
+                        onChange={(value, op) => {
+                          AttendanceAdjustmentFilter?.reset();
+                          setSelectedRow([]);
+                          form.setFieldsValue({
+                            employee: op,
+                          });
+                        }}
+                        onSearch={(value) => {
+                          getEmployee(value);
+                        }}
+                        showSearch
+                        filterOption={false}
+                      />
+                    </Col>
+                  </>
+                ) : empSearchType === 2 ? (
+                  <>
+                    <Col md={6} sm={24}>
+                      <PSelect
+                        options={empDepartmentDDL?.data || []}
+                        name="department"
+                        showSearch
+                        filterOption={true}
+                        label="Department"
+                        allowClear
+                        placeholder="Department"
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            department: op,
+                          });
+                        }}
+                        rules={[
+                          { required: true, message: "Department is required" },
+                        ]}
+                      />
+                    </Col>
+                    <Col md={6} sm={12} xs={24}>
+                      <PInput
+                        type="date"
+                        name="date"
+                        label="Select from date"
+                        placeholder="Select a date"
+                        onChange={() => {
+                          AttendanceAdjustmentFilter?.reset();
+                          setSelectedRow([]);
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please Select a date",
+                          },
+                        ]}
+                      />
+                    </Col>
+                    <Col md={6} sm={12} xs={24}>
+                      <PInput
+                        type="date"
+                        name="tdate"
+                        label="Select to date"
+                        placeholder="Select a date"
+                        onChange={() => {
+                          AttendanceAdjustmentFilter?.reset();
+                          setSelectedRow([]);
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please Select a date",
+                          },
+                        ]}
+                        max={30}
+                        disabledDate={disabledDate}
+                      />
+                    </Col>
+                    <Col md={6} sm={12} xs={24}>
+                      <PSelect
+                        name="attendanceStatus"
+                        label="Select Attendance Status"
+                        placeholder="Select Attendance Status"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please Select Attendance Status",
+                          },
+                        ]}
+                        options={[
+                          {
+                            value: "Present",
+                            label: "Present",
+                          },
+                          {
+                            value: "Absent",
+                            label: "Absent",
+                          },
+                          {
+                            label: "Late",
+                            value: "Late",
+                          },
+                          {
+                            value: "Leave",
+                            label: "Leave",
+                          },
+                          {
+                            label: "Movement",
+                            value: "Movement",
+                          },
+                        ]}
+                        onChange={() => {
+                          AttendanceAdjustmentFilter?.reset();
+                          setSelectedRow([]);
+                        }}
+                      />
+                    </Col>
+                  </>
+                ) : undefined;
               }}
-              rules={[
-                {
-                  required: true,
-                  message: "Please Select Employee Search Type",
-                },
-              ]}
-            />
-          </Col>
-          <Form.Item shouldUpdate noStyle>
-            {() => {
-              const { empSearchType } = form.getFieldsValue();
-              return empSearchType === 1 ? (
-                <>
-                  <Col md={6} sm={12} xs={24}>
-                    <PInput
-                      type="date"
-                      picker="month"
-                      name="date"
-                      label="Select a month"
-                      placeholder="Select a month"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please Select a month",
-                        },
-                      ]}
-                      onChange={() => {
-                        AttendanceAdjustmentFilter?.reset();
-                        setSelectedRow([]);
-                      }}
-                      format={"MMMM-YYYY"}
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
-                      name="employee"
-                      label="Select a Employee"
-                      placeholder="Search Min 2 char"
-                      options={CommonEmployeeDDL?.data || []}
-                      loading={CommonEmployeeDDL?.loading}
-                      onChange={(value, op) => {
-                        AttendanceAdjustmentFilter?.reset();
-                        setSelectedRow([]);
-                        form.setFieldsValue({
-                          employee: op,
-                        });
-                      }}
-                      onSearch={(value) => {
-                        getEmployee(value);
-                      }}
-                      showSearch
-                      filterOption={false}
-                    />
-                  </Col>
-                </>
-              ) : empSearchType === 2 ? (
-                <>
-                  <Col md={6} sm={12} xs={24}>
-                    <PInput
-                      type="date"
-                      name="date"
-                      label="Select a date"
-                      placeholder="Select a date"
-                      onChange={() => {
-                        AttendanceAdjustmentFilter?.reset();
-                        setSelectedRow([]);
-                      }}
-                    />
-                  </Col>
-                  <Col md={6} sm={12} xs={24}>
-                    <PSelect
-                      name="attendanceStatus"
-                      label="Select Attendance Status"
-                      placeholder="Select Attendance Status"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please Select Attendance Status",
-                        },
-                      ]}
-                      options={[
-                        {
-                          value: "Present",
-                          label: "Present",
-                        },
-                        {
-                          value: "Absent",
-                          label: "Absent",
-                        },
-                        {
-                          label: "Late",
-                          value: "Late",
-                        },
-                        {
-                          value: "Leave",
-                          label: "Leave",
-                        },
-                        {
-                          label: "Movement",
-                          value: "Movement",
-                        },
-                      ]}
-                      onChange={() => {
-                        AttendanceAdjustmentFilter?.reset();
-                        setSelectedRow([]);
-                      }}
-                    />
-                  </Col>
-                </>
-              ) : undefined;
-            }}
-          </Form.Item>
+            </Form.Item>
 
-          <Col
-            style={{
-              marginTop: "23px",
+            <Col
+              style={{
+                marginTop: "23px",
+              }}
+            >
+              <PButton
+                type="primary"
+                content="View"
+                onClick={() => {
+                  viewHandler();
+                }}
+              />
+            </Col>
+          </Row>
+        </div>
+
+        <div className="mt-4">
+          <DataTable
+            header={header}
+            bordered
+            data={AttendanceAdjustmentFilter?.data || []}
+            loading={AttendanceAdjustmentFilter?.loading}
+            scroll={{ x: 1500 }}
+            rowSelection={{
+              type: "checkbox",
+              selectedRowKeys: selectedRow.map((item) => item?.key),
+              onChange: (selectedRowKeys, selectedRows) => {
+                setSelectedRow(selectedRows);
+              },
+
+              // getCheckboxProps: (rec) => {
+              //   return {
+              //     disabled: rec?.ApplicationStatus === "Approved",
+              //   };
+              // },
             }}
-          >
-            <PButton type="primary" content="View" onClick={viewHandler} />
-          </Col>
-        </Row>
-        <DataTable
-          header={header}
-          bordered
-          data={AttendanceAdjustmentFilter?.data || []}
-          loading={AttendanceAdjustmentFilter?.loading}
-          scroll={{ x: 1500 }}
-          rowSelection={{
-            type: "checkbox",
-            selectedRowKeys: selectedRow.map((item) => item?.key),
-            onChange: (selectedRowKeys, selectedRows) => {
-              setSelectedRow(selectedRows);
-            },
-            getCheckboxProps: (rec) => {
-              return {
-                disabled: rec?.ApplicationStatus === "Approved",
-              };
-            },
-          }}
-        />
+            checkBoxColWidth={50}
+          />
+        </div>
       </PCard>
 
       {/* Confirmation Modal */}
@@ -507,7 +638,14 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               }}
               title="Are you sure to update attendance?"
               components={
-                <PForm form={form}>
+                <PForm form={form}
+                // initialValues={{
+                //   openModal: false,
+                //   attendanceAdujust: undefined,
+                //   intime: "",
+                //   outtime: "",
+                // }}
+                >
                   <>
                     <div>
                       <p>Request Status: {attendanceAdujust?.label}</p>
