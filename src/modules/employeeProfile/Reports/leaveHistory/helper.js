@@ -188,14 +188,6 @@ export const leaveHistoryCol = (page, paginationSize) => {
       sorter: false,
       filter: false,
     },
-    {
-      title: "Carry Forward (hrs)",
-      dataIndex: "carryBalance",
-      render: (data) => {
-        return <span>{data?.carryBalance || "N/A"}</span>;
-      },
-      sorter: false,
-      filter: false,
-    },
+    
   ];
 };
