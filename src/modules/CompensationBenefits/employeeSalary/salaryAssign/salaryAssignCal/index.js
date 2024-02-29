@@ -263,87 +263,7 @@ export const getByIdSalaryAssignDDL = (
   setter(modifyData);
 };
 
-export const getSalaryAssignDDLUpdate = ({
-  breakDownList = [],
-  grossSalaryAmount,
-  setBreakDownList,
-  salaryDependsOn = "",
-}) => {
-  const sorting = breakDownList
-    ?.slice()
-    ?.sort((a, b) => b?.numNumberOfPercent - a?.numNumberOfPercent);
-  const modifyData = [];
-  breakDownList?.forEach((itm) => {
-    if (
-      sorting?.[sorting?.length - 1]?.strPayrollElementName !==
-      itm?.strPayrollElementName
-    ) {
-      const obj = {
-        ...itm,
-        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-            ? Math.round(grossSalaryAmount)
-            : itm?.strBasedOn === "Amount"
-            ? Math.round(itm?.numAmount)
-            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
-        numAmount:
-          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-            ? Math.round(grossSalaryAmount)
-            : itm?.strBasedOn === "Amount"
-            ? Math.round(itm?.numAmount)
-            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
-        showPercentage: itm?.numNumberOfPercent,
-        levelVariable: itm?.strPayrollElementName
-          .toLowerCase()
-          .split(" ")
-          .join(""),
-      };
-      modifyData.push(obj);
-    } else {
-      const totalAmountExcepLowElement = modifyData?.reduce(
-        (acc, curr) => acc + +curr?.numAmount,
-        0
-      );
-      const restAmount = grossSalaryAmount - totalAmountExcepLowElement;
-      const obj = {
-        ...itm,
-        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
-          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-            ? grossSalaryAmount > restAmount
-              ? grossSalaryAmount - (grossSalaryAmount - restAmount)
-              : Math.round(grossSalaryAmount)
-            : itm?.strBasedOn === "Amount"
-            ? itm?.numAmount > restAmount
-              ? itm?.numAmount - (itm?.numAmount - restAmount)
-              : Math.round(itm?.numAmount)
-            : (itm?.numNumberOfPercent * grossSalaryAmount) / 100 > restAmount
-            ? (itm?.numNumberOfPercent * grossSalaryAmount) / 100 -
-              ((itm?.numNumberOfPercent * grossSalaryAmount) / 100 - restAmount)
-            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
-        numAmount:
-          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
-            ? grossSalaryAmount > restAmount
-              ? grossSalaryAmount - (grossSalaryAmount - restAmount)
-              : Math.round(grossSalaryAmount)
-            : itm?.strBasedOn === "Amount"
-            ? itm?.numAmount > restAmount
-              ? itm?.numAmount - (itm?.numAmount - restAmount)
-              : Math.round(itm?.numAmount)
-            : (itm?.numNumberOfPercent * grossSalaryAmount) / 100 > restAmount
-            ? (itm?.numNumberOfPercent * grossSalaryAmount) / 100 -
-              ((itm?.numNumberOfPercent * grossSalaryAmount) / 100 - restAmount)
-            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
-        showPercentage: itm?.numNumberOfPercent,
-        levelVariable: itm?.strPayrollElementName
-          .toLowerCase()
-          .split(" ")
-          .join(""),
-      };
-      modifyData.push(obj);
-    }
-  });
-  setBreakDownList(modifyData);
-};
+
 export const getSalaryAssignDDLUpdate2 = ({
   breakDownList = [],
   grossSalaryAmount,
@@ -393,93 +313,6 @@ export const getSalaryAssignDDLUpdate2 = ({
       .split(" ")
       .join("")}`
   );
-};
-
-export const getByIdSalaryAssignDDLUpdate = (
-  res,
-  grossSalaryAmount,
-  setter
-) => {
-  const list = [];
-  const sorting = res?.data
-    ?.slice()
-    ?.sort((a, b) => b?.numNumberOfPercent - a?.numNumberOfPercent);
-  res?.data?.forEach((itm) => {
-    if (
-      sorting?.[sorting?.length - 1]?.strPayrollElementName !==
-      itm?.strPayrollElementName
-    ) {
-      // return
-      const elemObj = {
-        ...itm,
-        [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
-          itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
-            ? Math.round(grossSalaryAmount)
-            : itm?.strBasedOn === "Amount"
-            ? Math.round(itm?.numAmount)
-            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100), // (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
-        numAmount:
-          itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
-            ? Math.round(grossSalaryAmount)
-            : itm?.strBasedOn === "Amount"
-            ? Math.round(itm?.numAmount)
-            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
-        showPercentage: itm?.numNumberOfPercent,
-        strPayrollElementName: itm?.strSalaryElement,
-        intPayrollElementTypeId: itm?.intSalaryElementId,
-        intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
-        levelVariable: itm?.strSalaryElement.toLowerCase().split(" ").join(""),
-      };
-      list.push(elemObj);
-    } else {
-      const totalAmountExcepLowElement = list?.reduce(
-        (acc, curr) => acc + +curr?.numAmount,
-        0
-      );
-      const restAmount = grossSalaryAmount - totalAmountExcepLowElement;
-      const lowestObj = {
-        ...itm,
-        [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
-          itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
-            ? grossSalaryAmount > restAmount
-              ? grossSalaryAmount - (grossSalaryAmount - restAmount)
-              : Math.round(grossSalaryAmount)
-            : itm?.strBasedOn === "Amount"
-            ? itm?.numAmount > restAmount
-              ? itm?.numAmount - (itm?.numAmount - restAmount)
-              : Math.round(itm?.numAmount)
-            : (itm?.numNumberOfPercent * grossSalaryAmount) / 100 > restAmount
-            ? (itm?.numNumberOfPercent * grossSalaryAmount) / 100 -
-              ((itm?.numNumberOfPercent * grossSalaryAmount) / 100 - restAmount)
-            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100), // (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
-        numAmount:
-          itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
-            ? grossSalaryAmount > restAmount
-              ? grossSalaryAmount - (grossSalaryAmount - restAmount)
-              : Math.round(grossSalaryAmount)
-            : itm?.strBasedOn === "Amount"
-            ? itm?.numAmount > restAmount
-              ? itm?.numAmount - (itm?.numAmount - restAmount)
-              : Math.round(itm?.numAmount)
-            : (itm?.numNumberOfPercent * grossSalaryAmount) / 100 > restAmount
-            ? (itm?.numNumberOfPercent * grossSalaryAmount) / 100 -
-              ((itm?.numNumberOfPercent * grossSalaryAmount) / 100 - restAmount)
-            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100), // (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
-        // itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
-        //   ? Math.round(grossSalaryAmount)
-        //   : itm?.strBasedOn === "Amount"
-        //   ? Math.round(itm?.numAmount)
-        //   : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
-        showPercentage: itm?.numNumberOfPercent,
-        strPayrollElementName: itm?.strSalaryElement,
-        intPayrollElementTypeId: itm?.intSalaryElementId,
-        intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
-        levelVariable: itm?.strSalaryElement.toLowerCase().split(" ").join(""),
-      };
-      list.push(lowestObj);
-    }
-  });
-  setter(list);
 };
 
 export const getByIdSalaryAssignDDLUpdate2 = (
@@ -567,4 +400,173 @@ const adjustOverFollowAmount = (
     array[indexOfLowestAmount][payrollElementName] += overFollowAmount * -1;
   }
   setterFunc(array);
+};
+
+export const getSalaryAssignDDLUpdate = ({
+  breakDownList = [],
+  grossSalaryAmount,
+  setBreakDownList,
+  salaryDependsOn = "",
+}) => {
+  const sorting = breakDownList
+    ?.slice()
+    ?.sort((a, b) => b?.numNumberOfPercent - a?.numNumberOfPercent);
+  const modifyData = [];
+  breakDownList?.forEach((itm) => {
+    if (
+      sorting?.[sorting?.length - 1]?.strPayrollElementName !==
+      itm?.strPayrollElementName
+    ) {
+      const obj = {
+        ...itm,
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+            ? Math.round(grossSalaryAmount)
+            : itm?.strBasedOn === "Amount"
+            ? Math.round(itm?.numAmount)
+            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
+        numAmount:
+          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+            ? Math.round(grossSalaryAmount)
+            : itm?.strBasedOn === "Amount"
+            ? Math.round(itm?.numAmount)
+            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
+        showPercentage: itm?.numNumberOfPercent,
+        levelVariable: itm?.strPayrollElementName
+          .toLowerCase()
+          .split(" ")
+          .join(""),
+      };
+      modifyData.push(obj);
+    } else {
+      const totalAmountExcepLowElement = modifyData?.reduce(
+        (acc, curr) => acc + +curr?.numAmount,
+        0
+      );
+      const restAmount = grossSalaryAmount - totalAmountExcepLowElement;
+      const obj = {
+        ...itm,
+        [itm?.strPayrollElementName.toLowerCase().split(" ").join("")]:
+          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+            ? grossSalaryAmount > restAmount
+              ? grossSalaryAmount - (grossSalaryAmount - restAmount)
+              : Math.round(grossSalaryAmount)
+            : itm?.strBasedOn === "Amount"
+            ? itm?.numAmount > restAmount
+              ? itm?.numAmount - (itm?.numAmount - restAmount)
+              : Math.round(itm?.numAmount)
+            : (itm?.numNumberOfPercent * grossSalaryAmount) / 100 > restAmount
+            ? (itm?.numNumberOfPercent * grossSalaryAmount) / 100 -
+              ((itm?.numNumberOfPercent * grossSalaryAmount) / 100 - restAmount)
+            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
+        numAmount:
+          itm?.strPayrollElementName === "Basic" && salaryDependsOn === "Basic"
+            ? grossSalaryAmount > restAmount
+              ? grossSalaryAmount - (grossSalaryAmount - restAmount)
+              : Math.round(grossSalaryAmount)
+            : itm?.strBasedOn === "Amount"
+            ? itm?.numAmount > restAmount
+              ? itm?.numAmount - (itm?.numAmount - restAmount)
+              : Math.round(itm?.numAmount)
+            : (itm?.numNumberOfPercent * grossSalaryAmount) / 100 > restAmount
+            ? (itm?.numNumberOfPercent * grossSalaryAmount) / 100 -
+              ((itm?.numNumberOfPercent * grossSalaryAmount) / 100 - restAmount)
+            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
+        showPercentage: itm?.numNumberOfPercent,
+        levelVariable: itm?.strPayrollElementName
+          .toLowerCase()
+          .split(" ")
+          .join(""),
+      };
+      modifyData.push(obj);
+    }
+  });
+  setBreakDownList(modifyData);
+};
+
+export const getByIdSalaryAssignDDLUpdate = (
+  res,
+  grossSalaryAmount,
+  setter
+) => {
+  const list = [];
+  const sorting = res?.data
+    ?.slice()
+    ?.sort((a, b) => b?.numNumberOfPercent - a?.numNumberOfPercent);
+  res?.data?.forEach((itm) => {
+    if (
+      sorting?.[sorting?.length - 1]?.strPayrollElementName !==
+      itm?.strPayrollElementName
+    ) {
+      // return
+      const elemObj = {
+        ...itm,
+        [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+          itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
+            ? Math.round(grossSalaryAmount)
+            : itm?.strBasedOn === "Amount"
+            ? Math.round(itm?.numAmount)
+            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100), // (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+        numAmount:
+          itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
+            ? Math.round(grossSalaryAmount)
+            : itm?.strBasedOn === "Amount"
+            ? Math.round(itm?.numAmount)
+            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
+        showPercentage: itm?.numNumberOfPercent,
+        strPayrollElementName: itm?.strSalaryElement,
+        intPayrollElementTypeId: itm?.intSalaryElementId,
+        intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
+        levelVariable: itm?.strSalaryElement.toLowerCase().split(" ").join(""),
+      };
+      list.push(elemObj);
+    } else {
+      const totalAmountExcepLowElement = list?.reduce(
+        (acc, curr) => acc + +curr?.numAmount,
+        0
+      );
+      const restAmount = grossSalaryAmount - totalAmountExcepLowElement;
+      const lowestObj = {
+        ...itm,
+        [itm?.strSalaryElement.toLowerCase().split(" ").join("")]:
+          itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
+            ? grossSalaryAmount > restAmount
+              ? grossSalaryAmount - (grossSalaryAmount - restAmount)
+              : Math.round(grossSalaryAmount)
+            : itm?.strBasedOn === "Amount"
+            ? itm?.numAmount > restAmount
+              ? itm?.numAmount - (itm?.numAmount - restAmount)
+              : Math.round(itm?.numAmount)
+            : (itm?.numNumberOfPercent * grossSalaryAmount) / 100 > restAmount
+            ? (itm?.numNumberOfPercent * grossSalaryAmount) / 100 -
+              ((itm?.numNumberOfPercent * grossSalaryAmount) / 100 - restAmount)
+            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100), // (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+        numAmount:
+          itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
+            ? grossSalaryAmount > restAmount
+              ? grossSalaryAmount - (grossSalaryAmount - restAmount)
+              : Math.round(grossSalaryAmount)
+            : itm?.strBasedOn === "Amount"
+            ? itm?.numAmount > restAmount
+              ? itm?.numAmount - (itm?.numAmount - restAmount)
+              : Math.round(itm?.numAmount)
+            : (itm?.numNumberOfPercent * grossSalaryAmount) / 100 > restAmount
+            ? (itm?.numNumberOfPercent * grossSalaryAmount) / 100 -
+              ((itm?.numNumberOfPercent * grossSalaryAmount) / 100 - restAmount)
+            : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100), // (itm?.numNumberOfPercent * grossSalaryAmount) / 100,
+        // itm?.strDependOn === "Basic" && itm?.strSalaryElement === "Basic"
+        //   ? Math.round(grossSalaryAmount)
+        //   : itm?.strBasedOn === "Amount"
+        //   ? Math.round(itm?.numAmount)
+        //   : Math.round((itm?.numNumberOfPercent * grossSalaryAmount) / 100),
+        showPercentage: itm?.numNumberOfPercent,
+        strPayrollElementName: itm?.strSalaryElement,
+        intPayrollElementTypeId: itm?.intSalaryElementId,
+        intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
+        levelVariable: itm?.strSalaryElement.toLowerCase().split(" ").join(""),
+      };
+      list.push(lowestObj);
+    }
+  });
+  setter(list);
 };
