@@ -175,7 +175,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
           employmentType: undefined,
           calendarName: undefined,
         });
-        // history?.goBack();
+        state?.intOtconfigId && history?.goBack();
+        // 
       },
     });
   };
