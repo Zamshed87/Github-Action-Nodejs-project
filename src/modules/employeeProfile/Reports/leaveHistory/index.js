@@ -34,12 +34,12 @@ const EmLeaveHistory = () => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { buId, buName, wgId, wId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
-  const saveHandler = (values) => {};
+  // const saveHandler = (values) => {};
   const [loading, setLoading] = useState(false);
 
   const [rowDto, setRowDto] = useState([]);
@@ -107,7 +107,7 @@ const EmLeaveHistory = () => {
   };
 
   const handleChangeRowsPerPage = (event, searchText, year) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -123,15 +123,7 @@ const EmLeaveHistory = () => {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
+      <Formik enableReinitialize={true} initialValues={initData}>
         {({
           handleSubmit,
           resetForm,
@@ -139,7 +131,6 @@ const EmLeaveHistory = () => {
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
