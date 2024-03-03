@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MasterFilter from "../../../common/MasterFilter";
 import AntTable from "../../../common/AntTable";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
@@ -201,28 +200,26 @@ const FinalSettlement = () => {
           <div className="table-card-body">
             <div className="table-card-styled tableOne">
               {rowDto?.length > 0 ? (
-                <>
-                  <div className="table-card-styled employee-table-card tableOne">
-                    <AntTable
-                      data={rowDto}
-                      columnsData={finalSettlementColumns(
-                        demoPopup,
-                        history,
-                        orgId,
-                        buId,
-                        setLoading
-                      )}
-                      rowClassName="pointer"
-                      onRowClick={(record) => {
-                        history.push(
-                          `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
-                          { employeeId: record?.intEmployeeId }
-                        );
-                      }}
-                      rowKey={(record) => record?.intFinalSettlementId}
-                    />
-                  </div>
-                </>
+                <div className="table-card-styled employee-table-card tableOne">
+                  <AntTable
+                    data={rowDto}
+                    columnsData={finalSettlementColumns(
+                      demoPopup,
+                      history,
+                      orgId,
+                      buId,
+                      setLoading
+                    )}
+                    rowClassName="pointer"
+                    onRowClick={(record) => {
+                      history.push(
+                        `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
+                        { employeeId: record?.intEmployeeId }
+                      );
+                    }}
+                    rowKey={(record) => record?.intFinalSettlementId}
+                  />
+                </div>
               ) : (
                 <>{!loading && <NoResult title="No Result Found" para="" />}</>
               )}
