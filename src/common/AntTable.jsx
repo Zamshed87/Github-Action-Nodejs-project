@@ -67,19 +67,19 @@ const AntTable = ({
     };
   });
 
-  const handleChange = (pagination, filters, sorter, newRowDto, action) => {
+  const handleChange = (pagination, filters, sorter, newRowDto) => {
     setFilteredInfo(filters);
     setSortedInfo(sorter);
     setColumnsData?.(newRowDto?.currentDataSource);
     setFIlterList?.(newRowDto?.currentDataSource);
     handleTableChange?.({ pagination, filters, sorter, newRowDto });
   };
-  useEffect(()=> {
-    console.log("columnsData", columnsData)
-  }, [columnsData])
-  useEffect(()=> {
-    console.log("data", data)
-  }, [data])
+  // useEffect(()=> {
+  //   console.log("columnsData", columnsData)
+  // }, [columnsData])
+  // useEffect(()=> {
+  //   console.log("data", data)
+  // }, [data])
   return (
     <div>
       <Table
