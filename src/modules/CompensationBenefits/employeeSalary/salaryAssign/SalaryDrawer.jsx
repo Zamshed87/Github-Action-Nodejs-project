@@ -203,9 +203,15 @@ export default function SalaryDrawer(props) {
   };
 
   const saveHandler = (values, cb) => {
-    const totalPay =
-      +values?.netPay || 0 + +values?.bankPay || 0 + +values?.digitalPay || 0;
-    if (totalPay !== +values?.totalGrossSalary) {
+    // const totalPay = +values?.netPay || 0 + +values?.bankPay || 0 + +values?.digitalPay || 0;
+    const totalPay = (values?.netPay ? +values?.netPay : 0) + (values?.bankPay ? +values?.bankPay : 0) + ( values?.digitalPay ? +values?.digitalPay : 0);
+    const totalPay2 =
+  (parseFloat(values?.netPay) ?? 0) +
+  (parseFloat(values?.bankPay) ?? 0) +
+  (parseFloat(values?.digitalPay) ?? 0);
+  // console.log(totalPay2, parseFloat(values?.totalGrossSalary), finalTotalAmount)
+  //   console.log({totalPay, totalGrossSalary: values?.totalGrossSalary, values})
+    if (totalPay2 !== parseFloat(values?.totalGrossSalary)) {
       return toast.warn(
         "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
       );
