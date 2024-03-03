@@ -61,7 +61,7 @@ const SalaryGenerateCreate = () => {
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 2000,
+    pageSize: 100,
     total: 0,
   });
   const [allEmployeeString, setAllEmployeeString] = useState("");
@@ -85,18 +85,41 @@ const SalaryGenerateCreate = () => {
 
   //get landing data
   const getLandingData = (pages = pages) => {
+    // getSalaryGenerateRequestLanding(
+    //   "EmployeeListForSalaryGenerateRequest",
+    //   orgId,
+    //   buId,
+    //   wgId,
+    //   wId,
+    //   setRowDto,
+    //   setAllData,
+    //   setLoading,
+    //   pages,
+    //   setPages,
+    //   setAllEmployeeString
+    // );
     getSalaryGenerateRequestLanding(
       "EmployeeListForSalaryGenerateRequest",
       orgId,
       buId,
       wgId,
       wId,
+      values?.monthId,
+      values?.yearId,
+      values?.fromDate,
+      values?.toDate,
       setRowDto,
       setAllData,
       setLoading,
       pages,
       setPages,
-      setAllEmployeeString
+      setAllEmployeeString,
+      values?.wing?.value,
+      values?.soleDepo?.value,
+      values?.region?.value,
+      values?.area?.value,
+      values?.territory?.value,
+      values
     );
   };
 
@@ -920,16 +943,16 @@ const SalaryGenerateCreate = () => {
                       setColumnsData={(newRow) => {
                         setAllData(newRow);
                       }}
-                      removePagination={true}
-                      // handleTableChange={({ pagination, newRowDto }) =>
-                      //   handleTableChange(
-                      //     pagination,
-                      //     newRowDto,
-                      //     values?.search || ""
-                      //   )
-                      // }
-                      // pages={pages?.pageSize}
-                      // pagination={pages}
+                      // removePagination={true}
+                      handleTableChange={({ pagination, newRowDto }) =>
+                        handleTableChange(
+                          pagination,
+                          newRowDto,
+                          values?.search || ""
+                        )
+                      }
+                      pages={pages?.pageSize}
+                      pagination={pages}
                     />
                   </div>
                 </>
