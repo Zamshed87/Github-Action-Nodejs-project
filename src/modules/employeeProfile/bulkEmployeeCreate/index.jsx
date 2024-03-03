@@ -282,7 +282,7 @@ export default function BulkEmployeeCreate() {
                               <th className="">
                                 <div>Email</div>
                               </th>
-                              <th className="text-center">
+                              {/* <th className="text-center">
                                 <div>Wing</div>
                               </th>
                               <th className="text-center">
@@ -296,7 +296,7 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th className="text-center">
                                 <div>Territory</div>
-                              </th>
+                              </th> */}
                             </tr>
                           </thead>
                           <tbody>
@@ -454,7 +454,7 @@ export default function BulkEmployeeCreate() {
                                       : "-"}
                                   </div>
                                 </td>
-                                <td className="text-center">
+                                {/* <td className="text-center">
                                   <div className="tableBody-title">
                                     {data?.strWingName
                                       ? data?.strWingName
@@ -488,7 +488,7 @@ export default function BulkEmployeeCreate() {
                                       ? data?.strTerritoryName
                                       : "-"}
                                   </div>
-                                </td>
+                                </td> */}
                               </tr>
                             ))}
                           </tbody>

@@ -151,21 +151,40 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   };
 
   const submitHandler = async () => {
+    // console.log({selectedRow})
     await form
       .validateFields(["intime", "outtime"])
       .then(() => {
         const values = form.getFieldsValue(true);
+        // console.log({ values });
         const payload = selectedRow.map((item) => {
+          // console.log({item})
+          // console.log("values?.outtime", values?.outtime)
           return {
             id: item?.ManualAttendanceId || 0,
             accountId: orgId,
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
+            // inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
+            // outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
+            // `${data?.InTime} - ${data?.OutTime}`,
             inTime:
-              moment(values?.intime).format("HH:mm:ss") || item?.StartTime,
+              values?.attendanceAdujust?.label === "Absent" ||
+              values?.attendanceAdujust?.label === "Late"
+                ? null
+                : values?.intime
+                ? moment(values?.intime).format("HH:mm:ss")
+                : moment(moment(item?.InTime, "h:mma")).format("HH:mm:ss") ||
+                  null,
             outTime:
-              moment(values?.outtime).format("HH:mm:ss") || item?.EndTime,
+              values?.attendanceAdujust?.label === "Absent" ||
+              values?.attendanceAdujust?.label === "Late"
+                ? null
+                : values?.outtime
+                ? moment(values?.outtime).format("HH:mm:ss")
+                : moment(moment(item?.OutTime, "h:mma")).format("HH:mm:ss") ||
+                  null,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
@@ -182,6 +201,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             businessUnitId: buId,
           };
         });
+        // console.log({payload})
 
         ManualAttendance?.action({
           method: "post",
@@ -640,7 +660,15 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               }}
               title="Are you sure to update attendance?"
               components={
-                <PForm form={form}>
+                <PForm
+                  form={form}
+                  // initialValues={{
+                  //   openModal: false,
+                  //   attendanceAdujust: undefined,
+                  //   intime: "",
+                  //   outtime: "",
+                  // }}
+                >
                   <>
                     <div>
                       <p>Request Status: {attendanceAdujust?.label}</p>

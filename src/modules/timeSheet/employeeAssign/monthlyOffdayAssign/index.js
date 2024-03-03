@@ -119,7 +119,7 @@ function MonthlyOffdayAssignLanding() {
 
       if (res?.data?.data) {
         setEmpIDString(res?.data?.employeeList);
-        let newData =
+        const newData =
           res?.data?.data?.length > 0
             ? res?.data?.data?.map((item) => {
                 return {
@@ -230,8 +230,6 @@ function MonthlyOffdayAssignLanding() {
     // setChecked([]);
   }, [buId, orgId, wId, wgId]);
 
-  const saveHandler = (values) => {};
-
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -244,11 +242,6 @@ function MonthlyOffdayAssignLanding() {
   const { handleSubmit, values, setFieldValue } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      saveHandler(values, () => {
-        resetForm(initData);
-      });
-    },
   });
 
   const handleSave = () => {
@@ -261,7 +254,7 @@ function MonthlyOffdayAssignLanding() {
         isActive: true,
       };
     });
-    let empArr = [];
+    const empArr = [];
     const intEmployeeId = singleAssign
       ? [selectedSingleEmployee[0]?.employeeId]
       : checkedList?.map((data) => empArr.push(data?.employeeId));
@@ -318,7 +311,7 @@ function MonthlyOffdayAssignLanding() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -393,7 +386,7 @@ function MonthlyOffdayAssignLanding() {
                             height: "30px",
                             minWidth: "120px",
                           }}
-                          onClick={(e) => {
+                          onClick={() => {
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
                             setShowModal(true);
@@ -414,7 +407,7 @@ function MonthlyOffdayAssignLanding() {
                             minWidth: "120px",
                             fontSize: "12px",
                           }}
-                          onClick={(e) => {
+                          onClick={() => {
                             if (!permission?.isCreate)
                               return toast.warn("You don't have permission");
                             setIsAssignAll(true);

@@ -85,7 +85,7 @@ export default function ManagementDashboardPermissionCreate() {
       getLandingData();
     };
 
-    const modifyArr = allData?.map((item) => {
+    const modifyArr = rowDto?.map((item) => {
       return {
         intEmployeeId: item?.intEmployeeId,
         employeeName: item?.employeeName,
@@ -141,7 +141,6 @@ export default function ManagementDashboardPermissionCreate() {
       setRowDto([]);
     }
   };
-
   return (
     <>
       <Formik

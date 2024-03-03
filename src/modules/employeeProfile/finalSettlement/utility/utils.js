@@ -130,7 +130,7 @@ const saveEmpFinalSettlement = async (payload, setLoading, cb) => {
       `/SaasMasterData/SaveEmpFinalSettlement`,
       payload
     );
-    cb && cb();
+    cb();
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading(false);
   } catch (error) {
@@ -241,7 +241,7 @@ const deleteFinalSettlement = async (
     );
     if (res?.data) {
       setLoading(false);
-      cb && cb();
+      cb();
       toast.success(res?.data?.message || "Deleted Successfully");
     }
   } catch (error) {

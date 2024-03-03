@@ -75,6 +75,8 @@ export const getSalaryGenerateRequestLanding = async (
     yearId || currentYear
   }&intWorkplaceGroupId=${wgId}&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
     pages?.pageSize
+  }&IntPageNo=${
+    pages?.current
   }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`;
 
   if (partName === `EmployeeListForSalaryGenerateRequest`) {

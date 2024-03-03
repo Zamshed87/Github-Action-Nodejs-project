@@ -14,7 +14,7 @@ export const getShiftAssignFilter = async (
 ) => {
   setIsLoading(true);
   try {
-    let res = await axios.post(`/Employee/CalendarAssignFilter`, payload);
+    const res = await axios.post(`/Employee/CalendarAssignFilter`, payload);
     setIsLoading(false);
     const newList = res?.data?.map((item) => ({
       ...item,
@@ -198,7 +198,6 @@ export const columns = (
   checkedList,
   setCheckedList,
   // isAlreadyPresent,
-  setSingleData,
   setCreateModal,
   // rowDtoHandler,
   setSingleShiftData,
@@ -343,12 +342,11 @@ export const columns = (
                 }}
                 type="button"
                 className="btn btn-default"
-                onClick={(e) => {
+                onClick={() => {
                   if (!permission?.isCreate)
                     return toast.warn("You don't have permission");
                   if (!permission?.isCreate)
                     return toast.warn("You don't have permission");
-                  setSingleData([record]);
                   setCreateModal(true);
                   // rowDtoHandler(record);
                 }}
