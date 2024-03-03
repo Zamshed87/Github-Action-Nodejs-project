@@ -62,7 +62,7 @@ const EmpBasicInfo = ({ empBasic }) => {
                     <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                       Employee Id -
                     </small>{" "}
-                    {"N/A"}
+                    {empBasic?.strEmployeeCode}
                   </p>
                 </div>
                 <div className="single-info">
@@ -108,7 +108,7 @@ const EmpBasicInfo = ({ empBasic }) => {
                     <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                       Length of Service -
                     </small>{" "}
-                    {"N/A"}
+                    {empBasic?.lengthofService}
                   </p>
                 </div>
                 <div className="single-info">
@@ -119,7 +119,7 @@ const EmpBasicInfo = ({ empBasic }) => {
                     <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                       Last Working Date -
                     </small>{" "}
-                    {"N/A"}
+                    {empBasic?.lastWorkingDate || "N/A"}
                   </p>
                 </div>
               </div>
@@ -132,7 +132,7 @@ const EmpBasicInfo = ({ empBasic }) => {
                     <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                       Mobile (Official) -
                     </small>{" "}
-                    {"N/A"}
+                    {empBasic?.mobileNumber || "N/A"}
                   </p>
                 </div>
                 <div className="single-info">
@@ -176,7 +176,7 @@ const EmpBasicInfo = ({ empBasic }) => {
                     <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                       Date of Resign -
                     </small>{" "}
-                    {"N/A"}
+                    {empBasic?.dateofResign || "N/A"}
                   </p>
                 </div>
                 <div className="single-info">
@@ -187,7 +187,7 @@ const EmpBasicInfo = ({ empBasic }) => {
                     <small style={{ fontSize: "12px", lineHeight: "1.5" }}>
                       Notice Period -
                     </small>{" "}
-                    {"N/A"}
+                    {empBasic?.noticePeriod || "N/A"}
                   </p>
                 </div>
               </div>
