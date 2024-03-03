@@ -61,7 +61,7 @@ const SalaryGenerateCreate = () => {
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 100,
+    pageSize: 500,
     total: 0,
   });
   const [allEmployeeString, setAllEmployeeString] = useState("");
