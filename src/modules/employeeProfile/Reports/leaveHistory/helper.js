@@ -188,6 +188,5 @@ export const leaveHistoryCol = (page, paginationSize) => {
       sorter: false,
       filter: false,
     },
-    
   ];
 };
