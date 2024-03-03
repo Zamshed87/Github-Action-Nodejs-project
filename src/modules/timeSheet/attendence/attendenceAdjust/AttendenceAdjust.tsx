@@ -156,6 +156,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       .validateFields(["intime", "outtime"])
       .then(() => {
         const values = form.getFieldsValue(true);
+        // console.log({ values });
         const payload = selectedRow.map((item) => {
           // console.log({item})
           // console.log("values?.outtime", values?.outtime)
@@ -168,8 +169,22 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             // inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
             // outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
             // `${data?.InTime} - ${data?.OutTime}`,
-            inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : moment(moment(item?.InTime, "h:mma")).format("HH:mm:ss")  || null,
-            outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : moment(moment(item?.OutTime, "h:mma")).format("HH:mm:ss")  || null,
+            inTime:
+              values?.attendanceAdujust?.label === "Absent" ||
+              values?.attendanceAdujust?.label === "Late"
+                ? null
+                : values?.intime
+                ? moment(values?.intime).format("HH:mm:ss")
+                : moment(moment(item?.InTime, "h:mma")).format("HH:mm:ss") ||
+                  null,
+            outTime:
+              values?.attendanceAdujust?.label === "Absent" ||
+              values?.attendanceAdujust?.label === "Late"
+                ? null
+                : values?.outtime
+                ? moment(values?.outtime).format("HH:mm:ss")
+                : moment(moment(item?.OutTime, "h:mma")).format("HH:mm:ss") ||
+                  null,
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
@@ -645,13 +660,14 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               }}
               title="Are you sure to update attendance?"
               components={
-                <PForm form={form}
-                // initialValues={{
-                //   openModal: false,
-                //   attendanceAdujust: undefined,
-                //   intime: "",
-                //   outtime: "",
-                // }}
+                <PForm
+                  form={form}
+                  // initialValues={{
+                  //   openModal: false,
+                  //   attendanceAdujust: undefined,
+                  //   intime: "",
+                  //   outtime: "",
+                  // }}
                 >
                   <>
                     <div>
