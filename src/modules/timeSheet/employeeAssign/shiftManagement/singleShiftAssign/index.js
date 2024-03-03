@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
-import * as Yup from "yup";
-import { useFormik } from "formik";
-import Loading from "../../../../../common/loading/Loading";
-import FormikSelect from "../../../../../common/FormikSelect";
-import { customStyles } from "../../../../../utility/selectCustomStyle";
-import AntTable from "../../../../../common/AntTable";
-import { Tooltip } from "@mui/material";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { createShiftManagement, getCalenderDDL } from "../helper";
-import { toast } from "react-toastify";
+import { Tooltip } from "@mui/material";
+import { useFormik } from "formik";
 import moment from "moment";
-import CalenderCommon from "../component/CalenderCommon";
+import { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
+import AntTable from "../../../../../common/AntTable";
+import FormikSelect from "../../../../../common/FormikSelect";
+import Loading from "../../../../../common/loading/Loading";
+import { customStyles } from "../../../../../utility/selectCustomStyle";
 import CalenderBulk from "../component/CalenderBulk";
+import CalenderCommon from "../component/CalenderCommon";
+import { createShiftManagement, getCalenderDDL } from "../helper";
 
 const initialValues = {
   shiftName: "",
@@ -184,15 +184,15 @@ function SingleShiftAssign({
       {loading && <Loading />}
       <>
         {calendarData?.filter((item) => item?.isActive).length > 0 ? (
-          <form onSubmit={handleSubmit} className="mb-2 shadow-sm pl-2 mr-3">
-            <div className="">
+          <form onSubmit={handleSubmit} className="mb-2 pl-3 mr-3">
+            <div className="row">
               <div className="table-card-body">
                 <div className="col-md-12 px-0">
                   <div className="">
-                    <div className="row d-flex ml-1">
-                      <label className="pt-2">Shift</label>
-                      <div className="col-lg-6">
+                    <div className="row d-flex">
+                      <div className="col-lg-5">
                         <div className="input-field-main ">
+                          <label className="pt-2">Shift</label>
                           <FormikSelect
                             placeholder=" "
                             classes="input-sm"
@@ -209,8 +209,8 @@ function SingleShiftAssign({
                           />
                         </div>
                       </div>
-                      <div className="col-lg-4 ">
-                        <div className="" style={{ marginLeft: "-15px" }}>
+                      <div className="col-lg-2 ">
+                        <div className="">
                           <button type="submit" className="btn btn-default">
                             Add
                           </button>
