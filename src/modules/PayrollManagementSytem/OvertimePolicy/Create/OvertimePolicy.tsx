@@ -889,8 +889,8 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   </Col>
                   <Col md={12} sm={24}>
                     <PInput
-                      label="OT Hour Above (Min)"
-                      placeholder="OT Hour Above"
+                      label="Max OT Hour In Working Days (Min)" // OT Hour Above (Min)
+                      placeholder="Max OT Hour In Working Days"
                       type="number"
                       name="intOTHourShouldBeAboveInMin"
                       rules={[
