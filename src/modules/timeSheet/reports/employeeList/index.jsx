@@ -20,6 +20,7 @@ import { gray900 } from "../../../../utility/customColor";
 import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { empReportListColumns } from "./helper";
 import FormikInput from "common/FormikInput";
+import { todayDate } from "utility/todayDate";
 
 const initData = {
   searchString: "",
@@ -371,7 +372,7 @@ export default function EmployeeList() {
                             downloadEmployeeCardFile(
                               url,
                               paylaod,
-                              "Employee List",
+                              `Employee List - ${todayDate()}`,
                               "xlsx",
                               setLoading
                             );
