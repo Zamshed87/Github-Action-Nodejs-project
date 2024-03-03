@@ -63,12 +63,12 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       fixed: "left",
     },
     {
-      title: "Employee ID",
+      title: "Emp ID",
       dataIndex: "strEmployeeCode",
       sorter: true,
       filter: true,
       key: "strEmployeeCode",
-      width: "120px",
+      width: "90px",
       fixed: "left",
     },
     {
@@ -96,7 +96,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       sorter: true,
       filter: true,
       key: "strDesignation",
-      width: "150px",
+      width: "120px",
       fixed: "left",
     },
     {
@@ -105,7 +105,19 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       sorter: true,
       filter: true,
       key: "strDepartment",
-      width: "150px",
+      width: "120px",
+    },
+    {
+      title: "Basic Salary",
+      dataIndex: "intBasicSalary",
+      sorter: true,
+      width: "100px",
+    },
+    {
+      title: "Gross Salary",
+      dataIndex: "intGrossSalary",
+      sorter: true,
+      width: "100px",
     },
     // {
     //   title: "Workplace Group",
@@ -115,7 +127,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
     //   key: "strWorkplaceGroup",
     //   width: "180px",
     // },
- 
+
     {
       title: "Date",
       dataIndex: "dteAttendanceDate",
@@ -144,7 +156,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       key: "strPolicyName",
       sorter: true,
       filter: true,
-      width: "150px",
+      width: "120px",
     },
     // {
     //   title: "Start Time",
@@ -196,9 +208,9 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
               type="number"
               onChange={(e) => {
                 // console.log({ e })
-                if(e.target.value){
+                if (e.target.value) {
                   rowDtoHandler("numMinutes", index, e.target.value);
-                }else{
+                } else {
                   rowDtoHandler("numMinutes", index, "");
                 }
                 // if(e.target.value){
