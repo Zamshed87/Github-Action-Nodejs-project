@@ -23,6 +23,7 @@ import { dateFormatter } from "../../../utility/dateFormatter";
 import AddEditForm from "./addEditFile";
 import { columnForHeadOffice, getTableDataEmployee } from "./helper";
 import "./styles.css";
+import Loading from "common/loading/Loading";
 
 function EmployeeFeatureNew() {
   // hook
@@ -50,6 +51,7 @@ function EmployeeFeatureNew() {
   // Api Instance
   const landingApi = useApiRequest({});
   const GetBusinessDetailsByBusinessUnitId = useApiRequest({});
+  const [excelLoading, setExcelLoading] = useState(false);
 
   type TLandingApi = {
     pagination?: {
@@ -328,6 +330,7 @@ function EmployeeFeatureNew() {
         }}
       >
         <PCard>
+          {excelLoading && <Loading />}
           <PCardHeader
             exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
@@ -378,6 +381,7 @@ function EmployeeFeatureNew() {
             ]}
             onExport={() => {
               const excelLanding = async () => {
+                setExcelLoading(true);
                 try {
                   const { search } = form.getFieldsValue(true);
                   const payload = {
@@ -414,6 +418,7 @@ function EmployeeFeatureNew() {
                   );
                   if (res?.data) {
                     if (!res?.data?.data?.length) {
+                      setExcelLoading(false);
                       return message.error("No Employee Data Found");
                     }
                     const newData = res?.data?.data?.map(
@@ -524,8 +529,11 @@ function EmployeeFeatureNew() {
                       commonCellRange: "A1:J1",
                       CellAlignment: "left",
                     });
+                    setExcelLoading(false);
                   }
                 } catch (error: any) {
+                  toast.error("Failed to download excel");
+                  setExcelLoading(false);
                   // console.log(error?.message);
                 }
               };
