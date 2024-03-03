@@ -1,4 +1,5 @@
 import moment from "moment";
+import { todayDate } from "utility/todayDate";
 import { createFile } from "./createExcelHelper";
 
 export const createCommonExcelFile = ({
@@ -97,10 +98,10 @@ const createExcelFile = ({
   const tableBody = getTableData?.() || [];
   const subTableBody = getSubTableData?.() || [];
   const excel = {
-    name: titleWithDate,
+    name: `${titleWithDate} - ${todayDate()}`,
     sheets: [
       {
-        name: titleWithDate,
+        name: `${titleWithDate} - ${todayDate()}`,
         gridLine: false,
         rows: [
           ["_blank*2"],
