@@ -2,15 +2,21 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import FormikInput from "../../../../common/FormikInput";
-import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
 import { generateExcelAction } from "./excel/excelConvert";
@@ -20,12 +26,6 @@ import {
   getOvertimeReportLanding,
 } from "./helper";
 import "./overTimeReport.css";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../../common/peopleDeskTable";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
-import { toast } from "react-toastify";
-import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 
 const initData = {
   search: "",
@@ -80,7 +80,7 @@ export default function EmOverTimeReport() {
     isPaginated = true
   ) => {
     getOvertimeReportLanding(
-      wId,
+      0,
       "CalculatedHistoryReportForAllEmployee",
       buId,
       wgId,

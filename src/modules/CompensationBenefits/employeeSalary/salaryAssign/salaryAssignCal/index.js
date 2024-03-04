@@ -270,8 +270,7 @@ export const getSalaryAssignDDLUpdate2 = ({
   salaryDependsOn = "",
 }) => {
   if (breakDownList?.[0]?.isCustomPayrollFor10ms) {
-    const res = iFarmarNotAssigneCal({data: breakDownList}, grossSalaryAmount);
-    console.log({res})
+    const res = tenMsNotAssignCal({data: breakDownList}, grossSalaryAmount);
     setBreakDownList(res || []);
   } else {
     const modifyData = [];
@@ -326,8 +325,7 @@ export const getByIdSalaryAssignDDLUpdate2 = (
   setter
 ) => {
   if (res?.[0]?.isCustomPayrollFor10ms) {
-    const res = iFarmarNotAssigneCal({data: res}, grossSalaryAmount);
-    console.log({res})
+    const res = tenMsAssignedCal({data: res}, grossSalaryAmount);
     setter(res || []);
   } else {
     const breakdownList = res?.data || [];
@@ -417,7 +415,7 @@ const adjustOverFollowAmount = (
   setterFunc(array);
 };
 
-export const iFarmarNotAssigneCal = (res, grossSalaryAmount) => {
+export const tenMsNotAssignCal = (res, grossSalaryAmount) => {
   const conveyanceAmount = res?.data?.filter(
     (itm) => itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
   );
@@ -562,7 +560,7 @@ export const iFarmarNotAssigneCal = (res, grossSalaryAmount) => {
   return finalModify;
 };
 
-export const iFarmarAssigneCal = (res, grossSalaryAmount) => {
+export const tenMsAssignedCal = (res, grossSalaryAmount) => {
   const conveyanceAmount = res?.data?.filter(
     (itm) => itm?.strBasedOn === "Amount" && !itm?.isBasicSalary
   );
