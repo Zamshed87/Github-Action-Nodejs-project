@@ -1,4 +1,6 @@
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { Tooltip } from "@mui/material";
 import { useFormik } from "formik";
 import moment from "moment";
@@ -46,6 +48,31 @@ function SingleShiftAssign({
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
 
+  // month change actions start
+  const [month, setMonth] = useState(moment());
+
+  function currMonthName() {
+    return month.format("MMM");
+  }
+
+  // function currMonth() {
+  //   return month.format("MM");
+  // }
+
+  function currYear() {
+    return month.format("YYYY");
+  }
+
+  function prevMonth() {
+    return month.clone().subtract(1, "month");
+  }
+
+  function nextMonth() {
+    return month.clone().add(1, "month");
+  }
+
+  // month change function end
+
   const [rosterDDL, setRosterDDL] = useState([]);
 
   useEffect(() => {
@@ -61,12 +88,12 @@ function SingleShiftAssign({
     enableReinitialize: true,
     validationSchema: validationSchema,
     initialValues: initialValues,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: (values, { resetForm }) => {
       const dateArray = calendarData?.filter((item) => item?.isActive);
       const modifiedData = dateArray?.map((item) => {
         return {
           shiftName: values?.shiftName,
-          date: moment().format(
+          date: month.format(
             `YYYY-MM-${item?.intDayId < 10 ? "0" : ""}${item?.intDayId}`
           ),
         };
@@ -81,7 +108,7 @@ function SingleShiftAssign({
         return;
       }
 
-      setRowDto((prev) => [...rowDto, ...similarProperties]);
+      setRowDto(() => [...rowDto, ...similarProperties]);
       resetForm(initialValues);
     },
   });
@@ -150,7 +177,7 @@ function SingleShiftAssign({
     {
       title: "Shift Name",
       dataIndex: "shiftName",
-      render: (_, record, index) => (
+      render: (_, record) => (
         <div className="d-flex align-items-center">
           <p className="ml-2">{record.shiftName.label}</p>
         </div>
@@ -183,18 +210,40 @@ function SingleShiftAssign({
     <>
       {loading && <Loading />}
       <>
-        {calendarData?.filter((item) => item?.isActive).length > 0 ? (
-          <form onSubmit={handleSubmit} className="mb-2 pl-3 mr-3">
-            <div className="row">
-              <div className="table-card-body">
-                <div className="col-md-12 px-0">
-                  <div className="">
-                    <div className="row d-flex">
-                      <div className="col-lg-5">
-                        <div className="input-field-main ">
-                          <label className="pt-2">Shift</label>
+        <form onSubmit={handleSubmit} className="mb-2 pl-3 mr-3">
+          <div className="row">
+            <div className="table-card-body">
+              <div className="col-md-12 px-0">
+                <div className="">
+                  <div className="row">
+                    <div className="col-lg-4 mt-1">
+                      <div className="d-flex align-items-center">
+                        <KeyboardArrowLeftIcon
+                          className="pointer"
+                          onClick={() => {
+                            setMonth(prevMonth());
+                            setCalendarData([]);
+                          }}
+                        />
+                        <p style={{ fontSize: "16px" }}>
+                          {currMonthName() + `, ` + currYear()}
+                        </p>
+                        <KeyboardArrowRightIcon
+                          className="pointer"
+                          onClick={() => {
+                            setMonth(nextMonth());
+                            setCalendarData([]);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    {calendarData?.filter((item) => item?.isActive).length >
+                      0 && (
+                      <div className="col-lg-4">
+                        {/* <label className="pt-2">Shift</label> */}
+                        <div className="input-field-main">
                           <FormikSelect
-                            placeholder=" "
+                            placeholder="Select Shift"
                             classes="input-sm"
                             styles={customStyles}
                             name="shiftName"
@@ -209,6 +258,9 @@ function SingleShiftAssign({
                           />
                         </div>
                       </div>
+                    )}
+                    {calendarData?.filter((item) => item?.isActive).length >
+                      0 && (
                       <div className="col-lg-2 ">
                         <div className="">
                           <button type="submit" className="btn btn-default">
@@ -216,27 +268,27 @@ function SingleShiftAssign({
                           </button>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-          </form>
-        ) : (
-          ""
-        )}
+          </div>
+        </form>
+
         {singleShiftData.length > 0 && (
           <div className=" mr-3">
             <CalenderCommon
               orgId={orgId}
               setShowModal={setCreateModal}
-              monthYear={moment().format("YYYY-MM")}
+              monthYear={month.format("YYYY-MM")}
               calendarData={calendarData}
               setCalendarData={setCalendarData}
               isClickable={true}
               singleShiftData={singleShiftData}
               uniqueShiftColor={uniqueShiftColor}
               uniqueShiftBg={uniqueShiftBg}
+              month={month}
             />
             <div className=" my-2 d-flex justify-content-around">
               {uniqueShift.length > 0 &&
@@ -262,7 +314,7 @@ function SingleShiftAssign({
             <CalenderBulk
               orgId={orgId}
               setShowModal={setCreateModal}
-              monthYear={moment().format("YYYY-MM")}
+              monthYear={month.format("YYYY-MM")}
               calendarData={calendarData}
               setCalendarData={setCalendarData}
               isClickable={true}
@@ -301,7 +353,6 @@ function SingleShiftAssign({
                     .sort((a, b) => a.date.localeCompare(b.date))}
                   columnsData={columns()}
                   removePagination={true}
-                  onRowClick={(dataRow) => {}}
                 />
               </>
             ) : (

@@ -8,18 +8,22 @@ const CalenderCommon = ({
   calendarData,
   setCalendarData,
   isClickable = false,
-  singleShiftData=[],
-  uniqueShiftColor=[],
-  uniqueShiftBg=[],
+  singleShiftData = [],
+  uniqueShiftColor = [],
+  uniqueShiftBg = [],
 }) => {
-//   console.log("-->",singleShiftData)
-//   console.log("->",calendarData)
+  //   console.log("-->",singleShiftData)
+  //   console.log("->",calendarData)
 
   const [dates, setDates] = useState([]);
   const [date, setDate] = useState({
     year: monthYear.split("-")[0],
     month: monthYear.split("-")[1],
   });
+
+  useEffect(() => {
+    setDate({ year: monthYear.split("-")[0], month: monthYear.split("-")[1] });
+  }, [monthYear]);
 
   useEffect(() => {
     let days = moment(`${date?.month}/01/${date?.year}`).daysInMonth();
@@ -34,22 +38,22 @@ const CalenderCommon = ({
     setDates(demoDate.reverse());
   }, [date]);
 
-    useEffect(() => {
-  if (calendarData.length === 0) {
-    const demoData = [];
-    singleShiftData?.forEach((item) => {
-      demoData.push({
-        ...item,isActive:false
+  useEffect(() => {
+    if (calendarData.length === 0) {
+      const demoData = [];
+      singleShiftData?.forEach((item) => {
+        demoData.push({
+          ...item,
+          isActive: false,
+        });
       });
-    });
 
-    
-//   console.log("->D",demoData)
+      //   console.log("->D",demoData)
 
-    setCalendarData(demoData);
-  }
-   // eslint-disable-next-line
-    }, []);
+      setCalendarData(demoData);
+    }
+    // eslint-disable-next-line
+  }, []);
   return (
     <div className="employee-attendance-calendar-wrapper h-100">
       <div className="mx-0 " style={{ height: "80%" }}>
@@ -121,7 +125,9 @@ const CalenderCommon = ({
                       backgroundColor: calendarData[i]?.isActive
                         ? "rgba(222,228,239,1)"
                         : uniqueShiftBg[item?.strCalendarName],
-                      color: calendarData[i]?.isActive ? "gray" : uniqueShiftColor[item?.strCalendarName],
+                      color: calendarData[i]?.isActive
+                        ? "gray"
+                        : uniqueShiftColor[item?.strCalendarName],
                     }}
                     onClick={() => {
                       calendarData[i].isActive = true;
