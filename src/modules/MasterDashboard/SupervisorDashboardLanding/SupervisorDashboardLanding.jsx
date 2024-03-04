@@ -361,8 +361,8 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                 </thead>
                 {midLevelDashboardViewModel?.employeeAttandanceListViewModels?.map(
                   (item, i) => (
-                    <tbody>
-                      <tr key={i}>
+                    <tbody key={i}>
+                      <tr>
                         <td>{i + 1}</td>
                         <td>
                           <div className="d-flex justify-content-left align-items-center">

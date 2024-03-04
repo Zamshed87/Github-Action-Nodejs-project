@@ -1,9 +1,11 @@
 import axios from "axios";
+import DefaultInput from "common/DefaultInput";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import { excelFileToArray } from "../../../../utility/excelFileToJSON";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
+import { bulkEmpInputHandler } from "./helper";
 
 export const initData = {
   searchString: "",
@@ -253,7 +255,12 @@ function getMonthId(monthName) {
   return null;
 }
 
-export const bulkLandingTbCol = (page, paginationSize) => {
+export const bulkLandingTbCol = (
+  page,
+  paginationSize,
+  setBulkLanding,
+  bulkLandingRowDto
+) => {
   return [
     {
       title: "SL",
@@ -332,12 +339,28 @@ export const bulkLandingTbCol = (page, paginationSize) => {
         return (
           <div style={{ width: "100%" }}>
             {record?.maxAmountRequired ? (
-              <p
-                className="px-2"
-                style={{ backgroundColor: "red", color: "white" }}
-              >
-                Required
-              </p>
+              <>
+                <div style={{ border: "3px solid red" }}>
+                  <DefaultInput
+                    style={{ backgroundColor: "red", color: "white" }}
+                    classes="input-sm"
+                    value={record?.maxAmount}
+                    placeholder=""
+                    name="maxAmount"
+                    type="number"
+                    className="form-control"
+                    onChange={(e) => {
+                      bulkEmpInputHandler(
+                        e.target.value,
+                        "maxAmount",
+                        index,
+                        setBulkLanding,
+                        bulkLandingRowDto
+                      );
+                    }}
+                  />
+                </div>
+              </>
             ) : (
               numberWithCommas(record?.maxAmount)
             )}
@@ -355,12 +378,28 @@ export const bulkLandingTbCol = (page, paginationSize) => {
         return (
           <div style={{ width: "100%" }}>
             {record?.attendenceStatusRequired ? (
-              <p
-                className="px-2"
-                style={{ backgroundColor: "red", color: "white" }}
-              >
-                Required
-              </p>
+              <>
+                <div style={{ border: "3px solid red" }}>
+                  <DefaultInput
+                    style={{ backgroundColor: "red", color: "white" }}
+                    classes="input-sm"
+                    value={record?.attendenceStatus}
+                    placeholder=""
+                    name="attendenceStatus"
+                    type="text"
+                    className="form-control"
+                    onChange={(e) => {
+                      bulkEmpInputHandler(
+                        e.target.value,
+                        "attendenceStatus",
+                        index,
+                        setBulkLanding,
+                        bulkLandingRowDto
+                      );
+                    }}
+                  />
+                </div>
+              </>
             ) : (
               numberWithCommas(record?.attendenceStatus)
             )}
@@ -464,7 +503,6 @@ export const assignedBulkTbleCol = (page, paginationSize) => {
   ];
 };
 
-
 export const saveBulkUploadAction = async (
   bulkLandingRowDto,
   setLoading,
@@ -483,7 +521,6 @@ export const saveBulkUploadAction = async (
     );
   }
   const bulkSalaryAdditionNDeductions = bulkLandingRowDto?.map((item) => {
-
     return {
       intSalaryAdditionAndDeductionId:
         item?.intSalaryAdditionAndDeductionId || 0,

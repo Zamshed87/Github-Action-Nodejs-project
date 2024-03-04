@@ -14,7 +14,7 @@ export const getShiftAssignFilter = async (
 ) => {
   setIsLoading(true);
   try {
-    let res = await axios.post(`/Employee/CalendarAssignFilter`, payload);
+    const res = await axios.post(`/Employee/CalendarAssignFilter`, payload);
     setIsLoading(false);
     const newList = res?.data?.map((item) => ({
       ...item,
@@ -198,7 +198,6 @@ export const columns = (
   checkedList,
   setCheckedList,
   // isAlreadyPresent,
-  setSingleData,
   setCreateModal,
   // rowDtoHandler,
   setSingleShiftData,
@@ -326,39 +325,38 @@ export const columns = (
         </>
       ),
     },
-    {
-      title: "Action",
-      className: "text-center",
-      dataIndex: "",
-      render: (record) => (
-        <div>
-          {!(record?.calendarAssignId || record?.isSelected) && (
-            <div className="assign-btn">
-              <button
-                style={{
-                  marginRight: "25px",
-                  height: "24px",
-                  fontSize: "12px",
-                  padding: "0px 12px 0px 12px",
-                }}
-                type="button"
-                className="btn btn-default"
-                onClick={(e) => {
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  setSingleData([record]);
-                  setCreateModal(true);
-                  // rowDtoHandler(record);
-                }}
-                disabled={checkedList.length > 1}
-              >
-                Assign
-              </button>
-            </div>
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   className: "text-center",
+    //   dataIndex: "",
+    //   render: (record) => (
+    //     <div>
+    //       {!(record?.calendarAssignId || record?.isSelected) && (
+    //         <div className="assign-btn">
+    //           <button
+    //             style={{
+    //               marginRight: "25px",
+    //               height: "24px",
+    //               fontSize: "12px",
+    //               padding: "0px 12px 0px 12px",
+    //             }}
+    //             type="button"
+    //             className="btn btn-default"
+    //             onClick={() => {
+    //               if (!permission?.isCreate)
+    //                 return toast.warn("You don't have permission");
+    //               if (!permission?.isCreate)
+    //                 return toast.warn("You don't have permission");
+    //               setCreateModal(true);
+    //               // rowDtoHandler(record);
+    //             }}
+    //             disabled={checkedList.length > 1}
+    //           >
+    //             Assign
+    //           </button>
+    //         </div>
+    //       )}
+    //     </div>
+    //   ),
+    // },
   ].filter((item) => item.hidden !== true);

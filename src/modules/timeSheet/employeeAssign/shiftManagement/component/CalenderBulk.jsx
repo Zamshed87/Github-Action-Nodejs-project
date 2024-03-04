@@ -14,6 +14,9 @@ const CalenderBulk = ({
     year: monthYear.split("-")[0],
     month: monthYear.split("-")[1],
   });
+  useEffect(() => {
+    setDate({ year: monthYear.split("-")[0], month: monthYear.split("-")[1] });
+  }, [monthYear]);
 
   useEffect(() => {
     let days = moment(`${date?.month}/01/${date?.year}`).daysInMonth();

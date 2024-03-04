@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
@@ -56,7 +56,6 @@ const validationSchema = Yup.object({});
 function ShiftManagement() {
   // row Data
   const [rowDto, setRowDto] = useState([]);
-  const [singleData, setSingleData] = useState([]);
   // const [checked, setChecked] = useState([]);
   const [singleShiftData, setSingleShiftData] = useState([]);
   const [uniqueShift, setUniqueShift] = useState([]);
@@ -64,16 +63,8 @@ function ShiftManagement() {
   const [uniqueShiftBg, setUniqueShiftBg] = useState({});
   // modal
   const [createModal, setCreateModal] = useState(false);
-  const handleCreateClose = () => setCreateModal(false);
   const [calendarData, setCalendarData] = useState([]);
   const [ismulti, setIsmulti] = useState(false);
-  // master filter
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
 
   const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -257,7 +248,7 @@ function ShiftManagement() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -288,8 +279,8 @@ function ShiftManagement() {
       const data = [
         ...new Set(singleShiftData.map((item) => item.strCalendarName)),
       ];
-      let colorData = {};
-      let colorDataBg = {};
+      const colorData = {};
+      const colorDataBg = {};
       data.forEach((status, index) => {
         colorData[status] = colors[index % colors.length];
       });
@@ -317,7 +308,7 @@ function ShiftManagement() {
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           resetForm(initData);
         }}
       >
@@ -493,7 +484,6 @@ function ShiftManagement() {
                                   0
                                 );
                               }}
-                              handleClick={handleClick}
                               width="200px"
                               inputWidth="200px"
                             />
@@ -510,7 +500,6 @@ function ShiftManagement() {
                           setRowDto,
                           checkedList,
                           setCheckedList,
-                          setSingleData,
                           setCreateModal,
                           setSingleShiftData,
                           setAnchorEl2,
@@ -567,7 +556,7 @@ function ShiftManagement() {
               {isAssignAll || ismulti ? (
                 <ViewModal
                   show={createModal}
-                  title={`Assign Shift (${moment().format("MMM, YYYY")})`}
+                  title={`Assign Shift`}
                   onHide={() => {
                     setCreateModal(false);
                     // setSingleAssign(false);
