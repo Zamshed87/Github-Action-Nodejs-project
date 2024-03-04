@@ -216,21 +216,13 @@ export default function EmployeeJobCard() {
           ...initData,
           employee: { value: employeeId, label: userName },
         }}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -483,9 +475,13 @@ export default function EmployeeJobCard() {
                             fontSize: "17px",
                           }}
                         >
+                          {console.log("empInfo", empInfo?.[0])}
                           <p>
                             Employee:{" "}
-                            <strong>{empInfo?.[0]?.EmployeeName}</strong>{" "}
+                            <strong>
+                              {empInfo?.[0]?.EmployeeName} -
+                              {empInfo?.[0]?.EmployeeCode}
+                            </strong>{" "}
                           </p>
                           <p>
                             Workplace Group:{" "}
@@ -575,6 +571,14 @@ export default function EmployeeJobCard() {
                             <p>
                               Total Leave: :{" "}
                               <strong>{rowDto?.[0]?.totalLeave} Days</strong>{" "}
+                            </p>
+                            <p>
+                              Total Late: :{" "}
+                              <strong>{rowDto?.[0]?.totalLateMin}</strong>{" "}
+                            </p>
+                            <p>
+                              Total Early Out: :{" "}
+                              <strong>{rowDto?.[0]?.totalEarlyOutMin}</strong>{" "}
                             </p>
                           </div>
                         </div>
