@@ -10,6 +10,7 @@ import {
   EditOutlined,
   FilePresentOutlined,
   AddOutlined,
+  VisibilityOutlined,
 } from "@mui/icons-material";
 import Loading from "../../../../common/loading/Loading";
 import NoResultTwo from "../../../../common/NoResultTwo";
@@ -19,12 +20,17 @@ import ResetButton from "../../../../common/ResetButton";
 import Chips from "../../../../common/Chips";
 import { gray500, gray700, gray900 } from "../../../../utility/customColor";
 import { getSeparationLanding } from "../helper";
-import { dateFormatter, monthFirstDate } from "./../../../../utility/dateFormatter";
+import {
+  dateFormatter,
+  monthFirstDate,
+} from "./../../../../utility/dateFormatter";
 import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
 import AntTable from "../../../../common/AntTable";
 import { LightTooltip } from "../../LoanApplication/helper";
 import { paginationSize } from "../../../../common/peopleDeskTable";
 import { todayDate } from "utility/todayDate";
+import { PModal } from "Components/Modal";
+import ManagementSeparationHistoryView from "../mgmApplication/viewForm/ManagementSeparationHistoryView";
 
 const initData = {
   status: "",
@@ -43,6 +49,8 @@ export default function SelfSeparation() {
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   const [, setAllData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [id, setId] = useState(null);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
@@ -69,22 +77,6 @@ export default function SelfSeparation() {
       setPages,
       wId
     );
-    // getSeparationLanding({
-    //   status: null,
-    //   depId: null,
-    //   desId: null,
-    //   supId: null,
-    //   empId: employeeId,
-    //   workId: null,
-    //   buId,
-    //   orgId,
-    //   setter: setRowDto,
-    //   setLoading,
-    //   separationTypeId: null,
-    //   setAllData,
-    //   tableName: "EmployeeSeparationList",
-    //   pages,
-    // });
   };
 
   useEffect(() => {
@@ -153,7 +145,12 @@ export default function SelfSeparation() {
                   <div className="table-card-styled tableOne employee-table-card tableOne  table-responsive">
                     <AntTable
                       data={rowDto}
-                      columnsData={empSeparationDtoCol(dispatch, history)}
+                      columnsData={empSeparationDtoCol(
+                        dispatch,
+                        history,
+                        setOpenModal,
+                        setId
+                      )}
                       rowClassName="pointer"
                       removePagination
                       onRowClick={(item) => {
@@ -178,10 +175,19 @@ export default function SelfSeparation() {
           </div>
         </div>
       </form>
+      <PModal
+        title="Separation History View"
+        open={openModal}
+        onCancel={() => {
+          setOpenModal(false);
+        }}
+        components={<ManagementSeparationHistoryView id={id} type="view" />}
+        width={1000}
+      />
     </>
   );
 }
-const empSeparationDtoCol = (dispatch, history) => {
+const empSeparationDtoCol = (dispatch, history, setOpenModal, setId) => {
   return [
     {
       title: "SL",
@@ -315,6 +321,17 @@ const empSeparationDtoCol = (dispatch, history) => {
       render: (_, item) => {
         return (
           <div className="d-flex">
+            <Tooltip title="View" arrow>
+              <button className="iconButton" type="button">
+                <VisibilityOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setId(item?.separationId);
+                    setOpenModal(true);
+                  }}
+                />
+              </button>
+            </Tooltip>
             {item?.approvalStatus === "Pending" && (
               <Tooltip title="Edit" arrow>
                 <button className="iconButton" type="button">
