@@ -556,7 +556,7 @@ function ShiftManagement() {
               {isAssignAll || ismulti ? (
                 <ViewModal
                   show={createModal}
-                  title={`Assign Shift (${moment().format("MMM, YYYY")})`}
+                  title={`Assign Shift`}
                   onHide={() => {
                     setCreateModal(false);
                     // setSingleAssign(false);
