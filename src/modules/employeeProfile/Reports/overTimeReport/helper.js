@@ -56,8 +56,8 @@ export const getOvertimeReportLanding = async (
     if (res?.data) {
       setter(res?.data);
       setPages({
-        current: pages?.current,
-        pageSize: pages?.pageSize,
+        current: pageNo,
+        pageSize: pageSize,
         total: res?.data[0]?.totalCount,
       });
       setLoading && setLoading(false);
