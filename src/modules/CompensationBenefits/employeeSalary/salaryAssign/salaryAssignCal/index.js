@@ -324,9 +324,10 @@ export const getByIdSalaryAssignDDLUpdate2 = (
   grossSalaryAmount,
   setter
 ) => {
-  if (res?.[0]?.isCustomPayrollFor10ms) {
-    const res = tenMsAssignedCal({data: res}, grossSalaryAmount);
-    setter(res || []);
+  // console.log(res?.data)
+  if (res?.data?.[0]?.isCustomPayrollFor10ms) {
+    const update = tenMsAssignedCal(res, grossSalaryAmount);
+    setter(update || []);
   } else {
     const breakdownList = res?.data || [];
     const demoList = [];
@@ -401,12 +402,12 @@ const adjustOverFollowAmount = (
   //   overFollowAmount,
   // });
   if (overFollowAmount > 0) {
-    console.log({ isOverFollow: overFollowAmount });
+    // console.log({ isOverFollow: overFollowAmount });
     array[indexOfLowestAmount].numAmount =
       array[indexOfLowestAmount]?.numAmount - overFollowAmount;
     array[indexOfLowestAmount][payrollElementName] -= overFollowAmount;
   } else {
-    console.log({ isNotOverFollow: overFollowAmount });
+    // console.log({ isNotOverFollow: overFollowAmount });
 
     array[indexOfLowestAmount].numAmount =
       array[indexOfLowestAmount]?.numAmount + overFollowAmount * -1;
