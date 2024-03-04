@@ -10,7 +10,6 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import {
-  getPeopleDeskAllDDL,
   getPeopleDeskAllDDLWithCode,
   getSearchEmployeeList,
   PeopleDeskSaasDDL,
@@ -796,6 +795,22 @@ const CreateLoanApplicationModal = ({
                   </div>
                 </div>
               </div>
+              {singleData?.loanApplicationId && (
+                <div style={{ textAlign: "right", marginRight: "10px" }}>
+                  <span
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    disabled={true}
+                    onClick={() => {
+                      handleAmendmentClick(tableData, setTableData);
+                    }}
+                  >
+                    <Tag color={"green"}>{"Add Installment"}</Tag>
+                  </span>
+                </div>
+              )}
+
               {/* row table start */}
               {singleData?.loanApplicationId && (
                 <div className="table-card-body pt-3">
@@ -833,7 +848,6 @@ const CreateLoanApplicationModal = ({
                           </th>
                         </tr>
                       </thead>
-                      {console.log("tableData", tableData)}
                       <tbody>
                         {tableData?.length > 0 && (
                           <>
@@ -850,30 +864,7 @@ const CreateLoanApplicationModal = ({
                                       className="form-control"
                                       disabled={true}
                                       onChange={(e) => {
-                                        // setFieldValue("repaymentDate", "");
                                         setFieldValue("date", e.target.value);
-                                        // setFieldValue(
-                                        //   "inMonth",
-                                        //   +e.target.value
-                                        //     .split("")
-                                        //     .slice(-2)
-                                        //     .join("")
-                                        // );
-                                        // setFieldValue(
-                                        //   "intYear",
-                                        //   +e.target.value
-                                        //     .split("")
-                                        //     .slice(0, 4)
-                                        //     .join("")
-                                        // );
-                                        // costInputHandler(
-                                        //   "date",
-                                        //   e.target.value,
-                                        //   index,
-                                        //   tableData,
-                                        //   setTableData,
-                                        //   values
-                                        // );
                                       }}
                                       errors={errors}
                                       touched={touched}
@@ -942,7 +933,6 @@ const CreateLoanApplicationModal = ({
                                       touched={touched}
                                     />
                                   </td>
-                                  {console.log("tableData main", tableData)}
                                   <td>
                                     <div className="d-flex align-items-end justify-content-end">
                                       <span
