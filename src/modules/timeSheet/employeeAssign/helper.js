@@ -40,7 +40,7 @@ export const offdayAssignCrud = async (obj) => {
   try {
     if (!values?.effectiveDate) return toast.warn("Effective date is required");
 
-    let commonObj = {
+    const commonObj = {
       accountId: orgId,
       businessUnitId: buId,
       workplaceGroupId: 0, // question
@@ -75,7 +75,6 @@ export const offdayAssignCrud = async (obj) => {
       ];
     }
     setLoading(true);
-    const res = await axios.post("/Employee/OffdayAssign", payload);
     setLoading(false);
     cb();
     // toast.success(res?.data?.message || "Submitted Successfully");
@@ -101,7 +100,7 @@ export const getOffDayLanding = async (
   isAssigned = false
 ) => {
   const printDays = (item) => {
-    let data = [];
+    const data = [];
     item?.isFriday && data.push("Friday");
     item?.isSaturday && data.push("Saturday");
     item?.isSunday && data.push("Sunday");
@@ -132,7 +131,7 @@ export const getOffDayLanding = async (
     };
     const res = await axios.post("/Employee/OffdayLandingFilter", payload);
     if (res?.data) {
-      let newData = res?.data?.map((item) => {
+      const newData = res?.data?.map((item) => {
         return {
           ...item,
           offDayList:
