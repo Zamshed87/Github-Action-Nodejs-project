@@ -413,11 +413,11 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   openModal: true,
                   intime:
                     selectedRow?.length === 1
-                      ? moment(selectedRow[0]?.InTime, "h:mma")
+                      ? selectedRow[0]?.InTime ? moment(selectedRow[0]?.InTime, "h:mma") : ""
                       : "",
                   outtime:
                     selectedRow?.length === 1
-                      ? moment(selectedRow[0]?.OutTime, "h:mma")
+                      ? selectedRow[0]?.OutTime ? moment(selectedRow[0]?.OutTime, "h:mma") : ""
                       : "",
                 });
 
