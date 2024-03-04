@@ -326,14 +326,18 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       render: (_: any, record: any) =>
         record?.actualAttendanceStatus === "Present" ? (
           <PBadge text="Present" type="success" />
-        ) : record?.actualAttendanceStatus === "Absence" ? (
-          <PBadge text="Absence" type="warning" />
+        ) : record?.actualAttendanceStatus === "Absent" ? (
+          <PBadge text="Absent" type="warning" />
         ) : record?.actualAttendanceStatus === "Holiday" ? (
           <PBadge text="Holiday" type="light" />
         ) : record?.actualAttendanceStatus === "Late" ? (
           <PBadge text="Late" type="danger" />
         ) : record?.actualAttendanceStatus === "Offday" ? (
           <PBadge text="Offday" type="light" />
+        ) : record?.actualAttendanceStatus === "Leave" ? (
+          <PBadge text="Leave" type="light" />
+        ) : record?.actualAttendanceStatus === "Movement" ? (
+          <PBadge text="Movement" type="light" />
         ) : (
           ""
         ),
@@ -413,11 +417,11 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   openModal: true,
                   intime:
                     selectedRow?.length === 1
-                      ? moment(selectedRow[0]?.InTime, "h:mma")
+                      ? selectedRow[0]?.InTime ? moment(selectedRow[0]?.InTime, "h:mma") : ""
                       : "",
                   outtime:
                     selectedRow?.length === 1
-                      ? moment(selectedRow[0]?.OutTime, "h:mma")
+                      ? selectedRow[0]?.OutTime ? moment(selectedRow[0]?.OutTime, "h:mma") : ""
                       : "",
                 });
 

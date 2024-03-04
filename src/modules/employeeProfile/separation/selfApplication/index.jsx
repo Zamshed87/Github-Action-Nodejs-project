@@ -10,6 +10,7 @@ import {
   EditOutlined,
   FilePresentOutlined,
   AddOutlined,
+  VisibilityOutlined,
 } from "@mui/icons-material";
 import Loading from "../../../../common/loading/Loading";
 import NoResultTwo from "../../../../common/NoResultTwo";
@@ -19,12 +20,17 @@ import ResetButton from "../../../../common/ResetButton";
 import Chips from "../../../../common/Chips";
 import { gray500, gray700, gray900 } from "../../../../utility/customColor";
 import { getSeparationLanding } from "../helper";
-import { dateFormatter } from "./../../../../utility/dateFormatter";
+import {
+  dateFormatter,
+  monthFirstDate,
+} from "./../../../../utility/dateFormatter";
 import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
 import AntTable from "../../../../common/AntTable";
 import { LightTooltip } from "../../LoanApplication/helper";
 import { paginationSize } from "../../../../common/peopleDeskTable";
 import { todayDate } from "utility/todayDate";
+import { PModal } from "Components/Modal";
+import ManagementSeparationHistoryView from "../mgmApplication/viewForm/ManagementSeparationHistoryView";
 
 const initData = {
   status: "",
@@ -43,6 +49,8 @@ export default function SelfSeparation() {
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   const [, setAllData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [id, setId] = useState(null);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
@@ -58,8 +66,9 @@ export default function SelfSeparation() {
       "EmployeeSeparationList",
       buId,
       wgId,
+      monthFirstDate(),
       todayDate(),
-      todayDate(),
+      0, // Status 0 means All
       "",
       setRowDto,
       setLoading,
@@ -68,22 +77,6 @@ export default function SelfSeparation() {
       setPages,
       wId
     );
-    // getSeparationLanding({
-    //   status: null,
-    //   depId: null,
-    //   desId: null,
-    //   supId: null,
-    //   empId: employeeId,
-    //   workId: null,
-    //   buId,
-    //   orgId,
-    //   setter: setRowDto,
-    //   setLoading,
-    //   separationTypeId: null,
-    //   setAllData,
-    //   tableName: "EmployeeSeparationList",
-    //   pages,
-    // });
   };
 
   useEffect(() => {
@@ -152,7 +145,12 @@ export default function SelfSeparation() {
                   <div className="table-card-styled tableOne employee-table-card tableOne  table-responsive">
                     <AntTable
                       data={rowDto}
-                      columnsData={empSeparationDtoCol(dispatch, history)}
+                      columnsData={empSeparationDtoCol(
+                        dispatch,
+                        history,
+                        setOpenModal,
+                        setId
+                      )}
                       rowClassName="pointer"
                       removePagination
                       onRowClick={(item) => {
@@ -177,10 +175,19 @@ export default function SelfSeparation() {
           </div>
         </div>
       </form>
+      <PModal
+        title="Separation History View"
+        open={openModal}
+        onCancel={() => {
+          setOpenModal(false);
+        }}
+        components={<ManagementSeparationHistoryView id={id} type="view" />}
+        width={1000}
+      />
     </>
   );
 }
-const empSeparationDtoCol = (dispatch, history) => {
+const empSeparationDtoCol = (dispatch, history, setOpenModal, setId) => {
   return [
     {
       title: "SL",
@@ -314,6 +321,17 @@ const empSeparationDtoCol = (dispatch, history) => {
       render: (_, item) => {
         return (
           <div className="d-flex">
+            <Tooltip title="View" arrow>
+              <button className="iconButton" type="button">
+                <VisibilityOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setId(item?.separationId);
+                    setOpenModal(true);
+                  }}
+                />
+              </button>
+            </Tooltip>
             {item?.approvalStatus === "Pending" && (
               <Tooltip title="Edit" arrow>
                 <button className="iconButton" type="button">
@@ -334,267 +352,3 @@ const empSeparationDtoCol = (dispatch, history) => {
     },
   ];
 };
-
-/*  <table className="table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: "30px" }}>SL</th>
-                        <th>
-                          <div
-                            className="d-flex align-items-center pointer"
-                            onClick={() => {
-                              setSeparationOrder(
-                                separationTypeOrder === "desc" ? "asc" : "desc"
-                              );
-                              commonSortByFilter(
-                                separationTypeOrder,
-                                "SeparationTypeName"
-                              );
-                            }}
-                          >
-                            Separation Type
-                            <div>
-                              <SortingIcon
-                                viewOrder={separationTypeOrder}
-                              ></SortingIcon>
-                            </div>
-                          </div>
-                        </th>
-                        <th>
-                          <div
-                            className="d-flex align-items-center pointer"
-                            onClick={() => {
-                              setApplicationDateOrder(
-                                aplicationDateOrder === "desc" ? "asc" : "desc"
-                              );
-                              commonSortByFilter(
-                                aplicationDateOrder,
-                                "SeparationDate"
-                              );
-                            }}
-                          >
-                            Application Date
-                            <div>
-                              <SortingIcon
-                                viewOrder={aplicationDateOrder}
-                              ></SortingIcon>
-                            </div>
-                          </div>
-                        </th>
-                        <th>
-                          <div
-                            className="d-flex align-items-center pointer"
-                            onClick={() => {
-                              setLastWorkingDateOrder(
-                                lastWorkingDateOrder === "desc" ? "asc" : "desc"
-                              );
-                              commonSortByFilter(
-                                lastWorkingDateOrder,
-                                "LastWorkingDay"
-                              );
-                            }}
-                          >
-                            Late Working Date
-                            <div>
-                              <SortingIcon
-                                viewOrder={lastWorkingDateOrder}
-                              ></SortingIcon>
-                            </div>
-                          </div>
-                        </th>
-                        <th style={{ width: "105px" }}>
-                          <div className="table-th d-flex align-items-center">
-                            Status
-                            <span>
-                              <Select
-                                sx={{
-                                  "& .MuiOutlinedInput-notchedOutline": {
-                                    border: "none !important",
-                                  },
-                                  "& .MuiSelect-select": {
-                                    paddingRight: "22px !important",
-                                    marginTop: "-15px",
-                                  },
-                                }}
-                                className="selectBtn"
-                                name="status"
-                                IconComponent={ArrowDropDown}
-                                value={values?.status}
-                                onChange={(e) => {
-                                  setFieldValue("status", "");
-                                  setStatus(e.target.value?.label);
-                                  statusTypeFilter(e.target.value?.label);
-                                }}
-                              >
-                                {statusDDL?.length > 0 &&
-                                  statusDDL?.map((item, index) => {
-                                    return (
-                                      <MenuItem key={index} value={item}>
-                                        {item?.label}
-                                      </MenuItem>
-                                    );
-                                  })}
-                              </Select>
-                            </span>
-                          </div>
-                        </th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rowDto?.map((item, index) => {
-                        return (
-                          <tr
-                            key={index}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              history.push(
-                                `/SelfService/separation/application/view/${item?.SeparationId}`
-                              );
-                            }}
-                            style={{
-                              cursor: "pointer",
-                            }}
-                          >
-                            <td>
-                              <p className="tableBody-title pl-1">
-                                {index + 1}
-                              </p>
-                            </td>
-                            <td>
-                              <div className="content tableBody-title">
-                                <LightTooltip
-                                  title={
-                                    <div className="p-1">
-                                      <div className="mb-1">
-                                        <h3
-                                          className="tooltip-title"
-                                          style={{
-                                            fontSize: "12px",
-                                            fontWeight: "500",
-                                            color: gray700,
-                                            marginBottom: "12px",
-                                          }}
-                                        >
-                                          Application
-                                        </h3>
-                                        <div
-                                          className=""
-                                          style={{
-                                            fontSize: "12px",
-                                            fontWeight: "400",
-                                            color: gray500,
-                                          }}
-                                          dangerouslySetInnerHTML={{
-                                            __html: item?.Reason,
-                                          }}
-                                        />
-                                        {item?.docArr?.length
-                                          ? item?.docArr.map((image, i) => (
-                                              <p
-                                                style={{
-                                                  margin: "6px 0 0",
-                                                  fontWeight: "400",
-                                                  fontSize: "12px",
-                                                  lineHeight: "18px",
-                                                  color: "#009cde",
-                                                  cursor: "pointer",
-                                                }}
-                                                key={i}
-                                              >
-                                                <span
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    dispatch(
-                                                      getDownlloadFileView_Action(
-                                                        image
-                                                      )
-                                                    );
-                                                  }}
-                                                >
-                                                  <>
-                                                    <FilePresentOutlined />{" "}
-                                                    {`Attachment_${i + 1}`}
-                                                  </>
-                                                </span>
-                                              </p>
-                                            ))
-                                          : ""}
-                                      </div>
-                                    </div>
-                                  }
-                                  arrow
-                                >
-                                  <InfoOutlined
-                                    sx={{
-                                      color: gray900,
-                                    }}
-                                  />
-                                </LightTooltip>
-                                <span className="ml-2"></span>
-                                {item?.SeparationTypeName}
-                              </div>
-                            </td>
-                            <td>
-                              <div className="content tableBody-title">
-                                {dateFormatter(item?.SeparationDate)}
-                              </div>
-                            </td>
-                            <td>
-                              <div className="content tableBody-title">
-                                {dateFormatter(item?.LastWorkingDay)}
-                              </div>
-                            </td>
-                            <td>
-                              {item?.ApprovalStatus === "Approve" && (
-                                <Chips
-                                  label="Approved"
-                                  classess="success p-2"
-                                />
-                              )}
-                              {item?.ApprovalStatus === "Pending" && (
-                                <Chips label="Pending" classess="warning p-2" />
-                              )}
-                              {item?.ApprovalStatus === "Process" && (
-                                <Chips label="Process" classess="primary p-2" />
-                              )}
-                              {item?.ApprovalStatus === "Reject" && (
-                                <>
-                                  <Chips
-                                    label="Rejected"
-                                    classess="danger p-2 mr-2"
-                                  />
-                                </>
-                              )}
-                              {item?.ApprovalStatus === "Released" && (
-                                <>
-                                  <Chips label="Released" classess="p-2 mr-2" />
-                                </>
-                              )}
-                            </td>
-                            <td width="60px">
-                              <div className="d-flex">
-                                {item?.ApprovalStatus === "Pending" && (
-                                  <Tooltip title="Edit" arrow>
-                                    <button
-                                      className="iconButton"
-                                      type="button"
-                                    >
-                                      <EditOutlined
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          history.push(
-                                            `/SelfService/separation/application/edit/${item?.SeparationId}`
-                                          );
-                                        }}
-                                      />
-                                    </button>
-                                  </Tooltip>
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table> */
