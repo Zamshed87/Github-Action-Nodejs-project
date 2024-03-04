@@ -1,6 +1,5 @@
 import axios from "axios";
 import AvatarComponent from "../../../../common/AvatarComponent";
-import { dateFormatter } from "../../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
 export const getBuDetails = async (buId, setter, setLoading) => {
   try {
@@ -77,6 +76,22 @@ export const empOverTimeDtoCol = (page, paginationSize) => {
       className: "text-center",
       width: 50,
     },
+    // {
+    //   title: "Workplace Group",
+    //   dataIndex: "workplaceGroup",
+    //   sort: false,
+    //   filter: false,
+    //   width: 100,
+    //   fixed: "left",
+    // },
+    {
+      title: "Workplace",
+      dataIndex: "workplace",
+      sort: false,
+      filter: false,
+      width: 200,
+      fixed: "left",
+    },
     {
       title: "Employee Id",
       dataIndex: "employeeCode",
@@ -127,14 +142,22 @@ export const empOverTimeDtoCol = (page, paginationSize) => {
       filter: false,
       width: 200,
     },
+    // {
+    //   title: "Overtime Date",
+    //   dataIndex: "overTimeDate",
+    //   isDate: true,
+    //   render: (record) => dateFormatter(record?.overTimeDate),
+    //   width: 100,
+    //   sort: false,
+    //   filter: false,
+    // },
     {
-      title: "Overtime Date",
-      dataIndex: "overTimeDate",
-      isDate: true,
-      render: (record) => dateFormatter(record?.overTimeDate),
-      width: 100,
-      sort: false,
+      title: "Basic Salary",
+      dataIndex: "basicSalary",
+      sort: true,
       filter: false,
+      width: 100,
+      type: "number",
     },
     {
       title: "Salary",
