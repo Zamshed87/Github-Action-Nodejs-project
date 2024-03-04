@@ -12,7 +12,6 @@ import Loading from "common/loading/Loading";
 import BackButton from "common/BackButton";
 import PrimaryButton from "common/PrimaryButton";
 import { downloadFile } from "utility/downloadFile";
-import HeaderTableForm from "./headerTableForm";
 import { gray600 } from "utility/customColor";
 import ResetButton from "common/ResetButton";
 import MasterFilter from "common/MasterFilter";
@@ -49,8 +48,6 @@ function bulkAssignCreate() {
   // States
   const debounce = useDebounce();
   const [loading, setLoading] = useState(false);
-  const [allowanceAndDeductionDDL, setAllowanceAndDeductionDDL] =
-    useState(false);
   const [headerList, setHeaderList] = useState({});
 
   const [resEmpLanding, setEmpLanding] = useState([]);
@@ -409,7 +406,9 @@ function bulkAssignCreate() {
                               data={bulkLandingRowDto}
                               columnsData={bulkLandingTbCol(
                                 pages?.current,
-                                pages?.pageSize
+                                pages?.pageSize,
+                                setBulkLanding,
+                                bulkLandingRowDto
                               )}
                               pages={Bulkpages?.pageSize}
                               rowKey={(record, index) => record?.employeeCode}
