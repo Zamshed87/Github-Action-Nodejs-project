@@ -687,7 +687,7 @@ const DefaultSalary = ({ propsObj }) => {
                                       // errors={errors}
                                       // touched={touched}
                                       disabled={
-                                        itm?.strBasedOn === "Percentage"
+                                        itm?.strBasedOn === "Percentage" || itm?.isCustomPayrollFor10ms
                                       }
                                     />
                                   </div>
