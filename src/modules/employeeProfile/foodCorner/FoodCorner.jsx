@@ -23,7 +23,7 @@ const initData = {
   place: "",
   date: todayDate(),
   meal: 1,
-  type: { value: 1, label: "Regular" },
+  type: { value: 2, label: "Irregular" },
   remarks: "",
   mealStatus: "own",
 };
