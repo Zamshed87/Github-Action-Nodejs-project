@@ -483,9 +483,13 @@ export default function EmployeeJobCard() {
                             fontSize: "17px",
                           }}
                         >
+                          {console.log("empInfo", empInfo?.[0])}
                           <p>
                             Employee:{" "}
-                            <strong>{empInfo?.[0]?.EmployeeName}</strong>{" "}
+                            <strong>
+                              {empInfo?.[0]?.EmployeeName} -
+                              {empInfo?.[0]?.EmployeeCode}
+                            </strong>{" "}
                           </p>
                           <p>
                             Workplace Group:{" "}
