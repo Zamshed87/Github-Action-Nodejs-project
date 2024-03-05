@@ -58,7 +58,8 @@ export const getSeparationLanding = async (
   pageNo,
   pageSize,
   setPages,
-  wId
+  wId,
+  empId,
 ) => {
   try {
     setLoading && setLoading(true);
@@ -66,6 +67,7 @@ export const getSeparationLanding = async (
     let apiUrl = `/Employee/EmployeeSeparationListFilter?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${fromDate}&ToDate=${toDate}&status=${status}&IsForXl=false&PageNo=${pageNo}&PageSize=${pageSize}`;
 
     search && (apiUrl += `&searchTxt=${search}`);
+    empId && (apiUrl += `&EmployeeId=${empId}`);
 
     const res = await axios.get(apiUrl);
 
