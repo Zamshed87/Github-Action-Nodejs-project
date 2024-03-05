@@ -8,6 +8,7 @@ import Loading from "../../../../common/loading/Loading";
 import PrimaryButton from "../../../../common/PrimaryButton";
 import { greenColor } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
+import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 
 const FormCard = ({ propsObj }) => {
   const { values, setFieldValue, errors, touched, loading, placeDDL } =
@@ -71,6 +72,8 @@ const FormCard = ({ propsObj }) => {
                   }}
                   errors={errors}
                   touched={touched}
+                  max={monthLastDate()}
+                  min={monthFirstDate()}
                 />
               </div>
             </div>

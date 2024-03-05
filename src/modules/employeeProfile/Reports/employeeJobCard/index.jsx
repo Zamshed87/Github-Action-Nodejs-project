@@ -573,11 +573,11 @@ export default function EmployeeJobCard() {
                               <strong>{rowDto?.[0]?.totalLeave} Days</strong>{" "}
                             </p>
                             <p>
-                              Total Late: :{" "}
+                              Total Late Time: :{" "}
                               <strong>{rowDto?.[0]?.totalLateMin}</strong>{" "}
                             </p>
                             <p>
-                              Total Early Out: :{" "}
+                              Total Early Out Time: :{" "}
                               <strong>{rowDto?.[0]?.totalEarlyOutMin}</strong>{" "}
                             </p>
                           </div>
