@@ -1,12 +1,10 @@
 import { ModalFooter } from "Components/Modal";
 import { PForm, PInput, PSelect } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Col, Divider, Form, Row } from "antd";
-import { debounce } from "lodash";
-import { useEffect, useState } from "react";
-import { Switch } from "antd";
+import { Col, Form, Row } from "antd";
+import { useEffect } from "react";
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
 import { quotaFrequencyDDL } from "../helper";
 // import { updateUerAndEmpNameAction } from "../../../../commonRedux/auth/actions";
@@ -21,24 +19,20 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
-  const dispatch = useDispatch();
   // const debounce = useDebounce();
-  const getSingleData = useApiRequest({});
   const saveLeaveType = useApiRequest({});
 
-  const { orgId, buId, employeeId, intUrlId, wgId, wId, intAccountId } =
-    useSelector((state) => state?.auth?.profileData, shallowEqual);
-
-  const [loading, setLoading] = useState(false);
-
-  // states
-
-  const [isUserCheckMsg, setIsUserCheckMsg] = useState("");
+  const { orgId, employeeId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   // Pages Start From Here code from above will be removed soon
 
   // Form Instance
   const [form] = Form.useForm();
+
+  console.log(singleData);
 
   useEffect(() => {
     if (singleData) {
@@ -49,19 +43,19 @@ export default function AddEditForm({
   }, [singleData]);
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
     const cb = () => {
-      console.log("callback calling...");
       resetForm();
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       intMovementTypeId: singleData?.intMovementTypeId
         ? singleData?.intMovementTypeId
         : 0,
       strMovementType: values?.strMovementType,
       strMovementTypeCode: values?.strMovementTypeCode,
       intQuotaHour: values?.intQuotaHour,
-      intQuotaFrequency: values?.intQuotaFrequency?.value,
+      intQuotaFrequency:
+        values?.intQuotaFrequency?.value || values?.intQuotaFrequency,
       isActive: true,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
@@ -157,7 +151,6 @@ export default function AddEditForm({
             setId({});
           }}
           submitAction="submit"
-          loading={loading}
         />
       </PForm>
     </>
