@@ -483,6 +483,7 @@ const SalaryGenerateCreate = () => {
       : salaryGenerateInitialValues,
     onSubmit: (values) => saveHandler(values),
   });
+  // console.log({rowDto, allData})
 
   return (
     <>
@@ -891,7 +892,7 @@ const SalaryGenerateCreate = () => {
                               )?.length || 0}
                       </button>
                     )}
-                    {allEmployeeString && (
+                    {allEmployeeString && allData?.length > 0 && (
                       <button
                         style={{
                           padding: "0px 10px",
@@ -929,19 +930,21 @@ const SalaryGenerateCreate = () => {
               </h2>
             </div>
             <div>
-              {allData?.length > 0 ? (
+              {rowDto?.length > 0 ? (
                 <>
                   <div className="table-card-styled employee-table-card tableOne customAntTable">
                     <AntTable
-                      data={allData}
+                      data={rowDto}
                       columnsData={salaryGenerateCreateEditTableColumn(
-                        setAllData,
+                        setRowDto,
                         pages,
-                        allData,
-                        setFieldValue
+                        rowDto,
+                        setFieldValue,
+                        setAllData,
+                        allData
                       )}
-                      setColumnsData={(newRow) => {
-                        setAllData(newRow);
+                      setColumnsData={(newList) => {
+                        setAllData(newList);
                       }}
                       // removePagination={true}
                       handleTableChange={({ pagination, newRowDto }) =>
