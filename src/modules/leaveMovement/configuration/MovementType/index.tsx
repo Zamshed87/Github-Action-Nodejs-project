@@ -1,20 +1,10 @@
 import { AddOutlined } from "@mui/icons-material";
-import {
-  Avatar,
-  DataTable,
-  PCard,
-  PCardHeader,
-  PForm,
-  TableButton,
-} from "Components";
+import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form, message } from "antd";
-import axios from "axios";
-import { debounce } from "lodash";
+import { Form } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 // import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 // import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 // import { dateFormatter } from "../../../utility/dateFormatter";
@@ -24,9 +14,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import Chips from "common/Chips";
 import AddEditForm from "./addEditForm";
-import { getDeleteLveMovementTypeById } from "../helper";
 
 function MovementType() {
   const frequencyLabel = (id: any) => {
@@ -47,10 +35,9 @@ function MovementType() {
   };
   // hook
   const dispatch = useDispatch();
-  const history = useHistory();
 
   // redux
-  const { buId, wgId, wgName, wId, buName } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -81,7 +68,7 @@ function MovementType() {
   };
   const landingApiCall = ({
     pagination = {},
-    filerList,
+
     searchText = "",
   }: TLandingApi = {}) => {
     landingApi.action({
@@ -116,10 +103,6 @@ function MovementType() {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const searchFunc = debounce((value) => {
-    landingApiCall({ searchText: value });
-  }, 500);
 
   // Header
   const header = [
@@ -224,7 +207,6 @@ function MovementType() {
             submitText="Movement Type"
             submitIcon={<AddOutlined />}
             buttonList={[]}
-            onExport={() => {}}
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
