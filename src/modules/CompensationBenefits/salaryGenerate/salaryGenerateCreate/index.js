@@ -483,7 +483,7 @@ const SalaryGenerateCreate = () => {
       : salaryGenerateInitialValues,
     onSubmit: (values) => saveHandler(values),
   });
-  console.log({rowDto, allData})
+  // console.log({rowDto, allData})
 
   return (
     <>
