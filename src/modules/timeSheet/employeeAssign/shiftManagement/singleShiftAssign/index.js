@@ -42,7 +42,7 @@ function SingleShiftAssign({
   uniqueShift = [],
   isMargin = false,
 }) {
-  const { orgId, buId, employeeId, wId } = useSelector(
+  const { orgId, buId, employeeId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -78,7 +78,7 @@ function SingleShiftAssign({
 
   useEffect(() => {
     getCalenderDDL(
-      `/Employee/GetCalenderDdl?intBusinessUnitId=${buId}&IntWorkplaceId=${wId}`,
+      `/Employee/GetCalenderDdl?intBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
       "intCalenderId",
       "strCalenderName",
       setRosterDDL
