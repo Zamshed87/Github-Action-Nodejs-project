@@ -30,18 +30,20 @@ const CalenderBulk = ({
     }
     setDates(demoDate.reverse());
   }, [date]);
-  if (calendarData.length === 0) {
-    const demoData = [];
-    dates?.forEach((item) => {
-      demoData.push({
-        date: "",
-        intDayId: item?.intDayId,
-        dayName: item?.dayName,
-        isActive: false,
+  useEffect(() => {
+    if (calendarData.length === 0) {
+      const demoData = [];
+      dates?.forEach((item) => {
+        demoData.push({
+          date: "",
+          intDayId: item?.intDayId,
+          dayName: item?.dayName,
+          isActive: false,
+        });
       });
-    });
-    setCalendarData(demoData);
-  }
+      setCalendarData(demoData);
+    }
+  }, [calendarData]);
 
   return (
     <div className="employee-attendance-calendar-wrapper h-100">

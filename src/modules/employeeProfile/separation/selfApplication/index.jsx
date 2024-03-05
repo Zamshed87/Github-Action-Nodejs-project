@@ -75,7 +75,8 @@ export default function SelfSeparation() {
       pages?.current,
       pages?.pageSize,
       setPages,
-      wId
+      wId,
+      employeeId
     );
   };
 

@@ -168,15 +168,16 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
       payload: payload,
       toast: true,
       onSuccess: () => {
-        !state?.intOtconfigId && form.setFieldsValue({
-          hrPosition: undefined,
-          policyName: undefined,
-          workplace: undefined,
-          employmentType: undefined,
-          calendarName: undefined,
-        });
+        !state?.intOtconfigId &&
+          form.setFieldsValue({
+            hrPosition: undefined,
+            policyName: undefined,
+            workplace: undefined,
+            employmentType: undefined,
+            calendarName: undefined,
+          });
         state?.intOtconfigId && history?.goBack();
-        // 
+        //
       },
     });
   };
@@ -578,7 +579,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       type="number"
                       name="otRatePerMin"
                       // rules={[
-                      
+
                       // ]}
                     />
                   </Col>
@@ -765,7 +766,7 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       ]}
                     />
                   </Col> */}
-                  <Col md={14} sm={24}>
+                  <Col md={12} sm={24}>
                     <PInput
                       label="Holiday Count As Full Day?"
                       type="checkbox"
@@ -780,7 +781,32 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       }}
                     />
                   </Col>
-                  <Col md={14} sm={24}>
+                  <Form.Item noStyle shouldUpdate>
+                    {() => {
+                      const { isHolidayCountAsFullDayOt } =
+                        form.getFieldsValue(true);
+                      return (
+                        isHolidayCountAsFullDayOt && (
+                          <Col md={12} sm={24}>
+                            <PInput
+                              label="Holiday Max OT Limit (Hr)"
+                              placeholder="Holiday Max OT Limit (HR)"
+                              type="text"
+                              name="intMaxOverTimeForHolidayInMin"
+                               rules={[
+                                 {
+                                   required: true,
+                                   message: "Holiday Max OT Limit (HR) is required!",
+                                 },
+                               ]}
+                            />
+                          </Col>
+                        )
+                      );
+                    }}
+                  </Form.Item>
+
+                  <Col md={12} sm={24}>
                     <PInput
                       label="Off Day Count As Full Day?"
                       type="checkbox"
@@ -795,6 +821,31 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                       }}
                     />
                   </Col>
+                  <Form.Item noStyle shouldUpdate>
+                    {() => {
+                      const { isOffdayCountAsFullDayOt } =
+                        form.getFieldsValue(true);
+                      return (
+                        isOffdayCountAsFullDayOt && (
+                          <Col md={12} sm={24}>
+                          <PInput
+                            label="Offday Max OT Limit (Hr)"
+                            placeholder="Offday Max OT Limit (Hr)"
+                            type="text"
+                            name="intMaxOverTimeForOffdayInMin"
+                             rules={[
+                               {
+                                 required: true,
+                                 message: "Offday Max OT Limit (Hr) is required!",
+                               },
+                             ]}
+                          />
+                        </Col>
+                        )
+                      );
+                    }}
+                  </Form.Item>
+                  
 
                   <Divider
                     style={{ margin: "3px 0", fontSize: 12 }}
@@ -889,14 +940,14 @@ const CreateOvertimePolicy: React.FC<TOvertimePolicy> = () => {
                   </Col>
                   <Col md={12} sm={24}>
                     <PInput
-                      label="Max OT Hour In Working Days (Min)" // OT Hour Above (Min)
-                      placeholder="Max OT Hour In Working Days"
+                      label="Min OT Hour to Display/Avail" // 04-03-24 "Max OT Hour In Working Days (Min)" || 29-02-24 "OT Hour Above (Min)"
+                      placeholder="Min OT Hour to Display/Avail"
                       type="number"
                       name="intOTHourShouldBeAboveInMin"
                       rules={[
                         {
                           required: true,
-                          message: "OT Hour must be above min",
+                          message: "Min OT Hour Required",
                         },
                       ]}
                     />

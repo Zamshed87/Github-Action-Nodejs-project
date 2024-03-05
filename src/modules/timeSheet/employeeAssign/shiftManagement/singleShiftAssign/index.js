@@ -35,6 +35,7 @@ function SingleShiftAssign({
   pages,
   calendarData,
   setCalendarData,
+  setCheckedList,
   singleShiftData = [],
   uniqueShiftColor = [],
   uniqueShiftBg = [],
@@ -143,6 +144,10 @@ function SingleShiftAssign({
     const callBack = () => {
       setSingleAssign(false);
       setCreateModal(false);
+      setCheckedList((prev) => {
+        prev = [];
+        return prev;
+      });
       getData(pages);
     };
     createShiftManagement(payload, setLoading, callBack);

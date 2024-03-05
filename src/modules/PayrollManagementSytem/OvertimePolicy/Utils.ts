@@ -104,8 +104,10 @@ TOTPolicyGenerate) => {
     // isOffdayCountAsFullDayOt: values?.count === 2 ? true : false,
     isHolidayCountAsFullDayOt: values?.isHolidayCountAsFullDayOt ? true : false,
     isOffdayCountAsFullDayOt: values?.isOffdayCountAsFullDayOt ? true : false,
+    intMaxOverTimeForHolidayInMin: values?.intMaxOverTimeForHolidayInMin * 60 || 0,
+    intMaxOverTimeForOffdayInMin: values?.intMaxOverTimeForOffdayInMin * 60 || 0,
     intCalenderId: 0,
-    intOTHourShouldBeAboveInMin: values?.intOTHourShouldBeAboveInMin || 0,
+    intOTHourShouldBeAboveInMin: values?.intOTHourShouldBeAboveInMin * 60 || 0,
     // numOTRateForBasedOnSalaryRange: values?.otRatePerMin || 0,
     numOTRateForBasedOnSalaryRange: +((values?.otRatePerMin || 0) / 60).toFixed(6), // convert hours to min (user input as hours but we need to save as min)
   };
@@ -368,7 +370,7 @@ export const initDataGenerate = (data: any) => {
       (ot) => ot.value === data?.intOtAmountShouldBe
     )?.value,
     calculateAutoAttendance: data?.isOvertimeAutoCalculate,
-    intOTHourShouldBeAboveInMin: data?.intOTHourShouldBeAboveInMin,
+    intOTHourShouldBeAboveInMin: data?.intOTHourShouldBeAboveInMin ? (data?.intOTHourShouldBeAboveInMin / 60)?.toFixed(2) : 0,
     intOtconfigId: data?.intOtconfigId,
     isOvertimeAutoCalculate: data?.isOvertimeAutoCalculate,
     isHolidayCountAsFullDayOt: data?.isHolidayCountAsFullDayOt,
@@ -380,6 +382,9 @@ export const initDataGenerate = (data: any) => {
         ? true
         : 2,
     otRatePerMin: ((data?.numOTRateForBasedOnSalaryRange ?? 0) * 60).toFixed(2),
+    intMaxOverTimeForHolidayInMin: data?.intMaxOverTimeForHolidayInMin ? (data?.intMaxOverTimeForHolidayInMin / 60)?.toFixed(2) : 0,
+    intMaxOverTimeForOffdayInMin: data?.intMaxOverTimeForOffdayInMin ? (data?.intMaxOverTimeForOffdayInMin / 60).toFixed(2) : 0,
+
   };
   return formData;
 };
