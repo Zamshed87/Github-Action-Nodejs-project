@@ -300,9 +300,7 @@ export default function ManagementApplicationSeparationForm() {
                           setFieldValue("employeeName", valueOption);
                           if (valueOption) {
                             getLastWorkingDay(
-                              `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${0}&employmentType=${
-                                valueOption?.employmentTypeId
-                              }&designationId=${valueOption?.designation}`,
+                              `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${valueOption?.departmentId || 0}&employmentType=${valueOption?.employmentTypeId}&designationId=${valueOption?.designation}`,
                               (data) => {
                                 const formattedLastWorkingDay = new Date(data);
                                 const formattedMinDate = formattedLastWorkingDay
