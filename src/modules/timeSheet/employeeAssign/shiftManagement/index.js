@@ -652,6 +652,7 @@ function ShiftManagement() {
                               calendarData={calendarData}
                               setCalendarData={setCalendarData}
                               isMargin={true}
+                              setCheckedList={setCheckedList}
                             />
                           </>
                         ) : (
@@ -667,6 +668,7 @@ function ShiftManagement() {
                                 pages={pages}
                                 calendarData={calendarData}
                                 setCalendarData={setCalendarData}
+                                setCheckedList={setCheckedList}
                               />
                             }
                             {null}

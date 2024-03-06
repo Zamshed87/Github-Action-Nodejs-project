@@ -35,13 +35,14 @@ function SingleShiftAssign({
   pages,
   calendarData,
   setCalendarData,
+  setCheckedList,
   singleShiftData = [],
   uniqueShiftColor = [],
   uniqueShiftBg = [],
   uniqueShift = [],
   isMargin = false,
 }) {
-  const { orgId, buId, employeeId, wId } = useSelector(
+  const { orgId, buId, employeeId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,7 +78,7 @@ function SingleShiftAssign({
 
   useEffect(() => {
     getCalenderDDL(
-      `/Employee/GetCalenderDdl?intBusinessUnitId=${buId}&IntWorkplaceId=${wId}`,
+      `/Employee/GetCalenderDdl?intBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}`,
       "intCalenderId",
       "strCalenderName",
       setRosterDDL
@@ -143,6 +144,10 @@ function SingleShiftAssign({
     const callBack = () => {
       setSingleAssign(false);
       setCreateModal(false);
+      setCheckedList((prev) => {
+        prev = [];
+        return prev;
+      });
       getData(pages);
     };
     createShiftManagement(payload, setLoading, callBack);

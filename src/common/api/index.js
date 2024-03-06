@@ -174,7 +174,6 @@ export const getPeopleDeskAllDDLWithCode = async (
 ) => {
   try {
     const res = await axios.get(apiUrl);
-    console.log("res", res?.data);
     const newDDL = res?.data?.map((itm) => ({
       ...itm,
       value: itm?.intEmployeeBasicInfoId,
