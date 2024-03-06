@@ -44,6 +44,7 @@ import NoResult from "../../../common/NoResult";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { LightTooltip } from "../../../common/LightTooltip";
 import AsyncFormikSelect from "../../../common/AsyncFormikSelect";
+import moment from "moment";
 
 const initData = {
   search: "",
@@ -115,7 +116,10 @@ export default function EmMovementApplication() {
       employeeId,
       setEmpBasic,
       null,
-      setLoading
+      setLoading,
+      "",
+      "",
+      wgId
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,7 +133,10 @@ export default function EmMovementApplication() {
       employee?.employeeId ? employee?.employeeId : employeeId,
       setOthersEmployee,
       null,
-      setLoading
+      setLoading,
+      "",
+      "",
+      wgId
     );
   }, [employee?.employeeId]);
 
@@ -141,8 +148,8 @@ export default function EmMovementApplication() {
       movementTypeId: values?.movementType?.value,
       fromDate: values.fromDate,
       toDate: values.toDate,
-      fromTime: values?.startTime,
-      toTime: values?.endTime,
+      fromTime: moment(values?.startTime, "HH:mm:ss").format("HH:mm"),
+      toTime: moment(values?.endTime, "HH:mm:ss").format("HH:mm"),
       reason: values?.reason,
       location: values?.location,
       accountId: orgId,
@@ -165,7 +172,7 @@ export default function EmMovementApplication() {
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter((item) =>
+      const newDta = allData?.filter((item) =>
         regex.test(item?.MovementType?.toLowerCase())
       );
       setRowDto(newDta);
@@ -194,7 +201,6 @@ export default function EmMovementApplication() {
     fromDate,
     status,
     toDate,
-    applicationDate,
     employee,
   }) => {
     setAnchorEl(null);
@@ -247,7 +253,7 @@ export default function EmMovementApplication() {
   const debounce = useDebounce();
 
   const demoPopup = (data, values) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: "Are you want to sure you delete your movement?",
       yesAlertFunc: () => {
@@ -364,7 +370,7 @@ export default function EmMovementApplication() {
       {
         title: "Status",
         dataIndex: "Status",
-        render: (data, record) => (
+        render: (data) => (
           <div>
             {data === "Approved" && <Chips label={data} classess="success" />}
             {data === "Pending" && <Chips label={data} classess="warning" />}
@@ -433,7 +439,6 @@ export default function EmMovementApplication() {
     ];
   };
 
-
   return (
     <>
       <Formik
@@ -446,7 +451,7 @@ export default function EmMovementApplication() {
           },
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm, setValues }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
             setIsEdit(false);
@@ -463,7 +468,6 @@ export default function EmMovementApplication() {
           touched,
           setFieldValue,
           setValues,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
