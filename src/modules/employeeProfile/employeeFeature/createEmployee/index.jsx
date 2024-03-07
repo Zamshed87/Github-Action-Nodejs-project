@@ -742,6 +742,7 @@ const CreateAndEditEmploye = () => {
                         section: undefined,
                         designation: undefined,
                         hrPosition: undefined,
+                        employeeType: undefined,
                       });
                       if (value) {
                         getEmployeDepartment();
