@@ -47,6 +47,8 @@ export default function BulkEmployeeCreate() {
     shallowEqual
   );
 
+  console.log("data",data)
+
   // old way
   // const saveHandler = (values) => {
   //   const emptyCheck = data?.some((item) => item?.strEmployeeCode === "");
@@ -177,8 +179,8 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=138"
-                                  : "/document/downloadfile?id=150"
+                                  ? "/document/downloadfile?id=171"
+                                  : "/document/downloadfile?id=161"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -245,6 +247,9 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th>
                                 <div>Gender</div>
+                              </th>
+                              <th>
+                                <div>OT Type</div>
                               </th>
                               <th>
                                 <div>Salary Hold</div>
@@ -378,6 +383,11 @@ export default function BulkEmployeeCreate() {
                                 <td>
                                   <div className="tableBody-title">
                                     {data?.strGender}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {data?.intOtTypeName}
                                   </div>
                                 </td>
                                 <td>

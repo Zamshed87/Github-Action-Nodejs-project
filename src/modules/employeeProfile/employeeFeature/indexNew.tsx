@@ -199,12 +199,7 @@ function EmployeeFeatureNew() {
       fixed: "left",
       width: 40,
     },
-    {
-      title: "Reference Id",
-      dataIndex: "strReferenceId",
-      sorter: true,
-      width: 35,
-    },
+  
     {
       title: "Designation",
       dataIndex: "strDesignation",
@@ -272,6 +267,12 @@ function EmployeeFeatureNew() {
       render: (_: any, rec: any) => dateFormatter(rec?.dteJoiningDate),
       sorter: true,
       dataType: "date",
+      width: 35,
+    },
+    {
+      title: "Blood Group",
+      dataIndex: "strBloodGroup",
+      sorter: true,
       width: 35,
     },
     {
