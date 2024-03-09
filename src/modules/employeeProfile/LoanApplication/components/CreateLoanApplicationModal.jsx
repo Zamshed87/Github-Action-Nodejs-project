@@ -661,7 +661,7 @@ const CreateLoanApplicationModal = ({
                       onChange={(e) => {
                         setFieldValue("effectiveDate", e.target.value);
                       }}
-                      min={!singleData && todayDate()}
+                      min={!singleData}
                       className="form-control"
                       placeholder=""
                       errors={errors}
