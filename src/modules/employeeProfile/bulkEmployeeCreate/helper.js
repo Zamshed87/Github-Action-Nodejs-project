@@ -12,6 +12,7 @@ export const processBulkUploadEmployeeAction = async (
   employeeId
 ) => {
   setLoading && setLoading(true);
+
   try {
     const modifiedData = data.map((item) => ({
       intEmpBulkUploadId: 0,
@@ -51,7 +52,6 @@ export const processBulkUploadEmployeeAction = async (
       strLoginId: item["Login ID"] + "" || "",
       strPassword: item["Password"] + "" || "",
       strEmailAddress: item["Email"]?.text || "",
-      // strPhoneNumber: item["Phone Number"] ? item["Phone Number"] : "-",
       strPhoneNumber: item["Phone Number"]
         ? String(item["Phone Number"]).trim().charAt(0) !== "0"
           ? "0" + String(item["Phone Number"]).trim()
@@ -70,7 +70,15 @@ export const processBulkUploadEmployeeAction = async (
       dteCreateAt: todayDate(),
       strSection: item["Section"] || "",
       strSalaryType: item["Salary Type"] || "Daily",
+      intOtTypeName:
+        item["OT Type"] === 2
+          ? "With Salary"
+          : item["OT Type"] === 3
+          ? "Without Salary/Additional OT"
+          : "Not Applicable",
+      intOtTypeId: +item["OT Type"],
     }));
+
     setter(modifiedData);
     setLoading && setLoading(false);
   } catch (error) {

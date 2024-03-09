@@ -733,8 +733,8 @@ const CreateAndEditEmploye = () => {
                   <PSelect
                     options={workplaceDDL?.data || []}
                     name="workplace"
-                    label="Workplace"
-                    placeholder="Workplace"
+                    label="Workplace/Concern"
+                    placeholder="Workplace/Concern"
                     onChange={(value, op) => {
                       form.setFieldsValue({
                         workplace: op,
