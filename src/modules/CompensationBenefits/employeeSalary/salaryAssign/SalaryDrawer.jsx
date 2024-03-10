@@ -13,6 +13,7 @@ import { useFormik } from "formik";
 import { DefaultSalaryValidationSchema } from "./DrawerBody/utils";
 import { toast } from "react-toastify";
 import Loading from "../../../../common/loading/Loading";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 // initial date
 const date = new Date();
@@ -52,7 +53,7 @@ export default function SalaryDrawer(props) {
     selectedEmployee,
     setSelectedEmployee,
     cbLanding,
-    setOpenBank
+    setOpenBank,
   } = props;
   const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -60,76 +61,137 @@ export default function SalaryDrawer(props) {
   );
   const [totalAmount, setTotalAmount] = useState(0);
   const [finalTotalAmount, setFinalTotalAmount] = useState(0);
+  const [
+    existingBankData,
+    getExistingBankData,
+    loadingBankData,
+    setExistingBankData,
+  ] = useAxiosGet({});
+  const bankDataHandler = (singleData) => {
+    getExistingBankData(
+      `/Employee/EmployeeProfileView?employeeId=${singleData?.[0]?.EmployeeId}&businessUnitId=${singleData?.[0]?.BusinessUnitId}&workplaceGroupId=${singleData?.[0]?.WorkplaceGroupId}`,
+      (res) => {
+        if (res) {
+          const empBasic = res?.empEmployeeBankDetail || {};
+          setValues((prev) => {
+            return {
+              ...prev,
+              bankName: {
+                value:
+                  empBasic?.intBankOrWalletType === 1
+                    ? empBasic?.intBankWalletId
+                    : 0,
+                label:
+                  empBasic?.intBankOrWalletType === 1
+                    ? empBasic?.strBankWalletName
+                    : "",
+              },
+              branchName: {
+                value: empBasic?.intBankBranchId || 0,
+                label: empBasic?.strBranchName || "",
+              },
+              routingNo: empBasic?.strRoutingNo,
+              districtName: empBasic?.strDistrict || "",
+              swiftCode: empBasic?.strSwiftCode,
+              accName: empBasic?.strAccountName,
+              accNo:
+                empBasic?.intBankOrWalletType === 1
+                  ? empBasic?.strAccountNo
+                  : "",
+              isDefault: empBasic?.isPrimarySalaryAccount || false,
+              intEmployeeBankDetailsId: empBasic?.intEmployeeBankDetailsId || 0,
+            };
+          });
+        }
+      }
+    );
+  };
+  useEffect(() => {
+    if (
+      singleData?.[0]?.EmployeeId &&
+      singleData?.[0]?.WorkplaceGroupId &&
+      singleData?.[0]?.BusinessUnitId
+    ) {
+      bankDataHandler(singleData);
+    }
+  }, [singleData?.[0]]);
 
-  const { handleSubmit, resetForm, values, errors, touched, setFieldValue } =
-    useFormik({
-      enableReinitialize: true,
-      initialValues: {
-        effectiveDate:
-          singleData[0]?.Status === "Assigned"
-            ? `${singleData[0]?.EffectiveYear}-${
-                singleData[0]?.EffectiveMonth <= 9
-                  ? `0${singleData[0]?.EffectiveMonth}`
-                  : singleData[0]?.EffectiveMonth
-              }`
-            : `${initYear}-${modifyMonthResult}`,
+  const {
+    handleSubmit,
+    resetForm,
+    values,
+    errors,
+    touched,
+    setFieldValue,
+    setValues,
+  } = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      effectiveDate:
+        singleData[0]?.Status === "Assigned"
+          ? `${singleData[0]?.EffectiveYear}-${
+              singleData[0]?.EffectiveMonth <= 9
+                ? `0${singleData[0]?.EffectiveMonth}`
+                : singleData[0]?.EffectiveMonth
+            }`
+          : `${initYear}-${modifyMonthResult}`,
 
-        effectiveMonth:
-          singleData[0]?.Status === "Assigned"
-            ? singleData[0]?.EffectiveMonth
-            : initMonth,
+      effectiveMonth:
+        singleData[0]?.Status === "Assigned"
+          ? singleData[0]?.EffectiveMonth
+          : initMonth,
 
-        effectiveYear:
-          singleData[0]?.Status === "Assigned"
-            ? singleData[0]?.EffectiveYear
-            : initYear,
+      effectiveYear:
+        singleData[0]?.Status === "Assigned"
+          ? singleData[0]?.EffectiveYear
+          : initYear,
 
-        employee: "",
+      employee: "",
 
-        isPerdaySalary: singleData[0]?.isPerdaySalary || false,
+      isPerdaySalary: singleData[0]?.isPerdaySalary || false,
 
-        payrollElement: singleData[0]?.intSalaryBreakdownHeaderId
-          ? {
-              intSalaryBreakdownHeaderId:
-                singleData[0]?.intSalaryBreakdownHeaderId,
-              isDefault: singleData[0]?.isDefault,
-              strDependOn: singleData[0]?.strDependOn,
-              strSalaryBreakdownTitle: singleData[0]?.strSalaryBreakdownTitle,
-              isPerday: singleData[0]?.isPerdaySalary,
-              value: singleData[0]?.intSalaryBreakdownHeaderId,
-              label: singleData[0]?.strSalaryBreakdownTitle,
-            }
-          : defaultPayrollElement?.length > 0
-          ? finalPayrollElement[0]
-          : "",
+      payrollElement: singleData[0]?.intSalaryBreakdownHeaderId
+        ? {
+            intSalaryBreakdownHeaderId:
+              singleData[0]?.intSalaryBreakdownHeaderId,
+            isDefault: singleData[0]?.isDefault,
+            strDependOn: singleData[0]?.strDependOn,
+            strSalaryBreakdownTitle: singleData[0]?.strSalaryBreakdownTitle,
+            isPerday: singleData[0]?.isPerdaySalary,
+            value: singleData[0]?.intSalaryBreakdownHeaderId,
+            label: singleData[0]?.strSalaryBreakdownTitle,
+          }
+        : defaultPayrollElement?.length > 0
+        ? finalPayrollElement[0]
+        : "",
 
-        totalGrossSalary: singleData[0]?.numGrossSalary
-          ? singleData[0]?.numGrossSalary
-          : "",
+      totalGrossSalary: singleData[0]?.numGrossSalary
+        ? singleData[0]?.numGrossSalary
+        : "",
 
-        perDaySalary: singleData[0]?.numGrossSalary
-          ? singleData[0]?.numGrossSalary
-          : "",
+      perDaySalary: singleData[0]?.numGrossSalary
+        ? singleData[0]?.numGrossSalary
+        : "",
 
-        finalGrossSalary: singleData[0]?.numGrossSalary
-          ? singleData[0]?.numGrossSalary
-          : "",
-        bankPay:
-          singleData[0]?.BankPayInAmount ||
-          (singleData[0]?.DigitalPayInAmount + singleData[0]?.CashPayInAmount >
-          1
-            ? 0
-            : singleData[0]?.numGrossSalary),
-        digitalPay: singleData[0]?.DigitalPayInAmount || 0,
-        netPay: singleData[0]?.CashPayInAmount || 0,
-      },
-      validationSchema: DefaultSalaryValidationSchema,
-      onSubmit: (values) => {
-        saveHandler(values, () => {
-          // resetForm(defaultSalaryInitData);
-        });
-      },
-    });
+      finalGrossSalary: singleData[0]?.numGrossSalary
+        ? singleData[0]?.numGrossSalary
+        : "",
+      bankPay:
+        singleData[0]?.BankPayInAmount ||
+        (singleData[0]?.DigitalPayInAmount + singleData[0]?.CashPayInAmount > 1
+          ? 0
+          : singleData[0]?.numGrossSalary),
+      digitalPay: singleData[0]?.DigitalPayInAmount || 0,
+      netPay: singleData[0]?.CashPayInAmount || 0,
+      // intEmployeeBankDetailsId: singleData[0]?.intEmployeeBankDetailsId || 0,
+    },
+    validationSchema: DefaultSalaryValidationSchema,
+    onSubmit: (values) => {
+      saveHandler(values, () => {
+        // resetForm(defaultSalaryInitData);
+      });
+    },
+  });
   const netGross = () => {
     let amount = 0;
     amount = breakDownList
@@ -205,13 +267,16 @@ export default function SalaryDrawer(props) {
 
   const saveHandler = (values, cb) => {
     // const totalPay = +values?.netPay || 0 + +values?.bankPay || 0 + +values?.digitalPay || 0;
-    const totalPay = (values?.netPay ? +values?.netPay : 0) + (values?.bankPay ? +values?.bankPay : 0) + ( values?.digitalPay ? +values?.digitalPay : 0);
+    const totalPay =
+      (values?.netPay ? +values?.netPay : 0) +
+      (values?.bankPay ? +values?.bankPay : 0) +
+      (values?.digitalPay ? +values?.digitalPay : 0);
     const totalPay2 =
-  (parseFloat(values?.netPay) ?? 0) +
-  (parseFloat(values?.bankPay) ?? 0) +
-  (parseFloat(values?.digitalPay) ?? 0);
-  // console.log(totalPay2, parseFloat(values?.totalGrossSalary), finalTotalAmount)
-  //   console.log({totalPay, totalGrossSalary: values?.totalGrossSalary, values})
+      (parseFloat(values?.netPay) ?? 0) +
+      (parseFloat(values?.bankPay) ?? 0) +
+      (parseFloat(values?.digitalPay) ?? 0);
+    // console.log(totalPay2, parseFloat(values?.totalGrossSalary), finalTotalAmount)
+    //   console.log({totalPay, totalGrossSalary: values?.totalGrossSalary, values})
     if (totalPay2 !== parseFloat(values?.totalGrossSalary)) {
       return toast.warn(
         "Bank Pay, Cash Pay and Digital pay must be equal to Gross Salary!!!"
@@ -470,7 +535,6 @@ export default function SalaryDrawer(props) {
       }
     }
   };
-
   return (
     <>
       {loading && <Loading />}
@@ -520,9 +584,9 @@ export default function SalaryDrawer(props) {
               ...styles,
             },
             "& .MuiDrawer-paperAnchorRight": {
-                // overflowY: "visible",
-                overflowX: "hidden",
-                overflowY: "scroll !important",
+              // overflowY: "visible",
+              overflowX: "hidden",
+              overflowY: "scroll !important",
             },
           }}
         >
@@ -634,6 +698,7 @@ export default function SalaryDrawer(props) {
               wgId-={wgId}
               addHandler={addHandler}
               deleteHandler={deleteHandler}
+              bankDataHandler={bankDataHandler}
             />
           </form>
         </Drawer>

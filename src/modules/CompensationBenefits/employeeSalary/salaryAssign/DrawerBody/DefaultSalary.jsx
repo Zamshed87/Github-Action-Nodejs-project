@@ -24,7 +24,6 @@ import {
   getBankBranchDDL,
 } from "modules/employeeProfile/aboutMe/helper";
 import { todayDate } from "utility/todayDate";
-import { getEmployeeProfileViewData } from "modules/employeeProfile/employeeFeature/helper";
 import {
   Accordion,
   AccordionDetails,
@@ -33,7 +32,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Typography } from "antd";
-import { makeStyles } from "@material-ui/core/styles";
 
 const DefaultSalary = ({ propsObj }) => {
   const {
@@ -69,6 +67,7 @@ const DefaultSalary = ({ propsObj }) => {
     setOpenIncrement,
     setIsOpen,
     setOpenBank,
+    bankDataHandler,
   } = propsObj;
 
   const payrollGroupDDL = (positionId) => {
@@ -80,9 +79,8 @@ const DefaultSalary = ({ propsObj }) => {
   // state
   const [bankDDL, setBankDDL] = useState([]);
   const [bankBranchDDL, setBankBranchDDL] = useState([]);
-  const [selectedBank, setSelectedBank] = useState(null);
-  const [empBasic, setEmpBasic] = useState({});
-  const { employeeId, empId } = useSelector(
+
+  const { employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -95,12 +93,6 @@ const DefaultSalary = ({ propsObj }) => {
       setBankDDL
     );
   }, []);
-  const getEmpData = () => {
-    getEmployeeProfileViewData(employeeId, setEmpBasic, setLoading, buId, wgId);
-  };
-  useEffect(() => {
-    getEmpData();
-  }, [singleData]);
 
   const loadEmployeeList = (v) => {
     if (v?.length < 2) return [];
@@ -141,12 +133,13 @@ const DefaultSalary = ({ propsObj }) => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  const useStyles = makeStyles({
-    fullWidthAccordion: {
-      width: "100%",
-    },
-  });
-  const classes = useStyles();
+  useEffect(() => {
+    if (values?.bankName?.value || values?.accName) {
+      setExpanded("panel1");
+    } else {
+      setExpanded(false);
+    }
+  }, [values?.bankName]);
   return (
     <>
       {loading && <Loading />}
@@ -1072,6 +1065,12 @@ const DefaultSalary = ({ propsObj }) => {
           <Accordion
             expanded={expanded === "panel1"}
             onChange={handleChange("panel1")}
+            sx={{
+              width: "100% !important",
+              left: "0px !important",
+              right: "0px !important",
+              marginBottom: "10px !important",
+            }}
           >
             <AccordionSummary aria-controls="panel1-content" id="panel1-header">
               <Typography>Bank Details</Typography>
@@ -1104,7 +1103,6 @@ const DefaultSalary = ({ propsObj }) => {
                         setFieldValue("routingNo", "");
                         setFieldValue("branchName", "");
                         setFieldValue("bankName", valueOption);
-                        setSelectedBank(valueOption);
                         getBankBranchDDL(
                           valueOption?.value,
                           orgId,
@@ -1378,8 +1376,9 @@ const DefaultSalary = ({ propsObj }) => {
                       onClick={() => {
                         const payload = {
                           partId: 0,
-                          intEmployeeBankDetailsId: 0,
-                          intEmployeeBasicInfoId: +employeeId || 0,
+                          intEmployeeBankDetailsId: values?.intEmployeeBankDetailsId || 0,
+                          intEmployeeBasicInfoId:
+                            +singleData?.[0]?.EmployeeId || 0,
                           isPrimarySalaryAccount: true,
                           isActive: true,
                           intWorkplaceId: wId || 0,
@@ -1390,8 +1389,8 @@ const DefaultSalary = ({ propsObj }) => {
                           dteUpdatedAt: todayDate(),
                           intUpdatedBy: employeeId,
                           intBankOrWalletType: 1,
-                          intBankWalletId: 0,
-                          strBankWalletName: "",
+                          intBankWalletId:  values?.bankName?.value || 0,
+                          strBankWalletName: values?.bankName?.label || "",
                           strDistrict: "",
                           intBankBranchId: values?.branchName?.value || 0,
                           strBranchName: values?.branchName?.label || "",
@@ -1400,8 +1399,9 @@ const DefaultSalary = ({ propsObj }) => {
                           strAccountNo: values?.accNo || "",
                           strSwiftCode: values?.swiftCode || "",
                         };
-                        console.log("payload", payload);
-                        bankDetailsAction(payload, setLoading, getEmpData, "");
+                        bankDetailsAction(payload, setLoading, () =>
+                          bankDataHandler(singleData)
+                        );
                       }}
                       type="submit"
                       className="btn btn-green btn-green-disable"
@@ -1461,7 +1461,6 @@ const DefaultSalary = ({ propsObj }) => {
                           Clear
                         </button>
                       )}
-                    {console.log("emp", empBasic)}
                     <button
                       disabled={
                         +values?.totalGrossSalary !==
@@ -1472,11 +1471,11 @@ const DefaultSalary = ({ propsObj }) => {
                       type="submit"
                       className="btn btn-green btn-green-disable"
                       onClick={() => {
-                        console.log("values", values);
                         const payload = {
                           partId: 0,
-                          intEmployeeBankDetailsId: 0,
-                          intEmployeeBasicInfoId: +employeeId || 0,
+                          intEmployeeBankDetailsId: values?.intEmployeeBankDetailsId || 0,
+                          intEmployeeBasicInfoId:
+                            +singleData?.[0]?.EmployeeId || 0,
                           isPrimarySalaryAccount: true,
                           isActive: true,
                           intWorkplaceId: wId || 0,
@@ -1487,8 +1486,8 @@ const DefaultSalary = ({ propsObj }) => {
                           dteUpdatedAt: todayDate(),
                           intUpdatedBy: employeeId,
                           intBankOrWalletType: 1,
-                          intBankWalletId: 0,
-                          strBankWalletName: "",
+                          intBankWalletId:  values?.bankName?.value || 0,
+                          strBankWalletName: values?.bankName?.label || "",
                           strDistrict: "",
                           intBankBranchId: values?.branchName?.value || 0,
                           strBranchName: values?.branchName?.label || "",
@@ -1497,8 +1496,9 @@ const DefaultSalary = ({ propsObj }) => {
                           strAccountNo: values?.accNo || "",
                           strSwiftCode: values?.swiftCode || "",
                         };
-                        console.log("payload", payload);
-                        bankDetailsAction(payload, setLoading, getEmpData, "");
+                        bankDetailsAction(payload, setLoading, () =>
+                          bankDataHandler(singleData)
+                        );
                       }}
                     >
                       Save
