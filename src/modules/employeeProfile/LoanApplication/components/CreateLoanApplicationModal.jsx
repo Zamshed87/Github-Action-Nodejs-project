@@ -192,19 +192,19 @@ const CreateLoanApplicationModal = ({
 
   const [resForView, getForView, loadingForView2, setForView] = useAxiosGet([]);
 
+
   // useEffect(() => {
+  //   console.log("singleData",singleData)
   //   if (singleData?.loanApplicationId) {
   //     getForView(
   //       `/Employee/LoanInstallmentRowGetById?loanId=${singleData?.loanApplicationId}`,
   //       (data) => {
   //         const currentDate = moment();
-  //         console.log("data",data)
   //         const modifyData = {
   //           row: data?.map((item, index) => {
-  //             const repaymentDate = moment(item?.date || currentDate).add(
-  //               index,
-  //               "months"
-  //             );
+  //             const repaymentDate = item?.date
+  //               ? moment(item.date)
+  //               : currentDate.clone().add(index, "months");
   //             return {
   //               isHold: item?.isHold || false,
   //               date: repaymentDate.format("YYYY-MM"),
@@ -231,15 +231,13 @@ const CreateLoanApplicationModal = ({
       getForView(
         `/Employee/LoanInstallmentRowGetById?loanId=${singleData?.loanApplicationId}`,
         (data) => {
-          const currentDate = moment();
+          const effectiveDate = moment(singleData.effectiveDate); // Parse effective date
           const modifyData = {
             row: data?.map((item, index) => {
-              const repaymentDate = item?.date
-                ? moment(item.date)
-                : currentDate.clone().add(index, "months");
+              const repaymentDate = effectiveDate.clone().add(index, "months"); // Start from effective date month
               return {
                 isHold: item?.isHold || false,
-                date: repaymentDate.format("YYYY-MM"),
+                date: repaymentDate.format("YYYY-MM"), // Format as "YYYY-MM"
                 paymentYear: repaymentDate.year() || 0,
                 paymentMonth: repaymentDate.month() + 1,
                 strRemarks: item?.strRemarks || "",
@@ -257,6 +255,7 @@ const CreateLoanApplicationModal = ({
       );
     }
   }, [singleData?.loanApplicationId]);
+
 
   const labelShowLastInstallmentAmt = (values) => {
     const lastAmount = values?.loanAmount % values?.amountPerInstallment;
@@ -368,10 +367,11 @@ const CreateLoanApplicationModal = ({
                       placeholder=""
                       errors={errors}
                       touched={touched}
-                      disabled={
-                        singleData?.loanApplicationId &&
-                        singleData?.intCreatedBy !== employeeId
-                      }
+                      disabled={singleData?.loanApplicationId}
+                      // disabled={
+                      //   singleData?.loanApplicationId &&
+                      //   singleData?.intCreatedBy !== employeeId
+                      // }
                     />
                   </div>
                   <div className="col-4">
@@ -403,7 +403,7 @@ const CreateLoanApplicationModal = ({
                       placeholder=""
                       errors={errors}
                       touched={touched}
-                      disabled={!values?.loanAmount}
+                      disabled={!values?.loanAmount || singleData?.loanApplicationId}
                     />
                   </div>
                   <div className="col-4">
@@ -531,10 +531,11 @@ const CreateLoanApplicationModal = ({
                       placeholder=""
                       errors={errors}
                       touched={touched}
-                      disabled={
-                        singleData?.loanApplicationId &&
-                        singleData?.intCreatedBy !== employeeId
-                      }
+                      disabled={singleData?.loanApplicationId}
+                      // disabled={
+                      //   singleData?.loanApplicationId &&
+                      //   singleData?.intCreatedBy !== employeeId
+                      // }
                     />
                   </div>
                   <div className="col-4">
@@ -569,10 +570,11 @@ const CreateLoanApplicationModal = ({
                       placeholder=""
                       errors={errors}
                       touched={touched}
-                      disabled={
-                        singleData?.loanApplicationId &&
-                        singleData?.intCreatedBy !== employeeId
-                      }
+                      disabled={singleData?.loanApplicationId}
+                      // disabled={
+                      //   singleData?.loanApplicationId &&
+                      //   singleData?.intCreatedBy !== employeeId
+                      // }
                     />
                   </div>
                   {singleData?.loanApplicationId && (
@@ -594,6 +596,7 @@ const CreateLoanApplicationModal = ({
                           placeholder=""
                           errors={errors}
                           touched={touched}
+                          disabled={singleData?.loanApplicationId}
                         />
                       </div>
                       <div className="col-4">
@@ -619,6 +622,7 @@ const CreateLoanApplicationModal = ({
                           placeholder=""
                           errors={errors}
                           touched={touched}
+                          disabled={singleData?.loanApplicationId}
                         />
                       </div>
                       <div className="col-4">
@@ -644,6 +648,7 @@ const CreateLoanApplicationModal = ({
                           placeholder=""
                           errors={errors}
                           touched={touched}
+                          disabled={singleData?.loanApplicationId}
                         />
                       </div>
                     </>
@@ -661,14 +666,32 @@ const CreateLoanApplicationModal = ({
                       onChange={(e) => {
                         setFieldValue("effectiveDate", e.target.value);
                       }}
-                      min={!singleData && todayDate()}
+                      min={!singleData}
                       className="form-control"
                       placeholder=""
                       errors={errors}
                       touched={touched}
                     />
                   </div>
-
+                  <div className="col-6">
+                    <label>
+                      Description <Required />
+                    </label>
+                    <FormikTextArea
+                      classes="textarea-with-label"
+                      value={values?.description}
+                      name="description"
+                      type="text"
+                      className="form-control"
+                      placeholder=""
+                      onChange={(e) => {
+                        setFieldValue("description", e.target.value);
+                      }}
+                      errors={errors}
+                      touched={touched}
+                      style={{ height: "60px" }}
+                    />
+                  </div>
                   <div className="col-4 mt-4">
                     <div className="input-main position-group-select">
                       {fileId ? (
@@ -774,25 +797,7 @@ const CreateLoanApplicationModal = ({
                   <div className="col-4">
                     {labelShowLastInstallmentAmt(values)}
                   </div>
-                  <div className="col-6">
-                    <label>
-                      Description <Required />
-                    </label>
-                    <FormikTextArea
-                      classes="textarea-with-label"
-                      value={values?.description}
-                      name="description"
-                      type="text"
-                      className="form-control"
-                      placeholder=""
-                      onChange={(e) => {
-                        setFieldValue("description", e.target.value);
-                      }}
-                      errors={errors}
-                      touched={touched}
-                      style={{ height: "60px" }}
-                    />
-                  </div>
+                 
                 </div>
               </div>
               {singleData?.loanApplicationId && (
@@ -828,7 +833,7 @@ const CreateLoanApplicationModal = ({
                           </th>
                           <th>
                             <div className="d-flex align-items-center">
-                              Repayment Date
+                              Repayment Month
                             </div>
                           </th>
                           <th>

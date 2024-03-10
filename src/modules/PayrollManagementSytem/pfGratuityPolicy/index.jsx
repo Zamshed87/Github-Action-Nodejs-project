@@ -11,6 +11,8 @@ import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PrimaryButton from "../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { getPfGratuityLanding } from "./helper";
+import { getCommaMethod, header } from "./utils";
+import { DataTable } from "Components";
 
 const initialValues = {
   search: "",
@@ -110,7 +112,22 @@ export default function PfGratuityPolicy() {
               {rowDto?.intPfngratuityId ? (
                 <>
                   <div className="table-card-body about-info-card policy-details">
-                    <div className="row mb-4">
+                    <div className="row">
+                      <div className="col-md-3 d-flex align-items-center mb-2">
+                        <IconButton
+                          style={{
+                            color: "black",
+                            backgroundColor: "#EAECF0",
+                            padding: "5px",
+                          }}
+                        >
+                          <Grain style={{ width: "25px", height: "25px" }} />
+                        </IconButton>
+                        <div className="ml-3">
+                          <h2>{getCommaMethod(rowDto?.workplaceList)}</h2>
+                          <p>Workplace</p>
+                        </div>
+                      </div>
                       <div className="col-md-3 d-flex align-items-center mb-2">
                         <IconButton
                           style={{
@@ -214,7 +231,7 @@ export default function PfGratuityPolicy() {
                           <p>Gratuity</p>
                         </div>
                       </div>
-                      <div className="col-md-3 d-flex align-items-center">
+                      {/* <div className="col-md-3 d-flex align-items-center">
                         <IconButton
                           style={{
                             color: "black",
@@ -230,7 +247,16 @@ export default function PfGratuityPolicy() {
                           </h2>
                           <p>No. Of Eligible Year For Gratuity</p>
                         </div>
-                      </div>
+                      </div> */}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6 ml-auto">
+                      <DataTable
+                        header={header(rowDto, setRowDto, "view")}
+                        bordered
+                        data={rowDto?.gratuityList || []}
+                      />
                     </div>
                   </div>
                 </>
