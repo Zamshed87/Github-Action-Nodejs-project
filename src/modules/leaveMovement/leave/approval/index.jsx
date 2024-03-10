@@ -728,44 +728,44 @@ export default function LeaveApproval() {
                               {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
                               ).length > 0 && (
-                                <div className="d-flex actionIcon mr-3">
-                                  <Tooltip title="Approve">
-                                    <div
-                                      className="muiIconHover success mr-3"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "approve",
-                                          "isApproved",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <CheckCircle
-                                            sx={{
-                                              color: successColor,
-                                              width: "25px !important",
-                                              height: "35px !important",
-                                              fontSize: "20px !important",
-                                            }}
-                                          />
-                                        }
+                                <div className="d-flex">
+                                  {/* <MuiIcon
+                                    icon={
+                                      <CheckCircle
+                                        sx={{
+                                          color: successColor,
+                                          width: "25px !important",
+                                          height: "35px !important",
+                                          fontSize: "20px !important",
+                                        }}
                                       />
-                                    </div>
-                                  </Tooltip>
-                                  <Tooltip title="Reject">
-                                    <div
-                                      className="muiIconHover  danger"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "reject",
-                                          "isReject",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
+                                    }
+                                  /> */}
+                                  <div
+                                    className="muiIconHover success mr-2"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    <button className="btn-green px-2">
+                                      Approve
+                                    </button>
+                                  </div>
+                                  <div
+                                    className="muiIconHover"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    {/* <MuiIcon
                                         icon={
                                           <Cancel
                                             sx={{
@@ -776,9 +776,11 @@ export default function LeaveApproval() {
                                             }}
                                           />
                                         }
-                                      />
-                                    </div>
-                                  </Tooltip>
+                                      /> */}
+                                    <button className="btn btn-cancel px-2">
+                                      Reject
+                                    </button>
+                                  </div>
                                 </div>
                               )}
                               <ul className="d-flex flex-wrap">

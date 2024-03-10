@@ -576,19 +576,18 @@ export default function MovementApproval() {
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        filterLanding
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
+                              <div className="d-flex">
+                                <div
+                                  className="muiIconHover success mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      filterLanding
+                                    );
+                                  }}
+                                >
+                                  {/* <MuiIcon
                                       icon={
                                         <CheckCircle
                                           sx={{
@@ -599,21 +598,22 @@ export default function MovementApproval() {
                                           }}
                                         />
                                       }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        filterLanding
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
+                                    /> */}
+                                  <button className="btn-green px-2">
+                                    Approve
+                                  </button>
+                                </div>
+                                <div
+                                  className="muiIconHover  danger"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      filterLanding
+                                    );
+                                  }}
+                                >
+                                  {/* <MuiIcon
                                       icon={
                                         <Cancel
                                           sx={{
@@ -624,9 +624,11 @@ export default function MovementApproval() {
                                           }}
                                         />
                                       }
-                                    />
-                                  </div>
-                                </Tooltip>
+                                    /> */}
+                                  <button className="btn-green px-2">
+                                    Reject
+                                  </button>
+                                </div>
                               </div>
                             )}
                             {/*   <ul className="d-flex flex-wrap">
