@@ -241,6 +241,7 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
         </Col>
       </Row>
       <ModalFooter
+        submitText={data?.isView && false}
         submitAction="submit"
         onCancel={() => {
           setOpen(false);
