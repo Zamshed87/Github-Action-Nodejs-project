@@ -8,13 +8,22 @@ import NotPermittedPage from '../../../../common/notPermitted/NotPermittedPage';
 import { setFirstLevelNameAction } from '../../../../commonRedux/reduxForLocalStorage/actions';
 import BackButton from '../../../../common/BackButton';
 import FormikRadio from '../../../../common/FormikRadio';
-import { greenColor } from '../../../../utility/customColor';
+import { gray600, greenColor, success500 } from '../../../../utility/customColor';
 import DefaultInput from '../../../../common/DefaultInput';
 import { createPfGratuityConfig } from '../helper';
 import { useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import FormikSelect from 'common/FormikSelect';
+import { customStyles } from 'utility/selectCustomStyle';
+import useAxiosGet from 'utility/customHooks/useAxiosGet';
+import PrimaryButton from 'common/PrimaryButton';
+import { DataTable } from 'Components';
+import { addHandler, header, isMultiHandler } from '../utils';
+import { getPeopleDeskAllDDL } from 'common/api';
+import { toast } from 'react-toastify';
 
 const initData = {
+  workplace: [],
   // profident fund
   providePF: "",
   companyBenefits: "",
@@ -25,9 +34,19 @@ const initData = {
   // gratuity
   provideGratuity: "",
   companyGratuity: "",
+
+  //New Requirement
+  dependsOn: "",
+  employmentType: "",
+  fromYear: "",
+  toYear: "",
+  multiplier: "",
 };
 
 const validationSchema = Yup.object().shape({
+  workplace: Yup.array()
+    .required("Workplace is required!!!")
+    .min(1),
   providePF: Yup.string().required("Provide PF is required!!!"),
   companyBenefits: Yup.number()
     .min(1, "Must be greater than zero!!!")
@@ -43,9 +62,9 @@ const validationSchema = Yup.object().shape({
     .max(12, "Must be equal or less than 12 !!!")
     .required("PF Employer Contribution Of Basic is required"),
   provideGratuity: Yup.string().required("Provide Gratuity is required!!!"),
-  companyGratuity: Yup.number()
-    .min(1, "Must be greater than zero!!!")
-    .required("Service length (Years) for eligibility of company benefits is required"),
+  // companyGratuity: Yup.number()
+  //   .min(1, "Must be greater than zero!!!")
+  //   .required("Service length (Years) for eligibility of company benefits is required"),
 });
 
 export default function PfGratuityPolicyForm() {
@@ -54,12 +73,17 @@ export default function PfGratuityPolicyForm() {
   const { state } = useLocation();
   const dispatch = useDispatch();
 
-  const { orgId, employeeId } = useSelector(
+  const { orgId, employeeId, buId, wId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+
+  const [employmentTypeDDL, getEmploymentTypeDDL, , setEmploymentTypeDDL] = useAxiosGet([]);
+  const [loading, setLoading] = useState(false);
+  const [rowDto, setRowDto] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
 
   let permission = null;
   permissionList.forEach((item) => {
@@ -72,9 +96,35 @@ export default function PfGratuityPolicyForm() {
     dispatch(setFirstLevelNameAction("Administration"));
   }, [dispatch]);
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    getEmploymentTypeDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`, (res) => {
+        const modifiedData = res?.map((item) => {
+          return {
+            value: item?.Id,
+            label: item?.EmploymentType,
+          };
+        });
+        setEmploymentTypeDDL(modifiedData);
+      }
+    );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
+    );
+    if(state?.intPfngratuityId){
+      setRowDto(state?.gratuityList);
+    }
+  },[buId, wgId, wId]);
+
 
   const saveHandler = (values, cb) => {
+    if (!rowDto?.length && values?.provideGratuity === "yes")
+      return toast.warn("Please add at least one gratuity policy!!!", {
+        toastId: "rowDto",
+      });
     const callback = () => {
       cb();
       if (!+params?.id) {
@@ -90,8 +140,14 @@ export default function PfGratuityPolicyForm() {
       numEmployerContributionOfBasic: +values?.employerContributionOfBasic,
       intNumOfEligibleMonthForPfinvestment: values?.numberOfEligibilityOfMonth,
       isHasGratuityPolicy: values?.provideGratuity === "yes" ? true : false,
-      intNumOfEligibleYearForGratuity: +values?.companyGratuity,
-      intCreatedBy: employeeId
+      intNumOfEligibleYearForGratuity: +values?.companyGratuity || 0,
+      intCreatedBy: employeeId,
+      workplaceList: values?.workplace?.map((item) => ({
+        intPfworkplace: item?.value,
+        strPfworkPlaceName: item?.label,
+        isactive: true,
+      })),
+      gratuityList: rowDto,
     };
 
     if (+params?.id) {
@@ -115,7 +171,11 @@ export default function PfGratuityPolicyForm() {
       validationSchema: validationSchema,
       initialValues: +params?.id ? {
         ...initData,
-        // profident fund
+        workplace: state?.workplaceList.map(item => ({
+          value: item?.intPfworkplace,
+          label: item.strPfworkPlaceName
+        })),
+        // provident fund
         providePF: state?.isHasPfpolicy ? "yes" : "no",
         companyBenefits: state?.intNumOfEligibleYearForBenifit,
         employeeContributionOfBasic: state?.numEmployeeContributionOfBasic,
@@ -124,7 +184,7 @@ export default function PfGratuityPolicyForm() {
 
         // gratuity
         provideGratuity: state?.isHasGratuityPolicy ? "yes" : "no",
-        companyGratuity: state?.intNumOfEligibleYearForGratuity,
+        companyGratuity: state?.intNumOfEligibleYearForGratuity || 0,
       } : {
         ...initData
       },
@@ -148,7 +208,9 @@ export default function PfGratuityPolicyForm() {
             <div className="table-card-heading mb12">
               <div className="d-flex align-items-center">
                 <BackButton />
-                <h2>{params?.id ? "Edit PF & Gratuity" : "Create PF & Gratuity"}</h2>
+                <h2>
+                  {params?.id ? "Edit PF & Gratuity" : "Create PF & Gratuity"}
+                </h2>
               </div>
               <ul className="d-flex flex-wrap">
                 <li>
@@ -163,10 +225,7 @@ export default function PfGratuityPolicyForm() {
                   </button>
                 </li>
                 <li>
-                  <button
-                    type="submit"
-                    className="btn btn-default flex-center"
-                  >
+                  <button type="submit" className="btn btn-default flex-center">
                     Save
                   </button>
                 </li>
@@ -176,10 +235,67 @@ export default function PfGratuityPolicyForm() {
               <div className="col-md-12 px-0 mt-3">
                 <div className="card-style">
                   <div className="row">
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>Workplace</label>
+                        <FormikSelect
+                          name="workplace"
+                          isClearable={true}
+                          options={[{ value: 0, label: "All"}, ...workplaceDDL]}
+                          value={values?.workplace}
+                          onChange={(valueOption) => {
+                            isMultiHandler({valueOption, name: "workplace", setFieldValue, workplaceDDL});
+                          }}
+                          styles={{
+                            ...customStyles,
+                            control: (provided, state) => ({
+                              ...provided,
+                              minHeight: "auto",
+                              height:
+                                values?.workplace?.length > 1 ? "auto" : "auto",
+                              borderRadius: "4px",
+                              boxShadow: `${success500}!important`,
+                              ":hover": {
+                                borderColor: `${gray600}!important`,
+                              },
+                              ":focus": {
+                                borderColor: `${gray600}!important`,
+                              },
+                            }),
+                            valueContainer: (provided, state) => ({
+                              ...provided,
+                              height:
+                                values?.workplace?.length > 1 ? "auto" : "auto",
+                              padding: "0 6px",
+                            }),
+                            multiValue: (styles) => {
+                              return {
+                                ...styles,
+                                position: "relative",
+                                top: "-1px",
+                              };
+                            },
+                            multiValueLabel: (styles) => ({
+                              ...styles,
+                              padding: "0",
+                            }),
+                          }}
+                          isMulti
+                          errors={errors}
+                          placeholder="Select..."
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
                     <div className="col-12">
                       <h2>Provident Fund Configuration</h2>
                     </div>
-                    <div className="col-12" style={{ marginBottom: "12px" }}></div>
+                    <div
+                      className="col-12"
+                      style={{ marginBottom: "12px" }}
+                    ></div>
                     <div className="col-lg-12">
                       <div className="input-field-main">
                         <label>Do your company provide PF?</label>
@@ -223,7 +339,7 @@ export default function PfGratuityPolicyForm() {
                           <span
                             className="mr-1"
                             style={{
-                              fontSize: "12px"
+                              fontSize: "12px",
                             }}
                           >
                             Service length (Years)
@@ -251,7 +367,7 @@ export default function PfGratuityPolicyForm() {
                           <span
                             className="mr-1"
                             style={{
-                              fontSize: "12px"
+                              fontSize: "12px",
                             }}
                           >
                             Amount of percentage (%)
@@ -264,7 +380,10 @@ export default function PfGratuityPolicyForm() {
                             type="number"
                             placeholder=" "
                             onChange={(e) => {
-                              setFieldValue("employeeContributionOfBasic", e.target.value);
+                              setFieldValue(
+                                "employeeContributionOfBasic",
+                                e.target.value
+                              );
                             }}
                             errors={errors}
                             touched={touched}
@@ -279,7 +398,7 @@ export default function PfGratuityPolicyForm() {
                           <span
                             className="mr-1"
                             style={{
-                              fontSize: "12px"
+                              fontSize: "12px",
                             }}
                           >
                             Amount of percentage (%)
@@ -292,7 +411,10 @@ export default function PfGratuityPolicyForm() {
                             type="number"
                             placeholder=" "
                             onChange={(e) => {
-                              setFieldValue("employerContributionOfBasic", e.target.value);
+                              setFieldValue(
+                                "employerContributionOfBasic",
+                                e.target.value
+                              );
                             }}
                             errors={errors}
                             touched={touched}
@@ -314,7 +436,10 @@ export default function PfGratuityPolicyForm() {
                             type="number"
                             placeholder=" "
                             onChange={(e) => {
-                              setFieldValue("numberOfEligibilityOfMonth", e.target.value);
+                              setFieldValue(
+                                "numberOfEligibilityOfMonth",
+                                e.target.value
+                              );
                             }}
                             errors={errors}
                             touched={touched}
@@ -322,7 +447,7 @@ export default function PfGratuityPolicyForm() {
                           <span
                             className="ml-1"
                             style={{
-                              fontSize: "12px"
+                              fontSize: "12px",
                             }}
                           >
                             months
@@ -330,11 +455,17 @@ export default function PfGratuityPolicyForm() {
                         </div>
                       </div>
                     </div>
-                    <div className="col-12" style={{ marginBottom: "12px" }}></div>
+                    <div
+                      className="col-12"
+                      style={{ marginBottom: "12px" }}
+                    ></div>
                     <div className="col-12">
                       <h2>Gratuity Configuration</h2>
                     </div>
-                    <div className="col-12" style={{ marginBottom: "12px" }}></div>
+                    <div
+                      className="col-12"
+                      style={{ marginBottom: "12px" }}
+                    ></div>
                     <div className="col-lg-12">
                       <div className="input-field-main">
                         <label>Do your company provide gratuity?</label>
@@ -371,10 +502,11 @@ export default function PfGratuityPolicyForm() {
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-12">
+                    {/* <div className="col-lg-12">
                       <div className="input-field-main">
                         <label>
-                          Service length (Years) for eligibility of company benefits
+                          Service length (Years) for eligibility of company
+                          benefits
                         </label>
                         <div className="d-flex align-items-baseline">
                           <DefaultInput
@@ -393,14 +525,175 @@ export default function PfGratuityPolicyForm() {
                           <span
                             className="ml-1"
                             style={{
-                              fontSize: "12px"
+                              fontSize: "12px",
                             }}
                           >
                             years
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
+                    {values?.provideGratuity === "yes" ? (
+                      <>
+                        <div className="col-lg-12">
+                          <div className="row">
+                            <div className="col-lg-2">
+                              <div className="input-field-main">
+                                <label>Depends On</label>
+                                <FormikSelect
+                                  name="dependsOn"
+                                  options={[
+                                    { value: 1, label: "Basic" },
+                                    { value: 2, label: "Gross" },
+                                  ]}
+                                  value={values?.dependsOn}
+                                  onChange={(valueOption) => {
+                                    setFieldValue("dependsOn", valueOption);
+                                  }}
+                                  isClearable={true}
+                                  styles={customStyles}
+                                  errors={errors}
+                                  touched={touched}
+                                />
+                              </div>
+                            </div>
+                            <div className="col-lg-2">
+                              <div className="input-field-main">
+                                <label>Employment Type</label>
+                                <FormikSelect
+                                  name="employmentType"
+                                  options={employmentTypeDDL || []}
+                                  value={values?.employmentType}
+                                  onChange={(valueOption) => {
+                                    setFieldValue(
+                                      "employmentType",
+                                      valueOption
+                                    );
+                                  }}
+                                  isClearable={true}
+                                  styles={customStyles}
+                                  errors={errors}
+                                  touched={touched}
+                                />
+                              </div>
+                            </div>
+                            <div className="col-lg-2">
+                              <div className="input-field-main">
+                                <label>From (No of Years)</label>
+                                <div className="d-flex align-items-baseline">
+                                  <DefaultInput
+                                    classes="input-sm"
+                                    value={values?.fromYear}
+                                    name="fromYear"
+                                    type="number"
+                                    placeholder=" "
+                                    onChange={(e) => {
+                                      if (e.target.value > 0) {
+                                        setFieldValue(
+                                          "fromYear",
+                                          e.target.value
+                                        );
+                                      } else {
+                                        setFieldValue("fromYear", "");
+                                      }
+                                    }}
+                                    min="1"
+                                    errors={errors}
+                                    touched={touched}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-12">
+                          <div className="row">
+                            <div className="col-lg-2">
+                              <div className="input-field-main">
+                                <label>To (No of Years)</label>
+                                <div className="d-flex align-items-baseline">
+                                  <DefaultInput
+                                    classes="input-sm"
+                                    value={values?.toYear}
+                                    name="toYear"
+                                    type="number"
+                                    placeholder=" "
+                                    onChange={(e) => {
+                                      if (e.target.value > 0) {
+                                        setFieldValue("toYear", e.target.value);
+                                      } else {
+                                        setFieldValue("toYear", "");
+                                      }
+                                    }}
+                                    min="1"
+                                    errors={errors}
+                                    touched={touched}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-lg-2">
+                              <div className="input-field-main">
+                                <label>Multiplier</label>
+                                <div className="d-flex align-items-baseline">
+                                  <DefaultInput
+                                    classes="input-sm"
+                                    value={values?.multiplier}
+                                    name="multiplier"
+                                    type="number"
+                                    placeholder=" "
+                                    onChange={(e) => {
+                                      if (e.target.value > 0) {
+                                        setFieldValue(
+                                          "multiplier",
+                                          e.target.value
+                                        );
+                                      } else {
+                                        setFieldValue("multiplier", "");
+                                      }
+                                    }}
+                                    min="1"
+                                    errors={errors}
+                                    touched={touched}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-lg-2 mt-1">
+                              <PrimaryButton
+                                type="button"
+                                className="btn btn-default flex-center mt-3"
+                                label={"ADD"}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  addHandler(values, rowDto, setRowDto, () => {
+                                    setFieldValue("dependsOn", "");
+                                    setFieldValue("employmentType", "");
+                                    setFieldValue("fromYear", "");
+                                    setFieldValue("toYear", "");
+                                    setFieldValue("multiplier", "");
+                                  });
+                                }}
+                                disabled={
+                                  !values?.dependsOn ||
+                                  !values?.employmentType ||
+                                  !values?.fromYear ||
+                                  !values?.toYear ||
+                                  !values?.multiplier
+                                }
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          <DataTable
+                            header={header(rowDto, setRowDto, "createEdit")}
+                            bordered
+                            data={rowDto || []}
+                          />
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -411,5 +704,5 @@ export default function PfGratuityPolicyForm() {
         <NotPermittedPage />
       )}
     </>
-  )
+  );
 }
