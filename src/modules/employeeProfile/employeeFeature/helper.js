@@ -42,8 +42,7 @@ export const createEditEmpAction = async (
   intUrlId,
   setLoading,
   cb,
-  isEdit,
-  intSignature = 0
+  isEdit
 ) => {
   // let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
   // let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
@@ -198,7 +197,7 @@ export const getEmployeeProfileLanding = async (
   setAllData
 ) => {
   setLoading && setLoading(true);
-  let searchTxt = search ? `&searchTxt=${search}` : "";
+  const searchTxt = search ? `&searchTxt=${search}` : "";
   try {
     const res = await axios.get(
       `/Employee/EmployeeProfileLandingPagination?accountId=${accId}&businessUnitId=${buId}&EmployeeId=${employeeId}${searchTxt}&pageNo=${pageNo}&pageSize=${pageSize}`
@@ -550,7 +549,7 @@ export const getEmployeeProfileViewData = async (
                 empBasic?.employeeProfileLandingView
                   ?.intProbationayClosedByInDate
             ) || undefined,
-            otType: empBasic?.employeeProfileLandingView?.intOtType
+          otType: empBasic?.employeeProfileLandingView?.intOtType
             ? [
                 {
                   value: 1,
@@ -563,13 +562,12 @@ export const getEmployeeProfileViewData = async (
                 },
               ].find(
                 (ot) =>
-                  ot.value ===
-                  empBasic?.employeeProfileLandingView?.intOtType
+                  ot.value === empBasic?.employeeProfileLandingView?.intOtType
               )
             : {
                 value: 1,
                 label: "Not Applicable",
-              }
+              },
           // new requirment calender field will be editable 8-01-2024 🔥🔥 -- requiremnt undo
           // generateDate:  moment(empBasic?.employeeProfileLandingView?.dteCalOrRosGenerateDate) || undefined,
           // calenderType: [{value: 1, label: "Calendar"},
@@ -643,8 +641,7 @@ export const empListColumn = (
   paginationSize,
   headerList,
   wgName,
-  history,
-  orgId
+  history
 ) => {
   return [
     {
@@ -828,8 +825,7 @@ export const newEmpListColumn = (
   paginationSize,
   headerList,
   wgName,
-  history,
-  orgId
+  history
 ) => {
   return [
     {
@@ -1012,8 +1008,8 @@ export const newEmpListColumn = (
 };
 
 // for excel
-export const getTableDataEmployee = (row, keys, totalKey) => {
-  const data = row?.map((item, index) => {
+export const getTableDataEmployee = (row, keys) => {
+  const data = row?.map((item) => {
     return keys?.map((key) => {
       const cellValue = item[key];
       const formattedValue =
