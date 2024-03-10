@@ -52,6 +52,7 @@ export default function SalaryDrawer(props) {
     selectedEmployee,
     setSelectedEmployee,
     cbLanding,
+    setOpenBank
   } = props;
   const { buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -612,6 +613,7 @@ export default function SalaryDrawer(props) {
               finalTotalAmount={finalTotalAmount}
               setIsOpen={setIsOpen}
               setOpenIncrement={setOpenIncrement}
+              setOpenBank={setOpenBank}
               setLoading={setLoading}
               loading={loading}
               wId={wId}
