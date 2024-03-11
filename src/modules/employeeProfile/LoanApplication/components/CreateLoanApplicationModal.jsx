@@ -157,7 +157,7 @@ const CreateLoanApplicationModal = ({
     }
     const total = subTotal(tableData);
     if (singleData?.loanApplicationId) {
-      if (values?.loanAmount != total) {
+      if (values?.totalwithinterest != total) {
         return toast.warn(
           "Total Actual Payment Amount and Loan Amount Must Be Equal"
         );
