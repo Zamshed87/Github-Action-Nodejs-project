@@ -31,6 +31,7 @@ export default function ClientSalaryAssignModule({
   selectedEmployee,
   setSelectedEmployee,
   cbLanding,
+  setOpenBank
 }) {
   const moduleRender = () => {
     return (
@@ -58,6 +59,7 @@ export default function ClientSalaryAssignModule({
         breakDownList={breakDownList}
         policyData={policyData}
         setOpenIncrement={setOpenIncrement}
+        setOpenBank={setOpenBank}
         pages={pages}
         setPages={setPages}
         setIsBulk={setIsBulk}
