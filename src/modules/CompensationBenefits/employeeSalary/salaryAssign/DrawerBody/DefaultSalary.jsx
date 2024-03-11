@@ -68,6 +68,7 @@ const DefaultSalary = ({ propsObj }) => {
     setIsOpen,
     setOpenBank,
     bankDataHandler,
+    bankId
   } = propsObj;
 
   const payrollGroupDDL = (positionId) => {
@@ -93,6 +94,15 @@ const DefaultSalary = ({ propsObj }) => {
       setBankDDL
     );
   }, []);
+console.log("bankId",bankId)
+  useEffect(() =>{
+    getBankBranchDDL(
+      bankId || 0,
+      orgId,
+      0,
+      setBankBranchDDL
+    );
+  },[bankId])
 
   const loadEmployeeList = (v) => {
     if (v?.length < 2) return [];
