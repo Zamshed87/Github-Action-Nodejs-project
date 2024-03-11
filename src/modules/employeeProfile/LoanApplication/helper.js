@@ -347,6 +347,23 @@ export const loanRequestLandingTableColumns = (
                 </Tooltip>
               </div>
             )}
+            {data?.installmentStatus === "Running" && (
+              <div className="d-flex">
+                <Tooltip title="Edit" arrow>
+                  <button
+                    type="button"
+                    className="iconButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSingleLoanApplication(data, setSingleData, setFileId);
+                      setShow(true);
+                    }}
+                  >
+                    <CreateOutlined />
+                  </button>
+                </Tooltip>
+              </div>
+            )}
           </div>
         </div>
       ),
@@ -434,7 +451,6 @@ export const loanCrudAction = async (
   wgId,
   tableData
 ) => {
-
   if (values?.intInterest > 100) {
     toast.warn("Interest can't be greater than 100");
     return;
@@ -630,7 +646,8 @@ export const handleAmendmentClick = (
   const updatedTableData = [...tableData];
 
   // Calculate the new date based on the clicked row or the last row
-  const referenceIndex = clickedRowIndex >= 0 ? clickedRowIndex : updatedTableData.length - 1;
+  const referenceIndex =
+    clickedRowIndex >= 0 ? clickedRowIndex : updatedTableData.length - 1;
   const referenceDate = moment(updatedTableData[referenceIndex]?.date);
   const newDate = referenceDate.isValid()
     ? referenceDate.add(1, "months")
@@ -638,8 +655,10 @@ export const handleAmendmentClick = (
 
   // Find the next available month that follows the sequence
   let nextDate = newDate.clone();
-  while (updatedTableData.some(row => moment(row.date).isSame(nextDate, 'month'))) {
-    nextDate.add(1, 'month');
+  while (
+    updatedTableData.some((row) => moment(row.date).isSame(nextDate, "month"))
+  ) {
+    nextDate.add(1, "month");
   }
 
   // Create a new data object for the last index with the new date
@@ -673,7 +692,6 @@ export const handleAmendmentClick = (
   setTableData(updatedTableData);
 };
 
-
 export const handleDeleteClick = (index, tableData, setTableData) => {
   // Clone the existing tableData array
   const updatedTableData = [...tableData];
@@ -693,4 +711,4 @@ export const subTotal = (tableData) => {
     return a + c?.intInstallmentAmount;
   }, 0);
 };
-// 
+//

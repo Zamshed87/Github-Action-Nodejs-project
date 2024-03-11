@@ -54,6 +54,8 @@ const DrawerBody = ({
   values,
   errors,
   touched,
+  setOpenBank,
+  bankDataHandler
 }) => {
   const [isHoldSalary, setIsHoldSalary] = useState(false);
 
@@ -254,6 +256,7 @@ const DrawerBody = ({
                     </span>
                   </p>
                 </div>
+               
               </div>
             </div>
             <DefaultSalary
@@ -290,6 +293,10 @@ const DrawerBody = ({
                 values,
                 errors,
                 touched,
+                setOpenIncrement,
+                setIsOpen,
+                setOpenBank,
+                bankDataHandler
               }}
             />
           </div>
@@ -359,6 +366,7 @@ const DrawerBody = ({
                 values,
                 errors,
                 touched,
+                bankDataHandler
               }}
             />
           </div>
