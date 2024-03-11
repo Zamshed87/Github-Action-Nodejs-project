@@ -579,7 +579,7 @@ const CreateLoanApplicationModal = ({
                   </div>
                   {singleData?.loanApplicationId && (
                     <>
-                      <div className="col-4">
+                      <div className="col-4 d-none">
                         <label>Approve Loan Amount</label>
                         <FormikInput
                           classes="input-sm"
@@ -599,7 +599,7 @@ const CreateLoanApplicationModal = ({
                           disabled={singleData?.loanApplicationId}
                         />
                       </div>
-                      <div className="col-4">
+                      <div className="col-4 d-none">
                         <label>Approve Installment Number</label>
                         <FormikInput
                           classes="input-sm"
@@ -625,7 +625,7 @@ const CreateLoanApplicationModal = ({
                           disabled={singleData?.loanApplicationId}
                         />
                       </div>
-                      <div className="col-4">
+                      <div className="col-4 d-none">
                         <label>Approve Amount Per Installment</label>
                         <FormikInput
                           classes="input-sm"
@@ -882,9 +882,9 @@ const CreateLoanApplicationModal = ({
                                       value={+item?.intInstallmentAmount}
                                       name="intInstallmentAmount"
                                       type="number"
-                                      disabled={
-                                        item?.intInstallmentAmount === 0
-                                      }
+                                      // disabled={
+                                      //   item?.intInstallmentAmount === 0
+                                      // }
                                       onChange={(e) => {
                                         if (e.target.value < 0) {
                                           return toast.warn(
