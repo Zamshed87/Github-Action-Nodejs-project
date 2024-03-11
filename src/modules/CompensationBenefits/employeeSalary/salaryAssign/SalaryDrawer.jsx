@@ -61,6 +61,8 @@ export default function SalaryDrawer(props) {
   );
   const [totalAmount, setTotalAmount] = useState(0);
   const [finalTotalAmount, setFinalTotalAmount] = useState(0);
+  const [bankId, setBankId] = useState(0)
+
   const [
     existingBankData,
     getExistingBankData,
@@ -73,6 +75,7 @@ export default function SalaryDrawer(props) {
       (res) => {
         if (res) {
           const empBasic = res?.empEmployeeBankDetail || {};
+          setBankId(empBasic?.intBankWalletId)
           setValues((prev) => {
             return {
               ...prev,
@@ -699,6 +702,7 @@ export default function SalaryDrawer(props) {
               addHandler={addHandler}
               deleteHandler={deleteHandler}
               bankDataHandler={bankDataHandler}
+              bankId={bankId}
             />
           </form>
         </Drawer>
