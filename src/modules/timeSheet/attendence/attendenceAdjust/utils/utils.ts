@@ -24,4 +24,9 @@ export const AttendanceType = [
     label: "Late",
     code: "late",
   },
+  {
+    value: 4,
+    label: "Changed In/Out Time",
+    code: "Changed In/Out Time",
+  },
 ];
