@@ -156,7 +156,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       .validateFields(["intime", "outtime"])
       .then(() => {
         const values = form.getFieldsValue(true);
-        // console.log({ values });
+        console.log({ values });
         const payload = selectedRow.map((item) => {
           // console.log({item})
           // console.log("values?.outtime", values?.outtime)
@@ -169,22 +169,25 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             // inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
             // outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
             // `${data?.InTime} - ${data?.OutTime}`,
-            inTime:
+            inDateTime:
               values?.attendanceAdujust?.label === "Absent" ||
               values?.attendanceAdujust?.label === "Late"
                 ? null
                 : values?.intime
-                ? moment(values?.intime).format("HH:mm:ss")
-                : moment(moment(item?.InTime, "h:mma")).format("HH:mm:ss") ||
-                  null,
-            outTime:
+                ? moment(values?.intime).format("YYYY-MM-DDTHH:mm:ss")
+                : moment(moment(item?.InTime, "h:mma")).format(
+                    "YYYY-MM-DDTHH:mm:ss"
+                  ) || null,
+            outDateTime:
               values?.attendanceAdujust?.label === "Absent" ||
               values?.attendanceAdujust?.label === "Late"
                 ? null
                 : values?.outtime
-                ? moment(values?.outtime).format("HH:mm:ss")
-                : moment(moment(item?.OutTime, "h:mma")).format("HH:mm:ss") ||
-                  null,
+                ? moment(values?.outtime).format("YYYY-MM-DDTHH:mm:ss")
+                : moment(moment(item?.OutTime, "h:mma")).format(
+                    "YYYY-MM-DDTHH:mm:ss"
+                  ) || null,
+
             status: item?.isPresent
               ? "Present"
               : item?.isLeave
@@ -271,26 +274,26 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       dataIndex: "CalendarName",
       sorter: true,
       filter: true,
-      // width: 130,
+      width: 160,
     },
     {
       title: "Attendance Date",
       dataIndex: "AttendanceDate",
       render: (data: any) => moment(data).format("DD-MMM-YYYY"),
-      // width: 130,
+      width: 120,
     },
     {
       title: "Punch In/Out",
       dataIndex: "",
       render: (data: any) => `${data?.InTime} - ${data?.OutTime}`,
-      // width: 130,
+      width: 100,
     },
     {
       title: "Manual In/Out",
       dataIndex: "",
       render: (data: any) =>
         `${data?.ManulInTime || "N/A"} - ${data?.ManulOutTime || "N/A"}`,
-      // width: 130,
+      width: 100,
     },
     {
       title: "Calender Time In/Out",
@@ -304,21 +307,23 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           : "N/A";
         return `${startTime} - ${endTime}`;
       },
-      // width: 130,
+      width: 150,
     },
     {
       title: "Late Min",
       dataIndex: "LateMin",
-      // width: 100,
+      width: 70,
     },
     {
       title: "Total Working Hours",
       dataIndex: "WorkingHours",
+      width: 140,
     },
     // change after that
     {
       title: "Total OT Hours",
       dataIndex: "OverTimeCalednder",
+      width: 120,
     },
     {
       title: "Actual Attendance",
@@ -342,11 +347,12 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           ""
         ),
       align: "center",
+      width: 150,
     },
     {
       title: "Request Attendance",
       dataIndex: "RequestStatus",
-      width: 100,
+      width: 170,
       filter: true,
       sorter: false,
     },
@@ -368,6 +374,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       align: "center",
       filter: true,
       sorter: false,
+      width: 170,
     },
   ];
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
@@ -412,26 +419,33 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 attendanceAdujust: op,
               });
 
-              value === 1 &&
+              value === 4 &&
                 form.setFieldsValue({
                   openModal: true,
                   intime:
                     selectedRow?.length === 1
-                      ? selectedRow[0]?.InTime ? moment(selectedRow[0]?.InTime, "h:mma") : ""
+                      ? selectedRow[0]?.InTime
+                        ? moment(selectedRow[0]?.InTime, "h:mma")
+                        : ""
                       : "",
                   outtime:
                     selectedRow?.length === 1
-                      ? selectedRow[0]?.OutTime ? moment(selectedRow[0]?.OutTime, "h:mma") : ""
+                      ? selectedRow[0]?.OutTime
+                        ? moment(selectedRow[0]?.OutTime, "h:mma")
+                        : ""
                       : "",
                 });
 
-              (value === 2 || value === 3) &&
-                Modal.confirm({
-                  title: "Are you sure to update attendance?",
-                  onOk: submitHandler,
+              (value === 1 || value === 2 || value === 3) &&
+                // Modal.confirm({
+                //   title: "Are you sure to update attendance?",
+                //   onOk: submitHandler,
+                // });
+                form.setFieldsValue({
+                  openModal1: true,
                 });
             }}
-            disabled={!selectedRow.length}
+            // disabled={!selectedRow.length}
           />
         </PCardHeader>
         <div className="card-style">
@@ -681,32 +695,20 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           <PInput
                             type="date"
                             name="intime"
-                            picker="time"
-                            label="Select In time"
-                            placeholder="Select Intime"
-                            format={"hh:mm A"}
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "Please Select Intime",
-                            //   },
-                            // ]}
+                            format={"DD/MM/YYYY hh:mm A"}
+                            label="Select In-Time"
+                            placeholder="Select In-Time"
+                            showTime={{ use12Hours: true }}
                           />
                         </Col>
                         <Col span={12}>
                           <PInput
                             type="date"
                             name="outtime"
-                            picker="time"
                             label="Select Out-Time"
                             placeholder="Select Out-Time"
-                            format={"hh:mm A"}
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "Please Select Out-Time",
-                            //   },
-                            // ]}
+                            format={"DD/MM/YYYY hh:mm A"}
+                            showTime={{ use12Hours: true }}
                           />
                         </Col>
                         <Col span={24}>
@@ -728,6 +730,55 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           attendanceAdujust: undefined,
                           intime: "",
                           outtime: "",
+                        });
+                      }}
+                      onSubmit={submitHandler}
+                    />
+                  </>
+                </PForm>
+              }
+            />
+          );
+        }}
+      </Form.Item>
+      {/* Confirmation Modal */}
+      <Form.Item shouldUpdate noStyle>
+        {() => {
+          const { openModal1, attendanceAdujust } = form.getFieldsValue(true);
+          return (
+            <PModal
+              width={500}
+              open={openModal1}
+              onCancel={() => {
+                form.setFieldsValue({
+                  openModal1: false,
+                  attendanceAdujust: undefined,
+                });
+              }}
+              title="Are you sure to update attendance?"
+              components={
+                <PForm form={form}>
+                  <>
+                    <div>
+                      <p>Request Status: {attendanceAdujust?.label}</p>
+                      <Row gutter={[10, 2]}>
+                        <Col span={24}>
+                          <PInput
+                            label="Reason"
+                            name={"reason"}
+                            type="text"
+                            placeholder="Write reason"
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                    <ModalFooter
+                      submitText="Yes"
+                      cancelText="No"
+                      onCancel={() => {
+                        form.setFieldsValue({
+                          openModal1: false,
+                          attendanceAdujust: undefined,
                         });
                       }}
                       onSubmit={submitHandler}

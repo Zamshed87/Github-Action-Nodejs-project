@@ -44,6 +44,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           value={value}
           style={{ width: "100%" }}
           format={format || "DD/MM/YYYY"}
+          showTime={{ use12Hours: true }}
           allowClear={allowClear}
           disabledDate={disabledDate}
           picker={picker as "date" | "week" | "month" | "year"}
