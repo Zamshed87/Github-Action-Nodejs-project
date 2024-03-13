@@ -262,7 +262,7 @@ export const offDayAssignDtoCol = (
                 setIsAssignAll(false);
               }}
             >
-              Assign
+              Re-assign
             </button>
           </div>
         </div>

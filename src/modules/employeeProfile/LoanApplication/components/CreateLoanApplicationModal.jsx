@@ -192,7 +192,6 @@ const CreateLoanApplicationModal = ({
 
   const [resForView, getForView, loadingForView2, setForView] = useAxiosGet([]);
 
-
   // useEffect(() => {
   //   console.log("singleData",singleData)
   //   if (singleData?.loanApplicationId) {
@@ -255,7 +254,6 @@ const CreateLoanApplicationModal = ({
       );
     }
   }, [singleData?.loanApplicationId]);
-
 
   const labelShowLastInstallmentAmt = (values) => {
     const lastAmount = values?.loanAmount % values?.amountPerInstallment;
@@ -381,7 +379,6 @@ const CreateLoanApplicationModal = ({
                       value={values?.interest}
                       name="interest"
                       type="number"
-                      step="1"
                       onChange={(e) => {
                         setFieldValue("interest", e.target.value);
                         if (values?.loanAmount) {
@@ -399,11 +396,14 @@ const CreateLoanApplicationModal = ({
                       }}
                       max={100}
                       min={0}
+                      step="0.01" // Accepts fractional values
                       className="form-control"
                       placeholder=""
                       errors={errors}
                       touched={touched}
-                      disabled={!values?.loanAmount || singleData?.loanApplicationId}
+                      disabled={
+                        !values?.loanAmount || singleData?.loanApplicationId
+                      }
                     />
                   </div>
                   <div className="col-4">
@@ -797,7 +797,6 @@ const CreateLoanApplicationModal = ({
                   <div className="col-4">
                     {labelShowLastInstallmentAmt(values)}
                   </div>
-                 
                 </div>
               </div>
               {singleData?.loanApplicationId && (
