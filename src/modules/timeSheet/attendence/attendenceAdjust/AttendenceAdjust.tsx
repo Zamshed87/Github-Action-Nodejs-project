@@ -216,6 +216,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               attendanceAdujust: undefined,
               intime: "",
               outtime: "",
+              reason: "",
             });
             setSelectedRow([]);
             getAttendanceFilterData();
@@ -421,7 +422,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               value === 4 &&
                 form.setFieldsValue({
                   openModal: true,
-                  reason:"",
+                  reason: "",
                   intime:
                     selectedRow?.length === 1
                       ? selectedRow[0]?.InTime
@@ -674,7 +675,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   attendanceAdujust: undefined,
                   intime: "",
                   outtime: "",
-                  reason:""
+                  reason: "",
                 });
               }}
               title="Are you sure to update attendance?"
@@ -686,7 +687,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                     attendanceAdujust: undefined,
                     intime: "",
                     outtime: "",
-                    reason:""
+                    reason: "",
                   }}
                 >
                   <>
@@ -732,7 +733,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           attendanceAdujust: undefined,
                           intime: "",
                           outtime: "",
-                          reason:""
+                          reason: "",
                         });
                       }}
                       onSubmit={submitHandler}
