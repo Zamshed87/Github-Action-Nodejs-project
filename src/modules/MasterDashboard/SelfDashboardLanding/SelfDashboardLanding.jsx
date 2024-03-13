@@ -423,7 +423,7 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                             paddingLeft: "10px",
                           }}
                         >
-                          Work Annivarsay
+                          Work Anniversary
                         </h2>
                       </div>
                       <div style={{ height: "180px" }}>
