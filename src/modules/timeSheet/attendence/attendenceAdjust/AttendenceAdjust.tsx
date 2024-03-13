@@ -163,9 +163,6 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
-            // inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
-            // outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
-            // `${data?.InTime} - ${data?.OutTime}`,
             inDateTime:
               values?.attendanceAdujust?.label === "Absent" ||
               values?.attendanceAdujust?.label === "Late" ||
