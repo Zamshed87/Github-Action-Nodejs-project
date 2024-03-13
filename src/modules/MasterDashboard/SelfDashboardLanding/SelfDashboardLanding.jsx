@@ -160,9 +160,6 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {console.log(
-                          employeeDashboard?.leaveBalanceHistoryList
-                        )}
                         {employeeDashboard?.leaveBalanceHistoryList
                           ?.filter(
                             (item) => item?.isLveBalanceShowForSelfService
