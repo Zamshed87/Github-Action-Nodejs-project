@@ -156,10 +156,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       .validateFields(["intime", "outtime"])
       .then(() => {
         const values = form.getFieldsValue(true);
-        console.log({ values });
         const payload = selectedRow.map((item) => {
-          // console.log({item})
-          // console.log("values?.outtime", values?.outtime)
           return {
             id: item?.ManualAttendanceId || 0,
             accountId: orgId,
@@ -171,7 +168,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             // `${data?.InTime} - ${data?.OutTime}`,
             inDateTime:
               values?.attendanceAdujust?.label === "Absent" ||
-              values?.attendanceAdujust?.label === "Late"
+              values?.attendanceAdujust?.label === "Late" ||
+              values?.attendanceAdujust?.label === "Present"
                 ? null
                 : values?.intime
                 ? moment(values?.intime).format("YYYY-MM-DDTHH:mm:ss")
@@ -180,7 +178,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   ) || null,
             outDateTime:
               values?.attendanceAdujust?.label === "Absent" ||
-              values?.attendanceAdujust?.label === "Late"
+              values?.attendanceAdujust?.label === "Late" ||
+              values?.attendanceAdujust?.label === "Present"
                 ? null
                 : values?.outtime
                 ? moment(values?.outtime).format("YYYY-MM-DDTHH:mm:ss")
@@ -422,6 +421,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               value === 4 &&
                 form.setFieldsValue({
                   openModal: true,
+                  reason:"",
                   intime:
                     selectedRow?.length === 1
                       ? selectedRow[0]?.InTime
@@ -445,7 +445,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   openModal1: true,
                 });
             }}
-            // disabled={!selectedRow.length}
+            disabled={!selectedRow.length}
           />
         </PCardHeader>
         <div className="card-style">
@@ -674,18 +674,20 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   attendanceAdujust: undefined,
                   intime: "",
                   outtime: "",
+                  reason:""
                 });
               }}
               title="Are you sure to update attendance?"
               components={
                 <PForm
                   form={form}
-                  // initialValues={{
-                  //   openModal: false,
-                  //   attendanceAdujust: undefined,
-                  //   intime: "",
-                  //   outtime: "",
-                  // }}
+                  initialValues={{
+                    openModal: false,
+                    attendanceAdujust: undefined,
+                    intime: "",
+                    outtime: "",
+                    reason:""
+                  }}
                 >
                   <>
                     <div>
@@ -730,6 +732,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           attendanceAdujust: undefined,
                           intime: "",
                           outtime: "",
+                          reason:""
                         });
                       }}
                       onSubmit={submitHandler}
