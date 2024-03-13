@@ -12,6 +12,7 @@ import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
+  dateFormatterForInput,
   monthFirstDate,
   monthLastDate,
 } from "../../../../utility/dateFormatter";
@@ -412,7 +413,7 @@ export default function EmployeeJobCard() {
                             />
                           </div>
                         </div>
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                           <div className="input-field-main">
                             <label>From Date</label>
                             <FormikInput
@@ -428,7 +429,7 @@ export default function EmployeeJobCard() {
                             />
                           </div>
                         </div>
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                           <div className="input-field-main">
                             <label>To Date</label>
                             <FormikInput
@@ -446,13 +447,79 @@ export default function EmployeeJobCard() {
                           </div>
                         </div>
                         <div className="col-lg-3">
-                          <button
-                            className="btn btn-green btn-green-disable mt-4"
-                            type="submit"
-                            onClick={handleSubmit}
-                          >
-                            Apply
-                          </button>
+                          <div className="d-flex align-items-center">
+                            <button
+                              className="btn btn-green btn-green-disable mt-4"
+                              type="submit"
+                              onClick={handleSubmit}
+                            >
+                              Apply
+                            </button>
+
+                            <Tooltip
+                              title="Previous Month 26 to Current Month 25"
+                              arrow
+                            >
+                              <button
+                                style={{
+                                  height: "32px",
+                                  width: "160px",
+                                  fontSize: "12px",
+                                  padding: "0px 12px 0px 12px",
+                                }}
+                                className="btn btn-default mt-4 ml-3"
+                                type="button"
+                                onClick={() => {
+                                  //
+                                  const currentDate = new Date();
+                                  // Get the current month and year
+                                  const currentMonth = currentDate.getMonth();
+                                  const currentYear = currentDate.getFullYear();
+                                  const previousMonth =
+                                    currentMonth === 0 ? 11 : currentMonth - 1;
+                                  const previousYear =
+                                    currentMonth === 0
+                                      ? currentYear - 1
+                                      : currentYear;
+
+                                  // Set the dates
+                                  const previousMonthDate = new Date(
+                                    previousYear,
+                                    previousMonth,
+                                    26
+                                  );
+                                  const currentMonthDate = new Date(
+                                    currentYear,
+                                    currentMonth,
+                                    25
+                                  );
+                                  setFieldValue("fromDate", dateFormatterForInput(previousMonthDate));
+                                  setFieldValue("toDate", dateFormatterForInput(currentMonthDate));
+              
+                                  empBasicInfo(
+                                    buId,
+                                    orgId,
+                                    values?.employee?.value
+                                      ? values?.employee?.value
+                                      : employeeId,
+                                    setEmpInfo,
+                                    setLoading
+                                  );
+                                  attendanceDetailsReport(
+                                    values?.employee?.value
+                                      ? values?.employee?.value
+                                      : employeeId,
+                                    dateFormatterForInput(previousMonthDate),
+                                    dateFormatterForInput(currentMonthDate),
+                                    setRowDto,
+                                    setLoading
+                                  );
+                                }}
+                              >
+                                Custom [26 - 25]
+                              </button>
+                            </Tooltip>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -475,7 +542,6 @@ export default function EmployeeJobCard() {
                             fontSize: "17px",
                           }}
                         >
-                          {console.log("empInfo", empInfo?.[0])}
                           <p>
                             Employee:{" "}
                             <strong>
