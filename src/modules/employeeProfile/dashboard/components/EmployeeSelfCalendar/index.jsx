@@ -112,7 +112,8 @@ const EmployeeSelfCalendar = ({ employeeDashboard }) => {
               <div className="d-flex align-items-center calendar-time-block-wrapper">
                 <div className="" style={{ borderColor: "#98A2B3" }}>
                   <h2>{days?.workingDays}</h2>
-                  <p>Working Days</p>
+                  <p>Payable Days</p> 
+                  {/* Working Days */}
                 </div>
                 <div style={{ borderColor: "#65D380" }}>
                   <h2>{days?.presentDays}</h2>
