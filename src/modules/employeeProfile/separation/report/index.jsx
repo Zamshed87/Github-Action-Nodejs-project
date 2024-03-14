@@ -19,7 +19,9 @@ import { getBuDetails, getEmployeeSeparationLanding } from "../helper";
 import FilterModal from "./component/FilterModal";
 import { generateExcelAction } from "./excel/excelConvert";
 import { empSeparationCol } from "./helper";
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initData = {
   search: "",
@@ -28,6 +30,7 @@ const initData = {
   employee: "",
   movementFromDate: "",
   movementToDate: "",
+  workplaceGroup: "",
   workplace: "",
   designation: "",
   appStatus: "",
@@ -40,7 +43,7 @@ const SeparationReport = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, wName, wId } = useSelector(
+  const { buId, wgId, wName, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -57,7 +60,8 @@ const SeparationReport = () => {
   const [loading, setLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [buDetails, setBuDetails] = useState({});
-
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   // modal
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -77,11 +81,11 @@ const SeparationReport = () => {
     total: 0,
   });
 
-  const getData = (pagination, searchText) => {
+  const getData = (values, pagination, searchText) => {
     getEmployeeSeparationLanding(
-      wId,
+      values?.workplace?.value || wId,
       buId,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       getDateOfYear("first"),
       getDateOfYear("last"),
       searchText,
@@ -94,12 +98,13 @@ const SeparationReport = () => {
     );
   };
 
-  const handleChangePage = (_, newPage, searchText = "") => {
+  const handleChangePage = (_, newPage, searchText = "", values) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
 
     getData(
+      values,
       {
         current: newPage,
         pageSize: pages?.pageSize,
@@ -109,11 +114,12 @@ const SeparationReport = () => {
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText = "") => {
+  const handleChangeRowsPerPage = (event, searchText = "", values) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
+      values,
       {
         current: 1,
         pageSize: +event.target.value,
@@ -145,6 +151,12 @@ const SeparationReport = () => {
       1,
       paginationSize,
       setPages
+    );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
     );
   }, [buId, wgId, wId]);
 
@@ -214,9 +226,10 @@ const SeparationReport = () => {
                                 onClick={() => {
                                   setIsFilter(false);
                                   getEmployeeSeparationLanding(
-                                    wId,
+                                    values?.workplace?.value || wId,
                                     buId,
-                                    wgId,
+                                    values?.workplaceGroup?.value || wgId,
+
                                     getDateOfYear("first"),
                                     getDateOfYear("last"),
                                     "",
@@ -241,9 +254,10 @@ const SeparationReport = () => {
                               setValue={(value) => {
                                 setFieldValue("search", value);
                                 getEmployeeSeparationLanding(
-                                  wId,
+                                  values?.workplace?.value || wId,
                                   buId,
-                                  wgId,
+                                  values?.workplaceGroup?.value || wgId,
+
                                   values?.filterFromDate,
                                   values?.filterToDate,
                                   value || "",
@@ -258,9 +272,10 @@ const SeparationReport = () => {
                               cancelHandler={() => {
                                 setFieldValue("search", "");
                                 getEmployeeSeparationLanding(
-                                  wId,
+                                  values?.workplace?.value || wId,
                                   buId,
-                                  wgId,
+                                  values?.workplaceGroup?.value || wgId,
+
                                   values?.filterFromDate,
                                   values?.filterToDate,
                                   "",
@@ -290,7 +305,7 @@ const SeparationReport = () => {
                       /> */}
                       <div className="card-style my-2">
                         <div className="row">
-                          <div className="col-lg-3">
+                          <div className="col-lg-2">
                             <div className="input-field-main">
                               <label>From Date</label>
                               <FormikInput
@@ -309,7 +324,7 @@ const SeparationReport = () => {
                               />
                             </div>
                           </div>
-                          <div className="col-lg-3">
+                          <div className="col-lg-2">
                             <div className="input-field-main">
                               <label>To Date</label>
                               <FormikInput
@@ -325,7 +340,50 @@ const SeparationReport = () => {
                               />
                             </div>
                           </div>
-
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace Group</label>
+                              <FormikSelect
+                                name="workplaceGroup"
+                                options={[...workplaceGroupDDL] || []}
+                                value={values?.workplaceGroup}
+                                onChange={(valueOption) => {
+                                  setWorkplaceDDL([]);
+                                  setFieldValue("workplaceGroup", valueOption);
+                                  setFieldValue("workplace", "");
+                                  if (valueOption?.value) {
+                                    getPeopleDeskAllDDL(
+                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                      "intWorkplaceId",
+                                      "strWorkplace",
+                                      setWorkplaceDDL
+                                    );
+                                  }
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace</label>
+                              <FormikSelect
+                                name="workplace"
+                                options={[...workplaceDDL] || []}
+                                value={values?.workplace}
+                                onChange={(valueOption) => {
+                                  setFieldValue("workplace", valueOption);
+                                  getWorkplaceDetails(
+                                    valueOption?.value,
+                                    setBuDetails
+                                  );
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
                           <div className="col-lg-1">
                             <button
                               disabled={
@@ -335,9 +393,10 @@ const SeparationReport = () => {
                               className="btn btn-green"
                               onClick={() => {
                                 getEmployeeSeparationLanding(
-                                  wId,
+                                  values?.workplace?.value || wId,
                                   buId,
-                                  wgId,
+                                  values?.workplaceGroup?.value || wgId,
+
                                   values?.filterFromDate,
                                   values?.filterToDate,
                                   values?.search,
@@ -367,10 +426,10 @@ const SeparationReport = () => {
                           rowDto={rowDto}
                           setRowDto={setRowDto}
                           handleChangePage={(e, newPage) =>
-                            handleChangePage(e, newPage, values?.search)
+                            handleChangePage(e, newPage, values?.search, values)
                           }
                           handleChangeRowsPerPage={(e) =>
-                            handleChangeRowsPerPage(e, values?.search)
+                            handleChangeRowsPerPage(e, values?.search, values)
                           }
                           onRowClick={(data) => {
                             getPDFAction(
