@@ -163,9 +163,6 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             attendanceSummaryId: item?.AutoId,
             employeeId: item?.EmployeeId,
             attendanceDate: item?.AttendanceDate,
-            // inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
-            // outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
-            // `${data?.InTime} - ${data?.OutTime}`,
             inDateTime:
               values?.attendanceAdujust?.label === "Absent" ||
               values?.attendanceAdujust?.label === "Late" ||
@@ -216,6 +213,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               attendanceAdujust: undefined,
               intime: "",
               outtime: "",
+              reason: "",
             });
             setSelectedRow([]);
             getAttendanceFilterData();
@@ -421,7 +419,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               value === 4 &&
                 form.setFieldsValue({
                   openModal: true,
-                  reason:"",
+                  reason: "",
                   intime:
                     selectedRow?.length === 1
                       ? selectedRow[0]?.InTime
@@ -674,7 +672,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   attendanceAdujust: undefined,
                   intime: "",
                   outtime: "",
-                  reason:""
+                  reason: "",
                 });
               }}
               title="Are you sure to update attendance?"
@@ -686,7 +684,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                     attendanceAdujust: undefined,
                     intime: "",
                     outtime: "",
-                    reason:""
+                    reason: "",
                   }}
                 >
                   <>
@@ -732,7 +730,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                           attendanceAdujust: undefined,
                           intime: "",
                           outtime: "",
-                          reason:""
+                          reason: "",
                         });
                       }}
                       onSubmit={submitHandler}
