@@ -194,9 +194,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 },
                 prompt: "Investment",
                 isActive:
-                  record?.status === "Complete" ||
-                  record?.intTypeId === 1 ||
-                  record?.intTypeId === 5
+                  record?.status === "Complete" || record?.intTypeId === 1
                     ? false
                     : true,
               },
@@ -210,7 +208,8 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 isActive:
                   record?.strType === "Fund" ||
                   record?.strType === "Refund" ||
-                  record?.status === "Complete"
+                  record?.status === "Complete" ||
+                  record?.intTypeId === 5
                     ? false
                     : true,
               },
