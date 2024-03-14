@@ -17,7 +17,8 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import { gray500 } from "../../../../utility/customColor";
 
 import axios from "axios";
-import { getWorkplaceDetails } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
@@ -25,6 +26,7 @@ import {
 import { toast } from "react-toastify";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { getPDFAction } from "utility/downloadFile";
+import { customStyles } from "utility/selectCustomStyle";
 import MasterFilter from "../../../../common/MasterFilter";
 import PeopleDeskTable, {
   paginationSize,
@@ -64,7 +66,7 @@ const MgmtDailyAttendance = () => {
   // redux
   const dispatch = useDispatch();
 
-  const { buId, wgId, wId, orgId } = useSelector(
+  const { buId, wgId, wId, orgId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -73,6 +75,8 @@ const MgmtDailyAttendance = () => {
 
   // states
   const [loading, setLoading] = useState(false);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [rowDto, setRowDto] = useState([]);
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
@@ -105,13 +109,15 @@ const MgmtDailyAttendance = () => {
     currentFilterSelection = -1,
     checkedHeaderList,
     IsForXl,
-    date
+    date,
+    values
   ) => {
     try {
       const payload = {
         intBusinessUnitId: buId,
-        intWorkplaceGroupId: wgId,
-        intWorkplaceId: wId,
+        intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
+
+        intWorkplaceId: values?.workplace?.value || wId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -150,6 +156,7 @@ const MgmtDailyAttendance = () => {
   };
 
   const getData = async (
+    values,
     pagination,
     IsForXl = false,
     searchText = "",
@@ -174,13 +181,20 @@ const MgmtDailyAttendance = () => {
       currentFilterSelection,
       checkedHeaderList,
       IsForXl,
-      date
+      date,
+      values
     );
   };
 
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
-    getData(pages);
+    getData(values, pages);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [wId]);
 
   // formik
@@ -190,6 +204,7 @@ const MgmtDailyAttendance = () => {
     initialValues,
     onSubmit: () => {
       getData(
+        values,
         { current: 1, pageSize: paginationSize },
         false,
         "",
@@ -208,12 +223,13 @@ const MgmtDailyAttendance = () => {
     document.title = "Daily Attendance Report";
   }, []);
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage, searchText, values) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
 
     getData(
+      values,
       {
         current: newPage,
         pageSize: pages?.pageSize,
@@ -235,6 +251,7 @@ const MgmtDailyAttendance = () => {
       pageSize: +event.target.value,
     });
     getData(
+      values,
       {
         current: 1,
         pageSize: +event.target.value,
@@ -283,6 +300,47 @@ const MgmtDailyAttendance = () => {
                     />
                   </div>
                 </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace Group</label>
+                    <FormikSelect
+                      name="workplaceGroup"
+                      options={[...workplaceGroupDDL] || []}
+                      value={values?.workplaceGroup}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("workplaceGroup", valueOption);
+                        setFieldValue("workplace", "");
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                            "intWorkplaceId",
+                            "strWorkplace",
+                            setWorkplaceDDL
+                          );
+                        }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+                    <FormikSelect
+                      name="workplace"
+                      options={[...workplaceDDL] || []}
+                      value={values?.workplace}
+                      onChange={(valueOption) => {
+                        setFieldValue("workplace", valueOption);
+                        getWorkplaceDetails(valueOption?.value, setBuDetails);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
                 <div className="col-lg-3 mt-3 pt-2">
                   <button
                     className="btn btn-green btn-green-disable"
@@ -325,8 +383,11 @@ const MgmtDailyAttendance = () => {
                                         `/Employee/GetDateWiseAttendanceReport`,
                                         {
                                           intBusinessUnitId: buId,
-                                          intWorkplaceGroupId: wgId,
-                                          intWorkplaceId: wId,
+                                          intWorkplaceGroupId:
+                                            values?.workplaceGroup?.value ||
+                                            wgId,
+                                          intWorkplaceId:
+                                            values?.workplace?.value || wId,
                                           pageNo: pages.current,
                                           pageSize: pages.pageSize,
                                           isPaginated: true,
@@ -424,13 +485,24 @@ const MgmtDailyAttendance = () => {
                                     }${
                                       buId ? `&IntBusinessUnitId=${buId}` : ""
                                     }${
-                                      wgId ? `&IntWorkplaceGroupId=${wgId}` : ""
+                                      wgId
+                                        ? `&IntWorkplaceGroupId=${
+                                            values?.workplaceGroup?.value ||
+                                            wgId
+                                          }`
+                                        : ""
                                     }${
                                       rowDto?.data?.length !==
                                       rowDto?.totalCount
                                         ? `&EmployeeIdList=${list}`
                                         : ""
-                                    }${wId ? `&IntWorkplaceId=${wId}` : ""}`,
+                                    }${
+                                      wId
+                                        ? `&IntWorkplaceId=${
+                                            values?.workplace?.value || wId
+                                          }`
+                                        : ""
+                                    }`,
                                     setLoading
                                   );
                                 }}
@@ -449,6 +521,7 @@ const MgmtDailyAttendance = () => {
                             icon={<SettingsBackupRestoreOutlined />}
                             onClick={() => {
                               getData(
+                                values,
                                 { current: 1, pageSize: paginationSize },
                                 false,
                                 "",
@@ -475,6 +548,7 @@ const MgmtDailyAttendance = () => {
                             setFieldValue("search", value);
                             debounce(() => {
                               getData(
+                                values,
                                 { current: 1, pageSize: paginationSize },
                                 false,
                                 value,
@@ -488,6 +562,7 @@ const MgmtDailyAttendance = () => {
                           cancelHandler={() => {
                             setFieldValue("search", "");
                             getData(
+                              values,
                               { current: 1, pageSize: paginationSize },
                               false,
                               "",
@@ -648,10 +723,10 @@ const MgmtDailyAttendance = () => {
                   checkedHeaderList={checkedHeaderList}
                   setCheckedHeaderList={setCheckedHeaderList}
                   handleChangePage={(e, newPage) =>
-                    handleChangePage(e, newPage, values?.search)
+                    handleChangePage(e, newPage, values?.search, values)
                   }
                   handleChangeRowsPerPage={(e) =>
-                    handleChangeRowsPerPage(e, values?.search)
+                    handleChangeRowsPerPage(e, values?.search, values)
                   }
                   getFilteredData={(
                     currentFilterSelection,
@@ -659,6 +734,7 @@ const MgmtDailyAttendance = () => {
                     updatedCheckedHeaderData
                   ) => {
                     getData(
+                      values,
                       {
                         current: 1,
                         pageSize: paginationSize,
