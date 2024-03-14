@@ -6,6 +6,7 @@ const header = (rowDto, setRowDto, type) => [
     title: "SL",
     align: "center",
     render: (text, record, index) => index + 1,
+    width: "20px",
   },
   {
     title: "Depends On",
