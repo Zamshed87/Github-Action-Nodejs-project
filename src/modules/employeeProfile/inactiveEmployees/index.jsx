@@ -31,24 +31,29 @@ import useDebounce from "../../../utility/customHooks/useDebounce";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import { getCurrentMonthName } from "utility/monthIdToMonthName";
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initData = {
   search: "",
   filterFromDate: getDateOfYear("first"),
   filterToDate: getDateOfYear("last"),
+  workplace: "",
+  workplaceGroup: "",
 };
 
 export default function ActiveInactiveEmployeeReport() {
   const dispatch = useDispatch();
 
   // eslint-disable-next-line no-unused-vars
-  const { buId, buName, wgId, wId, wName } = useSelector(
+  const { buId, buName, wgId, wId, wName, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
-
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   const [pages, setPages] = useState({
@@ -62,6 +67,8 @@ export default function ActiveInactiveEmployeeReport() {
   const [, getExcelData, apiLoading] = useAxiosGet();
 
   const getData = (
+    wgId,
+    wId,
     fromDate = getDateOfYear("first"),
     toDate = getDateOfYear("last"),
     pagination = { current: 1, pageSize: paginationSize },
@@ -85,9 +92,15 @@ export default function ActiveInactiveEmployeeReport() {
   };
 
   useEffect(() => {
-    getData();
+    getData(wgId, wId);
     getWorkplaceDetails(wId, setBuDetails);
-  }, [wId]);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
+  }, [wId, wgId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -110,6 +123,8 @@ export default function ActiveInactiveEmployeeReport() {
 
     const callback = () => {
       getData(
+        values?.workplaceGroup?.value || wgId,
+        values?.workplace?.value || wId,
         values?.filterFromDate,
         values?.filterToDate,
         { current: 1, pageSize: paginationSize },
@@ -138,12 +153,21 @@ export default function ActiveInactiveEmployeeReport() {
   //   return contractualExcelData(rowDto);
   // };
 
-  const handleChangePage = (_, newPage, searchText, fromDate, toDate) => {
+  const handleChangePage = (
+    _,
+    newPage,
+    searchText,
+    fromDate,
+    toDate,
+    values
+  ) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
 
     getData(
+      values?.workplaceGroup?.value || wgId,
+      values?.workplace?.value || wId,
       fromDate,
       toDate,
       {
@@ -155,11 +179,19 @@ export default function ActiveInactiveEmployeeReport() {
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText, fromDate, toDate) => {
+  const handleChangeRowsPerPage = (
+    event,
+    searchText,
+    fromDate,
+    toDate,
+    values
+  ) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
+      values?.workplaceGroup?.value || wgId,
+      values?.workplace?.value || wId,
       fromDate,
       toDate,
       {
@@ -200,7 +232,15 @@ export default function ActiveInactiveEmployeeReport() {
                             onClick={(e) => {
                               e.stopPropagation();
                               getExcelData(
-                                `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&IsXls=true&PageNo=1&PageSize=10000&searchTxt=${values?.search}&FromDate=${values?.filterFromDate}&ToDate=${values?.filterToDate}`,
+                                `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${
+                                  values?.workplaceGroup?.value || wgId
+                                }&WorkplaceId=${
+                                  values?.workplace?.value || wId
+                                }&IsXls=true&PageNo=1&PageSize=10000&searchTxt=${
+                                  values?.search
+                                }&FromDate=${values?.filterFromDate}&ToDate=${
+                                  values?.filterToDate
+                                }`,
                                 (res) => {
                                   const newData = res?.data?.map(
                                     (item, index) => {
@@ -322,7 +362,7 @@ export default function ActiveInactiveEmployeeReport() {
                     </div>
                     <div className="card-style my-2">
                       <div className="row mb-3">
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                           <div className="input-field-main">
                             <label>From Date</label>
                             <FormikInput
@@ -338,7 +378,7 @@ export default function ActiveInactiveEmployeeReport() {
                             />
                           </div>
                         </div>
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                           <div className="input-field-main">
                             <label>To Date</label>
                             <FormikInput
@@ -354,7 +394,50 @@ export default function ActiveInactiveEmployeeReport() {
                             />
                           </div>
                         </div>
-
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>Workplace Group</label>
+                            <FormikSelect
+                              name="workplaceGroup"
+                              options={[...workplaceGroupDDL] || []}
+                              value={values?.workplaceGroup}
+                              onChange={(valueOption) => {
+                                setWorkplaceDDL([]);
+                                setFieldValue("workplaceGroup", valueOption);
+                                setFieldValue("workplace", "");
+                                if (valueOption?.value) {
+                                  getPeopleDeskAllDDL(
+                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                    "intWorkplaceId",
+                                    "strWorkplace",
+                                    setWorkplaceDDL
+                                  );
+                                }
+                              }}
+                              placeholder=""
+                              styles={customStyles}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>Workplace</label>
+                            <FormikSelect
+                              name="workplace"
+                              options={[...workplaceDDL] || []}
+                              value={values?.workplace}
+                              onChange={(valueOption) => {
+                                setFieldValue("workplace", valueOption);
+                                getWorkplaceDetails(
+                                  valueOption?.value,
+                                  setBuDetails
+                                );
+                              }}
+                              placeholder=""
+                              styles={customStyles}
+                            />
+                          </div>
+                        </div>
                         <div className="col-lg-1">
                           <button
                             disabled={
@@ -364,6 +447,8 @@ export default function ActiveInactiveEmployeeReport() {
                             className="btn btn-green"
                             onClick={() => {
                               getData(
+                                values?.workplaceGroup?.value || wgId,
+                                values?.workplace?.value || wId,
                                 values?.filterFromDate,
                                 values?.filterToDate,
                                 pages,
@@ -393,7 +478,8 @@ export default function ActiveInactiveEmployeeReport() {
                             newPage,
                             values?.search,
                             values.filterFromDate,
-                            values.filterToDate
+                            values.filterToDate,
+                            values
                           )
                         }
                         handleChangeRowsPerPage={(e) =>
@@ -401,7 +487,8 @@ export default function ActiveInactiveEmployeeReport() {
                             e,
                             values?.search,
                             values.filterFromDate,
-                            values.filterToDate
+                            values.filterToDate,
+                            values
                           )
                         }
                         uniqueKey="strEmployeeCode"
