@@ -388,13 +388,12 @@ const MgmtDailyAttendance = () => {
                                             wgId,
                                           intWorkplaceId:
                                             values?.workplace?.value || wId,
-                                          pageNo: pages.current,
-                                          pageSize: pages.pageSize,
-                                          isPaginated: true,
+                                          isPaginated: false,
                                           isHeaderNeed: false,
                                           searchTxt: "",
                                           isXls: true,
                                           attendanceDate: values?.date,
+                                          ...checkedHeaderList,
                                         }
                                       );
 
