@@ -1,8 +1,7 @@
 import {
   CreateOutlined,
-  DeleteOutlined,
   Print,
-  VisibilityOutlined,
+  VisibilityOutlined
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import axios from "axios";
@@ -255,7 +254,10 @@ const finalSettlementColumns = (
   history,
   orgId,
   buId,
-  setLoading
+  setLoading,
+  setId,
+  setOpenModal,
+  setType
 ) => {
   return [
     {
@@ -369,16 +371,19 @@ const finalSettlementColumns = (
                   className="iconButton"
                   onClick={(e) => {
                     e.stopPropagation();
-                    history.push(
-                      `/profile/finalSettlement/edit/${record?.intFinalSettlementId}`,
-                      { employeeId: record?.intEmployeeId }
-                    );
+                    // history.push(
+                    //   `/profile/finalSettlement/edit/${record?.intFinalSettlementId}`,
+                    //   { employeeId: record?.intEmployeeId }
+                    // );
+                    setId(record?.intSeparationId);
+                    setOpenModal(true);
+                    setType("dueAmount");
                   }}
                 >
                   <CreateOutlined />
                 </button>
               </Tooltip>
-              <Tooltip title="Delete" arrow>
+              {/* <Tooltip title="Delete" arrow>
                 <button
                   type="button"
                   className="iconButton mt-0 mt-md-2 mt-lg-0"
@@ -389,7 +394,7 @@ const finalSettlementColumns = (
                 >
                   <DeleteOutlined />
                 </button>
-              </Tooltip>
+              </Tooltip> */}
             </>
           )}
           <Tooltip title="View" arrow>
@@ -398,10 +403,13 @@ const finalSettlementColumns = (
               className="iconButton mt-0 mt-md-2 mt-lg-0"
               onClick={(e) => {
                 e.stopPropagation();
-                history.push(
-                  `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
-                  { employeeId: record?.intEmployeeId }
-                );
+                // history.push(
+                //   `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
+                //   { employeeId: record?.intEmployeeId }
+                // );
+                setId(record?.intSeparationId);
+                setOpenModal(true);
+                setType("dueAmount");
               }}
             >
               <VisibilityOutlined />

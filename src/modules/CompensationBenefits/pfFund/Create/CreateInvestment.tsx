@@ -86,7 +86,7 @@ const CreateInvestment: React.FC<TAddEditForm> = ({
               dteTransactionDate: moment(values.invstDate).format("YYYY-MM-DD"),
               numAmount: totalAmount,
               isActive: true,
-              isComplete: true,
+              isComplete: false,
               numRate: values?.rate,
               intMaturityMonth: 0,
               code: values?.investReffNo,
