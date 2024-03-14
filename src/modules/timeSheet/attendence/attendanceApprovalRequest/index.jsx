@@ -7,15 +7,15 @@ import {
 } from "@mui/icons-material";
 import { Select, Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { APIUrl } from "../../../../App";
 import DemoImg from "../../../../assets/images/bigDemo.png";
-import { getPeopleDeskAllLanding } from "../../../../common/api";
 import DefaultInput from "../../../../common/DefaultInput";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
-import Loading from "../../../../common/loading/Loading";
 import ResetButton from "../../../../common/ResetButton";
+import { getPeopleDeskAllLanding } from "../../../../common/api";
+import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray900, greenColor } from "../../../../utility/customColor";
 import AddEditFormComponent from "./addEditForm";
@@ -71,7 +71,6 @@ export default function AttendanceApprovalRequest() {
   // filter
   const [status, setStatus] = useState("");
 
-  const saveHandler = (values) => {};
   const [loading, setLoading] = useState(false);
 
   const [tableData, setTableData] = useState([]);
@@ -110,7 +109,7 @@ export default function AttendanceApprovalRequest() {
 
   // active & inactive filter
   const statusTypeFilter = (statusType) => {
-    let modifyRowData = tableData?.filter(
+    const modifyRowData = tableData?.filter(
       ({ ApplicationStatus }) => ApplicationStatus === statusType
     );
     setTableData(modifyRowData);
@@ -143,20 +142,16 @@ export default function AttendanceApprovalRequest() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={() => {
+          //
         }}
       >
         {({
           handleSubmit,
-          resetForm,
           values,
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
