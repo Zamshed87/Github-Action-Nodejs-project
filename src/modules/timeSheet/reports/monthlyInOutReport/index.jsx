@@ -294,9 +294,9 @@ export default function MonthlyInOutReport() {
                               }&DteToDate=${
                                 values?.toDate
                               }&EmployeeId=0&WorkplaceGroupId=${
-                                wgId || 0
+                                values?.workplaceGroup?.value || wgId || 0
                               }&WorkplaceId=${
-                                values?.workplace?.value || 0
+                                values?.workplace?.value || wId || 0
                               }&PageNo=1&PageSize=100000&IsPaginated=false`
                             );
                             if (res?.data) {
