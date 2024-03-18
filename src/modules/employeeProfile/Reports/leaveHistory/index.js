@@ -242,6 +242,7 @@ const EmLeaveHistory = () => {
                                 setFieldValue("search", value);
                                 debounce(() => {
                                   getData(
+                                    values,
                                     values?.yearDDL?.value,
                                     { current: 1, pageSize: paginationSize },
                                     value
