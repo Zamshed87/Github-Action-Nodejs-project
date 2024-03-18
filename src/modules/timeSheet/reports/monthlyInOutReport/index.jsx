@@ -514,6 +514,39 @@ export default function MonthlyInOutReport() {
                       />
                     </div>
                   </div>
+
+                  <div className="col-lg-2">
+                    <div className="input-field-main">
+                      <label>From Date</label>
+                      <DefaultInput
+                        classes="input-sm"
+                        value={values?.fromDate}
+                        placeholder=""
+                        name="fromDate"
+                        type="date"
+                        className="form-control"
+                        onChange={(e) => {
+                          setFieldValue("fromDate", e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-2">
+                    <div className="input-field-main">
+                      <label>To Date</label>
+                      <DefaultInput
+                        classes="input-sm"
+                        value={values?.toDate}
+                        placeholder="Month"
+                        name="toDate"
+                        type="date"
+                        className="form-control"
+                        onChange={(e) => {
+                          setFieldValue("toDate", e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
                   <div className="col-lg-3 ">
                     <div className="input-field-main">
                       <label>Workplace Group</label>
@@ -574,39 +607,6 @@ export default function MonthlyInOutReport() {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-2">
-                    <div className="input-field-main">
-                      <label>From Date</label>
-                      <DefaultInput
-                        classes="input-sm"
-                        value={values?.fromDate}
-                        placeholder=""
-                        name="fromDate"
-                        type="date"
-                        className="form-control"
-                        onChange={(e) => {
-                          setFieldValue("fromDate", e.target.value);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-2">
-                    <div className="input-field-main">
-                      <label>To Date</label>
-                      <DefaultInput
-                        classes="input-sm"
-                        value={values?.toDate}
-                        placeholder="Month"
-                        name="toDate"
-                        type="date"
-                        className="form-control"
-                        onChange={(e) => {
-                          setFieldValue("toDate", e.target.value);
-                        }}
-                      />
-                    </div>
-                  </div>
-
                   <div className="col-lg-1">
                     <button
                       disabled={!values?.toDate || !values?.fromDate}
