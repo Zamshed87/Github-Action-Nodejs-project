@@ -48,12 +48,22 @@ export const monthlyAttendanceReportColumns = (
       fixed: "left",
     },
     {
-      title: () => <span style={{ color: gray600 }}>Employee ID</span>,
-      dataIndex: "EmployeeCode",
+      title: "Work. Group/Location",
+      dataIndex: "strWorkplaceGroup",
       sorter: true,
-      filter: true,
+      // filter: true,
       fixed: "left",
-      width: 120,
+
+      width: 180,
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      // filter: true,
+      fixed: "left",
+
+      width: 180,
     },
     {
       title: "Employee Name",
@@ -76,27 +86,23 @@ export const monthlyAttendanceReportColumns = (
       width: 200,
     },
     {
+      title: () => <span style={{ color: gray600 }}>Employee ID</span>,
+      dataIndex: "EmployeeCode",
+      sorter: true,
+      filter: true,
+      // fixed: "left",
+      width: 120,
+    },
+
+    {
       title: "Designation",
       dataIndex: "strDesignation",
       sorter: true,
       filter: true,
-      fixed: "left",
+      // fixed: "left",
       width: 180,
     },
-    {
-      title: "Work. Group/Location",
-      dataIndex: "strWorkplaceGroup",
-      sorter: true,
-      // filter: true,
-      width: 180,
-    },
-    {
-      title: "Workplace/Concern",
-      dataIndex: "strWorkplace",
-      sorter: true,
-      // filter: true,
-      width: 180,
-    },
+
     {
       title: "Department",
       dataIndex: "strDepartment",

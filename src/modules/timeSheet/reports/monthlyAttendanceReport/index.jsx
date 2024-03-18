@@ -89,14 +89,6 @@ const MonthlyAttendanceReport = () => {
     );
   }, [wgId]);
 
-  /*   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
-    );
-  }, [orgId, buId, employeeId]); */
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -330,71 +322,6 @@ const MonthlyAttendanceReport = () => {
           </div>
           <div className="table-card-body">
             <div className="card-style mb-2 row px-0 pb-0">
-              {/*     <div className="col-lg-3">
-                <div className="input-field-main">
-                  <label>Business Unit</label>
-                  <FormikSelect
-                    name="businessUnit"
-                    options={businessUnitDDL || []}
-                    value={values?.businessUnit}
-                    onChange={(valueOption) => {
-                      setFieldValue("businessUnit", valueOption);
-                      if (valueOption?.value) {
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
-                          "intWorkplaceGroupId",
-                          "strWorkplaceGroup",
-                          setWorkplaceGroupDDL
-                        );
-                      }
-                    }}
-                    placeholder=""
-                    styles={customStyles}
-                  />
-                </div>
-              </div> */}
-              {/*    <div className="col-lg-3">
-                <div className="input-field-main">
-                  <label>Workplace Group</label>
-                  <FormikSelect
-                    name="workplaceGroup"
-                    options={workplaceGroupDDL || []}
-                    value={values?.workplaceGroup}
-                    onChange={(valueOption) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        workplace: "",
-                        workplaceGroup: valueOption,
-                      }));
-                      if (valueOption?.value) {
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                          "intWorkplaceId",
-                          "strWorkplace",
-                          setWorkplaceDDL
-                        );
-                      }
-                    }}
-                    placeholder=""
-                    styles={customStyles}
-                  />
-                </div>
-              </div> */}
-              {/*     <div className="col-lg-3">
-                <div className="input-field-main">
-                  <label>Workplace</label>
-                  <FormikSelect
-                    name="workplace"
-                    options={workplaceDDL || []}
-                    value={values?.workplace}
-                    onChange={(valueOption) => {
-                      setFieldValue("workplace", valueOption);
-                    }}
-                    placeholder=""
-                    styles={customStyles}
-                  />
-                </div>
-              </div> */}
               <div className="col-lg-2">
                 <div className="input-field-main">
                   <label>From Date</label>

@@ -93,6 +93,20 @@ export const empOverTimeDtoCol = (page, paginationSize) => {
       fixed: "left",
     },
     {
+      title: "Designation",
+      dataIndex: "designation",
+      sort: false,
+      filter: false,
+      width: 200,
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+      sort: false,
+      filter: false,
+      width: 200,
+    },
+    {
       title: "Employee Id",
       dataIndex: "employeeCode",
       sort: false,
@@ -121,20 +135,7 @@ export const empOverTimeDtoCol = (page, paginationSize) => {
       ),
       fieldType: "string",
     },
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      sort: false,
-      filter: false,
-      width: 200,
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sort: false,
-      filter: false,
-      width: 200,
-    },
+
     {
       title: "Employment Type",
       dataIndex: "employementType",
