@@ -19,6 +19,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { AttendanceType, EmpFilterType } from "./utils/utils";
 import { convertTo12HourFormat } from "utility/timeFormatter";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import ChangedInOutTimeEmpListModal from "./component/ChangedInOutTime";
 
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
@@ -664,7 +665,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           const { openModal, attendanceAdujust } = form.getFieldsValue(true);
           return (
             <PModal
-              width={500}
+              width={attendanceAdujust?.label !== "Changed In/Out Time" ? 500 : 1200}
               open={openModal}
               onCancel={() => {
                 form.setFieldsValue({
@@ -675,7 +676,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   reason: "",
                 });
               }}
-              title="Are you sure to update attendance?"
+              title="Are You Sure To Update Attendance?"
               components={
                 <PForm
                   form={form}
@@ -688,53 +689,63 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   }}
                 >
                   <>
-                    <div>
-                      <p>Request Status: {attendanceAdujust?.label}</p>
-                      <Row gutter={[10, 2]}>
-                        <Col span={12}>
-                          <PInput
-                            type="date"
-                            name="intime"
-                            format={"DD/MM/YYYY hh:mm A"}
-                            label="Select In-Time"
-                            placeholder="Select In-Time"
-                            showTime={{ use12Hours: true }}
-                          />
-                        </Col>
-                        <Col span={12}>
-                          <PInput
-                            type="date"
-                            name="outtime"
-                            label="Select Out-Time"
-                            placeholder="Select Out-Time"
-                            format={"DD/MM/YYYY hh:mm A"}
-                            showTime={{ use12Hours: true }}
-                          />
-                        </Col>
-                        <Col span={24}>
-                          <PInput
-                            label="Reason"
-                            name={"reason"}
-                            type="text"
-                            placeholder="Write reason"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                    <ModalFooter
-                      submitText="Yes"
-                      cancelText="No"
-                      onCancel={() => {
-                        form.setFieldsValue({
-                          openModal: false,
-                          attendanceAdujust: undefined,
-                          intime: "",
-                          outtime: "",
-                          reason: "",
-                        });
-                      }}
-                      onSubmit={submitHandler}
-                    />
+                    {attendanceAdujust?.label !== "Changed In/Out Time" ? (
+                      <>
+                        <div>
+                          <p>Request Status: {attendanceAdujust?.label}</p>
+                          <Row gutter={[10, 2]}>
+                            <Col span={12}>
+                              <PInput
+                                type="date"
+                                name="intime"
+                                format={"DD/MM/YYYY hh:mm A"}
+                                label="Select In-Time"
+                                placeholder="Select In-Time"
+                                showTime={{ use12Hours: true }}
+                              />
+                            </Col>
+                            <Col span={12}>
+                              <PInput
+                                type="date"
+                                name="outtime"
+                                label="Select Out-Time"
+                                placeholder="Select Out-Time"
+                                format={"DD/MM/YYYY hh:mm A"}
+                                showTime={{ use12Hours: true }}
+                              />
+                            </Col>
+                            <Col span={24}>
+                              <PInput
+                                label="Reason"
+                                name={"reason"}
+                                type="text"
+                                placeholder="Write reason"
+                              />
+                            </Col>
+                          </Row>
+                        </div>
+                        <ModalFooter
+                          submitText="Yes"
+                          cancelText="No"
+                          onCancel={() => {
+                            form.setFieldsValue({
+                              openModal: false,
+                              attendanceAdujust: undefined,
+                              intime: "",
+                              outtime: "",
+                              reason: "",
+                            });
+                          }}
+                          onSubmit={submitHandler}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <ChangedInOutTimeEmpListModal
+                          selectedRow={selectedRow}
+                        />
+                      </>
+                    )}
                   </>
                 </PForm>
               }
