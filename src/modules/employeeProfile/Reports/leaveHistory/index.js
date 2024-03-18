@@ -1,6 +1,6 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -26,6 +26,8 @@ import { getLeaveHistoryAction, hasLeave, leaveHistoryCol } from "./helper";
 const initData = {
   search: "",
   yearDDL: { label: currentYear(), value: currentYear() },
+  workplace: "",
+  workplaceGroup: "",
 };
 
 const EmLeaveHistory = () => {
@@ -34,7 +36,7 @@ const EmLeaveHistory = () => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -43,6 +45,8 @@ const EmLeaveHistory = () => {
   const [loading, setLoading] = useState(false);
 
   const [rowDto, setRowDto] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
     current: 1,
@@ -53,15 +57,16 @@ const EmLeaveHistory = () => {
   const debounce = useDebounce();
 
   const getData = (
+    values,
     year = currentYear(),
     pagination = { current: 1, pageSize: paginationSize },
     srcTxt = "",
     isPaginated = true
   ) => {
     getLeaveHistoryAction(
-      wId,
+      values?.workplace?.value || wId,
       buId,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       year,
       setLoading,
       setRowDto,
@@ -76,6 +81,12 @@ const EmLeaveHistory = () => {
   useEffect(() => {
     getData();
     getWorkplaceDetails(wId, setBuDetails, setLoading);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Leave History";
   }, [buId, wgId, wId]);
@@ -89,13 +100,14 @@ const EmLeaveHistory = () => {
     }
   });
 
-  const handleChangePage = (_, newPage, searchText, year) => {
+  const handleChangePage = (_, newPage, searchText, year, values) => {
     console.log(newPage, searchText);
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
 
     getData(
+      values,
       year,
       {
         current: newPage,
@@ -106,11 +118,12 @@ const EmLeaveHistory = () => {
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText, year) => {
+  const handleChangeRowsPerPage = (event, searchText, year, values) => {
     setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
+      values,
       year,
       {
         current: 1,
@@ -154,7 +167,15 @@ const EmLeaveHistory = () => {
                               }
 
                               getExcelData(
-                                `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${values.yearDDL?.value}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&SearchText=${values?.search}&IsPaginated=false&PageNo=0&PageSize=0`,
+                                `/Employee/LeaveBalanceHistoryForAllEmployee?BusinessUnitId=${buId}&yearId=${
+                                  values.yearDDL?.value
+                                }&WorkplaceGroupId=${
+                                  values?.workplaceGroup?.value || wgId
+                                }&WorkplaceId=${
+                                  values?.workplace?.value || wId
+                                }&SearchText=${
+                                  values?.search
+                                }&IsPaginated=false&PageNo=0&PageSize=0`,
                                 (res) => {
                                   const excelLanding = () => {
                                     generateExcelAction(
@@ -211,23 +232,7 @@ const EmLeaveHistory = () => {
                               />
                             </li>
                           )}
-                          <li style={{ width: "200px" }}>
-                            <FormikSelect
-                              name="yearDDL"
-                              options={yearDDLAction(2, 0) || []}
-                              value={values?.yearDDL}
-                              onChange={(valueOption) => {
-                                setFieldValue("yearDDL", valueOption);
-                                getData(valueOption?.value);
-                              }}
-                              placeholder=""
-                              styles={customStyles}
-                              errors={errors}
-                              touched={touched}
-                              isDisabled={false}
-                              isClearable={false}
-                            />
-                          </li>
+
                           <li>
                             <MasterFilter
                               width="200px"
@@ -251,6 +256,89 @@ const EmLeaveHistory = () => {
                             />
                           </li>
                         </ul>
+                      </div>
+                    </div>
+                    <div className="table-card-body">
+                      <div className="card-style mb-3">
+                        <div className="row">
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>Select Year</label>
+                              <FormikSelect
+                                name="yearDDL"
+                                options={yearDDLAction(2, 0) || []}
+                                value={values?.yearDDL}
+                                onChange={(valueOption) => {
+                                  setFieldValue("yearDDL", valueOption);
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                                errors={errors}
+                                touched={touched}
+                                isDisabled={false}
+                                isClearable={false}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace Group</label>
+                              <FormikSelect
+                                name="workplaceGroup"
+                                options={[...workplaceGroupDDL] || []}
+                                value={values?.workplaceGroup}
+                                onChange={(valueOption) => {
+                                  setWorkplaceDDL([]);
+                                  setFieldValue("workplaceGroup", valueOption);
+                                  setFieldValue("workplace", "");
+                                  if (valueOption?.value) {
+                                    getPeopleDeskAllDDL(
+                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                      "intWorkplaceId",
+                                      "strWorkplace",
+                                      setWorkplaceDDL
+                                    );
+                                  }
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace</label>
+                              <FormikSelect
+                                name="workplace"
+                                options={[...workplaceDDL] || []}
+                                value={values?.workplace}
+                                onChange={(valueOption) => {
+                                  setFieldValue("workplace", valueOption);
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-1">
+                            <button
+                              // disabled={!values?.fromDate || !values?.toDate}
+                              style={{ marginTop: "21px" }}
+                              className="btn btn-green"
+                              onClick={() => {
+                                getData(
+                                  values,
+                                  values?.yearDDL?.value,
+                                  pages,
+                                  values?.search
+                                );
+                              }}
+                            >
+                              View
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div className="table-card-body">
