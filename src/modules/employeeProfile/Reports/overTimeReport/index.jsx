@@ -2,15 +2,21 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import FormikInput from "../../../../common/FormikInput";
-import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import PeopleDeskTable, {
+  paginationSize,
+} from "../../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
 import { generateExcelAction } from "./excel/excelConvert";
@@ -20,15 +26,13 @@ import {
   getOvertimeReportLanding,
 } from "./helper";
 import "./overTimeReport.css";
-import PeopleDeskTable, {
-  paginationSize,
-} from "../../../../common/peopleDeskTable";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
-import { toast } from "react-toastify";
-import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initData = {
   search: "",
+  workplaceGroup: "",
   workplace: "",
   department: "",
   designation: "",
@@ -56,8 +60,9 @@ export default function EmOverTimeReport() {
   });
   const debounce = useDebounce();
   const [, getExcelData, apiLoading] = useAxiosGet();
-
-  const { buId, buName, wgId, wId } = useSelector(
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const { buId, buName, wgId, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -73,6 +78,7 @@ export default function EmOverTimeReport() {
   }, [rowDto]);
   // date
   const getData = (
+    values,
     pagination = { current: 1, pageSize: paginationSize },
     srcTxt = "",
     fromDate,
@@ -80,10 +86,10 @@ export default function EmOverTimeReport() {
     isPaginated = true
   ) => {
     getOvertimeReportLanding(
-      wId,
+      values?.workplace?.value || wId,
       "CalculatedHistoryReportForAllEmployee",
       buId,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       fromDate ? fromDate : monthFirstDate(),
       toDate ? toDate : todayDate(),
       setRowDto,
@@ -99,17 +105,31 @@ export default function EmOverTimeReport() {
   useEffect(() => {
     getData();
     getBuDetails(buId, setBuDetails, setLoading);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
   const saveHandler = (values) => {};
 
-  const handleChangePage = (_, newPage, searchText, fromDate, toDate) => {
+  const handleChangePage = (
+    _,
+    newPage,
+    searchText,
+    fromDate,
+    toDate,
+    values
+  ) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
 
     getData(
+      values,
       {
         current: newPage,
         pageSize: pages?.pageSize,
@@ -121,11 +141,18 @@ export default function EmOverTimeReport() {
     );
   };
 
-  const handleChangeRowsPerPage = (event, searchText, fromDate, toDate) => {
+  const handleChangeRowsPerPage = (
+    event,
+    searchText,
+    fromDate,
+    toDate,
+    values
+  ) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
+      values,
       {
         current: 1,
         pageSize: +event.target.value,
@@ -187,7 +214,13 @@ export default function EmOverTimeReport() {
                               }
 
                               getExcelData(
-                                `/Employee/OvertimeReportLanding?PartType=CalculatedHistoryReportForAllEmployee&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&FromDate=${values?.fromDate}&ToDate=${values?.toDate}&SearchText=${values?.search}&IsPaginated=false&PageNo=0&PageSize=0`,
+                                `/Employee/OvertimeReportLanding?PartType=CalculatedHistoryReportForAllEmployee&BusinessUnitId=${buId}&WorkplaceGroupId=${
+                                  values?.workplaceGroup?.value || wgId
+                                }&FromDate=${values?.fromDate}&ToDate=${
+                                  values?.toDate
+                                }&SearchText=${
+                                  values?.search
+                                }&IsPaginated=false&PageNo=0&PageSize=0`,
                                 (res) => {
                                   generateExcelAction(
                                     "Overtime Report",
@@ -232,7 +265,7 @@ export default function EmOverTimeReport() {
                                 }
                                 onClick={() => {
                                   resetForm(initData);
-                                  getData();
+                                  getData(values);
                                 }}
                               />
                             </li>
@@ -247,6 +280,7 @@ export default function EmOverTimeReport() {
                                 setFieldValue("search", value);
                                 debounce(() => {
                                   getData(
+                                    values,
                                     { current: 1, pageSize: paginationSize },
                                     value,
                                     values?.fromDate,
@@ -257,6 +291,7 @@ export default function EmOverTimeReport() {
                               cancelHandler={() => {
                                 setFieldValue("search", "");
                                 getData(
+                                  values,
                                   { current: 1, pageSize: paginationSize },
                                   "",
                                   values?.fromDate,
@@ -271,7 +306,7 @@ export default function EmOverTimeReport() {
                     <div className="table-card-body">
                       <div className="card-style my-2">
                         <div className="row">
-                          <div className="col-lg-3">
+                          <div className="col-lg-2">
                             <div className="input-field-main">
                               <label>From Date</label>
                               <FormikInput
@@ -287,7 +322,7 @@ export default function EmOverTimeReport() {
                               />
                             </div>
                           </div>
-                          <div className="col-lg-3">
+                          <div className="col-lg-2">
                             <div className="input-field-main">
                               <label>To Date</label>
                               <FormikInput
@@ -303,7 +338,50 @@ export default function EmOverTimeReport() {
                               />
                             </div>
                           </div>
-
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace Group</label>
+                              <FormikSelect
+                                name="workplaceGroup"
+                                options={[...workplaceGroupDDL] || []}
+                                value={values?.workplaceGroup}
+                                onChange={(valueOption) => {
+                                  setWorkplaceDDL([]);
+                                  setFieldValue("workplaceGroup", valueOption);
+                                  setFieldValue("workplace", "");
+                                  if (valueOption?.value) {
+                                    getPeopleDeskAllDDL(
+                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                      "intWorkplaceId",
+                                      "strWorkplace",
+                                      setWorkplaceDDL
+                                    );
+                                  }
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace</label>
+                              <FormikSelect
+                                name="workplace"
+                                options={[...workplaceDDL] || []}
+                                value={values?.workplace}
+                                onChange={(valueOption) => {
+                                  setFieldValue("workplace", valueOption);
+                                  getWorkplaceDetails(
+                                    valueOption?.value,
+                                    setBuDetails
+                                  );
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
                           <div className="col-lg-1">
                             <button
                               disabled={!values?.toDate || !values?.fromDate}
@@ -311,6 +389,7 @@ export default function EmOverTimeReport() {
                               className="btn btn-green"
                               onClick={() => {
                                 getData(
+                                  values,
                                   { current: 1, pageSize: paginationSize },
                                   values?.search,
                                   values?.fromDate,
@@ -339,7 +418,8 @@ export default function EmOverTimeReport() {
                                 newPage,
                                 values?.search,
                                 values?.fromDate,
-                                values?.toDate
+                                values?.toDate,
+                                values
                               )
                             }
                             handleChangeRowsPerPage={(e) =>
@@ -347,7 +427,8 @@ export default function EmOverTimeReport() {
                                 e,
                                 values?.search,
                                 values?.fromDate,
-                                values?.toDate
+                                values?.toDate,
+                                values
                               )
                             }
                             uniqueKey="expenseId"

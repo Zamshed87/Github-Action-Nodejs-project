@@ -122,7 +122,7 @@ const approvalListHeader = ({
           </div>
         );
       },
-      isHidden: type === "view",
+      isHidden: type === "view" || type === "dueAmount",
     },
   ].filter((item) => !item.isHidden);
 
@@ -133,99 +133,99 @@ const rowDtoHandler = (name, value, sl, rowDto, setRowDto) => {
   setRowDto(data);
 };
 
- const employmentHeader = [
-   {
-     title: "SL",
-     render: (value, row, index) => index + 1,
-     align: "center",
-     width: 20,
-   },
-   {
-     title: "Workplace",
-     dataIndex: "workPlace",
-   },
-   {
-     title: "Employee Name",
-     dataIndex: "name",
-     sorter: true,
-   },
-   {
-     title: "Code",
-     dataIndex: "code",
-     width: "40px",
-   },
-   {
-     title: "Department",
-     dataIndex: "department",
-   },
-   {
-     title: "Designation",
-     dataIndex: "designation",
-   },
-   {
-     title: "HR Position",
-     dataIndex: "hrPosition",
-   },
-   {
-     title: "Employment Type",
-     dataIndex: "employmentType",
-   },
-   {
-     title: "Effective Date",
-     dataIndex: "effectiveDate",
-     render: (data, record) =>
-       record?.effectiveDate
-         ? moment(record?.effectiveDate).format("DD-MM-YYYY")
-         : "N/A",
-   },
-   {
-     title: "Salary",
-     dataIndex: "salaryAmount",
-   },
- ];
+const employmentHeader = [
+  {
+    title: "SL",
+    render: (value, row, index) => index + 1,
+    align: "center",
+    width: 20,
+  },
+  {
+    title: "Workplace",
+    dataIndex: "workPlace",
+  },
+  {
+    title: "Employee Name",
+    dataIndex: "name",
+    sorter: true,
+  },
+  {
+    title: "Code",
+    dataIndex: "code",
+    width: "40px",
+  },
+  {
+    title: "Department",
+    dataIndex: "department",
+  },
+  {
+    title: "Designation",
+    dataIndex: "designation",
+  },
+  {
+    title: "HR Position",
+    dataIndex: "hrPosition",
+  },
+  {
+    title: "Employment Type",
+    dataIndex: "employmentType",
+  },
+  {
+    title: "Effective Date",
+    dataIndex: "effectiveDate",
+    render: (data, record) =>
+      record?.effectiveDate
+        ? moment(record?.effectiveDate).format("DD-MM-YYYY")
+        : "N/A",
+  },
+  {
+    title: "Salary",
+    dataIndex: "salaryAmount",
+  },
+];
 
-  const assetHeader = [
-    {
-      title: "SL",
-      render: (value, row, index) => index + 1,
-      align: "center",
-      width: 20,
+const assetHeader = [
+  {
+    title: "SL",
+    render: (value, row, index) => index + 1,
+    align: "center",
+    width: 20,
+  },
+  {
+    title: "Item Name",
+    dataIndex: "itemName",
+    sorter: true,
+  },
+  {
+    title: "Item Qty",
+    dataIndex: "itemQuantity",
+  },
+  {
+    title: "UOM",
+    dataIndex: "itemUom",
+  },
+  {
+    title: "Assign Date",
+    dataIndex: "assignDate",
+    render: (data, record) => moment(record?.assignDate).format("DD-MM-YYYY"),
+  },
+  {
+    title: "Status",
+    dataIndex: "active",
+    align: "center",
+    render: (_, rec) => {
+      return (
+        <div className="d-flex justify-content-center align-items-center">
+          {rec?.active ? (
+            <Tag color="green">{"Active"}</Tag>
+          ) : (
+            <Tag color="red">{"Inactive"}</Tag>
+          )}
+        </div>
+      );
     },
-    {
-      title: "Item Name",
-      dataIndex: "itemName",
-      sorter: true,
-    },
-    {
-      title: "Item Qty",
-      dataIndex: "itemQuantity",
-    },
-    {
-      title: "UOM",
-      dataIndex: "itemUom",
-    },
-    {
-      title: "Assign Date",
-      dataIndex: "assignDate",
-      render: (data, record) => moment(record?.assignDate).format("DD-MM-YYYY"),
-    },
-    {
-      title: "Status",
-      dataIndex: "active",
-      align: "center",
-      render: (_, rec) => {
-        return (
-          <div className="d-flex justify-content-center align-items-center">
-            {rec?.active ? (
-              <Tag color="green">{"Active"}</Tag>
-            ) : (
-              <Tag color="red">{"Inactive"}</Tag>
-            )}
-          </div>
-        );
-      },
-    },
-  ];
+  },
+];
 
 const statusDDL = [
   { value: 0, label: "All" },
@@ -233,7 +233,77 @@ const statusDDL = [
   { value: 2, label: "Approved" },
   { value: 3, label: "Rejected" },
   { value: 4, label: "Released" },
-] 
+];
 
-export { approvalListHeader, assetHeader, employmentHeader, statusDDL };
+const duesRowDtoData = [
+  {
+    id: 1,
+    strPayrollElementName: "Salary",
+    strRemarks: "",
+    numAmount: 30000,
+  },
+  {
+    id: 2,
+    strPayrollElementName: "Provident Fund",
+    strRemarks: "",
+    numAmount: 15000,
+  },
+  {
+    id: 3,
+    strPayrollElementName: "Company Contribution (PF)",
+    strRemarks: "",
+    numAmount: 15000,
+  },
+  {
+    id: 4,
+    strPayrollElementName: "Gratuity",
+    strRemarks: "",
+    numAmount: 100000,
+  },
+  {
+    id: 5,
+    strPayrollElementName: "Other Dues",
+    strRemarks: "",
+    numAmount: 500,
+  },
+];
+
+const deductionRowDtoData = [
+  {
+    id: 1,
+    strPayrollElementName: "Personal Loan",
+    strRemarks: "",
+    numAmount: 0,
+  },
+  {
+    id: 2,
+    strPayrollElementName: "Advance",
+    strRemarks: "",
+    numAmount: 0,
+  },
+  {
+    id: 3,
+    strPayrollElementName: "Lunch",
+    strRemarks: "",
+    numAmount: 0,
+  },
+  {
+    id: 4,
+    strPayrollElementName: "AIT",
+    strRemarks: "",
+    numAmount: 0,
+  },
+  {
+    id: 5,
+    strPayrollElementName: "Other Deductions",
+    strRemarks: "",
+    numAmount: 0,
+  },
+];
+
+export {
+  approvalListHeader,
+  assetHeader, deductionRowDtoData, duesRowDtoData, employmentHeader,
+  statusDDL
+};
 

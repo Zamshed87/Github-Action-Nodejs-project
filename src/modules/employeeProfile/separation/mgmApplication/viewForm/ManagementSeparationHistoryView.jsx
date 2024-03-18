@@ -13,6 +13,7 @@ import Loading from "common/loading/Loading";
 import AssetHistory from "./AssetHistory";
 import EmploymentHistory from "./EmploymentHistory";
 import HistoryPrintView from "./HistoryPrintView";
+import DueAmount from "./DueAmount";
 
 const ManagementSeparationHistoryView = ({
   id,
@@ -110,6 +111,9 @@ const ManagementSeparationHistoryView = ({
                 <Tab label="Approval History" {...a11yProps(0)} />
                 <Tab label="Employment History" {...a11yProps(1)} />
                 <Tab label="Asset History" {...a11yProps(2)} />
+                {type === "dueAmount" && (
+                  <Tab label="Due Amount" {...a11yProps(3)} />
+                )}
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -133,10 +137,15 @@ const ManagementSeparationHistoryView = ({
             <TabPanel value={value} index={2}>
               <AssetHistory assetHistory={assetHistory} loading={loading} />
             </TabPanel>
+            {type === "dueAmount" && (
+              <TabPanel value={value} index={3}>
+                <DueAmount type={type} />
+              </TabPanel>
+            )}
           </Box>
         </div>
         <div className="historyPrintView" style={{ display: "none" }}>
-          <HistoryPrintView 
+          <HistoryPrintView
             approveListData={approveListData}
             assetHistory={assetHistory}
             employmentHistory={employmentHistory}

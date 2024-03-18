@@ -206,3 +206,11 @@ export const bulkAssignEmpListTableColumn = (pages) => {
     },
   ];
 };
+
+
+export const bulkEmpInputHandler = (value, name, index, setBulkLanding,
+  bulkLandingRowDto) => {
+  const xData = [...bulkLandingRowDto];
+  xData[index][name] = value;
+  setBulkLanding(xData);
+};

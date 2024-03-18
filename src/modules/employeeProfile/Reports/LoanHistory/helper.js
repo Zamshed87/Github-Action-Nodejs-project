@@ -1,9 +1,9 @@
+import { InfoOutlined } from "@mui/icons-material";
 import axios from "axios";
 import AvatarComponent from "../../../../common/AvatarComponent";
-import { dateFormatter } from "../../../../utility/dateFormatter";
-import { LightTooltip } from "../../../../common/LightTooltip";
-import { InfoOutlined } from "@mui/icons-material";
 import Chips from "../../../../common/Chips";
+import { LightTooltip } from "../../../../common/LightTooltip";
+import { dateFormatter } from "../../../../utility/dateFormatter";
 
 // search
 export const filterData = (keywords, allData, setRowDto) => {
@@ -68,7 +68,7 @@ export const loanReportColumns = (page, paginationSize) => {
     },
     {
       title: "Employee Id",
-      dataIndex: "employeeCode",
+      dataIndex: "strEmployeeCode",
       sort: true,
       filter: false,
       fieldType: "string",
@@ -92,14 +92,14 @@ export const loanReportColumns = (page, paginationSize) => {
     },
     {
       title: "Designation",
-      dataIndex: "designationName",
+      dataIndex: "strDesignation",
       sort: true,
       filter: false,
       fieldType: "string",
     },
     {
       title: "Department",
-      dataIndex: "departmentName",
+      dataIndex: "strDepartment",
       sort: true,
       filter: false,
       fieldType: "string",

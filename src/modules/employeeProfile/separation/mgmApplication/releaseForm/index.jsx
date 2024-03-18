@@ -4,7 +4,7 @@ import {
   ArrowDropUp,
   FilePresentOutlined,
 } from "@mui/icons-material";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import BackButton from "../../../../../common/BackButton";
 import Chips from "../../../../../common/Chips";
@@ -36,6 +36,7 @@ const initData = {
 export default function ManagementReleaseSeparationForm() {
   const params = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -63,21 +64,6 @@ export default function ManagementReleaseSeparationForm() {
   }, []);
 
   useEffect(() => {
-    // const payload = {
-    //   intSeparationId: +params?.id,
-    //   status: "",
-    //   workplaceGroupId: wgId,
-    //   departmentId: 0,
-    //   designationId: 0,
-    //   supervisorId: 0,
-    //   employeeId: employeeId,
-    //   separationTypeId: 0,
-    //   applicationFromDate: null,
-    //   applicationToDate: null,
-    //   businessUnitId: buId,
-    //   accountId: orgId,
-    //   tableName: "EmployeeSeparationReportBySeparationId",
-    // };
     getSeparationLandingById(+params?.id, setSingleData, setLoading);
   }, [orgId, buId, employeeId, params?.id, wgId]);
 
@@ -106,22 +92,8 @@ export default function ManagementReleaseSeparationForm() {
     };
     const callBack = () => {
       cb();
-      // const payloadData = {
-      //   intSeparationId: +params?.id,
-      //   status: "",
-      //   workplaceGroupId: wgId,
-      //   departmentId: 0,
-      //   designationId: 0,
-      //   supervisorId: 0,
-      //   employeeId: employeeId,
-      //   separationTypeId: 0,
-      //   applicationFromDate: null,
-      //   applicationToDate: null,
-      //   businessUnitId: buId,
-      //   accountId: orgId,
-      //   tableName: "EmployeeSeparationReportBySeparationId",
-      // };
       getSeparationLandingById(+params?.id, setSingleData, setLoading);
+      history.goBack();
     };
     releasedEmployeeSeparation(payload, setLoading, callBack);
   };

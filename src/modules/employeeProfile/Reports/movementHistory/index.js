@@ -1,10 +1,12 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import PrintIcon from "@mui/icons-material/Print";
 import { Tooltip } from "@mui/material";
-import { getWorkplaceDetails } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { customStyles } from "utility/selectCustomStyle";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import FormikInput from "../../../../common/FormikInput";
 import MasterFilter from "../../../../common/MasterFilter";
@@ -30,7 +32,6 @@ const initData = {
   search: "",
 
   // master Filter
-  workplace: "",
   department: "",
   designation: "",
   employee: "",
@@ -39,6 +40,8 @@ const initData = {
   appStatus: "",
   fromDate: monthFirstDate(),
   toDate: todayDate(),
+  workplaceGroup: "",
+  workplace: "",
 };
 
 const EmMovementHistory = () => {
@@ -46,7 +49,7 @@ const EmMovementHistory = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, buName, wId } = useSelector(
+  const { buId, wgId, buName, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -76,17 +79,19 @@ const EmMovementHistory = () => {
 
   // landing data
   const [rowDto, setRowDto] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
   });
 
-  const getData = (pagination, searchText) => {
+  const getData = (values, pagination, searchText) => {
     getMovementHistory(
-      wId,
+      values?.workplace?.value || wId,
       buId,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       initStartData,
       initEndDate,
       "",
@@ -99,23 +104,23 @@ const EmMovementHistory = () => {
     );
   };
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage, searchText, values) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
 
-    getData({
+    getData(values, {
       current: newPage,
       pageSize: pages?.pageSize,
       total: pages?.total,
     });
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
+  const handleChangeRowsPerPage = (event, searchText, values) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getData({
+    getData(values, {
       current: 1,
       pageSize: +event.target.value,
       total: pages?.total,
@@ -147,6 +152,12 @@ const EmMovementHistory = () => {
       paginationSize,
       setPages,
       true
+    );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
     );
   }, [buId, wgId, wId]);
 
@@ -286,7 +297,11 @@ const EmMovementHistory = () => {
                             type="button"
                             onClick={(e) => {
                               getPDFAction(
-                                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${wId}&WorkplaceGroupId=${wgId}&FromDate=${
+                                `/PdfAndExcelReport/MovementReport?BusinessUnitId=${buId}&WorkplaceId=${
+                                  values?.workplace?.value || wId
+                                }&WorkplaceGroupId=${
+                                  values?.workplaceGroup?.value || wgId
+                                }&FromDate=${
                                   values?.fromDate || initStartData
                                 }&ToDate=${
                                   values?.toDate || initEndDate
@@ -318,9 +333,9 @@ const EmMovementHistory = () => {
                               onClick={() => {
                                 setFieldValue("search", "");
                                 getMovementHistory(
-                                  wId,
+                                  values?.workplace?.value || wId,
                                   buId,
-                                  wgId,
+                                  values?.workplaceGroup?.value || wgId,
                                   values?.fromDate,
                                   values?.toDate,
                                   "",
@@ -344,9 +359,9 @@ const EmMovementHistory = () => {
                             setValue={(value) => {
                               setFieldValue("search", value);
                               getMovementHistory(
-                                wId,
+                                values?.workplace?.value || wId,
                                 buId,
-                                wgId,
+                                values?.workplaceGroup?.value || wgId,
                                 values?.fromDate || "",
                                 values?.toDate || "",
                                 value || "",
@@ -361,9 +376,9 @@ const EmMovementHistory = () => {
                             cancelHandler={() => {
                               setFieldValue("search", "");
                               getMovementHistory(
-                                wId,
+                                values?.workplace?.value || wId,
                                 buId,
-                                wgId,
+                                values?.workplaceGroup?.value || wgId,
                                 values?.fromDate || "",
                                 values?.toDate || "",
                                 "",
@@ -383,7 +398,7 @@ const EmMovementHistory = () => {
                     <div className="table-card-body">
                       <div className="card-style my-2">
                         <div className="row">
-                          <div className="col-lg-3">
+                          <div className="col-lg-2">
                             <div className="input-field-main">
                               <label>From Date</label>
                               <FormikInput
@@ -399,7 +414,7 @@ const EmMovementHistory = () => {
                               />
                             </div>
                           </div>
-                          <div className="col-lg-3">
+                          <div className="col-lg-2">
                             <div className="input-field-main">
                               <label>To Date</label>
                               <FormikInput
@@ -415,7 +430,50 @@ const EmMovementHistory = () => {
                               />
                             </div>
                           </div>
-
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace Group</label>
+                              <FormikSelect
+                                name="workplaceGroup"
+                                options={[...workplaceGroupDDL] || []}
+                                value={values?.workplaceGroup}
+                                onChange={(valueOption) => {
+                                  setWorkplaceDDL([]);
+                                  setFieldValue("workplaceGroup", valueOption);
+                                  setFieldValue("workplace", "");
+                                  if (valueOption?.value) {
+                                    getPeopleDeskAllDDL(
+                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                      "intWorkplaceId",
+                                      "strWorkplace",
+                                      setWorkplaceDDL
+                                    );
+                                  }
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace</label>
+                              <FormikSelect
+                                name="workplace"
+                                options={[...workplaceDDL] || []}
+                                value={values?.workplace}
+                                onChange={(valueOption) => {
+                                  setFieldValue("workplace", valueOption);
+                                  getWorkplaceDetails(
+                                    valueOption?.value,
+                                    setBuDetails
+                                  );
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
                           <div className="col-lg-1">
                             <button
                               disabled={!values?.toDate || !values?.fromDate}
@@ -423,9 +481,9 @@ const EmMovementHistory = () => {
                               className="btn btn-green"
                               onClick={() => {
                                 getMovementHistory(
-                                  wId,
+                                  values?.workplace?.value || wId,
                                   buId,
-                                  wgId,
+                                  values?.workplaceGroup?.value || wgId,
                                   values?.fromDate || "",
                                   values?.toDate || "",
                                   "",
@@ -452,10 +510,10 @@ const EmMovementHistory = () => {
                           rowDto={rowDto}
                           setRowDto={setRowDto}
                           handleChangePage={(e, newPage) =>
-                            handleChangePage(e, newPage, values?.search)
+                            handleChangePage(e, newPage, values?.search, values)
                           }
                           handleChangeRowsPerPage={(e) =>
-                            handleChangeRowsPerPage(e, values?.search)
+                            handleChangeRowsPerPage(e, values?.search, values)
                           }
                           uniqueKey="employeeCode"
                           isCheckBox={false}

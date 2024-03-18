@@ -556,7 +556,7 @@ function ShiftManagement() {
               {isAssignAll || ismulti ? (
                 <ViewModal
                   show={createModal}
-                  title={`Assign Shift (${moment().format("MMM, YYYY")})`}
+                  title={`Assign Shift`}
                   onHide={() => {
                     setCreateModal(false);
                     // setSingleAssign(false);
@@ -652,6 +652,7 @@ function ShiftManagement() {
                               calendarData={calendarData}
                               setCalendarData={setCalendarData}
                               isMargin={true}
+                              setCheckedList={setCheckedList}
                             />
                           </>
                         ) : (
@@ -667,6 +668,7 @@ function ShiftManagement() {
                                 pages={pages}
                                 calendarData={calendarData}
                                 setCalendarData={setCalendarData}
+                                setCheckedList={setCheckedList}
                               />
                             }
                             {null}

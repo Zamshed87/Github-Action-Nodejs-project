@@ -325,38 +325,38 @@ export const columns = (
         </>
       ),
     },
-    {
-      title: "Action",
-      className: "text-center",
-      dataIndex: "",
-      render: (record) => (
-        <div>
-          {!(record?.calendarAssignId || record?.isSelected) && (
-            <div className="assign-btn">
-              <button
-                style={{
-                  marginRight: "25px",
-                  height: "24px",
-                  fontSize: "12px",
-                  padding: "0px 12px 0px 12px",
-                }}
-                type="button"
-                className="btn btn-default"
-                onClick={() => {
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  if (!permission?.isCreate)
-                    return toast.warn("You don't have permission");
-                  setCreateModal(true);
-                  // rowDtoHandler(record);
-                }}
-                disabled={checkedList.length > 1}
-              >
-                Assign
-              </button>
-            </div>
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   className: "text-center",
+    //   dataIndex: "",
+    //   render: (record) => (
+    //     <div>
+    //       {!(record?.calendarAssignId || record?.isSelected) && (
+    //         <div className="assign-btn">
+    //           <button
+    //             style={{
+    //               marginRight: "25px",
+    //               height: "24px",
+    //               fontSize: "12px",
+    //               padding: "0px 12px 0px 12px",
+    //             }}
+    //             type="button"
+    //             className="btn btn-default"
+    //             onClick={() => {
+    //               if (!permission?.isCreate)
+    //                 return toast.warn("You don't have permission");
+    //               if (!permission?.isCreate)
+    //                 return toast.warn("You don't have permission");
+    //               setCreateModal(true);
+    //               // rowDtoHandler(record);
+    //             }}
+    //             disabled={checkedList.length > 1}
+    //           >
+    //             Assign
+    //           </button>
+    //         </div>
+    //       )}
+    //     </div>
+    //   ),
+    // },
   ].filter((item) => item.hidden !== true);

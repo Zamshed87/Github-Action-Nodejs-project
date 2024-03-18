@@ -41,7 +41,7 @@ export const bankDetailsAction = async (
     setLoading(true);
     const res = await axios.post("/Employee/CRUDEmployeeBankDetails", payload);
     setLoading(false);
-    setConfirmationMOdal(false);
+    setConfirmationMOdal?.(false);
     getEmpData && getEmpData();
     toast.success(res?.data?.message || "Saved Successful");
   } catch (error) {

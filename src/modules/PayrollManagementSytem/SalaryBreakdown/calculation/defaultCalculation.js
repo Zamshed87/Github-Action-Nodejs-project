@@ -4,6 +4,7 @@ import { todayDate } from "./../../../../utility/todayDate";
 import { isUniq } from "./../../../../utility/uniqChecker";
 
 export const defaultSetter = (values, dynamicForm, payload, setDynamicForm) => {
+  console.log({dynamicForm})
   // basic element check
   if (
     values?.dependsOn?.value === 2 &&

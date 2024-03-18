@@ -430,6 +430,7 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                                 basedOn: undefined,
                                 payrollElement: undefined,
                                 dependsOn: option,
+                                isDedicated: false
                               });
                             }}
                             // rules={[
@@ -465,16 +466,70 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                   );
                 }}
               </Form.Item>
+              {/* <Form.Item noStyle shouldUpdate>
+                {() => {
+                  const { isDedicated, dependsOn } = form.getFieldsValue();
+                  return (
+                    <>
+                      {dependsOn?.value === 1 ? (
+                        <>
+                          <Col md={6} sm={12} className="mt-3">
+                            <PInput
+                              type="checkbox"
+                              label="Is Dedicated Payroll Group?"
+                              name="isDedicated"
+                              layout="horizontal"
+                              onChange={(value) => {
+                                // console.log({value, checked})
+                                form.setFieldsValue({
+                                  dedicatedDDL: undefined,
+                                  isDedicated: value?.target?.checked,
+                                });
+                              }}
+                            />
+                          </Col>
+                          {isDedicated && (
+                            <Col md={6} sm={12}>
+                              <PSelect
+                                label="Dedicated Payroll Group"
+                                name="dedicatedDDL"
+                                placeholder="Dedicated Payroll Group"
+                                options={[
+                                  {
+                                    value: 1,
+                                    label: "Basic = (Gross - Conveyance) / 1.6",
+                                  },
+                                ]}
+                                onChange={(value, option) => {
+                                  form.setFieldsValue({
+                                    basedOn: undefined,
+                                    payrollElement: undefined,
+                                    dedicatedDDL: option,
+                                  });
+                                }}
+                                // rules={[
+                                //   {
+                                //     required: true,
+                                //     message: "Please Select Workplace!",
+                                //   },
+                                // ]}
+                              />
+                            </Col>
+                          )}
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  );
+                }}
+              </Form.Item> */}
             </Row>
             <Row gutter={[10, 2]}>
               <Form.Item noStyle shouldUpdate>
                 {() => {
-                  const {
-                    isPerdaySalary,
-                    payrollElement,
-                    basedOn,
-                    dependsOn,
-                  } = form.getFieldsValue();
+                  const { isPerdaySalary, payrollElement, basedOn, dependsOn } =
+                    form.getFieldsValue();
                   const values = form.getFieldsValue(true);
                   return (
                     isPerdaySalary === false && (
@@ -547,8 +602,6 @@ const PayrollGroupCreate: React.FC<TOvertimePolicy> = () => {
                     <>
                       {!isPerdaySalary &&
                         dynamicForm?.map((itm: any, index: number) => {
-                          console.log("item", itm);
-                          console.log(itm?.[itm?.levelVariable]);
                           return (
                             <>
                               <div className="d-flex align-items-center">

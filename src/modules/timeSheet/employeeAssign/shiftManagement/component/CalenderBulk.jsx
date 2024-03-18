@@ -14,6 +14,9 @@ const CalenderBulk = ({
     year: monthYear.split("-")[0],
     month: monthYear.split("-")[1],
   });
+  useEffect(() => {
+    setDate({ year: monthYear.split("-")[0], month: monthYear.split("-")[1] });
+  }, [monthYear]);
 
   useEffect(() => {
     let days = moment(`${date?.month}/01/${date?.year}`).daysInMonth();
@@ -27,18 +30,20 @@ const CalenderBulk = ({
     }
     setDates(demoDate.reverse());
   }, [date]);
-  if (calendarData.length === 0) {
-    const demoData = [];
-    dates?.forEach((item) => {
-      demoData.push({
-        date: "",
-        intDayId: item?.intDayId,
-        dayName: item?.dayName,
-        isActive: false,
+  useEffect(() => {
+    if (calendarData.length === 0) {
+      const demoData = [];
+      dates?.forEach((item) => {
+        demoData.push({
+          date: "",
+          intDayId: item?.intDayId,
+          dayName: item?.dayName,
+          isActive: false,
+        });
       });
-    });
-    setCalendarData(demoData);
-  }
+      setCalendarData(demoData);
+    }
+  }, [calendarData]);
 
   return (
     <div className="employee-attendance-calendar-wrapper h-100">

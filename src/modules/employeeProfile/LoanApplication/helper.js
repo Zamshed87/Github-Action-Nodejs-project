@@ -347,6 +347,23 @@ export const loanRequestLandingTableColumns = (
                 </Tooltip>
               </div>
             )}
+            {data?.installmentStatus === "Running" && (
+              <div className="d-flex">
+                <Tooltip title="Edit" arrow>
+                  <button
+                    type="button"
+                    className="iconButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSingleLoanApplication(data, setSingleData, setFileId);
+                      setShow(true);
+                    }}
+                  >
+                    <CreateOutlined />
+                  </button>
+                </Tooltip>
+              </div>
+            )}
           </div>
         </div>
       ),
@@ -434,7 +451,6 @@ export const loanCrudAction = async (
   wgId,
   tableData
 ) => {
-
   if (values?.intInterest > 100) {
     toast.warn("Interest can't be greater than 100");
     return;
@@ -620,68 +636,6 @@ export const costInputHandler = (
   }
 };
 
-// export const handleAmendmentClick = (
-//   tableData,
-//   setTableData,
-//   item,
-//   clickedRowIndex
-// ) => {
-//   // Clone the existing tableData
-//   const updatedTableData = [...tableData];
-
-//   // Determine the last index
-//   const lastIndex = updatedTableData.length - 1;
-
-//   // Calculate the new date based on the previous index
-//   const previousDate = moment(updatedTableData[lastIndex]?.date);
-//   const newDate = previousDate.isValid()
-//     ? previousDate.add(1, "months")
-//     : moment();
-
-//   // Create a new data object for the last index with the new date
-//   const newDataRow = {
-//     isHold: item?.isHold || false,
-//     date: newDate.format("YYYY-MM"),
-//     paymentYear: newDate.year() || 0,
-//     paymentMonth: newDate.month() + 1,
-//     strRemarks: item?.strRemarks || "",
-//     loanApplicationId: item?.loanApplicationId || 0,
-//     intInterest: +item?.intInterest || 0,
-//     totalLoanAmount: +item?.totalLoanAmount || 0,
-//     intInstallmentNumber: +item?.intInstallmentNumber || 0,
-//     intInstallmentAmount: +item?.intInstallmentAmount || 0,
-//     strApplicantName: item?.strApplicantName || "",
-//   };
-
-//   // Add the new object to the last index
-//   updatedTableData.push(newDataRow);
-
-//   // Make the intInstallmentAmount, paymentYear, and paymentMonth of the previous row zero
-//   if (
-//     lastIndex >= 0 &&
-//     lastIndex < updatedTableData.length - 1 &&
-//     previousDate.isAfter(moment().subtract(1, "year")) // Add your condition here
-//   ) {
-//     updatedTableData[lastIndex - 1].intInstallmentAmount = 0;
-//     updatedTableData[lastIndex - 1].isHold = true;
-//     updatedTableData[lastIndex - 1].paymentYear = newDate.year() || 0;
-//     updatedTableData[lastIndex - 1].paymentMonth = newDate.month() + 1;
-//     updatedTableData[lastIndex - 1].strRemarks = "";
-//   }
-
-//   // Make the intInstallmentAmount of the clicked row zero
-//   if (clickedRowIndex >= 0 && clickedRowIndex < updatedTableData.length) {
-//     updatedTableData[clickedRowIndex].intInstallmentAmount = 0;
-//     updatedTableData[clickedRowIndex].isHold = true;
-//     updatedTableData[clickedRowIndex].paymentYear = newDate.year() || 0;
-//     updatedTableData[clickedRowIndex].paymentMonth = newDate.month() + 1;
-//     updatedTableData[clickedRowIndex].strRemarks = "";
-//   }
-
-//   // Set the state with the updated array
-//   setTableData(updatedTableData);
-// };
-
 export const handleAmendmentClick = (
   tableData,
   setTableData,
@@ -692,7 +646,8 @@ export const handleAmendmentClick = (
   const updatedTableData = [...tableData];
 
   // Calculate the new date based on the clicked row or the last row
-  const referenceIndex = clickedRowIndex >= 0 ? clickedRowIndex : updatedTableData.length - 1;
+  const referenceIndex =
+    clickedRowIndex >= 0 ? clickedRowIndex : updatedTableData.length - 1;
   const referenceDate = moment(updatedTableData[referenceIndex]?.date);
   const newDate = referenceDate.isValid()
     ? referenceDate.add(1, "months")
@@ -700,8 +655,10 @@ export const handleAmendmentClick = (
 
   // Find the next available month that follows the sequence
   let nextDate = newDate.clone();
-  while (updatedTableData.some(row => moment(row.date).isSame(nextDate, 'month'))) {
-    nextDate.add(1, 'month');
+  while (
+    updatedTableData.some((row) => moment(row.date).isSame(nextDate, "month"))
+  ) {
+    nextDate.add(1, "month");
   }
 
   // Create a new data object for the last index with the new date
@@ -715,7 +672,7 @@ export const handleAmendmentClick = (
     intInterest: +item?.intInterest || 0,
     totalLoanAmount: +item?.totalLoanAmount || 0,
     intInstallmentNumber: +item?.intInstallmentNumber || 0,
-    intInstallmentAmount: +item?.intInstallmentAmount || 0,
+    intInstallmentAmount: +item?.intInstallmentAmount || 1,
     strApplicantName: item?.strApplicantName || "",
   };
 
@@ -734,7 +691,6 @@ export const handleAmendmentClick = (
   // Set the state with the updated array
   setTableData(updatedTableData);
 };
-
 
 export const handleDeleteClick = (index, tableData, setTableData) => {
   // Clone the existing tableData array
@@ -755,4 +711,4 @@ export const subTotal = (tableData) => {
     return a + c?.intInstallmentAmount;
   }, 0);
 };
-// 
+//

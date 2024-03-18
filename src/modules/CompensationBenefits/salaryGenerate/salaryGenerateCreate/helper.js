@@ -199,7 +199,9 @@ export const salaryGenerateCreateEditTableColumn = (
   setRowDto,
   pages,
   rowDto,
-  setFieldValue
+  setFieldValue,
+  setAllData,
+  allData
 ) => [
   {
     title: "SL",
@@ -229,7 +231,12 @@ export const salaryGenerateCreateEditTableColumn = (
                 ...item,
                 isSalaryGenerate: e.target.checked,
               }));
+              const modifyRowDto2 = (allData || []).map((item) => ({
+                ...item,
+                isSalaryGenerate: e.target.checked,
+              }));
               setRowDto(modifyRowDto);
+              setAllData(modifyRowDto2);
               setFieldValue("allSelected", e.target.checked);
             }}
           />
@@ -252,10 +259,31 @@ export const salaryGenerateCreateEditTableColumn = (
             color={greenColor}
             checked={rowDto[index]?.isSalaryGenerate}
             onChange={() => {
-              const copyRowDto = [...rowDto];
-              copyRowDto[index].isSalaryGenerate =
-                !copyRowDto[index].isSalaryGenerate;
-              setRowDto(copyRowDto);
+              // const copyRowDto = [...rowDto];
+              // copyRowDto[index].isSalaryGenerate =
+              //   !copyRowDto[index].isSalaryGenerate;
+                const updateList = rowDto?.slice()?.map(emp => {
+                  if (emp?.strEmployeeCode === record?.strEmployeeCode) {
+                    return {
+                      ...emp,
+                      isSalaryGenerate: !emp?.isSalaryGenerate
+                    }
+                  }
+                  return emp
+                
+                });
+                const updateList2 = allData?.slice()?.map(emp => {
+                  if (emp?.strEmployeeCode === record?.strEmployeeCode) {
+                    return {
+                      ...emp,
+                      isSalaryGenerate: !emp?.isSalaryGenerate
+                    }
+                  }
+                  return emp
+                
+                });
+              setRowDto(updateList);
+              setAllData(updateList2);
             }}
             // disabled={item?.ApplicationStatus === "Approved"}
           />

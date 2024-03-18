@@ -40,7 +40,7 @@ const initData = {
   breakEndTime: "",
   officeStartTime: "",
   officeCloseTime: "",
-  isLunchBreakAsWorkingHour: true,
+  isLunchBreakAsWorkingHour: false,
   nightShift: false,
   isEmployeeUpdate: false,
   dteEmployeeUpdateFromDate: "",
@@ -93,7 +93,7 @@ const CalendarSetupModal = ({
       const newRowData = {
         calendarName: singleData?.strCalenderName,
         isLunchBreakAsWorkingHour:
-          singleData?.isLunchBreakCalculateAsWorkingHour || true,
+          singleData?.isLunchBreakCalculateAsWorkingHour || false,
         startTime: singleData?.dteStartTime,
         endTime: singleData?.dteEndTime,
         minWork: singleData?.numMinWorkHour,

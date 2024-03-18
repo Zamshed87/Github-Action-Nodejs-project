@@ -3,14 +3,16 @@ import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { IconButton, Tooltip } from "@mui/material";
 import AntScrollTable from "common/AntScrollTable";
+import FormikSelect from "common/FormikSelect";
 import ResetButton from "common/ResetButton";
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { dateFormatter } from "utility/dateFormatter";
+import { customStyles } from "utility/selectCustomStyle";
 import * as Yup from "yup";
 import DefaultInput from "../../../../common/DefaultInput";
 import NoResult from "../../../../common/NoResult";
@@ -49,7 +51,7 @@ const JoineeAttendanceReport = () => {
   // redux
   const dispatch = useDispatch();
 
-  const { buId, wgId, wId, orgId } = useSelector(
+  const { buId, wgId, wId, orgId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -57,6 +59,8 @@ const JoineeAttendanceReport = () => {
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   // states
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   const [buDetails, setBuDetails] = useState({});
@@ -96,21 +100,28 @@ const JoineeAttendanceReport = () => {
       pagination?.current,
       pagination?.pageSize,
       isExcel,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       setPages,
-      wId,
+      values?.workplace?.value || wId,
+
       values
     );
   };
 
   useEffect(() => {
-    getWorkplaceDetails(wId, setBuDetails);
+    getWorkplaceDetails(values?.workplace?.value || wId, setBuDetails);
     getData(
       { current: 1, pageSize: paginationSize },
       "",
       values?.fromdate,
       values?.todate,
       values
+    );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
     );
   }, [wId, wgId]);
 
@@ -137,42 +148,6 @@ const JoineeAttendanceReport = () => {
     document.title = "Joinee Attendance Report";
   }, [dispatch]);
 
-  const handleChangePage = (_, newPage, searchText) => {
-    setPages((prev) => {
-      return { ...prev, current: newPage };
-    });
-
-    getData(
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      },
-      searchText,
-      values?.fromdate,
-      values?.todate,
-      values
-    );
-  };
-
-  const handleChangeRowsPerPage = (event, searchText) => {
-    setPages({
-      current: 1,
-      total: pages?.total,
-      pageSize: +event.target.value,
-    });
-    getData(
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      },
-      searchText,
-      values?.fromdate,
-      values?.todate,
-      values
-    );
-  };
   // page handling function
   const handleTableChange = (pagination, newRowDto, srcText) => {
     if (newRowDto?.action === "filter") {
@@ -255,7 +230,7 @@ const JoineeAttendanceReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-2">
+                <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>Joining From Date</label>
                     <DefaultInput
@@ -273,7 +248,7 @@ const JoineeAttendanceReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-2">
+                <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>Joining To Date</label>
                     <DefaultInput
@@ -288,6 +263,47 @@ const JoineeAttendanceReport = () => {
                       // min={values?.date}
                       errors={errors}
                       touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace Group</label>
+                    <FormikSelect
+                      name="workplaceGroup"
+                      options={[...workplaceGroupDDL] || []}
+                      value={values?.workplaceGroup}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("workplaceGroup", valueOption);
+                        setFieldValue("workplace", "");
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                            "intWorkplaceId",
+                            "strWorkplace",
+                            setWorkplaceDDL
+                          );
+                        }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+                    <FormikSelect
+                      name="workplace"
+                      options={[...workplaceDDL] || []}
+                      value={values?.workplace}
+                      onChange={(valueOption) => {
+                        setFieldValue("workplace", valueOption);
+                        getWorkplaceDetails(valueOption?.value, setBuDetails);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
                     />
                   </div>
                 </div>
@@ -318,9 +334,18 @@ const JoineeAttendanceReport = () => {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   getExcelData(
-                                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=new_joinee_in_out_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromdate}&DteToDate=${values?.todate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&PageSize=10000000&IsPaginated=false&intYearId=${values?.yearId}&intMonthId=${values?.monthId}`,
+                                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=new_joinee_in_out_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
+                                      values?.fromdate
+                                    }&DteToDate=${
+                                      values?.todate
+                                    }&EmployeeId=0&WorkplaceGroupId=${
+                                      values?.workplaceGroup?.value || wgId
+                                    }&WorkplaceId=${
+                                      values?.workplace?.value || wId
+                                    }&PageNo=1&PageSize=10000000&IsPaginated=false&intYearId=${
+                                      values?.yearId
+                                    }&intMonthId=${values?.monthId}`,
                                     (res) => {
-                                      console.log(res);
                                       const newData = res?.map(
                                         (item, index) => {
                                           return {

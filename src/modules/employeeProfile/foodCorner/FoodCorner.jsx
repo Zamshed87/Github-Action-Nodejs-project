@@ -22,8 +22,9 @@ const initData = {
   employeeName: "",
   place: "",
   date: todayDate(),
+  ndate: todayDate(),
   meal: 1,
-  type: { value: 2, label: "Irregular" },
+  type: { value: 1, label: "Regular" },
   remarks: "",
   mealStatus: "own",
 };
