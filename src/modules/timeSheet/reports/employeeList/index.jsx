@@ -1,7 +1,7 @@
 import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import axios from "axios";
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -21,6 +21,8 @@ import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { empReportListColumns } from "./helper";
 import FormikInput from "common/FormikInput";
 import { todayDate } from "utility/todayDate";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initData = {
   searchString: "",
@@ -41,6 +43,8 @@ const initData = {
 
   fromDate: null,
   toDate: null,
+  workplace: "",
+  workplaceGroup: "",
 };
 
 const initHeaderList = {
@@ -67,7 +71,7 @@ const initHeaderList = {
 export default function EmployeeList() {
   // redux
   const dispatch = useDispatch();
-  const { buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -78,11 +82,14 @@ export default function EmployeeList() {
   const [buDetails, setBuDetails] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [status, setStatus] = useState("");
+
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 100,
     total: 0,
   });
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [resEmpLanding, setEmpLanding] = useState([]);
   const [headerList, setHeaderList] = useState({});
   const [filterOrderList, setFilterOrderList] = useState([]);
@@ -96,6 +103,18 @@ export default function EmployeeList() {
     setHeaderList({});
     setEmpLanding([]);
     getData(pages);
+    // getPeopleDeskAllDDL(
+    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+    //   "intWorkplaceId",
+    //   "strWorkplace",
+    //   setWorkplaceDDL
+    // );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
     // getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
@@ -116,8 +135,8 @@ export default function EmployeeList() {
     try {
       const payload = {
         businessUnitId: buId,
-        workplaceGroupId: wgId,
-        workplaceId: wId,
+        workplaceGroupId: values?.workplaceGroup?.value || wgId,
+        workplaceId: values?.workplace?.value || wId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -356,8 +375,9 @@ export default function EmployeeList() {
                             // excelLanding();
                             const paylaod = {
                               businessUnitId: 1,
-                              workplaceGroupId: 1,
-                              workplaceId: 1,
+                              workplaceGroupId:
+                                values?.workplaceGroup?.value || wgId,
+                              workplaceId: values?.workplace?.value || wId,
                               pageNo: 1,
                               pageSize: 25,
                               isPaginated: true,
@@ -484,7 +504,7 @@ export default function EmployeeList() {
                       // style={{ marginTop: "13px" }}
                     >
                       <div className="row">
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                           <div className="input-field-main">
                             <label>From Joining Date</label>
                             <FormikInput
@@ -500,7 +520,7 @@ export default function EmployeeList() {
                             />
                           </div>
                         </div>
-                        <div className="col-lg-3">
+                        <div className="col-lg-2">
                           <div className="input-field-main">
                             <label>To Joining Date</label>
                             <FormikInput
@@ -516,7 +536,50 @@ export default function EmployeeList() {
                             />
                           </div>
                         </div>
-
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>Workplace Group</label>
+                            <FormikSelect
+                              name="workplaceGroup"
+                              options={[...workplaceGroupDDL] || []}
+                              value={values?.workplaceGroup}
+                              onChange={(valueOption) => {
+                                setWorkplaceDDL([]);
+                                setFieldValue("workplaceGroup", valueOption);
+                                setFieldValue("workplace", "");
+                                if (valueOption?.value) {
+                                  getPeopleDeskAllDDL(
+                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                    "intWorkplaceId",
+                                    "strWorkplace",
+                                    setWorkplaceDDL
+                                  );
+                                }
+                              }}
+                              placeholder=""
+                              styles={customStyles}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-3">
+                          <div className="input-field-main">
+                            <label>Workplace</label>
+                            <FormikSelect
+                              name="workplace"
+                              options={[...workplaceDDL] || []}
+                              value={values?.workplace}
+                              onChange={(valueOption) => {
+                                setFieldValue("workplace", valueOption);
+                                getWorkplaceDetails(
+                                  valueOption?.value,
+                                  setBuDetails
+                                );
+                              }}
+                              placeholder=""
+                              styles={customStyles}
+                            />
+                          </div>
+                        </div>
                         <div className="col-lg-1">
                           <button
                             disabled={!values?.fromDate || !values?.toDate}

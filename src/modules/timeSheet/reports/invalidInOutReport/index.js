@@ -109,6 +109,12 @@ const MgmtInOutReport = () => {
       "strWorkplace",
       setWorkplaceDDL
     );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
     // getPeopleDeskAllDDL(
     //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
     //   "intBusinessUnitId",
@@ -220,7 +226,7 @@ const MgmtInOutReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3">
+                <div className="col-lg-2">
                   <div className="input-field-main">
                     <label>Form Date</label>
                     <DefaultInput
@@ -244,7 +250,7 @@ const MgmtInOutReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3">
+                <div className="col-lg-2">
                   <div className="input-field-main">
                     <label>To Date</label>
                     <DefaultInput
@@ -267,7 +273,7 @@ const MgmtInOutReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3 d-none">
+                <div className="col-lg-3 ">
                   <div className="input-field-main ">
                     <label>Workplace Group</label>
                     <FormikSelect
@@ -280,12 +286,15 @@ const MgmtInOutReport = () => {
                           workplace: "",
                           workplaceGroup: valueOption,
                         }));
-                        // getPeopleDeskAllDDL(
-                        //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                        //   "intWorkplaceId",
-                        //   "strWorkplace",
-                        //   setWorkplaceDDL
-                        // );
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                            "intWorkplaceId",
+                            "strWorkplace",
+                            setWorkplaceDDL
+                          );
+                        }
+
                         setAllData([]);
                         setRowDto([]);
                         setWorkplaceDDL([]);
@@ -319,7 +328,7 @@ const MgmtInOutReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-1">
                   <button
                     className="btn btn-green btn-green-disable"
                     type="submit"
