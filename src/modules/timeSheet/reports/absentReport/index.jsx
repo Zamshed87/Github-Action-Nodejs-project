@@ -15,7 +15,7 @@ import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../../utility/customColor";
 
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { getPDFAction } from "utility/downloadFile";
 import MasterFilter from "../../../../common/MasterFilter";
 import PeopleDeskTable, {
@@ -37,6 +37,8 @@ import {
 } from "common/peopleDeskTable/helper";
 import axios from "axios";
 import { toast } from "react-toastify";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initialValues = {
   businessUnit: "",
@@ -60,7 +62,7 @@ const AbsentReport = () => {
   // redux
   const dispatch = useDispatch();
 
-  const { buId, wgId, wId, orgId } = useSelector(
+  const { buId, wgId, wId, orgId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -72,6 +74,8 @@ const AbsentReport = () => {
   const [rowDto, setRowDto] = useState([]);
   const [headerList, setHeaderList] = useState({});
   const [filterOrderList, setFilterOrderList] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [initialHeaderListData, setInitialHeaderListData] = useState({});
   const [landingLoading, setLandingLoading] = useState(false);
   const [checkedHeaderList, setCheckedHeaderList] = useState({
@@ -105,8 +109,8 @@ const AbsentReport = () => {
       const payload = {
         intAccountId: orgId,
         intBusinessUnitId: buId,
-        intWorkplaceGroupId: wgId,
-        intWorkplaceId: wId,
+        intWorkplaceGroupId: values?.workplaceGroup?.value || wgId,
+        intWorkplaceId: values?.workplace?.value || wId,
         fromDate: values?.date,
         toDate: values?.todate,
         pageNo: pagination.current,
@@ -168,32 +172,16 @@ const AbsentReport = () => {
       checkedHeaderList
     );
   };
-  // const getData = (
-  //   pagination = { current: 1, pageSize: paginationSize },
-  //   srcTxt = "",
-  //   date = todayDate(),
-  //   todate = todayDate(),
-  //   isExcel = false
-  // ) => {
-  //   getAbsentData(
-  //     buId,
-  //     date,
-  //     setRowDto,
-  //     setLoading,
-  //     srcTxt,
-  //     pagination?.current,
-  //     pagination?.pageSize,
-  //     isExcel,
-  //     wgId,
-  //     setPages,
-  //     wId,
-  //     todate
-  //   );
-  // };
 
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
     getData(pages);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [wId, wgId]);
 
   // formik
@@ -308,7 +296,48 @@ const AbsentReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3 mt-3 pt-2">
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace Group</label>
+                    <FormikSelect
+                      name="workplaceGroup"
+                      options={[...workplaceGroupDDL] || []}
+                      value={values?.workplaceGroup}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("workplaceGroup", valueOption);
+                        setFieldValue("workplace", "");
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                            "intWorkplaceId",
+                            "strWorkplace",
+                            setWorkplaceDDL
+                          );
+                        }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+                    <FormikSelect
+                      name="workplace"
+                      options={[...workplaceDDL] || []}
+                      value={values?.workplace}
+                      onChange={(valueOption) => {
+                        setFieldValue("workplace", valueOption);
+                        getWorkplaceDetails(valueOption?.value, setBuDetails);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
+                <div className="col-1 mt-3 pt-2">
                   <button
                     className="btn btn-green btn-green-disable"
                     type="submit"
@@ -351,8 +380,11 @@ const AbsentReport = () => {
                                         {
                                           intAccountId: orgId,
                                           intBusinessUnitId: buId,
-                                          intWorkplaceGroupId: wgId,
-                                          intWorkplaceId: wId,
+                                          intWorkplaceGroupId:
+                                            values?.workplaceGroup?.value ||
+                                            wgId,
+                                          intWorkplaceId:
+                                            values?.workplace?.value || wId,
                                           fromDate: values?.date,
                                           toDate: values?.todate,
                                           pageNo: 1,
@@ -360,9 +392,7 @@ const AbsentReport = () => {
                                           isPaginated: false,
                                           isHeaderNeed: false,
                                           searchTxt: "",
-                                          departmentList: [],
-                                          sectionList: [],
-                                          designationList: [],
+                                          ...checkedHeaderList,
                                         }
                                       );
                                       if (res?.data?.data?.length > 0) {

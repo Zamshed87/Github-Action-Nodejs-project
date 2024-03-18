@@ -71,7 +71,7 @@ export default function MonthlyInOutReport() {
   const [buDetails, setBuDetails] = useState({});
   // const [pdfData, setPdfData] = useState(null);
   // const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  // const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
 
   // const [isFilter, setIsFilter] = useState({
@@ -126,6 +126,12 @@ export default function MonthlyInOutReport() {
 
   useEffect(() => {
     getData();
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [buId, wgId]);
 
   useEffect(() => {
@@ -288,9 +294,9 @@ export default function MonthlyInOutReport() {
                               }&DteToDate=${
                                 values?.toDate
                               }&EmployeeId=0&WorkplaceGroupId=${
-                                wgId || 0
+                                values?.workplaceGroup?.value || wgId || 0
                               }&WorkplaceId=${
-                                values?.workplace?.value || 0
+                                values?.workplace?.value || wId || 0
                               }&PageNo=1&PageSize=100000&IsPaginated=false`
                             );
                             if (res?.data) {
@@ -508,12 +514,12 @@ export default function MonthlyInOutReport() {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-3 d-none">
+                  <div className="col-lg-3 ">
                     <div className="input-field-main">
                       <label>Workplace Group</label>
                       <FormikSelect
                         name="workplaceGroup"
-                        // options={[...workplaceGroupDDL] || []}
+                        options={[...workplaceGroupDDL] || []}
                         value={values?.workplaceGroup}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
@@ -526,13 +532,14 @@ export default function MonthlyInOutReport() {
                               valueOption?.value,
                               setBuDetails
                             );
-
-                            // getPeopleDeskAllDDL(
-                            //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                            //   "intWorkplaceId",
-                            //   "strWorkplace",
-                            //   setWorkplaceDDL
-                            // );
+                            if (valueOption?.value) {
+                              getPeopleDeskAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                "intWorkplaceId",
+                                "strWorkplace",
+                                setWorkplaceDDL
+                              );
+                            }
                           }
                           setTableRowDto([]);
                           setRowDto([]);
@@ -567,7 +574,7 @@ export default function MonthlyInOutReport() {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-3">
+                  <div className="col-lg-2">
                     <div className="input-field-main">
                       <label>From Date</label>
                       <DefaultInput
@@ -583,7 +590,7 @@ export default function MonthlyInOutReport() {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-3">
+                  <div className="col-lg-2">
                     <div className="input-field-main">
                       <label>To Date</label>
                       <DefaultInput
