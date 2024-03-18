@@ -18,11 +18,14 @@ import { toast } from "react-toastify";
 import { employeeIdCardLandingColumns } from "./helper";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import { downloadFile } from "../../../../utility/downloadFile";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
+import { getPeopleDeskAllDDL } from "common/api";
 
 const EmployeeIdCardLanding = () => {
   const {
     permissionList,
-    profileData: { buId, wgName, wgId, wId, orgId },
+    profileData: { buId, wgName, wgId, wId, orgId, employeeId },
   } = useSelector((state) => state?.auth, shallowEqual);
   // const [anchorEl, setAnchorEl] = React.useState(null);
   const [rowDto, setRowDto] = useState([]);
@@ -42,6 +45,8 @@ const EmployeeIdCardLanding = () => {
     // employmentTypeList: [],
   };
   const [landingLoading, setLandingLoading] = useState(false);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [filterOrderList, setFilterOrderList] = useState([]);
   const [initialHeaderListData, setInitialHeaderListData] = useState({});
   const [headerList, setHeaderList] = useState({});
@@ -52,7 +57,10 @@ const EmployeeIdCardLanding = () => {
   const [empIDString, setEmpIDString] = useState("");
 
   const { values, setFieldValue } = useFormik({
-    initialValues: {},
+    initialValues: {
+      workplace: "",
+      workplaceGroup: "",
+    },
     onSubmit: (values) => {},
   });
 
@@ -68,8 +76,8 @@ const EmployeeIdCardLanding = () => {
   ) => {
     const payload = {
       accountId: orgId,
-      workplaceGroupId: wgId,
-      workplaceId: wId,
+      workplaceGroupId: values?.workplaceGroup?.value || wgId,
+      workplaceId: values?.workplace?.value || wId,
       pageNo: pagination.current,
       pageSize: pagination.pageSize,
       isPaginated: true,
@@ -189,6 +197,12 @@ const EmployeeIdCardLanding = () => {
 
   useEffect(() => {
     getData(pages);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
@@ -371,7 +385,64 @@ const EmployeeIdCardLanding = () => {
               </ul>
             </div>
           </div>
-
+          <div className="table-card-body">
+            <div className="card-style mb-3">
+              <div className="row">
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace Group</label>
+                    <FormikSelect
+                      name="workplaceGroup"
+                      options={[...workplaceGroupDDL] || []}
+                      value={values?.workplaceGroup}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("workplaceGroup", valueOption);
+                        setFieldValue("workplace", "");
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                            "intWorkplaceId",
+                            "strWorkplace",
+                            setWorkplaceDDL
+                          );
+                        }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+                    <FormikSelect
+                      name="workplace"
+                      options={[...workplaceDDL] || []}
+                      value={values?.workplace}
+                      onChange={(valueOption) => {
+                        setFieldValue("workplace", valueOption);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-1">
+                  <button
+                    // disabled={!values?.fromDate || !values?.toDate}
+                    style={{ marginTop: "21px" }}
+                    className="btn btn-green"
+                    onClick={() => {
+                      getData(pages);
+                    }}
+                  >
+                    View
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           {rowDto?.length > 0 ? (
             <PeopleDeskTable
               columnData={employeeIdCardLandingColumns(

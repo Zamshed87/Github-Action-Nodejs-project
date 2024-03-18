@@ -41,8 +41,8 @@ const initData = {
   contractualToDate: "",
   employmentStatus: "",
 
-  fromDate: null,
-  toDate: null,
+  fromDate: todayDate(),
+  toDate: todayDate(),
   workplace: "",
   workplaceGroup: "",
 };

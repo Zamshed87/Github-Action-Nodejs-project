@@ -106,8 +106,7 @@ export const generatePayload = (
       +values?.intHalfdayPreviousLveTypeEnd?.value || null,
     intMaxEncashableLveInDay: +values?.intMaxEncashableLveInDay || null,
     intAllocatedLveInDay: +values?.intAllocatedLveInDay || null,
-    intCarryForwarExpiryMonth:
-      +values?.intCarryForwarExpiryMonth?.value || null,
+    intCarryForwarExpiryMonth: +values?.intCarryForwarExpiryMonth || null,
     intCarryForwarExpiryDay: +values?.intCarryForwarExpiryDay || null,
     intActiveFromJoiningdayInDay: +values?.intActiveFromJoiningdayInDay || 0,
     intActiveFromConfirmationInDay:

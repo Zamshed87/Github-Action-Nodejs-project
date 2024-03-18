@@ -11,11 +11,23 @@ export const attendanceReportColumn = (page, paginationSize) => {
       filter: false,
       className: "text-center",
     },
-
     {
-      title: "Employee Id",
-      dataIndex: "employeeCode",
+      title: "Work. Group/Location",
+      dataIndex: "workplaceGroup",
       width: 150,
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "workplace",
+      width: 150,
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+    },
+    {
+      title: "Section",
+      dataIndex: "section",
     },
     {
       title: "Employee",
@@ -37,23 +49,11 @@ export const attendanceReportColumn = (page, paginationSize) => {
       fieldType: "string",
     },
     {
-      title: "Work. Group/Location",
-      dataIndex: "workplaceGroup",
+      title: "Employee Id",
+      dataIndex: "employeeCode",
       width: 150,
     },
-    {
-      title: "Workplace/Concern",
-      dataIndex: "workplace",
-      width: 150,
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-    },
-    {
-      title: "Section",
-      dataIndex: "section",
-    },
+
     {
       title: "Designation",
       dataIndex: "designation",
