@@ -202,17 +202,17 @@ const header = (updateRowDto) => {
 const ChangedInOutTimeEmpListModal = ({ selectedRow = [] }) => {
   const [rowDto, setRowDto] = useState([]);
   useEffect(() => {
-    // setRowDto([
-    //   ...selectedRow.map((info) => ({
-    //     ...info,
-    //     inDateUpdate: moment(info?.AttendanceDate).format("YYYY-MM-DD"),
-    //     outDateUpdate: moment(info?.AttendanceDate).format("YYYY-MM-DD"),
-    //     // intimeUpdate: moment(info?.inTime).format("hh:mm:ss"),
-    //     // outtimeUpdate: moment(info?.outTime).format("hh:mm:ss"),
-    //     reasonUpdate: "",
-    //   })),
-    // ]);
-    setRowDto([...selectedRow]);
+    setRowDto([
+      ...selectedRow.map((info) => ({
+        ...info,
+        inDateUpdate: info?.AttendanceDate ? moment(info?.AttendanceDate).format("YYYY-MM-DD") : null,
+        outDateUpdate: info?.AttendanceDate ? moment(info?.AttendanceDate).format("YYYY-MM-DD") : null,
+        intimeUpdate: info?.InTime ? moment(info?.InTime, "h:mma") : null,
+        outtimeUpdate: info?.OutTime ? moment(info?.OutTime, "h:mma") : null,
+        reasonUpdate: "",
+      })),
+    ]);
+    // setRowDto([...selectedRow]);
   }, [selectedRow]);
 
   const updateRowDto = (fieldName, value, index) => {
