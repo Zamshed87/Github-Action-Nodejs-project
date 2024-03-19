@@ -175,6 +175,7 @@ export const onGenerateOrReGenerateBonus = (
   }
 
   const bonusObj = location?.state?.bonusObj;
+  console.log("bonusObj",bonusObj)
 
   let selectedEmployeeForBonus = [];
 
@@ -207,7 +208,7 @@ export const onGenerateOrReGenerateBonus = (
         numBasic: 0,
         numBonusAmount: 0,
         intCreatedBy: employeeId,
-        intBonusSetupId: bonusObj?.intBonusSetupId || 0
+        intBonusSetupId: item?.intBonusSetupId || 0
       });
     }
   });
@@ -236,7 +237,6 @@ export const onGenerateOrReGenerateBonus = (
     dteEffectedDateTime: values?.effectiveDate,
     intCreatedBy: employeeId,
     bonusGenerateRowVM: selectedEmployeeForBonus,
-    intBonusSetupId: bonusObj?.intBonusSetupId || 0
   };
 
   const callback = () => {
