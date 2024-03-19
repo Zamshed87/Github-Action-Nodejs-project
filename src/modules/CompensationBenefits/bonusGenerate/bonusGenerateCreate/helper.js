@@ -26,6 +26,9 @@ export const getEmployeeListForBonusGenerateOrRegenerate = (
   let areaParams = area ? `&AreaId=${area}` : "";
   let territoryParams = territory ? `&TerritoryId=${territory}` : "";
 
+  let wgIdList = 0;
+  wgIdList = values?.workplace?.map((item) => item?.value).join(",");
+
   getEmployeeList(
     `/Employee/EligbleEmployeeForBonusGenerateLanding?StrPartName=${
       values?.bonusSystemType?.value === 1
@@ -35,7 +38,7 @@ export const getEmployeeListForBonusGenerateOrRegenerate = (
       isEdit ? location?.state?.bonusObj?.intBonusHeaderId : 0
     }&IntBonusId=${values?.bonusName?.value}&DteEffectedDate=${
       values?.effectiveDate
-    }&IntCreatedBy=0&WorkplaceGroupId=${wgId}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`,
+    }&IntCreatedBy=0&WorkplaceGroupId=${wgId}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}&workplaceListId=${wgIdList}`,
     (res) => {
       const modifiedEmployeeList = [];
 

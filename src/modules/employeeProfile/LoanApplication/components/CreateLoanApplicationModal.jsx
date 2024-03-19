@@ -20,7 +20,6 @@ import FormikTextArea from "../../../../common/FormikTextArea";
 import Loading from "../../../../common/loading/Loading";
 import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
 import { customStyles } from "../../../../utility/selectCustomStyle";
-import { todayDate } from "../../../../utility/todayDate";
 import { attachment_action } from "../../../policyUpload/helper";
 import "../application.css";
 import {
@@ -192,38 +191,6 @@ const CreateLoanApplicationModal = ({
 
   const [resForView, getForView, loadingForView2, setForView] = useAxiosGet([]);
 
-  // useEffect(() => {
-  //   console.log("singleData",singleData)
-  //   if (singleData?.loanApplicationId) {
-  //     getForView(
-  //       `/Employee/LoanInstallmentRowGetById?loanId=${singleData?.loanApplicationId}`,
-  //       (data) => {
-  //         const currentDate = moment();
-  //         const modifyData = {
-  //           row: data?.map((item, index) => {
-  //             const repaymentDate = item?.date
-  //               ? moment(item.date)
-  //               : currentDate.clone().add(index, "months");
-  //             return {
-  //               isHold: item?.isHold || false,
-  //               date: repaymentDate.format("YYYY-MM"),
-  //               paymentYear: repaymentDate.year() || 0,
-  //               paymentMonth: repaymentDate.month() + 1,
-  //               strRemarks: item?.strRemarks || "",
-  //               loanApplicationId: item?.loanApplicationId || 0,
-  //               intInterest: +item?.intInterest || 0,
-  //               totalLoanAmount: +item?.totalLoanAmount || 0,
-  //               intInstallmentNumber: +item?.intInstallmentNumber || 0,
-  //               intInstallmentAmount: +item?.intInstallmentAmount || 0,
-  //               strApplicantName: item?.strApplicantName || "",
-  //             };
-  //           }),
-  //         };
-  //         setTableData(modifyData?.row);
-  //       }
-  //     );
-  //   }
-  // }, [singleData?.loanApplicationId]);
 
   useEffect(() => {
     if (singleData?.loanApplicationId) {
