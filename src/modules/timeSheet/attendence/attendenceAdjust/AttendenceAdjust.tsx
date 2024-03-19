@@ -587,7 +587,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       <PInput
                         type="date"
                         name="date"
-                        label="Select from date"
+                        label="Select From Date"
                         placeholder="Select a date"
                         onChange={() => {
                           AttendanceAdjustmentFilter?.reset();
@@ -605,7 +605,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       <PInput
                         type="date"
                         name="tdate"
-                        label="Select to date"
+                        label="Select To Date"
                         placeholder="Select a date"
                         onChange={() => {
                           AttendanceAdjustmentFilter?.reset();
