@@ -22,6 +22,7 @@ import AddEditFormComponent from "./addEditForm";
 import StyledTable from "./component/StyledTable";
 import { getManualAttendanceApprovalList } from "./helper";
 import { currentYear } from "./utilities/currentYear";
+import { dateFormatterForInput } from "utility/dateFormatter";
 
 const initData = {
   search: "",
@@ -146,13 +147,7 @@ export default function AttendanceApprovalRequest() {
           //
         }}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -224,6 +219,61 @@ export default function AttendanceApprovalRequest() {
                           />
                         </li>
                       )}
+                      <li>
+                        <Tooltip
+                          title="Previous Month 26 to Current Month 25"
+                          arrow
+                        >
+                          <button
+                            style={{
+                              height: "32px",
+                              width: "160px",
+                              fontSize: "12px",
+                              padding: "0px 12px 0px 12px",
+                            }}
+                            className="btn btn-default ml-3"
+                            type="button"
+                            onClick={() => {
+                              //
+                              const currentDate = new Date();
+                              // Get the current month and year
+                              const currentMonth = currentDate.getMonth();
+                              const currentYear = currentDate.getFullYear();
+                              const previousMonth =
+                                currentMonth === 0 ? 11 : currentMonth - 1;
+                              const previousYear =
+                                currentMonth === 0
+                                  ? currentYear - 1
+                                  : currentYear;
+
+                              // Set the dates
+                              const previousMonthDate = new Date(
+                                previousYear,
+                                previousMonth,
+                                26
+                              );
+                              const currentMonthDate = new Date(
+                                currentYear,
+                                currentMonth,
+                                25
+                              );
+                              getManualAttendanceApprovalList(
+                                "MonthlyAttendanceSummaryByEmployeeId",
+                                buId,
+                                employeeId,
+                                null,
+                                null,
+                                setLoading,
+                                setTableData,
+                                dateFormatterForInput(previousMonthDate),
+                                dateFormatterForInput(currentMonthDate)
+                              );
+                            }}
+                          >
+                            Custom [26 - 25]
+                          </button>
+                        </Tooltip>
+                      </li>
                       <li>
                         <DefaultInput
                           classes="input-sm"
