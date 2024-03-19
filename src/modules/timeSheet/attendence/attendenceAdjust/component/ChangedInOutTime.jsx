@@ -1,10 +1,9 @@
 import { DataTable, PInput } from "Components";
 import { TimePicker } from "antd";
-import FormikInput from "common/FormikInput";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
-const header = (updateRowDto) => {
+const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto) => {
   return [
     {
       title: "SL",
@@ -55,16 +54,13 @@ const header = (updateRowDto) => {
             <PInput
               label="Apply All?"
               type="checkbox"
-              name="isUsersection"
+              checked={apply.inTime}
               layout="horizontal"
               onChange={(e) => {
-                //   if (e.target.checked) {
-                //     form.setFieldsValue({
-                //       loginUserId: employeeCode,
-                //       password: "123456",
-                //     });
-                //   }
+                setApply({ ...apply, inTime: e.target.checked });
+                e.target.checked && updateByApplyAll("intimeUpdate");
               }}
+              disabled={rowDto?.[0]?.intimeUpdate ? false : true }
             />
           </div>
         );
@@ -75,29 +71,14 @@ const header = (updateRowDto) => {
         <div>
           <TimePicker
             value={record?.intimeUpdate}
-            //   onChange={onChange as (time: any) => void}
             onChange={(e) => {
-              console.log(e);
-              //   updateRowDto("intimeUpdate", moment(e).format("hh:mm A"), idx);
-                updateRowDto("intimeUpdate", e, idx);
-              //   updateRowDto("intimeUpdate", moment(e).format("hh:mm A"), idx);
+              updateRowDto("intimeUpdate", e, idx);
             }}
             format={"hh:mm A"}
             style={{ width: "100%" }}
+            disabled={apply.inTime && idx !== 0 ? true : false}
+            allowClear={false}
           />
-          {/* <PInput
-            type="time"
-            placeholder="In-Time"
-            // name={reocod?.intimeUpdate}
-            // name={[reocod.intimeUpdate]}
-            // value={moment(reocod?.intimeUpdate).format("hh:mm A")}
-            value={reocod?.intimeUpdate}
-            format={"hh:mm A"}
-            onChange={(e) => {
-              //   updateRowDto("intimeUpdate", moment(e).format("hh:mm A"), idx);
-              updateRowDto("intimeUpdate", moment(e).format("hh:mm A"), idx);
-            }}
-          /> */}
         </div>
       ),
     },
@@ -132,17 +113,15 @@ const header = (updateRowDto) => {
             <PInput
               label="Apply All?"
               type="checkbox"
-              name="isUsersection"
+              // name={apply.outTime}
+              checked={apply.outTime}
               layout="horizontal"
-              // layout="vertical"
               onChange={(e) => {
-                //   if (e.target.checked) {
-                //     form.setFieldsValue({
-                //       loginUserId: employeeCode,
-                //       password: "123456",
-                //     });
-                //   }
+                setApply({ ...apply, outTime: e.target.checked });
+                e.target.checked && updateByApplyAll("outtimeUpdate");
               }}
+              disabled={rowDto?.[0]?.outtimeUpdate ? false : true }
+
             />
           </div>
         );
@@ -151,44 +130,29 @@ const header = (updateRowDto) => {
       width: 150,
       render: (_, record, idx) => (
         <div>
-          {/* <PInput
-            type="time"
-            name={record?.outtimeUpdate}
-            value={record?.outtimeUpdate}
-            placeholder="Out-Time"
-            format={"hh:mm A"}
-            onChange={(e) => {
-              updateRowDto("outtimeUpdate", moment(e).format("hh:mm"), idx);
-            }}
-          /> */}
           <TimePicker
             value={record?.outtimeUpdate}
-            //   onChange={onChange as (time: any) => void}
             onChange={(e) => {
-              console.log(e);
-              //   updateRowDto("intimeUpdate", moment(e).format("hh:mm A"), idx);
-                updateRowDto("outtimeUpdate", e, idx);
-              //   updateRowDto("intimeUpdate", moment(e).format("hh:mm A"), idx);
+              updateRowDto("outtimeUpdate", e, idx);
             }}
             format={"hh:mm A"}
             style={{ width: "100%" }}
+            disabled={apply.outTime && idx !== 0 ? true : false}
+            allowClear={false}
           />
         </div>
       ),
     },
     {
-      title: "Reason",
+      title: "Reason (optional)",
       dataIndex: "reasonUpdate",
       render: (_, record, idx) => (
         <div>
           <PInput
-            // name={"reasonUpdate"}
             type="text"
             placeholder="Write reason"
-            // name={record?.reasonUpdate}
             value={record?.reasonUpdate}
             onChange={(e) => {
-              // console.log(e?.target?.value, idx)
               updateRowDto("reasonUpdate", e?.target?.value, idx);
             }}
           />
@@ -199,38 +163,60 @@ const header = (updateRowDto) => {
   ];
 };
 
-const ChangedInOutTimeEmpListModal = ({ selectedRow = [] }) => {
-  const [rowDto, setRowDto] = useState([]);
+const ChangedInOutTimeEmpListModal = ({
+  selectedRow = [],
+  rowDto = [],
+  setRowDto,
+}) => {
+  const updateRowDto = (fieldName, value, index) => {
+    const data = [...rowDto];
+    data[index][fieldName] = value;
+    setRowDto(data);
+  };
+  const [apply, setApply] = useState({
+    inTime: false,
+    outTime: false,
+  });
+  const updateByApplyAll = (fieldName) => {
+    const firstIndex = moment(
+      moment(rowDto?.[0][fieldName]).format("HH:mm:ss"),
+      "h:mma"
+    );
+    const updateState = [];
+    rowDto.forEach((item) => {
+      const obj = {
+        ...item,
+        [fieldName]: firstIndex,
+      };
+      updateState.push(obj);
+    });
+    setRowDto(updateState);
+  };
+
   useEffect(() => {
     setRowDto([
       ...selectedRow.map((info) => ({
         ...info,
-        inDateUpdate: info?.AttendanceDate ? moment(info?.AttendanceDate).format("YYYY-MM-DD") : null,
-        outDateUpdate: info?.AttendanceDate ? moment(info?.AttendanceDate).format("YYYY-MM-DD") : null,
+        inDateUpdate: info?.AttendanceDate
+          ? moment(info?.AttendanceDate).format("YYYY-MM-DD")
+          : null,
+        outDateUpdate: info?.AttendanceDate
+          ? moment(info?.AttendanceDate).format("YYYY-MM-DD")
+          : null,
         intimeUpdate: info?.InTime ? moment(info?.InTime, "h:mma") : null,
         outtimeUpdate: info?.OutTime ? moment(info?.OutTime, "h:mma") : null,
         reasonUpdate: "",
       })),
     ]);
-    // setRowDto([...selectedRow]);
   }, [selectedRow]);
 
-  const updateRowDto = (fieldName, value, index) => {
-    console.log({ fieldName, value, index });
-    const data = [...rowDto];
-    data[index][fieldName] = value;
-    setRowDto(data);
-  };
-  console.log({ rowDto });
   return (
     <div>
       {rowDto.length > 0 ? (
         <DataTable
-          header={header(updateRowDto)}
+          header={tableHeadColumn(updateRowDto, apply, setApply, updateByApplyAll, rowDto)}
           bordered
           data={rowDto || []}
-          // loading={AttendanceAdjustmentFilter?.loading}
-          // scroll={{ x: 1500 }}
           checkBoxColWidth={50}
         />
       ) : null}
@@ -238,4 +224,4 @@ const ChangedInOutTimeEmpListModal = ({ selectedRow = [] }) => {
   );
 };
 
-export default ChangedInOutTimeEmpListModal;
+export default memo(ChangedInOutTimeEmpListModal);

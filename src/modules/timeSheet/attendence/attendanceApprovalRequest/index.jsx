@@ -257,15 +257,17 @@ export default function AttendanceApprovalRequest() {
                                 currentMonth,
                                 25
                               );
-                              // getManualAttendanceApprovalList(
-                              //   "MonthlyAttendanceSummaryByEmployeeId",
-                              //   buId,
-                              //   employeeId,
-                              //   e.target.value.split("-")[0],
-                              //   e.target.value.split("-")[1],
-                              //   setLoading,
-                              //   setTableData
-                              // );
+                              getManualAttendanceApprovalList(
+                                "MonthlyAttendanceSummaryByEmployeeId",
+                                buId,
+                                employeeId,
+                                null,
+                                null,
+                                setLoading,
+                                setTableData,
+                                dateFormatterForInput(previousMonthDate),
+                                dateFormatterForInput(currentMonthDate)
+                              );
                             }}
                           >
                             Custom [26 - 25]
