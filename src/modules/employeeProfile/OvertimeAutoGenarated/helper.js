@@ -247,3 +247,19 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
     },
   ];
 };
+export const columns = {
+  sl: "SL",
+  strWorkplace: "Workplace",
+  strEmployeeCode: "Emp ID",
+  strEmployeeName: "Employee Name",
+  strDesignation: "Designation",
+  strDepartment: "Department",
+  intBasicSalary: "Basic Salary",
+  intGrossSalary: "Gross Salary",
+  dteAttendanceDate: "Date",
+  strCalendarName: "Calendar Name",
+  strPolicyName: "Policy Name",
+  numMinutes: "Overtime Hours",
+  numPerMinunitRate: "Per Hours.Rate",
+  numTotalAmount: "Amount (BDT)",
+};
