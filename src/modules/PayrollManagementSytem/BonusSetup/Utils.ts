@@ -40,6 +40,9 @@ export const payloadGenerate = (values: any, wgId: number, wgName: string) => {
     strBonusPercentageOn:
       values?.bounsDependOn?.value === 1 ? "Gross" : "Basic",
     numBonusPercentage: values?.bonusPercentage || 0,
+    hrPositionId: values?.hrPosition?.value || 0,
+    hrPositionName: values?.hrPosition?.label || "",
+    isDividedbyServiceLength: values?.isDividedByLength || false
   };
   return data;
 };
