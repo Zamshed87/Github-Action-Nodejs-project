@@ -58,12 +58,19 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
         label: state?.strReligionName || "",
         value: state?.intReligion || 0,
       },
-      // serviceLengthType: {
-      //   label: state?.strReligionName || "",
-      //   value: state?.intReligion || 0
-      // },
+      serviceLengthType: state?.IsServiceLengthInDays
+        ? {
+            label: "Day",
+            value: 1,
+          }
+        : {
+            label: "Month",
+            value: 2,
+          },
       minServiceLengthMonth: state?.intMinimumServiceLengthMonth || 0,
+      minServiceLengthDay: state?.intMinimumServiceLengthDays || 0,
       maxServiceLengthMonth: state?.intMaximumServiceLengthMonth || 0,
+      maxServiceLengthDay: state?.intMaximumServiceLengthDays,
       isDividedByLength: state?.IsDividedbyServiceLength,
     };
     if (state) {
@@ -267,6 +274,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                   label="Bonus Name"
                   name="bonusName"
                   placeholder="Select Bonus Name"
+                  disabled={state}
                   onChange={(value: number, op: any) => {
                     form.setFieldsValue({ bonusName: op });
                   }}
@@ -301,6 +309,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 label="Workplace"
                 placeholder="Select workplace"
                 options={WorkplaceDDL?.data || []}
+                disabled={state}
                 onChange={(value: number, op: any) => {
                   form.setFieldsValue({ workplace: op });
                   form.setFieldsValue({ employmentType: [] });
@@ -323,6 +332,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 filterOption={true}
                 label="HR Position"
                 placeholder="HR Position"
+                disabled={state}
                 onChange={(value, op) => {
                   form.setFieldsValue({
                     hrPosition: op,
@@ -348,7 +358,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                           : "Select Workplace First"
                       }`}
                       options={EmploymentTypeDDL?.data || []}
-                      disabled={!workplace}
+                      disabled={!workplace || state}
                       mode="multiple"
                       maxTagCount={"responsive"}
                       onChange={(value: number, op: any) => {
@@ -401,6 +411,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 label="Religion"
                 name="religion"
                 placeholder="Select Religion"
+                disabled={state}
                 onChange={(value: number, op: any) => {
                   form.setFieldsValue({ religion: op });
                 }}

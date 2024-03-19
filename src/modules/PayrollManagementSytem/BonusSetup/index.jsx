@@ -44,6 +44,7 @@ export default function BonusSetupLanding() {
 
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
+  const [lengthValue, setLengthValue] = useState("");
 
   const [status, setStatus] = useState("");
 
@@ -127,15 +128,36 @@ export default function BonusSetupLanding() {
       filter: false,
     },
     {
-      title: "min.Service Length",
-      dataIndex: "intMinimumServiceLengthMonth",
+      title: "Service Length Type",
+      render: (_, item) => (
+        <>{item?.IsServiceLengthInDays ? "Days" : "Month"}</>
+      ),
       sorter: true,
       filter: false,
     },
     {
-      title: "Max. Service Length",
-      dataIndex: "intMaximumServiceLengthMonth",
-      render: (_, item) => <>{item?.intMaximumServiceLengthMonth || "-"}</>,
+      title: "Min. Service Length",
+      // dataIndex: "intMinimumServiceLengthMonth",
+      render: (_, item) => (
+        <>
+          {item?.intMinimumServiceLengthMonth > 0
+            ? item?.intMinimumServiceLengthMonth
+            : item?.intMinimumServiceLengthDays || "-"}
+        </>
+      ),
+      sorter: true,
+      filter: false,
+    },
+    {
+      title: `Max. Service Length`,
+      // dataIndex: "intMaximumServiceLengthMonth",
+      render: (_, item) => (
+        <>
+          {item?.intMaximumServiceLengthMonth > 0
+            ? item?.intMaximumServiceLengthMonth
+            : item?.intMaximumServiceLengthDays || "-"}
+        </>
+      ),
       sorter: true,
       filter: false,
     },
