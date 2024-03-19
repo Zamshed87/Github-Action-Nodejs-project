@@ -349,8 +349,10 @@ export default function AttendanceApprovalRequest() {
                           <th>Out-Time</th>
                           <th>Manual In-Time</th>
                           <th>Manual Out-Time</th>
-                          <th className="text-center">Actual Attendence</th>
-                          <th className="text-center">Request Attendence</th>
+                          <th className="text-center">Actual Attendance
+</th>
+                          <th className="text-center">Request Attendance
+</th>
                           <th>Remarks</th>
                           <th>
                             <div className="d-flex align-items-center justify-content-center">
