@@ -88,6 +88,26 @@ export const absentDtoCol = (page, paginationSize, headerList) => {
       // fixed: "left",
     },
     {
+      title: "Designation",
+      dataIndex: "designation",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`designationList`],
+      fieldType: "string",
+
+      render: (record) => record?.designation || "N/A",
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`departmentList`],
+      fieldType: "string",
+
+      render: (record) => record?.department || "N/A",
+    },
+    {
       title: "Employee Id",
       dataIndex: "employeeCode",
       sorter: false,
@@ -119,26 +139,6 @@ export const absentDtoCol = (page, paginationSize, headerList) => {
       fieldType: "string",
     },
 
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      sorter: true,
-      filter: true,
-      filterDropDownList: headerList[`designationList`],
-      fieldType: "string",
-
-      render: (record) => record?.designation || "N/A",
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sorter: true,
-      filter: true,
-      filterDropDownList: headerList[`departmentList`],
-      fieldType: "string",
-
-      render: (record) => record?.department || "N/A",
-    },
     {
       title: "Section",
       dataIndex: "section",

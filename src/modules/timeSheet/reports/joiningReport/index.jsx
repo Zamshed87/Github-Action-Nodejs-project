@@ -18,23 +18,27 @@ import PeopleDeskTable, {
 } from "../../../../common/peopleDeskTable";
 import ResetButton from "./../../../../common/ResetButton";
 import { column, getJoiningData, getTableData, joiningDtoCol } from "./helper";
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import MasterFilter from "common/MasterFilter";
 import useDebounce from "utility/customHooks/useDebounce";
 import DefaultInput from "common/DefaultInput";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const todayDate = dateFormatterForInput(new Date());
 const initData = {
   search: "",
   fromDate: todayDate,
   toDate: todayDate,
+  workplaceGroup: "",
+  workplace: "",
 };
 
 export default function JoiningReport() {
   // dispatch
   const dispatch = useDispatch();
-  const { buId, orgId, wgId, wId, wName, wgName } = useSelector(
+  const { buId, orgId, wgId, wId, wName, wgName, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -54,9 +58,9 @@ export default function JoiningReport() {
       pagination?.current,
       pagination?.pageSize,
       isExcel,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       setPages,
-      wId,
+      values?.workplace?.value || wId,
       orgId,
       values?.fromDate || todayDate,
       values?.toDate || todayDate
@@ -66,6 +70,8 @@ export default function JoiningReport() {
 
   // hooks
   const [rowDto, setRowDto] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [loading, setLoading] = useState(false);
   const [buDetails, setBuDetails] = useState({});
   const [pages, setPages] = useState({
@@ -76,6 +82,12 @@ export default function JoiningReport() {
 
   useEffect(() => {
     getData();
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [buId, orgId, wgId, wId]);
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
@@ -151,7 +163,11 @@ export default function JoiningReport() {
                           setLoading && setLoading(true);
                           try {
                             const res = await axios.get(
-                              `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&PageNo=${1}&PageSize=${100000}`
+                              `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+                                values?.workplaceGroup?.value || wgId
+                              }&IntWorkplaceId=${
+                                values?.workplace?.value || wId
+                              }&PageNo=${1}&PageSize=${100000}`
                             );
                             if (res?.data) {
                               if (res?.data < 1) {
@@ -300,7 +316,48 @@ export default function JoiningReport() {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-3 mt-3 pt-2">
+                  <div className="col-lg-3">
+                    <div className="input-field-main">
+                      <label>Workplace Group</label>
+                      <FormikSelect
+                        name="workplaceGroup"
+                        options={[...workplaceGroupDDL] || []}
+                        value={values?.workplaceGroup}
+                        onChange={(valueOption) => {
+                          setWorkplaceDDL([]);
+                          setFieldValue("workplaceGroup", valueOption);
+                          setFieldValue("workplace", "");
+                          if (valueOption?.value) {
+                            getPeopleDeskAllDDL(
+                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                              "intWorkplaceId",
+                              "strWorkplace",
+                              setWorkplaceDDL
+                            );
+                          }
+                        }}
+                        placeholder=""
+                        styles={customStyles}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-3">
+                    <div className="input-field-main">
+                      <label>Workplace</label>
+                      <FormikSelect
+                        name="workplace"
+                        options={[...workplaceDDL] || []}
+                        value={values?.workplace}
+                        onChange={(valueOption) => {
+                          setFieldValue("workplace", valueOption);
+                          getWorkplaceDetails(valueOption?.value, setBuDetails);
+                        }}
+                        placeholder=""
+                        styles={customStyles}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-1 mt-3 pt-2">
                     <button
                       className="btn btn-green btn-green-disable"
                       type="submit"

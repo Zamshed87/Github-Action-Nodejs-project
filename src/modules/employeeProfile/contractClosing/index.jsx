@@ -14,7 +14,7 @@ import FormikInput from "../../../common/FormikInput";
 import FormikSelect from "../../../common/FormikSelect";
 import NoResult from "../../../common/NoResult";
 import ResetButton from "../../../common/ResetButton";
-import { PeopleDeskSaasDDL } from "../../../common/api";
+import { PeopleDeskSaasDDL, getPeopleDeskAllDDL } from "../../../common/api";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable from "../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
@@ -40,6 +40,8 @@ const initData = {
   designation: "",
   contractFromDate: "",
   contractToDate: "",
+  workplace: "",
+  workplaceGroup: "",
 };
 
 export default function ContactClosingReport() {
@@ -47,7 +49,7 @@ export default function ContactClosingReport() {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, buName, wgId } = useSelector(
+  const { buId, buName, wgId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -63,7 +65,8 @@ export default function ContactClosingReport() {
 
   // state
   const [loading, setLoading] = useState(false);
-
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [buDetails, setBuDetails] = useState({});
   const [designationDDL, setDesignationDDL] = useState([]);
 
@@ -140,6 +143,12 @@ export default function ContactClosingReport() {
       "DesignationId",
       "DesignationName"
     );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [buId, wgId]);
 
   const confirmation = (values) => {
@@ -192,7 +201,7 @@ export default function ContactClosingReport() {
             : "",
         }}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          resetForm(initData);
+          // resetForm(initData);
         }}
       >
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
@@ -272,7 +281,7 @@ export default function ContactClosingReport() {
                                   setFieldValue("search", "");
                                   getContractClosingInfo(
                                     buId,
-                                    wgId,
+                                    values?.workplaceGroup?.value || wgId,
                                     setRowDto,
                                     setLoading,
                                     "",
@@ -313,7 +322,7 @@ export default function ContactClosingReport() {
                                 } else {
                                   getContractClosingInfo(
                                     buId,
-                                    wgId,
+                                    values?.workplaceGroup?.value || wgId,
                                     setRowDto,
                                     setLoading,
                                     "",
@@ -331,7 +340,106 @@ export default function ContactClosingReport() {
                         </ul>
                       </div>
                     </div>
-
+                    <div className="table-card-body">
+                      <div className="card-style mb-3">
+                        <div className="row">
+                          {/* <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>From Joining Date</label>
+                              <FormikInput
+                                classes="input-sm"
+                                value={values?.fromDate}
+                                placeholder="From Joining Date"
+                                name="fromDate"
+                                type="date"
+                                className="form-control"
+                                onChange={(e) => {
+                                  setFieldValue("fromDate", e.target.value);
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>To Joining Date</label>
+                              <FormikInput
+                                classes="input-sm"
+                                value={values?.toDate}
+                                placeholder="To Joining Date"
+                                name="toDate"
+                                type="date"
+                                className="form-control"
+                                onChange={(e) => {
+                                  setFieldValue("toDate", e.target.value);
+                                }}
+                              />
+                            </div>
+                          </div> */}
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace Group</label>
+                              <FormikSelect
+                                name="workplaceGroup"
+                                options={[...workplaceGroupDDL] || []}
+                                value={values?.workplaceGroup}
+                                onChange={(valueOption) => {
+                                  setWorkplaceDDL([]);
+                                  setFieldValue("workplaceGroup", valueOption);
+                                  setFieldValue("workplace", "");
+                                  if (valueOption?.value) {
+                                    getPeopleDeskAllDDL(
+                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                      "intWorkplaceId",
+                                      "strWorkplace",
+                                      setWorkplaceDDL
+                                    );
+                                  }
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace</label>
+                              <FormikSelect
+                                name="workplace"
+                                options={[...workplaceDDL] || []}
+                                value={values?.workplace}
+                                onChange={(valueOption) => {
+                                  setFieldValue("workplace", valueOption);
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-1">
+                            <button
+                              // disabled={!values?.fromDate || !values?.toDate}
+                              style={{ marginTop: "21px" }}
+                              className="btn btn-green"
+                              onClick={() => {
+                                getContractClosingInfo(
+                                  buId,
+                                  values?.workplaceGroup?.value || wgId,
+                                  setRowDto,
+                                  setLoading,
+                                  "",
+                                  pages?.current,
+                                  pages?.pageSize,
+                                  setPages,
+                                  true
+                                );
+                              }}
+                            >
+                              View
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     {rowDto?.length > 0 ? (
                       <>
                         <PeopleDeskTable

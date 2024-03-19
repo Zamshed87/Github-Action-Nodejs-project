@@ -32,6 +32,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const BonusAllLanding = useApiRequest([]);
   const CheckBounsExist = useApiRequest({});
   const CRUDBonusSetup = useApiRequest({});
+  const positionDDL = useApiRequest([]);
 
   // Life Cycle Hooks
   useEffect(() => {
@@ -92,6 +93,28 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       },
     });
   };
+  const getEmployeePosition = () => {
+    const { workplace } = form.getFieldsValue(true);
+
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId || 0,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+  };
+
   const getEmploymentTypeDDL = () => {
     const { workplace } = form.getFieldsValue();
     EmploymentTypeDDL?.action({
@@ -157,7 +180,10 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
     <>
       <PForm
         form={form}
-        initialValues={{ serviceLengthType: 2 /* 1 for Month */ }}
+        initialValues={{
+          serviceLengthType: 2,/* 1 for Month */
+          isDividedByLength: false,
+        }}
         onValuesChange={(changedFields, allFields) => {
           const { bonusName, workplace } = allFields;
 
@@ -233,6 +259,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                   form.setFieldsValue({ workplace: op });
                   form.setFieldsValue({ employmentType: [] });
                   getEmploymentTypeDDL();
+                  getEmployeePosition();
                 }}
                 rules={[
                   {
@@ -240,6 +267,22 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                     message: "Please Select Workplace",
                   },
                 ]}
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PSelect
+                options={positionDDL?.data || []}
+                name="hrPosition"
+                showSearch
+                filterOption={true}
+                label="HR Position"
+                placeholder="HR Position"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    hrPosition: op,
+                  });
+                }}
+                rules={[{ required: true, message: "HR Position is required" }]}
               />
             </Col>
             <Form.Item
@@ -449,6 +492,19 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                           }),
                         ]}
                         min={0}
+                      />
+                    </Col>
+                    <Col md={8} sm={24} style={{ marginTop: "20px" }}>
+                      <PInput
+                        label="Divided by Service Length?"
+                        type="checkbox"
+                        name="isDividedByLength"
+                        layout="horizontal"
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            form.setFieldsValue({});
+                          }
+                        }}
                       />
                     </Col>
                   </>

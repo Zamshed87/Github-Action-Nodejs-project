@@ -27,8 +27,10 @@ import {
   onGetMonthlyAttendanceReport,
 } from "./helper";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initialValues = {
   search: "",
@@ -44,7 +46,7 @@ const MonthlyAttendanceReport = () => {
 
   const {
     permissionList,
-    profileData: { orgId, buId, wgId, wId },
+    profileData: { orgId, buId, wgId, wId, employeeId },
   } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -58,7 +60,8 @@ const MonthlyAttendanceReport = () => {
   const [buDetails, setBuDetails] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rowData, setRowDto] = useState([]);
-
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -78,16 +81,14 @@ const MonthlyAttendanceReport = () => {
       pages,
       setPages
     );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [wgId]);
 
-  /*   useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
-    );
-  }, [orgId, buId, employeeId]); */
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,7 +105,7 @@ const MonthlyAttendanceReport = () => {
       onGetMonthlyAttendanceReport(
         getMonthlyAttendanceInformation,
         orgId,
-        wgId,
+        values?.workplaceGroup?.value || wgId,
         values,
         setRowDto,
         pages,
@@ -114,7 +115,7 @@ const MonthlyAttendanceReport = () => {
     },
   });
   // page handling function
-  const handleTableChange = (pagination, newRowDto, srcText) => {
+  const handleTableChange = (pagination, newRowDto, srcText, values) => {
     if (newRowDto?.action === "filter") {
       return;
     }
@@ -125,7 +126,7 @@ const MonthlyAttendanceReport = () => {
       return onGetMonthlyAttendanceReport(
         getMonthlyAttendanceInformation,
         orgId,
-        wgId,
+        values?.workplaceGroup?.value || wgId,
         values,
         setRowDto,
         pagination,
@@ -137,7 +138,7 @@ const MonthlyAttendanceReport = () => {
       return onGetMonthlyAttendanceReport(
         getMonthlyAttendanceInformation,
         orgId,
-        wgId,
+        values?.workplaceGroup?.value || wgId,
         values,
         setRowDto,
         pagination,
@@ -167,7 +168,9 @@ const MonthlyAttendanceReport = () => {
                             values?.fromDate
                           }&DteToDate=${
                             values?.toDate
-                          }&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${0}&AccountId=${orgId}&PageNo=1&PageSize=1000&IsPaginated=false`
+                          }&EmployeeId=0&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || wgId
+                          }&WorkplaceId=${0}&AccountId=${orgId}&PageNo=1&PageSize=1000&IsPaginated=false`
                         );
                         if (res?.data) {
                           setLoading(false);
@@ -252,7 +255,7 @@ const MonthlyAttendanceReport = () => {
                       onGetMonthlyAttendanceReport(
                         getMonthlyAttendanceInformation,
                         orgId,
-                        wgId,
+                        values?.workplaceGroup?.value || wgId,
                         values,
                         setRowDto,
                         pages,
@@ -276,7 +279,7 @@ const MonthlyAttendanceReport = () => {
                     onGetMonthlyAttendanceReport(
                       getMonthlyAttendanceInformation,
                       orgId,
-                      wgId,
+                      values?.workplaceGroup?.value || wgId,
                       values,
                       setRowDto,
                       pages,
@@ -288,7 +291,8 @@ const MonthlyAttendanceReport = () => {
                     onGetMonthlyAttendanceReport(
                       getMonthlyAttendanceInformation,
                       orgId,
-                      wgId,
+                      values?.workplaceGroup?.value || wgId,
+
                       values,
                       setRowDto,
                       pages,
@@ -303,7 +307,8 @@ const MonthlyAttendanceReport = () => {
                   onGetMonthlyAttendanceReport(
                     getMonthlyAttendanceInformation,
                     orgId,
-                    wgId,
+                    values?.workplaceGroup?.value || wgId,
+
                     values,
                     setRowDto,
                     pages,
@@ -317,72 +322,7 @@ const MonthlyAttendanceReport = () => {
           </div>
           <div className="table-card-body">
             <div className="card-style mb-2 row px-0 pb-0">
-              {/*     <div className="col-lg-3">
-                <div className="input-field-main">
-                  <label>Business Unit</label>
-                  <FormikSelect
-                    name="businessUnit"
-                    options={businessUnitDDL || []}
-                    value={values?.businessUnit}
-                    onChange={(valueOption) => {
-                      setFieldValue("businessUnit", valueOption);
-                      if (valueOption?.value) {
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${valueOption?.value}&intId=${employeeId}&WorkplaceGroupId=${wgId}`,
-                          "intWorkplaceGroupId",
-                          "strWorkplaceGroup",
-                          setWorkplaceGroupDDL
-                        );
-                      }
-                    }}
-                    placeholder=""
-                    styles={customStyles}
-                  />
-                </div>
-              </div> */}
-              {/*    <div className="col-lg-3">
-                <div className="input-field-main">
-                  <label>Workplace Group</label>
-                  <FormikSelect
-                    name="workplaceGroup"
-                    options={workplaceGroupDDL || []}
-                    value={values?.workplaceGroup}
-                    onChange={(valueOption) => {
-                      setValues((prev) => ({
-                        ...prev,
-                        workplace: "",
-                        workplaceGroup: valueOption,
-                      }));
-                      if (valueOption?.value) {
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                          "intWorkplaceId",
-                          "strWorkplace",
-                          setWorkplaceDDL
-                        );
-                      }
-                    }}
-                    placeholder=""
-                    styles={customStyles}
-                  />
-                </div>
-              </div> */}
-              {/*     <div className="col-lg-3">
-                <div className="input-field-main">
-                  <label>Workplace</label>
-                  <FormikSelect
-                    name="workplace"
-                    options={workplaceDDL || []}
-                    value={values?.workplace}
-                    onChange={(valueOption) => {
-                      setFieldValue("workplace", valueOption);
-                    }}
-                    placeholder=""
-                    styles={customStyles}
-                  />
-                </div>
-              </div> */}
-              <div className="col-lg-3">
+              <div className="col-lg-2">
                 <div className="input-field-main">
                   <label>From Date</label>
                   <DefaultInput
@@ -398,7 +338,7 @@ const MonthlyAttendanceReport = () => {
                   />
                 </div>
               </div>
-              <div className="col-lg-3">
+              <div className="col-lg-2">
                 <div className="input-field-main">
                   <label>To Date</label>
                   <DefaultInput
@@ -414,7 +354,47 @@ const MonthlyAttendanceReport = () => {
                   />
                 </div>
               </div>
-
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Workplace Group</label>
+                  <FormikSelect
+                    name="workplaceGroup"
+                    options={[...workplaceGroupDDL] || []}
+                    value={values?.workplaceGroup}
+                    onChange={(valueOption) => {
+                      setWorkplaceDDL([]);
+                      setFieldValue("workplaceGroup", valueOption);
+                      setFieldValue("workplace", "");
+                      if (valueOption?.value) {
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                          "intWorkplaceId",
+                          "strWorkplace",
+                          setWorkplaceDDL
+                        );
+                      }
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Workplace</label>
+                  <FormikSelect
+                    name="workplace"
+                    options={[...workplaceDDL] || []}
+                    value={values?.workplace}
+                    onChange={(valueOption) => {
+                      setFieldValue("workplace", valueOption);
+                      getWorkplaceDetails(valueOption?.value, setBuDetails);
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
               <div className="col-lg-1">
                 <button
                   type="button"
@@ -439,7 +419,12 @@ const MonthlyAttendanceReport = () => {
                   pages?.pageSize
                 )}
                 handleTableChange={({ pagination, newRowDto }) =>
-                  handleTableChange(pagination, newRowDto, values?.search || "")
+                  handleTableChange(
+                    pagination,
+                    newRowDto,
+                    values?.search || "",
+                    values
+                  )
                 }
                 pages={pages?.pageSize}
                 pagination={pages}

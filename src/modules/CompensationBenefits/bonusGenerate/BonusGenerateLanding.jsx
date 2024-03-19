@@ -19,7 +19,11 @@ import {
   setFirstLevelNameAction,
 } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../utility/customColor";
-import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
+import {
+  getDateOfYear,
+  monthFirstDate,
+  monthLastDate,
+} from "../../../utility/dateFormatter";
 // import { customStyles } from "../../../utility/selectCustomStyle";
 import { todayDate } from "../../../utility/todayDate";
 import {
@@ -45,7 +49,7 @@ const initialValues = {
   yearId: new Date().getFullYear(),
   effectiveDate: todayDate(),
   search: "",
-  filterFromDate: monthFirstDate(),
+  filterFromDate: getDateOfYear("first"),
   filterToDate: monthLastDate(),
 };
 
@@ -183,7 +187,7 @@ const BonusGenerateLanding = () => {
     initialValues: {
       ...initialValues,
       filterFromDate:
-        compensationBenefits?.bonusGenerate?.fromDate || monthFirstDate(),
+        compensationBenefits?.bonusGenerate?.fromDate || getDateOfYear("first"),
       filterToDate:
         compensationBenefits?.bonusGenerate?.toDate || monthLastDate(),
     },

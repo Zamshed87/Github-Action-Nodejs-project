@@ -19,7 +19,7 @@ import {
 } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
-import { monthFirstDate } from "../../../utility/dateFormatter";
+import { getDateOfYear, monthFirstDate } from "../../../utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 import {
   getAllIncrementAndPromotionLanding,
@@ -87,7 +87,8 @@ function IncrementLanding() {
     initialValues: {
       ...initialValues,
       filterFromDate:
-        compensationBenefits?.incrementLanding?.fromDate || monthFirstDate(),
+        compensationBenefits?.incrementLanding?.fromDate ||
+        getDateOfYear("first"),
       filterToDate:
         compensationBenefits?.incrementLanding?.toDate || todayDate(),
     },
@@ -180,10 +181,9 @@ function IncrementLanding() {
   }, []);
   const [transferNpromotion, getTransferNpromotion, loading1] = useAxiosGet();
 
-
   return (
     <>
-      {(loading || loading1 ) && <Loading />}
+      {(loading || loading1) && <Loading />}
       <form onSubmit={handleSubmit} className="employeeProfile-form-main">
         <div className="employee-profile-main">
           {/* box-employee-profile  */}

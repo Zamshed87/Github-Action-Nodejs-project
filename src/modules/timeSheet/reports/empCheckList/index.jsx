@@ -17,6 +17,9 @@ import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import NoResult from "common/NoResult";
 import DefaultInput from "common/DefaultInput";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
+import { getPeopleDeskAllDDL } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 // import { getSalaryDetailsReportRDLC } from "../reports/salaryDetailsReport/helper";
 
 const validationSchema = Yup.object({});
@@ -28,7 +31,7 @@ const EmpCheckList = () => {
   const { state } = useLocation();
 
   // redux
-  const { orgId, buId, wId, wgId } = useSelector(
+  const { orgId, buId, wId, wgId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -38,6 +41,8 @@ const EmpCheckList = () => {
   // state
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   // eslint-disable-next-line no-unused-vars
 
   // const [tableAllowanceHead, setTableAllowanceHead] = useState([]);
@@ -49,6 +54,8 @@ const EmpCheckList = () => {
     initialValues: {
       fDate: monthFirstDate(),
       tDate: monthLastDate(),
+      workplaceGroup: "",
+      workplace: "",
     },
     validationSchema: validationSchema,
     onSubmit: () => {
@@ -57,7 +64,7 @@ const EmpCheckList = () => {
           "htmlView",
           orgId,
           buId,
-          wId,
+          values?.workplace?.value || wId,
           setLoading,
           setDetailsData,
           values?.fDate,
@@ -85,13 +92,19 @@ const EmpCheckList = () => {
         "htmlView",
         orgId,
         buId,
-        wId,
+        values?.workplace?.value || wId,
         setLoading,
         setDetailsData,
         values?.fDate,
         values?.tDate
       );
     }
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [orgId, buId, wId, wgId]);
 
   useEffect(() => {
@@ -156,6 +169,46 @@ const EmpCheckList = () => {
                 </div>
               </div>
               <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Workplace Group</label>
+                  <FormikSelect
+                    name="workplaceGroup"
+                    options={[...workplaceGroupDDL] || []}
+                    value={values?.workplaceGroup}
+                    onChange={(valueOption) => {
+                      setWorkplaceDDL([]);
+                      setFieldValue("workplaceGroup", valueOption);
+                      setFieldValue("workplace", "");
+                      if (valueOption?.value) {
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                          "intWorkplaceId",
+                          "strWorkplace",
+                          setWorkplaceDDL
+                        );
+                      }
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Workplace</label>
+                  <FormikSelect
+                    name="workplace"
+                    options={[...workplaceDDL] || []}
+                    value={values?.workplace}
+                    onChange={(valueOption) => {
+                      setFieldValue("workplace", valueOption);
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
+              <div className="col-1">
                 <button
                   style={{ marginTop: "21px" }}
                   className="btn btn-green btn-green-disable"
@@ -183,7 +236,9 @@ const EmpCheckList = () => {
                           }
 
                           downloadFile(
-                            `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}`,
+                            `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${
+                              values?.workplace?.value || wId
+                            }`,
                             "Employee CheckList Report",
                             "xlsx",
                             setLoading
@@ -217,7 +272,9 @@ const EmpCheckList = () => {
                             return toast.warn("No Data Found");
                           } else {
                             getPDFAction(
-                              `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${wId}`,
+                              `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${
+                                values?.workplace?.value || wId
+                              }`,
                               setLoading
                             );
                           }
