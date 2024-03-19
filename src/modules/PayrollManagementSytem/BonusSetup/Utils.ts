@@ -15,6 +15,7 @@ export const bounusDependsOnList = [
 ];
 
 export const payloadGenerate = (values: any, wgId: number, wgName: string) => {
+  console.log("values",values)
   const data = {
     intBonusSetupId: 0,
     strPartName: "BonusSetupCreate",
@@ -38,7 +39,7 @@ export const payloadGenerate = (values: any, wgId: number, wgName: string) => {
     intMinimumServiceLengthDays: values?.minServiceLengthDay || 0,
     intMaximumServiceLengthDays: values?.maxServiceLengthDay || 0,
     strBonusPercentageOn:
-      values?.bounsDependOn?.value === 1 ? "Gross" : "Basic",
+      values?.bounsDependOn === 1 ? "Gross" : "Basic",
     numBonusPercentage: values?.bonusPercentage || 0,
     hrPositionId: values?.hrPosition?.value || 0,
     hrPositionName: values?.hrPosition?.label || "",
