@@ -6,15 +6,21 @@ export const getManualAttendanceApprovalList = async (
   partType,
   businessUnitId,
   employeeId,
-  year,
-  month,
+  year = null,
+  month = null,
   setLoading,
-  setter
+  setter,
+  fromDate = null,
+  toDate  = null,
 ) => {
   setLoading && setLoading(true);
+  const intYear = year ? `&intYear=${year}` : "";
+  const intMonth = month ? `&intMonth=${month}` : "";
+  const strfromDate =  fromDate ? `&fromDate=${fromDate}` : "";
+  const stToDate = toDate ? `&toDate=${toDate}` : "";
   try {
     const res = await Axios.get(
-      `/Employee/TimeSheetAllLanding?PartType=${partType}&BuninessUnitId=${businessUnitId}&intId=${employeeId}&intYear=${year}&intMonth=${month}`
+      `/Employee/TimeSheetAllLanding?PartType=${partType}&BuninessUnitId=${businessUnitId}&intId=${employeeId}${intYear}${intMonth}${strfromDate}${stToDate}`
     );
     setLoading && setLoading(false);
     setter(res?.data);

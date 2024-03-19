@@ -13,6 +13,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { PModal } from "Components/Modal";
 import AddEditForm from "./Bonus/CreateBouns";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { useLocation, useHistory } from "react-router-dom";
 type TCreateBonusSetup = unknown;
 const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   // Data From Store
@@ -22,8 +23,53 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   );
   // Form Instance
   const [form] = Form.useForm();
+  const history = useHistory();
+  const { state }: any = useLocation();
+  console.log(state);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const formData = {
+      bonusName: {
+        label: state?.strBonusName || "",
+        value: state?.intBonusId || 0,
+      },
+      workplace: {
+        label: state?.strWorkplace || "",
+        value: state?.intWorkPlaceId || 0,
+      },
+      hrPosition: {
+        label: state?.HrPositionName || "",
+        value: state?.HrPositionId || 0,
+      },
+      employmentType: [
+        {
+          label: state?.strEmploymentType || "",
+          value: state?.intEmploymentTypeId || 0,
+        },
+      ],
+      bounsDependOn: {
+        label: state?.strBonusPercentageOn || "",
+        value: 0,
+      },
+      bonusPercentage: state?.numBonusPercentage || 0,
+      religion: {
+        label: state?.strReligionName || "",
+        value: state?.intReligion || 0,
+      },
+      // serviceLengthType: {
+      //   label: state?.strReligionName || "",
+      //   value: state?.intReligion || 0
+      // },
+      minServiceLengthMonth: state?.intMinimumServiceLengthMonth || 0,
+      maxServiceLengthMonth: state?.intMaximumServiceLengthMonth || 0,
+      isDividedByLength: state?.IsDividedbyServiceLength,
+    };
+    if (state) {
+      form.setFieldsValue(formData);
+    }
+  }, [state]);
 
   // Api Actions
   const ReligionDDL = useApiRequest([]);
@@ -156,6 +202,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       intCreatedBy: employeeId,
       isActive: true,
     };
+
     CRUDBonusSetup?.action({
       method: "post",
       urlKey: "CRUDBonusSetup",
@@ -163,10 +210,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
         ...commonData,
         ...payload,
       },
-      // onSuccess: (data) => {
-      //   form.resetFields();
-      //   getBounsList();
-      // },
+      onSuccess: () => {
+        history.push("/administration/payrollConfiguration/bonusSetup");
+      },
     });
   };
   const [open, setOpen] = useState(false);
@@ -181,7 +227,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       <PForm
         form={form}
         initialValues={{
-          serviceLengthType: 2,/* 1 for Month */
+          serviceLengthType: 2 /* 1 for Month */,
           isDividedByLength: false,
         }}
         onValuesChange={(changedFields, allFields) => {
@@ -494,23 +540,23 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                         min={0}
                       />
                     </Col>
-                    <Col md={8} sm={24} style={{ marginTop: "20px" }}>
-                      <PInput
-                        label="Divided by Service Length?"
-                        type="checkbox"
-                        name="isDividedByLength"
-                        layout="horizontal"
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            form.setFieldsValue({});
-                          }
-                        }}
-                      />
-                    </Col>
                   </>
                 );
               }}
             </Form.Item>
+            <Col md={8} sm={24} style={{ marginTop: "20px" }}>
+              <PInput
+                label="Divided by Service Length?"
+                type="checkbox"
+                name="isDividedByLength"
+                layout="horizontal"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    form.setFieldsValue({});
+                  }
+                }}
+              />
+            </Col>
           </Row>
         </PCard>
       </PForm>
