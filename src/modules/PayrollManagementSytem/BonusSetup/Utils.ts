@@ -15,7 +15,7 @@ export const bounusDependsOnList = [
 ];
 
 export const payloadGenerate = (values: any, wgId: number, wgName: string) => {
-  console.log("values",values)
+  console.log("values", values);
   const data = {
     intBonusSetupId: 0,
     strPartName: "BonusSetupCreate",
@@ -34,16 +34,23 @@ export const payloadGenerate = (values: any, wgId: number, wgName: string) => {
       intEmploymentTypeId: type?.value,
       strEmploymentType: type?.label,
     })),
+    hrPositionList: values?.hrPosition?.map((type: any) => ({
+      intHrPositionId: type?.value,
+      strHrPositionName: type?.label,
+    })),
+    religionList: values?.religion?.map((type: any) => ({
+      intReligionId: type?.value,
+      strReligionName: type?.label,
+    })),
     intMinimumServiceLengthMonth: values?.minServiceLengthMonth || 0,
     intMaximumServiceLengthMonth: values?.maxServiceLengthMonth || 0,
     intMinimumServiceLengthDays: values?.minServiceLengthDay || 0,
     intMaximumServiceLengthDays: values?.maxServiceLengthDay || 0,
-    strBonusPercentageOn:
-      values?.bounsDependOn === 1 ? "Gross" : "Basic",
+    strBonusPercentageOn: values?.bounsDependOn === 1 ? "Gross" : "Basic",
     numBonusPercentage: values?.bonusPercentage || 0,
     hrPositionId: values?.hrPosition?.value || 0,
     hrPositionName: values?.hrPosition?.label || "",
-    isDividedbyServiceLength: values?.isDividedByLength || false
+    isDividedbyServiceLength: values?.isDividedByLength || false,
   };
   return data;
 };
