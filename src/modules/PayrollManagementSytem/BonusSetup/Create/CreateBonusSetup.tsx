@@ -103,7 +103,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
           data[idx].label = item?.ReligionName;
           data[idx].value = item?.ReligionId;
         });
-        data?.length > 1 && data?.unshift({ label: "All", value: 0 });
+        // data?.length > 1 && data?.unshift({ label: "All", value: 0 });
       },
     });
     WorkplaceDDL?.action({
@@ -333,10 +333,10 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 label="HR Position"
                 placeholder="HR Position"
                 disabled={state}
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    hrPosition: op,
-                  });
+                mode="multiple"
+                maxTagCount={"responsive"}
+                onChange={(value: number, op: any) => {
+                  form.setFieldsValue({ hrPosition: op });
                 }}
                 rules={[{ required: true, message: "HR Position is required" }]}
               />
@@ -412,6 +412,8 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 name="religion"
                 placeholder="Select Religion"
                 disabled={state}
+                mode="multiple"
+                maxTagCount={"responsive"}
                 onChange={(value: number, op: any) => {
                   form.setFieldsValue({ religion: op });
                 }}
