@@ -128,6 +128,13 @@ export default function BonusSetupLanding() {
       filter: false,
     },
     {
+      title: "Workplace Name",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      filter: false,
+      width:'120px'
+    },
+    {
       title: "Service Length Type",
       render: (_, item) => (
         <>{item?.IsServiceLengthInDays ? "Days" : "Month"}</>
