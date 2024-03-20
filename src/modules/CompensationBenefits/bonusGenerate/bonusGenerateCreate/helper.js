@@ -175,7 +175,7 @@ export const onGenerateOrReGenerateBonus = (
   }
 
   const bonusObj = location?.state?.bonusObj;
-  console.log("bonusObj",bonusObj)
+  console.log("bonusObj", bonusObj);
 
   let selectedEmployeeForBonus = [];
 
@@ -208,7 +208,9 @@ export const onGenerateOrReGenerateBonus = (
         numBasic: 0,
         numBonusAmount: 0,
         intCreatedBy: employeeId,
-        intBonusSetupId: item?.intBonusSetupId || 0
+        intBonusSetupId: item?.intBonusSetupId || 0,
+        intDepartmentId: item?.intDepartmentId || 0,
+        strDepartmentName: item?.strDepartment || ""
       });
     }
   });
