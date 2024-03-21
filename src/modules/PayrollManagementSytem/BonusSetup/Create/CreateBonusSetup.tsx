@@ -25,7 +25,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const [form] = Form.useForm();
   const history = useHistory();
   const { state }: any = useLocation();
-  console.log(state);
 
   const dispatch = useDispatch();
 
@@ -313,6 +312,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 onChange={(value: number, op: any) => {
                   form.setFieldsValue({ workplace: op });
                   form.setFieldsValue({ employmentType: [] });
+                  form.setFieldsValue({ hrPosition: [] });
                   getEmploymentTypeDDL();
                   getEmployeePosition();
                 }}
