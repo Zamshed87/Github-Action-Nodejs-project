@@ -12,7 +12,6 @@ export const processBulkUploadEmployeeAction = async (
   employeeId
 ) => {
   setLoading && setLoading(true);
-
   try {
     const modifiedData = data.map((item) => ({
       intEmpBulkUploadId: 0,
@@ -77,6 +76,8 @@ export const processBulkUploadEmployeeAction = async (
           ? "Without Salary/Additional OT"
           : "Not Applicable",
       intOtTypeId: +item["OT Type"],
+      strJobLocation: item["Job Location"] || "",
+      strJobTerritory: item["Job Territory"] || "",
     }));
 
     setter(modifiedData);
@@ -84,7 +85,6 @@ export const processBulkUploadEmployeeAction = async (
   } catch (error) {
     setter([]);
     setLoading && setLoading(false);
-    console.log(error);
     toast.warn("Failed to process!");
   }
 };

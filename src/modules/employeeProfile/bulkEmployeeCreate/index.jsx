@@ -46,9 +46,6 @@ export default function BulkEmployeeCreate() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
-  console.log("data",data)
-
   // old way
   // const saveHandler = (values) => {
   //   const emptyCheck = data?.some((item) => item?.strEmployeeCode === "");
@@ -89,7 +86,7 @@ export default function BulkEmployeeCreate() {
       history.push("/profile/employee");
       setData([]);
     };
-    if(isExistSalaryType){
+    if (isExistSalaryType) {
       toast.warn("Salary Type is required");
       return;
     }
@@ -141,21 +138,13 @@ export default function BulkEmployeeCreate() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, resetForm, values }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {isLoading && <Loading />}
@@ -179,8 +168,8 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=171"
-                                  : "/document/downloadfile?id=161"
+                                  ? "/document/downloadfile?id=176"
+                                  : "/document/downloadfile?id=178"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -229,6 +218,12 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th>
                                 <div>Workplace</div>
+                              </th>
+                              <th>
+                                <div>Job Territory</div>
+                              </th>
+                              <th>
+                                <div>Job Location</div>
                               </th>
                               <th>
                                 <div>Department</div>
@@ -353,6 +348,16 @@ export default function BulkEmployeeCreate() {
                                 <td>
                                   <div className="tableBody-title">
                                     {data?.strWorkplace}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {data?.strJobTerritory}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="tableBody-title">
+                                    {data?.strJobLocation}
                                   </div>
                                 </td>
                                 <td>
