@@ -164,16 +164,16 @@ const BonusGenerateCreate = () => {
       setWingDDL
     );
   }, [orgId, buId, wgId]);
-    // for initial
-    useEffect(() => {
-      setWorkplaceDDL([]);
-      getPeopleDeskAllDDL(
-        `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-        "intWorkplaceId",
-        "strWorkplace",
-        setWorkplaceDDL
-      );
-    }, [orgId, buId, employeeId, wgId]);
+  // for initial
+  useEffect(() => {
+    setWorkplaceDDL([]);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
+    );
+  }, [orgId, buId, employeeId, wgId]);
 
   // filter data
   const filterData = (keywords) => {
@@ -431,6 +431,7 @@ const BonusGenerateCreate = () => {
                       className="btn btn-default"
                       type="button"
                       onClick={handleSubmit}
+                      disabled={rowDto?.length <= 0}
                     >
                       {!isEdit ? "Generate" : "Re-Generate"}
                     </button>
