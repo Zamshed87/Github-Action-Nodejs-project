@@ -82,6 +82,7 @@ const BonusGenerateView = () => {
         (res) => {
           setLoading(true);
           modifiedLanding(res);
+          console.log("res", res);
         }
       );
     } else {
@@ -156,6 +157,7 @@ const BonusGenerateView = () => {
       DeptName: "Sub-Total:",
     };
     setLandingData(temp);
+    console.log("temp", temp);
     setLoading(false);
   };
 
@@ -393,11 +395,14 @@ const BonusGenerateView = () => {
                         {!item?.DeptName ? (
                           <div className="d-flex align-items-center">
                             <div className="emp-avatar">
-                              <AvatarComponent
-                                classess=""
-                                letterCount={1}
-                                label={item?.strEmployeeName}
-                              />
+                              {!item?.DeptName?.trim() &&
+                                item?.strEmployeeName && (
+                                  <AvatarComponent
+                                    classess=""
+                                    letterCount={1}
+                                    label={item.strEmployeeName}
+                                  />
+                                )}
                             </div>
                             <div className="ml-2">
                               <span className="tableBody-title">
