@@ -350,9 +350,10 @@ const BonusGenerateView = () => {
                         </thead>
                       </table>
                     </th>
-                    <th rowSpan="2">Bonus Percentage</th>
-                    <th rowSpan="2">Workplace</th>
+                    {/* <th rowSpan="2">Bonus Percentage</th> */}
                     <th rowSpan="2">Workplace Group</th>
+                    <th rowSpan="2">Workplace</th>
+                  
                   </tr>
                 </thead>
                 <tbody>
@@ -490,7 +491,7 @@ const BonusGenerateView = () => {
                           numberWithCommas(item?.numBonusAmount) || 0
                         )}
                       </td>
-                      <td
+                      {/* <td
                         style={{ textAlign: "center" }}
                         className={
                           item?.DeptName === "Sub-Total:" ? "rowClass" : ""
@@ -499,6 +500,15 @@ const BonusGenerateView = () => {
                         {!item?.DeptName?.trim()
                           ? item?.numBonusPercentage + " %"
                           : ""}
+                      </td> */}
+                       <td
+                        className={
+                          item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                        }
+                      >
+                        {!item?.DeptName?.trim()
+                          ? numberWithCommas(item?.strWorkPlaceGroupName)
+                          : null}
                       </td>
                       <td
                         className={
@@ -509,15 +519,7 @@ const BonusGenerateView = () => {
                           ? numberWithCommas(item?.strWorkPlaceName)
                           : null}
                       </td>
-                      <td
-                        className={
-                          item?.DeptName === "Sub-Total:" ? "rowClass" : ""
-                        }
-                      >
-                        {!item?.DeptName?.trim()
-                          ? numberWithCommas(item?.strWorkPlaceGroupName)
-                          : null}
-                      </td>
+                     
                     </tr>
                   ))}
                 </tbody>
