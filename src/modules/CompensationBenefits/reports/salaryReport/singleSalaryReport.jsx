@@ -16,7 +16,7 @@ import BankSalaryReport from "./components/bankSalaryReport";
 import CashSalaryReport from "./components/cashSalaryReport";
 import DigitalBankingSalaryReport from "./components/digitalbankingSalaryReport";
 import HeaderInfoBar from "./components/HeaderInfoBar";
-import { getBuDetails, getSalaryReport } from "./helper";
+import { getSalaryReport } from "./helper";
 import { generateExcelAction } from "./reportExl/allSalaryExcel";
 import {
   allSalaryExcelColumn,
@@ -30,6 +30,7 @@ import {
 } from "./utility/excelColum";
 import { getMonthName } from "../../../../utility/monthUtility";
 import { useMemo } from "react";
+import { getBuDetails } from "common/api";
 // import { getPDFAction } from "../../../../utility/downloadFile";
 
 const initData = {

@@ -27,10 +27,10 @@ import {
 } from "../reports/salaryReport/utility/excelColum";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import {
-  getBuDetails,
   getSalaryGenerateRequestById,
   salaryGenerateApproveReject,
 } from "./helper";
+import { getBuDetails } from "common/api";
 
 const initData = {
   search: "",

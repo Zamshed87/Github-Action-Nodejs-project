@@ -12,7 +12,6 @@ import "./contactBook.css";
 import { generateExcelAction } from "./Excel/excelConvert";
 import {
   empSelfContactBookCol,
-  getBuDetails,
   getEmpContactInfoNew,
 } from "./helper";
 import PeopleDeskTable, {
@@ -21,6 +20,7 @@ import PeopleDeskTable, {
 import MasterFilter from "../../../common/MasterFilter";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
+import { getBuDetails } from "common/api";
 
 const initData = {
   search: "",
