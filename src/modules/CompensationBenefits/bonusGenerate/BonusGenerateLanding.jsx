@@ -21,7 +21,6 @@ import {
 import { gray500 } from "../../../utility/customColor";
 import {
   getDateOfYear,
-  monthFirstDate,
   monthLastDate,
 } from "../../../utility/dateFormatter";
 // import { customStyles } from "../../../utility/selectCustomStyle";
@@ -29,7 +28,6 @@ import { todayDate } from "../../../utility/todayDate";
 import {
   bonusGenerateColumn,
   createBonusGenerateRequest,
-  // getBonusNameDDL,
   getBonusGenerateLanding,
 } from "./helper";
 import "./salaryGenerate.css";
@@ -252,9 +250,9 @@ const BonusGenerateLanding = () => {
       intBusinessUnitId: data?.intBusinessUnitId || values?.businessUnit?.value,
       intBonusId: data?.intBonusId || values?.bonusName?.value,
       intPayrollGroupId: data?.intPayrollGroupId || values?.payrollGroup?.value,
-      intWorkplaceId: data?.intWorkplaceId || values?.workplace?.value,
+      intWorkplaceId: data?.intWorkplaceId || values?.workplace?.value || 0,
       intWorkplaceGroupId:
-        values?.intWorkplaceGroupId || values?.workplaceGroup?.value,
+        data?.intWorkplaceGroupId || values?.workplaceGroup?.value,
       intReligionId: data?.intReligionId || values?.religion?.value,
       dteEffectedDate: data?.dteEffectedDateTime || values?.effectiveDate,
       intCreatedBy: employeeId,
