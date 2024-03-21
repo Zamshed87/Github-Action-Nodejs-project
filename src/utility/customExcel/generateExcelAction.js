@@ -82,15 +82,15 @@ const createExcelFile = ({
     tableHead?.length > 0
       ? customCell(tableHead, tableHeadFontSize, "center")
       : [];
-  const subHeaderList =
+      const subHeaderList =
     subHeader?.length > 0
       ? customCell(subHeader, tableHeadFontSize, "center")
       : [];
-  const tableFooterData =
+      const tableFooterData =
     tableFooter?.length > 0
       ? customCell(tableFooter, tableHeadFontSize, CellAlignment)
       : [];
-  const subHeaderInfoCell =
+      const subHeaderInfoCell =
     subHeaderInfo?.length > 0
       ? customCell(subHeaderInfo, 9, "left", true, "A1:C1", false)
       : [];
@@ -139,6 +139,7 @@ const createExcelFile = ({
           [subHeaderInfoModifed.length > 0 ? "_blank" : null],
           ...subHeaderInfoModifed,
           [subHeaderInfoModifed.length > 0 ? "_blank" : null],
+          [subHeaderList.length > 0 ? "_blank" : null],
           subHeaderList.length > 0 ? [...subHeaderList] : [null],
           subTableBody.length > 0 ? subTableBody : [null],
           ["_blank"],
