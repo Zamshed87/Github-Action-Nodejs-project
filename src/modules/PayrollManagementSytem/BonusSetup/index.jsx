@@ -132,7 +132,14 @@ export default function BonusSetupLanding() {
       dataIndex: "strWorkplace",
       sorter: true,
       filter: false,
-      width:'120px'
+      width: "120px",
+    },
+    {
+      title: "HR Position Name",
+      dataIndex: "HrPositionName",
+      sorter: true,
+      filter: false,
+      width: "120px",
     },
     {
       title: "Service Length Type",
@@ -192,31 +199,31 @@ export default function BonusSetupLanding() {
       sorter: true,
       filter: true,
     },
-    {
-      title: "",
-      dataIndex: "",
-      render: (_, item) => (
-        <div className="d-flex">
-          <Tooltip title="Edit" arrow>
-            <button className="iconButton" type="button">
-              <EditOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!permission?.isEdit)
-                    return toast.warn("You don't have permission");
-                  history.push({
-                    pathname: `/administration/payrollConfiguration/bonusSetup/edit/${item?.intBonusSetupId}`,
-                    state: item,
-                  });
-                }}
-              />
-            </button>
-          </Tooltip>
-        </div>
-      ),
-      sorter: false,
-      filter: false,
-    },
+    // {
+    //   title: "",
+    //   dataIndex: "",
+    //   render: (_, item) => (
+    //     <div className="d-flex">
+    //       <Tooltip title="Edit" arrow>
+    //         <button className="iconButton" type="button">
+    //           <EditOutlined
+    //             onClick={(e) => {
+    //               e.stopPropagation();
+    //               if (!permission?.isEdit)
+    //                 return toast.warn("You don't have permission");
+    //               history.push({
+    //                 pathname: `/administration/payrollConfiguration/bonusSetup/edit/${item?.intBonusSetupId}`,
+    //                 state: item,
+    //               });
+    //             }}
+    //           />
+    //         </button>
+    //       </Tooltip>
+    //     </div>
+    //   ),
+    //   sorter: false,
+    //   filter: false,
+    // },
   ];
 
   return (
