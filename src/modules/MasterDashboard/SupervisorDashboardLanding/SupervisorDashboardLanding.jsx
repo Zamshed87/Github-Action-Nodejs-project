@@ -12,6 +12,8 @@ import moment from "moment";
 import { InfoOutlined } from "@mui/icons-material";
 import EmpInOutModal from "./EmpInOutModal";
 import ViewModal from "../../../common/ViewModal";
+import { useHistory } from "react-router-dom";
+import { shallowEqual, useSelector } from "react-redux";
 
 const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   // const { employeeId, orgId } = useSelector(
@@ -22,7 +24,13 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [value, setValue] = useState(moment());
   const [modalLoading, setModalLoading] = useState(false);
+  const history = useHistory();
 
+  // redux
+  const { buId, wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
   function currMonthName() {
     return value.format("MMM");
   }
@@ -364,8 +372,18 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                     <tbody key={i}>
                       <tr>
                         <td>{i + 1}</td>
-                        <td>
-                          <div className="d-flex justify-content-left align-items-center">
+                        <td
+                          onClick={() =>
+                            history.push({
+                              pathname: `/profile/employee/${item?.employeeId}`,
+                              state: { buId, wgId },
+                            })
+                          }
+                        >
+                          <div
+                            className="d-flex justify-content-left align-items-center"
+                            style={{ cursor: "pointer" }}
+                          >
                             <div>
                               <img src={demoUserIcon} alt="" />
                             </div>
