@@ -23,6 +23,8 @@ import {
 } from "../../../timeSheet/reports/helper";
 import "./attendanceDetails.css";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+import { SaveAlt } from "@mui/icons-material";
+import { gray900 } from "utility/customColor";
 
 const firstDate = monthFirstDate(new Date());
 const lastDate = monthLastDate(new Date());
@@ -231,10 +233,43 @@ export default function EmployeeJobCard() {
                 <div>
                   <div className="table-card">
                     <div className="table-card-heading">
-                      <div>
-                        <Tooltip title="Print" arrow>
+                      <div className="d-flex align-items-center gap-2">
+                        {/* <Tooltip title="Download Excel" arrow>
                           <button
                             className="btn-save"
+                            type="button"
+                            onClick={() => {
+
+                              const excelDataHeader = {
+                                AttendanceDateWithName: 'Attendance Date',
+                                InTime: 'In-Time',
+                                OutTime: 'Out-Time',
+                                LateMin: 'Late Min',
+                                StartTime: 'Start Time',
+                                breakStartTime: 'Break Start',
+                                breakEndTime: 'Break End',
+                                EndTime: 'End Time',
+                                EarlyOut: 'Early Out',
+                                WorkingHours: 'Total Working Hours',
+                                numOverTime: 'Over Time',
+                                CalendarName: 'Calendar Name',
+                                AttStatus: 'Attendance Status',
+                                Remarks: 'Remarks'
+                              }
+                              //
+                            }}
+                          >
+                            <SaveAlt
+                              sx={{
+                                color: gray900,
+                                fontSize: "14px",
+                              }}
+                            />
+                          </button>
+                        </Tooltip> */}
+                        <Tooltip title="Print" arrow>
+                          <button
+                            className="btn-save ml-2"
                             type="button"
                             onClick={() => {
                               getPDFAction(
@@ -365,7 +400,7 @@ export default function EmployeeJobCard() {
                         </li>
                       </ul> */}
                     </div>
-                    <div className="card-style pb-0 mb-2 mt-4">
+                    <div className="card-style pb-0 mb-2 mt-3">
                       <div className="row">
                         <div className="col-lg-3">
                           <div className="input-field-main">
@@ -493,9 +528,15 @@ export default function EmployeeJobCard() {
                                     currentMonth,
                                     25
                                   );
-                                  setFieldValue("fromDate", dateFormatterForInput(previousMonthDate));
-                                  setFieldValue("toDate", dateFormatterForInput(currentMonthDate));
-              
+                                  setFieldValue(
+                                    "fromDate",
+                                    dateFormatterForInput(previousMonthDate)
+                                  );
+                                  setFieldValue(
+                                    "toDate",
+                                    dateFormatterForInput(currentMonthDate)
+                                  );
+
                                   empBasicInfo(
                                     buId,
                                     orgId,

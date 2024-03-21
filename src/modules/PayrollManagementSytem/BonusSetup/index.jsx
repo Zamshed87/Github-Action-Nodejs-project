@@ -44,6 +44,7 @@ export default function BonusSetupLanding() {
 
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
+  const [lengthValue, setLengthValue] = useState("");
 
   const [status, setStatus] = useState("");
 
@@ -127,15 +128,50 @@ export default function BonusSetupLanding() {
       filter: false,
     },
     {
-      title: "min.Service Length",
-      dataIndex: "intMinimumServiceLengthMonth",
+      title: "Workplace Name",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      filter: false,
+      width: "120px",
+    },
+    {
+      title: "HR Position Name",
+      dataIndex: "HrPositionName",
+      sorter: true,
+      filter: false,
+      width: "120px",
+    },
+    {
+      title: "Service Length Type",
+      render: (_, item) => (
+        <>{item?.IsServiceLengthInDays ? "Days" : "Month"}</>
+      ),
       sorter: true,
       filter: false,
     },
     {
-      title: "Max. Service Length",
-      dataIndex: "intMaximumServiceLengthMonth",
-      render: (_, item) => <>{item?.intMaximumServiceLengthMonth || "-"}</>,
+      title: "Min. Service Length",
+      // dataIndex: "intMinimumServiceLengthMonth",
+      render: (_, item) => (
+        <>
+          {item?.intMinimumServiceLengthMonth > 0
+            ? item?.intMinimumServiceLengthMonth
+            : item?.intMinimumServiceLengthDays || "-"}
+        </>
+      ),
+      sorter: true,
+      filter: false,
+    },
+    {
+      title: `Max. Service Length`,
+      // dataIndex: "intMaximumServiceLengthMonth",
+      render: (_, item) => (
+        <>
+          {item?.intMaximumServiceLengthMonth > 0
+            ? item?.intMaximumServiceLengthMonth
+            : item?.intMaximumServiceLengthDays || "-"}
+        </>
+      ),
       sorter: true,
       filter: false,
     },
@@ -163,31 +199,31 @@ export default function BonusSetupLanding() {
       sorter: true,
       filter: true,
     },
-    {
-      title: "",
-      dataIndex: "",
-      render: (_, item) => (
-        <div className="d-flex">
-          <Tooltip title="Edit" arrow>
-            <button className="iconButton" type="button">
-              <EditOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!permission?.isEdit)
-                    return toast.warn("You don't have permission");
-                  history.push({
-                    pathname: `/administration/payrollConfiguration/bonusSetup/edit/${item?.intBonusSetupId}`,
-                    state: item,
-                  });
-                }}
-              />
-            </button>
-          </Tooltip>
-        </div>
-      ),
-      sorter: false,
-      filter: false,
-    },
+    // {
+    //   title: "",
+    //   dataIndex: "",
+    //   render: (_, item) => (
+    //     <div className="d-flex">
+    //       <Tooltip title="Edit" arrow>
+    //         <button className="iconButton" type="button">
+    //           <EditOutlined
+    //             onClick={(e) => {
+    //               e.stopPropagation();
+    //               if (!permission?.isEdit)
+    //                 return toast.warn("You don't have permission");
+    //               history.push({
+    //                 pathname: `/administration/payrollConfiguration/bonusSetup/edit/${item?.intBonusSetupId}`,
+    //                 state: item,
+    //               });
+    //             }}
+    //           />
+    //         </button>
+    //       </Tooltip>
+    //     </div>
+    //   ),
+    //   sorter: false,
+    //   filter: false,
+    // },
   ];
 
   return (

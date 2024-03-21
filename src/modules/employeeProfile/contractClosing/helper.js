@@ -3,21 +3,6 @@ import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
 import { dateFormatter } from "../../../utility/dateFormatter";
 
-export const getBuDetails = async (buId, setter, setLoading) => {
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-    setter([]);
-  }
-};
-
 export const getContractClosingInfo = async (
   buId,
   wgId,

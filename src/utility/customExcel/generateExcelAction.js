@@ -78,19 +78,19 @@ const createExcelFile = ({
       alignment: "center:middle",
     };
   }
-  let tableHeader =
+  const tableHeader =
     tableHead?.length > 0
       ? customCell(tableHead, tableHeadFontSize, "center")
       : [];
-  let subHeaderList =
+  const subHeaderList =
     subHeader?.length > 0
       ? customCell(subHeader, tableHeadFontSize, "center")
       : [];
-  let tableFooterData =
+  const tableFooterData =
     tableFooter?.length > 0
       ? customCell(tableFooter, tableHeadFontSize, CellAlignment)
       : [];
-  let subHeaderInfoCell =
+  const subHeaderInfoCell =
     subHeaderInfo?.length > 0
       ? customCell(subHeaderInfo, 9, "left", true, "A1:C1", false)
       : [];
@@ -174,7 +174,7 @@ const customCell = (
   cellRange,
   isBorder = true
 ) => {
-  let cellArry = [];
+  const cellArry = [];
   arrayOfString.forEach((item) => {
     cellArry.push({
       text: item,

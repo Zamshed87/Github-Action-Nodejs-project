@@ -18,12 +18,12 @@ import {
   bonusGenerateApproveReject,
   createBonusGenExcelHandeler,
   getBonusGenerateLanding,
-  getBuDetails,
 } from "./helper";
 import { toast } from "react-toastify";
 import { getPDFAction } from "../../../utility/downloadFile";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import NoResult from "../../../common/NoResult";
+import { getBuDetails } from "common/api";
 
 const initData = {
   search: "",
