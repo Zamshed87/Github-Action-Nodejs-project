@@ -135,6 +135,13 @@ export default function BonusSetupLanding() {
       width:'120px'
     },
     {
+      title: "HR Position Name",
+      dataIndex: "HrPositionName",
+      sorter: true,
+      filter: false,
+      width:'120px'
+    },
+    {
       title: "Service Length Type",
       render: (_, item) => (
         <>{item?.IsServiceLengthInDays ? "Days" : "Month"}</>
