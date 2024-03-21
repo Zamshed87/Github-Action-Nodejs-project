@@ -5,7 +5,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AntScrollTable from "../../../../common/AntScrollTable";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import { getBuDetails, getPeopleDeskAllDDL } from "../../../../common/api";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import FormikInput from "../../../../common/FormikInput";
 import FormikSelect from "../../../../common/FormikSelect";
@@ -20,7 +20,7 @@ import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import { generateExcelAction } from "./excel/excelConvert";
-import { getBuDetails, getMonthlyPunchDetailsReport } from "./helper";
+import { getMonthlyPunchDetailsReport } from "./helper";
 
 const initData = {
   search: "",

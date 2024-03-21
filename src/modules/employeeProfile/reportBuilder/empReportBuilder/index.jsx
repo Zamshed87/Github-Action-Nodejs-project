@@ -26,10 +26,10 @@ import {
   salaryDetailsExcelData,
 } from "./excel/excelStyle";
 import {
-  getBuDetails,
   getColumnNameForReport,
   getCustomReportData,
 } from "./helper";
+import { getBuDetails } from "common/api";
 
 const initialValues = {
   search: "",
