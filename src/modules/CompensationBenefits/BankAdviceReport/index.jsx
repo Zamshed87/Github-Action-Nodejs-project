@@ -99,7 +99,6 @@ const BankAdviceReport = () => {
       values,
       null,
       null,
-      null,
       setLoading,
       "",
       true,
