@@ -19,9 +19,14 @@ import {
 } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
-import { getDateOfYear, monthFirstDate } from "../../../utility/dateFormatter";
+import {
+  dateFormatter,
+  getDateOfYear,
+  monthFirstDate,
+} from "../../../utility/dateFormatter";
 import { todayDate } from "../../../utility/todayDate";
 import {
+  columns,
   getAllIncrementAndPromotionLanding,
   incrementColumnData,
   searchData,
@@ -30,6 +35,11 @@ import PeopleDeskTable, {
   paginationSize,
 } from "../../../common/peopleDeskTable";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { Tooltip } from "@mui/material";
+import { SaveAlt } from "@mui/icons-material";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
+import { getWorkplaceDetails } from "common/api";
+import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
 
 const initialValues = {
   searchString: "",
@@ -43,6 +53,8 @@ function IncrementLanding() {
   const debounce = useDebounce();
   const dispatch = useDispatch();
   const history = useHistory();
+  const [buDetails, setBuDetails] = useState({});
+
   // const [filterBadges, setFilterBadges] = useState({});
   // const [filterValues, setFilterValues] = useState({});
   // const [filterAnchorEl, setFilterAnchorEl] = useState(null);
@@ -51,7 +63,7 @@ function IncrementLanding() {
   const [loading, setLoading] = useState(false);
   // const [checkedList, setCheckedList] = useState([]);
 
-  const { orgId, buId, wgId } = useSelector(
+  const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -161,6 +173,7 @@ function IncrementLanding() {
 
   useEffect(() => {
     getData(pages);
+    getWorkplaceDetails(wId, setBuDetails);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, wgId]);
 
@@ -189,8 +202,74 @@ function IncrementLanding() {
           {/* box-employee-profile  */}
           {permission?.isView ? (
             <div className="table-card">
-              <div className="table-card-heading">
-                <div></div>
+              <div className="table-card-heading justify-content-between align-items-center">
+                <div>
+                  {" "}
+                  <Tooltip title="Export CSV" arrow>
+                    <button
+                      className="btn-save "
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        if (!rowDto?.length) {
+                          return toast.warn("No Data Found");
+                        }
+                        setLoading(true);
+                        const excelLanding = async () => {
+                          try {
+                            const newData = rowDto?.map((item, idx) => ({
+                              ...item,
+                              sl: idx + 1,
+                              dteEffectiveDate: dateFormatter(
+                                item?.dteEffectiveDate
+                              ),
+                            }));
+                            createCommonExcelFile({
+                              titleWithDate: `Increment - ${dateFormatter(
+                                values?.filterFromDate
+                              )} to ${dateFormatter(values?.filterToDate)}`,
+                              fromDate: "",
+                              toDate: "",
+                              buAddress: buDetails?.strAddress,
+                              businessUnit: buDetails?.strWorkplace,
+                              tableHeader: columns,
+                              getTableData: () =>
+                                getTableDataDailyAttendance(
+                                  newData,
+                                  Object.keys(columns)
+                                ),
+                              tableFooter: [],
+                              extraInfo: {},
+                              tableHeadFontSize: 10,
+                              widthList: {
+                                C: 14,
+                                B: 30,
+                                D: 30,
+                                E: 25,
+                                F: 20,
+                                G: 20,
+                                H: 15,
+                                I: 15,
+                                J: 20,
+                                K: 20,
+                              },
+                              commonCellRange: "A1:J1",
+                              CellAlignment: "left",
+                            });
+                            setLoading(false);
+                          } catch (error) {
+                            setLoading(false);
+                            console.log({ error });
+                            // toast.error(error?.response?.data?.message);
+                          }
+                        };
+                        excelLanding();
+                      }}
+                    >
+                      <SaveAlt sx={{ color: "#637381", fontSize: "16px" }} />
+                    </button>
+                  </Tooltip>
+                </div>
                 <ul className="d-flex flex-wrap">
                   <li>
                     <MasterFilter
