@@ -110,10 +110,8 @@ export default function EmployeeJobCard() {
           ...initData,
           employee: { value: employeeId, label: userName },
         }}
-        onSubmit={(values, { resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values) => {
+          saveHandler(values);
         }}
       >
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
@@ -280,29 +278,9 @@ export default function EmployeeJobCard() {
                                 onClick={() => {
                                   custom26to25LandingDataHandler(
                                     (previousMonthDate, currentMonthDate) => {
-                                      setFieldValue(
-                                        "fromDate",
-                                        previousMonthDate
-                                      );
+                                      setFieldValue("fromDate", previousMonthDate);
                                       setFieldValue("toDate", currentMonthDate);
-                                      empBasicInfo(
-                                        buId,
-                                        orgId,
-                                        values?.employee?.value
-                                          ? values?.employee?.value
-                                          : employeeId,
-                                        setEmpInfo,
-                                        setLoading
-                                      );
-                                      attendanceDetailsReport(
-                                        values?.employee?.value
-                                          ? values?.employee?.value
-                                          : employeeId,
-                                        previousMonthDate,
-                                        currentMonthDate,
-                                        setRowDto,
-                                        setLoading
-                                      );
+                                      saveHandler({...values, fromDate: previousMonthDate, toDate: currentMonthDate})
                                     }
                                   );
                                 }}
