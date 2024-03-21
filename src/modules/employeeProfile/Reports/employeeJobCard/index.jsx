@@ -5,7 +5,7 @@ import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AntTable from "../../../../common/AntTable";
-import { getSearchEmployeeList } from "../../../../common/api";
+import { getBuDetails, getSearchEmployeeList } from "../../../../common/api";
 import Chips from "../../../../common/Chips";
 import FormikInput from "../../../../common/FormikInput";
 import Loading from "../../../../common/loading/Loading";
@@ -25,6 +25,9 @@ import "./attendanceDetails.css";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 import { SaveAlt } from "@mui/icons-material";
 import { gray900 } from "utility/customColor";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
+import { Cell } from "utility/customExcel/createExcelHelper";
+import { toast } from "react-toastify";
 
 const firstDate = monthFirstDate(new Date());
 const lastDate = monthLastDate(new Date());
@@ -41,7 +44,7 @@ export default function EmployeeJobCard() {
     dispatch(setFirstLevelNameAction("Employee Management"));
     document.title = "Job Card";
   }, []);
-  const { buId, orgId, employeeId, userName, wgId } = useSelector(
+  const { buId, orgId, employeeId, userName, wgId, buName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -210,6 +213,10 @@ export default function EmployeeJobCard() {
       },
     ];
   };
+  const [BuDetails, setBuDetails] = useState(null);
+  useEffect(() => {
+    getBuDetails(buId, setBuDetails, setLoading);
+  }, [buId]);
 
   return (
     <>
@@ -234,28 +241,115 @@ export default function EmployeeJobCard() {
                   <div className="table-card">
                     <div className="table-card-heading">
                       <div className="d-flex align-items-center gap-2">
-                        {/* <Tooltip title="Download Excel" arrow>
+                        <Tooltip title="Download Excel" arrow>
                           <button
                             className="btn-save"
                             type="button"
                             onClick={() => {
-
-                              const excelDataHeader = {
-                                AttendanceDateWithName: 'Attendance Date',
-                                InTime: 'In-Time',
-                                OutTime: 'Out-Time',
-                                LateMin: 'Late Min',
-                                StartTime: 'Start Time',
-                                breakStartTime: 'Break Start',
-                                breakEndTime: 'Break End',
-                                EndTime: 'End Time',
-                                EarlyOut: 'Early Out',
-                                WorkingHours: 'Total Working Hours',
-                                numOverTime: 'Over Time',
-                                CalendarName: 'Calendar Name',
-                                AttStatus: 'Attendance Status',
-                                Remarks: 'Remarks'
+                              if(!rowDto?.length > 0){
+                                return  toast.warn("No Data Found");
                               }
+                              const excelDataHeader = {
+                                AttendanceDateWithName: "Attendance Date",
+                                InTime: "In-Time",
+                                OutTime: "Out-Time",
+                                LateMin: "Late Min",
+                                StartTime: "Start Time",
+                                breakStartTime: "Break Start",
+                                breakEndTime: "Break End",
+                                EndTime: "End Time",
+                                EarlyOut: "Early Out",
+                                WorkingHours: "Total Working Hours",
+                                numOverTime: "Over Time",
+                                CalendarName: "Calendar Name",
+                                AttStatus: "Attendance Status",
+                                Remarks: "Remarks",
+                              };
+                              try {
+                                createCommonExcelFile({
+                                  titleWithDate: `Job Card Report `,
+                                  fromDate: "",
+                                  toDate: "",
+                                  buAddress: BuDetails?.strBusinessUnitAddress,
+                                  businessUnit: buName,
+                                  tableHeader: excelDataHeader,
+                                  getTableData: () => {
+                                    const data = rowDto?.map((item) => {
+                                      return Object.keys(excelDataHeader)?.map(
+                                        (key) => {
+                                          const cellValue = item[key];
+                                          const formattedValue = typeof cellValue === "string" && cellValue !== "" && !isNaN(cellValue)
+                                              ? parseFloat(cellValue)
+                                              : cellValue;
+                                          return new Cell(formattedValue || "-", "center", typeof formattedValue === "number" ? "amount" : "text").getCell();
+                                        }
+                                      );
+                                    });
+                                    return data;
+                                  },
+                                  tableFooter: [],
+                                  extraInfo: {},
+                                  tableHeadFontSize: 10,
+                                  widthList: {
+                                    A: 20,
+                                    B: 12,
+                                    C: 12,
+                                    D: 12,
+                                    E: 12,
+                                    F: 12,
+                                    G: 12,
+                                    H: 12,
+                                    I: 12,
+                                    J: 12,
+                                    K: 15,
+                                    L: 25,
+                                    M: 15,
+                                    N: 25,
+                                  },
+                                  commonCellRange: "A1:N1",
+                                  CellAlignment: "left",
+                                  getSubTableData: () => {
+                                    const generateSubHeadData = (obj) => {
+                                      return [
+                                        new Cell(obj?.employeeName || 0, "center", "text").getCell(),
+                                        new Cell(obj?.workplaceGroup || 0, "center", "text").getCell(),
+                                        new Cell(obj?.designation || 0, "center", "text").getCell(),
+                                        new Cell(obj?.department || 0, "center", "text").getCell(),
+                                        new Cell(obj?.totalPresent || 0, "center", "text").getCell(),
+                                        new Cell(obj?.totalLate || 0, "center", "text").getCell(),
+                                        new Cell(obj?.totalLeave || 0, "center", "text").getCell(),
+                                        new Cell(obj?.totalMovement || 0, "center", "text").getCell(),
+                                        new Cell(obj?.totalOffday || 0, "center", "text").getCell(),
+                                        new Cell(obj?.totalAbsent || 0, "center", "text").getCell(),
+                                      ]
+                                    }
+                                    return generateSubHeadData({
+                                      employeeName: `${empInfo?.[0]?.EmployeeName} - ${empInfo?.[0]?.EmployeeCode}`,
+                                      workplaceGroup: empInfo?.[0]?.WorkplaceGroupName || "-",
+                                      designation: empInfo?.[0]?.DesignationName || "-",
+                                      department: empInfo?.[0]?.DepartmentName  || "-",
+                                      totalPresent: `${rowDto?.[0]?.totalPresent || 0} Days`,
+                                      totalLate: `${rowDto?.[0]?.totalLate || 0} Days`,
+                                      totalLeave: `${rowDto?.[0]?.totalLeave || 0} Days`,
+                                      totalMovement: `${rowDto?.[0]?.totalMovement || 0} Days`,
+                                      totalOffday:`${rowDto?.[0]?.totalOffday || 0} Days`,
+                                      totalAbsent: `${rowDto?.[0]?.totalAbsent || 0} Days`,
+                                    })
+                                  },
+                                  subHeaderColumn: {
+                                    employeeName: "Employee & Code",
+                                    workplaceGroup: "Workplace Group",
+                                    designation: "Designation",
+                                    department: "Department",
+                                    totalPresent: "Total Present",
+                                    totalLate: "Total Late",
+                                    totalLeave: "Total Leave",
+                                    totalMovement: "Total Movement",
+                                    totalOffday: "Total Off day",
+                                    totalAbsent: "Total Absent",
+                                  }
+                                });
+                              } catch (error) {}
                               //
                             }}
                           >
@@ -266,7 +360,7 @@ export default function EmployeeJobCard() {
                               }}
                             />
                           </button>
-                        </Tooltip> */}
+                        </Tooltip>
                         <Tooltip title="Print" arrow>
                           <button
                             className="btn-save ml-2"
@@ -670,7 +764,7 @@ export default function EmployeeJobCard() {
                               <strong>{rowDto?.[0]?.totalPresent} Days</strong>{" "}
                             </p>
                             <p>
-                              Total Manual Present: :{" "}
+                              Total Manual Present: {" "}
                               <strong>
                                 {rowDto?.[0]?.totalManualPresent} Days
                               </strong>{" "}
@@ -680,11 +774,11 @@ export default function EmployeeJobCard() {
                               <strong>{rowDto?.[0]?.totalLeave} Days</strong>{" "}
                             </p>
                             <p>
-                              Total Late Time: :{" "}
+                              Total Late Time:{" "}
                               <strong>{rowDto?.[0]?.totalLateMin}</strong>{" "}
                             </p>
                             <p>
-                              Total Early Out Time: :{" "}
+                              Total Early Out Time:{" "}
                               <strong>{rowDto?.[0]?.totalEarlyOutMin}</strong>{" "}
                             </p>
                           </div>
@@ -702,17 +796,17 @@ export default function EmployeeJobCard() {
                               <strong>{rowDto?.[0]?.totalLate} Days</strong>{" "}
                             </p>
                             <p>
-                              Total Manual late: :{" "}
+                              Total Manual late:{" "}
                               <strong>
                                 {rowDto?.[0]?.totalManualLate} Days
                               </strong>{" "}
                             </p>
                             <p>
-                              Total Absent: :{" "}
+                              Total Absent:{" "}
                               <strong>{rowDto?.[0]?.totalAbsent} Days</strong>{" "}
                             </p>
                             <p>
-                              Total Manual Absent: :{" "}
+                              Total Manual Absent:{" "}
                               <strong>
                                 {rowDto?.[0]?.totalManualAbsent} Days
                               </strong>{" "}
@@ -732,15 +826,15 @@ export default function EmployeeJobCard() {
                               <strong>{rowDto?.[0]?.totalEarlyOut} Days</strong>{" "}
                             </p>
                             <p>
-                              Total Holiday: :{" "}
+                              Total Holiday:{" "}
                               <strong>{rowDto?.[0]?.totalHoliday} Days</strong>{" "}
                             </p>
                             <p>
-                              Total Movement: :{" "}
+                              Total Movement:{" "}
                               <strong>{rowDto?.[0]?.totalMovement} Days</strong>{" "}
                             </p>
                             <p>
-                              Total Off day: :{" "}
+                              Total Off day:{" "}
                               <strong>{rowDto?.[0]?.totalOffday} Days</strong>{" "}
                             </p>
                           </div>

@@ -579,7 +579,7 @@ function EmployeeFeatureNew() {
           />
         </PCard>
       </PForm>
-
+    {/* modal not used anymone 🔥 
       <PModal
         open={open}
         title="Create New Employee"
@@ -588,6 +588,7 @@ function EmployeeFeatureNew() {
         maskClosable={false}
         components={
           <>
+         modal not used anymone 🔥
             <AddEditForm
               getData={landingApiCall}
               setIsAddEditForm={setOpen}
@@ -600,6 +601,7 @@ function EmployeeFeatureNew() {
           </>
         }
       />
+      */}
     </>
   ) : (
     <NotPermittedPage />
