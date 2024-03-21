@@ -1,12 +1,12 @@
-import { Clear } from "@mui/icons-material";
+import { Clear, SaveAlt } from "@mui/icons-material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { IconButton, Popover } from "@mui/material";
+import { IconButton, Popover, Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { paginationSize } from "../../../common/AntTable";
-import { PeopleDeskSaasDDL } from "../../../common/api";
+import { PeopleDeskSaasDDL, getWorkplaceDetails } from "../../../common/api";
 import FormikInput from "../../../common/FormikInput";
 import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
@@ -18,6 +18,7 @@ import ViewModal from "../../../common/ViewModal";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray900 } from "../../../utility/customColor";
 import {
+  dateFormatter,
   dateFormatterForInput,
   monthFirstDate,
 } from "../../../utility/dateFormatter";
@@ -26,6 +27,7 @@ import { todayDate } from "../../../utility/todayDate";
 import { getTodayDateAndTime } from "../../../utility/todayDateTime";
 import "./confirmation.css";
 import {
+  columns,
   confirmationEmpAction,
   empConfirmcolumns,
   getEmployeeSalaryInfo,
@@ -33,6 +35,9 @@ import {
 } from "./helper";
 import ViewForm from "./ViewForm";
 import PeopleDeskTable from "../../../common/peopleDeskTable";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
+import { toast } from "react-toastify";
+import { getTableDataDailyAttendance } from "modules/timeSheet/reports/lateReport/helper";
 
 const initData = {
   search: "",
@@ -73,6 +78,8 @@ function Confirmation() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [designationDDL, setDesignationDDL] = useState([]);
+  const [buDetails, setBuDetails] = useState({});
+
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -154,6 +161,8 @@ function Confirmation() {
 
   useEffect(() => {
     getData(monthFirstDate(), todayDate(), "", pages);
+    getWorkplaceDetails(intWorkplaceId, setBuDetails);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, wgId, intWorkplaceId]);
 
@@ -240,6 +249,79 @@ function Confirmation() {
                         <div className="d-flex justify-content-between align-items-center">
                           {rowDto?.length > 0 ? (
                             <>
+                              <Tooltip title="Export CSV" arrow>
+                                <button
+                                  className="btn-save "
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    if (!rowDto?.length) {
+                                      return toast.warn("No Data Found");
+                                    }
+                                    setLoading(true);
+                                    const excelLanding = async () => {
+                                      try {
+                                        const newData = rowDto?.map(
+                                          (item, idx) => ({
+                                            ...item,
+                                            sl: idx + 1,
+                                            confirmationDate: dateFormatter(
+                                              item?.confirmationDate
+                                            ),
+                                            joiningDate: dateFormatter(
+                                              item?.joiningDate
+                                            ),
+                                          })
+                                        );
+                                        createCommonExcelFile({
+                                          titleWithDate: `Confirmation - ${dateFormatter(
+                                            values?.filterFromDate
+                                          )} to ${dateFormatter(
+                                            values?.filterToDate
+                                          )}`,
+                                          fromDate: "",
+                                          toDate: "",
+                                          buAddress: buDetails?.strAddress,
+                                          businessUnit: buDetails?.strWorkplace,
+                                          tableHeader: columns,
+                                          getTableData: () =>
+                                            getTableDataDailyAttendance(
+                                              newData,
+                                              Object.keys(columns)
+                                            ),
+                                          tableFooter: [],
+                                          extraInfo: {},
+                                          tableHeadFontSize: 10,
+                                          widthList: {
+                                            C: 14,
+                                            B: 30,
+                                            D: 30,
+                                            E: 25,
+                                            F: 20,
+                                            G: 20,
+                                            H: 15,
+                                            I: 15,
+                                            J: 20,
+                                            K: 20,
+                                          },
+                                          commonCellRange: "A1:J1",
+                                          CellAlignment: "left",
+                                        });
+                                        setLoading(false);
+                                      } catch (error) {
+                                        setLoading(false);
+                                        console.log({ error });
+                                        // toast.error(error?.response?.data?.message);
+                                      }
+                                    };
+                                    excelLanding();
+                                  }}
+                                >
+                                  <SaveAlt
+                                    sx={{ color: "#637381", fontSize: "16px" }}
+                                  />
+                                </button>
+                              </Tooltip>
                               <h6 className="count">
                                 Total {rowDto[0]?.totalCount} employees
                               </h6>

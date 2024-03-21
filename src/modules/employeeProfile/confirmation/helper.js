@@ -312,3 +312,15 @@ export const empConfirmcolumns = (
     },
   ].filter((item) => !item.hidden);
 };
+export const columns = {
+  sl: "SL",
+  employeeCode: "Employee ID",
+  employeeName: "Employee Name",
+  designationName: "Designation",
+  departmentName: "Department",
+  employmentType: "Employment Type",
+  joiningDate: "Joining Date",
+  supervisorName: "Supervisor",
+  confirmationDate: "Confirmation Date",
+  confirmationStatus: "Status",
+};
