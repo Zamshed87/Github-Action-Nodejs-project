@@ -73,7 +73,7 @@ const createExcelFile = (
           ],
           [
             {
-              text: `${comapanyNameHeader}-${moment().format("LL")}`,
+              text: `${comapanyNameHeader}`,
               fontSize: 15,
               bold: true,
               cellRange: "A1:E1",
