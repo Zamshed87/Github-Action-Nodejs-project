@@ -3,20 +3,7 @@ import AvatarComponent from "../../../../common/AvatarComponent";
 import Chips from "../../../../common/Chips";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 import { dateFormatter } from "../../../../utility/dateFormatter";
-export const getBuDetails = async (buId, setter, setLoading) => {
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-    setter([]);
-  }
-};
+
 export const allEmployeeList = async (
   { orgId, buId, wgId },
   values,

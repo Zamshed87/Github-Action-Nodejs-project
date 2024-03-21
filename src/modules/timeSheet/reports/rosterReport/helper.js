@@ -1,20 +1,8 @@
-import axios from "axios";
 import moment from "moment";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import { gray600 } from "../../../../utility/customColor";
 import { fromToDateList } from "../helper";
-export const getBuDetails = async (buId, setter) => {
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-    }
-  } catch (error) {
-    setter({});
-  }
-};
+
 export const onGetRosterReportForAll = (
   wId,
   getRosterReportInformation,

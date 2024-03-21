@@ -29,9 +29,9 @@ import {
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import {
   getArearSalaryGenerateRequestById,
-  getBuDetails,
   salaryGenerateApproveReject
 } from "./helper";
+import { getBuDetails } from "common/api";
 
 const initData = {
   search: "",

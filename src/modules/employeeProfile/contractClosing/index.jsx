@@ -14,7 +14,7 @@ import FormikInput from "../../../common/FormikInput";
 import FormikSelect from "../../../common/FormikSelect";
 import NoResult from "../../../common/NoResult";
 import ResetButton from "../../../common/ResetButton";
-import { PeopleDeskSaasDDL, getPeopleDeskAllDDL } from "../../../common/api";
+import { PeopleDeskSaasDDL, getBuDetails, getPeopleDeskAllDDL } from "../../../common/api";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable from "../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
@@ -31,7 +31,6 @@ import {
 import {
   contactClosingColumns,
   extendContractEmpAction,
-  getBuDetails,
   getContractClosingInfo,
 } from "./helper";
 

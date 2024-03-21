@@ -20,22 +20,6 @@ import { dateFormatter } from "../../../utility/dateFormatter";
 //   return new Date(year2, month2, 0).getDate();
 // }
 
-export const getBuDetails = async (buId, setter, setLoading) => {
-  setLoading && setLoading(true);
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-    setter([]);
-  }
-};
-
 export const createEditEmpAction = async (
   values,
   buId,

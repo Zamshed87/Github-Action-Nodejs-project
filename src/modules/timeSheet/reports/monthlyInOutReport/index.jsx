@@ -8,6 +8,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import {
+  getBuDetails,
   getPeopleDeskAllDDL,
   getWorkplaceDetails,
 } from "../../../../common/api";
@@ -28,7 +29,6 @@ import { todayDate } from "../../../../utility/todayDate";
 import axios from "axios";
 import {
   fromToDateList,
-  getBuDetails,
   getRosterReport,
   rosterReportDtoCol,
 } from "../helper";
