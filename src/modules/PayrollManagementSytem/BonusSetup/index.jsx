@@ -44,7 +44,6 @@ export default function BonusSetupLanding() {
 
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
-  const [lengthValue, setLengthValue] = useState("");
 
   const [status, setStatus] = useState("");
 
@@ -188,6 +187,13 @@ export default function BonusSetupLanding() {
       filter: false,
     },
     {
+      title: "Divided by Service Length",
+      dataIndex: "IsDividedbyServiceLength",
+      render: (data) => <>{`${data}`}</>,
+      sorter: true,
+      filter: false,
+    },
+    {
       title: "Status",
       dataIndex: "statusValue",
       render: (_, item) => (
@@ -199,31 +205,31 @@ export default function BonusSetupLanding() {
       sorter: true,
       filter: true,
     },
-    // {
-    //   title: "",
-    //   dataIndex: "",
-    //   render: (_, item) => (
-    //     <div className="d-flex">
-    //       <Tooltip title="Edit" arrow>
-    //         <button className="iconButton" type="button">
-    //           <EditOutlined
-    //             onClick={(e) => {
-    //               e.stopPropagation();
-    //               if (!permission?.isEdit)
-    //                 return toast.warn("You don't have permission");
-    //               history.push({
-    //                 pathname: `/administration/payrollConfiguration/bonusSetup/edit/${item?.intBonusSetupId}`,
-    //                 state: item,
-    //               });
-    //             }}
-    //           />
-    //         </button>
-    //       </Tooltip>
-    //     </div>
-    //   ),
-    //   sorter: false,
-    //   filter: false,
-    // },
+    {
+      title: "",
+      dataIndex: "",
+      render: (_, item) => (
+        <div className="d-flex">
+          <Tooltip title="Edit" arrow>
+            <button className="iconButton" type="button">
+              <EditOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!permission?.isEdit)
+                    return toast.warn("You don't have permission");
+                  history.push({
+                    pathname: `/administration/payrollConfiguration/bonusSetup/edit/${item?.intBonusSetupId}`,
+                    state: item,
+                  });
+                }}
+              />
+            </button>
+          </Tooltip>
+        </div>
+      ),
+      sorter: false,
+      filter: false,
+    },
   ];
 
   return (
