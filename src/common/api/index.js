@@ -693,3 +693,20 @@ export const getWorkplaceDetails = async (wId, setter, setLoading) => {
     setter([]);
   }
 };
+
+// this is common getBuDetails detail api for all module
+export const getBuDetails = async (buId = 0, setter, setLoading) => {
+  setLoading?.(true);
+  try {
+    const res = await axios.get(
+      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
+    );
+    if (res?.data) {
+      setter?.(res?.data);
+      setLoading?.(false);
+    }
+  } catch (error) {
+    setLoading?.(false);
+    setter?.([]);
+  }
+};

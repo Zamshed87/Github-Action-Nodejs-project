@@ -341,7 +341,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
     {
       title: "Employee Name",
       dataIndex: "strEmployeeName",
-      fixed: "left",
+      // fixed: "left",
     },
     {
       title: "Designation",

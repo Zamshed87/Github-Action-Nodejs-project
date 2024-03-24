@@ -1,20 +1,8 @@
-import axios from "axios";
 import moment from "moment";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import { gray600 } from "../../../../utility/customColor";
 import { fromToDateList } from "../helper";
-export const getBuDetails = async (buId, setter) => {
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-    }
-  } catch (error) {
-    setter({});
-  }
-};
+
 export const onGetRosterReportForAll = (
   wId,
   getRosterReportInformation,
@@ -62,12 +50,34 @@ export const monthlyRosterReportColumns = (
       fixed: "left",
     },
     {
-      title: () => <span style={{ color: gray600 }}>Employee ID</span>,
-      dataIndex: "EmployeeCode",
+      title: "Work. Group/Location",
+      dataIndex: "strWorkplaceGroup",
+      sorter: false,
+      fixed: "left",
+      filter: false,
+      width: 180,
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "strWorkplace",
+      sorter: false,
+      filter: false,
+      fixed: "left",
+      width: 180,
+    },
+    {
+      title: "Department",
+      dataIndex: "strDepartment",
       sorter: true,
       filter: true,
-      fixed: "left",
-      width: 120,
+      width: 180,
+    },
+    {
+      title: "Section",
+      dataIndex: "strSectionName",
+      sorter: true,
+      filter: true,
+      width: 180,
     },
     {
       title: "Employee Name",
@@ -86,36 +96,16 @@ export const monthlyRosterReportColumns = (
       },
       sorter: true,
       filter: true,
-      fixed: "left",
+      // fixed: "left",
       width: 200,
     },
     {
-      title: "Work. Group/Location",
-      dataIndex: "strWorkplaceGroup",
-      sorter: false,
-      filter: false,
-      width: 180,
-    },
-    {
-      title: "Workplace/Concern",
-      dataIndex: "strWorkplace",
-      sorter: false,
-      filter: false,
-      width: 180,
-    },
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
+      title: () => <span style={{ color: gray600 }}>Employee ID</span>,
+      dataIndex: "EmployeeCode",
       sorter: true,
       filter: true,
-      width: 180,
-    },
-    {
-      title: "Section",
-      dataIndex: "strSectionName",
-      sorter: true,
-      filter: true,
-      width: 180,
+      // fixed: "left",
+      width: 120,
     },
 
     {

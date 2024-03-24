@@ -25,7 +25,7 @@ import {
   getPeopleDeskAllDDL,
   getPeopleDeskWithoutAllDDL,
   getSearchEmployeeList,
-  getSuperVisorLineMangerDottedByWorkplace
+  getSuperVisorLineMangerDottedByWorkplace,
 } from "../../../../../common/api";
 // import {
 //   PeopleDeskSaasDDL,
@@ -81,6 +81,8 @@ const initialValues = {
   region: "",
   area: "",
   territory: "",
+  employmentType: "",
+  hrPosition: "",
 };
 
 export const organizationTypeList = [
@@ -281,6 +283,9 @@ function CreateTransferPromotion() {
   const [departmentDDL, setDepartmentDDL] = useState([]);
   const [designationDDL, setDesignationDDL] = useState([]);
   const [sectionDDL, setSectionDDL] = useState([]);
+  const [employmentTypeDDL, setEmploymentTypeDDL] = useState([]);
+  const [hrPositionDDL, setHrPositionDDL] = useState([]);
+
   // const [supNLineManagerDDL, setSupNLineManagerDDL] = useState([]);
   const [userRoleDDL, setUserRoleDDL] = useState([]);
   const [organizationDDL, setOrganizationDDL] = useState([]);
@@ -625,7 +630,6 @@ function CreateTransferPromotion() {
                   isDisabled={values?.employee}
                 />
               </div>
-
               <div className="col-lg-3 pt-2">
                 <>
                   {values?.employee && (
@@ -652,10 +656,8 @@ function CreateTransferPromotion() {
                   )}
                 </>
               </div>
-
               <div className="col-lg-6"></div>
               {/* first row end */}
-
               {values?.employee && (
                 <>
                   <div className="col-lg-12 my-2">
@@ -675,7 +677,6 @@ function CreateTransferPromotion() {
                   </div>
                 </>
               )}
-
               {/* second row start */}
               <div className="col-lg-12 my-2">
                 <h3
@@ -740,7 +741,6 @@ function CreateTransferPromotion() {
               </div>
               <div className="col-lg-6"></div>
               {/* second row end */}
-
               <div className="col-lg-12 my-2">
                 <h3
                   style={{
@@ -754,7 +754,6 @@ function CreateTransferPromotion() {
                   Transfer To Information
                 </h3>
               </div>
-
               {/* third row start */}
               <div className="col-md-3">
                 <div className="input-field-main">
@@ -837,12 +836,8 @@ function CreateTransferPromotion() {
                         supervisor: "",
                         lineManager: "",
                         section: "",
-
-                        wing: "",
-                        soleDepo: "",
-                        region: "",
-                        area: "",
-                        territory: "",
+                        hrPosition: "",
+                        employmentType: "",
                       }));
                       getPeopleDeskAllDDL(
                         `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace_All&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
@@ -889,6 +884,8 @@ function CreateTransferPromotion() {
                         supervisor: "",
                         lineManager: "",
                         section: "",
+                        hrPosition: "",
+                        employmentType: "",
                       }));
                       if (valueOption) {
                         getPeopleDeskAllDDL(
@@ -918,6 +915,26 @@ function CreateTransferPromotion() {
                           "DesignationName",
                           setDesignationDDL
                         );
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&BusinessUnitId=${
+                            values?.businessUnit?.value
+                          }&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || wgId
+                          }&intWorkplaceId=${valueOption?.value || 0}&intId=0`,
+                          "Id",
+                          "EmploymentType",
+                          setEmploymentTypeDDL
+                        );
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Position&BusinessUnitId=${
+                            values?.businessUnit?.value
+                          }&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || wgId
+                          }&intWorkplaceId=${valueOption?.value || 0}&intId=0`,
+                          "PositionId",
+                          "PositionName",
+                          setHrPositionDDL
+                        );
                       }
                     }}
                     placeholder=""
@@ -929,7 +946,6 @@ function CreateTransferPromotion() {
                   />
                 </div>
               </div>
-
               {/* marketing setup */}
               {values?.workplaceGroup?.label === "Marketing" && (
                 <div className="col-md-3">
@@ -1092,7 +1108,56 @@ function CreateTransferPromotion() {
                   </div>
                 </div>
               )}
-
+              {/* <div className="col-md-3">
+                <div className="input-field-main">
+                  <label>Employment Type</label>
+                  <FormikSelect
+                    name="employmentType"
+                    options={employmentTypeDDL || []}
+                    value={values?.employmentType}
+                    onChange={(valueOption) => {
+                      setValues((prev) => ({
+                        ...prev,
+                        employmentType: valueOption,
+                        designation: "",
+                        supervisor: "",
+                        lineManager: "",
+                        section: "",
+                      }));
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                    errors={errors}
+                    touched={touched}
+                    isClearable={false}
+                  />
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="input-field-main">
+                  <label>HR Position</label>
+                  <FormikSelect
+                    name="hrPosition"
+                    options={hrPositionDDL || []}
+                    value={values?.hrPosition}
+                    onChange={(valueOption) => {
+                      setValues((prev) => ({
+                        ...prev,
+                        hrPosition: valueOption,
+                        designation: "",
+                        supervisor: "",
+                        lineManager: "",
+                        section: "",
+                      }));
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                    errors={errors}
+                    touched={touched}
+                    isClearable={false}
+                  />
+                </div>
+              </div> */}
               <div className="col-md-3">
                 <div className="input-field-main">
                   <label>Department</label>
@@ -1127,7 +1192,6 @@ function CreateTransferPromotion() {
                   />
                 </div>
               </div>
-
               <div className="col-md-3">
                 <div className="input-field-main">
                   <label>Section</label>
@@ -1150,9 +1214,7 @@ function CreateTransferPromotion() {
                   />
                 </div>
               </div>
-
               {/* third row end  */}
-
               {/* fourth row start  */}
               <div className="col-md-3">
                 <div className="input-field-main">
@@ -1346,7 +1408,6 @@ function CreateTransferPromotion() {
                 </div>
               </div>
               {/* fourth row end  */}
-
               {/* fifth row start  */}
               <div className="col-6 mt-3">
                 <div className="input-main position-group-select">
@@ -1445,7 +1506,6 @@ function CreateTransferPromotion() {
                 </div>
               </div>
               {/* fifth row end  */}
-
               <div className="col-lg-12 mb-2 mt-3">
                 <h3
                   style={{
@@ -1458,7 +1518,6 @@ function CreateTransferPromotion() {
                   Is this employee applicable for role extension
                 </h3>
               </div>
-
               {/* sixth row start */}
               <div className="col-lg-3">
                 <FormikCheckBox
@@ -1481,7 +1540,6 @@ function CreateTransferPromotion() {
               </div>
               <div className="col-lg-9"></div>
               {/* sixth row end */}
-
               {/* User  role extension start */}
               {values?.isRoleExtension && (
                 <>

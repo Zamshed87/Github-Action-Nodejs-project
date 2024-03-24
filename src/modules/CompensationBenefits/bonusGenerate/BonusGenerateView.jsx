@@ -18,12 +18,12 @@ import {
   bonusGenerateApproveReject,
   createBonusGenExcelHandeler,
   getBonusGenerateLanding,
-  getBuDetails,
 } from "./helper";
 import { toast } from "react-toastify";
 import { getPDFAction } from "../../../utility/downloadFile";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import NoResult from "../../../common/NoResult";
+import { getBuDetails } from "common/api";
 
 const initData = {
   search: "",
@@ -82,6 +82,7 @@ const BonusGenerateView = () => {
         (res) => {
           setLoading(true);
           modifiedLanding(res);
+          console.log("res", res);
         }
       );
     } else {
@@ -156,6 +157,7 @@ const BonusGenerateView = () => {
       DeptName: "Sub-Total:",
     };
     setLandingData(temp);
+    console.log("temp", temp);
     setLoading(false);
   };
 
@@ -348,9 +350,10 @@ const BonusGenerateView = () => {
                         </thead>
                       </table>
                     </th>
-                    <th rowSpan="2">Bonus Percentage</th>
-                    <th rowSpan="2">Workplace</th>
+                    {/* <th rowSpan="2">Bonus Percentage</th> */}
                     <th rowSpan="2">Workplace Group</th>
+                    <th rowSpan="2">Workplace</th>
+                  
                   </tr>
                 </thead>
                 <tbody>
@@ -393,11 +396,14 @@ const BonusGenerateView = () => {
                         {!item?.DeptName ? (
                           <div className="d-flex align-items-center">
                             <div className="emp-avatar">
-                              <AvatarComponent
-                                classess=""
-                                letterCount={1}
-                                label={item?.strEmployeeName}
-                              />
+                              {!item?.DeptName?.trim() &&
+                                item?.strEmployeeName && (
+                                  <AvatarComponent
+                                    classess=""
+                                    letterCount={1}
+                                    label={item.strEmployeeName}
+                                  />
+                                )}
                             </div>
                             <div className="ml-2">
                               <span className="tableBody-title">
@@ -485,7 +491,7 @@ const BonusGenerateView = () => {
                           numberWithCommas(item?.numBonusAmount) || 0
                         )}
                       </td>
-                      <td
+                      {/* <td
                         style={{ textAlign: "center" }}
                         className={
                           item?.DeptName === "Sub-Total:" ? "rowClass" : ""
@@ -494,6 +500,15 @@ const BonusGenerateView = () => {
                         {!item?.DeptName?.trim()
                           ? item?.numBonusPercentage + " %"
                           : ""}
+                      </td> */}
+                       <td
+                        className={
+                          item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                        }
+                      >
+                        {!item?.DeptName?.trim()
+                          ? numberWithCommas(item?.strWorkPlaceGroupName)
+                          : null}
                       </td>
                       <td
                         className={
@@ -504,15 +519,7 @@ const BonusGenerateView = () => {
                           ? numberWithCommas(item?.strWorkPlaceName)
                           : null}
                       </td>
-                      <td
-                        className={
-                          item?.DeptName === "Sub-Total:" ? "rowClass" : ""
-                        }
-                      >
-                        {!item?.DeptName?.trim()
-                          ? numberWithCommas(item?.strWorkPlaceGroupName)
-                          : null}
-                      </td>
+                     
                     </tr>
                   ))}
                 </tbody>

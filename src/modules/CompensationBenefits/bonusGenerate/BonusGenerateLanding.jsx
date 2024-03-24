@@ -19,13 +19,15 @@ import {
   setFirstLevelNameAction,
 } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500 } from "../../../utility/customColor";
-import { monthFirstDate, monthLastDate } from "../../../utility/dateFormatter";
+import {
+  getDateOfYear,
+  monthLastDate,
+} from "../../../utility/dateFormatter";
 // import { customStyles } from "../../../utility/selectCustomStyle";
 import { todayDate } from "../../../utility/todayDate";
 import {
   bonusGenerateColumn,
   createBonusGenerateRequest,
-  // getBonusNameDDL,
   getBonusGenerateLanding,
 } from "./helper";
 import "./salaryGenerate.css";
@@ -45,7 +47,7 @@ const initialValues = {
   yearId: new Date().getFullYear(),
   effectiveDate: todayDate(),
   search: "",
-  filterFromDate: monthFirstDate(),
+  filterFromDate: getDateOfYear("first"),
   filterToDate: monthLastDate(),
 };
 
@@ -183,7 +185,7 @@ const BonusGenerateLanding = () => {
     initialValues: {
       ...initialValues,
       filterFromDate:
-        compensationBenefits?.bonusGenerate?.fromDate || monthFirstDate(),
+        compensationBenefits?.bonusGenerate?.fromDate || getDateOfYear("first"),
       filterToDate:
         compensationBenefits?.bonusGenerate?.toDate || monthLastDate(),
     },
@@ -248,9 +250,9 @@ const BonusGenerateLanding = () => {
       intBusinessUnitId: data?.intBusinessUnitId || values?.businessUnit?.value,
       intBonusId: data?.intBonusId || values?.bonusName?.value,
       intPayrollGroupId: data?.intPayrollGroupId || values?.payrollGroup?.value,
-      intWorkplaceId: data?.intWorkplaceId || values?.workplace?.value,
+      intWorkplaceId: data?.intWorkplaceId || values?.workplace?.value || 0,
       intWorkplaceGroupId:
-        values?.intWorkplaceGroupId || values?.workplaceGroup?.value,
+        data?.intWorkplaceGroupId || values?.workplaceGroup?.value,
       intReligionId: data?.intReligionId || values?.religion?.value,
       dteEffectedDate: data?.dteEffectedDateTime || values?.effectiveDate,
       intCreatedBy: employeeId,

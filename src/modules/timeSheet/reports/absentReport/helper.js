@@ -3,20 +3,6 @@ import { dateFormatter } from "utility/dateFormatter";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import { Cell } from "../../../../utility/customExcel/createExcelHelper";
 
-export const getBuDetails = async (buId, setter, setLoading) => {
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-    setter([]);
-  }
-};
 
 // daily attendance generate landing
 export const getAbsentData = async (
@@ -88,6 +74,26 @@ export const absentDtoCol = (page, paginationSize, headerList) => {
       // fixed: "left",
     },
     {
+      title: "Designation",
+      dataIndex: "designation",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`designationList`],
+      fieldType: "string",
+
+      render: (record) => record?.designation || "N/A",
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+      sorter: true,
+      filter: true,
+      filterDropDownList: headerList[`departmentList`],
+      fieldType: "string",
+
+      render: (record) => record?.department || "N/A",
+    },
+    {
       title: "Employee Id",
       dataIndex: "employeeCode",
       sorter: false,
@@ -119,26 +125,6 @@ export const absentDtoCol = (page, paginationSize, headerList) => {
       fieldType: "string",
     },
 
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      sorter: true,
-      filter: true,
-      filterDropDownList: headerList[`designationList`],
-      fieldType: "string",
-
-      render: (record) => record?.designation || "N/A",
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sorter: true,
-      filter: true,
-      filterDropDownList: headerList[`departmentList`],
-      fieldType: "string",
-
-      render: (record) => record?.department || "N/A",
-    },
     {
       title: "Section",
       dataIndex: "section",

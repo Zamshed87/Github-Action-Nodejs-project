@@ -5,7 +5,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AntScrollTable from "../../../../common/AntScrollTable";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import { getBuDetails, getPeopleDeskAllDDL } from "../../../../common/api";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import FormikInput from "../../../../common/FormikInput";
 import FormikSelect from "../../../../common/FormikSelect";
@@ -20,7 +20,7 @@ import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import { generateExcelAction } from "./excel/excelConvert";
-import { getBuDetails, getMonthlyPunchDetailsReport } from "./helper";
+import { getMonthlyPunchDetailsReport } from "./helper";
 
 const initData = {
   search: "",
@@ -315,6 +315,38 @@ const MonthlyPunchReportDetails = () => {
                               />
                             </div>
                           </div> */}
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>From Date</label>
+                              <FormikInput
+                                classes="input-sm"
+                                value={values?.fromDate}
+                                placeholder=""
+                                name="fromDate"
+                                type="date"
+                                className="form-control"
+                                onChange={(e) => {
+                                  setFieldValue("fromDate", e.target.value);
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>To Date</label>
+                              <FormikInput
+                                classes="input-sm"
+                                value={values?.toDate}
+                                placeholder="Month"
+                                name="toDate"
+                                type="date"
+                                className="form-control"
+                                onChange={(e) => {
+                                  setFieldValue("toDate", e.target.value);
+                                }}
+                              />
+                            </div>
+                          </div>
                           <div className="col-lg-3">
                             <div className="input-field-main">
                               <label>Workplace Group</label>
@@ -369,38 +401,6 @@ const MonthlyPunchReportDetails = () => {
                               />
                             </div>
                           </div>{" "}
-                          <div className="col-lg-2">
-                            <div className="input-field-main">
-                              <label>From Date</label>
-                              <FormikInput
-                                classes="input-sm"
-                                value={values?.fromDate}
-                                placeholder=""
-                                name="fromDate"
-                                type="date"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue("fromDate", e.target.value);
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-2">
-                            <div className="input-field-main">
-                              <label>To Date</label>
-                              <FormikInput
-                                classes="input-sm"
-                                value={values?.toDate}
-                                placeholder="Month"
-                                name="toDate"
-                                type="date"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue("toDate", e.target.value);
-                                }}
-                              />
-                            </div>
-                          </div>
                           <div className="col-lg-1">
                             <button
                               disabled={!values?.toDate || !values?.fromDate}

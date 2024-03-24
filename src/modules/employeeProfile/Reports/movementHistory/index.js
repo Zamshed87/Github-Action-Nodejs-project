@@ -4,6 +4,7 @@ import { Tooltip } from "@mui/material";
 import FormikSelect from "common/FormikSelect";
 import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { Form, Formik } from "formik";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { customStyles } from "utility/selectCustomStyle";
@@ -277,7 +278,11 @@ const EmMovementHistory = () => {
                             className="btn-save "
                             onClick={() => {
                               generateExcelAction(
-                                "Movement Report",
+                                `Movement Report ${moment(
+                                  values?.fromDate
+                                ).format("LL")} to ${moment(
+                                  values?.toDate
+                                ).format("LL")}`,
                                 "",
                                 "",
                                 buDetails?.strWorkplace,

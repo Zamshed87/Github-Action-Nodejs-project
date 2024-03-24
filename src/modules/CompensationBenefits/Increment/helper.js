@@ -220,3 +220,14 @@ export const searchData = (keywords, allData, setRowDto) => {
     setRowDto([]);
   }
 };
+export const columns = {
+  sl: "SL",
+  strEmployeeName: "Employee Name",
+  strEmploymentType: "Type",
+  strDesignation: "Designation",
+  strDepartment: "Department",
+  strIncrementDependOn: "Depend On",
+  numIncrementPercentageOrAmount: "Increment Percentage/Amount",
+  dteEffectiveDate: "Effective Data",
+  strStatus: "Status",
+};
