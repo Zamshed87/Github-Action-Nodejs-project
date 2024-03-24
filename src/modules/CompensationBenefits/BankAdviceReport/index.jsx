@@ -9,7 +9,7 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { getPeopleDeskAllDDL } from "../../../common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "../../../common/api";
 import DefaultInput from "../../../common/DefaultInput";
 import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
@@ -44,6 +44,9 @@ const BankAdviceReport = () => {
   const [rowDto, setRowDto] = useState([]);
   const [total, setTotal] = useState(0);
   const [totalInWords, setTotalInWords] = useState("");
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [buDetails, setBuDetails] = useState(false);
 
   // DDl section
   const [bankAccountDDL, setBankAccountDDL] = useState([]);
@@ -185,13 +188,8 @@ const BankAdviceReport = () => {
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${buId}&intId=${employeeId}`,
       "intWorkplaceGroupId",
-      "strWorkplaceGroup"
-    );
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CompanyAccountNo&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
-      "BankAccountId",
-      "BankAccountNo",
-      setBankAccountDDL
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
     );
   }, [orgId, buId, employeeId, wgId]);
 
@@ -253,6 +251,57 @@ const BankAdviceReport = () => {
                         );
                         setRowDto([]);
                       }}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace Group</label>
+                    <FormikSelect
+                      name="workplaceGroup"
+                      options={[...workplaceGroupDDL] || []}
+                      value={values?.workplaceGroup}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("workplaceGroup", valueOption);
+                        setFieldValue("workplace", "");
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                            "intWorkplaceId",
+                            "strWorkplace",
+                            setWorkplaceDDL
+                          );
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CompanyAccountNo&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}`,
+                            "BankAccountId",
+                            "BankAccountNo",
+                            setBankAccountDDL
+                          );
+                        }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+                    <FormikSelect
+                      name="workplace"
+                      options={[...workplaceDDL] || []}
+                      value={values?.workplace}
+                      onChange={(valueOption) => {
+                        setFieldValue("workplace", valueOption);
+                        getWorkplaceDetails(valueOption?.value, setBuDetails);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
                       errors={errors}
                       touched={touched}
                     />
@@ -325,7 +374,7 @@ const BankAdviceReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-lg-3 mt-3">
                   <button
                     className="btn btn-green btn-green-disable"
                     type="submit"
@@ -386,6 +435,27 @@ const BankAdviceReport = () => {
                                     businessUnitDDL[0]?.BusinessUnitAddress
                                   );
                                 });
+                              } else if (
+                                values?.bankAccountNo?.BankAccountNo.includes(
+                                  "101"
+                                )
+                              ) {
+                                excelGenerate((res) => {
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    5,
+                                    res,
+                                    values?.bankAccountNo,
+                                    total,
+                                    totalInWords,
+                                    buDetails
+                                  );
+                                });
                               } else {
                                 excelGenerate((res) => {
                                   generateExcelAction(
@@ -400,7 +470,7 @@ const BankAdviceReport = () => {
                                     values?.bankAccountNo,
                                     total,
                                     totalInWords,
-                                    businessUnitDDL[0]?.BusinessUnitAddress
+                                    buDetails
                                   );
                                 });
                               }

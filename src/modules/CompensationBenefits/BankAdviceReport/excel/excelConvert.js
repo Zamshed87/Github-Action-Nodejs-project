@@ -1,4 +1,5 @@
 import { formatBEFTN } from "./PrintFormats/BFTN";
+import { formatDBBL } from "./PrintFormats/DBBL";
 import { formatIbbl } from "./PrintFormats/IBBL";
 import { formatSCB } from "./PrintFormats/SCB";
 
@@ -97,22 +98,22 @@ const createExcelFile = (
         buAddress
       );
       break;
-    // case 5:
-    //   formatIbbl(
-    //     comapanyNameHeader,
-    //     tableHeader,
-    //     tableData,
-    //     fromDate,
-    //     toDate,
-    //     businessUnit,
-    //     moneyProcessId,
-    //     rowDto,
-    //     bankAccountNo,
-    //     total,
-    //     totalInWords,
-    //     buAddress
-    //   );
-    //   break;
+    case 5:
+      formatDBBL(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        moneyProcessId,
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
+      break;
     default:
   }
 };

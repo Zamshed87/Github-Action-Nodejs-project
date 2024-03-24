@@ -24,6 +24,20 @@ export const bankAdviceValidationSchema = Yup.object().shape({
       label: Yup.string().required("Salary Code is required"),
     })
     .typeError("Salary Code is required"),
+  workplaceGroup: Yup.object()
+    .shape({
+      value: Yup.string().required("Workplace Group is required"),
+      label: Yup.string().required("Workplace Group is required"),
+    })
+    .typeError("Workplace Group is required"),
+
+  workplace: Yup.object()
+    .shape({
+      value: Yup.string().required("Workplace is required"),
+      label: Yup.string().required("Workplace is required"),
+    })
+    .typeError("Workplace is required"),
+
   adviceTo: Yup.object()
     .shape({
       value: Yup.string().required("Advice To is required"),
