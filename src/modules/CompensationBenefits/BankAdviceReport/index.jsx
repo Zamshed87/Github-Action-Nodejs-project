@@ -364,22 +364,46 @@ const BankAdviceReport = () => {
                                 });
                               }
 
-                              excelGenerate((res) => {
-                                generateExcelAction(
-                                  monthYearFormatter(values?.monthYear),
-                                  "",
-                                  "",
-                                  excelColumnFunc(0),
-                                  excelDataFunc(0),
-                                  strBusinessUnit,
-                                  values?.adviceTo?.type,
-                                  res,
-                                  values?.bankAccountNo,
-                                  total,
-                                  totalInWords,
-                                  businessUnitDDL[0]?.BusinessUnitAddress
-                                );
-                              });
+                              if (
+                                values?.bankAccountNo?.BankAccountNo ===
+                                  "01-1308438-01" ||
+                                values?.bankAccountNo?.BankAccountNo ===
+                                  "01-1308439-01"
+                              ) {
+                                excelGenerate((res) => {
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    4,
+                                    res,
+                                    values?.bankAccountNo,
+                                    total,
+                                    totalInWords,
+                                    businessUnitDDL[0]?.BusinessUnitAddress
+                                  );
+                                });
+                              } else {
+                                excelGenerate((res) => {
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    values?.adviceTo?.type,
+                                    res,
+                                    values?.bankAccountNo,
+                                    total,
+                                    totalInWords,
+                                    businessUnitDDL[0]?.BusinessUnitAddress
+                                  );
+                                });
+                              }
                             }}
                           >
                             <DownloadIcon />
