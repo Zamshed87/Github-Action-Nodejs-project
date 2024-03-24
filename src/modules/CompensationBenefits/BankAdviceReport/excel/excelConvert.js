@@ -1,5 +1,6 @@
 import { formatBEFTN } from "./PrintFormats/BFTN";
 import { formatIbbl } from "./PrintFormats/IBBL";
+import { formatSCB } from "./PrintFormats/SCB";
 
 const createExcelFile = (
   comapanyNameHeader,
@@ -17,20 +18,20 @@ const createExcelFile = (
 ) => {
   switch (moneyProcessId) {
     case 0:
-          formatIbbl(
-          comapanyNameHeader,
-          tableHeader,
-          tableData,
-          fromDate,
-          toDate,
-          businessUnit,
-          moneyProcessId,
-          rowDto,
-          bankAccountNo,
-          total,
-          totalInWords,
-          buAddress
-        );
+      formatIbbl(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        moneyProcessId,
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
       break;
     case 1:
       formatBEFTN(
@@ -64,6 +65,54 @@ const createExcelFile = (
         buAddress
       );
       break;
+    // case 3:
+    //   formatIbbl(
+    //     comapanyNameHeader,
+    //     tableHeader,
+    //     tableData,
+    //     fromDate,
+    //     toDate,
+    //     businessUnit,
+    //     moneyProcessId,
+    //     rowDto,
+    //     bankAccountNo,
+    //     total,
+    //     totalInWords,
+    //     buAddress
+    //   );
+    //   break;
+    case 4:
+      formatSCB(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        moneyProcessId,
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
+      break;
+    // case 5:
+    //   formatIbbl(
+    //     comapanyNameHeader,
+    //     tableHeader,
+    //     tableData,
+    //     fromDate,
+    //     toDate,
+    //     businessUnit,
+    //     moneyProcessId,
+    //     rowDto,
+    //     bankAccountNo,
+    //     total,
+    //     totalInWords,
+    //     buAddress
+    //   );
+    //   break;
     default:
   }
 };

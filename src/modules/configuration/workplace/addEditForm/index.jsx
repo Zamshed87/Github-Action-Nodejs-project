@@ -237,6 +237,7 @@ export default function AddEditForm({
                           strWorkplaceGroupCode: newWorkplaceGroup,
                           isActive: true,
                           intAccountId: orgId,
+                          intBusinessUnitId: buId,
                         };
                         createWg.action({
                           urlKey: "SaveWorkplaceGroup",
