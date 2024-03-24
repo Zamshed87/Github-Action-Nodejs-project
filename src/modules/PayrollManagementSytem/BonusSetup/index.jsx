@@ -189,7 +189,7 @@ export default function BonusSetupLanding() {
     {
       title: "Divided by Service Length",
       dataIndex: "IsDividedbyServiceLength",
-      render: (data) => <>{`${data}`}</>,
+      render: (data) => <>{data ? "True" : "False"}</>,
       sorter: true,
       filter: false,
     },
