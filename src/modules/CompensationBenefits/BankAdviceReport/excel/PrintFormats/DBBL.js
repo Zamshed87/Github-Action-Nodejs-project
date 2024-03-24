@@ -21,21 +21,16 @@ const getTableData = (row, BankName, comapanyNameHeader) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(index + 1, "center", "text").getCell(),
+      new Cell(item?.employeeCode || "N/A", "center", "text").getCell(),
+      new Cell(item?.accountName || "N/A", "left", "text").getCell(),
       new Cell(item?.accountNo || "N/A", "left", "text").getCell(),
       new Cell(item?.numNetPayable || 0, "right", "money").getCell(),
-      new Cell(item?.reason || "N/A", "left", "text").getCell(),
-
-      new Cell(item?.accountName || "N/A", "left", "text").getCell(),
-      new Cell("Cr", "center", "text").getCell(),
-      new Cell(comapanyNameHeader, "center", "text").getCell(),
-      new Cell("BDT" || "N/A", "center", "text").getCell(),
-      new Cell("N/A", "left", "text").getCell(),
     ];
   });
   return data;
 };
 
-export const formatSCB = (
+export const formatDBBL = (
   comapanyNameHeader,
   tableHeader,
   tableData,
@@ -53,7 +48,7 @@ export const formatSCB = (
     name: "Bank Advice",
     sheets: [
       {
-        name: "SCB Report",
+        name: "DBL Report",
         gridLine: false,
         rows: [
           [
@@ -69,7 +64,7 @@ export const formatSCB = (
           ],
           [
             {
-              text: buAddress,
+              text: buAddress?.strWorkplace,
               fontSize: 12,
               underline: true,
               bold: true,
@@ -112,7 +107,7 @@ export const formatSCB = (
           ],
           [
             {
-              text: "Branch Manager",
+              text: "The Manager",
               fontSize: 10,
               bold: true,
               cellRange: "A1:F1",
@@ -122,7 +117,7 @@ export const formatSCB = (
           ],
           [
             {
-              text: "Dhanmondi Road# 5 Branch Standard Chartered Bank",
+              text: "Dutch- Bangla Bank Limited",
               fontSize: 10,
               cellRange: "A1:F1",
               merge: true,
@@ -131,7 +126,7 @@ export const formatSCB = (
           ],
           [
             {
-              text: "House 6, Road 5, Dhanmondi R/A, Dhaka-1209.",
+              text: "Local Office Branch, Dilkusha Dhaka.",
               fontSize: 10,
               cellRange: "A1:F1",
               merge: true,
@@ -202,12 +197,28 @@ export const formatSCB = (
           ["_blank*1"],
           [
             {
-              text: "SL No.",
+              text: "SL ",
               fontSize: 8,
               bold: true,
 
               border: "all 000000 thin",
               alignment: "center:middle",
+            },
+            {
+              text: "Employee Id",
+              fontSize: 8,
+              bold: true,
+
+              border: "all 000000 thin",
+              alignment: "left:middle",
+            },
+            {
+              text: "Account Name",
+              fontSize: 8,
+              bold: true,
+
+              border: "all 000000 thin",
+              alignment: "left:middle",
             },
             {
               text: "Bank Account No",
@@ -225,55 +236,8 @@ export const formatSCB = (
               border: "all 000000 thin",
               alignment: "right:middle",
             },
-            {
-              text: "Comments",
-              fontSize: 7,
-              bold: true,
-              border: "all 000000 thin",
-            },
-            {
-              text: "Account Name",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "left:middle",
-            },
-
-            {
-              text: "Dr/Cr",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "center:middle",
-            },
-            {
-              text: "Value Date",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "left:middle",
-            },
-            {
-              text: "Currency",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "left:middle",
-            },
-            {
-              text: "Ref No.",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "left:middle",
-            },
           ],
-          ...getTableData(rowDto, bankAccountNo?.BankName, comapanyNameHeader),
+          ...getTableData(rowDto, bankAccountNo?.BankName),
           [
             {
               text: "Total",
@@ -281,6 +245,17 @@ export const formatSCB = (
               bold: true,
               border: "all 000000 thin",
               alignment: "center",
+            },
+
+            {
+              text: "",
+              fontSize: 9,
+              border: "all 000000 thin",
+            },
+            {
+              text: "",
+              fontSize: 9,
+              border: "all 000000 thin",
             },
             {
               text: "",
@@ -294,36 +269,6 @@ export const formatSCB = (
               bold: true,
               alignment: "right:middle",
               textFormat: "money",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
             },
           ],
           ["_blank*1"],
