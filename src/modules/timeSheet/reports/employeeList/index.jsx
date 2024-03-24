@@ -132,11 +132,12 @@ export default function EmployeeList() {
     checkedHeaderList,
     values
   ) => {
+    console.log({ values });
     try {
       const payload = {
         businessUnitId: buId,
         workplaceGroupId: values?.workplaceGroup?.value || wgId,
-        workplaceId: values?.workplace?.value || wId,
+        workplaceId: values?.workplace?.value ? values?.workplace?.value : 0,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,

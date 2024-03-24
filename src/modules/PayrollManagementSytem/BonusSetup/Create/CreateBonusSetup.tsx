@@ -38,10 +38,12 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
         label: state?.strWorkplace || "",
         value: state?.intWorkPlaceId || 0,
       },
-      hrPosition: {
-        label: state?.HrPositionName || "",
-        value: state?.HrPositionId || 0,
-      },
+      hrPosition: [
+        {
+          label: state?.HrPositionName || "",
+          value: state?.HrPositionId || 0,
+        },
+      ],
       employmentType: [
         {
           label: state?.strEmploymentType || "",
@@ -53,10 +55,12 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
         value: 0,
       },
       bonusPercentage: state?.numBonusPercentage || 0,
-      religion: {
-        label: state?.strReligionName || "",
-        value: state?.intReligion || 0,
-      },
+      religion: [
+        {
+          label: state?.strReligionName || "",
+          value: state?.intReligion || 0,
+        },
+      ],
       serviceLengthType: state?.IsServiceLengthInDays
         ? {
             label: "Day",
@@ -201,7 +205,12 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
 
   const submitHandler = () => {
     const values = form.getFieldsValue(true);
-    const payload = payloadGenerate(values, wgId, wgName);
+    const payload = payloadGenerate(
+      values,
+      wgId,
+      wgName,
+      state?.intBonusSetupId || 0
+    );
     const commonData = {
       intAccountId: orgId,
       intBusinessUnitId: buId,
