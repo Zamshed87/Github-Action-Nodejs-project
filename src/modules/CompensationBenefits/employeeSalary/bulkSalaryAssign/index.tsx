@@ -1,4 +1,3 @@
-import { AddOutlined } from "@mui/icons-material";
 import {
   DataTable,
   PButton,
@@ -8,18 +7,11 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import PBadge from "Components/Badge";
-import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Modal, Row } from "antd";
+import { Col, Form, Row } from "antd";
 import NoResult from "common/NoResult";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import { getLandingData } from "modules/assetManagement/itemRegistration/helper";
-import {
-  AttendanceType,
-  EmpFilterType,
-} from "modules/timeSheet/attendence/attendenceAdjust/utils/utils";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -370,9 +362,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
               { value: 1, label: "Yes" },
               { value: 0, label: "No" },
             ]}
-            onChange={(value, op) =>
-              handleIsPerDayChange(value, index, "isPerDay")
-            }
+            onChange={(value) => handleIsPerDayChange(value, index, "isPerDay")}
             defaultValue={{ value: 1, label: "Yes" }}
             // rules={[{ required: true, message: "Per Day Salary is required" }]}
           />
@@ -764,7 +754,7 @@ const BulkSalaryAssign: React.FC<TAttendenceAdjust> = () => {
               onChange: (selectedRowKeys, selectedRows) => {
                 setSelectedRow(selectedRows);
               },
-              getCheckboxProps: (rec) => {
+              getCheckboxProps: () => {
                 // console.log(rec);
                 // return {
                 //   disabled: rec?.ApplicationStatus === "Approved",

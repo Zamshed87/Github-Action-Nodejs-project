@@ -14,11 +14,16 @@ export const bounusDependsOnList = [
   { value: 2, label: "Basic" },
 ];
 
-export const payloadGenerate = (values: any, wgId: number, wgName: string) => {
+export const payloadGenerate = (
+  values: any,
+  wgId: number,
+  wgName: string,
+  bsId = 0
+) => {
   console.log("values", values);
   const data = {
-    intBonusSetupId: 0,
-    strPartName: "BonusSetupCreate",
+    intBonusSetupId: bsId,
+    strPartName: bsId === 0 ? "BonusSetupCreate" : "BonusSetupUpdate",
     intBonusId: values?.bonusName?.value,
     strBonusName: values?.bonusName?.label,
     strBonusDescription: "",
