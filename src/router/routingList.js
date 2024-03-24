@@ -1,3 +1,4 @@
+
 import BulkSalaryAssign from "modules/CompensationBenefits/employeeSalary/bulkSalaryAssign";
 import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/CreateBonusSetup";
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
@@ -39,6 +40,9 @@ import { lazy } from "react";
 
 const CreateAndEditEmploye = lazy(() =>
   import("modules/employeeProfile/employeeFeature/createEmployee")
+);
+const SlabWiseIncomeTaxConf = lazy(() =>
+  import("modules/CompensationBenefits/SlabWiseIncomeTaxConf")
 );
 const MultiCalendarAssign = lazy(() =>
   import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
@@ -2287,6 +2291,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/incometaxmgmt/taxassign/bulk",
     component: BulkEmployeeTaxAssign,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/slabwiseincometaxconf",
+    component: SlabWiseIncomeTaxConf,
   },
   {
     path: "/compensationAndBenefits/incometaxmgmt/taxassign",
