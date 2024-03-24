@@ -496,8 +496,8 @@ function CreateTransferPromotion() {
         : state?.singleData?.intTransferNpromotionId,
       intEmployeeId: values?.employee?.value,
       strEmployeeName: values?.employee?.label,
-      employmentTypeId: values?.employee?.employmentTypeId,
-      hrPositionId: values?.employee?.hrPositionId,
+      employmentTypeId: values?.employmentType?.value,
+      hrPositionId: values?.hrPosition?.value,
       StrTransferNpromotionType: values?.transferNPromotionType?.label,
       intAccountId: orgId,
       intBusinessUnitId: values?.businessUnit?.value,
@@ -535,6 +535,7 @@ function CreateTransferPromotion() {
     const callBack = () => {
       history.push("/profile/transferandpromotion/transferandpromotion");
     };
+
     addEditTransferAndPromotion(payload, callBack, setLoading);
   };
 
@@ -1108,7 +1109,7 @@ function CreateTransferPromotion() {
                   </div>
                 </div>
               )}
-              {/* <div className="col-md-3">
+              <div className="col-md-3">
                 <div className="input-field-main">
                   <label>Employment Type</label>
                   <FormikSelect
@@ -1130,6 +1131,7 @@ function CreateTransferPromotion() {
                     errors={errors}
                     touched={touched}
                     isClearable={false}
+                    isDisabled={!values?.workplace}
                   />
                 </div>
               </div>
@@ -1155,9 +1157,10 @@ function CreateTransferPromotion() {
                     errors={errors}
                     touched={touched}
                     isClearable={false}
+                    isDisabled={!values?.workplace}
                   />
                 </div>
-              </div> */}
+              </div>
               <div className="col-md-3">
                 <div className="input-field-main">
                   <label>Department</label>

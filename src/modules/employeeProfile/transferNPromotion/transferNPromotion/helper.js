@@ -91,8 +91,14 @@ export const releaseEmpTransferNPromotion = async (
 ) => {
   try {
     setLoading(true);
-    let res = await axios.put(
-      `/Employee/ReleaseEmpTransferNpromotion?accountId=${orgId}&employeeId=${singleData?.intEmployeeId}&substitutionEmployeeId=${values?.substituteEmployee?.value || 0}&transferNPromotionId=${singleData?.intTransferNpromotionId || 0}&ReleaseDate=${values?.releaseDate}&actionBy=${employeeId}`
+    const res = await axios.put(
+      `/Employee/ReleaseEmpTransferNpromotion?accountId=${orgId}&employeeId=${
+        singleData?.intEmployeeId
+      }&substitutionEmployeeId=${
+        values?.substituteEmployee?.value || 0
+      }&transferNPromotionId=${
+        singleData?.intTransferNpromotionId || 0
+      }&ReleaseDate=${values?.releaseDate}&actionBy=${employeeId}`
     );
 
     setLoading(false);
