@@ -45,6 +45,8 @@ const BankAdviceReport = () => {
   const [total, setTotal] = useState(0);
   const [totalInWords, setTotalInWords] = useState("");
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [bankDDL, setBankDDL] = useState([]);
+  const [accountDDL, setAccountDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [buDetails, setBuDetails] = useState(false);
 
@@ -200,7 +202,7 @@ const BankAdviceReport = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  console.log({ values });
   return (
     <form onSubmit={handleSubmit}>
       {loading && <Loading />}
@@ -237,18 +239,18 @@ const BankAdviceReport = () => {
                           monthYear: e.target.value,
                           adviceName: "",
                         }));
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriod&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&IntMonth=${+e.target.value
-                            .split("")
-                            .slice(-2)
-                            .join("")}&IntYear=${+e.target.value
-                            .split("")
-                            .slice(0, 4)
-                            .join("")}`,
-                          "SalaryGenerateRequestId",
-                          "SalaryCode",
-                          setPayrollPeriodDDL
-                        );
+                        // getPeopleDeskAllDDL(
+                        //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriod&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&IntMonth=${+e.target.value
+                        //     .split("")
+                        //     .slice(-2)
+                        //     .join("")}&IntYear=${+e.target.value
+                        //     .split("")
+                        //     .slice(0, 4)
+                        //     .join("")}`,
+                        //   "SalaryGenerateRequestId",
+                        //   "SalaryCode",
+                        //   setPayrollPeriodDDL
+                        // );
                         setRowDto([]);
                       }}
                       errors={errors}
@@ -269,36 +271,18 @@ const BankAdviceReport = () => {
                         setFieldValue("workplace", "");
                         if (valueOption?.value) {
                           getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                            "intWorkplaceId",
-                            "strWorkplace",
-                            setWorkplaceDDL
-                          );
-                          getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CompanyAccountNo&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}`,
                             "BankAccountId",
                             "BankAccountNo",
                             setBankAccountDDL
                           );
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
+                            "value",
+                            "label",
+                            setPayrollPeriodDDL
+                          );
                         }
-                      }}
-                      placeholder=""
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-                </div>
-                <div className="col-lg-3">
-                  <div className="input-field-main">
-                    <label>Workplace</label>
-                    <FormikSelect
-                      name="workplace"
-                      options={[...workplaceDDL] || []}
-                      value={values?.workplace}
-                      onChange={(valueOption) => {
-                        setFieldValue("workplace", valueOption);
-                        getWorkplaceDetails(valueOption?.value, setBuDetails);
                       }}
                       placeholder=""
                       styles={customStyles}
@@ -315,6 +299,15 @@ const BankAdviceReport = () => {
                       options={payrollPeriodDDL || []}
                       value={values?.adviceName}
                       onChange={(valueOption) => {
+                        console.log(valueOption);
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebySalaryGenerateRequestId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
+                            "value",
+                            "label",
+                            setWorkplaceDDL
+                          );
+                        }
                         setValues((prev) => ({
                           ...prev,
                           adviceName: valueOption,
@@ -329,6 +322,33 @@ const BankAdviceReport = () => {
                   </div>
                 </div>
                 <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+                    <FormikSelect
+                      name="workplace"
+                      options={[...workplaceDDL] || []}
+                      value={values?.workplace}
+                      onChange={(valueOption) => {
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BankListofBankAdvicebyWorkplaceId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intWorkplaceId=${valueOption?.value}`,
+                            "value",
+                            "label",
+                            setBankDDL
+                          );
+                        }
+                        setFieldValue("workplace", valueOption);
+                        getWorkplaceDetails(valueOption?.value, setBuDetails);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+
+                {/* <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>Advice Type</label>
                     <FormikSelect
@@ -352,8 +372,8 @@ const BankAdviceReport = () => {
                       touched={touched}
                     />
                   </div>
-                </div>
-                <div className="col-lg-3">
+                </div> */}
+                {/* <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>Sender Bank Account No</label>
                     <FormikSelect
@@ -366,6 +386,51 @@ const BankAdviceReport = () => {
                           bankAccountNo: valueOption,
                         }));
                         setRowDto([]);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div> */}
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Bank Name</label>
+                    <FormikSelect
+                      name="bank"
+                      options={[...bankDDL] || []}
+                      value={values?.bank}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("bank", valueOption);
+                        setFieldValue("account", "");
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BankAccountListofBankAdvicebyBankId&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&intWorkplaceId=${values?.workplace?.value}&intId=${valueOption?.value}`,
+                            "value",
+                            "label",
+                            setBankAccountDDL
+                          );
+                        }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Account</label>
+                    <FormikSelect
+                      name="account"
+                      options={[...bankAccountDDL] || []}
+                      value={values?.account}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("account", valueOption);
                       }}
                       placeholder=""
                       styles={customStyles}
@@ -414,10 +479,8 @@ const BankAdviceReport = () => {
                               }
 
                               if (
-                                values?.bankAccountNo?.BankAccountNo ===
-                                  "01-1308438-01" ||
-                                values?.bankAccountNo?.BankAccountNo ===
-                                  "01-1308439-01"
+                                values?.bankAccountNo?.BankName ===
+                                "Standard Chartered Bank"
                               ) {
                                 excelGenerate((res) => {
                                   generateExcelAction(
@@ -436,9 +499,8 @@ const BankAdviceReport = () => {
                                   );
                                 });
                               } else if (
-                                values?.bankAccountNo?.BankAccountNo.includes(
-                                  "101"
-                                )
+                                values?.bankAccountNo?.BankName ===
+                                "DUTCH-BANGLA BANK LTD"
                               ) {
                                 excelGenerate((res) => {
                                   generateExcelAction(

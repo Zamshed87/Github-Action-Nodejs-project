@@ -15,6 +15,8 @@ export const bankAdviceInitialValues = {
   monthId: "" /* new Date().getMonth() + 1 */,
   yearId: "" /* new Date().getFullYear() */,
   search: "",
+  bank: "",
+  account: "",
 };
 
 export const bankAdviceValidationSchema = Yup.object().shape({
@@ -38,18 +40,18 @@ export const bankAdviceValidationSchema = Yup.object().shape({
     })
     .typeError("Workplace is required"),
 
-  adviceTo: Yup.object()
+  account: Yup.object()
     .shape({
-      value: Yup.string().required("Advice To is required"),
-      label: Yup.string().required("Advice To is required"),
+      value: Yup.string().required("Account is required"),
+      label: Yup.string().required("Account is required"),
     })
     .typeError("Advice To is required"),
-  bankAccountNo: Yup.object()
+  bank: Yup.object()
     .shape({
-      value: Yup.string().required("Bank Account No is required"),
-      label: Yup.string().required("Bank Account No is required"),
+      value: Yup.string().required("Bank is required"),
+      label: Yup.string().required("Bank is required"),
     })
-    .typeError("Bank Account No is required"),
+    .typeError("Bank is required"),
   monthYear: Yup.date().required("Payroll month is required"),
 });
 
@@ -68,17 +70,20 @@ export const getBankAdviceRequestLanding = async (
   cb
 ) => {
   setLoading && setLoading(true);
+  console.log({ values });
   try {
     const payload = {
       intAccountId: orgId,
       intBusinessUnitId: buId,
       intMonthId: values?.monthId,
       intYearId: values?.yearId,
-      intWorkplaceGroupId: wgId,
+      intWorkplaceGroupId: values?.workplaceGroup?.value,
+      intWorkplaceId: values?.workplace?.value,
+      intBankId: values?.bank?.value,
       intSalaryGenerateRequestId: values?.adviceName?.value,
-      bankAccountNo: values?.bankAccountNo?.value,
+      bankAccountNo: values?.account?.AccountNo,
       intBankOrWalletType: 1,
-      strAdviceType: values?.adviceTo?.value,
+      strAdviceType: "",
       isForXl: isForXl,
       searchTxt: searchTxt,
       pageNo: pages?.current,
