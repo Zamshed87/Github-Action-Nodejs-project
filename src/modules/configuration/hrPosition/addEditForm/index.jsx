@@ -40,7 +40,7 @@ export default function AddEditForm({
       strPosition: values?.strPosition || "",
       strPositionCode: values?.strPositionCode || "",
       intBusinessUnitId: buId,
-      isActive: values?.isActive || true,
+      isActive: isEdit ? values?.isActive : true,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: singleData?.intPositionId ? 0 : employeeId,
@@ -55,6 +55,8 @@ export default function AddEditForm({
       onSuccess: () => {
         cb();
       },
+
+      toast: true,
     });
   };
   useEffect(() => {
