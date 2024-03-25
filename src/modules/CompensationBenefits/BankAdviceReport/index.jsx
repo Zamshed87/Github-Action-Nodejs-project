@@ -479,7 +479,7 @@ const BankAdviceReport = () => {
                               }
 
                               if (
-                                values?.bankAccountNo?.BankName ===
+                                values?.bank?.label ===
                                 "Standard Chartered Bank"
                               ) {
                                 excelGenerate((res) => {
@@ -499,8 +499,7 @@ const BankAdviceReport = () => {
                                   );
                                 });
                               } else if (
-                                values?.bankAccountNo?.BankName ===
-                                "DUTCH-BANGLA BANK LTD"
+                                values?.bank?.label === "DUTCH-BANGLA BANK LTD"
                               ) {
                                 excelGenerate((res) => {
                                   generateExcelAction(
@@ -512,7 +511,7 @@ const BankAdviceReport = () => {
                                     strBusinessUnit,
                                     5,
                                     res,
-                                    values?.bankAccountNo,
+                                    values?.account?.AccountNo,
                                     total,
                                     totalInWords,
                                     buDetails
