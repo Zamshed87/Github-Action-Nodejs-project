@@ -1238,7 +1238,7 @@ function CreateTransferPromotion() {
                     styles={customStyles}
                     errors={errors}
                     touched={touched}
-                    isDisabled={!values?.businessUnit}
+                    isDisabled={!values?.workplace}
                     isClearable={false}
                   />
                 </div>
