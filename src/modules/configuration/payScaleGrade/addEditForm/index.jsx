@@ -165,7 +165,6 @@ export default function AddEditFormComponent({
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             {loading && <Loading />}

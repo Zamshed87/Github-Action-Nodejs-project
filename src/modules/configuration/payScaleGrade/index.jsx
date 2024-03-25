@@ -64,8 +64,6 @@ const PayScaleGrade = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const saveHandler = (values) => {};
-
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
@@ -120,11 +118,6 @@ const PayScaleGrade = () => {
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
       >
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
