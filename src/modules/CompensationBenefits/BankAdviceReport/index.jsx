@@ -517,6 +517,25 @@ const BankAdviceReport = () => {
                                     buDetails
                                   );
                                 });
+                              } else if (
+                                values?.bank?.label === "Dhaka Bank Limited "
+                              ) {
+                                excelGenerate((res) => {
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    3,
+                                    res,
+                                    values?.account?.AccountNo,
+                                    total,
+                                    totalInWords,
+                                    buDetails
+                                  );
+                                });
                               } else {
                                 excelGenerate((res) => {
                                   generateExcelAction(
