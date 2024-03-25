@@ -1,8 +1,8 @@
-import { message } from "antd";
 import axios, { Method } from "axios";
 import { useState } from "react";
 import { ApiHookState, TApiInfo } from "./TApiRequest";
 import { apiList } from "data/apiList";
+import { toast } from "react-toastify";
 
 export const useApiRequest = (initialState: any) => {
   const [state, setState] = useState<ApiHookState>({
@@ -19,8 +19,15 @@ export const useApiRequest = (initialState: any) => {
     // Setting Loading State True
     setState((prevState) => ({ ...prevState, loading: true, error: null }));
 
-    const { method, urlKey, params, payload, toast, onSuccess, onError } =
-      apiInfo;
+    const {
+      method,
+      urlKey,
+      params,
+      payload,
+      toast: isToast,
+      onSuccess,
+      onError,
+    } = apiInfo;
 
     try {
       const response = await axios({
@@ -29,8 +36,8 @@ export const useApiRequest = (initialState: any) => {
         data: payload,
         params: params,
       });
-      toast &&
-        message.success(response?.data?.message || "Submitted Successfully");
+      isToast &&
+        toast.success(response?.data?.message || "Submitted Successfully");
 
       onSuccess && onSuccess(response.data);
       setState((prevState) => ({
@@ -39,12 +46,18 @@ export const useApiRequest = (initialState: any) => {
         data: response.data,
       }));
     } catch (error: any) {
-      toast &&
-        message.error(
+      isToast &&
+        toast.warning(
           error?.response?.data?.message ||
             error?.message ||
             "Something went wrong"
         );
+      // isToast &&
+      //   message.error(
+      //     error?.response?.data?.message ||
+      //       error?.message ||
+      //       "Something went wrong"
+      //   );
       onError && onError(error as Error);
       setState((prevState) => ({
         ...prevState,
