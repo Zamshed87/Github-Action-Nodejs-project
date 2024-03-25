@@ -22,8 +22,12 @@ const initData = {
 };
 const validationSchema = Yup.object().shape({
   payScaleGradeName: Yup.string().required("PayScale Grade Name is required"),
-  maxSalary: Yup.number().min(1, "Must be greater than zero").required("Max Salary is required"),
-  minSalary: Yup.number().min(1, "Must be greater than zero").required("Minimum Salary is required"),
+  maxSalary: Yup.number()
+    .min(1, "Must be greater than zero")
+    .required("Max Salary is required"),
+  minSalary: Yup.number()
+    .min(1, "Must be greater than zero")
+    .required("Minimum Salary is required"),
   dependOn: Yup.object()
     .shape({
       label: Yup.string().required("Depend On is required"),
@@ -32,7 +36,11 @@ const validationSchema = Yup.object().shape({
     .typeError("Depend On is required"),
 });
 
-export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHeading }) {
+export default function AddEditFormComponent({
+  propsObj,
+  fullscreen,
+  isVisibleHeading,
+}) {
   const {
     show,
     title,
@@ -45,15 +53,17 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
     paysaleGradeId,
     setPayscaleGradeId,
     setSingleData,
-    singleData
+    singleData,
     // rowFileId,
   } = propsObj;
   const [loading, setLoading] = useState(false);
 
   const [modifySingleData, setModifySingleData] = useState("");
 
-
-  const { employeeId, orgId, buId } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { employeeId, orgId, buId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   // useEffect(() => {
   //   if (paysaleGradeId) {
@@ -84,15 +94,14 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [singleData]);
 
-
   const saveHandler = (values, cb) => {
     if (values?.maxSalary < values?.minSalary) {
-      return toast.warning("Max. Salary must be greater than min salary!!!")
+      return toast.warning("Max. Salary must be greater than min salary!!!");
     }
 
-    let payload = {
+    const payload = {
       strPayscaleGradeName: values?.payScaleGradeName,
-      strPayscaleGradeCode: values?.AddEditFormComponent,
+      strPayscaleGradeCode: values?.payScaleGradeCode,
       intAccountId: orgId,
       intBusinessUnitId: buId,
       strBusinessUnitName: "",
@@ -117,9 +126,17 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
     };
 
     if (paysaleGradeId) {
-      createBusinessUnit({ ...payload, intPayscaleGradeId: singleData?.intPayscaleGradeId }, setLoading, callback);
+      createBusinessUnit(
+        { ...payload, intPayscaleGradeId: singleData?.intPayscaleGradeId },
+        setLoading,
+        callback
+      );
     } else {
-      createBusinessUnit({ ...payload, intPayscaleGradeId: 0 }, setLoading, callback);
+      createBusinessUnit(
+        { ...payload, intPayscaleGradeId: 0 },
+        setLoading,
+        callback
+      );
     }
   };
 
@@ -129,7 +146,7 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
         enableReinitialize={true}
         initialValues={paysaleGradeId ? modifySingleData : initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             if (paysaleGradeId) {
               resetForm(modifySingleData);
@@ -139,8 +156,17 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
             setSingleData("");
             setPayscaleGradeId(null);
           });
-        }}>
-        {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid }) => (
+        }}
+      >
+        {({
+          handleSubmit,
+          resetForm,
+          values,
+          errors,
+          touched,
+          setFieldValue,
+          isValid,
+        }) => (
           <>
             {loading && <Loading />}
             <div className="viewModal">
@@ -151,12 +177,15 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
                 backdrop={backdrop}
                 aria-labelledby="example-modal-sizes-title-xl"
                 className={classes}
-                fullscreen={fullscreen && fullscreen}>
+                fullscreen={fullscreen && fullscreen}
+              >
                 <Form>
                   {isVisibleHeading && (
                     <Modal.Header className="bg-custom">
                       <div className="d-flex w-100 justify-content-between align-items-center">
-                        <Modal.Title className="text-center">{title}</Modal.Title>
+                        <Modal.Title className="text-center">
+                          {title}
+                        </Modal.Title>
                         <div>
                           <IconButton
                             onClick={() => {
@@ -168,7 +197,8 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
                               onHide();
                               setSingleData("");
                               setPayscaleGradeId(null);
-                            }}>
+                            }}
+                          >
                             <Close />
                           </IconButton>
                         </div>
@@ -190,7 +220,10 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
                               className="form-control"
                               placeholder=""
                               onChange={(e) => {
-                                setFieldValue("payScaleGradeName", e.target.value);
+                                setFieldValue(
+                                  "payScaleGradeName",
+                                  e.target.value
+                                );
                               }}
                               errors={errors}
                               touched={touched}
@@ -206,7 +239,10 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
                               className="form-control"
                               placeholder=""
                               onChange={(e) => {
-                                setFieldValue("payScaleGradeCode", e.target.value);
+                                setFieldValue(
+                                  "payScaleGradeCode",
+                                  e.target.value
+                                );
                               }}
                               errors={errors}
                               touched={touched}
@@ -284,10 +320,16 @@ export default function AddEditFormComponent({ propsObj, fullscreen, isVisibleHe
                           onHide();
                           setSingleData("");
                           setPayscaleGradeId(null);
-                        }}>
+                        }}
+                      >
                         Cancel
                       </button>
-                      <button className="btn btn-green btn-green-disable" style={{ width: "auto" }} type="submit" onSubmit={() => handleSubmit()}>
+                      <button
+                        className="btn btn-green btn-green-disable"
+                        style={{ width: "auto" }}
+                        type="submit"
+                        onSubmit={() => handleSubmit()}
+                      >
                         Save
                       </button>
                     </div>

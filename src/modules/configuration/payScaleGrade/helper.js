@@ -8,7 +8,7 @@ import Chips from "../../../common/Chips";
 export const filterData = (keywords, allData, setRowDto) => {
   try {
     const regex = new RegExp(keywords?.toLowerCase());
-    let newDta = allData?.filter((item) =>
+    const newDta = allData?.filter((item) =>
       regex.test(
         item?.strPayscaleGradeName?.toLowerCase() ||
           item?.strPayscaleGradeCode?.toLowerCase() ||
