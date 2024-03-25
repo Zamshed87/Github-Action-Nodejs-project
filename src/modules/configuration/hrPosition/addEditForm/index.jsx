@@ -1,11 +1,10 @@
 import { ModalFooter } from "Components/Modal";
-import { PForm, PInput, PSelect } from "Components/PForm";
+import { PForm, PInput } from "Components/PForm";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
-import { useEffect, useState } from "react";
-import { Switch } from "antd";
+import { Col, Form, Row, Switch } from "antd";
+import { useEffect } from "react";
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { todayDate } from "utility/todayDate";
 
 export default function AddEditForm({
@@ -16,17 +15,12 @@ export default function AddEditForm({
   singleData,
   setId,
 }) {
-  const dispatch = useDispatch();
-  // const debounce = useDebounce();
-
   const saveHRPostion = useApiRequest({});
 
-  const { orgId, buId, employeeId, wgId, wId } = useSelector(
+  const { orgId, buId, employeeId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
-
-  const [loading, setLoading] = useState(false);
 
   // states
 
@@ -41,12 +35,12 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       intPositionId: singleData?.intPositionId || 0,
       strPosition: values?.strPosition || "",
       strPositionCode: values?.strPositionCode || "",
       intBusinessUnitId: buId,
-      isActive: true,
+      isActive: isEdit ? values?.isActive : true,
       intAccountId: orgId,
       dteCreatedAt: todayDate(),
       intCreatedBy: singleData?.intPositionId ? 0 : employeeId,
@@ -61,6 +55,8 @@ export default function AddEditForm({
       onSuccess: () => {
         cb();
       },
+
+      toast: true,
     });
   };
   useEffect(() => {
@@ -105,6 +101,45 @@ export default function AddEditForm({
               rules={[{ required: true, message: "Code is required" }]}
             />
           </Col>
+
+          {isEdit && (
+            <Col
+              md={24}
+              style={{
+                marginLeft: "-0.5rem",
+              }}
+            >
+              <div
+                className=""
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  className="input-main position-group-select "
+                  style={{ margin: "3rem 0 0 0.7rem" }}
+                >
+                  <h6 className="title-item-name">HR Position Activation</h6>
+                  <p className="subtitle-p">
+                    Activation toggle indicates to the particular HR Position
+                    status (Active/Inactive)
+                  </p>
+                </div>
+                <div
+                  style={{
+                    margin: "4rem 0 -1.5rem -2rem",
+                    // padding: "5rem -2rem 0 -15rem",
+                  }}
+                >
+                  <Form.Item name="isActive" valuePropName="checked">
+                    <Switch />
+                  </Form.Item>
+                </div>
+              </div>
+            </Col>
+          )}
         </Row>
         <ModalFooter
           onCancel={() => {
@@ -112,7 +147,6 @@ export default function AddEditForm({
             setIsAddEditForm(false);
           }}
           submitAction="submit"
-          loading={loading}
         />
       </PForm>
     </>

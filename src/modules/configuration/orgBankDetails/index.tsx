@@ -60,6 +60,8 @@ function OrgBankDetailsLanding() {
       params: {
         IntAccountId: orgId,
         IntBusinessUnitId: buId,
+        workplaceGroupId: wgId,
+        workplaceId: wId,
       },
     });
   };
@@ -95,6 +97,18 @@ function OrgBankDetailsLanding() {
       //   fixed: "left",
       width: 25,
       align: "center",
+    },
+    {
+      title: "Workplace Group",
+      dataIndex: "workplaceGroupName",
+      // sorter: true,
+      filter: true,
+    },
+    {
+      title: "Workplace",
+      dataIndex: "workplaceName",
+      // sorter: true,
+      filter: true,
     },
     {
       title: "Account Name",

@@ -39,20 +39,7 @@ function HRPosition() {
   // Api Instance
   const landingApi = useApiRequest({});
 
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any;
-    searchText?: string;
-    excelDownload?: boolean;
-  };
-  const landingApiCall = ({
-    pagination = {},
-    filerList,
-    searchText = "",
-  }: TLandingApi = {}) => {
+  const landingApiCall = () => {
     landingApi.action({
       urlKey: "GetAllPosition",
       method: "GET",
@@ -99,6 +86,13 @@ function HRPosition() {
     {
       title: "HR Position",
       dataIndex: "strPosition",
+      sorter: true,
+      width: 20,
+      //   fixed: "left",
+    },
+    {
+      title: "HR Position Code",
+      dataIndex: "strPositionCode",
       sorter: true,
       width: 20,
       //   fixed: "left",
@@ -158,7 +152,6 @@ function HRPosition() {
             submitText="HR Position"
             submitIcon={<AddOutlined />}
             buttonList={[]}
-            onExport={() => {}}
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
@@ -170,12 +163,7 @@ function HRPosition() {
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
               if (extra.action === "sort") return;
-              const { search } = form.getFieldsValue(true);
-              landingApiCall({
-                pagination,
-                filerList: filters,
-                searchText: search,
-              });
+              landingApiCall();
             }}
             onRow={(record) => ({
               onClick: () => {
