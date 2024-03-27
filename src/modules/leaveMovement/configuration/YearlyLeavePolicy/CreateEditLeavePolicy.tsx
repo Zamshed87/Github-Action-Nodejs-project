@@ -208,6 +208,8 @@ const CreateEditLeavePolicy = () => {
             pathname: `/administration/timeManagement/leavePolicyAssign`,
             state: { list: data?.intPolicyIdList, year: payload?.intYear },
           });
+        } else {
+          history.push("/administration/leaveandmovement/yearlyLeavePolicy");
         }
       },
       onError: (error) => {
