@@ -28,7 +28,7 @@ const SlabWiseIncomeTaxConf = () => {
   });
   return (
     <form onSubmit={handleSubmit}>
-      {permission?.isView ? (
+      {0 ? (
         <div className="table-card">
           <div className="table-card-heading">
             <div className="d-flex align-items-center">
@@ -79,9 +79,6 @@ const SlabWiseIncomeTaxConf = () => {
                     />
                   </div>
                 </div>
-                {/* <div className="col-12">
-                <NoResult title={"Coming Soon"} para="Under Construction" />
-              </div> */}
               </div>
             </div>
           </div>
