@@ -102,7 +102,7 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       intAccountBankDetailsId: !singleData?.intAccountBankDetailsId
         ? 0
         : singleData?.intAccountBankDetailsId,
@@ -122,10 +122,10 @@ export default function AddEditForm({
       isActive: values?.isActive,
       intCreatedBy: employeeId,
       intUpdatedBy: employeeId,
-      workplaceId: values?.workplace?.intWorkplaceId,
-      workplaceName: values?.workplace?.strWorkplace,
-      workplaceGroupId: values?.workplaceGroup?.intWorkplaceGroupId,
-      workplaceGroupName: values?.workplaceGroup?.strWorkplaceGroup,
+      workplaceId: values?.workplace?.value ,
+      workplaceName: values?.workplace?.label,
+      workplaceGroupId: values?.workplaceGroup?.value,
+      workplaceGroupName: values?.workplaceGroup?.label,
     };
     saveOrgBank.action({
       urlKey: "AccountBankDetailsCRUD",
