@@ -155,11 +155,11 @@ export default function AddEditForm({
         },
         workplaceGroup: {
           value: singleData?.workplaceGroupId,
-          label: singleData?.workplaceName,
+          label: singleData?.workplaceGroupName,
         },
         workplace: {
           value: singleData?.workplaceId,
-          label: singleData?.strBranchName,
+          label: singleData?.workplaceName,
         },
         routingNo: singleData?.strRoutingNo,
         districtName: singleData?.strDistrict,
