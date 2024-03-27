@@ -270,12 +270,12 @@ const BankAdviceReport = () => {
                         setFieldValue("workplaceGroup", valueOption);
                         setFieldValue("workplace", "");
                         if (valueOption?.value) {
-                          getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CompanyAccountNo&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}`,
-                            "BankAccountId",
-                            "BankAccountNo",
-                            setBankAccountDDL
-                          );
+                          // getPeopleDeskAllDDL(
+                          //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CompanyAccountNo&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}`,
+                          //   "BankAccountId",
+                          //   "BankAccountNo",
+                          //   setBankAccountDDL
+                          // );
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
                             "value",
