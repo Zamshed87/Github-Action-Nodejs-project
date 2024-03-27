@@ -153,6 +153,14 @@ export default function AddEditForm({
           value: singleData?.intBankBranchId,
           label: singleData?.strBranchName,
         },
+        workplaceGroup: {
+          value: singleData?.workplaceGroupId,
+          label: singleData?.workplaceName,
+        },
+        workplace: {
+          value: singleData?.workplaceId,
+          label: singleData?.strBranchName,
+        },
         routingNo: singleData?.strRoutingNo,
         districtName: singleData?.strDistrict,
         swiftCode: singleData?.strSwiftCode,
