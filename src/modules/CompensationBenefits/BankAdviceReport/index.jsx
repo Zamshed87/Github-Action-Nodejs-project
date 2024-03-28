@@ -202,7 +202,6 @@ const BankAdviceReport = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log({ values });
   return (
     <form onSubmit={handleSubmit}>
       {loading && <Loading />}
@@ -239,18 +238,23 @@ const BankAdviceReport = () => {
                           monthYear: e.target.value,
                           adviceName: "",
                         }));
-                        // getPeopleDeskAllDDL(
-                        //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriod&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&IntMonth=${+e.target.value
-                        //     .split("")
-                        //     .slice(-2)
-                        //     .join("")}&IntYear=${+e.target.value
-                        //     .split("")
-                        //     .slice(0, 4)
-                        //     .join("")}`,
-                        //   "SalaryGenerateRequestId",
-                        //   "SalaryCode",
-                        //   setPayrollPeriodDDL
-                        // );
+                        if (values?.workplaceGroup?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${
+                              values?.workplaceGroup?.value
+                            }&BusinessUnitId=${buId}&IntMonth=${+e.target.value
+                              .split("")
+                              .slice(-2)
+                              .join("")}&IntYear=${+e.target.value
+                              .split("")
+                              .slice(0, 4)
+                              .join("")}`,
+                            "value",
+                            "label",
+                            setPayrollPeriodDDL
+                          );
+                        }
+
                         setRowDto([]);
                       }}
                       errors={errors}
@@ -270,12 +274,6 @@ const BankAdviceReport = () => {
                         setFieldValue("workplaceGroup", valueOption);
                         setFieldValue("workplace", "");
                         if (valueOption?.value) {
-                          // getPeopleDeskAllDDL(
-                          //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CompanyAccountNo&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}`,
-                          //   "BankAccountId",
-                          //   "BankAccountNo",
-                          //   setBankAccountDDL
-                          // );
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
                             "value",
@@ -299,7 +297,6 @@ const BankAdviceReport = () => {
                       options={payrollPeriodDDL || []}
                       value={values?.adviceName}
                       onChange={(valueOption) => {
-                        console.log(valueOption);
                         if (valueOption?.value) {
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebySalaryGenerateRequestId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
@@ -310,6 +307,9 @@ const BankAdviceReport = () => {
                         }
                         setValues((prev) => ({
                           ...prev,
+                          workplace: "",
+                          bank: "",
+                          account: "",
                           adviceName: valueOption,
                         }));
                         setRowDto([]);
@@ -338,6 +338,8 @@ const BankAdviceReport = () => {
                           );
                         }
                         setFieldValue("workplace", valueOption);
+                        setFieldValue("bank", "");
+                        setFieldValue("account", "");
                         getWorkplaceDetails(valueOption?.value, setBuDetails);
                       }}
                       placeholder=""
@@ -492,13 +494,15 @@ const BankAdviceReport = () => {
                                     strBusinessUnit,
                                     4,
                                     res,
-                                    values?.bankAccountNo,
+                                    values?.account?.AccountNo,
                                     total,
                                     totalInWords,
                                     businessUnitDDL[0]?.BusinessUnitAddress
                                   );
                                 });
                               } else if (
+                                values?.bank?.label ===
+                                  "Dutch Bangla Bank Agent Banking" ||
                                 values?.bank?.label === "DUTCH-BANGLA BANK LTD"
                               ) {
                                 excelGenerate((res) => {
@@ -510,6 +514,27 @@ const BankAdviceReport = () => {
                                     excelDataFunc(0),
                                     strBusinessUnit,
                                     5,
+                                    res,
+                                    values?.account?.AccountNo,
+                                    total,
+                                    totalInWords,
+                                    buDetails
+                                  );
+                                });
+                              } else if (
+                                values?.bank?.label.includes(
+                                  "City Bank Limited"
+                                )
+                              ) {
+                                excelGenerate((res) => {
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    6,
                                     res,
                                     values?.account?.AccountNo,
                                     total,
@@ -547,7 +572,7 @@ const BankAdviceReport = () => {
                                     strBusinessUnit,
                                     values?.adviceTo?.type,
                                     res,
-                                    values?.bankAccountNo,
+                                    values?.account?.AccountNo,
                                     total,
                                     totalInWords,
                                     buDetails
