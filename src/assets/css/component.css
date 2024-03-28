@@ -307,6 +307,35 @@
   border: 2px solid var(--success800);
 }
 
+.btn-red,
+.btn-red:hover,
+.btn-red:focus,
+.btn-red-less,
+.btn-red-less:hover,
+.btn-red-less:focus {
+  width: 80px;
+  height: 32px;
+  color: var(--white);
+  background: var(--error);
+  border: 2px solid var(--error);
+  box-shadow: none;
+  outline: 0;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  border-radius: 4px;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+.btn-red:hover,
+.btn-red:focus {
+  background: var(--error900);
+  border: 2px solid var(--error900);
+}
+
 .auth-log-submit .btn-green,
 .auth-log-submit .btn-green:hover,
 .auth-log-submit .btn-green:focus {

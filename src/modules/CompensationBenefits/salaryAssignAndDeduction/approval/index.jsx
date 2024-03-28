@@ -108,35 +108,6 @@ export default function AllowanceNDeductionApproval() {
   // const openFilter = Boolean(filterAnchorEl);
   // const id = openFilter ? "simple-popover" : undefined;
 
-  const handleSearch = (values) => {
-    getAllAdditionNDeductionListDataForApproval(
-      {
-        applicationStatus: "Pending",
-        isAdmin: isOfficeAdmin,
-        approverId: employeeId,
-        workplaceGroupId: wgId,
-        businessUnitId: buId,
-        departmentId: 0,
-        designationId: 0,
-        applicantId: 0,
-        accountId: orgId,
-        intId: 0,
-        workplaceId: wId,
-      },
-
-      setApplicationListData,
-      setAllData,
-      setFilterData,
-      setLoading
-    );
-    // setFilterBages(values);
-    // setfilterAnchorEl(null);
-  };
-
-  // const getFilterValues = (name, value) => {
-  //   setFilterValues((prev) => ({ ...prev, [name]: value }));
-  // };
-
   useEffect(() => {
     const array = [];
     filterData?.listData?.forEach((data) => {
@@ -196,7 +167,7 @@ export default function AllowanceNDeductionApproval() {
         isAdmin: isOfficeAdmin,
       });
     }
-  
+
     const callback = () => {
       getAllAdditionNDeductionListDataForApproval(
         {
@@ -599,60 +570,33 @@ export default function AllowanceNDeductionApproval() {
                             {filterData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "Approved",
-                                        // applicationData
-                                        filterData?.listData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                            marginRight: "10px",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "Reject",
-                                        // applicationData
-                                        filterData?.listData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "Approved",
+                                      // applicationData
+                                      filterData?.listData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "Reject",
+                                      // applicationData
+                                      filterData?.listData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                             <ul className="d-flex flex-wrap">
