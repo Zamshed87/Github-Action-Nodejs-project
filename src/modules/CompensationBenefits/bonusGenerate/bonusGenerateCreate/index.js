@@ -782,7 +782,7 @@ const BonusGenerateCreate = () => {
                         value={values?.effectiveDate}
                         name="effectiveDate"
                         type="date"
-                        disabled={isEdit}
+                        // disabled={isEdit}
                         onChange={(e) => {
                           setValues((prev) => ({
                             ...prev,
