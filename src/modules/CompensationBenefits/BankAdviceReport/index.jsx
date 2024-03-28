@@ -202,7 +202,6 @@ const BankAdviceReport = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log({ values });
   return (
     <form onSubmit={handleSubmit}>
       {loading && <Loading />}
@@ -502,6 +501,8 @@ const BankAdviceReport = () => {
                                   );
                                 });
                               } else if (
+                                values?.bank?.label ===
+                                  "Dutch Bangla Bank Agent Banking" ||
                                 values?.bank?.label === "DUTCH-BANGLA BANK LTD"
                               ) {
                                 excelGenerate((res) => {
