@@ -270,12 +270,12 @@ const BankAdviceReport = () => {
                         setFieldValue("workplaceGroup", valueOption);
                         setFieldValue("workplace", "");
                         if (valueOption?.value) {
-                          getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CompanyAccountNo&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}`,
-                            "BankAccountId",
-                            "BankAccountNo",
-                            setBankAccountDDL
-                          );
+                          // getPeopleDeskAllDDL(
+                          //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CompanyAccountNo&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}`,
+                          //   "BankAccountId",
+                          //   "BankAccountNo",
+                          //   setBankAccountDDL
+                          // );
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
                             "value",
@@ -479,7 +479,7 @@ const BankAdviceReport = () => {
                               }
 
                               if (
-                                values?.bankAccountNo?.BankName ===
+                                values?.bank?.label ===
                                 "Standard Chartered Bank"
                               ) {
                                 excelGenerate((res) => {
@@ -499,8 +499,7 @@ const BankAdviceReport = () => {
                                   );
                                 });
                               } else if (
-                                values?.bankAccountNo?.BankName ===
-                                "DUTCH-BANGLA BANK LTD"
+                                values?.bank?.label === "DUTCH-BANGLA BANK LTD"
                               ) {
                                 excelGenerate((res) => {
                                   generateExcelAction(
@@ -512,7 +511,26 @@ const BankAdviceReport = () => {
                                     strBusinessUnit,
                                     5,
                                     res,
-                                    values?.bankAccountNo,
+                                    values?.account?.AccountNo,
+                                    total,
+                                    totalInWords,
+                                    buDetails
+                                  );
+                                });
+                              } else if (
+                                values?.bank?.label === "Dhaka Bank Limited "
+                              ) {
+                                excelGenerate((res) => {
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    3,
+                                    res,
+                                    values?.account?.AccountNo,
                                     total,
                                     totalInWords,
                                     buDetails
