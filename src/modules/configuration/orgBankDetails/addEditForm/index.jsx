@@ -169,6 +169,26 @@ export default function AddEditForm({
       });
     }
   }, [singleData]);
+  useEffect(() => {
+    if (singleData?.intAccountBankDetailsId) {
+      getWDDL.action({
+        urlKey: "PeopleDeskAllDDL",
+        method: "GET",
+        params: {
+          DDLType: "Workplace",
+          WorkplaceGroupId: singleData?.workplaceGroupId,
+          BusinessUnitId: buId,
+          intId: employeeId || 0,
+        },
+        onSuccess: (res) => {
+          res.forEach((item, i) => {
+            res[i].label = item?.strWorkplace;
+            res[i].value = item?.intWorkplaceId;
+          });
+        },
+      });
+    }
+  }, [singleData]);
   return (
     <>
       <PForm
