@@ -14,7 +14,6 @@ import Chips from "../../../common/Chips";
 import FormikCheckBox from "../../../common/FormikCheckbox";
 import IConfirmModal from "../../../common/IConfirmModal";
 import Loading from "../../../common/loading/Loading";
-import MasterFilter from "../../../common/MasterFilter";
 import MuiIcon from "../../../common/MuiIcon";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
@@ -26,7 +25,6 @@ import {
   greenColor,
   successColor,
 } from "../../../utility/customColor";
-import useDebounce from "../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { AssetApproveReject, getAssetListDataForApproval } from "./helper";
 import "./index.css";
@@ -102,8 +100,6 @@ export default function AssetApproval() {
     );
   }, [employeeId, orgId, isOfficeAdmin]);
 
-  const debounce = useDebounce();
-
   useEffect(() => {
     const array = [];
     applicationListData?.listData?.forEach((data) => {
@@ -120,17 +116,7 @@ export default function AssetApproval() {
   }, [applicationListData, orgId, isOfficeAdmin, employeeId]);
 
   const saveHandler = (values) => {};
-  const searchData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter((item) =>
-        regex.test(item?.employeeName?.toLowerCase())
-      );
-      setRowDto({ listData: newDta });
-    } catch {
-      setRowDto([]);
-    }
-  };
+
   const demoPopup = (action, text, array) => {
     let newArray = [];
 
@@ -166,7 +152,7 @@ export default function AssetApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -183,7 +169,7 @@ export default function AssetApproval() {
   };
 
   const singlePopup = (action, text, item) => {
-    let payload = [
+    const payload = [
       {
         applicationId: item?.application?.intAssetRequisitionId,
         approverEmployeeId: employeeId,
@@ -213,7 +199,7 @@ export default function AssetApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
@@ -494,22 +480,13 @@ export default function AssetApproval() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-          dirty,
-        }) => (
+        {({ handleSubmit, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -524,57 +501,31 @@ export default function AssetApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                             <ul className="d-flex flex-wrap">
@@ -645,7 +596,7 @@ export default function AssetApproval() {
                                       dataRow?.length ===
                                       allData?.listData?.length
                                     ) {
-                                      let temp = dataRow?.map((item) => {
+                                      const temp = dataRow?.map((item) => {
                                         return {
                                           ...item,
                                           selectCheckbox: false,
