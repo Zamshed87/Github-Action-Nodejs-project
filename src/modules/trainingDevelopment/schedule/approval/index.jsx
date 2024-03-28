@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Cancel, CheckCircle } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -8,11 +5,9 @@ import AntTable from "../../../../common/AntTable";
 import BackButton from "../../../../common/BackButton";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import Loading from "../../../../common/loading/Loading";
-import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { failColor, successColor } from "../../../../utility/customColor";
 import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 import { scheduleApprovalColumn } from "./helper";
 
@@ -67,7 +62,7 @@ export default function TrainingScheduleApproval() {
         intTrainingScheduleId: 0,
       },
       (res) => {
-        let temp = res?.listData?.map((item) => {
+        const temp = res?.listData?.map((item) => {
           return {
             ...item,
             selectCheckbox: false,
@@ -121,7 +116,7 @@ export default function TrainingScheduleApproval() {
   }, []);
 
   const demoPopupForTable = (action, text, data) => {
-    let payload = [
+    const payload = [
       {
         applicationId: data?.application?.intScheduleId,
         approverEmployeeId: employeeId,
@@ -132,12 +127,13 @@ export default function TrainingScheduleApproval() {
         isAdmin: isOfficeAdmin,
       },
     ];
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to ${action}? `,
       yesAlertFunc: () => {
         handleApprovalAction(payload, getLandingData);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -171,7 +167,7 @@ export default function TrainingScheduleApproval() {
         }
       });
     }
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -189,11 +185,7 @@ export default function TrainingScheduleApproval() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
-      >
+      <Formik enableReinitialize={true} initialValues={initData}>
         {({ handleSubmit, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -210,56 +202,30 @@ export default function TrainingScheduleApproval() {
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
                               <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        filterLanding
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        filterLanding
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      filterLanding
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      filterLanding
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                           </div>
@@ -287,7 +253,7 @@ export default function TrainingScheduleApproval() {
                                       dataRow?.length ===
                                       landingApproval?.length
                                     ) {
-                                      let temp = dataRow?.map((item) => {
+                                      const temp = dataRow?.map((item) => {
                                         return {
                                           ...item,
                                           selectCheckbox: false,

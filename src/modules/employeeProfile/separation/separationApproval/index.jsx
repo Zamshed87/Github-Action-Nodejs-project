@@ -1,9 +1,4 @@
-import {
-  Cancel,
-  CheckCircle,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
+import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -20,8 +15,6 @@ import IConfirmModal from "./../../../../common/IConfirmModal";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import Loading from "../../../../common/loading/Loading";
 import BackButton from "../../../../common/BackButton";
-import MuiIcon from "../../../../common/MuiIcon";
-import { failColor, successColor } from "../../../../utility/customColor";
 import ResetButton from "../../../../common/ResetButton";
 import MasterFilter from "../../../../common/MasterFilter";
 import FilterBadgeComponent from "../../../../common/FilterBadgeComponent";
@@ -276,7 +269,7 @@ export default function SeparationApproval() {
     <Formik
       enableReinitialize={true}
       initialValues={initData}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
+      onSubmit={(values, { resetForm }) => {
         saveHandler(values, () => {
           resetForm(initData);
         });
@@ -305,57 +298,31 @@ export default function SeparationApproval() {
                           {applicationListData?.listData?.filter(
                             (item) => item?.selectCheckbox
                           ).length > 0 && (
-                            <div className="d-flex actionIcon mr-3">
-                              <Tooltip title="Accept">
-                                <div
-                                  className="muiIconHover success mr-2"
-                                  onClick={() => {
-                                    demoPopup(
-                                      "approve",
-                                      "isApproved",
-                                      applicationData
-                                    );
-                                  }}
-                                >
-                                  <MuiIcon
-                                    icon={
-                                      <CheckCircle
-                                        sx={{
-                                          color: successColor,
-                                          width: "25px !important",
-                                          height: "35px !important",
-                                          fontSize: "20px !important",
-                                        }}
-                                      />
-                                    }
-                                  />
-                                </div>
-                              </Tooltip>
-                              <Tooltip title="Reject">
-                                <div
-                                  className="muiIconHover  danger"
-                                  onClick={() => {
-                                    demoPopup(
-                                      "reject",
-                                      "isReject",
-                                      applicationData
-                                    );
-                                  }}
-                                >
-                                  <MuiIcon
-                                    icon={
-                                      <Cancel
-                                        sx={{
-                                          color: failColor,
-                                          width: "25px !important",
-                                          height: "35px !important",
-                                          fontSize: "20px !important",
-                                        }}
-                                      />
-                                    }
-                                  />
-                                </div>
-                              </Tooltip>
+                            <div className="d-flex actionIcon">
+                              <button
+                                className="btn-green mr-2"
+                                onClick={() => {
+                                  demoPopup(
+                                    "approve",
+                                    "isApproved",
+                                    applicationData
+                                  );
+                                }}
+                              >
+                                Approve
+                              </button>
+                              <button
+                                className="btn-red"
+                                onClick={() => {
+                                  demoPopup(
+                                    "reject",
+                                    "isReject",
+                                    applicationData
+                                  );
+                                }}
+                              >
+                                Reject
+                              </button>
                             </div>
                           )}
                           <ul className="d-flex flex-wrap">

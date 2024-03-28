@@ -18,7 +18,6 @@ import FormikCheckBox from "../../../../common/FormikCheckbox";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import { LightTooltip } from "../../../../common/LightTooltip";
 import Loading from "../../../../common/loading/Loading";
-import MasterFilter from "../../../../common/MasterFilter";
 import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
@@ -174,7 +173,7 @@ export default function SalaryGenerateApproval() {
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter(
+      const newDta = allData?.listData?.filter(
         (item) =>
           regex.test(item?.strBusinessUnit?.toLowerCase()) ||
           regex.test(item?.strSalaryCode?.toLowerCase())
@@ -233,7 +232,7 @@ export default function SalaryGenerateApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -250,7 +249,7 @@ export default function SalaryGenerateApproval() {
   };
 
   const singlePopup = (action, text, item) => {
-    let payload = [
+    const payload = [
       {
         applicationId: item?.intSalaryGenerateRequestId,
         approverEmployeeId: employeeId,
@@ -284,7 +283,7 @@ export default function SalaryGenerateApproval() {
       );
     };
 
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
@@ -340,7 +339,7 @@ export default function SalaryGenerateApproval() {
                     : false
                 }
                 onChange={(e) => {
-                  let data = filterLanding.map((item) => ({
+                  const data = filterLanding.map((item) => ({
                     ...item,
                     selectCheckbox: e.target.checked,
                   }));
@@ -360,7 +359,7 @@ export default function SalaryGenerateApproval() {
           </div>
         ),
         dataIndex: "strBusinessUnit",
-        render: (strBusinessUnit, record, index) => (
+        render: (strBusinessUnit, record) => (
           <div className="d-flex align-items-center">
             <div className="mr-2" onClick={(e) => e.stopPropagation()}>
               <FormikCheckBox
@@ -374,7 +373,7 @@ export default function SalaryGenerateApproval() {
                 color={greenColor}
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
-                  let data2 = filterLanding?.map((item) => {
+                  const data2 = filterLanding?.map((item) => {
                     if (
                       item?.intSalaryGenerateRequestId ===
                       record?.intSalaryGenerateRequestId
@@ -386,7 +385,7 @@ export default function SalaryGenerateApproval() {
                     } else return item;
                   });
                   setFilterLanding(data2);
-                  let data = applicationListData?.listData?.map((item) => {
+                  const data = applicationListData?.listData?.map((item) => {
                     if (
                       item?.intSalaryGenerateRequestId ===
                       record?.intSalaryGenerateRequestId
@@ -465,7 +464,7 @@ export default function SalaryGenerateApproval() {
       {
         title: "Waiting Stage",
         dataIndex: "currentStage",
-        render: (currentStage, record) => (
+        render: (currentStage) => (
           <div className="d-flex align-items-center">
             <div>{currentStage}</div>
           </div>
@@ -528,7 +527,7 @@ export default function SalaryGenerateApproval() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -541,7 +540,6 @@ export default function SalaryGenerateApproval() {
           errors,
           touched,
           setFieldValue,
-          isValid,
           dirty,
         }) => (
           <>
@@ -558,57 +556,31 @@ export default function SalaryGenerateApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                             <ul className="d-flex flex-wrap">
@@ -706,7 +678,7 @@ export default function SalaryGenerateApproval() {
                                         allData?.length ===
                                         applicationListData?.listData?.length
                                       ) {
-                                        let temp = allData?.map((item) => {
+                                        const temp = allData?.map((item) => {
                                           return {
                                             ...item,
                                             selectCheckbox: false,
