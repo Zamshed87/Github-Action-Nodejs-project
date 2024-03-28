@@ -88,10 +88,10 @@ const SalaryPayslipReport = () => {
       `/Employee/EmployeeProfileView?employeeId=${values?.employee?.value}`
     );
     getViewPaySlipData(
-      `/Payroll/SalarySelectQueryAll?partName=SalaryPaySlipByEmployeeId&intMonthId=${values?.inMonth}&intYearId=${values?.intYear}&IntEmployeeId=${values?.employee?.value}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intWorkplaceGroupId=${wgId}`
+      `/Payroll/SalarySelectQueryAll?partName=SalaryPaySlipByEmployeeId&intMonthId=${values?.inMonth}&intBusinessUnitId=${buId}&intYearId=${values?.intYear}&IntEmployeeId=${values?.employee?.value}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intWorkplaceGroupId=${wgId}`
     );
     getSalaryHeader(
-      `/Payroll/SalarySelectQueryAll?partName=SalaryGenerateHeaderByEmployeeId&intMonthId=${values?.inMonth}&intYearId=${values?.intYear}&IntEmployeeId=${values?.employee?.value}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intWorkplaceGroupId=${wgId}`
+      `/Payroll/SalarySelectQueryAll?partName=SalaryGenerateHeaderByEmployeeId&intMonthId=${values?.inMonth}&intBusinessUnitId=${buId}&intYearId=${values?.intYear}&IntEmployeeId=${values?.employee?.value}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intWorkplaceGroupId=${wgId}`
     );
   };
 
@@ -250,7 +250,7 @@ const SalaryPayslipReport = () => {
                             valueOption?.value
                           ) {
                             getPeopleDeskAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&intId=${valueOption?.value}&IntMonth=${values?.inMonth}&IntYear=${values?.intYear}`,
+                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${valueOption?.value}&IntMonth=${values?.inMonth}&IntYear=${values?.intYear}`,
                               "SalaryGenerateRequestId",
                               "SalaryCode",
                               setPayrollPeiodDDL
