@@ -17,25 +17,19 @@ class Cell {
     };
   }
 }
-const getTableData = (row, comapanyNameHeader) => {
+const getTableData = (row) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(index + 1, "center", "text").getCell(),
+      new Cell(item?.accountName || "N/A", "center", "text").getCell(),
       new Cell(item?.accountNo || "N/A", "left", "text").getCell(),
       new Cell(item?.numNetPayable || 0, "right", "money").getCell(),
-      new Cell(item?.reason || "N/A", "left", "text").getCell(),
-
-      new Cell(item?.accountName || "N/A", "left", "text").getCell(),
-      new Cell("Cr", "center", "text").getCell(),
-      new Cell(comapanyNameHeader, "center", "text").getCell(),
-      new Cell("BDT" || "N/A", "center", "text").getCell(),
-      new Cell("N/A", "left", "text").getCell(),
     ];
   });
   return data;
 };
 
-export const formatSCB = (
+export const formatCity = (
   comapanyNameHeader,
   tableHeader,
   tableData,
@@ -53,7 +47,7 @@ export const formatSCB = (
     name: "Bank Advice",
     sheets: [
       {
-        name: "SCB Report",
+        name: "City Bank Report",
         gridLine: false,
         rows: [
           [
@@ -69,7 +63,7 @@ export const formatSCB = (
           ],
           [
             {
-              text: buAddress,
+              text: buAddress?.strWorkplace,
               fontSize: 12,
               underline: true,
               bold: true,
@@ -122,7 +116,17 @@ export const formatSCB = (
           ],
           [
             {
-              text: "Standard Chartered Bank",
+              text: "Gulshan Avenue Branch",
+              fontSize: 10,
+              bold: true,
+              cellRange: "A1:F1",
+              merge: true,
+              alignment: "left:middle",
+            },
+          ],
+          [
+            {
+              text: "The City Bank Limited",
               fontSize: 10,
               cellRange: "A1:F1",
               merge: true,
@@ -131,7 +135,7 @@ export const formatSCB = (
           ],
           [
             {
-              text: "Dhanmondi Road# 5 Branch ",
+              text: "136, Gulshan Avenue branch, Gulshan 2 ",
               fontSize: 10,
               cellRange: "A1:F1",
               merge: true,
@@ -140,7 +144,7 @@ export const formatSCB = (
           ],
           [
             {
-              text: "House 6, Road 5, Dhanmondi R/A, Dhaka-1209.",
+              text: "Dhaka – 1212",
               fontSize: 10,
               cellRange: "A1:F1",
               merge: true,
@@ -151,14 +155,14 @@ export const formatSCB = (
             {
               text: "",
               fontSize: 10,
-              cellRange: "A1:F1",
+              cellRange: "A1:H1",
               merge: true,
               alignment: "left:middle",
             },
           ],
           [
             {
-              text: `Subject : REQUEST TO DISBURSE EMPLOYEE SALARY ${comapanyNameHeader.toUpperCase()}`,
+              text: `Subject : Salary Disbursement for the month of ${comapanyNameHeader} of "10MS Limited" employees.`,
               fontSize: 10,
               bold: true,
               underline: true,
@@ -170,7 +174,7 @@ export const formatSCB = (
           ["_blank*1"],
           [
             {
-              text: "Dear Recipients,",
+              text: "Dear Sir,",
               fontSize: 9,
               bold: true,
               cellRange: "A1:F1",
@@ -180,7 +184,7 @@ export const formatSCB = (
           ],
           [
             {
-              text: `With due respect, please disburse the net payable amount BDT ${total} (${totalInWords} Only) as Employee Salary ${comapanyNameHeader} to the all-account holders as per attached sheet from our Company Account ${bankAccountNo} `,
+              text: `With due respect, we are requesting you to transfer the salary for the month of ${comapanyNameHeader} of ‘10MS Limited’ employees. Please debit BDT  ${total}  from our company account no. ${bankAccountNo}  to disburse salaries as mentioned below. `,
               fontSize: 9,
               cellRange: "A2:H1",
               merge: true,
@@ -191,7 +195,7 @@ export const formatSCB = (
           ["_blank*1"],
           [
             {
-              text: "We are looking forward for your kind cooperation.",
+              text: "Employee Bank Account Information with Transfer Amount:",
               fontSize: 9,
               cellRange: "A1:L1",
               merge: true,
@@ -199,19 +203,19 @@ export const formatSCB = (
             },
           ],
           ["_blank*1"],
+          //   [
+          //     {
+          //       text: "Thanking You",
+          //       fontSize: 9,
+          //       cellRange: "A1:L1",
+          //       merge: true,
+          //       alignment: "left:middle",
+          //     },
+          //   ],
+          //   ["_blank*1"],
           [
             {
-              text: "Thanking You",
-              fontSize: 9,
-              cellRange: "A1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          ["_blank*1"],
-          [
-            {
-              text: "SL No.",
+              text: "SL ",
               fontSize: 8,
               bold: true,
 
@@ -219,7 +223,7 @@ export const formatSCB = (
               alignment: "center:middle",
             },
             {
-              text: "Bank Account No",
+              text: "Name",
               fontSize: 8,
               bold: true,
 
@@ -227,62 +231,24 @@ export const formatSCB = (
               alignment: "left:middle",
             },
             {
-              text: "Net Amount",
+              text: "A/C Number",
+              fontSize: 8,
+              bold: true,
+
+              border: "all 000000 thin",
+              alignment: "left:middle",
+            },
+
+            {
+              text: "Net Salary Payable",
               fontSize: 8,
               bold: true,
 
               border: "all 000000 thin",
               alignment: "right:middle",
             },
-            {
-              text: "Comments",
-              fontSize: 7,
-              bold: true,
-              border: "all 000000 thin",
-            },
-            {
-              text: "Account Name",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "left:middle",
-            },
-
-            {
-              text: "Dr/Cr",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "center:middle",
-            },
-            {
-              text: "Value Date",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "left:middle",
-            },
-            {
-              text: "Currency",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "left:middle",
-            },
-            {
-              text: "Ref No.",
-              fontSize: 8,
-              bold: true,
-
-              border: "all 000000 thin",
-              alignment: "left:middle",
-            },
           ],
-          ...getTableData(rowDto, comapanyNameHeader),
+          ...getTableData(rowDto),
           [
             {
               text: "Total",
@@ -291,11 +257,18 @@ export const formatSCB = (
               border: "all 000000 thin",
               alignment: "center",
             },
+
             {
               text: "",
               fontSize: 9,
               border: "all 000000 thin",
             },
+            {
+              text: "",
+              fontSize: 9,
+              border: "all 000000 thin",
+            },
+
             {
               text: total,
               fontSize: 7,
@@ -304,85 +277,77 @@ export const formatSCB = (
               alignment: "right:middle",
               textFormat: "money",
             },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
-            {
-              text: "",
-              fontSize: 7,
-              border: "all 000000 thin",
-            },
           ],
           ["_blank*1"],
+          //   [
+          //     {
+          //       text: `In Word :`,
+          //       fontSize: 9,
+          //       bold: false,
+          //       cellRange: "A1:A1",
+          //       merge: true,
+          //       alignment: "left:end",
+          //     },
+          //     {
+          //       text: ` ${totalInWords} Taka Only.`,
+          //       fontSize: 9,
+          //       bold: true,
+          //       cellRange: "B1:L1",
+          //       merge: true,
+          //       alignment: "left:middle",
+          //     },
+          //   ],
+          //   ["_blank*2"],
+          //   [
+          //     {
+          //       text: `For : ${businessUnit}`,
+          //       fontSize: 9,
+          //       bold: true,
+          //       cellRange: "A1:F1",
+          //       merge: true,
+          //       alignment: "left:middle",
+          //     },
+          //   ],
+          //   ["_blank*6"],
           [
             {
-              text: `In Word :`,
-              fontSize: 9,
-              bold: false,
-              cellRange: "A1:A1",
-              merge: true,
-              alignment: "left:end",
-            },
-            {
-              text: ` ${totalInWords} Taka Only.`,
-              fontSize: 9,
-              bold: true,
-              cellRange: "B1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          ["_blank*2"],
-          [
-            {
-              text: `For : ${businessUnit}`,
-              fontSize: 9,
-              bold: true,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          ["_blank*6"],
-          [
-            {
-              text: `Authorize Signature`,
+              text: `Ayman Sadiq`,
               fontSize: 9,
               bold: true,
               cellRange: "A1:C1",
               merge: true,
               alignment: "left:middle",
             },
-            // {
-            //   text: `Authorize Signature`,
-            //   fontSize: 10,
-            //   bold: true,
-            //   cellRange: "D1:F1",
-            //   merge: true,
-            //   alignment: "left:middle",
-            // },
+          ],
+          [
+            {
+              text: `CEO & Managing Director`,
+              fontSize: 9,
+              bold: true,
+              cellRange: "A1:C1",
+              merge: true,
+              alignment: "left:middle",
+            },
+          ],
+          [
+            {
+              text: `10MS Limited`,
+              fontSize: 9,
+              bold: true,
+              cellRange: "A1:C1",
+              merge: true,
+              alignment: "left:middle",
+            },
+          ],
+          [
+            {
+              text: `Email- ayman@10minuteschool.com`,
+              fontSize: 9,
+              bold: true,
+              cellRange: "A1:C1",
+              merge: true,
+              alignment: "left:middle",
+            },
           ],
           ["_blank*2"],
           [

@@ -17,7 +17,7 @@ class Cell {
     };
   }
 }
-const getTableData = (row, BankName, comapanyNameHeader) => {
+const getTableData = (row) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(index + 1, "center", "text").getCell(),
@@ -172,7 +172,7 @@ export const formatDBL = (
           ],
           [
             {
-              text: `With due respect, please disburse the net payable amount ${total} (${totalInWords} Only) as Employee Salary ${comapanyNameHeader} to the all-account holders as per attached sheet from our Company Account ${bankAccountNo?.BankAccountNo} `,
+              text: `With due respect, please disburse the net payable amount ${total} (${totalInWords} Only) as Employee Salary ${comapanyNameHeader} to the all-account holders as per attached sheet from our Company Account ${bankAccountNo} `,
               fontSize: 9,
               cellRange: "A2:H1",
               merge: true,
@@ -279,7 +279,7 @@ export const formatDBL = (
               alignment: "left:middle",
             },
           ],
-          ...getTableData(rowDto, bankAccountNo?.BankName, comapanyNameHeader),
+          ...getTableData(rowDto),
           [
             {
               text: "Total",
