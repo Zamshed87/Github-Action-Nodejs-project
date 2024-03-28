@@ -1,17 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Cancel, CheckCircle } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import BackButton from "../../../../../common/BackButton";
 import IConfirmModal from "../../../../../common/IConfirmModal";
 import Loading from "../../../../../common/loading/Loading";
-import MuiIcon from "../../../../../common/MuiIcon";
 import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../../commonRedux/reduxForLocalStorage/actions";
-import { failColor, successColor } from "../../../../../utility/customColor";
 import useDebounce from "../../../../../utility/customHooks/useDebounce";
 import CardTable from "./component/CardTable";
 import {
@@ -143,7 +139,7 @@ export default function IncrementNPromotionApproval() {
           approverId: employeeId,
           workplaceId: wId,
           workplaceGroupId: wgId,
-        businessUnitId: buId,
+          businessUnitId: buId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
@@ -220,8 +216,20 @@ export default function IncrementNPromotionApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                {/* <Tooltip title="Accept">
                                   <div
                                     className="muiIconHover success mr-2"
                                     onClick={() => {
@@ -245,8 +253,20 @@ export default function IncrementNPromotionApproval() {
                                       }
                                     />
                                   </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
+                                </Tooltip> */}
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
+                                {/* <Tooltip title="Reject">
                                   <div
                                     className="muiIconHover  danger"
                                     onClick={() => {
@@ -270,7 +290,7 @@ export default function IncrementNPromotionApproval() {
                                       }
                                     />
                                   </div>
-                                </Tooltip>
+                                </Tooltip> */}
                               </div>
                             )}
                             <ul className="d-flex flex-wrap">
