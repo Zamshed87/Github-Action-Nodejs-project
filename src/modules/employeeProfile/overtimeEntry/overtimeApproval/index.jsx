@@ -220,7 +220,7 @@ export default function OvertimeApproval() {
       ); */
       getLandingData();
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -237,7 +237,7 @@ export default function OvertimeApproval() {
   };
 
   const singlePopup = (action, text, data) => {
-    let payload = [
+    const payload = [
       {
         applicationId: data?.intOverTimeId,
         approverEmployeeId: employeeId,
@@ -274,7 +274,7 @@ export default function OvertimeApproval() {
       ); */
       getLandingData();
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to ${action}? `,
       yesAlertFunc: () => {
@@ -588,7 +588,7 @@ export default function OvertimeApproval() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -601,7 +601,6 @@ export default function OvertimeApproval() {
           errors,
           touched,
           setFieldValue,
-          isValid,
           dirty,
         }) => (
           <>
@@ -618,49 +617,23 @@ export default function OvertimeApproval() {
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup("approve", "isApproved");
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup("reject", "isReject");
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup("approve", "isApproved");
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup("reject", "isReject");
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                             {/*   <ul className="d-flex flex-wrap">
@@ -747,7 +720,7 @@ export default function OvertimeApproval() {
                                       dataRow?.length ===
                                       resOvertimeApproval?.length
                                     ) {
-                                      let temp = dataRow?.map((item) => {
+                                      const temp = dataRow?.map((item) => {
                                         return {
                                           ...item,
                                           selectCheckbox: false,

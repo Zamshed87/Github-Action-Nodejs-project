@@ -18,7 +18,6 @@ import FilterBadgeComponent from "../../../../common/FilterBadgeComponent";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import Loading from "../../../../common/loading/Loading";
-import MasterFilter from "../../../../common/MasterFilter";
 import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
@@ -58,7 +57,7 @@ const initData = {
 
 const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
+))(() => ({
   [`& .${tooltipClasses.arrow}`]: {
     color: "#fff !important",
   },
@@ -106,25 +105,6 @@ export default function LoanApproval() {
   // for view Modal
   const handleViewClose = () => setViewModal(false);
 
-  // ascending & descending
-  const commonSortByFilter = (filterType, property) => {
-    const newRowData = [...allData?.listData];
-    let modifyRowData = [];
-
-    if (filterType === "asc") {
-      modifyRowData = newRowData?.sort((a, b) => {
-        if (a[property] > b[property]) return -1;
-        return 1;
-      });
-    } else {
-      modifyRowData = newRowData?.sort((a, b) => {
-        if (b[property] > a[property]) return -1;
-        return 1;
-      });
-    }
-    setAllLoanApplicatonData({ listData: modifyRowData });
-  };
-
   useEffect(() => {
     const array = [];
     filterData?.listData?.forEach((data) => {
@@ -141,18 +121,6 @@ export default function LoanApproval() {
       setApplicationData(array);
     });
   }, [filterData]);
-
-  const searchData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter((item) =>
-        regex.test(item?.strEmployeeName?.toLowerCase())
-      );
-      setRowDto({ listData: newDta });
-    } catch {
-      setRowDto([]);
-    }
-  };
 
   const getLandingData = () => {
     getAllLoanApplicatonListDataForApproval(
@@ -282,7 +250,7 @@ export default function LoanApproval() {
       );
     };
 
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
@@ -299,7 +267,7 @@ export default function LoanApproval() {
   };
 
   const demoPopupForTable = (action, text, item) => {
-    let payload = [
+    const payload = [
       {
         applicationId: item?.intLoanApplicationId,
         fromDate: item?.application?.dteEffectiveDate || null,
@@ -339,7 +307,7 @@ export default function LoanApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
@@ -353,7 +321,7 @@ export default function LoanApproval() {
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
-  permissionList.forEach((item, idx) => {
+  permissionList.forEach((item) => {
     if (item?.menuReferenceId === 108) {
       return (permission = item);
     }
@@ -427,7 +395,7 @@ export default function LoanApproval() {
                 color={greenColor}
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
-                  let loanAppData = loanApplicationData?.listData?.map(
+                  const loanAppData = loanApplicationData?.listData?.map(
                     (item) => {
                       if (
                         item?.application?.intLoanApplicationId ===
@@ -440,7 +408,7 @@ export default function LoanApproval() {
                       } else return item;
                     }
                   );
-                  let data = filterData?.listData?.map((item) => {
+                  const data = filterData?.listData?.map((item) => {
                     if (
                       item?.application?.intLoanApplicationId ===
                       record?.application?.intLoanApplicationId
@@ -669,11 +637,7 @@ export default function LoanApproval() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
-      >
+      <Formik enableReinitialize={true} initialValues={initData}>
         {({
           handleSubmit,
           resetForm,
@@ -681,7 +645,6 @@ export default function LoanApproval() {
           errors,
           touched,
           setFieldValue,
-          isValid,
           dirty,
         }) => (
           <>
@@ -732,57 +695,31 @@ export default function LoanApproval() {
                               {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
                               ).length > 0 && (
-                                <div className="d-flex actionIcon mr-3">
-                                  <Tooltip title="Approve">
-                                    <div
-                                      className="muiIconHover success "
-                                      onClick={() => {
-                                        demoPopup(
-                                          "approve",
-                                          "isApproved",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <CheckCircle
-                                            sx={{
-                                              color: successColor,
-                                              width: "25px !important",
-                                              height: "35px !important",
-                                              fontSize: "20px !important",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
-                                  <Tooltip title="Reject">
-                                    <div
-                                      className="muiIconHover  danger mx-2"
-                                      onClick={() => {
-                                        demoPopup(
-                                          "reject",
-                                          "isReject",
-                                          applicationData
-                                        );
-                                      }}
-                                    >
-                                      <MuiIcon
-                                        icon={
-                                          <Cancel
-                                            sx={{
-                                              color: failColor,
-                                              width: "25px !important",
-                                              height: "35px !important",
-                                              fontSize: "20px !important",
-                                            }}
-                                          />
-                                        }
-                                      />
-                                    </div>
-                                  </Tooltip>
+                                <div className="d-flex actionIcon">
+                                  <button
+                                    className="btn-green mr-2"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    className="btn-red"
+                                    onClick={() => {
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    }}
+                                  >
+                                    Reject
+                                  </button>
                                 </div>
                               )}
                               <ul className="d-flex flex-wrap">

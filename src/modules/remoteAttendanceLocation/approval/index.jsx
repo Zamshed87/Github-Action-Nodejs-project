@@ -1,7 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Cancel, CheckCircle } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -9,11 +5,8 @@ import BackButton from "../../../common/BackButton";
 import FilterBadgeComponent from "../../../common/FilterBadgeComponent";
 import IConfirmModal from "../../../common/IConfirmModal";
 import Loading from "../../../common/loading/Loading";
-import MuiIcon from "../../../common/MuiIcon";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { failColor, successColor } from "../../../utility/customColor";
-import useDebounce from "../../../utility/customHooks/useDebounce";
 import CardTable from "./component/CardTable";
 import {
   getAllRemoteAttendanceListDataForApproval,
@@ -43,7 +36,6 @@ export default function RemoteAttendanceApproval() {
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
   const [allData, setAllData] = useState();
-  const [isFilter, setIsFilter] = useState(false);
 
   const getLandingData = () => {
     getAllRemoteAttendanceListDataForApproval(
@@ -72,14 +64,9 @@ export default function RemoteAttendanceApproval() {
     getLandingData(/* isSupOrLineManager?.value */);
   }, [employeeId]);
 
-  const debounce = useDebounce();
-
   // advance filter
-  const [filterAnchorEl, setfilterAnchorEl] = useState(null);
   const [filterBages, setFilterBages] = useState({});
   const [filterValues, setFilterValues] = useState({});
-  const openFilter = Boolean(filterAnchorEl);
-  const id = openFilter ? "simple-popover" : undefined;
 
   const handleSearch = (values) => {
     getAllRemoteAttendanceListDataForApproval(
@@ -102,7 +89,6 @@ export default function RemoteAttendanceApproval() {
       setLoading
     );
     setFilterBages(values);
-    setfilterAnchorEl(null);
   };
   const clearFilter = () => {
     setFilterBages({});
@@ -115,9 +101,6 @@ export default function RemoteAttendanceApproval() {
     setFilterBages(data);
     setFilterValues(data);
     handleSearch(data);
-  };
-  const getFilterValues = (name, value) => {
-    setFilterValues((prev) => ({ ...prev, [name]: value }));
   };
 
   useEffect(() => {
@@ -135,23 +118,11 @@ export default function RemoteAttendanceApproval() {
     });
   }, [applicationListData]);
 
-  const [appliedStatus, setAppliedStatus] = useState({
+  const [appliedStatus] = useState({
     value: 1,
     label: "Pending",
   });
 
-  const saveHandler = (values) => {};
-  const searchData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter((item) =>
-        regex.test(item?.employeeName?.toLowerCase())
-      );
-      setRowDto({ listData: newDta });
-    } catch {
-      setRowDto([]);
-    }
-  };
   const demoPopup = (action, text, array) => {
     let newArray = [];
 
@@ -187,7 +158,7 @@ export default function RemoteAttendanceApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -225,25 +196,8 @@ export default function RemoteAttendanceApproval() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-          dirty,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, resetForm, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -258,57 +212,31 @@ export default function RemoteAttendanceApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                             <ul className="d-flex flex-wrap">

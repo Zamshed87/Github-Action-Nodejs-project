@@ -20,6 +20,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { convertTo12HourFormat } from "utility/timeFormatter";
 import ChangedInOutTimeEmpListModal from "./component/ChangedInOutTime";
 import { AttendanceType, EmpFilterType } from "./utils/utils";
+import { toast } from "react-toastify";
 
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
@@ -160,33 +161,21 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         const values = form.getFieldsValue(true);
         let payload: any[] = [];
         if (values?.attendanceAdujust?.label === "Changed In/Out Time") {
+          const isEmpty = selectedPayloadState?.some(item => !item?.intimeUpdate || !item?.outtimeUpdate);
+          if(isEmpty){
+            return toast.warn("Please fill all time fields")
+          }
           payload = selectedPayloadState.map((item) => {
+            const inTImeStr = item?.inDateUpdate + "T" + moment(item?.intimeUpdate).format("HH:mm:ss")
+            const outTimeStr = item?.outDateUpdate + "T" + moment(item?.outtimeUpdate).format("HH:mm:ss")
             return {
               id: item?.ManualAttendanceId || 0,
               accountId: orgId,
               attendanceSummaryId: item?.AutoId,
               employeeId: item?.EmployeeId,
               attendanceDate: item?.AttendanceDate,
-              inDateTime:
-                values?.attendanceAdujust?.label === "Absent" ||
-                values?.attendanceAdujust?.label === "Late" ||
-                values?.attendanceAdujust?.label === "Present"
-                  ? null
-                  : values?.intime
-                  ? moment(values?.intime).format("YYYY-MM-DDTHH:mm:ss")
-                  : item?.inDateUpdate +
-                      "T" +
-                      moment(item?.intimeUpdate).format("HH:mm:ss") || null,
-              outDateTime:
-                values?.attendanceAdujust?.label === "Absent" ||
-                values?.attendanceAdujust?.label === "Late" ||
-                values?.attendanceAdujust?.label === "Present"
-                  ? null
-                  : values?.outtime
-                  ? moment(values?.outtime).format("YYYY-MM-DDTHH:mm:ss")
-                  : item?.outDateUpdate +
-                      "T" +
-                      moment(item?.outtimeUpdate).format("HH:mm:ss") || null,
+              inDateTime: inTImeStr || null,
+              outDateTime: outTimeStr || null,
 
               status: item?.isPresent
                 ? "Present"

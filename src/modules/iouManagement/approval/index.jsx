@@ -194,11 +194,10 @@ export default function IOUApproval() {
     label: "Pending",
   });
 
-  const saveHandler = (values) => {};
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter((item) =>
+      const newDta = allData?.listData?.filter((item) =>
         regex.test(item?.employeeName?.toLowerCase())
       );
       setRowDto({ listData: newDta });
@@ -241,7 +240,7 @@ export default function IOUApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -258,7 +257,7 @@ export default function IOUApproval() {
   };
 
   const singlePopup = (action, text, item) => {
-    let payload = [
+    const payload = [
       {
         applicationId: item?.application?.intIouid,
         approverEmployeeId: employeeId,
@@ -288,12 +287,13 @@ export default function IOUApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
         IOUApproveReject(payload, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -323,7 +323,7 @@ export default function IOUApproval() {
   // landing table
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
-  ))(({ theme }) => ({
+  ))(() => ({
     [`& .${tooltipClasses.arrow}`]: {
       color: "#fff !important",
     },
@@ -385,7 +385,7 @@ export default function IOUApproval() {
           </div>
         ),
         dataIndex: "employeeCode",
-        render: (employeeCode, record, index) => (
+        render: (employeeCode, record) => (
           <div className="d-flex align-items-center">
             <div className="mr-2" onClick={(e) => e.stopPropagation()}>
               <FormikCheckBox
@@ -399,7 +399,7 @@ export default function IOUApproval() {
                 color={greenColor}
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
-                  let data = applicationListData?.listData?.map((item) => {
+                  const data = applicationListData?.listData?.map((item) => {
                     if (
                       item?.application?.intIouid ===
                       record?.application?.intIouid
@@ -411,7 +411,7 @@ export default function IOUApproval() {
                     } else return item;
                   });
                   setApplicationListData({ listData: [...data] });
-                  let data2 = allData?.listData?.map((item) => {
+                  const data2 = allData?.listData?.map((item) => {
                     if (
                       item?.application?.intIouid ===
                       record?.application?.intIouid
@@ -562,7 +562,7 @@ export default function IOUApproval() {
       {
         title: "Waiting Stage",
         dataIndex: "currentStage",
-        render: (currentStage, record) => (
+        render: (currentStage) => (
           <div className="d-flex align-items-center">
             <div>{currentStage}</div>
           </div>
@@ -624,15 +624,7 @@ export default function IOUApproval() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
+      <Formik enableReinitialize={true} initialValues={initData}>
         {({
           handleSubmit,
           resetForm,
@@ -640,7 +632,6 @@ export default function IOUApproval() {
           errors,
           touched,
           setFieldValue,
-          isValid,
           dirty,
         }) => (
           <>
@@ -658,56 +649,30 @@ export default function IOUApproval() {
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
                               <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                             <ul className="d-flex flex-wrap">
@@ -796,7 +761,7 @@ export default function IOUApproval() {
                                       dataRow?.length ===
                                       allData?.listData?.length
                                     ) {
-                                      let temp = dataRow?.map((item) => {
+                                      const temp = dataRow?.map((item) => {
                                         return {
                                           ...item,
                                           selectCheckbox: false,

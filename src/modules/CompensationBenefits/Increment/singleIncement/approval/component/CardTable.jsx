@@ -310,7 +310,7 @@ const CardTable = ({ propsObj }) => {
               }
             );
             setSingleData(dataRow);
-            setViewModal(true);
+            // setViewModal(true);
           }}
           setColumnsData={(dataRow) => {
             if (dataRow?.length === allData?.listData?.length) {

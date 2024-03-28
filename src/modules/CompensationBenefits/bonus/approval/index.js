@@ -69,7 +69,7 @@ const BonusApproval = () => {
         approveBy: userId,
       },
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Are your sure for ${message}?`,
       yesAlertFunc: () => {
@@ -90,7 +90,7 @@ const BonusApproval = () => {
         approveBy: userId,
       },
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Are your sure for ${message}`,
       yesAlertFunc: () => {
@@ -126,21 +126,13 @@ const BonusApproval = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -189,33 +181,6 @@ const BonusApproval = () => {
                                   />
                                 </li>
                               )}
-                              {/* {permission?.isCreate && (
-                                <li style={{ marginRight: "24px" }}>
-                                  <FormikInput
-                                    classes="search-input fixed-width mt-2 mt-md-0 mb-2 mb-md-0 tableCardHeaderSeach"
-                                    inputClasses="search-inner-input"
-                                    placeholder="Search"
-                                    value={values?.search}
-                                    name="search"
-                                    type="text"
-                                    trailicon={
-                                      <SearchOutlined
-                                        sx={{ color: "#323232" }}
-                                      />
-                                    }
-                                    onChange={(e) => {
-                                      filterData(
-                                        e.target.value,
-                                        allData,
-                                        setRowDto
-                                      );
-                                      setFieldValue("search", e.target.value);
-                                    }}
-                                    errors={errors}
-                                    touched={touched}
-                                  />
-                                </li>
-                              )} */}
                             </ul>
                           </div>
                         </div>
