@@ -1,5 +1,3 @@
-import { Cancel, CheckCircle } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -7,10 +5,8 @@ import BackButton from "../../../../common/BackButton";
 import FilterBadgeComponent from "../../../../common/FilterBadgeComponent";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import Loading from "../../../../common/loading/Loading";
-import MuiIcon from "../../../../common/MuiIcon";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { failColor, successColor } from "../../../../utility/customColor";
 import CardTable from "./component/CardTable";
 import {
   getAllRequisitionListDataForApproval,
@@ -126,8 +122,6 @@ export default function RequisitionApproval() {
     label: "Pending",
   });
 
-  const saveHandler = (values) => {};
-
   const demoPopup = (action, text, array) => {
     let newArray = [];
 
@@ -163,7 +157,7 @@ export default function RequisitionApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -201,25 +195,8 @@ export default function RequisitionApproval() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-          dirty,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, resetForm, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -234,57 +211,31 @@ export default function RequisitionApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                             <ul className="d-flex flex-wrap">
