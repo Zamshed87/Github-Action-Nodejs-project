@@ -95,7 +95,7 @@ export default function Joining() {
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [wgId, wId]);
 
   const handleChangePage = (_, newPage, searchText) => {
     setPages((prev) => {
@@ -353,9 +353,7 @@ export default function Joining() {
                                     width: "200px",
                                   }}
                                 >
-                                  <div>
-                                    B.Unit, Workplace Group
-                                  </div>
+                                  <div>B.Unit, Workplace Group</div>
                                 </td>
                                 <td
                                   style={{
@@ -371,9 +369,7 @@ export default function Joining() {
                                     width: "200px",
                                   }}
                                 >
-                                  <div>
-                                    B.Unit, Workplace Group
-                                  </div>
+                                  <div>B.Unit, Workplace Group</div>
                                 </td>
                                 <td
                                   style={{

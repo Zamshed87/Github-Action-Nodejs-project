@@ -70,7 +70,6 @@ export const getBankAdviceRequestLanding = async (
   cb
 ) => {
   setLoading && setLoading(true);
-  console.log({ values });
   try {
     const payload = {
       intAccountId: orgId,
@@ -103,6 +102,7 @@ export const getBankAdviceRequestLanding = async (
         pageSize: res?.data?.pageSize,
         total: res?.data?.totalCount,
       });
+
       setLoading && setLoading(false);
     }
   } catch (error) {
