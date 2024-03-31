@@ -522,9 +522,9 @@ const BankAdviceReport = () => {
                                   );
                                 });
                               } else if (
-                                values?.bank?.label.includes(
-                                  "City Bank Limited"
-                                )
+                                values?.bank?.label
+                                  ?.toLowerCase()
+                                  .includes("the city bank")
                               ) {
                                 excelGenerate((res) => {
                                   generateExcelAction(
