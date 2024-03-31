@@ -108,7 +108,7 @@ const MasterLocationRegistration = () => {
       getData();
     };
 
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -125,7 +125,7 @@ const MasterLocationRegistration = () => {
   };
 
   const singlePopUp = (action, text, item) => {
-    let payload = [
+    const payload = [
       {
         applicationId: item?.intLoanApplicationId,
         fromDate: item?.application?.dteEffectiveDate || null,
@@ -156,27 +156,21 @@ const MasterLocationRegistration = () => {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
         allLocationAssignApproveReject(payload, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
   };
 
-  const { resetForm, handleSubmit, setFieldValue } = useFormik({
+  const { handleSubmit, setFieldValue } = useFormik({
     initialValues: {},
-    onSubmit: (values) => {
-      saveHandler(values, () => {
-        resetForm();
-      });
-    },
   });
-
-  const saveHandler = (values) => {};
 
   useEffect(() => {
     getData();
@@ -242,7 +236,7 @@ const MasterLocationRegistration = () => {
                 color={greenColor}
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
-                  let locationAppData = rowDto?.listData?.map((item) => {
+                  const locationAppData = rowDto?.listData?.map((item) => {
                     if (
                       item?.application?.intMasterLocationId ===
                       record?.application?.intMasterLocationId
@@ -253,7 +247,7 @@ const MasterLocationRegistration = () => {
                       };
                     } else return item;
                   });
-                  let data = filteredData?.listData?.map((item) => {
+                  const data = filteredData?.listData?.map((item) => {
                     if (
                       item?.application?.intMasterLocationId ===
                       record?.application?.intMasterLocationId
@@ -376,57 +370,31 @@ const MasterLocationRegistration = () => {
                             filteredData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                         </div>

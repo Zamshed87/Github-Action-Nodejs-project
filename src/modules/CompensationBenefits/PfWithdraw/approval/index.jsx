@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Cancel, CheckCircle } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -9,12 +7,9 @@ import AntTable from "../../../../common/AntTable";
 import BackButton from "../../../../common/BackButton";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import Loading from "../../../../common/loading/Loading";
-import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { failColor, successColor } from "../../../../utility/customColor";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
 import {
   getWithdrawalListDataForApproval,
   pfWithdrawApprovalLandingTableColumn,
@@ -36,18 +31,8 @@ export default function PfWithdrawApproval() {
   const [applicationData, setApplicationData] = useState([]);
   const [allData, setAllData] = useState();
 
-  //View Modal
-  const [viewModal, setViewModal] = useState(false);
-
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
-
-  const handleOpen = () => {
-    setViewModal(false);
-  };
-
-  // for view Modal
-  const handleViewClose = () => setViewModal(false);
 
   const getLandingData = () => {
     getWithdrawalListDataForApproval(
@@ -76,30 +61,6 @@ export default function PfWithdrawApproval() {
     getLandingData();
   }, [employeeId]);
 
-  const debounce = useDebounce();
-
-  const handleSearch = (values) => {
-    getWithdrawalListDataForApproval(
-      {
-        applicationStatus: "Pending",
-        isAdmin: isOfficeAdmin,
-        approverId: employeeId,
-        workplaceGroupId: wgId,
-        businessUnitId: buId,
-        workplaceId: wId,
-        departmentId: 0,
-        designationId: 0,
-        applicantId: 0,
-        accountId: orgId,
-        intId: 0,
-      },
-
-      setApplicationListData,
-      setAllData,
-      setLoading
-    );
-  };
-
   useEffect(() => {
     const array = [];
     applicationListData?.listData?.forEach((data) => {
@@ -115,23 +76,6 @@ export default function PfWithdrawApproval() {
     });
   }, [applicationListData]);
 
-  // const [appliedStatus, setAppliedStatus] = useState({
-  //   value: 1,
-  //   label: "Pending",
-  // });
-
-  const saveHandler = (values) => {};
-  const searchData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter((item) =>
-        regex.test(item?.employeeName?.toLowerCase())
-      );
-      setRowDto({ listData: newDta });
-    } catch {
-      setRowDto([]);
-    }
-  };
   const demoPopup = (action, text, array) => {
     let newArray = [];
 
@@ -167,7 +111,7 @@ export default function PfWithdrawApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -200,25 +144,8 @@ export default function PfWithdrawApproval() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-          dirty,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -233,57 +160,31 @@ export default function PfWithdrawApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                             <ul className="d-flex flex-wrap">
@@ -367,7 +268,7 @@ export default function PfWithdrawApproval() {
                                         dataRow?.length ===
                                         allData?.listData?.length
                                       ) {
-                                        let temp = dataRow?.map((item) => {
+                                        const temp = dataRow?.map((item) => {
                                           return {
                                             ...item,
                                             selectCheckbox: false,

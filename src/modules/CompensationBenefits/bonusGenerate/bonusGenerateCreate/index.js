@@ -512,6 +512,7 @@ const BonusGenerateCreate = () => {
                       isClearable={false}
                       options={workplaceDDL || []}
                       value={values?.workplace}
+                      isDisabled={isEdit}
                       onChange={(valueOption) => {
                         setFieldValue("workplace", valueOption);
                       }}
@@ -781,6 +782,7 @@ const BonusGenerateCreate = () => {
                         value={values?.effectiveDate}
                         name="effectiveDate"
                         type="date"
+                        // disabled={isEdit}
                         onChange={(e) => {
                           setValues((prev) => ({
                             ...prev,
@@ -802,70 +804,72 @@ const BonusGenerateCreate = () => {
                     </div>
                   </div>
                   <div className="col-lg-12"></div>
-                  <div className="col-lg-3">
-                    <div className="d-flex align-items-center">
-                      <button
-                        style={{
-                          padding: "0px 10px",
-                        }}
-                        className="btn btn-default mr-2"
-                        type="button"
-                        disabled={
-                          !values?.bonusSystemType ||
-                          !values?.bonusName ||
-                          !values?.effectiveDate ||
-                          !values?.workplace
-                        }
-                        onClick={() => {
-                          if (+params?.id) {
-                            if (!isSameWgEmployee) {
-                              return toast.warning(
-                                "Bonus generate must be same workplace group!"
+                  {!isEdit && (
+                    <div className="col-lg-3">
+                      <div className="d-flex align-items-center">
+                        <button
+                          style={{
+                            padding: "0px 10px",
+                          }}
+                          className="btn btn-default mr-2"
+                          type="button"
+                          disabled={
+                            !values?.bonusSystemType ||
+                            !values?.bonusName ||
+                            !values?.effectiveDate ||
+                            !values?.workplace
+                          }
+                          onClick={() => {
+                            if (+params?.id) {
+                              if (!isSameWgEmployee) {
+                                return toast.warning(
+                                  "Bonus generate must be same workplace group!"
+                                );
+                              }
+
+                              getEmployeeListForBonusGenerateOrRegenerate(
+                                orgId,
+                                employeeList,
+                                getEmployeeList,
+                                setEmployeeList,
+                                setRowDto,
+                                values,
+                                isEdit,
+                                location,
+                                buId,
+                                wgId,
+                                values?.wing?.value,
+                                values?.soleDepo?.value,
+                                values?.region?.value,
+                                values?.area?.value,
+                                values?.territory?.value
+                              );
+                            } else {
+                              getEmployeeListForBonusGenerateOrRegenerate(
+                                orgId,
+                                employeeList,
+                                getEmployeeList,
+                                setEmployeeList,
+                                setRowDto,
+                                values,
+                                isEdit,
+                                location,
+                                buId,
+                                wgId,
+                                values?.wing?.value,
+                                values?.soleDepo?.value,
+                                values?.region?.value,
+                                values?.area?.value,
+                                values?.territory?.value
                               );
                             }
-
-                            getEmployeeListForBonusGenerateOrRegenerate(
-                              orgId,
-                              employeeList,
-                              getEmployeeList,
-                              setEmployeeList,
-                              setRowDto,
-                              values,
-                              isEdit,
-                              location,
-                              buId,
-                              wgId,
-                              values?.wing?.value,
-                              values?.soleDepo?.value,
-                              values?.region?.value,
-                              values?.area?.value,
-                              values?.territory?.value
-                            );
-                          } else {
-                            getEmployeeListForBonusGenerateOrRegenerate(
-                              orgId,
-                              employeeList,
-                              getEmployeeList,
-                              setEmployeeList,
-                              setRowDto,
-                              values,
-                              isEdit,
-                              location,
-                              buId,
-                              wgId,
-                              values?.wing?.value,
-                              values?.soleDepo?.value,
-                              values?.region?.value,
-                              values?.area?.value,
-                              values?.territory?.value
-                            );
-                          }
-                        }}
-                      >
-                        View
-                      </button>
+                          }}
+                        >
+                          View
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
