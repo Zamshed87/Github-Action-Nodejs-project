@@ -215,6 +215,7 @@ const BankAdviceReport = () => {
                       onChange={(e) => {
                         setValues((prev) => ({
                           ...prev,
+
                           yearId: +e.target.value
                             .split("")
                             .slice(0, 4)
@@ -258,6 +259,7 @@ const BankAdviceReport = () => {
                         setWorkplaceDDL([]);
                         setFieldValue("workplaceGroup", valueOption);
                         setFieldValue("workplace", "");
+                        setFieldValue("adviceName", "");
                         if (valueOption?.value) {
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
