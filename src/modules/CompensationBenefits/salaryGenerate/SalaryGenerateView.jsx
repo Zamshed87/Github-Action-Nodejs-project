@@ -378,17 +378,40 @@ const SalaryGenerateView = () => {
 
               <div>
                 <ul className="d-flex flex-wrap align-items-center justify-content-center">
-                  {values?.summary === "2" && (
+                  {/* {values?.summary === "2" && (
                     <li className="pr-2">
                       <button
                         className="btn-green"
                         style={{ minWidth: "120px" }}
-                        onClick={() => {}}
+                        onClick={() => {
+                          const total = Number(
+                            rowDto
+                              ?.reduce(
+                                (acc, item) => acc + item?.numNetPayable,
+                                0
+                              )
+                              .toFixed(2)
+                          );
+                          generateCashPayExcelAction(
+                            monthYearFormatter(values?.monthYear),
+                            "",
+                            "",
+                            excelColumnFunc(0),
+                            excelDataFunc(0),
+                            strBusinessUnit,
+                            5,
+                            rowDto,
+                            values?.account?.AccountNo,
+                            total,
+                            withDecimal(total),
+                            buDetails
+                          );
+                        }}
                       >
                         Cash Pay Slip
                       </button>
                     </li>
-                  )}
+                  )} */}
                   <li className="pr-2">
                     <Tooltip title="Download the salary report as Excel" arrow>
                       <button

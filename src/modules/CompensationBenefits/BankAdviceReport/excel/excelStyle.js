@@ -1,5 +1,5 @@
-import { numberWithCommas } from "../../../../utility/numberWithCommas";
 import { getRowTotal } from "../../../../utility/getRowTotal";
+import { numberWithCommas } from "../../../../utility/numberWithCommas";
 
 export const salaryAdviceExcelColumn = {
   sl: "SL",
@@ -60,7 +60,7 @@ const salaryAdviceExcelWorkSheetTotal = (
   rowDto,
   amountCellArr
 ) => {
-  let total = worksheet.addRow([
+  const total = worksheet.addRow([
     " ",
     " ",
     " ",
