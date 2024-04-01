@@ -23,8 +23,10 @@ import {
 } from "./helper";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initialValues = {
   search: "",
@@ -37,7 +39,7 @@ const initialValues = {
 const RosterReport = () => {
   const {
     permissionList,
-    profileData: { orgId, wgId, wId },
+    profileData: { orgId, wgId, wId, buId, employeeId },
   } = useSelector((state) => state?.auth, shallowEqual);
   const [loading, setLoading] = useState(false);
 
@@ -54,6 +56,8 @@ const RosterReport = () => {
     document.title = "Roster Report";
   }, []);
   const [buDetails, setBuDetails] = useState({});
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -63,10 +67,10 @@ const RosterReport = () => {
     initialValues,
     onSubmit: (formValues) => {
       onGetRosterReportForAll(
-        wId,
+        values?.workplace?.value || wId,
         getRosterReportInformation,
         orgId,
-        wgId,
+        values?.workplaceGroup?.value || wgId,
         formValues,
         setRowDto,
         pages,
@@ -92,8 +96,14 @@ const RosterReport = () => {
       setPages,
       "true"
     );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [wgId]);
-  const handleTableChange = (pagination, newRowDto, srcText) => {
+  const handleTableChange = (pagination, newRowDto, srcText, values) => {
     if (newRowDto?.action === "filter") {
       return;
     }
@@ -102,10 +112,10 @@ const RosterReport = () => {
       pages?.pageSize !== pagination?.pageSize
     ) {
       return onGetRosterReportForAll(
-        wId,
+        values?.workplace?.value || wId,
         getRosterReportInformation,
         orgId,
-        wgId,
+        values?.workplaceGroup?.value || wgId,
         values,
         setRowDto,
         pagination,
@@ -116,10 +126,10 @@ const RosterReport = () => {
     }
     if (pages?.current !== pagination?.current) {
       return onGetRosterReportForAll(
-        wId,
+        values?.workplace?.value || wId,
         getRosterReportInformation,
         orgId,
-        wgId,
+        values?.workplaceGroup?.value || wgId,
         values,
         setRowDto,
         pagination,
@@ -152,7 +162,11 @@ const RosterReport = () => {
                             values?.fromDate
                           }&DteToDate=${
                             values?.toDate
-                          }&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&SearchTxt=${
+                          }&EmployeeId=0&WorkplaceGroupId=${
+                            values?.workplaceGroup?.value || wgId
+                          }&WorkplaceId=${
+                            values?.workplace?.value || wId
+                          }&PageNo=1&SearchTxt=${
                             values?.search || ""
                           }&PageSize=1000&IsPaginated=false`
                         );
@@ -202,10 +216,11 @@ const RosterReport = () => {
                     onClick={() => {
                       setFieldValue("search", "");
                       onGetRosterReportForAll(
-                        wId,
+                        values?.workplace?.value || wId,
                         getRosterReportInformation,
                         orgId,
-                        wgId,
+                        values?.workplaceGroup?.value || wgId,
+
                         values,
                         setRowDto,
                         pages,
@@ -227,10 +242,11 @@ const RosterReport = () => {
                   setFieldValue("search", value);
                   if (value) {
                     onGetRosterReportForAll(
-                      wId,
+                      values?.workplace?.value || wId,
                       getRosterReportInformation,
                       orgId,
-                      wgId,
+                      values?.workplaceGroup?.value || wgId,
+
                       values,
                       setRowDto,
                       pages,
@@ -240,10 +256,10 @@ const RosterReport = () => {
                     );
                   } else {
                     onGetRosterReportForAll(
-                      wId,
+                      values?.workplace?.value || wId,
                       getRosterReportInformation,
                       orgId,
-                      wgId,
+                      values?.workplaceGroup?.value || wgId,
                       values,
                       setRowDto,
                       pages,
@@ -256,10 +272,10 @@ const RosterReport = () => {
                 cancelHandler={() => {
                   setFieldValue("search", "");
                   onGetRosterReportForAll(
-                    wId,
+                    values?.workplace?.value || wId,
                     getRosterReportInformation,
                     orgId,
-                    wgId,
+                    values?.workplaceGroup?.value || wgId,
                     values,
                     setRowDto,
                     pages,
@@ -339,7 +355,7 @@ const RosterReport = () => {
                   />
                 </div>
               </div> */}
-              <div className="col-lg-3">
+              <div className="col-lg-2">
                 <div className="input-field-main">
                   <label>From Date</label>
                   <DefaultInput
@@ -355,7 +371,7 @@ const RosterReport = () => {
                   />
                 </div>
               </div>
-              <div className="col-lg-3">
+              <div className="col-lg-2">
                 <div className="input-field-main">
                   <label>To Date</label>
                   <DefaultInput
@@ -371,7 +387,47 @@ const RosterReport = () => {
                   />
                 </div>
               </div>
-
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Workplace Group</label>
+                  <FormikSelect
+                    name="workplaceGroup"
+                    options={[...workplaceGroupDDL] || []}
+                    value={values?.workplaceGroup}
+                    onChange={(valueOption) => {
+                      setWorkplaceDDL([]);
+                      setFieldValue("workplaceGroup", valueOption);
+                      setFieldValue("workplace", "");
+                      if (valueOption?.value) {
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                          "intWorkplaceId",
+                          "strWorkplace",
+                          setWorkplaceDDL
+                        );
+                      }
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Workplace</label>
+                  <FormikSelect
+                    name="workplace"
+                    options={[...workplaceDDL] || []}
+                    value={values?.workplace}
+                    onChange={(valueOption) => {
+                      setFieldValue("workplace", valueOption);
+                      getWorkplaceDetails(valueOption?.value, setBuDetails);
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
               <div className="col-lg-1">
                 <button
                   type="button"
@@ -396,7 +452,12 @@ const RosterReport = () => {
                   pages?.pageSize
                 )}
                 handleTableChange={({ pagination, newRowDto }) =>
-                  handleTableChange(pagination, newRowDto, values?.search || "")
+                  handleTableChange(
+                    pagination,
+                    newRowDto,
+                    values?.search || "",
+                    values
+                  )
                 }
                 pages={pages?.pageSize}
                 pagination={pages}

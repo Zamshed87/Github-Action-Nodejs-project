@@ -20,6 +20,8 @@ export default function AddEditForm({
 
   const saveOrgBank = useApiRequest({});
   const getBUnitDDL = useApiRequest({});
+  const getWGDDL = useApiRequest({});
+  const getWDDL = useApiRequest({});
   const getBanksDDL = useApiRequest({});
   const getBranchDDL = useApiRequest({});
 
@@ -47,6 +49,22 @@ export default function AddEditForm({
         res.forEach((item, i) => {
           res[i].label = item?.strBusinessUnit;
           res[i].value = item?.intBusinessUnitId;
+        });
+      },
+    });
+    getWGDDL.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "WorkplaceGroup",
+        WorkplaceGroupId: 0,
+        BusinessUnitId: buId,
+        intId: employeeId || 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strWorkplaceGroup;
+          res[i].value = item?.intWorkplaceGroupId;
         });
       },
     });
@@ -78,12 +96,13 @@ export default function AddEditForm({
   const [form] = Form.useForm();
   // submit
   const submitHandler = ({ values, resetForm, setIsAddEditForm }) => {
+    console.log({ values });
     const cb = () => {
       resetForm();
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       intAccountBankDetailsId: !singleData?.intAccountBankDetailsId
         ? 0
         : singleData?.intAccountBankDetailsId,
@@ -103,6 +122,10 @@ export default function AddEditForm({
       isActive: values?.isActive,
       intCreatedBy: employeeId,
       intUpdatedBy: employeeId,
+      workplaceId: values?.workplace?.value ,
+      workplaceName: values?.workplace?.label,
+      workplaceGroupId: values?.workplaceGroup?.value,
+      workplaceGroupName: values?.workplaceGroup?.label,
     };
     saveOrgBank.action({
       urlKey: "AccountBankDetailsCRUD",
@@ -130,11 +153,39 @@ export default function AddEditForm({
           value: singleData?.intBankBranchId,
           label: singleData?.strBranchName,
         },
+        workplaceGroup: {
+          value: singleData?.workplaceGroupId,
+          label: singleData?.workplaceGroupName,
+        },
+        workplace: {
+          value: singleData?.workplaceId,
+          label: singleData?.workplaceName,
+        },
         routingNo: singleData?.strRoutingNo,
         districtName: singleData?.strDistrict,
         swiftCode: singleData?.strSwiftCode,
         accName: singleData?.strAccountName,
         accNo: singleData?.strAccountNo,
+      });
+    }
+  }, [singleData]);
+  useEffect(() => {
+    if (singleData?.intAccountBankDetailsId) {
+      getWDDL.action({
+        urlKey: "PeopleDeskAllDDL",
+        method: "GET",
+        params: {
+          DDLType: "Workplace",
+          WorkplaceGroupId: singleData?.workplaceGroupId,
+          BusinessUnitId: buId,
+          intId: employeeId || 0,
+        },
+        onSuccess: (res) => {
+          res.forEach((item, i) => {
+            res[i].label = item?.strWorkplace;
+            res[i].value = item?.intWorkplaceId;
+          });
+        },
       });
     }
   }, [singleData]);
@@ -292,6 +343,56 @@ export default function AddEditForm({
                 });
               }}
               rules={[{ required: true, message: "Business Unit is required" }]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={getWGDDL?.data?.length > 0 ? getWGDDL?.data : []}
+              name="workplaceGroup"
+              label="Workplace Group"
+              showSearch
+              filterOption={true}
+              placeholder="Workplace Group"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplaceGroup: op,
+                });
+                getWDDL.action({
+                  urlKey: "PeopleDeskAllDDL",
+                  method: "GET",
+                  params: {
+                    DDLType: "Workplace",
+                    WorkplaceGroupId: value,
+                    BusinessUnitId: buId,
+                    intId: employeeId || 0,
+                  },
+                  onSuccess: (res) => {
+                    res.forEach((item, i) => {
+                      res[i].label = item?.strWorkplace;
+                      res[i].value = item?.intWorkplaceId;
+                    });
+                  },
+                });
+              }}
+              rules={[
+                { required: true, message: "Workplace Group is required" },
+              ]}
+            />
+          </Col>
+          <Col md={12} sm={24}>
+            <PSelect
+              options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
+              name="workplace"
+              label="Workplace"
+              showSearch
+              filterOption={true}
+              placeholder="Workplace"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  workplace: op,
+                });
+              }}
+              rules={[{ required: true, message: "Workplace is required" }]}
             />
           </Col>
 

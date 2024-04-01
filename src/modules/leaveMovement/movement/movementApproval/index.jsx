@@ -15,12 +15,7 @@ import MuiIcon from "../../../../common/MuiIcon";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../../common/PopoverMasterFilter";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import {
-  failColor,
-  gray900,
-  greenColor,
-  successColor,
-} from "../../../../utility/customColor";
+import { gray900, greenColor } from "../../../../utility/customColor";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import { timeFormatter } from "../../../../utility/timeFormatter";
 import {
@@ -92,7 +87,7 @@ export default function MovementApproval() {
       `/ApprovalPipeline/MovementApplicationLanding`,
       payload,
       (res) => {
-        let temp = res?.listData?.map((item) => {
+        const temp = res?.listData?.map((item) => {
           return {
             ...item,
             selectCheckbox: false,
@@ -576,9 +571,9 @@ export default function MovementApproval() {
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex">
-                                <div
-                                  className="muiIconHover success mr-2"
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
                                   onClick={() => {
                                     demoPopup(
                                       "approve",
@@ -587,24 +582,10 @@ export default function MovementApproval() {
                                     );
                                   }}
                                 >
-                                  {/* <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    /> */}
-                                  <button className="btn-green px-2">
-                                    Approve
-                                  </button>
-                                </div>
-                                <div
-                                  className="muiIconHover  danger"
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
                                   onClick={() => {
                                     demoPopup(
                                       "reject",
@@ -613,22 +594,8 @@ export default function MovementApproval() {
                                     );
                                   }}
                                 >
-                                  {/* <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    /> */}
-                                  <button className="btn-green px-2">
-                                    Reject
-                                  </button>
-                                </div>
+                                  Reject
+                                </button>
                               </div>
                             )}
                             {/*   <ul className="d-flex flex-wrap">

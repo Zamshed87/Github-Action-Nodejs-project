@@ -21,17 +21,17 @@ const getTableData = (row, BankName) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(String(index + 1), "center", "text").getCell(),
-      new Cell(item?.strAccountName || "N/A", "left", "text").getCell(),
-      new Cell(item?.intEmployeeId || "N/A", "center", "text").getCell(),
-      new Cell(item?.strFinancialInstitution || "N/A", "left", "text").getCell(),
-      new Cell(item?.strBankBranchName || "N/A", "center", "text").getCell(),
-      new Cell(item?.AccType || "N/A", "center", "text").getCell(),
-      new Cell(item?.strAccountNo || "N/A", "left", "text").getCell(),
+      new Cell(item?.accountName || "N/A", "left", "text").getCell(),
+      new Cell(item?.employeeId || "N/A", "center", "text").getCell(),
+      new Cell(item?.financialInstitution || "N/A", "left", "text").getCell(),
+      new Cell(item?.branchName || "N/A", "center", "text").getCell(),
+      new Cell(item?.accType || "N/A", "center", "text").getCell(),
+      new Cell(item?.accountNo || "N/A", "left", "text").getCell(),
       new Cell(item?.numNetPayable || "N/A", "right", "money").getCell(),
-      new Cell(item?.Reason || "N/A", "left", "text").getCell(),
-      new Cell(item?.strComments || "N/A", "center", "text").getCell(),
-      new Cell(item?.strRoutingNumber || "N/A", "left", "text").getCell(),
-      new Cell(item?.strEmployeeCode || "N/A", "center", "text").getCell(),
+      new Cell(item?.reason || "N/A", "left", "text").getCell(),
+      new Cell(item?.adviceType || "N/A", "center", "text").getCell(),
+      new Cell(item?.routingNumber || "N/A", "left", "text").getCell(),
+      new Cell(item?.employeeCode || "N/A", "center", "text").getCell(),
     ];
   });
   return data;
@@ -141,7 +141,7 @@ export const formatBEFTN = (
           ],
           [
             {
-              text: `Subject : Payment Instruction by BEFTN for ${comapanyNameHeader}` ,
+              text: `Subject : Payment Instruction by BEFTN for ${comapanyNameHeader}`,
               fontSize: 9,
               bold: true,
               underline: true,
@@ -300,10 +300,9 @@ export const formatBEFTN = (
               border: "all 000000 thin",
             },
             {
-              text: '',
+              text: "",
               fontSize: 7,
               border: "all 000000 thin",
-              
             },
             {
               text: total,
@@ -378,7 +377,7 @@ export const formatBEFTN = (
           ["_blank*2"],
           [
             {
-              text: `System Generated Report ${moment().format('ll')}`,
+              text: `System Generated Report ${moment().format("ll")}`,
               fontSize: 9,
               bold: true,
               cellRange: "A1:F1",

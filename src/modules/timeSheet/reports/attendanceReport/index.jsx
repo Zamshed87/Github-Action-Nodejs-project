@@ -24,19 +24,23 @@ import PopOverFilter from "./PopOverFilter";
 import "./attendanceReport.css";
 import { generateExcelAction } from "./excel/excelConvert";
 import { attendanceReportColumn, getAttendanceReport } from "./helper";
-import { getWorkplaceDetails } from "common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const todayDate = dateFormatterForInput(new Date());
 const initData = {
   search: "",
   fromDate: todayDate,
   toDate: todayDate,
+  workplace: "",
+  workplaceGroup: "",
 };
 
 export default function AttendanceReport() {
   // dispatch
   const dispatch = useDispatch();
-  const { buId, orgId, wgId, wId } = useSelector(
+  const { buId, orgId, wgId, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -49,6 +53,8 @@ export default function AttendanceReport() {
   );
   // hooks
   const [rowDto, setRowDto] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [tempLoading, setTempLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -79,6 +85,12 @@ export default function AttendanceReport() {
   }, [buId, orgId, wgId]);
   useEffect(() => {
     getWorkplaceDetails(wId, setBuDetails);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [buId, orgId]);
 
   useEffect(() => {
@@ -95,18 +107,18 @@ export default function AttendanceReport() {
     setAnchorEl(null);
   };
   // handleChangePage
-  const handleChangePage = (_, newPage) => {
+  const handleChangePage = (_, newPage, values) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
     getAttendanceReport(
-      wId,
+      values?.workplace?.value || wId,
       buId,
       todayDate,
       todayDate,
       setRowDto,
       setLoading,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       {
         current: newPage === 0 ? 1 : newPage,
         pageSize: pages?.pageSize,
@@ -117,18 +129,18 @@ export default function AttendanceReport() {
     );
   };
   //handleChangeRowsPerPage
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event, values) => {
     setPages((prev) => {
       return { ...prev, pageSize: +event.target.value };
     });
     getAttendanceReport(
-      wId,
+      values?.workplace?.value || wId,
       buId,
       todayDate,
       todayDate,
       setRowDto,
       setLoading,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       {
         current: pages?.current,
         pageSize: +event.target.value,
@@ -141,13 +153,13 @@ export default function AttendanceReport() {
 
   const saveHandler = (values) => {
     getAttendanceReport(
-      wId,
+      values?.workplace?.value || wId,
       buId,
       values?.fromDate,
       values?.toDate,
       setRowDto,
       setLoading,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       pages,
       setPages,
       ""
@@ -209,14 +221,13 @@ export default function AttendanceReport() {
                                       values?.fromDate
                                     }&ToDate=${
                                       values?.toDate
-                                    }&IntBusinessUnitId=${buId}&IntWorkplaceId=${wId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${
+                                    }&IntBusinessUnitId=${buId}&IntWorkplaceId=${
+                                      values?.workplace?.value || wId
+                                    }&IntWorkplaceGroupId=${
+                                      values?.workplaceGroup?.value || wgId
+                                    }&PageNo=1&PageSize=100000&IsPaginated=false&SearchTxt=${
                                       values?.search || ""
                                     }&IsXls=true`
-                                    // `/TimeSheetReport/GetAttendanceReport?FromDate=${
-                                    //   values?.fromDate
-                                    // }&ToDate=${
-                                    //   values?.toDate
-                                    // }&BusinessUnitId=${buId}&AccountId=${orgId}&IntWorkplaceGroupId=${wgId}&PageNo=1&PageSize=1000000&IsPaginated=${false}`
                                   );
                                   if (res?.data) {
                                     if (res?.data < 1) {
@@ -317,52 +328,101 @@ export default function AttendanceReport() {
                               />
                             </li>
                           )}
-                          <li>
-                            <div
-                              className="d-flex align-items-end"
-                              style={{ paddingBottom: "7px" }}
-                            >
-                              <div className="mr-3 d-flex align-items-center">
-                                <label className="mr-2">From Date</label>
-                                <FormikInput
-                                  classes="input-sm"
-                                  type="date"
-                                  value={values?.fromDate}
-                                  name="fromDate"
-                                  onChange={(e) => {
-                                    setFieldValue("fromDate", e.target.value);
-                                  }}
-                                  errors={errors}
-                                  touched={touched}
-                                />
-                              </div>
-                              <div className="mr-3 d-flex align-items-center">
-                                <label className="mr-2">To Date</label>
-                                <FormikInput
-                                  classes="input-sm"
-                                  type="date"
-                                  value={values?.toDate}
-                                  name="toDate"
-                                  min={values?.fromDate}
-                                  onChange={(e) => {
-                                    setFieldValue("toDate", e.target.value);
-                                  }}
-                                  errors={errors}
-                                  touched={touched}
-                                />
-                              </div>
-                              <div>
-                                <PrimaryButton
-                                  type="submit"
-                                  className="btn btn-default flex-center"
-                                  label={"Apply"}
-                                  onClick={() => {}}
-                                  onSubmit={() => handleSubmit()}
-                                />
-                              </div>
-                            </div>
-                          </li>
                         </ul>
+                      </div>
+                    </div>
+                    <div className="table-card-body">
+                      <div className="card-style my-3">
+                        <div className="row">
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>From Date</label>
+                              <FormikInput
+                                classes="input-sm"
+                                value={values?.fromDate}
+                                placeholder="From Joining Date"
+                                name="fromDate"
+                                type="date"
+                                className="form-control"
+                                onChange={(e) => {
+                                  setFieldValue("fromDate", e.target.value);
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>To Date</label>
+                              <FormikInput
+                                classes="input-sm"
+                                value={values?.toDate}
+                                placeholder="To Joining Date"
+                                name="toDate"
+                                type="date"
+                                className="form-control"
+                                onChange={(e) => {
+                                  setFieldValue("toDate", e.target.value);
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace Group</label>
+                              <FormikSelect
+                                name="workplaceGroup"
+                                options={[...workplaceGroupDDL] || []}
+                                value={values?.workplaceGroup}
+                                onChange={(valueOption) => {
+                                  setWorkplaceDDL([]);
+                                  setFieldValue("workplaceGroup", valueOption);
+                                  setFieldValue("workplace", "");
+                                  if (valueOption?.value) {
+                                    getPeopleDeskAllDDL(
+                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                      "intWorkplaceId",
+                                      "strWorkplace",
+                                      setWorkplaceDDL
+                                    );
+                                  }
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="input-field-main">
+                              <label>Workplace</label>
+                              <FormikSelect
+                                name="workplace"
+                                options={[...workplaceDDL] || []}
+                                value={values?.workplace}
+                                onChange={(valueOption) => {
+                                  setFieldValue("workplace", valueOption);
+                                  getWorkplaceDetails(
+                                    valueOption?.value,
+                                    setBuDetails
+                                  );
+                                }}
+                                placeholder=""
+                                styles={customStyles}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-1">
+                            <button
+                              // disabled={!values?.fromDate || !values?.toDate}
+                              style={{ marginTop: "21px" }}
+                              className="btn btn-green"
+                              onClick={() => {
+                                handleSubmit();
+                              }}
+                            >
+                              View
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <PeopleDeskTable
@@ -377,7 +437,7 @@ export default function AttendanceReport() {
                         handleChangePage(e, newPage, values?.search)
                       }
                       handleChangeRowsPerPage={(e) =>
-                        handleChangeRowsPerPage(e, values?.search)
+                        handleChangeRowsPerPage(e, values)
                       }
                       onRowClick={(record) => {
                         getPDFAction(

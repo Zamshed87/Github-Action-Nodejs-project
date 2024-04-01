@@ -1,3 +1,4 @@
+
 import BulkSalaryAssign from "modules/CompensationBenefits/employeeSalary/bulkSalaryAssign";
 import CreateBonusSetup from "modules/PayrollManagementSytem/BonusSetup/Create/CreateBonusSetup";
 import CreateOvertimePolicy from "modules/PayrollManagementSytem/OvertimePolicy/Create/OvertimePolicy";
@@ -39,6 +40,9 @@ import { lazy } from "react";
 
 const CreateAndEditEmploye = lazy(() =>
   import("modules/employeeProfile/employeeFeature/createEmployee")
+);
+const SlabWiseIncomeTaxConf = lazy(() =>
+  import("modules/CompensationBenefits/SlabWiseIncomeTaxConf")
 );
 const MultiCalendarAssign = lazy(() =>
   import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
@@ -714,6 +718,9 @@ const CustomReport = lazy(() =>
 );
 const EmployeeJobCard = lazy(() =>
   import("../modules/employeeProfile/Reports/employeeJobCard/index.jsx")
+);
+const PfFundReport = lazy(() =>
+  import("../modules/employeeProfile/Reports/pfFundReport/index.tsx")
 );
 const EmpOverallStaus = lazy(() =>
   import("../modules/employeeProfile/Reports/EmployeeOverallStatus/index.jsx")
@@ -1679,6 +1686,10 @@ export const routingList = [
     component: EmployeeJobCard,
   },
   {
+    path: "/profile/reports/pfFundReport",
+    component: PfFundReport,
+  },
+  {
     path: "/profile/reports/empOverallStatus",
     component: EmpOverallStaus,
   },
@@ -2287,6 +2298,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/incometaxmgmt/taxassign/bulk",
     component: BulkEmployeeTaxAssign,
+  },
+  {
+    path: "/compensationAndBenefits/incometaxmgmt/slabwiseincometaxconf",
+    component: SlabWiseIncomeTaxConf,
   },
   {
     path: "/compensationAndBenefits/incometaxmgmt/taxassign",

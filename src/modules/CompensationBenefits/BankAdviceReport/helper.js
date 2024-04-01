@@ -15,6 +15,8 @@ export const bankAdviceInitialValues = {
   monthId: "" /* new Date().getMonth() + 1 */,
   yearId: "" /* new Date().getFullYear() */,
   search: "",
+  bank: "",
+  account: "",
 };
 
 export const bankAdviceValidationSchema = Yup.object().shape({
@@ -24,35 +26,34 @@ export const bankAdviceValidationSchema = Yup.object().shape({
       label: Yup.string().required("Salary Code is required"),
     })
     .typeError("Salary Code is required"),
-  adviceTo: Yup.object()
+  workplaceGroup: Yup.object()
     .shape({
-      value: Yup.string().required("Advice To is required"),
-      label: Yup.string().required("Advice To is required"),
+      value: Yup.string().required("Workplace Group is required"),
+      label: Yup.string().required("Workplace Group is required"),
+    })
+    .typeError("Workplace Group is required"),
+
+  workplace: Yup.object()
+    .shape({
+      value: Yup.string().required("Workplace is required"),
+      label: Yup.string().required("Workplace is required"),
+    })
+    .typeError("Workplace is required"),
+
+  account: Yup.object()
+    .shape({
+      value: Yup.string().required("Account is required"),
+      label: Yup.string().required("Account is required"),
     })
     .typeError("Advice To is required"),
-  bankAccountNo: Yup.object()
+  bank: Yup.object()
     .shape({
-      value: Yup.string().required("Bank Account No is required"),
-      label: Yup.string().required("Bank Account No is required"),
+      value: Yup.string().required("Bank is required"),
+      label: Yup.string().required("Bank is required"),
     })
-    .typeError("Bank Account No is required"),
+    .typeError("Bank is required"),
   monthYear: Yup.date().required("Payroll month is required"),
 });
-
-export const getBuDetails = async (buId, setter, setLoading) => {
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-    setter([]);
-  }
-};
 
 // salary generate landing
 export const getBankAdviceRequestLanding = async (
@@ -75,11 +76,13 @@ export const getBankAdviceRequestLanding = async (
       intBusinessUnitId: buId,
       intMonthId: values?.monthId,
       intYearId: values?.yearId,
-      intWorkplaceGroupId: wgId,
+      intWorkplaceGroupId: values?.workplaceGroup?.value,
+      intWorkplaceId: values?.workplace?.value,
+      intBankId: values?.bank?.value,
       intSalaryGenerateRequestId: values?.adviceName?.value,
-      bankAccountNo: values?.bankAccountNo?.value,
+      bankAccountNo: values?.account?.AccountNo,
       intBankOrWalletType: 1,
-      strAdviceType: values?.adviceTo?.value,
+      strAdviceType: "",
       isForXl: isForXl,
       searchTxt: searchTxt,
       pageNo: pages?.current,
@@ -99,6 +102,7 @@ export const getBankAdviceRequestLanding = async (
         pageSize: res?.data?.pageSize,
         total: res?.data?.totalCount,
       });
+
       setLoading && setLoading(false);
     }
   } catch (error) {
@@ -115,28 +119,41 @@ export const bankAdviceColumnData = (page, paginationSize) => {
       filter: false,
       className: "text-center",
     },
+
     {
-      title: "Reason",
-      dataIndex: "reason",
+      title: "Work. Group/Location",
+      dataIndex: "workPlaceGroupName",
+      width: 130,
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+
+    {
+      title: "Workplace/Concern",
+      dataIndex: "workPlaceName",
       width: 130,
       sort: true,
       filter: false,
       fieldType: "string",
     },
     {
-      title: "Sender Acc Number",
-      dataIndex: "bankAccountNumber",
+      title: "Emp ID ",
+      dataIndex: "employeeCode",
+      width: 130,
       sort: true,
       filter: false,
       fieldType: "string",
     },
     {
-      title: "Receiving Bank Routing",
-      dataIndex: "routingNumber",
+      title: "Employee Name ",
+      dataIndex: "employeeName",
+      width: 130,
       sort: true,
       filter: false,
       fieldType: "string",
     },
+
     {
       title: "Bank Acc No",
       dataIndex: "accountNo",
@@ -152,12 +169,19 @@ export const bankAdviceColumnData = (page, paginationSize) => {
       fieldType: "string",
     },
     {
-      title: "Acc Type",
-      dataIndex: "accType",
+      title: "Receiving Bank Routing",
+      dataIndex: "routingNumber",
       sort: true,
       filter: false,
       fieldType: "string",
     },
+    // {
+    //   title: "Acc Type",
+    //   dataIndex: "accType",
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "string",
+    // },
     {
       title: "Amount",
       dataIndex: "numNetPayable",
@@ -166,26 +190,41 @@ export const bankAdviceColumnData = (page, paginationSize) => {
       filter: false,
       fieldType: "number",
     },
+    // {
+    //   title: "Receiver ID",
+    //   dataIndex: "employeeCode",
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "string",
+    // },
+    // {
+    //   title: "Receiver Name",
+    //   dataIndex: "accountName",
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "string",
+    // },
     {
-      title: "Receiver ID",
-      dataIndex: "employeeCode",
+      title: "Sender Acc Number",
+      dataIndex: "bankAccountNumber",
       sort: true,
       filter: false,
       fieldType: "string",
     },
     {
-      title: "Receiver Name",
-      dataIndex: "accountName",
+      title: "Reason",
+      dataIndex: "reason",
+      width: 130,
       sort: true,
       filter: false,
       fieldType: "string",
     },
-    {
-      title: "Advice Type",
-      dataIndex: "adviceType",
-      sort: true,
-      filter: false,
-      fieldType: "string",
-    },
+    // {
+    //   title: "Advice Type",
+    //   dataIndex: "adviceType",
+    //   sort: true,
+    //   filter: false,
+    //   fieldType: "string",
+    // },
   ];
 };

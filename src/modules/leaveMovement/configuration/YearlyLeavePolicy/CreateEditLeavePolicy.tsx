@@ -208,6 +208,8 @@ const CreateEditLeavePolicy = () => {
             pathname: `/administration/timeManagement/leavePolicyAssign`,
             state: { list: data?.intPolicyIdList, year: payload?.intYear },
           });
+        } else {
+          history.push("/administration/leaveandmovement/yearlyLeavePolicy");
         }
       },
       onError: (error) => {
@@ -1414,7 +1416,7 @@ const CreateEditLeavePolicy = () => {
                             form.setFieldsValue({
                               intCarryForwardMaxInDay: undefined,
                               intCarryForwarExpiryDay: undefined,
-                              intCarryForwardMonth: undefined,
+                              intCarryForwarExpiryMonth: undefined,
                             });
                           }}
                         />
@@ -1462,6 +1464,13 @@ const CreateEditLeavePolicy = () => {
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/
                                     ),
                                   },
+                                  {
+                                    type: "number",
+                                    min: 1, // Minimum value allowed
+                                    max: 31, // Maximum value allowed
+                                    message:
+                                      "Carry Forward Expiry Day must be between 1 and 31",
+                                  },
                                 ]}
                               />
                             </Col>
@@ -1469,7 +1478,7 @@ const CreateEditLeavePolicy = () => {
                               <PInput
                                 disabled={!isCarryForward}
                                 type="number"
-                                name="intCarryForwardMonth"
+                                name="intCarryForwarExpiryMonth"
                                 label="Expiry Month Of Carry Forward"
                                 placeholder="Expiry Month Of Carry Forward"
                                 size="small"
@@ -1481,6 +1490,13 @@ const CreateEditLeavePolicy = () => {
                                     pattern: new RegExp(
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/
                                     ),
+                                  },
+                                  {
+                                    type: "number",
+                                    min: 1, // Minimum value allowed
+                                    max: 12, // Maximum value allowed
+                                    message:
+                                      "Expiry Month Of Carry Forward must be between 1 and 12",
                                   },
                                 ]}
                               />

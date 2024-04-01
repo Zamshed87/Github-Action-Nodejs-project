@@ -56,14 +56,14 @@ const HeaderInfoBar = ({ data, setLoading }) => {
           subTitle="Business Unit"
         />
       </div>
-      {/* <div className="col-lg-2 mb-1">
+      <div className="col-lg-2 mb-1">
         <CircleButton
           icon={<BusinessCenterIcon style={{ fontSize: "24px" }} />}
-          title={data?.strWorkplaceGroupName || "-"}
+          title={data?.strWorkplaceGroup || "-"}
           subTitle="Workplace Group Name"
         />
       </div>
-      <div className="col-lg-2 mb-1">
+      {/* <div className="col-lg-2 mb-1">
         <CircleButton
           icon={<BusinessCenterIcon style={{ fontSize: "24px" }} />}
           title={data?.strWorkplaceName || "-"}
@@ -91,7 +91,7 @@ const HeaderInfoBar = ({ data, setLoading }) => {
           subTitle="Net Amount"
         />
       </div>
-      <div className="col-lg-3 mb-1">
+      <div className="col-lg-2 mb-1">
         <CircleButton
           icon={<BatchPredictionIcon style={{ fontSize: "24px" }} />}
           title={

@@ -127,15 +127,50 @@ export default function BonusSetupLanding() {
       filter: false,
     },
     {
-      title: "min.Service Length",
-      dataIndex: "intMinimumServiceLengthMonth",
+      title: "Workplace Name",
+      dataIndex: "strWorkplace",
+      sorter: true,
+      filter: false,
+      width: "120px",
+    },
+    {
+      title: "HR Position Name",
+      dataIndex: "HrPositionName",
+      sorter: true,
+      filter: false,
+      width: "120px",
+    },
+    {
+      title: "Service Length Type",
+      render: (_, item) => (
+        <>{item?.IsServiceLengthInDays ? "Days" : "Month"}</>
+      ),
       sorter: true,
       filter: false,
     },
     {
-      title: "Max. Service Length",
-      dataIndex: "intMaximumServiceLengthMonth",
-      render: (_, item) => <>{item?.intMaximumServiceLengthMonth || "-"}</>,
+      title: "Min. Service Length",
+      // dataIndex: "intMinimumServiceLengthMonth",
+      render: (_, item) => (
+        <>
+          {item?.intMinimumServiceLengthMonth > 0
+            ? item?.intMinimumServiceLengthMonth
+            : item?.intMinimumServiceLengthDays || "-"}
+        </>
+      ),
+      sorter: true,
+      filter: false,
+    },
+    {
+      title: `Max. Service Length`,
+      // dataIndex: "intMaximumServiceLengthMonth",
+      render: (_, item) => (
+        <>
+          {item?.intMaximumServiceLengthMonth > 0
+            ? item?.intMaximumServiceLengthMonth
+            : item?.intMaximumServiceLengthDays || "-"}
+        </>
+      ),
       sorter: true,
       filter: false,
     },
@@ -148,6 +183,13 @@ export default function BonusSetupLanding() {
     {
       title: "Bonus Percentage",
       dataIndex: "numBonusPercentage",
+      sorter: true,
+      filter: false,
+    },
+    {
+      title: "Divided by Service Length",
+      dataIndex: "IsDividedbyServiceLength",
+      render: (data) => <>{data ? "True" : "False"}</>,
       sorter: true,
       filter: false,
     },

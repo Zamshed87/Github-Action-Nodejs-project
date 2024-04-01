@@ -2,6 +2,7 @@ import {
   SearchOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
+import Required from "common/Required";
 import { useFormik } from "formik";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -22,7 +23,7 @@ import {
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500 } from "../../../../utility/customColor";
+import { gray500, gray600, success500 } from "../../../../utility/customColor";
 import useAxiosGet from "../../../../utility/customHooks/useAxiosGet";
 import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 import { customStyles } from "../../../../utility/selectCustomStyle";
@@ -86,6 +87,7 @@ const BonusGenerateCreate = () => {
   const [rowDto, setRowDto] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [singleData, setSingleData] = useState(null);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
 
   const { orgId, buId, employeeId, wgId, wgName } = useSelector(
     (state) => state?.auth?.profileData,
@@ -162,6 +164,16 @@ const BonusGenerateCreate = () => {
       setWingDDL
     );
   }, [orgId, buId, wgId]);
+  // for initial
+  useEffect(() => {
+    setWorkplaceDDL([]);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceId",
+      "strWorkplace",
+      setWorkplaceDDL
+    );
+  }, [orgId, buId, employeeId, wgId]);
 
   // filter data
   const filterData = (keywords) => {
@@ -419,6 +431,7 @@ const BonusGenerateCreate = () => {
                       className="btn btn-default"
                       type="button"
                       onClick={handleSubmit}
+                      disabled={rowDto?.length <= 0}
                     >
                       {!isEdit ? "Generate" : "Re-Generate"}
                     </button>
@@ -486,6 +499,60 @@ const BonusGenerateCreate = () => {
                       }}
                       isDisabled={isEdit}
                       errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                  <div className="col-3">
+                    <label>
+                      Workplace <Required />
+                    </label>
+
+                    <FormikSelect
+                      name="workplace"
+                      isClearable={false}
+                      options={workplaceDDL || []}
+                      value={values?.workplace}
+                      isDisabled={isEdit}
+                      onChange={(valueOption) => {
+                        setFieldValue("workplace", valueOption);
+                      }}
+                      styles={{
+                        ...customStyles,
+                        control: (provided, state) => ({
+                          ...provided,
+                          minHeight: "auto",
+                          height:
+                            values?.workplace?.length > 1 ? "auto" : "auto",
+                          borderRadius: "4px",
+                          boxShadow: `${success500}!important`,
+                          ":hover": {
+                            borderColor: `${gray600}!important`,
+                          },
+                          ":focus": {
+                            borderColor: `${gray600}!important`,
+                          },
+                        }),
+                        valueContainer: (provided, state) => ({
+                          ...provided,
+                          height:
+                            values?.workplace?.length > 1 ? "auto" : "auto",
+                          padding: "0 6px",
+                        }),
+                        multiValue: (styles) => {
+                          return {
+                            ...styles,
+                            position: "relative",
+                            top: "-1px",
+                          };
+                        },
+                        multiValueLabel: (styles) => ({
+                          ...styles,
+                          padding: "0",
+                        }),
+                      }}
+                      isMulti
+                      errors={errors}
+                      placeholder=""
                       touched={touched}
                     />
                   </div>
@@ -715,6 +782,7 @@ const BonusGenerateCreate = () => {
                         value={values?.effectiveDate}
                         name="effectiveDate"
                         type="date"
+                        // disabled={isEdit}
                         onChange={(e) => {
                           setValues((prev) => ({
                             ...prev,
@@ -736,69 +804,72 @@ const BonusGenerateCreate = () => {
                     </div>
                   </div>
                   <div className="col-lg-12"></div>
-                  <div className="col-lg-3">
-                    <div className="d-flex align-items-center">
-                      <button
-                        style={{
-                          padding: "0px 10px",
-                        }}
-                        className="btn btn-default mr-2"
-                        type="button"
-                        disabled={
-                          !values?.bonusSystemType ||
-                          !values?.bonusName ||
-                          !values?.effectiveDate
-                        }
-                        onClick={() => {
-                          if (+params?.id) {
-                            if (!isSameWgEmployee) {
-                              return toast.warning(
-                                "Bonus generate must be same workplace group!"
+                  {!isEdit && (
+                    <div className="col-lg-3">
+                      <div className="d-flex align-items-center">
+                        <button
+                          style={{
+                            padding: "0px 10px",
+                          }}
+                          className="btn btn-default mr-2"
+                          type="button"
+                          disabled={
+                            !values?.bonusSystemType ||
+                            !values?.bonusName ||
+                            !values?.effectiveDate ||
+                            !values?.workplace
+                          }
+                          onClick={() => {
+                            if (+params?.id) {
+                              if (!isSameWgEmployee) {
+                                return toast.warning(
+                                  "Bonus generate must be same workplace group!"
+                                );
+                              }
+
+                              getEmployeeListForBonusGenerateOrRegenerate(
+                                orgId,
+                                employeeList,
+                                getEmployeeList,
+                                setEmployeeList,
+                                setRowDto,
+                                values,
+                                isEdit,
+                                location,
+                                buId,
+                                wgId,
+                                values?.wing?.value,
+                                values?.soleDepo?.value,
+                                values?.region?.value,
+                                values?.area?.value,
+                                values?.territory?.value
+                              );
+                            } else {
+                              getEmployeeListForBonusGenerateOrRegenerate(
+                                orgId,
+                                employeeList,
+                                getEmployeeList,
+                                setEmployeeList,
+                                setRowDto,
+                                values,
+                                isEdit,
+                                location,
+                                buId,
+                                wgId,
+                                values?.wing?.value,
+                                values?.soleDepo?.value,
+                                values?.region?.value,
+                                values?.area?.value,
+                                values?.territory?.value
                               );
                             }
-
-                            getEmployeeListForBonusGenerateOrRegenerate(
-                              orgId,
-                              employeeList,
-                              getEmployeeList,
-                              setEmployeeList,
-                              setRowDto,
-                              values,
-                              isEdit,
-                              location,
-                              buId,
-                              wgId,
-                              values?.wing?.value,
-                              values?.soleDepo?.value,
-                              values?.region?.value,
-                              values?.area?.value,
-                              values?.territory?.value
-                            );
-                          } else {
-                            getEmployeeListForBonusGenerateOrRegenerate(
-                              orgId,
-                              employeeList,
-                              getEmployeeList,
-                              setEmployeeList,
-                              setRowDto,
-                              values,
-                              isEdit,
-                              location,
-                              buId,
-                              wgId,
-                              values?.wing?.value,
-                              values?.soleDepo?.value,
-                              values?.region?.value,
-                              values?.area?.value,
-                              values?.territory?.value
-                            );
-                          }
-                        }}
-                      >
-                        View
-                      </button>
+                          }}
+                        >
+                          View
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>

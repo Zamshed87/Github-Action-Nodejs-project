@@ -14,7 +14,6 @@ class Cell {
       border: "all 000000 thin",
       alignment: this.alignment || "",
       textFormat: this.format,
-     
     };
   }
 }
@@ -22,11 +21,11 @@ const getTableData = (row, BankName) => {
   const data = row?.map((item, index) => {
     return [
       new Cell(index + 1, "center", "text").getCell(),
-      new Cell(item?.strAccountNo || "N/A", "left", "text").getCell(),
-      new Cell(item?.strAccountName || "N/A", "left", "text").getCell(),
+      new Cell(item?.accountNo || "N/A", "left", "text").getCell(),
+      new Cell(item?.accountName || "N/A", "left", "text").getCell(),
       new Cell(item?.numNetPayable || 0, "right", "money").getCell(),
-      new Cell(item?.strEmployeeCode || "N/A", "center", "text").getCell(),
-      new Cell(item?.BranchName || "N/A", "left", "text").getCell(),
+      new Cell(item?.employeeCode || "N/A", "center", "text").getCell(),
+      new Cell(item?.branchName || "N/A", "left", "text").getCell(),
     ];
   });
   return data;

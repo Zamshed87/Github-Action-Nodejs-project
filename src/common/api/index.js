@@ -213,17 +213,18 @@ export const getPeopleDeskAllLanding = async (
   setLoading,
   statusId,
   year,
-  wgId,
-  wId
+  wgId = 0,
+  wId = 0
 ) => {
   setLoading && setLoading(true);
 
   const status = statusId ? `&intStatusId=${statusId}` : "";
   const yearFilter = year ? `&YearId=${year}` : "";
   const workplace = wId ? `&workplaceId=${wId}` : "";
+  const workplaceGroup = wId ? `&WorkplaceGroupId=${wgId}` : "";
   try {
     const res = await axios.get(
-      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}${workplace}&WorkplaceGroupId=${wgId}&intId=${id}`
+      `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}${yearFilter}${status}${workplace}${workplaceGroup}&intId=${id}`
     );
     if (res?.data) {
       setter && setter(res?.data);
@@ -690,5 +691,22 @@ export const getWorkplaceDetails = async (wId, setter, setLoading) => {
   } catch (error) {
     setLoading && setLoading(false);
     setter([]);
+  }
+};
+
+// this is common getBuDetails detail api for all module
+export const getBuDetails = async (buId = 0, setter, setLoading) => {
+  setLoading?.(true);
+  try {
+    const res = await axios.get(
+      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
+    );
+    if (res?.data) {
+      setter?.(res?.data);
+      setLoading?.(false);
+    }
+  } catch (error) {
+    setLoading?.(false);
+    setter?.([]);
   }
 };

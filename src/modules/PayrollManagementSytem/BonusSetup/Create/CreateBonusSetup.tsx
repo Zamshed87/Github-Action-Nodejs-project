@@ -13,6 +13,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { PModal } from "Components/Modal";
 import AddEditForm from "./Bonus/CreateBouns";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { useLocation, useHistory } from "react-router-dom";
 type TCreateBonusSetup = unknown;
 const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   // Data From Store
@@ -22,8 +23,63 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   );
   // Form Instance
   const [form] = Form.useForm();
+  const history = useHistory();
+  const { state }: any = useLocation();
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const formData = {
+      bonusName: {
+        label: state?.strBonusName || "",
+        value: state?.intBonusId || 0,
+      },
+      workplace: {
+        label: state?.strWorkplace || "",
+        value: state?.intWorkPlaceId || 0,
+      },
+      hrPosition: [
+        {
+          label: state?.HrPositionName || "",
+          value: state?.HrPositionId || 0,
+        },
+      ],
+      employmentType: [
+        {
+          label: state?.strEmploymentType || "",
+          value: state?.intEmploymentTypeId || 0,
+        },
+      ],
+      bounsDependOn: {
+        label: state?.strBonusPercentageOn || "",
+        value: 0,
+      },
+      bonusPercentage: state?.numBonusPercentage || 0,
+      religion: [
+        {
+          label: state?.strReligionName || "",
+          value: state?.intReligion || 0,
+        },
+      ],
+      serviceLengthType: state?.IsServiceLengthInDays
+        ? {
+            label: "Day",
+            value: 1,
+          }
+        : {
+            label: "Month",
+            value: 2,
+          },
+      minServiceLengthMonth: state?.intMinimumServiceLengthMonth || 0,
+      minServiceLengthDay: state?.intMinimumServiceLengthDays || 0,
+      maxServiceLengthMonth: state?.intMaximumServiceLengthMonth || 0,
+      maxServiceLengthDay: state?.intMaximumServiceLengthDays,
+      isDividedByLength: state?.IsDividedbyServiceLength,
+    };
+    if (state) {
+      form.setFieldsValue(formData);
+    }
+  }, [state]);
 
   // Api Actions
   const ReligionDDL = useApiRequest([]);
@@ -32,6 +88,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const BonusAllLanding = useApiRequest([]);
   const CheckBounsExist = useApiRequest({});
   const CRUDBonusSetup = useApiRequest({});
+  const positionDDL = useApiRequest([]);
 
   // Life Cycle Hooks
   useEffect(() => {
@@ -49,7 +106,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
           data[idx].label = item?.ReligionName;
           data[idx].value = item?.ReligionId;
         });
-        data?.length > 1 && data?.unshift({ label: "All", value: 0 });
+        // data?.length > 1 && data?.unshift({ label: "All", value: 0 });
       },
     });
     WorkplaceDDL?.action({
@@ -92,6 +149,28 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       },
     });
   };
+  const getEmployeePosition = () => {
+    const { workplace } = form.getFieldsValue(true);
+
+    positionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Position",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId || 0,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: number) => {
+          res[i].label = item?.PositionName;
+          res[i].value = item?.PositionId;
+        });
+      },
+    });
+  };
+
   const getEmploymentTypeDDL = () => {
     const { workplace } = form.getFieldsValue();
     EmploymentTypeDDL?.action({
@@ -126,13 +205,19 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
 
   const submitHandler = () => {
     const values = form.getFieldsValue(true);
-    const payload = payloadGenerate(values, wgId, wgName);
+    const payload = payloadGenerate(
+      values,
+      wgId,
+      wgName,
+      state?.intBonusSetupId || 0
+    );
     const commonData = {
       intAccountId: orgId,
       intBusinessUnitId: buId,
       intCreatedBy: employeeId,
       isActive: true,
     };
+
     CRUDBonusSetup?.action({
       method: "post",
       urlKey: "CRUDBonusSetup",
@@ -140,10 +225,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
         ...commonData,
         ...payload,
       },
-      // onSuccess: (data) => {
-      //   form.resetFields();
-      //   getBounsList();
-      // },
+      onSuccess: () => {
+        history.push("/administration/payrollConfiguration/bonusSetup");
+      },
     });
   };
   const [open, setOpen] = useState(false);
@@ -157,7 +241,10 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
     <>
       <PForm
         form={form}
-        initialValues={{ serviceLengthType: 2 /* 1 for Month */ }}
+        initialValues={{
+          serviceLengthType: 2 /* 1 for Month */,
+          isDividedByLength: false,
+        }}
         onValuesChange={(changedFields, allFields) => {
           const { bonusName, workplace } = allFields;
 
@@ -195,6 +282,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                   label="Bonus Name"
                   name="bonusName"
                   placeholder="Select Bonus Name"
+                  disabled={state}
                   onChange={(value: number, op: any) => {
                     form.setFieldsValue({ bonusName: op });
                   }}
@@ -229,10 +317,13 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 label="Workplace"
                 placeholder="Select workplace"
                 options={WorkplaceDDL?.data || []}
+                disabled={state}
                 onChange={(value: number, op: any) => {
                   form.setFieldsValue({ workplace: op });
                   form.setFieldsValue({ employmentType: [] });
+                  form.setFieldsValue({ hrPosition: [] });
                   getEmploymentTypeDDL();
+                  getEmployeePosition();
                 }}
                 rules={[
                   {
@@ -240,6 +331,23 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                     message: "Please Select Workplace",
                   },
                 ]}
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PSelect
+                options={positionDDL?.data || []}
+                name="hrPosition"
+                showSearch
+                filterOption={true}
+                label="HR Position"
+                placeholder="HR Position"
+                disabled={state}
+                mode="multiple"
+                maxTagCount={"responsive"}
+                onChange={(value: number, op: any) => {
+                  form.setFieldsValue({ hrPosition: op });
+                }}
+                rules={[{ required: true, message: "HR Position is required" }]}
               />
             </Col>
             <Form.Item
@@ -259,7 +367,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                           : "Select Workplace First"
                       }`}
                       options={EmploymentTypeDDL?.data || []}
-                      disabled={!workplace}
+                      disabled={!workplace || state}
                       mode="multiple"
                       maxTagCount={"responsive"}
                       onChange={(value: number, op: any) => {
@@ -312,6 +420,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 label="Religion"
                 name="religion"
                 placeholder="Select Religion"
+                disabled={state}
+                mode="multiple"
+                maxTagCount={"responsive"}
                 onChange={(value: number, op: any) => {
                   form.setFieldsValue({ religion: op });
                 }}
@@ -455,6 +566,19 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 );
               }}
             </Form.Item>
+            <Col md={8} sm={24} style={{ marginTop: "20px" }}>
+              <PInput
+                label="Divided by Service Length?"
+                type="checkbox"
+                name="isDividedByLength"
+                layout="horizontal"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    form.setFieldsValue({});
+                  }
+                }}
+              />
+            </Col>
           </Row>
         </PCard>
       </PForm>

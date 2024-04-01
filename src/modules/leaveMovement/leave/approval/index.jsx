@@ -49,6 +49,7 @@ import SingleNotice from "./component/SingleNotice";
 import LeaveApprovalEditForm from "./component/editForm";
 import "./leaveApproval.css";
 import ViewFormComponent from "./view-form";
+import { reject } from "lodash";
 
 const initData = {
   searchString: "",
@@ -728,21 +729,9 @@ export default function LeaveApproval() {
                               {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
                               ).length > 0 && (
-                                <div className="d-flex">
-                                  {/* <MuiIcon
-                                    icon={
-                                      <CheckCircle
-                                        sx={{
-                                          color: successColor,
-                                          width: "25px !important",
-                                          height: "35px !important",
-                                          fontSize: "20px !important",
-                                        }}
-                                      />
-                                    }
-                                  /> */}
-                                  <div
-                                    className="muiIconHover success mr-2"
+                                <div className="d-flex actionIcon">
+                                  <button
+                                    className="btn-green mr-2"
                                     onClick={() => {
                                       demoPopup(
                                         "approve",
@@ -751,12 +740,10 @@ export default function LeaveApproval() {
                                       );
                                     }}
                                   >
-                                    <button className="btn-green px-2">
-                                      Approve
-                                    </button>
-                                  </div>
-                                  <div
-                                    className="muiIconHover"
+                                    Approve
+                                  </button>
+                                  <button
+                                    className="btn-red"
                                     onClick={() => {
                                       demoPopup(
                                         "reject",
@@ -765,22 +752,8 @@ export default function LeaveApproval() {
                                       );
                                     }}
                                   >
-                                    {/* <MuiIcon
-                                        icon={
-                                          <Cancel
-                                            sx={{
-                                              color: failColor,
-                                              width: "25px !important",
-                                              height: "35px !important",
-                                              fontSize: "20px !important",
-                                            }}
-                                          />
-                                        }
-                                      /> */}
-                                    <button className="btn btn-cancel px-2">
-                                      Reject
-                                    </button>
-                                  </div>
+                                    Reject
+                                  </button>
                                 </div>
                               )}
                               <ul className="d-flex flex-wrap">
@@ -1010,3 +983,57 @@ export default function LeaveApproval() {
     </>
   );
 }
+
+// old bulk approve and reject
+// <div className="d-flex actionIcon mr-3">
+//                                   <Tooltip title="Approve">
+//                                     <div
+//                                       className="muiIconHover success mr-3"
+//                                       onClick={() => {
+//                                         demoPopup(
+//                                           "approve",
+//                                           "isApproved",
+//                                           applicationData
+//                                         );
+//                                       }}
+//                                     >
+//                                       <MuiIcon
+//                                         icon={
+//                                           <CheckCircle
+//                                             sx={{
+//                                               color: successColor,
+//                                               width: "25px !important",
+//                                               height: "35px !important",
+//                                               fontSize: "20px !important",
+//                                             }}
+//                                           />
+//                                         }
+//                                       />
+//                                     </div>
+//                                   </Tooltip>
+//                                   <Tooltip title="Reject">
+//                                     <div
+//                                       className="muiIconHover  danger"
+//                                       onClick={() => {
+//                                         demoPopup(
+//                                           "reject",
+//                                           "isReject",
+//                                           applicationData
+//                                         );
+//                                       }}
+//                                     >
+//                                       <MuiIcon
+//                                         icon={
+//                                           <Cancel
+//                                             sx={{
+//                                               color: failColor,
+//                                               width: "25px !important",
+//                                               height: "35px !important",
+//                                               fontSize: "20px !important",
+//                                             }}
+//                                           />
+//                                         }
+//                                       />
+//                                     </div>
+//                                   </Tooltip>
+//                                 </div>

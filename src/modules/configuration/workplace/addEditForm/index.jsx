@@ -219,13 +219,14 @@ export default function AddEditForm({
                       }
                     />
                   </Col>
-                  <Col span={2} className="mt-1">
+                  <Col md={12} className="mt-1">
                     <button
                       type="button"
-                      className="mt-4  btn add-ddl-btn "
+                      className="mt-3  btn btn-green  "
                       style={{
-                        margin: "0.4em 0 0 0.7em",
-                        padding: "0.2em",
+                        width: "auto",
+                        // margin: "0.4em 0 0 0.7em",
+                        // padding: " 0 2rem",
                       }}
                       onClick={() => {
                         if (newWorkplaceGroup === undefined) {
@@ -237,6 +238,7 @@ export default function AddEditForm({
                           strWorkplaceGroupCode: newWorkplaceGroup,
                           isActive: true,
                           intAccountId: orgId,
+                          intBusinessUnitId: buId,
                         };
                         createWg.action({
                           urlKey: "SaveWorkplaceGroup",
@@ -267,7 +269,8 @@ export default function AddEditForm({
                         });
                       }}
                     >
-                      <IoMdAddCircleOutline sx={{ fontSize: "16px" }} />
+                      Add Work. Group
+                      {/* <IoMdAddCircleOutline sx={{ fontSize: "16px" }} /> */}
                     </button>
                   </Col>
                 </>

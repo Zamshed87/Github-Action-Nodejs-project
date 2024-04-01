@@ -8,6 +8,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import AntScrollTable from "../../../../common/AntScrollTable";
 import {
+  getBuDetails,
   getPeopleDeskAllDDL,
   getWorkplaceDetails,
 } from "../../../../common/api";
@@ -28,7 +29,6 @@ import { todayDate } from "../../../../utility/todayDate";
 import axios from "axios";
 import {
   fromToDateList,
-  getBuDetails,
   getRosterReport,
   rosterReportDtoCol,
 } from "../helper";
@@ -71,7 +71,7 @@ export default function MonthlyInOutReport() {
   const [buDetails, setBuDetails] = useState({});
   // const [pdfData, setPdfData] = useState(null);
   // const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  // const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
 
   // const [isFilter, setIsFilter] = useState({
@@ -126,6 +126,12 @@ export default function MonthlyInOutReport() {
 
   useEffect(() => {
     getData();
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [buId, wgId]);
 
   useEffect(() => {
@@ -288,9 +294,9 @@ export default function MonthlyInOutReport() {
                               }&DteToDate=${
                                 values?.toDate
                               }&EmployeeId=0&WorkplaceGroupId=${
-                                wgId || 0
+                                values?.workplaceGroup?.value || wgId || 0
                               }&WorkplaceId=${
-                                values?.workplace?.value || 0
+                                values?.workplace?.value || wId || 0
                               }&PageNo=1&PageSize=100000&IsPaginated=false`
                             );
                             if (res?.data) {
@@ -508,12 +514,45 @@ export default function MonthlyInOutReport() {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-3 d-none">
+
+                  <div className="col-lg-2">
+                    <div className="input-field-main">
+                      <label>From Date</label>
+                      <DefaultInput
+                        classes="input-sm"
+                        value={values?.fromDate}
+                        placeholder=""
+                        name="fromDate"
+                        type="date"
+                        className="form-control"
+                        onChange={(e) => {
+                          setFieldValue("fromDate", e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-2">
+                    <div className="input-field-main">
+                      <label>To Date</label>
+                      <DefaultInput
+                        classes="input-sm"
+                        value={values?.toDate}
+                        placeholder="Month"
+                        name="toDate"
+                        type="date"
+                        className="form-control"
+                        onChange={(e) => {
+                          setFieldValue("toDate", e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-3 ">
                     <div className="input-field-main">
                       <label>Workplace Group</label>
                       <FormikSelect
                         name="workplaceGroup"
-                        // options={[...workplaceGroupDDL] || []}
+                        options={[...workplaceGroupDDL] || []}
                         value={values?.workplaceGroup}
                         onChange={(valueOption) => {
                           setValues((prev) => ({
@@ -526,13 +565,14 @@ export default function MonthlyInOutReport() {
                               valueOption?.value,
                               setBuDetails
                             );
-
-                            // getPeopleDeskAllDDL(
-                            //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                            //   "intWorkplaceId",
-                            //   "strWorkplace",
-                            //   setWorkplaceDDL
-                            // );
+                            if (valueOption?.value) {
+                              getPeopleDeskAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                "intWorkplaceId",
+                                "strWorkplace",
+                                setWorkplaceDDL
+                              );
+                            }
                           }
                           setTableRowDto([]);
                           setRowDto([]);
@@ -567,39 +607,6 @@ export default function MonthlyInOutReport() {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-3">
-                    <div className="input-field-main">
-                      <label>From Date</label>
-                      <DefaultInput
-                        classes="input-sm"
-                        value={values?.fromDate}
-                        placeholder=""
-                        name="fromDate"
-                        type="date"
-                        className="form-control"
-                        onChange={(e) => {
-                          setFieldValue("fromDate", e.target.value);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-3">
-                    <div className="input-field-main">
-                      <label>To Date</label>
-                      <DefaultInput
-                        classes="input-sm"
-                        value={values?.toDate}
-                        placeholder="Month"
-                        name="toDate"
-                        type="date"
-                        className="form-control"
-                        onChange={(e) => {
-                          setFieldValue("toDate", e.target.value);
-                        }}
-                      />
-                    </div>
-                  </div>
-
                   <div className="col-lg-1">
                     <button
                       disabled={!values?.toDate || !values?.fromDate}

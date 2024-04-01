@@ -9,7 +9,7 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { getPeopleDeskAllDDL } from "../../../common/api";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "../../../common/api";
 import DefaultInput from "../../../common/DefaultInput";
 import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
@@ -36,6 +36,7 @@ import {
 import { paginationSize } from "../../../common/peopleDeskTable";
 import PeopleDeskTable from "../../componentModule/peopledeskTable";
 import useDebounce from "../../../utility/customHooks/useDebounce";
+import { set } from "lodash";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -44,6 +45,11 @@ const BankAdviceReport = () => {
   const [rowDto, setRowDto] = useState([]);
   const [total, setTotal] = useState(0);
   const [totalInWords, setTotalInWords] = useState("");
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [bankDDL, setBankDDL] = useState([]);
+  const [accountDDL, setAccountDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [buDetails, setBuDetails] = useState(false);
 
   // DDl section
   const [bankAccountDDL, setBankAccountDDL] = useState([]);
@@ -99,11 +105,11 @@ const BankAdviceReport = () => {
       values,
       null,
       null,
-      null,
       setLoading,
       "",
       true,
-      cb
+      cb,
+      setTotal
     );
   };
 
@@ -165,34 +171,12 @@ const BankAdviceReport = () => {
     );
   };
 
-  // Side effects
-  useEffect(() => {
-    if (rowDto.length > 0) {
-      setTotal(
-        Number(
-          rowDto?.reduce((acc, item) => acc + item?.numNetPayable, 0).toFixed(2)
-        )
-      );
-    }
-  }, [rowDto]);
-
-  useEffect(() => {
-    if (total) {
-      setTotalInWords(withDecimal(total));
-    }
-  }, [total]);
-
   useEffect(() => {
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${buId}&intId=${employeeId}`,
       "intWorkplaceGroupId",
-      "strWorkplaceGroup"
-    );
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=CompanyAccountNo&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}`,
-      "BankAccountId",
-      "BankAccountNo",
-      setBankAccountDDL
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
     );
   }, [orgId, buId, employeeId, wgId]);
 
@@ -203,7 +187,6 @@ const BankAdviceReport = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   return (
     <form onSubmit={handleSubmit}>
       {loading && <Loading />}
@@ -232,6 +215,7 @@ const BankAdviceReport = () => {
                       onChange={(e) => {
                         setValues((prev) => ({
                           ...prev,
+
                           yearId: +e.target.value
                             .split("")
                             .slice(0, 4)
@@ -240,20 +224,53 @@ const BankAdviceReport = () => {
                           monthYear: e.target.value,
                           adviceName: "",
                         }));
-                        getPeopleDeskAllDDL(
-                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriod&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&IntMonth=${+e.target.value
-                            .split("")
-                            .slice(-2)
-                            .join("")}&IntYear=${+e.target.value
-                            .split("")
-                            .slice(0, 4)
-                            .join("")}`,
-                          "SalaryGenerateRequestId",
-                          "SalaryCode",
-                          setPayrollPeriodDDL
-                        );
+                        if (values?.workplaceGroup?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${
+                              values?.workplaceGroup?.value
+                            }&BusinessUnitId=${buId}&IntMonth=${+e.target.value
+                              .split("")
+                              .slice(-2)
+                              .join("")}&IntYear=${+e.target.value
+                              .split("")
+                              .slice(0, 4)
+                              .join("")}`,
+                            "value",
+                            "label",
+                            setPayrollPeriodDDL
+                          );
+                        }
+
                         setRowDto([]);
                       }}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace Group</label>
+                    <FormikSelect
+                      name="workplaceGroup"
+                      options={[...workplaceGroupDDL] || []}
+                      value={values?.workplaceGroup}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("workplaceGroup", valueOption);
+                        setFieldValue("workplace", "");
+                        setFieldValue("adviceName", "");
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
+                            "value",
+                            "label",
+                            setPayrollPeriodDDL
+                          );
+                        }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
                       errors={errors}
                       touched={touched}
                     />
@@ -267,8 +284,19 @@ const BankAdviceReport = () => {
                       options={payrollPeriodDDL || []}
                       value={values?.adviceName}
                       onChange={(valueOption) => {
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebySalaryGenerateRequestId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
+                            "value",
+                            "label",
+                            setWorkplaceDDL
+                          );
+                        }
                         setValues((prev) => ({
                           ...prev,
+                          workplace: "",
+                          bank: "",
+                          account: "",
                           adviceName: valueOption,
                         }));
                         setRowDto([]);
@@ -281,6 +309,35 @@ const BankAdviceReport = () => {
                   </div>
                 </div>
                 <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Workplace</label>
+                    <FormikSelect
+                      name="workplace"
+                      options={[...workplaceDDL] || []}
+                      value={values?.workplace}
+                      onChange={(valueOption) => {
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BankListofBankAdvicebyWorkplaceId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intWorkplaceId=${valueOption?.value}`,
+                            "value",
+                            "label",
+                            setBankDDL
+                          );
+                        }
+                        setFieldValue("workplace", valueOption);
+                        setFieldValue("bank", "");
+                        setFieldValue("account", "");
+                        getWorkplaceDetails(valueOption?.value, setBuDetails);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+
+                {/* <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>Advice Type</label>
                     <FormikSelect
@@ -304,8 +361,8 @@ const BankAdviceReport = () => {
                       touched={touched}
                     />
                   </div>
-                </div>
-                <div className="col-lg-3">
+                </div> */}
+                {/* <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>Sender Bank Account No</label>
                     <FormikSelect
@@ -325,8 +382,53 @@ const BankAdviceReport = () => {
                       touched={touched}
                     />
                   </div>
+                </div> */}
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Bank Name</label>
+                    <FormikSelect
+                      name="bank"
+                      options={[...bankDDL] || []}
+                      value={values?.bank}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("bank", valueOption);
+                        setFieldValue("account", "");
+                        if (valueOption?.value) {
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BankAccountListofBankAdvicebyBankId&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&intWorkplaceId=${values?.workplace?.value}&intId=${valueOption?.value}`,
+                            "value",
+                            "label",
+                            setBankAccountDDL
+                          );
+                        }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Account</label>
+                    <FormikSelect
+                      name="account"
+                      options={[...bankAccountDDL] || []}
+                      value={values?.account}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setFieldValue("account", valueOption);
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3 mt-3">
                   <button
                     className="btn btn-green btn-green-disable"
                     type="submit"
@@ -365,29 +467,158 @@ const BankAdviceReport = () => {
                                 });
                               }
 
-                              excelGenerate((res) => {
-                                generateExcelAction(
-                                  monthYearFormatter(values?.monthYear),
-                                  "",
-                                  "",
-                                  excelColumnFunc(0),
-                                  excelDataFunc(0),
-                                  strBusinessUnit,
-                                  values?.adviceTo?.type,
-                                  res,
-                                  values?.bankAccountNo,
-                                  total,
-                                  totalInWords,
-                                  businessUnitDDL[0]?.BusinessUnitAddress
-                                );
-                              });
+                              if (
+                                values?.bank?.label ===
+                                "Standard Chartered Bank"
+                              ) {
+                                excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
+
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    4,
+                                    res,
+                                    values?.account?.AccountNo,
+                                    total,
+                                    withDecimal(total),
+                                    businessUnitDDL[0]?.BusinessUnitAddress
+                                  );
+                                });
+                              } else if (
+                                values?.bank?.label ===
+                                  "Dutch Bangla Bank Agent Banking" ||
+                                values?.bank?.label === "DUTCH-BANGLA BANK LTD"
+                              ) {
+                                excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    5,
+                                    res,
+                                    values?.account?.AccountNo,
+                                    total,
+                                    withDecimal(total),
+                                    buDetails
+                                  );
+                                });
+                              } else if (
+                                values?.bank?.label
+                                  ?.toLowerCase()
+                                  .includes("the city bank")
+                              ) {
+                                excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    6,
+                                    res,
+                                    values?.account?.AccountNo,
+                                    total,
+                                    withDecimal(total),
+                                    buDetails
+                                  );
+                                });
+                              } else if (
+                                values?.bank?.label === "Dhaka Bank Limited "
+                              ) {
+                                excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    3,
+                                    res,
+                                    values?.account?.AccountNo,
+                                    total,
+                                    withDecimal(total),
+                                    buDetails
+                                  );
+                                });
+                              } else {
+                                excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
+                                  generateExcelAction(
+                                    monthYearFormatter(values?.monthYear),
+                                    "",
+                                    "",
+                                    excelColumnFunc(0),
+                                    excelDataFunc(0),
+                                    strBusinessUnit,
+                                    values?.adviceTo?.type,
+                                    res,
+                                    values?.account?.AccountNo,
+                                    total,
+                                    withDecimal(total),
+                                    buDetails
+                                  );
+                                });
+                              }
                             }}
                           >
                             <DownloadIcon />
                           </IconButton>
                         </Tooltip>
                       </li>
-                      <li className="pr-2">
+                      {/* <li className="pr-2">
                         <Tooltip title="Print" arrow>
                           <IconButton
                             style={{ color: "#101828" }}
@@ -408,7 +639,7 @@ const BankAdviceReport = () => {
                             <LocalPrintshopIcon />
                           </IconButton>
                         </Tooltip>
-                      </li>
+                      </li> */}
                     </>
                   )}
                   {values?.search && (

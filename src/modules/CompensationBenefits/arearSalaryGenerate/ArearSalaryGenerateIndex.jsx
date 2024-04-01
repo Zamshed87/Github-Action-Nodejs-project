@@ -23,6 +23,7 @@ import {
 import { gray500 } from "../../../utility/customColor";
 import {
   dateFormatter,
+  getDateOfYear,
   monthFirstDate,
   monthLastDate,
 } from "../../../utility/dateFormatter";
@@ -35,7 +36,7 @@ import "./salaryGenerate.css";
 
 const initialValues = {
   search: "",
-  filterFromDate: monthFirstDate(),
+  filterFromDate: getDateOfYear("first"),
   filterToDate: monthLastDate(),
 };
 
@@ -70,7 +71,7 @@ const ArearSalaryGenerateIndex = () => {
       ...initialValues,
       filterFromDate:
         compensationBenefits?.arrearSalaryGenerate?.fromDate ||
-        monthFirstDate(),
+        getDateOfYear("first"),
       filterToDate:
         compensationBenefits?.arrearSalaryGenerate?.toDate || monthLastDate(),
     },

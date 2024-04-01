@@ -19,6 +19,8 @@ import {
 import { customStyles } from "utility/selectCustomStyle";
 import FormikSelect from "common/FormikSelect";
 import { useFormik } from "formik";
+import { PModal } from "Components/Modal";
+import ManagementSeparationHistoryView from "../separation/mgmApplication/viewForm/ManagementSeparationHistoryView";
 
 const initData = {
   status: { value: 0, label: "All" },
@@ -51,6 +53,9 @@ const FinalSettlement = () => {
   const [allData, setAllData] = useState([]);
   const [searchString, setSearchString] = useState("");
   const [loading, setLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [id, setId] = useState(null);
+  const [type, setType] = useState(null);
 
   // useFormik
   const { setFieldValue, values, handleSubmit, errors, touched } = useFormik({
@@ -146,7 +151,7 @@ const FinalSettlement = () => {
                   placeholder="Employee Name or ID"
                 />
               </li>
-              <li>
+              {/* <li>
                 <PrimaryButton
                   customStyle={{ minWidth: "150px" }}
                   type="button"
@@ -159,7 +164,7 @@ const FinalSettlement = () => {
                     history.push(`/profile/finalSettlement/create`);
                   }}
                 />
-              </li>
+              </li> */}
             </ul>
           </div>
           <div className="card-style pb-0 mb-2" style={{ marginTop: "12px" }}>
@@ -208,7 +213,10 @@ const FinalSettlement = () => {
                       history,
                       orgId,
                       buId,
-                      setLoading
+                      setLoading,
+                      setId,
+                      setOpenModal,
+                      setType
                     )}
                     rowClassName="pointer"
                     onRowClick={(record) => {
@@ -218,6 +226,17 @@ const FinalSettlement = () => {
                       );
                     }}
                     rowKey={(record) => record?.intFinalSettlementId}
+                  />
+                  <PModal
+                    title={`Full & Final Settlement`}
+                    open={openModal}
+                    onCancel={() => {
+                      setOpenModal(false);
+                    }}
+                    components={
+                      <ManagementSeparationHistoryView id={id} type={type} />
+                    }
+                    width={1000}
                   />
                 </div>
               ) : (

@@ -5,7 +5,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import AntScrollTable from "../../../../common/AntScrollTable";
-import { getPeopleDeskAllDDL } from "../../../../common/api";
+import { getBuDetails, getPeopleDeskAllDDL } from "../../../../common/api";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import FormikInput from "../../../../common/FormikInput";
 import FormikSelect from "../../../../common/FormikSelect";
@@ -20,13 +20,13 @@ import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import { generateExcelAction } from "./excel/excelConvert";
-import { getBuDetails, getMonthlyPunchDetailsReport } from "./helper";
+import { getMonthlyPunchDetailsReport } from "./helper";
 
 const initData = {
   search: "",
-  // workplace: "",
+  workplace: "",
   // businessUnit: "",
-  // workplaceGroup: "",
+  workplaceGroup: "",
   fromDate: monthFirstDate(),
   toDate: todayDate(),
 };
@@ -49,8 +49,8 @@ const MonthlyPunchReportDetails = () => {
   const [rowDto, setRowDto] = useState(null);
   const [buDetails, setBuDetails] = useState([]);
   // const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  // const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
-  // const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [tableRowDto, setTableRowDto] = useState([]);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -63,20 +63,21 @@ const MonthlyPunchReportDetails = () => {
       setLoading,
       setTableRowDto,
       buId,
-      wgId,
-      wId
+      values?.workplaceGroup?.value || wgId,
+
+      values?.workplace?.value || wId
     );
     getBuDetails(buId, setBuDetails);
   };
 
-  // useEffect(() => {
-  //   getPeopleDeskAllDDL(
-  //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
-  //     "intBusinessUnitId",
-  //     "strBusinessUnit",
-  //     setBusinessUnitDDL
-  //   );
-  // }, [orgId, buId, employeeId]);
+  useEffect(() => {
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
+  }, [orgId, buId, employeeId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   const { buName } = useSelector(
@@ -251,7 +252,7 @@ const MonthlyPunchReportDetails = () => {
                               }
                               onClick={() => {
                                 setFieldValue("search", "");
-                                getData();
+                                getData(values);
                               }}
                             />
                           </li>
@@ -269,7 +270,7 @@ const MonthlyPunchReportDetails = () => {
                             }}
                             cancelHandler={() => {
                               setFieldValue("search", "");
-                              getData();
+                              getData(values);
                             }}
                           />
                         </li>
@@ -278,7 +279,7 @@ const MonthlyPunchReportDetails = () => {
                     <div className="table-card-body">
                       <div className="card-style my-2">
                         <div className="row">
-                          {/* <div className="col-lg-3">
+                          {/* <div className="col-lg-3 ">
                             <div className="input-field-main">
                               <label>Business Unit</label>
                               <FormikSelect
@@ -313,6 +314,38 @@ const MonthlyPunchReportDetails = () => {
                                 touched={touched}
                               />
                             </div>
+                          </div> */}
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>From Date</label>
+                              <FormikInput
+                                classes="input-sm"
+                                value={values?.fromDate}
+                                placeholder=""
+                                name="fromDate"
+                                type="date"
+                                className="form-control"
+                                onChange={(e) => {
+                                  setFieldValue("fromDate", e.target.value);
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>To Date</label>
+                              <FormikInput
+                                classes="input-sm"
+                                value={values?.toDate}
+                                placeholder="Month"
+                                name="toDate"
+                                type="date"
+                                className="form-control"
+                                onChange={(e) => {
+                                  setFieldValue("toDate", e.target.value);
+                                }}
+                              />
+                            </div>
                           </div>
                           <div className="col-lg-3">
                             <div className="input-field-main">
@@ -329,7 +362,7 @@ const MonthlyPunchReportDetails = () => {
                                   }));
                                   if (valueOption?.value) {
                                     getPeopleDeskAllDDL(
-                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${values?.businessUnit?.value}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
                                       "intWorkplaceId",
                                       "strWorkplace",
                                       setWorkplaceDDL
@@ -367,40 +400,7 @@ const MonthlyPunchReportDetails = () => {
                                 touched={touched}
                               />
                             </div>
-                          </div> */}
-                          <div className="col-lg-3">
-                            <div className="input-field-main">
-                              <label>From Date</label>
-                              <FormikInput
-                                classes="input-sm"
-                                value={values?.fromDate}
-                                placeholder=""
-                                name="fromDate"
-                                type="date"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue("fromDate", e.target.value);
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-lg-3">
-                            <div className="input-field-main">
-                              <label>To Date</label>
-                              <FormikInput
-                                classes="input-sm"
-                                value={values?.toDate}
-                                placeholder="Month"
-                                name="toDate"
-                                type="date"
-                                className="form-control"
-                                onChange={(e) => {
-                                  setFieldValue("toDate", e.target.value);
-                                }}
-                              />
-                            </div>
-                          </div>
-
+                          </div>{" "}
                           <div className="col-lg-1">
                             <button
                               disabled={!values?.toDate || !values?.fromDate}

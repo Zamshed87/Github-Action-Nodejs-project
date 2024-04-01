@@ -38,21 +38,7 @@ export const empBasicInfo = async (buId, orgId, empId, setter, setLoading) => {
     setLoading && setLoading(false);
   }
 };
-export const getBuDetails = async (buId, setter, setLoading) => {
-  // used in many component
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-    setter([]);
-  }
-};
+
 export const getAttendenceReport = async (
   AccountId,
   buId,
@@ -245,12 +231,21 @@ export const rosterReportDtoCol = (page, paginationSize, columnList) => {
       fixed: "left",
     },
     {
-      title: () => <span style={{ color: gray600 }}>Employee ID</span>,
-      dataIndex: "EmployeeCode",
-      sorter: true,
-      filter: true,
+      title: "Work. Group/Location",
+      dataIndex: "strWorkplaceGroup",
+      sorter: false,
+      filter: false,
       fixed: "left",
-      width: 120,
+
+      width: 180,
+    },
+    {
+      title: "Workplace/Concern",
+      dataIndex: "strWorkplace",
+      sorter: false,
+      filter: false,
+      width: 180,
+      fixed: "left",
     },
     {
       title: "Employee Name",
@@ -273,19 +268,14 @@ export const rosterReportDtoCol = (page, paginationSize, columnList) => {
       width: 200,
     },
     {
-      title: "Work. Group/Location",
-      dataIndex: "strWorkplaceGroup",
-      sorter: false,
-      filter: false,
-      width: 180,
+      title: () => <span style={{ color: gray600 }}>Employee ID</span>,
+      dataIndex: "EmployeeCode",
+      sorter: true,
+      filter: true,
+      // fixed: "left",
+      width: 120,
     },
-    {
-      title: "Workplace/Concern",
-      dataIndex: "strWorkplace",
-      sorter: false,
-      filter: false,
-      width: 180,
-    },
+
     {
       title: "Department",
       dataIndex: "strDepartment",

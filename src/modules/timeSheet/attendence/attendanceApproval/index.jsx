@@ -1,17 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Cancel, CheckCircle } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import BackButton from "../../../../common/BackButton";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import Loading from "../../../../common/loading/Loading";
-import MuiIcon from "../../../../common/MuiIcon";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { failColor, successColor } from "../../../../utility/customColor";
 import FilterModal from "./component/FilterModal";
 import StyledTable from "./component/StyledTable";
 import { approveAttendance, getAttendanceApprovalLanding } from "./helper";
@@ -40,8 +36,6 @@ export default function AttendanceApproval() {
   };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-
-  const saveHandler = (values) => {};
 
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState([]);
@@ -84,7 +78,7 @@ export default function AttendanceApproval() {
     setGridData(modifyData);
   }, [allData]);
 
-  const demoPopup = (action, text, array) => {
+  const demoPopup = (action, text) => {
     let newArray = [];
     const checkedList = filterLanding.filter((item) => item?.selectCheckbox);
 
@@ -110,7 +104,7 @@ export default function AttendanceApproval() {
       });
     }
 
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action} ?`,
       yesAlertFunc: () => {
@@ -159,15 +153,7 @@ export default function AttendanceApproval() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
+      <Formik enableReinitialize={true} initialValues={initData}>
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -183,9 +169,9 @@ export default function AttendanceApproval() {
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex">
-                                <div
-                                  className="muiIconHover success mr-2"
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
                                   onClick={() => {
                                     demoPopup(
                                       "approve",
@@ -194,12 +180,10 @@ export default function AttendanceApproval() {
                                     );
                                   }}
                                 >
-                                  <button className="btn-green px-2">
-                                    Approve
-                                  </button>
-                                </div>
-                                <div
-                                  className="muiIconHover  danger"
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
                                   onClick={() => {
                                     demoPopup(
                                       "reject",
@@ -208,10 +192,8 @@ export default function AttendanceApproval() {
                                     );
                                   }}
                                 >
-                                  <button className="btn-green px-2">
-                                    Reject
-                                  </button>
-                                </div>
+                                  Reject
+                                </button>
                               </div>
                             )}
                             {/*      <ul className="d-flex flex-wrap">

@@ -19,6 +19,7 @@ import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalSt
 import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import NoResult from "./../../../../common/NoResult";
+import BankDetails from "./DrawerBody/bankDetails";
 import IncrementHistoryComponent from "./DrawerBody/incrementHistoryView";
 import { defaultSalaryInitData } from "./DrawerBody/utils";
 import ClientSalaryAssignModule from "./clientSalaryAssign";
@@ -83,10 +84,12 @@ const SalaryAssign = () => {
 
   // for increment history
   const [openIncrement, setOpenIncrement] = useState(false);
+  const [openBank, setOpenBank] = useState(false);
 
   // for increment modal
   const handleIncrementClose = () => {
     setOpenIncrement(false);
+    setOpenBank(false)
     setSideDrawer(true);
   };
 
@@ -530,6 +533,7 @@ const SalaryAssign = () => {
           policyData={policyData}
           accId={orgId}
           setOpenIncrement={setOpenIncrement}
+          setOpenBank={setOpenBank}
           pages={pages}
           setPages={setPages}
           isBulk={isBulk}
@@ -551,6 +555,20 @@ const SalaryAssign = () => {
           size="lg"
           backdrop="static"
           classes="default-modal"
+          orgId={orgId}
+          buId={buId}
+          singleData={singleData[0]}
+          loading={loading}
+          setLoading={setLoading}
+        />
+        {/* increment history Modal */}
+        <BankDetails
+          show={openBank}
+          title={"Bank History"}
+          onHide={handleIncrementClose}
+          size="lg"
+          backdrop="static"
+          classes="default-modal"setFieldValue
           orgId={orgId}
           buId={buId}
           singleData={singleData[0]}

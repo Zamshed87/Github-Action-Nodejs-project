@@ -25,7 +25,20 @@ const ManagementDashboardLanding = ({ setLoading }) => {
   );
 
   const currentYear = new Date().getFullYear();
-
+  const month = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+  ];
   // get data api calling
   const [employeeStatusGraph, getEmployeeStatusGraph, loading1] = useAxiosGet();
   const [iouGraph, getIouGraph, loading2] = useAxiosGet();
@@ -1431,7 +1444,10 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                   >
                     Department Details
                   </h4>
-                  <p>The results shows from october 2022</p>
+                  <p>
+                    The results shows from {month[new Date().getMonth()]}{" "}
+                    {currentYear}
+                  </p>
                 </div>
                 {/* <div>
                   <DefaultInput

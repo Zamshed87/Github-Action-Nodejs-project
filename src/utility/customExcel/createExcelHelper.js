@@ -253,7 +253,7 @@ export const createFile = (excel, colWidth) => {
     });
   });
   workbook.xlsx.writeBuffer().then((data) => {
-    let blob = new Blob([data], {
+    const blob = new Blob([data], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     fs.saveAs(blob, `${excel.name}.xlsx`);

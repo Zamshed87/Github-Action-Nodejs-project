@@ -1,15 +1,37 @@
 /* eslint-disable array-callback-return */
-import { DeleteOutline } from "@mui/icons-material";
-import { IconButton, Tooltip } from "@mui/material";
+import { ArrowDropDown, ArrowDropUp, DeleteOutline } from "@mui/icons-material";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import axios from "axios";
 import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
 import DefaultInput from "../../../../../common/DefaultInput";
 import FormikSelect from "../../../../../common/FormikSelect";
 import Loading from "../../../../../common/loading/Loading";
-import { gray200, gray400, gray700 } from "../../../../../utility/customColor";
+import {
+  gray200,
+  gray400,
+  gray700,
+  gray900,
+} from "../../../../../utility/customColor";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { getBreakdownListDDL, getByIdBreakdownListDDL } from "../helper";
 import { adjustPaymentFiledFun } from "./utils";
+import BankForm from "modules/employeeProfile/aboutMe/bankDetails/component/BankForm";
+import React, { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
+import { getPeopleDeskAllDDL } from "common/api";
+import {
+  bankDetailsAction,
+  getBankBranchDDL,
+} from "modules/employeeProfile/aboutMe/helper";
+import { todayDate } from "utility/todayDate";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
+import { Typography } from "antd";
 
 const DefaultSalary = ({ propsObj }) => {
   const {
@@ -42,6 +64,11 @@ const DefaultSalary = ({ propsObj }) => {
     values,
     errors,
     touched,
+    setOpenIncrement,
+    setIsOpen,
+    setOpenBank,
+    bankDataHandler,
+    bankId
   } = propsObj;
 
   const payrollGroupDDL = (positionId) => {
@@ -49,6 +76,33 @@ const DefaultSalary = ({ propsObj }) => {
       (itm) => itm?.intHrPositonId === positionId
     );
   };
+
+  // state
+  const [bankDDL, setBankDDL] = useState([]);
+  const [bankBranchDDL, setBankBranchDDL] = useState([]);
+
+  const { employeeId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+
+  useEffect(() => {
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Bank&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0`,
+      "BankID",
+      "BankName",
+      setBankDDL
+    );
+  }, []);
+console.log("bankId",bankId)
+  useEffect(() =>{
+    getBankBranchDDL(
+      bankId || 0,
+      orgId,
+      0,
+      setBankBranchDDL
+    );
+  },[bankId])
 
   const loadEmployeeList = (v) => {
     if (v?.length < 2) return [];
@@ -83,6 +137,19 @@ const DefaultSalary = ({ propsObj }) => {
         //
       });
   };
+
+  const [expanded, setExpanded] = React.useState(false);
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
+
+  useEffect(() => {
+    if (values?.bankName?.value || values?.accName) {
+      setExpanded("panel1");
+    } else {
+      setExpanded(false);
+    }
+  }, [values?.bankName]);
   return (
     <>
       {loading && <Loading />}
@@ -687,7 +754,8 @@ const DefaultSalary = ({ propsObj }) => {
                                       // errors={errors}
                                       // touched={touched}
                                       disabled={
-                                        itm?.strBasedOn === "Percentage" || itm?.isCustomPayrollFor10ms
+                                        itm?.strBasedOn === "Percentage" ||
+                                        itm?.isCustomPayrollFor10ms
                                       }
                                     />
                                   </div>
@@ -1003,6 +1071,241 @@ const DefaultSalary = ({ propsObj }) => {
           }}
         ></div>
 
+        <div style={{ width: "100%", maxWidth: "100%" }}>
+          <Accordion
+            expanded={expanded === "panel1"}
+            onChange={handleChange("panel1")}
+            sx={{
+              width: "100% !important",
+              left: "0px !important",
+              right: "0px !important",
+              marginBottom: "10px !important",
+            }}
+          >
+            <AccordionSummary aria-controls="panel1-content" id="panel1-header">
+              <Typography>Bank Details</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                {/* Bank Name */}
+                <div className="row">
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      Bank Name
+                    </h2>
+                  </div>
+                  <div className="col-md-5">
+                    <FormikSelect
+                      name="bankName"
+                      options={bankDDL}
+                      value={values?.bankName}
+                      menuPosition="fixed"
+                      onChange={(valueOption) => {
+                        setFieldValue("routingNo", "");
+                        setFieldValue("branchName", "");
+                        setFieldValue("bankName", valueOption);
+                        getBankBranchDDL(
+                          valueOption?.value,
+                          orgId,
+                          0,
+                          setBankBranchDDL
+                        );
+                      }}
+                      placeholder=" "
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                      isDisabled={false}
+                    />
+                  </div>
+                </div>
+
+                {/* Branch Name */}
+                <div className="row">
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      Branch Name
+                    </h2>
+                  </div>
+                  <div className="col-md-5">
+                    <div
+                      className="policy-category-ddl-wrapper"
+                      style={{ marginBottom: "5px" }}
+                    >
+                      <FormikSelect
+                        name="branchName"
+                        options={bankBranchDDL}
+                        value={values?.branchName}
+                        menuPosition="fixed"
+                        onChange={(valueOption) => {
+                          setFieldValue("routingNo", valueOption?.name);
+                          setFieldValue("branchName", valueOption);
+                        }}
+                        placeholder=" "
+                        styles={customStyles}
+                        errors={errors}
+                        touched={touched}
+                        // isDisabled={!values?.bankName}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* routing no */}
+                <div className="row">
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      Routing No
+                    </h2>
+                  </div>
+                  <div className="col-md-5">
+                    <DefaultInput
+                      value={values?.routingNo}
+                      disabled={true}
+                      name="routingNo"
+                      type="text"
+                      className="form-control"
+                      onChange={(e) => {
+                        setFieldValue("routingNo", e.target.value);
+                      }}
+                      errors={errors}
+                      touched={touched}
+                      placeholder=" "
+                      classes="input-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Swift Code */}
+                <div className="row">
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      Swift Code
+                    </h2>
+                  </div>
+                  <div className="col-md-5">
+                    <DefaultInput
+                      value={values?.swiftCode}
+                      onChange={(e) => {
+                        setFieldValue("swiftCode", e.target.value);
+                      }}
+                      name="swiftCode"
+                      type="text"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                      placeholder=" "
+                      classes="input-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Account Name */}
+                <div className="row">
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      Account Name
+                    </h2>
+                  </div>
+                  <div className="col-lg-5">
+                    <DefaultInput
+                      value={values?.accName}
+                      onChange={(e) => {
+                        setFieldValue("accName", e.target.value);
+                      }}
+                      name="accName"
+                      type="text"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                      placeholder=" "
+                      classes="input-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Account No */}
+                <div className="row">
+                  <div className="col-lg-7">
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        color: gray700,
+                        position: "relative",
+                        top: "-1px",
+                      }}
+                    >
+                      Account No
+                    </h2>
+                  </div>
+                  <div className="col-md-5">
+                    <DefaultInput
+                      value={values?.accNo}
+                      onChange={(e) => {
+                        setFieldValue("accNo", e.target.value);
+                      }}
+                      name="accNo"
+                      type="text"
+                      className="form-control"
+                      errors={errors}
+                      touched={touched}
+                      placeholder=" "
+                      classes="input-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+        </div>
+
         {isBulk ? (
           <>
             {step === 1 ? (
@@ -1080,6 +1383,36 @@ const DefaultSalary = ({ propsObj }) => {
                           ? true
                           : false
                       }
+                      onClick={() => {
+                        const payload = {
+                          partId: 0,
+                          intEmployeeBankDetailsId: values?.intEmployeeBankDetailsId || 0,
+                          intEmployeeBasicInfoId:
+                            +singleData?.[0]?.EmployeeId || 0,
+                          isPrimarySalaryAccount: true,
+                          isActive: true,
+                          intWorkplaceId: wId || 0,
+                          intBusinessUnitId: buId,
+                          intAccountId: orgId,
+                          dteCreatedAt: todayDate(),
+                          intCreatedBy: employeeId,
+                          dteUpdatedAt: todayDate(),
+                          intUpdatedBy: employeeId,
+                          intBankOrWalletType: 1,
+                          intBankWalletId:  values?.bankName?.value || 0,
+                          strBankWalletName: values?.bankName?.label || "",
+                          strDistrict: "",
+                          intBankBranchId: values?.branchName?.value || 0,
+                          strBranchName: values?.branchName?.label || "",
+                          strRoutingNo: values?.routingNo || "",
+                          strAccountName: values?.accName || "",
+                          strAccountNo: values?.accNo || "",
+                          strSwiftCode: values?.swiftCode || "",
+                        };
+                        bankDetailsAction(payload, setLoading, () =>
+                          bankDataHandler(singleData)
+                        );
+                      }}
                       type="submit"
                       className="btn btn-green btn-green-disable"
                     >
@@ -1138,7 +1471,6 @@ const DefaultSalary = ({ propsObj }) => {
                           Clear
                         </button>
                       )}
-
                     <button
                       disabled={
                         +values?.totalGrossSalary !==
@@ -1148,6 +1480,36 @@ const DefaultSalary = ({ propsObj }) => {
                       }
                       type="submit"
                       className="btn btn-green btn-green-disable"
+                      onClick={() => {
+                        const payload = {
+                          partId: 0,
+                          intEmployeeBankDetailsId: values?.intEmployeeBankDetailsId || 0,
+                          intEmployeeBasicInfoId:
+                            +singleData?.[0]?.EmployeeId || 0,
+                          isPrimarySalaryAccount: true,
+                          isActive: true,
+                          intWorkplaceId: wId || 0,
+                          intBusinessUnitId: buId,
+                          intAccountId: orgId,
+                          dteCreatedAt: todayDate(),
+                          intCreatedBy: employeeId,
+                          dteUpdatedAt: todayDate(),
+                          intUpdatedBy: employeeId,
+                          intBankOrWalletType: 1,
+                          intBankWalletId:  values?.bankName?.value || 0,
+                          strBankWalletName: values?.bankName?.label || "",
+                          strDistrict: "",
+                          intBankBranchId: values?.branchName?.value || 0,
+                          strBranchName: values?.branchName?.label || "",
+                          strRoutingNo: values?.routingNo || "",
+                          strAccountName: values?.accName || "",
+                          strAccountNo: values?.accNo || "",
+                          strSwiftCode: values?.swiftCode || "",
+                        };
+                        bankDetailsAction(payload, setLoading, () =>
+                          bankDataHandler(singleData)
+                        );
+                      }}
                     >
                       Save
                     </button>

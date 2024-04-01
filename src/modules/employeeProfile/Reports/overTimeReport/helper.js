@@ -1,20 +1,7 @@
 import axios from "axios";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
-export const getBuDetails = async (buId, setter, setLoading) => {
-  try {
-    const res = await axios.get(
-      `/SaasMasterData/GetBusinessDetailsByBusinessUnitId?businessUnitId=${buId}`
-    );
-    if (res?.data) {
-      setter(res?.data);
-      setLoading && setLoading(false);
-    }
-  } catch (error) {
-    setLoading && setLoading(false);
-    setter([]);
-  }
-};
+
 // search
 export const filterData = (keywords, allData, setRowDto) => {
   try {
@@ -93,6 +80,20 @@ export const empOverTimeDtoCol = (page, paginationSize) => {
       fixed: "left",
     },
     {
+      title: "Designation",
+      dataIndex: "designation",
+      sort: false,
+      filter: false,
+      width: 200,
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+      sort: false,
+      filter: false,
+      width: 200,
+    },
+    {
       title: "Employee Id",
       dataIndex: "employeeCode",
       sort: false,
@@ -121,20 +122,7 @@ export const empOverTimeDtoCol = (page, paginationSize) => {
       ),
       fieldType: "string",
     },
-    {
-      title: "Designation",
-      dataIndex: "designation",
-      sort: false,
-      filter: false,
-      width: 200,
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      sort: false,
-      filter: false,
-      width: 200,
-    },
+
     {
       title: "Employment Type",
       dataIndex: "employementType",

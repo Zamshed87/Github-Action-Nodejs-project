@@ -1,8 +1,4 @@
-import {
-  Cancel,
-  CheckCircle,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -14,11 +10,9 @@ import Chips from "../../../common/Chips";
 import FormikCheckBox from "../../../common/FormikCheckbox";
 import IConfirmModal from "../../../common/IConfirmModal";
 import Loading from "../../../common/loading/Loading";
-import MasterFilter from "../../../common/MasterFilter";
 import MuiIcon from "../../../common/MuiIcon";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import {
   failColor,
@@ -26,7 +20,6 @@ import {
   greenColor,
   successColor,
 } from "../../../utility/customColor";
-import useDebounce from "../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import {
   AssetTransferApproveReject,
@@ -57,31 +50,9 @@ export default function AssetTransferApproval() {
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
   const [allData, setAllData] = useState();
-  const [isFilter, setIsFilter] = useState(false);
+  const [isFilter] = useState(false);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
-
-  const getLandingData = () => {
-    getAssetTransferListDataForApproval(
-      {
-        applicationStatus: "Pending",
-        isAdmin: isOfficeAdmin,
-        isSupOrLineManager: 0,
-        workplaceId: wId,
-        approverId: employeeId,
-        workplaceGroupId: wgId,
-        businessUnitId: buId,
-        departmentId: 0,
-        designationId: 0,
-        applicantId: 0,
-        accountId: orgId,
-        intId: 0,
-      },
-      setApplicationListData,
-      setAllData,
-      setLoading
-    );
-  };
 
   useEffect(() => {
     getAssetTransferListDataForApproval(
@@ -105,8 +76,6 @@ export default function AssetTransferApproval() {
     );
   }, [employeeId, orgId, isOfficeAdmin, wId]);
 
-  const debounce = useDebounce();
-
   useEffect(() => {
     const array = [];
     applicationListData?.listData?.forEach((data) => {
@@ -122,18 +91,6 @@ export default function AssetTransferApproval() {
     });
   }, [applicationListData, orgId, isOfficeAdmin, employeeId]);
 
-  const saveHandler = (values) => {};
-  const searchData = (keywords, allData, setRowDto) => {
-    try {
-      const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.listData?.filter((item) =>
-        regex.test(item?.employeeName?.toLowerCase())
-      );
-      setRowDto({ listData: newDta });
-    } catch {
-      setRowDto([]);
-    }
-  };
   const demoPopup = (action, text, array) => {
     let newArray = [];
 
@@ -169,7 +126,7 @@ export default function AssetTransferApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
@@ -186,7 +143,7 @@ export default function AssetTransferApproval() {
   };
 
   const singlePopup = (action, text, item) => {
-    let payload = [
+    const payload = [
       {
         applicationId: item?.application?.intAssetTransferId,
         approverEmployeeId: employeeId,
@@ -216,12 +173,13 @@ export default function AssetTransferApproval() {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Do you want to ${action}? `,
       yesAlertFunc: () => {
         AssetTransferApproveReject(payload, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -291,7 +249,7 @@ export default function AssetTransferApproval() {
           </div>
         ),
         dataIndex: "employeeCode",
-        render: (employeeCode, record, index) => (
+        render: (employeeCode, record) => (
           <div className="d-flex align-items-center">
             <div className="mr-2" onClick={(e) => e.stopPropagation()}>
               <FormikCheckBox
@@ -305,7 +263,7 @@ export default function AssetTransferApproval() {
                 color={greenColor}
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
-                  let data = applicationListData?.listData?.map((item) => {
+                  const data = applicationListData?.listData?.map((item) => {
                     if (
                       item?.application?.intAssetTransferId ===
                       record?.application?.intAssetTransferId
@@ -317,7 +275,7 @@ export default function AssetTransferApproval() {
                     } else return item;
                   });
                   setApplicationListData({ listData: [...data] });
-                  let data2 = allData?.listData?.map((item) => {
+                  const data2 = allData?.listData?.map((item) => {
                     if (
                       item?.application?.intAssetTransferId ===
                       record?.application?.intAssetTransferId
@@ -450,7 +408,7 @@ export default function AssetTransferApproval() {
       {
         title: "Waiting Stage",
         dataIndex: "currentStage",
-        render: (currentStage, record) => (
+        render: (currentStage) => (
           <div className="d-flex align-items-center">
             <div>{currentStage}</div>
           </div>
@@ -512,25 +470,8 @@ export default function AssetTransferApproval() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-          dirty,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -545,57 +486,31 @@ export default function AssetTransferApproval() {
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
                             ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
+                              <div className="d-flex actionIcon">
+                                <button
+                                  className="btn-green mr-2"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className="btn-red"
+                                  onClick={() => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  }}
+                                >
+                                  Reject
+                                </button>
                               </div>
                             )}
                             <ul className="d-flex flex-wrap">
@@ -666,7 +581,7 @@ export default function AssetTransferApproval() {
                                       dataRow?.length ===
                                       allData?.listData?.length
                                     ) {
-                                      let temp = dataRow?.map((item) => {
+                                      const temp = dataRow?.map((item) => {
                                         return {
                                           ...item,
                                           selectCheckbox: false,

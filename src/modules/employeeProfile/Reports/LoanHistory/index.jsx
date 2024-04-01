@@ -20,6 +20,9 @@ import PeopleDeskTable, {
   paginationSize,
 } from "../../../../common/peopleDeskTable";
 import DefaultInput from "./../../../../common/DefaultInput";
+import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initData = {
   status: "",
@@ -34,6 +37,8 @@ const initData = {
   maximumAmount: "",
   applicationStatus: "",
   installmentStatus: "",
+  workplaceGroup: "",
+  workplace: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -46,7 +51,7 @@ const EmLoanHistory = () => {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, wId } = useSelector(
+  const { buId, wgId, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -76,6 +81,8 @@ const EmLoanHistory = () => {
 
   // landing data
   const [rowDto, setRowDto] = useState([]);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -103,12 +110,11 @@ const EmLoanHistory = () => {
       pageNo: pagination.current,
       ispaginated: true,
       searchText: searchTxt || "",
-      workplaceGroupId: wgId,
-      workplaceId: wId,
+      workplaceGroupId: values?.workplaceGroup?.value || wgId,
+      workplaceId: values?.workplace?.value || wId,
     });
   };
-
-  const handleChangePage = (_, newPage, searchText = "") => {
+  const handleChangePage = (_, newPage, searchText = "", values) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
@@ -120,7 +126,7 @@ const EmLoanHistory = () => {
     });
   };
 
-  const handleChangeRowsPerPage = (event, searchText = "") => {
+  const handleChangeRowsPerPage = (event, searchText = "", values) => {
     setPages((prev) => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
@@ -165,6 +171,12 @@ const EmLoanHistory = () => {
       workplaceGroupId: wgId,
       workplaceId: wId,
     });
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
   }, [buId, wgId, wId]);
 
   return (
@@ -190,7 +202,9 @@ const EmLoanHistory = () => {
                         }}
                         onClick={() => {
                           getPDFAction(
-                            `/PdfAndExcelReport/LoanReportAll?&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&DepartmentId=${
+                            `/PdfAndExcelReport/LoanReportAll?&BusinessUnitId=${buId}&WorkplaceGroupId=${
+                              values?.workplaceGroup?.value || wgId
+                            }&DepartmentId=${
                               values?.department?.value || 0
                             }&DesignationId=${
                               values?.designation?.value || 0
@@ -272,8 +286,9 @@ const EmLoanHistory = () => {
                                 pageNo: 1,
                                 ispaginated: true,
                                 searchText: "",
-                                workplaceGroupId: wgId,
-                                workplaceId: wId,
+                                workplaceGroupId:
+                                  values?.workplaceGroup?.value || wgId,
+                                workplaceId: values?.workplace?.value || wId,
                               }
                             );
                           }}
@@ -307,8 +322,9 @@ const EmLoanHistory = () => {
                               pageNo: 1,
                               ispaginated: true,
                               searchText: values || "",
-                              workplaceGroupId: wgId,
-                              workplaceId: wId,
+                              workplaceGroupId:
+                                values?.workplaceGroup?.value || wgId,
+                              workplaceId: values?.workplace?.value || wId,
                             }
                           );
                           setFieldValue("search", value);
@@ -334,8 +350,9 @@ const EmLoanHistory = () => {
                               pageNo: 1,
                               ispaginated: true,
                               searchText: "",
-                              workplaceGroupId: wgId,
-                              workplaceId: wId,
+                              workplaceGroupId:
+                                values?.workplaceGroup?.value || wgId,
+                              workplaceId: values?.workplace?.value || wId,
                             }
                           );
                           setFieldValue("search", "");
@@ -349,7 +366,7 @@ const EmLoanHistory = () => {
               <div className="table-card-body">
                 <div className="card-style my-2">
                   <div className="row">
-                    <div className="col-lg-3">
+                    <div className="col-lg-2">
                       <div className="input-field-main">
                         <label>From Date</label>
                         <DefaultInput
@@ -365,7 +382,7 @@ const EmLoanHistory = () => {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-3">
+                    <div className="col-lg-2">
                       <div className="input-field-main">
                         <label>To Date</label>
                         <DefaultInput
@@ -381,7 +398,50 @@ const EmLoanHistory = () => {
                         />
                       </div>
                     </div>
-
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>Workplace Group</label>
+                        <FormikSelect
+                          name="workplaceGroup"
+                          options={[...workplaceGroupDDL] || []}
+                          value={values?.workplaceGroup}
+                          onChange={(valueOption) => {
+                            setWorkplaceDDL([]);
+                            setFieldValue("workplaceGroup", valueOption);
+                            setFieldValue("workplace", "");
+                            if (valueOption?.value) {
+                              getPeopleDeskAllDDL(
+                                `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                "intWorkplaceId",
+                                "strWorkplace",
+                                setWorkplaceDDL
+                              );
+                            }
+                          }}
+                          placeholder=""
+                          styles={customStyles}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>Workplace</label>
+                        <FormikSelect
+                          name="workplace"
+                          options={[...workplaceDDL] || []}
+                          value={values?.workplace}
+                          onChange={(valueOption) => {
+                            setFieldValue("workplace", valueOption);
+                            // getWorkplaceDetails(
+                            //   valueOption?.value,
+                            //   setBuDetails
+                            // );
+                          }}
+                          placeholder=""
+                          styles={customStyles}
+                        />
+                      </div>
+                    </div>
                     <div className="col-lg-1">
                       <button
                         disabled={!values?.toDate || !values?.fromDate}
@@ -408,8 +468,9 @@ const EmLoanHistory = () => {
                               pageNo: 1,
                               ispaginated: true,
                               searchText: "",
-                              workplaceGroupId: wgId,
-                              workplaceId: wId,
+                              workplaceGroupId:
+                                values?.workplaceGroup?.value || wgId,
+                              workplaceId: values?.workplace?.value || wId,
                             }
                           );
                         }}
@@ -431,14 +492,18 @@ const EmLoanHistory = () => {
                     rowDto={rowDto}
                     setRowDto={setRowDto}
                     handleChangePage={(e, newPage) =>
-                      handleChangePage(e, newPage, values?.search)
+                      handleChangePage(e, newPage, values?.search, values)
                     }
                     handleChangeRowsPerPage={(e) =>
-                      handleChangeRowsPerPage(e, values?.search)
+                      handleChangeRowsPerPage(e, values?.search, values)
                     }
                     onRowClick={(dataRow) => {
                       getPDFAction(
-                        `/PdfAndExcelReport/LoanReportDetails?LoanApplicationId=${dataRow?.loanApplicationId}&BusinessUintId=${buId}&WorkplaceGroupId=${wgId}&EmployeeId=${dataRow?.employeeId}`,
+                        `/PdfAndExcelReport/LoanReportDetails?LoanApplicationId=${
+                          dataRow?.loanApplicationId
+                        }&BusinessUintId=${buId}&WorkplaceGroupId=${
+                          values?.workplaceGroup?.value || wgId
+                        }&EmployeeId=${dataRow?.employeeId}`,
                         setLoading
                       );
                     }}

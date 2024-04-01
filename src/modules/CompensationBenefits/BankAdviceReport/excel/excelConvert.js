@@ -1,5 +1,9 @@
 import { formatBEFTN } from "./PrintFormats/BFTN";
+import { formatCity } from "./PrintFormats/CityBank";
+import { formatDBBL } from "./PrintFormats/DBBL";
+import { formatDBL } from "./PrintFormats/DBL";
 import { formatIbbl } from "./PrintFormats/IBBL";
+import { formatSCB } from "./PrintFormats/SCB";
 
 const createExcelFile = (
   comapanyNameHeader,
@@ -17,20 +21,20 @@ const createExcelFile = (
 ) => {
   switch (moneyProcessId) {
     case 0:
-          formatIbbl(
-          comapanyNameHeader,
-          tableHeader,
-          tableData,
-          fromDate,
-          toDate,
-          businessUnit,
-          moneyProcessId,
-          rowDto,
-          bankAccountNo,
-          total,
-          totalInWords,
-          buAddress
-        );
+      formatIbbl(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        moneyProcessId,
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
       break;
     case 1:
       formatBEFTN(
@@ -50,6 +54,70 @@ const createExcelFile = (
       break;
     case 2:
       formatBEFTN(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        moneyProcessId,
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
+      break;
+    case 3:
+      formatDBL(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        moneyProcessId,
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
+      break;
+    case 4:
+      formatSCB(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        moneyProcessId,
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
+      break;
+    case 5:
+      formatDBBL(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        moneyProcessId,
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
+      break;
+    case 6:
+      formatCity(
         comapanyNameHeader,
         tableHeader,
         tableData,

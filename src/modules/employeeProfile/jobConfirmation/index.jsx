@@ -22,7 +22,6 @@ import Loading from "./../../../common/loading/Loading";
 
 import {
   column,
-  getBuDetails,
   getJobConfirmationInfo,
   getTableDataConfirmation,
   jobConfirmColumns,
@@ -31,6 +30,9 @@ import "./jobConfirmation.css";
 import { createCommonExcelFile } from "../../../utility/customExcel/generateExcelAction";
 import DefaultInput from "common/DefaultInput";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
+import { getBuDetails, getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initData = {
   search: "",
@@ -39,6 +41,8 @@ const initData = {
   // yearId: new Date().getFullYear(),
   fromDate: monthFirstDate(),
   toDate: monthLastDate(),
+  workplace: "",
+  workplaceGroup: "",
 };
 
 export default function JobConfirmationReport() {
@@ -46,14 +50,21 @@ export default function JobConfirmationReport() {
 
   const dispatch = useDispatch();
   // eslint-disable-next-line no-unused-vars
-  const { intAccountId, intBusinessUnitId, buName, wgId, wId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const {
+    intAccountId,
+    intBusinessUnitId,
+    buName,
+    buId,
+    wgId,
+    wId,
+    employeeId,
+  } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   // hooks
   const [loading, setLoading] = useState(false);
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [rowDto, setRowDto] = useState([]);
   const [allData, setAllData] = useState([]);
   const [buDetails, setBuDetails] = useState({});
@@ -64,8 +75,14 @@ export default function JobConfirmationReport() {
   });
 
   useEffect(() => {
-    getBuDetails(intBusinessUnitId, setBuDetails);
-  }, [intBusinessUnitId]);
+    getBuDetails(intBusinessUnitId, setBuDetails, undefined);
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${intBusinessUnitId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
+    );
+  }, [intBusinessUnitId, wgId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -92,7 +109,7 @@ export default function JobConfirmationReport() {
     );
   }, [wgId, wId]);
 
-  const handleTableChange = (pagination, newRowDto, srcText) => {
+  const handleTableChange = (pagination, newRowDto, srcText, values) => {
     if (newRowDto?.action === "filter") {
       return;
     }
@@ -111,11 +128,11 @@ export default function JobConfirmationReport() {
         setAllData,
         setLoading,
         2,
-        wgId,
+        values?.workplaceGroup?.value || wgId,
         srcText,
         pagination,
         setPages,
-        wId
+        values?.workplace?.value || wId
       );
     }
     if (pages?.current !== pagination?.current) {
@@ -130,11 +147,11 @@ export default function JobConfirmationReport() {
         setAllData,
         setLoading,
         2,
-        wgId,
+        values?.workplaceGroup?.value || wgId,
         srcText,
         pagination,
         setPages,
-        wId
+        values?.workplace?.value || wId
       );
     }
   };
@@ -321,11 +338,11 @@ export default function JobConfirmationReport() {
                                   setAllData,
                                   setLoading,
                                   2,
-                                  wgId,
+                                  values?.workplaceGroup?.value || wgId,
                                   e.target.value,
                                   { current: 1, pageSize: paginationSize },
                                   setPages,
-                                  wId
+                                  values?.workplace?.value || wId
                                 );
                               } else {
                                 getJobConfirmationInfo(
@@ -339,11 +356,11 @@ export default function JobConfirmationReport() {
                                   setAllData,
                                   setLoading,
                                   2,
-                                  wgId,
+                                  values?.workplaceGroup?.value || wgId,
                                   "",
                                   { current: 1, pageSize: paginationSize },
                                   setPages,
-                                  wId
+                                  values?.workplace?.value || wId
                                 );
                               }
                             }}
@@ -394,6 +411,50 @@ export default function JobConfirmationReport() {
                           />
                         </div>
                       </div>
+                      <div className="col-lg-3">
+                        <div className="input-field-main">
+                          <label>Workplace Group</label>
+                          <FormikSelect
+                            name="workplaceGroup"
+                            options={[...workplaceGroupDDL] || []}
+                            value={values?.workplaceGroup}
+                            onChange={(valueOption) => {
+                              setWorkplaceDDL([]);
+                              setFieldValue("workplaceGroup", valueOption);
+                              setFieldValue("workplace", "");
+                              if (valueOption?.value) {
+                                getPeopleDeskAllDDL(
+                                  `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                                  "intWorkplaceId",
+                                  "strWorkplace",
+                                  setWorkplaceDDL
+                                );
+                              }
+                            }}
+                            placeholder=""
+                            styles={customStyles}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-3">
+                        <div className="input-field-main">
+                          <label>Workplace</label>
+                          <FormikSelect
+                            name="workplace"
+                            options={[...workplaceDDL] || []}
+                            value={values?.workplace}
+                            onChange={(valueOption) => {
+                              setFieldValue("workplace", valueOption);
+                              getWorkplaceDetails(
+                                valueOption?.value,
+                                setBuDetails
+                              );
+                            }}
+                            placeholder=""
+                            styles={customStyles}
+                          />
+                        </div>
+                      </div>
                       <div className="col-lg-1">
                         <button
                           style={{ marginTop: "21px" }}
@@ -410,11 +471,11 @@ export default function JobConfirmationReport() {
                               setAllData,
                               setLoading,
                               2,
-                              wgId,
+                              values?.workplaceGroup?.value || wgId,
                               "",
                               pages,
                               setPages,
-                              wId
+                              values?.workplace?.value || wId
                             );
                           }}
                         >
@@ -435,7 +496,8 @@ export default function JobConfirmationReport() {
                           handleTableChange(
                             pagination,
                             newRowDto,
-                            values?.search || ""
+                            values?.search || "",
+                            values
                           )
                         }
                         pages={pages?.pageSize}

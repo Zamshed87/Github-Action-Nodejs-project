@@ -7,21 +7,22 @@ import {
 } from "@mui/icons-material";
 import { Select, Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { APIUrl } from "../../../../App";
 import DemoImg from "../../../../assets/images/bigDemo.png";
-import { getPeopleDeskAllLanding } from "../../../../common/api";
 import DefaultInput from "../../../../common/DefaultInput";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
-import Loading from "../../../../common/loading/Loading";
 import ResetButton from "../../../../common/ResetButton";
+import { getPeopleDeskAllLanding } from "../../../../common/api";
+import Loading from "../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray900, greenColor } from "../../../../utility/customColor";
 import AddEditFormComponent from "./addEditForm";
 import StyledTable from "./component/StyledTable";
 import { getManualAttendanceApprovalList } from "./helper";
 import { currentYear } from "./utilities/currentYear";
+import { dateFormatterForInput } from "utility/dateFormatter";
 
 const initData = {
   search: "",
@@ -71,7 +72,6 @@ export default function AttendanceApprovalRequest() {
   // filter
   const [status, setStatus] = useState("");
 
-  const saveHandler = (values) => {};
   const [loading, setLoading] = useState(false);
 
   const [tableData, setTableData] = useState([]);
@@ -110,7 +110,7 @@ export default function AttendanceApprovalRequest() {
 
   // active & inactive filter
   const statusTypeFilter = (statusType) => {
-    let modifyRowData = tableData?.filter(
+    const modifyRowData = tableData?.filter(
       ({ ApplicationStatus }) => ApplicationStatus === statusType
     );
     setTableData(modifyRowData);
@@ -143,21 +143,11 @@ export default function AttendanceApprovalRequest() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={() => {
+          //
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -229,6 +219,61 @@ export default function AttendanceApprovalRequest() {
                           />
                         </li>
                       )}
+                      <li>
+                        <Tooltip
+                          title="Previous Month 26 to Current Month 25"
+                          arrow
+                        >
+                          <button
+                            style={{
+                              height: "32px",
+                              width: "160px",
+                              fontSize: "12px",
+                              padding: "0px 12px 0px 12px",
+                            }}
+                            className="btn btn-default ml-3"
+                            type="button"
+                            onClick={() => {
+                              //
+                              const currentDate = new Date();
+                              // Get the current month and year
+                              const currentMonth = currentDate.getMonth();
+                              const currentYear = currentDate.getFullYear();
+                              const previousMonth =
+                                currentMonth === 0 ? 11 : currentMonth - 1;
+                              const previousYear =
+                                currentMonth === 0
+                                  ? currentYear - 1
+                                  : currentYear;
+
+                              // Set the dates
+                              const previousMonthDate = new Date(
+                                previousYear,
+                                previousMonth,
+                                26
+                              );
+                              const currentMonthDate = new Date(
+                                currentYear,
+                                currentMonth,
+                                25
+                              );
+                              getManualAttendanceApprovalList(
+                                "MonthlyAttendanceSummaryByEmployeeId",
+                                buId,
+                                employeeId,
+                                null,
+                                null,
+                                setLoading,
+                                setTableData,
+                                dateFormatterForInput(previousMonthDate),
+                                dateFormatterForInput(currentMonthDate)
+                              );
+                            }}
+                          >
+                            Custom [26 - 25]
+                          </button>
+                        </Tooltip>
+                      </li>
                       <li>
                         <DefaultInput
                           classes="input-sm"
@@ -304,8 +349,8 @@ export default function AttendanceApprovalRequest() {
                           <th>Out-Time</th>
                           <th>Manual In-Time</th>
                           <th>Manual Out-Time</th>
-                          <th className="text-center">Actual Attendence</th>
-                          <th className="text-center">Request Attendence</th>
+                          <th className="text-center">Actual Attendance</th>
+                          <th className="text-center">Request Attendance</th>
                           <th>Remarks</th>
                           <th>
                             <div className="d-flex align-items-center justify-content-center">

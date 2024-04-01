@@ -203,10 +203,7 @@ export const getYearlyPolicyById = async (
           value: res?.data?.intCarryForwardMonth,
           label: getMonthName(res?.data?.intCarryForwardMonth),
         },
-        intCarryForwarExpiryMonth: res?.data?.intCarryForwarExpiryMonth && {
-          value: res?.data?.intCarryForwarExpiryMonth,
-          label: getMonthName(res?.data?.intCarryForwarExpiryMonth),
-        },
+        intCarryForwarExpiryMonth: res?.data?.intCarryForwarExpiryMonth,
         intYear: res?.data?.intYear && {
           value: res?.data?.intYear,
           label: res?.data?.intYear,

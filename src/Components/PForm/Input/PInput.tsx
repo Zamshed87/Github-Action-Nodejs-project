@@ -1,4 +1,11 @@
-import { Checkbox, DatePicker, Form, Input, InputNumber } from "antd";
+import {
+  Checkbox,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  TimePicker,
+} from "antd";
 import { InputProperty, InputType } from "../TForm";
 import "../styles.scss";
 
@@ -44,6 +51,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           value={value}
           style={{ width: "100%" }}
           format={format || "DD/MM/YYYY"}
+          // showTime={{ use12Hours: true }}
           allowClear={allowClear}
           disabledDate={disabledDate}
           picker={picker as "date" | "week" | "month" | "year"}
@@ -55,6 +63,15 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           value={value}
           checked={checked}
         />
+      ) : type === "time" ? (
+        <TimePicker 
+          value={value}
+          disabled={disabled}
+          onChange={onChange as (time: any) => void}  
+          format={format || "HH:mm:ss"}
+          style={{ width: "100%" }}
+          />
+          
       ) : type === "search" ? (
         <Input.Search
           placeholder={placeholder}

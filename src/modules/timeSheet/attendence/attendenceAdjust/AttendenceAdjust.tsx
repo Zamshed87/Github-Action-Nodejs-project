@@ -12,13 +12,15 @@ import type { RangePickerProps } from "antd/es/date-picker";
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Modal, Row } from "antd";
+import { Col, Form, Row } from "antd";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { AttendanceType, EmpFilterType } from "./utils/utils";
 import { convertTo12HourFormat } from "utility/timeFormatter";
-import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import ChangedInOutTimeEmpListModal from "./component/ChangedInOutTime";
+import { AttendanceType, EmpFilterType } from "./utils/utils";
+import { toast } from "react-toastify";
 
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
@@ -30,7 +32,9 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   const dispatch = useDispatch();
   // States
   const [selectedRow, setSelectedRow] = React.useState<any[]>([]);
-
+  const [selectedPayloadState, setSelectedPayloadState] = React.useState<any[]>(
+    []
+  );
   // Form Instance
   const [form] = Form.useForm();
 
@@ -151,58 +155,90 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
   };
 
   const submitHandler = async () => {
-    // console.log({selectedRow})
     await form
       .validateFields(["intime", "outtime"])
       .then(() => {
         const values = form.getFieldsValue(true);
-        // console.log({ values });
-        const payload = selectedRow.map((item) => {
-          // console.log({item})
-          // console.log("values?.outtime", values?.outtime)
-          return {
-            id: item?.ManualAttendanceId || 0,
-            accountId: orgId,
-            attendanceSummaryId: item?.AutoId,
-            employeeId: item?.EmployeeId,
-            attendanceDate: item?.AttendanceDate,
-            // inTime: values?.intime ?  moment(values?.intime).format("HH:mm:ss") : item?.StartTime,
-            // outTime: values?.outtime ?  moment(values?.outtime).format("HH:mm:ss") : item?.EndTime,
-            // `${data?.InTime} - ${data?.OutTime}`,
-            inTime:
-              values?.attendanceAdujust?.label === "Absent" ||
-              values?.attendanceAdujust?.label === "Late"
-                ? null
-                : values?.intime
-                ? moment(values?.intime).format("HH:mm:ss")
-                : moment(moment(item?.InTime, "h:mma")).format("HH:mm:ss") ||
-                  null,
-            outTime:
-              values?.attendanceAdujust?.label === "Absent" ||
-              values?.attendanceAdujust?.label === "Late"
-                ? null
-                : values?.outtime
-                ? moment(values?.outtime).format("HH:mm:ss")
-                : moment(moment(item?.OutTime, "h:mma")).format("HH:mm:ss") ||
-                  null,
-            status: item?.isPresent
-              ? "Present"
-              : item?.isLeave
-              ? "Leave"
-              : "Absent",
-            requestStatus: values?.attendanceAdujust?.label,
-            remarks: values?.reason || "By HR",
-            isApproved: true,
-            isActive: true,
-            isManagement: true,
-            insertUserId: employeeId,
-            insertDateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
-            workPlaceGroup: wgId,
-            businessUnitId: buId,
-          };
-        });
-        // console.log({payload})
+        let payload: any[] = [];
+        if (values?.attendanceAdujust?.label === "Changed In/Out Time") {
+          const isEmpty = selectedPayloadState?.some(item => !item?.intimeUpdate || !item?.outtimeUpdate);
+          if(isEmpty){
+            return toast.warn("Please fill all time fields")
+          }
+          payload = selectedPayloadState.map((item) => {
+            const inTImeStr = item?.inDateUpdate + "T" + moment(item?.intimeUpdate).format("HH:mm:ss")
+            const outTimeStr = item?.outDateUpdate + "T" + moment(item?.outtimeUpdate).format("HH:mm:ss")
+            return {
+              id: item?.ManualAttendanceId || 0,
+              accountId: orgId,
+              attendanceSummaryId: item?.AutoId,
+              employeeId: item?.EmployeeId,
+              attendanceDate: item?.AttendanceDate,
+              inDateTime: inTImeStr || null,
+              outDateTime: outTimeStr || null,
 
+              status: item?.isPresent
+                ? "Present"
+                : item?.isLeave
+                ? "Leave"
+                : "Absent",
+              requestStatus: values?.attendanceAdujust?.label,
+              remarks: item?.reasonUpdate || "By HR",
+              isApproved: true,
+              isActive: true,
+              isManagement: true,
+              insertUserId: employeeId,
+              insertDateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+              workPlaceGroup: wgId,
+              businessUnitId: buId,
+            };
+          });
+        } else {
+          payload = selectedRow.map((item) => {
+            return {
+              id: item?.ManualAttendanceId || 0,
+              accountId: orgId,
+              attendanceSummaryId: item?.AutoId,
+              employeeId: item?.EmployeeId,
+              attendanceDate: item?.AttendanceDate,
+              inDateTime:
+                values?.attendanceAdujust?.label === "Absent" ||
+                values?.attendanceAdujust?.label === "Late" ||
+                values?.attendanceAdujust?.label === "Present"
+                  ? null
+                  : values?.intime
+                  ? moment(values?.intime).format("YYYY-MM-DDTHH:mm:ss")
+                  : moment(moment(item?.InTime, "h:mma")).format(
+                      "YYYY-MM-DDTHH:mm:ss"
+                    ) || null,
+              outDateTime:
+                values?.attendanceAdujust?.label === "Absent" ||
+                values?.attendanceAdujust?.label === "Late" ||
+                values?.attendanceAdujust?.label === "Present"
+                  ? null
+                  : values?.outtime
+                  ? moment(values?.outtime).format("YYYY-MM-DDTHH:mm:ss")
+                  : moment(moment(item?.OutTime, "h:mma")).format(
+                      "YYYY-MM-DDTHH:mm:ss"
+                    ) || null,
+
+              status: item?.isPresent
+                ? "Present"
+                : item?.isLeave
+                ? "Leave"
+                : "Absent",
+              requestStatus: values?.attendanceAdujust?.label,
+              remarks: values?.reason || "By HR",
+              isApproved: true,
+              isActive: true,
+              isManagement: true,
+              insertUserId: employeeId,
+              insertDateTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+              workPlaceGroup: wgId,
+              businessUnitId: buId,
+            };
+          });
+        }
         ManualAttendance?.action({
           method: "post",
           urlKey: "ManualAttendance",
@@ -214,6 +250,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               attendanceAdujust: undefined,
               intime: "",
               outtime: "",
+              reason: "",
             });
             setSelectedRow([]);
             getAttendanceFilterData();
@@ -271,26 +308,26 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       dataIndex: "CalendarName",
       sorter: true,
       filter: true,
-      // width: 130,
+      width: 160,
     },
     {
       title: "Attendance Date",
       dataIndex: "AttendanceDate",
       render: (data: any) => moment(data).format("DD-MMM-YYYY"),
-      // width: 130,
+      width: 120,
     },
     {
       title: "Punch In/Out",
       dataIndex: "",
       render: (data: any) => `${data?.InTime} - ${data?.OutTime}`,
-      // width: 130,
+      width: 100,
     },
     {
       title: "Manual In/Out",
       dataIndex: "",
       render: (data: any) =>
         `${data?.ManulInTime || "N/A"} - ${data?.ManulOutTime || "N/A"}`,
-      // width: 130,
+      width: 100,
     },
     {
       title: "Calender Time In/Out",
@@ -304,21 +341,23 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           : "N/A";
         return `${startTime} - ${endTime}`;
       },
-      // width: 130,
+      width: 150,
     },
     {
       title: "Late Min",
       dataIndex: "LateMin",
-      // width: 100,
+      width: 70,
     },
     {
       title: "Total Working Hours",
       dataIndex: "WorkingHours",
+      width: 140,
     },
     // change after that
     {
       title: "Total OT Hours",
       dataIndex: "OverTimeCalednder",
+      width: 120,
     },
     {
       title: "Actual Attendance",
@@ -342,11 +381,12 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           ""
         ),
       align: "center",
+      width: 150,
     },
     {
       title: "Request Attendance",
       dataIndex: "RequestStatus",
-      width: 100,
+      width: 170,
       filter: true,
       sorter: false,
     },
@@ -368,6 +408,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       align: "center",
       filter: true,
       sorter: false,
+      width: 170,
     },
   ];
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
@@ -412,23 +453,31 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 attendanceAdujust: op,
               });
 
-              value === 1 &&
+              value === 4 &&
                 form.setFieldsValue({
                   openModal: true,
+                  reason: "",
                   intime:
                     selectedRow?.length === 1
-                      ? selectedRow[0]?.InTime ? moment(selectedRow[0]?.InTime, "h:mma") : ""
+                      ? selectedRow[0]?.InTime
+                        ? moment(selectedRow[0]?.InTime, "h:mma")
+                        : ""
                       : "",
                   outtime:
                     selectedRow?.length === 1
-                      ? selectedRow[0]?.OutTime ? moment(selectedRow[0]?.OutTime, "h:mma") : ""
+                      ? selectedRow[0]?.OutTime
+                        ? moment(selectedRow[0]?.OutTime, "h:mma")
+                        : ""
                       : "",
                 });
 
-              (value === 2 || value === 3) &&
-                Modal.confirm({
-                  title: "Are you sure to update attendance?",
-                  onOk: submitHandler,
+              (value === 1 || value === 2 || value === 3) &&
+                // Modal.confirm({
+                //   title: "Are you sure to update attendance?",
+                //   onOk: submitHandler,
+                // });
+                form.setFieldsValue({
+                  openModal1: true,
                 });
             }}
             disabled={!selectedRow.length}
@@ -527,7 +576,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       <PInput
                         type="date"
                         name="date"
-                        label="Select from date"
+                        label="Select From Date"
                         placeholder="Select a date"
                         onChange={() => {
                           AttendanceAdjustmentFilter?.reset();
@@ -545,7 +594,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       <PInput
                         type="date"
                         name="tdate"
-                        label="Select to date"
+                        label="Select To Date"
                         placeholder="Select a date"
                         onChange={() => {
                           AttendanceAdjustmentFilter?.reset();
@@ -652,7 +701,9 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
           const { openModal, attendanceAdujust } = form.getFieldsValue(true);
           return (
             <PModal
-              width={500}
+              width={
+                attendanceAdujust?.label !== "Changed In/Out Time" ? 500 : 1200
+              }
               open={openModal}
               onCancel={() => {
                 form.setFieldsValue({
@@ -660,55 +711,123 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   attendanceAdujust: undefined,
                   intime: "",
                   outtime: "",
+                  reason: "",
+                });
+              }}
+              title="Are You Sure To Update Attendance?"
+              components={
+                <PForm
+                  form={form}
+                  initialValues={{
+                    openModal: false,
+                    attendanceAdujust: undefined,
+                    intime: "",
+                    outtime: "",
+                    reason: "",
+                  }}
+                >
+                  <>
+                    {attendanceAdujust?.label !== "Changed In/Out Time" ? (
+                      <>
+                        <div>
+                          <p>Request Status: {attendanceAdujust?.label}</p>
+                          <Row gutter={[10, 2]}>
+                            <Col span={12}>
+                              <PInput
+                                type="date"
+                                name="intime"
+                                format={"DD/MM/YYYY hh:mm A"}
+                                label="Select In-Time"
+                                placeholder="Select In-Time"
+                                showTime={{ use12Hours: true }}
+                              />
+                            </Col>
+                            <Col span={12}>
+                              <PInput
+                                type="date"
+                                name="outtime"
+                                label="Select Out-Time"
+                                placeholder="Select Out-Time"
+                                format={"DD/MM/YYYY hh:mm A"}
+                                showTime={{ use12Hours: true }}
+                              />
+                            </Col>
+                            <Col span={24}>
+                              <PInput
+                                label="Reason"
+                                name={"reason"}
+                                type="text"
+                                placeholder="Write reason"
+                              />
+                            </Col>
+                          </Row>
+                        </div>
+                        <ModalFooter
+                          submitText="Yes"
+                          cancelText="No"
+                          onCancel={() => {
+                            form.setFieldsValue({
+                              openModal: false,
+                              attendanceAdujust: undefined,
+                              intime: "",
+                              outtime: "",
+                              reason: "",
+                            });
+                          }}
+                          onSubmit={submitHandler}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <ChangedInOutTimeEmpListModal
+                          selectedRow={selectedRow}
+                          rowDto={selectedPayloadState}
+                          setRowDto={setSelectedPayloadState}
+                        />
+                        <ModalFooter
+                          submitText="Yes"
+                          cancelText="No"
+                          onCancel={() => {
+                            form.setFieldsValue({
+                              openModal: false,
+                              attendanceAdujust: undefined,
+                              intime: "",
+                              outtime: "",
+                              reason: "",
+                            });
+                          }}
+                          onSubmit={submitHandler}
+                        />
+                      </>
+                    )}
+                  </>
+                </PForm>
+              }
+            />
+          );
+        }}
+      </Form.Item>
+      {/* Confirmation Modal */}
+      <Form.Item shouldUpdate noStyle>
+        {() => {
+          const { openModal1, attendanceAdujust } = form.getFieldsValue(true);
+          return (
+            <PModal
+              width={500}
+              open={openModal1}
+              onCancel={() => {
+                form.setFieldsValue({
+                  openModal1: false,
+                  attendanceAdujust: undefined,
                 });
               }}
               title="Are you sure to update attendance?"
               components={
-                <PForm
-                  form={form}
-                  // initialValues={{
-                  //   openModal: false,
-                  //   attendanceAdujust: undefined,
-                  //   intime: "",
-                  //   outtime: "",
-                  // }}
-                >
+                <PForm form={form}>
                   <>
                     <div>
                       <p>Request Status: {attendanceAdujust?.label}</p>
                       <Row gutter={[10, 2]}>
-                        <Col span={12}>
-                          <PInput
-                            type="date"
-                            name="intime"
-                            picker="time"
-                            label="Select In time"
-                            placeholder="Select Intime"
-                            format={"hh:mm A"}
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "Please Select Intime",
-                            //   },
-                            // ]}
-                          />
-                        </Col>
-                        <Col span={12}>
-                          <PInput
-                            type="date"
-                            name="outtime"
-                            picker="time"
-                            label="Select Out-Time"
-                            placeholder="Select Out-Time"
-                            format={"hh:mm A"}
-                            // rules={[
-                            //   {
-                            //     required: true,
-                            //     message: "Please Select Out-Time",
-                            //   },
-                            // ]}
-                          />
-                        </Col>
                         <Col span={24}>
                           <PInput
                             label="Reason"
@@ -724,10 +843,8 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       cancelText="No"
                       onCancel={() => {
                         form.setFieldsValue({
-                          openModal: false,
+                          openModal1: false,
                           attendanceAdujust: undefined,
-                          intime: "",
-                          outtime: "",
                         });
                       }}
                       onSubmit={submitHandler}

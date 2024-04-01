@@ -25,11 +25,16 @@ import {
   onGetEmployeeShiftInformation,
 } from "./helper";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { getPeopleDeskAllDDL } from "modules/announcement/helper";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
 
 const initialValues = {
   employee: "",
   fromDate: monthFirstDate?.(),
   toDate: todayDate?.(),
+  workplace: "",
+  workplaceGroup: "",
 };
 const EmployeesShift = () => {
   const dispatch = useDispatch();
@@ -61,7 +66,8 @@ const EmployeesShift = () => {
   const [buDetails, setBuDetails] = useState({});
   const [employeeInformation, setEmployeeInformation] = useState([]);
   const [loading, setLoading] = useState({});
-
+  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
+  const [workplaceDDL, setWorkplaceDDL] = useState([]);
   // landing data
   const [rowDto, setRowDto] = useState([]);
   const [pages, setPages] = useState({
@@ -73,7 +79,7 @@ const EmployeesShift = () => {
   const getData = (pagination, searchText) => {
     onGetEmployeeShiftInformation(
       buId,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       values?.employee?.value,
       values?.fromDate,
       values?.toDate,
@@ -112,7 +118,7 @@ const EmployeesShift = () => {
   const saveHandler = (values) => {
     onGetEmployeeShiftInformation(
       buId,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       values?.employee?.value,
       values?.fromDate,
       values?.toDate,
@@ -149,7 +155,7 @@ const EmployeesShift = () => {
   useEffect(() => {
     onGetEmployeeShiftInformation(
       buId,
-      wgId,
+      values?.workplaceGroup?.value || wgId,
       employeeId,
       values?.fromDate,
       values?.toDate,
@@ -159,6 +165,12 @@ const EmployeesShift = () => {
       paginationSize,
       setPages,
       true
+    );
+    getPeopleDeskAllDDL(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
+      "intWorkplaceGroupId",
+      "strWorkplaceGroup",
+      setWorkplaceGroupDDL
     );
   }, [buId, wgId, employeeId, values]);
 
@@ -228,7 +240,7 @@ const EmployeesShift = () => {
                       if (valueOption?.value) {
                         onGetEmployeeShiftInformation(
                           buId,
-                          wgId,
+                          values?.workplaceGroup?.value || wgId,
                           valueOption?.value || "",
                           values?.fromDate,
                           values?.toDate,
@@ -276,6 +288,46 @@ const EmployeesShift = () => {
                 </div>
               </div>
               <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Workplace Group</label>
+                  <FormikSelect
+                    name="workplaceGroup"
+                    options={[...workplaceGroupDDL] || []}
+                    value={values?.workplaceGroup}
+                    onChange={(valueOption) => {
+                      setWorkplaceDDL([]);
+                      setFieldValue("workplaceGroup", valueOption);
+                      setFieldValue("workplace", "");
+                      if (valueOption?.value) {
+                        getPeopleDeskAllDDL(
+                          `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
+                          "intWorkplaceId",
+                          "strWorkplace",
+                          setWorkplaceDDL
+                        );
+                      }
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
+              <div className="col-lg-3">
+                <div className="input-field-main">
+                  <label>Workplace</label>
+                  <FormikSelect
+                    name="workplace"
+                    options={[...workplaceDDL] || []}
+                    value={values?.workplace}
+                    onChange={(valueOption) => {
+                      setFieldValue("workplace", valueOption);
+                    }}
+                    placeholder=""
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
+              <div className="col-1">
                 <button
                   className="btn btn-green btn-green-disable mt-4"
                   type="button"
