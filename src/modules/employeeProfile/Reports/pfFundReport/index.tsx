@@ -19,7 +19,7 @@ type TPFFundReport = {};
 const PFFundReport: React.FC<TPFFundReport> = () => {
   const dispatch = useDispatch();
   // Data From Store
-  const { buId, wgId, wId, intEmployeeId } = useSelector(
+  const { buId, wgId, wId, intEmployeeId, orgId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -51,35 +51,28 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
     filerList?: any[];
     searchText?: string;
   };
-  const landingApi = ({
+  const landingApi = async ({
     pagination = {},
     filerList = [],
     searchText = "",
   }: TLandingApi = {}) => {
-    // pfFundReportApi?.action({
-    //   urlKey: "pfFundReportApi",
-    //   method: "POST",
-    //   payload: {
-    //     businessUnitId: buId,
-    //     workplaceGroupId: wgId,
-    //     workplaceId: wId,
-    //     isNotAssign: false,
-    //     pageNo: pagination?.current || 1,
-    //     pageSize: pagination?.pageSize || 25,
-    //     isPaginated: true,
-    //     isHeaderNeed: true,
-    //     searchTxt: searchText || "",
-    //     designationList: [],
-    //     departmentList: [],
-    //     supervisorNameList: [],
-    //     employmentTypeList: [],
-    //     wingNameList: [],
-    //     soleDepoNameList: [],
-    //     regionNameList: [],
-    //     areaNameList: [],
-    //     territoryNameList: [],
-    //   },
-    // });
+    await form
+      .validateFields()
+      .then(() => {
+        const values = form.getFieldsValue();
+        pfFundReportApi.action({
+          urlKey: "RefundOrEarningReport",
+          method: "get",
+          params: {
+            intAccountId: orgId,
+            intEmployeeCode: values?.employeeName?.value,
+            status: values?.status?.value,
+            pageNo: pagination?.current || 1,
+            pageSize: pagination?.pageSize || 25,
+          },
+        });
+      })
+      .catch((err) => {});
   };
 
    const employeeDDL = () => {
@@ -190,6 +183,11 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
                 rules={[
                   { required: true, message: "Employee Name Is Required" },
                 ]}
+                onChange={(value: any, option: any) => {
+                  form.setFieldsValue({
+                    employeeName: option,
+                  });
+                }}
                 options={employeeDDLApi?.data || []}
                 label="Employee Name"
               />
@@ -200,14 +198,17 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
                 placeholder="Status"
                 allowClear={true}
                 showSearch={true}
-                rules={[
-                  { required: true, message: "Status Is Required" },
-                ]}
+                rules={[{ required: true, message: "Status Is Required" }]}
                 options={[
-                  { label: "All", value: 0 },
+                  { label: "All", value: 2 },
                   { label: "Active", value: 1 },
-                  { label: "Inactive", value: 2 },
+                  { label: "Inactive", value: 0 },
                 ]}
+                onChange={(value: any, option: any) => {
+                  form.setFieldsValue({
+                    status: option,
+                  });
+                }}
                 label="Status"
               />
             </Col>
