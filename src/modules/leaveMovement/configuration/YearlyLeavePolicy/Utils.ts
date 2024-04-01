@@ -67,7 +67,8 @@ export const generatePayload = (
     isProdataBasis: values?.isProdataBasis || false,
     isHalfDayLeave: values?.isHalfDayLeave || false,
     isEncashable: values?.isEncashable || false,
-    isCompensatoryLve: values?.isCompensatoryLve || false,
+    isCompensatoryLve:
+      values?.intLeaveType?.label === "Compensatory Leave" ? true : false,
     isConpensatoryLveExpire: values?.isConpensatoryLveExpire || false,
     isEarnLeave: values?.isEarnLeave || false,
     isEarnLveIncludeHoliday: values?.isEarnLveIncludeHoliday || false,
@@ -114,8 +115,8 @@ export const generatePayload = (
     howMuchMonth: +values?.howMuchMonth?.value || null,
     intCarryForwardMaxInDay: +values?.intCarryForwardMaxInDay || null,
     intCarryForwardMonth: +values?.intCarryForwardMonth?.value || null,
-    intConpensatoryLveExpireInDays:
-      +values?.intConpensatoryLveExpireInDays || null,
+    intCompensatoryLveExpireInDays:
+      +values?.intCompensatoryLveExpireInDays || null,
     intDayForOneEarnLve: +values?.intDayForOneEarnLve || null,
     intEarnLveInDay: +values?.intEarnLveInDay || null,
     intMaxForAdvLveInYear: +values?.intMaxForAdvLveInYear || null,

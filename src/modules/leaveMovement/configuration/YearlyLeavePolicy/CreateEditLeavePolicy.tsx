@@ -287,7 +287,7 @@ const CreateEditLeavePolicy = () => {
                             isEarnLveIncludeHoliday: false,
                             intDayForOneEarnLve: undefined,
                             intEarnLveInDay: undefined,
-                            intConpensatoryLveExpireInDays: undefined,
+                            IntCompensatoryLveExpireInDays: undefined,
                             isConpensatoryLveExpire: false,
                           });
 
@@ -1137,7 +1137,7 @@ const CreateEditLeavePolicy = () => {
                               <PInput
                                 disabled={!isConpensatoryLveExpire}
                                 type="number"
-                                name="intConpensatoryLveExpireInDays"
+                                name="intCompensatoryLveExpireInDays"
                                 label="Conpensatory Leave Expire In Days"
                                 placeholder="Conpensatory Leave Expire In Days"
                                 size="small"
@@ -1167,9 +1167,12 @@ const CreateEditLeavePolicy = () => {
                   <>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
-                        const { intLeaveType, isConpensatoryLveExpire } =
-                          form.getFieldsValue();
-
+                        const {
+                          intLeaveType,
+                          isConpensatoryLveExpire,
+                          isCompensatoryLve,
+                        } = form.getFieldsValue();
+                        console.log({ isCompensatoryLve });
                         // const empType = employeeType?.label;
 
                         return intLeaveType?.label ===
