@@ -27,7 +27,8 @@ import {
   setHeaderListDataDynamically,
 } from "common/peopleDeskTable/helper";
 import { downloadEmployeeCardFile } from "modules/timeSheet/reports/employeeIDCard/helper";
-import { gray900 } from "utility/customColor";
+import { gray900, greenColor } from "utility/customColor";
+import FormikCheckBox from "common/FormikCheckbox";
 
 const paginationSize = 100;
 
@@ -43,13 +44,8 @@ const initData = {
   designation: "",
   supervisor: "",
   employmentType: "",
+  isSlabWiseTax: false,
 };
-
-// status DDL
-// const statusDDL = [
-//   { value: "Yes", label: "Yes" },
-//   { value: "No", label: "No" },
-// ];
 
 export default function IncomeTaxAssign() {
   // hooks
@@ -265,9 +261,55 @@ export default function IncomeTaxAssign() {
         {permission?.isCreate ? (
           <div className="table-card">
             <div className="table-card-heading">
-              <div className="d-flex align-items-center">
-                <h2 className="ml-1">Income Tax Assign</h2>
-              </div>
+              {resEmpLanding?.length > 0 ? (
+                <div style={{ display: "flex", paddingLeft: "6px" }}>
+                  <Tooltip title="Export CSV" arrow>
+                    <button
+                      type="button"
+                      className="btn-save mr-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLoading(true);
+
+                        const paylaod = {
+                          intBusinessUnitId: buId,
+                          intWorkplaceGroupId: wgId,
+                          intWorkplaceId: wId,
+                          intEmployeeId: values?.employee?.value || 0,
+                          pageNo: 0,
+                          pageSize: 0,
+                          isPaginated: false,
+                          isHeaderNeed: false,
+                          searchTxt: "",
+                          ...checkedHeaderList,
+                        };
+                        const url =
+                          "/PdfAndExcelReport/GetAllEmployeeForTaxAssign_RDLC";
+                        downloadEmployeeCardFile(
+                          url,
+                          paylaod,
+                          "Tax Assign List",
+                          "xlsx",
+                          setLoading
+                        );
+                      }}
+                      disabled={resEmpLanding?.length <= 0}
+                    >
+                      <SaveAlt
+                        sx={{
+                          color: gray900,
+                          fontSize: "14px",
+                        }}
+                      />
+                    </button>
+                  </Tooltip>
+                  <h6 className="count">
+                    Total {resEmpLanding?.length} employees
+                  </h6>
+                </div>
+              ) : (
+                <div></div>
+              )}
               <div className="table-card-head-right">
                 <ul>
                   <li className="pr-2">
@@ -357,50 +399,25 @@ export default function IncomeTaxAssign() {
                   style={{ marginTop: "12px" }}
                 >
                   {" "}
-                  <div style={{ display: "flex", paddingLeft: "6px" }}>
-                    <Tooltip title="Export CSV" arrow>
-                      <button
-                        type="button"
-                        className="btn-save mr-2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setLoading(true);
-
-                          const paylaod = {
-                            intBusinessUnitId: buId,
-                            intWorkplaceGroupId: wgId,
-                            intWorkplaceId: wId,
-                            intEmployeeId: values?.employee?.value || 0,
-                            pageNo: 0,
-                            pageSize: 0,
-                            isPaginated: false,
-                            isHeaderNeed: false,
-                            searchTxt: "",
-                            ...checkedHeaderList,
-                          };
-                          const url =
-                            "/PdfAndExcelReport/GetAllEmployeeForTaxAssign_RDLC";
-                          downloadEmployeeCardFile(
-                            url,
-                            paylaod,
-                            "Tax Assign List",
-                            "xlsx",
-                            setLoading
-                          );
-                        }}
-                        disabled={resEmpLanding?.length <= 0}
-                      >
-                        <SaveAlt
-                          sx={{
-                            color: gray900,
-                            fontSize: "14px",
-                          }}
-                        />
-                      </button>
-                    </Tooltip>
-                    <h6 className="count">
-                      Total {resEmpLanding?.length} employees
-                    </h6>
+                  <div
+                    className="slab"
+                    style={{
+                      display: "flex",
+                      paddingLeft: "6px",
+                    }}
+                  >
+                    <FormikCheckBox
+                      styleObj={{
+                        color: gray900,
+                        checkedColor: greenColor,
+                      }}
+                      label="Slab Wise Tax Assign"
+                      name="isSlabWiseTax"
+                      checked={values?.isSlabWiseTax}
+                      onChange={(e) => {
+                        setFieldValue("isSlabWiseTax", e.target.checked);
+                      }}
+                    />
                   </div>
                   <ul className="d-flex flex-wrap">
                     {(isFilter || status || values?.searchString) && (
