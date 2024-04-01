@@ -36,6 +36,7 @@ import {
 import { paginationSize } from "../../../common/peopleDeskTable";
 import PeopleDeskTable from "../../componentModule/peopledeskTable";
 import useDebounce from "../../../utility/customHooks/useDebounce";
+import { set } from "lodash";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -107,7 +108,8 @@ const BankAdviceReport = () => {
       setLoading,
       "",
       true,
-      cb
+      cb,
+      setTotal
     );
   };
 
@@ -169,23 +171,6 @@ const BankAdviceReport = () => {
     );
   };
 
-  // Side effects
-  useEffect(() => {
-    if (rowDto.length > 0) {
-      setTotal(
-        Number(
-          rowDto?.reduce((acc, item) => acc + item?.numNetPayable, 0).toFixed(2)
-        )
-      );
-    }
-  }, [rowDto]);
-
-  useEffect(() => {
-    if (total) {
-      setTotalInWords(withDecimal(total));
-    }
-  }, [total]);
-
   useEffect(() => {
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&WorkplaceGroupId=0&BusinessUnitId=${buId}&intId=${employeeId}`,
@@ -230,6 +215,7 @@ const BankAdviceReport = () => {
                       onChange={(e) => {
                         setValues((prev) => ({
                           ...prev,
+
                           yearId: +e.target.value
                             .split("")
                             .slice(0, 4)
@@ -273,6 +259,7 @@ const BankAdviceReport = () => {
                         setWorkplaceDDL([]);
                         setFieldValue("workplaceGroup", valueOption);
                         setFieldValue("workplace", "");
+                        setFieldValue("adviceName", "");
                         if (valueOption?.value) {
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
@@ -485,6 +472,16 @@ const BankAdviceReport = () => {
                                 "Standard Chartered Bank"
                               ) {
                                 excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
+
                                   generateExcelAction(
                                     monthYearFormatter(values?.monthYear),
                                     "",
@@ -496,7 +493,7 @@ const BankAdviceReport = () => {
                                     res,
                                     values?.account?.AccountNo,
                                     total,
-                                    totalInWords,
+                                    withDecimal(total),
                                     businessUnitDDL[0]?.BusinessUnitAddress
                                   );
                                 });
@@ -506,6 +503,15 @@ const BankAdviceReport = () => {
                                 values?.bank?.label === "DUTCH-BANGLA BANK LTD"
                               ) {
                                 excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
                                   generateExcelAction(
                                     monthYearFormatter(values?.monthYear),
                                     "",
@@ -517,16 +523,25 @@ const BankAdviceReport = () => {
                                     res,
                                     values?.account?.AccountNo,
                                     total,
-                                    totalInWords,
+                                    withDecimal(total),
                                     buDetails
                                   );
                                 });
                               } else if (
-                                values?.bank?.label.includes(
-                                  "City Bank Limited"
-                                )
+                                values?.bank?.label
+                                  ?.toLowerCase()
+                                  .includes("the city bank")
                               ) {
                                 excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
                                   generateExcelAction(
                                     monthYearFormatter(values?.monthYear),
                                     "",
@@ -538,7 +553,7 @@ const BankAdviceReport = () => {
                                     res,
                                     values?.account?.AccountNo,
                                     total,
-                                    totalInWords,
+                                    withDecimal(total),
                                     buDetails
                                   );
                                 });
@@ -546,6 +561,15 @@ const BankAdviceReport = () => {
                                 values?.bank?.label === "Dhaka Bank Limited "
                               ) {
                                 excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
                                   generateExcelAction(
                                     monthYearFormatter(values?.monthYear),
                                     "",
@@ -557,12 +581,21 @@ const BankAdviceReport = () => {
                                     res,
                                     values?.account?.AccountNo,
                                     total,
-                                    totalInWords,
+                                    withDecimal(total),
                                     buDetails
                                   );
                                 });
                               } else {
                                 excelGenerate((res) => {
+                                  const total = Number(
+                                    res
+                                      ?.reduce(
+                                        (acc, item) =>
+                                          acc + item?.numNetPayable,
+                                        0
+                                      )
+                                      .toFixed(2)
+                                  );
                                   generateExcelAction(
                                     monthYearFormatter(values?.monthYear),
                                     "",
@@ -574,7 +607,7 @@ const BankAdviceReport = () => {
                                     res,
                                     values?.account?.AccountNo,
                                     total,
-                                    totalInWords,
+                                    withDecimal(total),
                                     buDetails
                                   );
                                 });
@@ -585,7 +618,7 @@ const BankAdviceReport = () => {
                           </IconButton>
                         </Tooltip>
                       </li>
-                      <li className="pr-2">
+                      {/* <li className="pr-2">
                         <Tooltip title="Print" arrow>
                           <IconButton
                             style={{ color: "#101828" }}
@@ -606,7 +639,7 @@ const BankAdviceReport = () => {
                             <LocalPrintshopIcon />
                           </IconButton>
                         </Tooltip>
-                      </li>
+                      </li> */}
                     </>
                   )}
                   {values?.search && (

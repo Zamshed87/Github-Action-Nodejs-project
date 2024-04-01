@@ -263,7 +263,7 @@ const SalaryPayslipReport = () => {
                             valueOption?.value
                           ) {
                             getPeopleDeskAllDDL(
-                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&intId=${valueOption?.value}&IntMonth=${values?.inMonth}&IntYear=${values?.intYear}`,
+                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollPeriodByEmployeeId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${valueOption?.value}&IntMonth=${values?.inMonth}&IntYear=${values?.intYear}`,
                               "SalaryGenerateRequestId",
                               "SalaryCode",
                               setPayrollPeiodDDL

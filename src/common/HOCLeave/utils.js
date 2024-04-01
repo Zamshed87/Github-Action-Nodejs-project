@@ -229,11 +229,21 @@ export const empMgmtLeaveApplicationDtoColumn = (
                       leaveType: {
                         value: record?.LeaveTypeId,
                         label: record?.LeaveType,
+                        isHalfDayLeave: record?.HalfDay,
                       },
                       fromDate: dateFormatterForInput(record?.AppliedFromDate),
                       toDate: dateFormatterForInput(record?.AppliedToDate),
                       location: record?.AddressDuetoLeave,
                       reason: record?.Reason,
+                      isHalfDay: record?.HalfDay
+                        ? { value: 1, label: "Half Day" }
+                        : "",
+                      halfTime: record?.HalfDay
+                        ? {
+                            value: record?.HalfDayRange?.includes("8") ? 0 : 1,
+                            label: record?.HalfDayRange,
+                          }
+                        : "",
                     });
 
                     setImageFile({
