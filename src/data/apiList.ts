@@ -103,4 +103,5 @@ export const apiList = {
   ChangeReporter: "/Employee/SupervisorLineManagerChange",
   BulkSalaryAssignLanding: "/Payroll/BulkSalaryAssignLanding",
   EmployeeDDLWithCode: "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
+  RefundOrEarningReport: "/EmployeeIncrement/RefundOrEarningReport",
 };
