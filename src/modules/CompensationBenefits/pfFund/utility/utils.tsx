@@ -23,7 +23,8 @@ function calculateTotalAmount(data: DataItem[]): number {
   for (const item of data) {
     if (
       (item?.isComplete === false && item?.strType === "Fund") ||
-      item?.strType === "Refund"
+      item?.strType === "Refund" ||
+      item?.strType === "Earning"
     ) {
       totalAmount += item?.numAmount || 0;
     }
