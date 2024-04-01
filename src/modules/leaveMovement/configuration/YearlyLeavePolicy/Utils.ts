@@ -114,8 +114,8 @@ export const generatePayload = (
     howMuchMonth: +values?.howMuchMonth?.value || null,
     intCarryForwardMaxInDay: +values?.intCarryForwardMaxInDay || null,
     intCarryForwardMonth: +values?.intCarryForwardMonth?.value || null,
-    intConpensatoryLveExpireInDays:
-      +values?.intConpensatoryLveExpireInDays || null,
+    IntCompensatoryLveExpireInDays:
+      +values?.IntCompensatoryLveExpireInDays || null,
     intDayForOneEarnLve: +values?.intDayForOneEarnLve || null,
     intEarnLveInDay: +values?.intEarnLveInDay || null,
     intMaxForAdvLveInYear: +values?.intMaxForAdvLveInYear || null,
