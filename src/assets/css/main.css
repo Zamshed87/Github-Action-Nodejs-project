@@ -1054,3 +1054,8 @@ h6.count {
   overflow-y: auto;
   overflow-x: hidden;
 }
+.slab
+  .css-8935tu-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-root
+  .MuiSvgIcon-root {
+  padding: 3px;
+}
