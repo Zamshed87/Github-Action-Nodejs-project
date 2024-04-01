@@ -10,7 +10,7 @@ import profileImg from "../../../../../assets/images/profile.jpg";
 const Accordion = ({ empBasic }) => {
   const [isAccordion, setIsAccordion] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  console.log({ empBasic });
   return (
     <div className="card-about-info-main about-info-card">
       {loading && <Loading />}
@@ -31,9 +31,9 @@ const Accordion = ({ empBasic }) => {
                 htmlFor="contained-button-file"
                 className="label-add-image"
               >
-                {empBasic?.intEmployeeImageUrlId ? (
+                {empBasic?.empEmployeePhotoIdentity?.intProfilePicFileUrlId ? (
                   <img
-                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.intEmployeeImageUrlId?.intProfilePicFileUrlId}`}
+                    src={`${APIUrl}/Document/DownloadFile?id=${empBasic?.empEmployeePhotoIdentity?.intProfilePicFileUrlId}`}
                     alt=""
                     style={{ maxHeight: "78px", minWidth: "78px" }}
                   />

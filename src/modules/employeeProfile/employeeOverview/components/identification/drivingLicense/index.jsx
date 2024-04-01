@@ -240,7 +240,7 @@ function DrivingLicense({ empId, buId, wgId }) {
       getEmployeeProfileViewData(empId, setRowDto, setLoading, buId, wgId);
       setStatus("empty");
       setSingleData("");
-      setFieldValue("drivingLicense", "")
+      setFieldValue("drivingLicense", "");
     };
     updateEmployeeProfile(payload, setLoading, callback);
   };
@@ -254,21 +254,13 @@ function DrivingLicense({ empId, buId, wgId }) {
           drivingLicense: singleData ? singleData : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -282,14 +274,10 @@ function DrivingLicense({ empId, buId, wgId }) {
                         <FormikInput
                           name="drivingLicense"
                           value={values?.drivingLicense}
-                          type="tel"
+                          type="text"
                           className="form-control"
                           onChange={(e) => {
-                            if (e.target.value >= 0) {
-                              setFieldValue("drivingLicense", e.target.value);
-                            } else {
-                              return "";
-                            }
+                            setFieldValue("drivingLicense", e.target.value);
                           }}
                           placeholder=" "
                           errors={errors}
@@ -302,7 +290,6 @@ function DrivingLicense({ empId, buId, wgId }) {
                         >
                           <button
                             type="button"
-                            variant="text"
                             className="btn btn-cancel"
                             style={{ marginRight: "16px" }}
                             onClick={() => {
@@ -316,7 +303,6 @@ function DrivingLicense({ empId, buId, wgId }) {
                           </button>
 
                           <button
-                            variant="text"
                             type="submit"
                             className="btn btn-green btn-green-disable"
                             disabled={!values.drivingLicense}
