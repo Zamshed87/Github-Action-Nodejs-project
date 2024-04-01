@@ -48,7 +48,10 @@ export const getTaxAssignLanding = async (
 export const createTaxAssign = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.post(`/Employee/EmployeeTaxAssign`, payload);
+    const res = await axios.post(
+      `/Employee/EmployeeTaxAssignSlabAndOther`,
+      payload
+    );
     cb && cb();
     toast.success(res?.data?.message || "Submitted Successfully");
     setLoading && setLoading(false);
@@ -75,7 +78,7 @@ export const incomeTaxColumnData = (
     {
       title: "Employee Code",
       dataIndex: "employeeCode",
-      width: 130,
+      width: 150,
       sort: true,
       filter: false,
       fieldType: "string",
@@ -122,6 +125,13 @@ export const incomeTaxColumnData = (
     {
       title: "Gross Salary",
       dataIndex: "numGrossSalary",
+      sort: true,
+      filter: false,
+      fieldType: "number",
+    },
+    {
+      title: "Slab Amount",
+      dataIndex: "slabWiseTAX",
       sort: true,
       filter: false,
       fieldType: "number",
