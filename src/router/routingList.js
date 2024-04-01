@@ -719,6 +719,9 @@ const CustomReport = lazy(() =>
 const EmployeeJobCard = lazy(() =>
   import("../modules/employeeProfile/Reports/employeeJobCard/index.jsx")
 );
+const PfFundReport = lazy(() =>
+  import("../modules/employeeProfile/Reports/pfFundReport/index.tsx")
+);
 const EmpOverallStaus = lazy(() =>
   import("../modules/employeeProfile/Reports/EmployeeOverallStatus/index.jsx")
 );
@@ -1681,6 +1684,10 @@ export const routingList = [
   {
     path: "/profile/reports/jobcard",
     component: EmployeeJobCard,
+  },
+  {
+    path: "/profile/reports/pfFundReport",
+    component: PfFundReport,
   },
   {
     path: "/profile/reports/empOverallStatus",
