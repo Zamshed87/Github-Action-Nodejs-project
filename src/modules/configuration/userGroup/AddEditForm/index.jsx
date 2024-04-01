@@ -98,7 +98,7 @@ const AddEditFormComponent = ({
   };
 
   const saveHandler = (values, cb) => {
-    let userList = tableData?.map((itm) => {
+    const userList = tableData?.map((itm) => {
       return {
         intUserGroupRowId: itm?.intUserGroupRowId || 0,
         intUserGroupHeaderId: itm?.intUserGroupHeaderId || 0,
@@ -109,7 +109,7 @@ const AddEditFormComponent = ({
       };
     });
 
-    let deleteList = deleteRowData?.map((itm) => {
+    const deleteList = deleteRowData?.map((itm) => {
       return {
         intUserGroupRowId: itm?.intUserGroupRowId || 0,
         intUserGroupHeaderId: itm?.intUserGroupHeaderId || 0,
@@ -120,7 +120,7 @@ const AddEditFormComponent = ({
       };
     });
 
-    let editList = [];
+    const editList = [];
 
     userList.map((itm) => {
       if (itm?.intUserGroupRowId <= 0) {
@@ -144,6 +144,7 @@ const AddEditFormComponent = ({
 
     const callback = () => {
       cb();
+      setDeleteRowData([]);
       onHide();
       getData(pages);
       setTableData([]);
