@@ -37,6 +37,7 @@ import { paginationSize } from "../../../common/peopleDeskTable";
 import PeopleDeskTable from "../../componentModule/peopledeskTable";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { set } from "lodash";
+import { generateTopSheetAction } from "./excel/excelTopSheet";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -456,6 +457,49 @@ const BankAdviceReport = () => {
                   {!!rowDto?.length && (
                     <>
                       <li className="pr-2">
+                        <Tooltip title="Export Top Sheet" arrow>
+                          <IconButton
+                            style={{ color: "#101828" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (rowDto?.length <= 0) {
+                                return toast.warning("Data is empty !!!!", {
+                                  toastId: 1,
+                                });
+                              }
+
+                              excelGenerate((res) => {
+                                const total = Number(
+                                  res
+                                    ?.reduce(
+                                      (acc, item) => acc + item?.numNetPayable,
+                                      0
+                                    )
+                                    .toFixed(2)
+                                );
+
+                                generateTopSheetAction(
+                                  monthYearFormatter(values?.monthYear),
+                                  "",
+                                  "",
+                                  excelColumnFunc(0),
+                                  excelDataFunc(0),
+                                  strBusinessUnit,
+                                  4,
+                                  res,
+                                  values,
+                                  total,
+                                  withDecimal(total),
+                                  businessUnitDDL[0]?.BusinessUnitAddress
+                                );
+                              });
+                            }}
+                          >
+                            <DownloadIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </li>
+                      <li className="pr-2">
                         <Tooltip title="Export CSV" arrow>
                           <IconButton
                             style={{ color: "#101828" }}
@@ -467,151 +511,36 @@ const BankAdviceReport = () => {
                                 });
                               }
 
-                              if (
-                                values?.bank?.label ===
-                                "Standard Chartered Bank"
-                              ) {
-                                excelGenerate((res) => {
-                                  const total = Number(
-                                    res
-                                      ?.reduce(
-                                        (acc, item) =>
-                                          acc + item?.numNetPayable,
-                                        0
-                                      )
-                                      .toFixed(2)
-                                  );
+                              excelGenerate((res) => {
+                                const total = Number(
+                                  res
+                                    ?.reduce(
+                                      (acc, item) => acc + item?.numNetPayable,
+                                      0
+                                    )
+                                    .toFixed(2)
+                                );
 
-                                  generateExcelAction(
-                                    monthYearFormatter(values?.monthYear),
-                                    "",
-                                    "",
-                                    excelColumnFunc(0),
-                                    excelDataFunc(0),
-                                    strBusinessUnit,
-                                    4,
-                                    res,
-                                    values?.account?.AccountNo,
-                                    total,
-                                    withDecimal(total),
-                                    businessUnitDDL[0]?.BusinessUnitAddress
-                                  );
-                                });
-                              } else if (
-                                values?.bank?.label ===
-                                  "Dutch Bangla Bank Agent Banking" ||
-                                values?.bank?.label === "DUTCH-BANGLA BANK LTD"
-                              ) {
-                                excelGenerate((res) => {
-                                  const total = Number(
-                                    res
-                                      ?.reduce(
-                                        (acc, item) =>
-                                          acc + item?.numNetPayable,
-                                        0
-                                      )
-                                      .toFixed(2)
-                                  );
-                                  generateExcelAction(
-                                    monthYearFormatter(values?.monthYear),
-                                    "",
-                                    "",
-                                    excelColumnFunc(0),
-                                    excelDataFunc(0),
-                                    strBusinessUnit,
-                                    5,
-                                    res,
-                                    values?.account?.AccountNo,
-                                    total,
-                                    withDecimal(total),
-                                    buDetails
-                                  );
-                                });
-                              } else if (
-                                values?.bank?.label
-                                  ?.toLowerCase()
-                                  .includes("the city bank")
-                              ) {
-                                excelGenerate((res) => {
-                                  const total = Number(
-                                    res
-                                      ?.reduce(
-                                        (acc, item) =>
-                                          acc + item?.numNetPayable,
-                                        0
-                                      )
-                                      .toFixed(2)
-                                  );
-                                  generateExcelAction(
-                                    monthYearFormatter(values?.monthYear),
-                                    "",
-                                    "",
-                                    excelColumnFunc(0),
-                                    excelDataFunc(0),
-                                    strBusinessUnit,
-                                    6,
-                                    res,
-                                    values?.account?.AccountNo,
-                                    total,
-                                    withDecimal(total),
-                                    buDetails
-                                  );
-                                });
-                              } else if (
-                                values?.bank?.label === "Dhaka Bank Limited "
-                              ) {
-                                excelGenerate((res) => {
-                                  const total = Number(
-                                    res
-                                      ?.reduce(
-                                        (acc, item) =>
-                                          acc + item?.numNetPayable,
-                                        0
-                                      )
-                                      .toFixed(2)
-                                  );
-                                  generateExcelAction(
-                                    monthYearFormatter(values?.monthYear),
-                                    "",
-                                    "",
-                                    excelColumnFunc(0),
-                                    excelDataFunc(0),
-                                    strBusinessUnit,
-                                    3,
-                                    res,
-                                    values?.account?.AccountNo,
-                                    total,
-                                    withDecimal(total),
-                                    buDetails
-                                  );
-                                });
-                              } else {
-                                excelGenerate((res) => {
-                                  const total = Number(
-                                    res
-                                      ?.reduce(
-                                        (acc, item) =>
-                                          acc + item?.numNetPayable,
-                                        0
-                                      )
-                                      .toFixed(2)
-                                  );
-                                  generateExcelAction(
-                                    monthYearFormatter(values?.monthYear),
-                                    "",
-                                    "",
-                                    excelColumnFunc(0),
-                                    excelDataFunc(0),
-                                    strBusinessUnit,
-                                    values?.adviceTo?.type,
-                                    res,
-                                    values?.account?.AccountNo,
-                                    total,
-                                    withDecimal(total),
-                                    buDetails
-                                  );
-                                });
-                              }
+                                generateExcelAction(
+                                  monthYearFormatter(values?.monthYear),
+                                  "",
+                                  "",
+                                  excelColumnFunc(0),
+                                  excelDataFunc(0),
+                                  strBusinessUnit,
+                                  values,
+                                  res,
+                                  values?.account?.AccountNo,
+                                  total,
+                                  withDecimal(total),
+                                  businessUnitDDL[0]?.BusinessUnitAddress
+                                );
+                              });
+
+                              //   values?.bank?.label ===
+                              //     "Dutch Bangla Bank Agent Banking" ||
+                              //   values?.bank?.label === "DUTCH-BANGLA BANK LTD"
+                              // ) {
                             }}
                           >
                             <DownloadIcon />

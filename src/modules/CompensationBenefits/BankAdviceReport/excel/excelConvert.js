@@ -12,14 +12,14 @@ const createExcelFile = (
   fromDate,
   toDate,
   businessUnit,
-  moneyProcessId,
+  values,
   rowDto,
   bankAccountNo,
   total,
   totalInWords,
   buAddress
 ) => {
-  switch (moneyProcessId) {
+  switch (values?.bank?.label) {
     case 0:
       formatIbbl(
         comapanyNameHeader,
@@ -28,7 +28,7 @@ const createExcelFile = (
         fromDate,
         toDate,
         businessUnit,
-        moneyProcessId,
+        "",
         rowDto,
         bankAccountNo,
         total,
@@ -44,7 +44,7 @@ const createExcelFile = (
         fromDate,
         toDate,
         businessUnit,
-        moneyProcessId,
+        "",
         rowDto,
         bankAccountNo,
         total,
@@ -60,7 +60,7 @@ const createExcelFile = (
         fromDate,
         toDate,
         businessUnit,
-        moneyProcessId,
+        "",
         rowDto,
         bankAccountNo,
         total,
@@ -68,7 +68,7 @@ const createExcelFile = (
         buAddress
       );
       break;
-    case 3:
+    case "Dhaka Bank Limited ":
       formatDBL(
         comapanyNameHeader,
         tableHeader,
@@ -76,7 +76,7 @@ const createExcelFile = (
         fromDate,
         toDate,
         businessUnit,
-        moneyProcessId,
+        "",
         rowDto,
         bankAccountNo,
         total,
@@ -84,7 +84,7 @@ const createExcelFile = (
         buAddress
       );
       break;
-    case 4:
+    case "Standard Chartered Bank":
       formatSCB(
         comapanyNameHeader,
         tableHeader,
@@ -92,7 +92,7 @@ const createExcelFile = (
         fromDate,
         toDate,
         businessUnit,
-        moneyProcessId,
+        "",
         rowDto,
         bankAccountNo,
         total,
@@ -101,22 +101,22 @@ const createExcelFile = (
       );
       break;
     case 5:
-      formatDBBL(
-        comapanyNameHeader,
-        tableHeader,
-        tableData,
-        fromDate,
-        toDate,
-        businessUnit,
-        moneyProcessId,
-        rowDto,
-        bankAccountNo,
-        total,
-        totalInWords,
-        buAddress
-      );
+      // formatDBBL(
+      //   comapanyNameHeader,
+      //   tableHeader,
+      //   tableData,
+      //   fromDate,
+      //   toDate,
+      //   businessUnit,
+      //   "",
+      //   rowDto,
+      //   bankAccountNo,
+      //   total,
+      //   totalInWords,
+      //   buAddress
+      // );
       break;
-    case 6:
+    case "The City Bank Limited":
       formatCity(
         comapanyNameHeader,
         tableHeader,
@@ -124,7 +124,23 @@ const createExcelFile = (
         fromDate,
         toDate,
         businessUnit,
-        moneyProcessId,
+        "",
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
+      break;
+    case "THE CITY BANK LTD":
+      formatCity(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        "",
         rowDto,
         bankAccountNo,
         total,
@@ -133,6 +149,20 @@ const createExcelFile = (
       );
       break;
     default:
+      formatDBBL(
+        comapanyNameHeader,
+        tableHeader,
+        tableData,
+        fromDate,
+        toDate,
+        businessUnit,
+        "",
+        rowDto,
+        bankAccountNo,
+        total,
+        totalInWords,
+        buAddress
+      );
   }
 };
 
@@ -150,7 +180,7 @@ export const generateExcelAction = (
   column,
   data,
   businessUnit,
-  moneyProcessId,
+  values,
   rowDto,
   bankAccountNo,
   total,
@@ -165,7 +195,7 @@ export const generateExcelAction = (
     fromDate,
     toDate,
     businessUnit,
-    moneyProcessId,
+    values,
     rowDto,
     bankAccountNo,
     total,
