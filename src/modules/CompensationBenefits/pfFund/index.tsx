@@ -161,9 +161,9 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
       render: (data: any, record: any) =>
         // Write condition to check status
         record?.isComplete === false ? (
-          <PBadge type="warning" text={record?.status} />
+          <PBadge type="warning" text="Incomplete" />
         ) : (
-          <PBadge type="success" text={record?.status} />
+          <PBadge type="success" text="Complete" />
         ),
       width: "50px",
     },
