@@ -65,7 +65,7 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
           method: "get",
           params: {
             intAccountId: orgId,
-            intEmployeeCode: values?.employeeName?.value,
+            intEmployeeId: values?.employeeName?.value,
             status: values?.status?.value,
             pageNo: pagination?.current || 1,
             pageSize: pagination?.pageSize || 25,
@@ -75,30 +75,30 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
       .catch((err) => {});
   };
 
-   const employeeDDL = () => {
-     employeeDDLApi.action({
-       method: "get",
-       urlKey: "EmployeeDDLWithCode",
-       params: {
-         EmployeeId: intEmployeeId,
-         businessUnitId: buId,
-         WorkplaceGroupId: wgId,
-       },
-       onSuccess: (res: any) => {
-         const employeeList = res.map((item: any) => ({
-           ...item,
-           label: `${item?.strEmployeeName} - ${item?.strEmployeeCode}`,
-           value: item?.intEmployeeBasicInfoId,
-         }));
+  const employeeDDL = () => {
+    employeeDDLApi.action({
+      method: "get",
+      urlKey: "EmployeeDDLWithCode",
+      params: {
+        EmployeeId: intEmployeeId,
+        businessUnitId: buId,
+        WorkplaceGroupId: wgId,
+      },
+      onSuccess: (res: any) => {
+        const employeeList = res.map((item: any) => ({
+          ...item,
+          label: `${item?.strEmployeeName} - ${item?.strEmployeeCode}`,
+          value: item?.intEmployeeBasicInfoId,
+        }));
 
-         // Add the "All" value
-         employeeList.unshift({ value: 0, label: "All" });
+        // Add the "All" value
+        employeeList.unshift({ value: 0, label: "All" });
 
-         // Assuming you need to set the modified result back to the response
-         res.splice(0, res.length, ...employeeList);
-       },
-     });
-   };
+        // Assuming you need to set the modified result back to the response
+        res.splice(0, res.length, ...employeeList);
+      },
+    });
+  };
 
   // Life Cycle Hooks
   useEffect(() => {
@@ -137,33 +137,47 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
       sorter: true,
     },
     {
+      title: "Code",
+      dataIndex: "employeeCode",
+      sorter: true,
+    },
+    {
       title: "Department",
-      dataIndex: "department",
+      dataIndex: "departmentName",
       sorter: true,
     },
     {
       title: "Designation",
-      dataIndex: "designation",
+      dataIndex: "designationName",
       sorter: true,
     },
     {
+      title: "Type",
+      dataIndex: "types",
+    },
+    {
       title: "Employee Amount",
-      dataIndex: "empAmount",
-      width: "80px",
+      dataIndex: "employeeContributionAmount",
+      align: "right",
     },
     {
       title: "Employer Amount",
-      dataIndex: "employerAmount",
-      width: "80px",
+      dataIndex: "companyContributionAmount",
+      align: "right",
     },
     {
       title: "Status",
       dataIndex: "status",
       align: "center",
-      render: (data: any, record: any, index: number) => (
+      render: (data: any, record: any) =>
         // Write condition to check status
-        <PBadge type="primary" text="Active" />
-      ),
+        record?.status ? (
+          <PBadge type="success" text="Active" />
+        ) : record?.status === false ? (
+          <PBadge type="warning" text="Inactive" />
+        ) : (
+          "N/A"
+        ),
       width: "50px",
     },
   ];
