@@ -53,6 +53,7 @@ const JoiningTable = ({
         >
           <div>{item?.businessUnitNameFrom}</div>
           <div>{item?.workplaceGroupNameFrom}</div>
+          <div>{item?.workplaceNameFrom}</div>
         </div>
       </td>
       <td
@@ -66,6 +67,7 @@ const JoiningTable = ({
           }}
         >
           <div>{item?.departmentNameFrom}</div>
+          <div>{item?.sectionNameFrom || "N/A"}</div>
           <div>{item?.designationNameFrom}</div>
         </div>
       </td>
@@ -81,6 +83,7 @@ const JoiningTable = ({
         >
           <div>{item?.businessUnitName}</div>
           <div>{item?.workplaceGroupName}</div>
+          <div>{item?.workplaceName}</div>
         </div>
       </td>
       <td
@@ -95,6 +98,7 @@ const JoiningTable = ({
           className=""
         >
           <div>{item?.departmentName}</div>
+          <div>{item?.strSectionName || "N/A"}</div>
           <div>{item?.designationName}</div>
         </div>
       </td>
