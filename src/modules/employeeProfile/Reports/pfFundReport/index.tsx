@@ -154,6 +154,7 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
     {
       title: "Type",
       dataIndex: "types",
+      width: 100,
     },
     {
       title: "Employee Amount",
@@ -214,9 +215,9 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
                 showSearch={true}
                 rules={[{ required: true, message: "Status Is Required" }]}
                 options={[
-                  { label: "All", value: 2 },
+                  { label: "All", value: 0 },
                   { label: "Active", value: 1 },
-                  { label: "Inactive", value: 0 },
+                  { label: "Inactive", value: 2 },
                 ]}
                 onChange={(value: any, option: any) => {
                   form.setFieldsValue({

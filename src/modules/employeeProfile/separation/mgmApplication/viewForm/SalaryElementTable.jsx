@@ -5,7 +5,6 @@ import DefaultInput from 'common/DefaultInput';
 
 const SalaryElementTable = ({
   title,
-  footerTitle,
   rowDto,
   setRowDto,
   showHeader,
@@ -25,7 +24,7 @@ const SalaryElementTable = ({
             columnsData={[
               {
                 title: "Element",
-                dataIndex: "strPayrollElementName",
+                dataIndex: "strAdditionTypeName",
                 width: "200px",
               },
               {
@@ -70,7 +69,7 @@ const SalaryElementTable = ({
                 title: "Amount in BDT",
                 dataIndex: "numAmount",
                 className: "text-right",
-                width: "120px",
+                width: "140px",
                 render: (_, record, index) => (
                   <span>
                     <DefaultInput
@@ -86,7 +85,7 @@ const SalaryElementTable = ({
                           updatePayrollElementByIndex({
                             index,
                             fieldName: "numAmount",
-                            value: e.target.value,
+                            value: +e.target.value,
                             rowDto,
                             setRowDto,
                           });
@@ -109,16 +108,6 @@ const SalaryElementTable = ({
             rowKey={(record) => record?.id}
           />
         </div>
-      </div>
-      <div className="d-flex justify-content-end my-2">
-        <p>
-          <span className="mr-3">
-            <b>{footerTitle}</b>
-          </span>
-          <span>
-            <b>{0}</b>
-          </span>
-        </p>
       </div>
     </div>
   );
