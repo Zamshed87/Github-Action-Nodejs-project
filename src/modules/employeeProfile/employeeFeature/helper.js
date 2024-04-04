@@ -98,7 +98,7 @@ export const createEditEmpAction = async (
       intHrpositionId: values?.hrPosition?.value || 0,
       strHrpostionName: values?.hrPosition?.label || "",
       strPersonalMail: values?.email || "",
-      strOfficeMail: values?.workMail || values?.officeEmail || "",
+      strOfficeMail: values?.officeEmail || values?.workMail || "",
       strPersonalMobile: values?.phone || "",
       strOfficeMobile: values?.workPhone || values?.officePhone || "",
       isCreateUser: values?.isUsersection,
