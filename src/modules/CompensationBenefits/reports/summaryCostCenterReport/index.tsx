@@ -14,7 +14,6 @@ import { getPeopleDeskAllDDL } from "common/api";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 import Loading from "common/loading/Loading";
@@ -152,9 +151,6 @@ const SummaryCostCenterReport = () => {
                       const values = form.getFieldsValue(true);
                       e.stopPropagation();
 
-                      if (data?.length <= 0) {
-                        return toast.warn("No Data Found");
-                      }
                       const url = `/PdfAndExcelReport/GetSalaryCostCenterReportMatador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${moment(
                         values?.month
                       ).format("MM")}&intYearId=${moment(values?.month).format(
