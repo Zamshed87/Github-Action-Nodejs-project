@@ -7,8 +7,6 @@ import Loading from "../../../common/loading/Loading";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import PrimaryButton from "../../../common/PrimaryButton";
-import { toast } from "react-toastify";
 import IConfirmModal from "../../../common/IConfirmModal";
 import {
   deleteFinalSettlement,
@@ -57,6 +55,7 @@ const FinalSettlement = () => {
   const [id, setId] = useState(null);
   const [type, setType] = useState(null);
   const [empId, setEmpId] = useState(null);
+  const [empBasicInfo, setEmpBasicInfo] = useState(null);
 
   // useFormik
   const { setFieldValue, values, handleSubmit, errors, touched } = useFormik({
@@ -116,6 +115,7 @@ const FinalSettlement = () => {
 
   useEffect(() => {
     getData();
+    document.title = "Final Settlement"
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
 
@@ -218,15 +218,9 @@ const FinalSettlement = () => {
                       setId,
                       setOpenModal,
                       setType,
-                      setEmpId
+                      setEmpId,
+                      setEmpBasicInfo
                     )}
-                    rowClassName="pointer"
-                    onRowClick={(record) => {
-                      history.push(
-                        `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
-                        { employeeId: record?.intEmployeeId }
-                      );
-                    }}
                     rowKey={(record) => record?.intFinalSettlementId}
                   />
                   <PModal
@@ -236,7 +230,14 @@ const FinalSettlement = () => {
                       setOpenModal(false);
                     }}
                     components={
-                      <ManagementSeparationHistoryView id={id} type={type} empId={empId} />
+                      <ManagementSeparationHistoryView
+                        id={id}
+                        type={type}
+                        empId={empId}
+                        getData={getData}
+                        setOpenModal={setOpenModal}
+                        empBasicInfo={empBasicInfo}
+                      />
                     }
                     width={1000}
                   />

@@ -292,8 +292,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
               getCheckboxProps: (record) => ({
                 disabled:
                   record?.isComplete ||
-                  record?.strType === "Investment" ||
-                  record?.strType === "Earning",
+                  record?.strType === "Investment"
               }),
             }}
             bordered
