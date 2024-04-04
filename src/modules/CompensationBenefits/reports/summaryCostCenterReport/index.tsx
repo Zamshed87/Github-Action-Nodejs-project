@@ -93,7 +93,7 @@ const SummaryCostCenterReport = () => {
         }}
         onFinish={submitHandler}
       >
-        {loading && <Loading />}
+        {(loading || CostCenterReportLanding.loading) && <Loading />}
         <PCard>
           <PCardHeader title="Salary Summary Cost Center Report" />
           <div className="card-style">
@@ -109,6 +109,7 @@ const SummaryCostCenterReport = () => {
                   onChange={(e: any) => {
                     getSalaryCodeByFromDateAndWId(e);
                     form.setFieldsValue({ salaryCode: "" });
+                    setData("");
                   }}
                   rules={[{ required: true, message: "Month Is Required" }]}
                 />
@@ -221,7 +222,7 @@ const SummaryCostCenterReport = () => {
           )}
         </div>
 
-        <div className="mt-3">
+        <div style={{ overflow: "scroll" }} className="mt-3 w-100">
           <div
             dangerouslySetInnerHTML={{
               __html: data,
