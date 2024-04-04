@@ -56,7 +56,7 @@ const SalaryGenerateView = () => {
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [allData, setAllData] = useState([]);
+  const [, setAllData] = useState([]);
   const [totalSalary, setTotalSalary] = useState(0);
   const [totalAllowance, setTotalAllowance] = useState(0);
   const [totalDeduction, setTotalDeduction] = useState(0);
@@ -379,6 +379,24 @@ const SalaryGenerateView = () => {
               <div>
                 <ul className="d-flex flex-wrap align-items-center justify-content-center">
                   <li className="pr-2">
+                    <button
+                      className="btn-green"
+                      style={{ minWidth: "120px" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const url = `/PdfAndExcelReport/GetCashPayPayslipMatador?accountId=${orgId}&salaryCode=${
+                          !state?.data
+                            ? state?.strSalaryCode
+                            : state?.data?.strSalaryCode
+                        }`;
+
+                        getPDFAction(url, setLoading);
+                      }}
+                    >
+                      Cash Pay Slip
+                    </button>
+                  </li>
+                  <li className="pr-2">
                     <Tooltip title="Download the salary report as Excel" arrow>
                       <button
                         className="btn-save"
@@ -428,12 +446,18 @@ const SalaryGenerateView = () => {
                               tableDeductionHead,
                             }); */
                             const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
-                              !state?.data ? state?.intMonth : state?.data?.intMonth
+                              !state?.data
+                                ? state?.intMonth
+                                : state?.data?.intMonth
                             }&intYearId=${
-                              !state?.data ? state?.intYear : state?.data?.intYear
+                              !state?.data
+                                ? state?.intYear
+                                : state?.data?.intYear
                             }&strSalaryCode=${
-                              !state?.data ? state?.strSalaryCode : state?.data?.strSalaryCode
-                            }`
+                              !state?.data
+                                ? state?.strSalaryCode
+                                : state?.data?.strSalaryCode
+                            }`;
                             downloadFile(
                               url,
                               "Salary Details Report",
@@ -487,17 +511,20 @@ const SalaryGenerateView = () => {
                             return toast.warn("No Data Found");
                           } else {
                             const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
-                              !state?.data ? state?.intMonth : state?.data?.intMonth
+                              !state?.data
+                                ? state?.intMonth
+                                : state?.data?.intMonth
                             }&intYearId=${
-                              !state?.data ? state?.intYear : state?.data?.intYear
+                              !state?.data
+                                ? state?.intYear
+                                : state?.data?.intYear
                             }&strSalaryCode=${
-                              !state?.data ? state?.strSalaryCode : state?.data?.strSalaryCode
-                            }`
-                          
-                            getPDFAction(
-                              url,
-                              setLoading
-                            );
+                              !state?.data
+                                ? state?.strSalaryCode
+                                : state?.data?.strSalaryCode
+                            }`;
+
+                            getPDFAction(url, setLoading);
                           }
                         }}
                         // disabled={resDetailsReport?.length <= 0}

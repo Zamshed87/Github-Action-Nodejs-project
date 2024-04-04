@@ -45,10 +45,11 @@ export const formatDBBL = (
   buAddress
 ) => {
   const excel = {
-    name: "Bank Advice",
+    name: `DBBL Report-${moment().format("ll")}`,
+
     sheets: [
       {
-        name: "DBL Report",
+        name: "DBBL Report",
         gridLine: false,
         rows: [
           [

@@ -81,7 +81,7 @@ export default function LoanApproval() {
     value: 1,
     label: "Pending",
   });
-  const [isSupOrLineManager, setIsSupOrLineManager] = useState({
+  const [isSupOrLineManager] = useState({
     value: 1,
     label: "Supervisor",
   });
@@ -89,11 +89,11 @@ export default function LoanApproval() {
   const [applicationData, setApplicationData] = useState([]);
   const [singleData, setSingleData] = useState("");
   const [viewModal, setViewModal] = useState(false);
-  const [imageFile, setImageFile] = useState("");
+  const [imageFile] = useState("");
   const [createModal, setCreateModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
-  const [allData, setAllData] = useState();
+  const [, setAllData] = useState();
   const [filterData, setFilterData] = useState([]);
 
   const dispatch = useDispatch();
@@ -313,6 +313,7 @@ export default function LoanApproval() {
       yesAlertFunc: () => {
         loanApproveReject(payload, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);

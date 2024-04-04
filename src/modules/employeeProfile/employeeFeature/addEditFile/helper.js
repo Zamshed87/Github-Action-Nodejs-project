@@ -331,7 +331,7 @@ export const submitHandler = ({
   history,
 }) => {
   const cb = () => {
-    action === "save" ? history?.push("/profile/employee") : resetForm();
+    action === "save" ? history?.goBack() : resetForm();
     // !isEdit && resetForm();
     setIsAddEditForm(false);
     getData && getData({ current: 1, pageSize: pages?.pageSize }, "false");
