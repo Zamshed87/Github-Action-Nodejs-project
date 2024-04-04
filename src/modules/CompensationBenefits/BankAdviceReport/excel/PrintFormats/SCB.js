@@ -50,7 +50,7 @@ export const formatSCB = (
   buAddress
 ) => {
   const excel = {
-    name: "Bank Advice",
+    name: `SCB Report-${moment().format("ll")}`,
     sheets: [
       {
         name: "SCB Report",

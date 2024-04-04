@@ -44,7 +44,7 @@ export const formatCity = (
   buAddress
 ) => {
   const excel = {
-    name: "Bank Advice",
+    name: `City Bank Report-${moment().format("ll")}`,
     sheets: [
       {
         name: "City Bank Report",
