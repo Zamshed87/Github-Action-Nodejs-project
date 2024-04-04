@@ -1,14 +1,14 @@
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import AntTable from "../../../common/AntTable";
-import { getPeopleDeskAllDDL } from "../../../common/api";
 import BackButton from "../../../common/BackButton";
 import FormikSelect from "../../../common/FormikSelect";
-import Loading from "../../../common/loading/Loading";
 import NoResult from "../../../common/NoResult";
+import { getPeopleDeskAllDDL } from "../../../common/api";
+import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { customStyles } from "../../../utility/selectCustomStyle";
@@ -212,7 +212,7 @@ const LocationWiseEmployee = () => {
                     )}
                     setColumnsData={(dataRow) => {
                       if (dataRow?.length === rowDto?.length) {
-                        let temp = dataRow?.map((item) => {
+                        const temp = dataRow?.map((item) => {
                           return {
                             ...item,
                             selectCheckbox: false,

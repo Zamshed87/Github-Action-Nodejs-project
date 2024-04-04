@@ -96,6 +96,7 @@ const CreateAndEditEmploye = () => {
   const payScaleGradeDDL = useApiRequest([]);
   const positionDDL = useApiRequest([]);
   const userTypeDDL = useApiRequest([]);
+  const bloodGroupDDL = useApiRequest([]);
 
   const getEmpData = () => {
     getEmployeeProfileViewData(
@@ -292,26 +293,6 @@ const CreateAndEditEmploye = () => {
     });
   };
 
-  const getReligion = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    religionDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "Religion",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res.forEach((item, i) => {
-          res[i].label = item?.ReligionName;
-          res[i].value = item?.ReligionId;
-        });
-      },
-    });
-  };
-
   const getEmploymentType = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
     employmentTypeDDL?.action({
@@ -478,6 +459,22 @@ const CreateAndEditEmploye = () => {
         });
       },
     });
+    religionDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "Religion",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.ReligionName;
+          res[i].value = item?.ReligionId;
+        });
+      },
+    });
     genderDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -494,6 +491,23 @@ const CreateAndEditEmploye = () => {
         });
       },
     });
+
+    bloodGroupDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "BloodGroupName",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strBloodGroup;
+          res[i].value = item?.intBloodGroupId;
+        });
+      },
+    });
   };
 
   useEffect(() => {
@@ -504,7 +518,6 @@ const CreateAndEditEmploye = () => {
     if (singleData?.empId) {
       form.setFieldsValue(singleData);
       getWorkplace();
-      getReligion();
       getEmploymentType();
       getUserTypeDDL();
       getEmployeDepartment();
@@ -713,7 +726,6 @@ const CreateAndEditEmploye = () => {
                       });
                       if (value) {
                         getWorkplace();
-                        getReligion();
                         getUserTypeDDL();
                       }
                     }}
@@ -1039,55 +1051,6 @@ const CreateAndEditEmploye = () => {
                   </Col>
                 ) : undefined}
 
-                <Col md={6} sm={24}>
-                  <PSelect
-                    options={religionDDL?.data || []}
-                    name="religion"
-                    label="Religion"
-                    placeholder="Religion"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        religion: op,
-                      });
-                    }}
-                    // rules={[
-                    //   { required: true, message: "Religion is required" },
-                    // ]}
-                    // disabled={params?.id}
-                    disabled={
-                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
-                    }
-                  />
-                </Col>
-                <Col md={6} sm={24}>
-                  <PSelect
-                    options={genderDDL?.data || []}
-                    name="gender"
-                    label="Gender"
-                    placeholder="Gender"
-                    onChange={(value, op) => {
-                      form.setFieldsValue({
-                        gender: op,
-                      });
-                    }}
-                    // rules={[{ required: true, message: "Gender is required" }]}
-                    // disabled={params?.id}
-                    disabled={empId && !isOfficeAdmin}
-                  />
-                </Col>
-                <Col md={6} sm={24}>
-                  <PInput
-                    type="date"
-                    name="dateofBirth"
-                    label="Date of Birth"
-                    placeholder="Date of Birth"
-                    // rules={[
-                    //   { required: true, message: "Date of Birth is required" },
-                    // ]}
-                    // disabled={params?.id}
-                  />
-                </Col>
-
                 <Form.Item shouldUpdate noStyle>
                   {() => {
                     const { workplaceGroup } = form.getFieldsValue(true);
@@ -1245,7 +1208,7 @@ const CreateAndEditEmploye = () => {
                 </Col>
 
                 {!empId && (
-                  <Col style={{ marginTop: "21px" }} md={6} sm={24}>
+                  <Col className="mt-2" md={6} sm={24}>
                     <div>
                       <FileUploadComponents
                         propsObj={{
@@ -1264,6 +1227,102 @@ const CreateAndEditEmploye = () => {
                     </div>
                   </Col>
                 )}
+              </Row>
+            </PCardBody>
+          </div>
+          <div>
+            <h3 style={{ fontSize: "13px" }} className="my-2">
+              Voluntary Disclosures
+            </h3>
+            <PCardBody>
+              <Row gutter={[10, 2]}>
+                <Col md={6} sm={24}>
+                  <PSelect
+                    options={religionDDL?.data || []}
+                    name="religion"
+                    label="Religion"
+                    placeholder="Religion"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        religion: op,
+                      });
+                    }}
+                    rules={[
+                      { required: true, message: "Religion is required" },
+                    ]}
+                    disabled={
+                      empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
+                    }
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PSelect
+                    options={genderDDL?.data || []}
+                    name="gender"
+                    label="Gender"
+                    placeholder="Gender"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        gender: op,
+                      });
+                    }}
+                    rules={[{ required: true, message: "Gender is required" }]}
+                    disabled={empId && !isOfficeAdmin}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    type="date"
+                    name="dateofBirth"
+                    label="Date of Birth"
+                    placeholder="Date of Birth"
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PSelect
+                    options={bloodGroupDDL.data || []}
+                    name="bloodGroup"
+                    label="Blood Group"
+                    placeholder="Blood Group"
+                    onChange={(value, op) => {
+                      form.setFieldsValue({
+                        bloodGroup: op,
+                      });
+                    }}
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    name="officeEmail"
+                    type="email"
+                    placeholder="Office Email"
+                    label="Office Email"
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    name="officePhone"
+                    type="text"
+                    placeholder="Office Contact No."
+                    label="Office Contact No."
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    name="nid"
+                    type="text"
+                    placeholder="NID"
+                    label="NID"
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    name="tinNo"
+                    type="text"
+                    placeholder="TIN No."
+                    label="TIN No."
+                  />
+                </Col>
               </Row>
             </PCardBody>
           </div>

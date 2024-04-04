@@ -24,7 +24,7 @@ const FileUploadComponents = ({ propsObj }) => {
     makeApiReq = true,
   } = propsObj;
   const { tokenData } = useSelector((state) => state?.auth, shallowEqual);
-  let dispatch = useDispatch();
+  const dispatch = useDispatch();
   let apiAction = {};
   if (makeApiReq) {
     apiAction = {
@@ -35,6 +35,7 @@ const FileUploadComponents = ({ propsObj }) => {
     };
   } else {
     apiAction = {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
       customRequest: (res) => {},
     };
   }
@@ -89,7 +90,7 @@ const FileUploadComponents = ({ propsObj }) => {
     <Upload {...props}>
       <Button
         style={{ color: "green", border: "green 1px solid" }}
-        icon={<UploadOutlined />}
+        icon={<UploadOutlined sx={{}} />}
       >
         {title ? title : "Upload Attachment"}
       </Button>

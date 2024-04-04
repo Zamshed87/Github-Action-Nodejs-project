@@ -115,8 +115,6 @@ export default function AssetApproval() {
     });
   }, [applicationListData, orgId, isOfficeAdmin, employeeId]);
 
-  const saveHandler = (values) => {};
-
   const demoPopup = (action, text, array) => {
     let newArray = [];
 
@@ -205,6 +203,7 @@ export default function AssetApproval() {
       yesAlertFunc: () => {
         AssetApproveReject(payload, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -274,7 +273,7 @@ export default function AssetApproval() {
           </div>
         ),
         dataIndex: "employeeCode",
-        render: (employeeCode, record, index) => (
+        render: (employeeCode, record) => (
           <div className="d-flex align-items-center">
             <div className="mr-2" onClick={(e) => e.stopPropagation()}>
               <FormikCheckBox
@@ -288,7 +287,7 @@ export default function AssetApproval() {
                 color={greenColor}
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
-                  let data = applicationListData?.listData?.map((item) => {
+                  const data = applicationListData?.listData?.map((item) => {
                     if (
                       item?.application?.intAssetRequisitionId ===
                       record?.application?.intAssetRequisitionId
@@ -300,7 +299,7 @@ export default function AssetApproval() {
                     } else return item;
                   });
                   setApplicationListData({ listData: [...data] });
-                  let data2 = allData?.listData?.map((item) => {
+                  const data2 = allData?.listData?.map((item) => {
                     if (
                       item?.application?.intAssetRequisitionId ===
                       record?.application?.intAssetRequisitionId
@@ -415,7 +414,7 @@ export default function AssetApproval() {
       {
         title: "Waiting Stage",
         dataIndex: "currentStage",
-        render: (currentStage, record) => (
+        render: (currentStage) => (
           <div className="d-flex align-items-center">
             <div>{currentStage}</div>
           </div>
@@ -477,15 +476,7 @@ export default function AssetApproval() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
-        }}
-      >
+      <Formik enableReinitialize={true} initialValues={initData}>
         {({ handleSubmit, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
