@@ -62,7 +62,7 @@ const ViewJoining = () => {
               <Accordion empBasic={empBasic} />
             </div>
 
-            <IconButton
+            {/* <IconButton
               onClick={(e) => {
                 e.stopPropagation();
                 dispatch(getDownlloadFileView_Action());
@@ -104,7 +104,7 @@ const ViewJoining = () => {
                   }}
                 />
               </div>
-            </IconButton>
+            </IconButton> */}
 
             {/* Role extension table */}
             {!!transferNpromotion?.empTransferNpromotionRoleExtensionVMList

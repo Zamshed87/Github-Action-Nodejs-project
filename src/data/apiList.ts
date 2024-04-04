@@ -102,6 +102,9 @@ export const apiList = {
   GetLandingForBulkReporter: "/Employee/SupervisorLineManagerChangeLanding",
   ChangeReporter: "/Employee/SupervisorLineManagerChange",
   BulkSalaryAssignLanding: "/Payroll/BulkSalaryAssignLanding",
-  EmployeeDDLWithCode: "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
+  EmployeeDDLWithCode:
+    "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
   RefundOrEarningReport: "/EmployeeIncrement/RefundOrEarningReport",
+  costCenterReportLanding:
+    "/PdfAndExcelReport/GetSalaryCostCenterReportMatador",
 };

@@ -53,7 +53,7 @@ export default function IncomeTaxAssign() {
   const history = useHistory();
 
   // redux data
-  const { buId, employeeId, wgId, wId } = useSelector(
+  const { buId, employeeId, wgId, wId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -73,6 +73,8 @@ export default function IncomeTaxAssign() {
     pageSize: paginationSize,
     total: 0,
   });
+  const [empIDString, setEmpIDString] = useState("");
+
   const [resEmpLanding, setEmpLanding] = useState([]);
   const [headerList, setHeaderList] = useState({});
   const [filterOrderList, setFilterOrderList] = useState([]);
@@ -81,15 +83,46 @@ export default function IncomeTaxAssign() {
   const [checkedHeaderList, setCheckedHeaderList] = useState({
     ...initHeaderList,
   });
+  const [checkedList, setCheckedList] = useState([]);
 
   const { handleSubmit, values, setFieldValue } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
-    onSubmit: () => saveHandler(),
+    onSubmit: () => taxAssign(),
   });
 
-  const saveHandler = () => {
+  // const saveHandler = () => {
+  //   const callBack = () => {
+  //     getData(
+  //       {
+  //         current: pages?.current,
+  //         pageSize: pages?.pageSize,
+  //         total: pages?.total,
+  //       },
+  //       values.search,
+  //       -1,
+  //       filterOrderList,
+  //       checkedHeaderList
+  //     );
+  //   };
+  //   const payload = resEmpLanding.map((item) => {
+  //     return {
+  //       intTaxId: item?.intTaxId,
+  //       intEmployeeId: item?.intEmployeeId,
+  //       numTaxAmount: +item?.numTaxAmount,
+  //       intCreatedBy: employeeId,
+  //       intAccountId: item?.intAccountId,
+  //       intBusinessUnitId: item?.intBusinessUnitId,
+  //       intWorkplaceId: wId || 0,
+  //       intWorkplaceGroupId: wgId || 0,
+  //     };
+  //   });
+  //   createTaxAssign(payload, setLoading, callBack);
+  // };
+  const taxAssign = (flag) => {
     const callBack = () => {
+      setCheckedList([]);
+      setFieldValue("isSlabWiseTax", false);
       getData(
         {
           current: pages?.current,
@@ -102,21 +135,40 @@ export default function IncomeTaxAssign() {
         checkedHeaderList
       );
     };
-    const payload = resEmpLanding.map((item) => {
-      return {
-        intTaxId: item?.intTaxId,
-        intEmployeeId: item?.intEmployeeId,
-        numTaxAmount: +item?.numTaxAmount,
-        intCreatedBy: employeeId,
-        intAccountId: item?.intAccountId,
-        intBusinessUnitId: item?.intBusinessUnitId,
-        intWorkplaceId: wId || 0,
-        intWorkplaceGroupId: wgId || 0,
+    let payload = {
+      intWorkplaceId: wId,
+      intWorkplaceGroupId: wgId,
+      employeeIdList: empIDString,
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intCreatedBy: employeeId,
+    };
+
+    if (values?.isSlabWiseTax) {
+      payload = {
+        ...payload,
+        employeeIdList: flag
+          ? empIDString
+          : checkedList.map((item) => item?.intEmployeeId).join(","),
+        isSlabWiseTax: true,
       };
-    });
+    } else {
+      payload = {
+        ...payload,
+        taxmodel: checkedList.map((item) => {
+          return {
+            intTaxId: 0,
+            intEmployeeId: item?.intEmployeeId,
+            numTaxAmount: item?.numTaxAmount,
+            numGrossSalary: item?.numGrossSalary,
+          };
+        }),
+      };
+    }
+
     createTaxAssign(payload, setLoading, callBack);
   };
-
+  console.log({ checkedList });
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -170,6 +222,7 @@ export default function IncomeTaxAssign() {
       });
 
       if (res?.data?.data) {
+        setEmpIDString(res?.data?.employeeIdList);
         setHeaderListDataDynamically({
           currentFilterSelection,
           checkedHeaderList,
@@ -308,10 +361,54 @@ export default function IncomeTaxAssign() {
                   </h6>
                 </div>
               ) : (
-                <div></div>
+                <h2>Income Tax Assign</h2>
               )}
               <div className="table-card-head-right">
                 <ul>
+                  {values?.isSlabWiseTax ? (
+                    <>
+                      <li>
+                        <PrimaryButton
+                          className="btn btn-green btn-green-disable w-100"
+                          type="button"
+                          label={`Slab Wise Tax Assign ${pages?.total}`}
+                          disabled={!values?.isSlabWiseTax}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            taxAssign(true);
+                          }}
+                        />
+                      </li>
+
+                      {checkedList?.length > 0 && (
+                        <li>
+                          <PrimaryButton
+                            className="btn btn-green btn-green-disable w-100"
+                            type="button"
+                            label={`Slab Wise Tax Assign ${checkedList?.length}`}
+                            disabled={!values?.isSlabWiseTax}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              taxAssign();
+                            }}
+                          />
+                        </li>
+                      )}
+                    </>
+                  ) : (
+                    <li>
+                      <PrimaryButton
+                        className="btn btn-green btn-green-disable w-100"
+                        type="button"
+                        label={`Tax Assign ${checkedList?.length}`}
+                        disabled={checkedList?.length === 0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          taxAssign();
+                        }}
+                      />
+                    </li>
+                  )}
                   <li className="pr-2">
                     <PrimaryButton
                       type="button"
@@ -336,7 +433,8 @@ export default function IncomeTaxAssign() {
                       }}
                     />
                   </li>
-                  <li>
+
+                  {/* <li>
                     <PrimaryButton
                       className="btn btn-green btn-green-disable"
                       type="submit"
@@ -346,7 +444,7 @@ export default function IncomeTaxAssign() {
                         e.stopPropagation();
                       }}
                     />
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
@@ -375,6 +473,7 @@ export default function IncomeTaxAssign() {
                       className="btn btn-green btn-green-disable"
                       onClick={(e) => {
                         e.stopPropagation();
+                        setCheckedList([]);
                         getData(
                           { current: 1, pageSize: paginationSize },
                           "",
@@ -501,6 +600,8 @@ export default function IncomeTaxAssign() {
                           headerList
                         )}
                         pages={pages}
+                        checkedList={checkedList}
+                        setCheckedList={setCheckedList}
                         rowDto={resEmpLanding}
                         setRowDto={setEmpLanding}
                         checkedHeaderList={checkedHeaderList}
@@ -514,6 +615,7 @@ export default function IncomeTaxAssign() {
                         filterOrderList={filterOrderList}
                         setFilterOrderList={setFilterOrderList}
                         uniqueKey="intEmployeeId"
+                        isCheckBox={true}
                         getFilteredData={(
                           currentFilterSelection,
                           updatedFilterData,

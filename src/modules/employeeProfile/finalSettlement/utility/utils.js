@@ -1,6 +1,5 @@
 import {
   CreateOutlined,
-  Print,
   VisibilityOutlined
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -9,7 +8,6 @@ import AvatarComponent from "common/AvatarComponent";
 import Chips from "common/Chips";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
-import { getPDFAction } from "utility/downloadFile";
 import { numberWithCommas } from "utility/numberWithCommas";
 
 const statusDDL = [
@@ -257,7 +255,8 @@ const finalSettlementColumns = (
   setLoading,
   setId,
   setOpenModal,
-  setType
+  setType,
+  setEmpId,
 ) => {
   return [
     {
@@ -365,6 +364,24 @@ const finalSettlementColumns = (
         <div className="d-flex align-items-center">
           {record?.status === "Pending" && (
             <>
+              <Tooltip title="View" arrow>
+                <button
+                  type="button"
+                  className="iconButton mt-0 mt-md-2 mt-lg-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // history.push(
+                    //   `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
+                    //   { employeeId: record?.intEmployeeId }
+                    // );
+                    setId(record?.intSeparationId);
+                    setOpenModal(true);
+                    setType("dueAmount");
+                  }}
+                >
+                  <VisibilityOutlined />
+                </button>
+              </Tooltip>
               <Tooltip title="Edit" arrow>
                 <button
                   type="button"
@@ -376,6 +393,7 @@ const finalSettlementColumns = (
                     //   { employeeId: record?.intEmployeeId }
                     // );
                     setId(record?.intSeparationId);
+                    setEmpId(record?.intEmployeeId);
                     setOpenModal(true);
                     setType("dueAmount");
                   }}
@@ -389,7 +407,7 @@ const finalSettlementColumns = (
                   className="iconButton mt-0 mt-md-2 mt-lg-0"
                   onClick={(e) => {
                     e.stopPropagation();
-                    demoPopup(record?.intFinalSettlementId);
+                    // demoPopup(record?.intFinalSettlementId);
                   }}
                 >
                   <DeleteOutlined />
@@ -397,25 +415,7 @@ const finalSettlementColumns = (
               </Tooltip> */}
             </>
           )}
-          <Tooltip title="View" arrow>
-            <button
-              type="button"
-              className="iconButton mt-0 mt-md-2 mt-lg-0"
-              onClick={(e) => {
-                e.stopPropagation();
-                // history.push(
-                //   `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
-                //   { employeeId: record?.intEmployeeId }
-                // );
-                setId(record?.intSeparationId);
-                setOpenModal(true);
-                setType("dueAmount");
-              }}
-            >
-              <VisibilityOutlined />
-            </button>
-          </Tooltip>
-          <Tooltip title="Print/Pdf" arrow>
+          {/* <Tooltip title="Print/Pdf" arrow>
             <button
               type="button"
               className="iconButton mt-0 mt-md-2 mt-lg-0"
@@ -427,7 +427,7 @@ const finalSettlementColumns = (
             >
               <Print sx={{}} />
             </button>
-          </Tooltip>
+          </Tooltip> */}
         </div>
       ),
       sorter: false,
