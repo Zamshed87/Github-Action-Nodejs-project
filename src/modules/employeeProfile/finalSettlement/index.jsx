@@ -56,6 +56,7 @@ const FinalSettlement = () => {
   const [openModal, setOpenModal] = useState(false);
   const [id, setId] = useState(null);
   const [type, setType] = useState(null);
+  const [empId, setEmpId] = useState(null);
 
   // useFormik
   const { setFieldValue, values, handleSubmit, errors, touched } = useFormik({
@@ -216,7 +217,8 @@ const FinalSettlement = () => {
                       setLoading,
                       setId,
                       setOpenModal,
-                      setType
+                      setType,
+                      setEmpId
                     )}
                     rowClassName="pointer"
                     onRowClick={(record) => {
@@ -234,7 +236,7 @@ const FinalSettlement = () => {
                       setOpenModal(false);
                     }}
                     components={
-                      <ManagementSeparationHistoryView id={id} type={type} />
+                      <ManagementSeparationHistoryView id={id} type={type} empId={empId} />
                     }
                     width={1000}
                   />

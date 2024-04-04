@@ -353,7 +353,7 @@ export default function Joining() {
                                     width: "200px",
                                   }}
                                 >
-                                  <div>B.Unit, Workplace Group</div>
+                                  <div> B.Unit, Workplace Group, Workplace</div>
                                 </td>
                                 <td
                                   style={{
@@ -361,7 +361,7 @@ export default function Joining() {
                                     width: "150px",
                                   }}
                                 >
-                                  Dept & Designation
+                                  Dept, Section & Designation
                                 </td>
                                 <td
                                   style={{
@@ -369,7 +369,7 @@ export default function Joining() {
                                     width: "200px",
                                   }}
                                 >
-                                  <div>B.Unit, Workplace Group</div>
+                                  <div> B.Unit, Workplace Group, Workplace</div>
                                 </td>
                                 <td
                                   style={{
@@ -377,7 +377,7 @@ export default function Joining() {
                                     width: "150px",
                                   }}
                                 >
-                                  Dept & Designation
+                                  Dept, Section & Designation
                                 </td>
                               </tr>
                             </thead>

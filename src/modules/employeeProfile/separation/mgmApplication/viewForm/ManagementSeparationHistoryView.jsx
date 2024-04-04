@@ -23,9 +23,10 @@ const ManagementSeparationHistoryView = ({
   buttonType,
   setComment,
   loading,
+  empId,
 }) => {
   const printRef = useRef();
-  const { orgId } = useSelector(
+  const { orgId, intAccountId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -36,6 +37,12 @@ const ManagementSeparationHistoryView = ({
     useAxiosGet();
   const [assetHistory, setAssetHistory] = useState([]);
   const [employmentHistory, setEmploymentHistory] = useState([]);
+  // Due Amount
+  const [, getFinalSettlement, finalSettlementLoading] = useAxiosGet({});
+  const [duesRowDto, setDuesRowDto] = useState([]);
+  const [deductionRowDto, setDeductionRowDto] = useState([]);
+  const [totalDuesAmount, setTotalDuesAmount] = useState(0);
+  const [totalDeductionAmount, setTotalDeductionAmount] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -52,8 +59,19 @@ const ManagementSeparationHistoryView = ({
           setEmploymentHistory(res?.employeeHistory);
         }
       );
+      getFinalSettlement(
+        `/SaasMasterData/GetFinalSattlementData?intApplicationId=${id}&intEmployeeId=${empId}&intAccountId=${intAccountId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
+        (data) => {
+          const duesData = data?.row.filter((item) => item?.isAddition === 1);
+          const deductionData = data?.row.filter(
+            (item) => item?.isAddition === 0
+          );
+          setDuesRowDto(duesData);
+          setDeductionRowDto(deductionData);
+        }
+      );
     }
-  }, [id, orgId]);
+  }, [id, empId, orgId, buId, wgId, wId, intAccountId]);
 
   return (
     <>
@@ -139,7 +157,18 @@ const ManagementSeparationHistoryView = ({
             </TabPanel>
             {type === "dueAmount" && (
               <TabPanel value={value} index={3}>
-                <DueAmount type={type} />
+                <DueAmount
+                  type={type}
+                  finalSettlementLoading={finalSettlementLoading}
+                  duesRowDto={duesRowDto}
+                  deductionRowDto={deductionRowDto}
+                  setDuesRowDto={setDuesRowDto}
+                  setDeductionRowDto={setDeductionRowDto}
+                  setTotalDuesAmount={setTotalDuesAmount}
+                  setTotalDeductionAmount={setTotalDeductionAmount}
+                  totalDuesAmount={totalDuesAmount}
+                  totalDeductionAmount={totalDeductionAmount}
+                />
               </TabPanel>
             )}
           </Box>
