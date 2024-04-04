@@ -49,9 +49,8 @@ export const topSheet = (
   totalInWords,
   buAddress
 ) => {
-  console.log({ values });
   const excel = {
-    name: `${values?.bank?.label} Top Sheet`,
+    name: `${values?.bank?.label} Top Sheet-${moment().format("ll")}`,
     sheets: [
       {
         name: `${values?.bank?.label} Top Sheet`,
