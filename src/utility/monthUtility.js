@@ -1,6 +1,6 @@
 //This function return always a string if you need number type please add + before call the function
 export const currentMonth = () => {
-  let currentMonthInt = new Date().getMonth() + 1;
+  const currentMonthInt = new Date().getMonth() + 1;
   return currentMonthInt?.toString().length < 2
     ? `0${currentMonthInt}`
     : currentMonthInt.toString();
@@ -51,13 +51,12 @@ export const getMonthName = (month) => {
 };
 
 export const currentMonthValueLabel = () => {
-  let currentMonthId = +currentMonth();
+  const currentMonthId = +currentMonth();
   return {
     value: currentMonthId,
     label: getMonthName(currentMonthId),
   };
 };
-
 
 export const monthDDL = [
   { value: 1, label: "January" },

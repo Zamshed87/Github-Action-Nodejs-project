@@ -47,7 +47,8 @@ export const createEditEmpAction = async (
       intReligionId: values?.religion?.value,
       strReligion: values?.religion?.label,
       strMaritalStatus: "",
-      strBloodGroup: "",
+      intBloodGroupId: values?.bloodGroup?.value || "",
+      strBloodGroup: values?.bloodGroup?.label || "",
       IntSectionId: values?.section?.value || 0,
       intDepartmentId: values?.department?.value,
       intDesignationId: values?.designation?.value,
@@ -97,15 +98,17 @@ export const createEditEmpAction = async (
       intHrpositionId: values?.hrPosition?.value || 0,
       strHrpostionName: values?.hrPosition?.label || "",
       strPersonalMail: values?.email || "",
-      strOfficeMail: values?.workMail || "",
+      strOfficeMail: values?.workMail || values?.officeEmail || "",
       strPersonalMobile: values?.phone || "",
-      strOfficeMobile: values?.workPhone || "",
+      strOfficeMobile: values?.workPhone || values?.officePhone || "",
       isCreateUser: values?.isUsersection,
       calendarAssignViewModel: null,
       intOtType: values?.otType?.value,
       intSignature: values?.intSignature,
       intProbationayClosedByInDate: +values?.probationayClosedBy?.value,
       strProbationayClosedByInDate: values?.probationayClosedBy?.label,
+      nid: values?.nid || "",
+      tinNo: values?.tinNo || "",
     };
     if (!isEdit) {
       payload = {
@@ -311,6 +314,7 @@ export const getEmployeeProfileViewData = async (
       setter && setter(res?.data);
       setForEdit &&
         setForEdit({
+          tinNo: empBasic?.employeeProfileLandingView?.tinNo,
           empId: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
           strReferenceId: empBasic?.employeeProfileLandingView?.strReferenceId,
           fullName: empBasic?.employeeProfileLandingView?.strEmployeeName,
@@ -320,6 +324,12 @@ export const getEmployeeProfileViewData = async (
             ? {
                 value: empBasic?.employeeProfileLandingView?.intReligionId,
                 label: empBasic?.employeeProfileLandingView?.strReligion,
+              }
+            : undefined,
+          bloodGroup: empBasic?.employeeProfileLandingView?.intBloodGroupId
+            ? {
+                value: empBasic?.employeeProfileLandingView?.intBloodGroupId,
+                label: empBasic?.employeeProfileLandingView?.strBloodGroup,
               }
             : undefined,
           gender: empBasic?.employeeProfileLandingView?.intGenderId
@@ -525,7 +535,10 @@ export const getEmployeeProfileViewData = async (
               }
             : undefined,
           isActive: empBasic?.employeeProfileLandingView?.userStatus,
-
+          officePhone:
+            empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
+          officeEmail:
+            empBasic?.employeeProfileLandingView?.strOfficeMail || "",
           probationayClosedBy:
             probationCloseDateCustomDDL.find(
               (dt) =>
