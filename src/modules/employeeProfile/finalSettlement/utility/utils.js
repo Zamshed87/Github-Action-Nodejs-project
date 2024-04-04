@@ -257,6 +257,7 @@ const finalSettlementColumns = (
   setOpenModal,
   setType,
   setEmpId,
+  setEmpBasicInfo
 ) => {
   return [
     {
@@ -362,38 +363,33 @@ const finalSettlementColumns = (
       dataIndex: "Status",
       render: (data, record) => (
         <div className="d-flex align-items-center">
+          <Tooltip title="View" arrow>
+            <button
+              type="button"
+              className="iconButton mt-0 mt-md-2 mt-lg-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                setId(record?.intSeparationId);
+                setEmpId(null);
+                setEmpBasicInfo(record);
+                setOpenModal(true);
+                setType("dueAmount");
+              }}
+            >
+              <VisibilityOutlined />
+            </button>
+          </Tooltip>
           {record?.status === "Pending" && (
             <>
-              <Tooltip title="View" arrow>
-                <button
-                  type="button"
-                  className="iconButton mt-0 mt-md-2 mt-lg-0"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // history.push(
-                    //   `/profile/finalSettlement/view/${record?.intFinalSettlementId}`,
-                    //   { employeeId: record?.intEmployeeId }
-                    // );
-                    setId(record?.intSeparationId);
-                    setOpenModal(true);
-                    setType("dueAmount");
-                  }}
-                >
-                  <VisibilityOutlined />
-                </button>
-              </Tooltip>
               <Tooltip title="Edit" arrow>
                 <button
                   type="button"
                   className="iconButton"
                   onClick={(e) => {
                     e.stopPropagation();
-                    // history.push(
-                    //   `/profile/finalSettlement/edit/${record?.intFinalSettlementId}`,
-                    //   { employeeId: record?.intEmployeeId }
-                    // );
                     setId(record?.intSeparationId);
                     setEmpId(record?.intEmployeeId);
+                    setEmpBasicInfo(record);
                     setOpenModal(true);
                     setType("dueAmount");
                   }}

@@ -2,6 +2,7 @@ import PBadge from "Components/Badge";
 import { Tag } from "antd";
 import FormikInput from "common/FormikInput";
 import moment from "moment";
+import { todayDate } from "utility/todayDate";
 
 const approvalListHeader = ({
   type,
@@ -243,17 +244,112 @@ const calculateTotalAmounts = (deductionDataset, duesDataset) => {
 
   combinedDataset.forEach((item) => {
     item?.isAddition === 0
-      ? (totalDeductionAmount += item?.numAmount)
-      : (totalDuesAmount += item?.numAmount);
+      ? (totalDeductionAmount += +item?.numAmount)
+      : (totalDuesAmount += +item?.numAmount);
   });
 
   return { totalDuesAmount, totalDeductionAmount };
+};
+
+const dueAmountSaveHandler = (
+  separationId,
+  empId,
+  empBasicInfo,
+  totalDuesAmount,
+  totalDeductionAmount,
+  duesRowDto,
+  deductionRowDto,
+  saveDueAmount,
+  intEmployeeId,
+  cb
+) => {
+  const mergeData = [...duesRowDto, ...deductionRowDto];
+  const payload = {
+    intFinalSettlementId: empBasicInfo?.intFinalSettlementId || 0,
+    intEmployeeId: empId || 0,
+    strEmployeeName: empBasicInfo?.strEmployeeName,
+    strEmployeeCode: empBasicInfo?.strEmployeeCode,
+    intSeparationId: separationId || 0,
+    strIdCard: empBasicInfo?.strIdCard || "",
+    strHealthCard: empBasicInfo?.strHealthCard || "",
+    strSalaryDues: empBasicInfo?.strSalaryDues || "",
+    strLastDrawnMonth: empBasicInfo?.strLastDrawnMonth || "",
+    strDueMonth: empBasicInfo?.strDueMonth || "",
+    strAdvanceDues: empBasicInfo?.strAdvanceDues || "",
+    strTaDaOtDues: empBasicInfo?.strTaDaOtDues || "",
+    strOtherDues: empBasicInfo?.strOtherDues || "",
+    strRemarksForHr: empBasicInfo?.strRemarksForHr || "",
+    strRemarksForStore: empBasicInfo?.strRemarksForStore || "",
+    intAccountId: empBasicInfo?.intAccountId,
+    intBusinessUnitId: empBasicInfo?.intBusinessUnitId,
+    intActionBy: intEmployeeId,
+    dteCreatedAt: todayDate(),
+    dteUpdatedAt: todayDate(),
+    isActive: true,
+    designationId: empBasicInfo?.designationId,
+    designationName: empBasicInfo?.designationName,
+    departmentId: empBasicInfo?.departmentId,
+    departmentName: empBasicInfo?.departmentName,
+    typeOfSeparation: empBasicInfo?.typeOfSeparation,
+    dateOfResign: empBasicInfo?.dateOfResign,
+    numTotalAmount: totalDuesAmount - totalDeductionAmount,
+    status: empBasicInfo?.status,
+    payrollElementPayment: mergeData?.map((item) => ({
+      intFinalSettlementRowId: 0,
+      intFinalSettlementId: 0,
+      strPayrollElementName: item?.strAdditionTypeName,
+      strRemarks: item?.strRemarks || "",
+      numAmount: item?.numAmount || 0,
+      intCalculationStatus: item?.isAddition,
+      strCalculationStatus: "",
+    })),
+    primary: [
+      {
+        intPayrollElementTypeId: 0,
+        strPayrollElementName: "",
+        strCode: "",
+        isBasicSalary: true,
+        isPrimarySalary: true,
+        isAddition: true,
+        isDeduction: true,
+      },
+    ],
+    addition: [
+      {
+        intPayrollElementTypeId: 0,
+        strPayrollElementName: "",
+        strCode: "",
+        isBasicSalary: true,
+        isPrimarySalary: true,
+        isAddition: true,
+        isDeduction: true,
+      },
+    ],
+    deduction: [
+      {
+        intPayrollElementTypeId: 0,
+        strPayrollElementName: "",
+        strCode: "",
+        isBasicSalary: true,
+        isPrimarySalary: true,
+        isAddition: true,
+        isDeduction: true,
+      },
+    ],
+  };
+  saveDueAmount(
+    `/SaasMasterData/SaveEmpFinalSettlement`,
+    payload,
+    cb,
+    true
+  )
 };
 
 export {
   approvalListHeader,
   assetHeader,
   calculateTotalAmounts,
+  dueAmountSaveHandler,
   employmentHeader,
   statusDDL
 };

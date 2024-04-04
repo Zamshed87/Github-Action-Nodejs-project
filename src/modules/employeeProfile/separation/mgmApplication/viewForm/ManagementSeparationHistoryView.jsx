@@ -24,17 +24,24 @@ const ManagementSeparationHistoryView = ({
   setComment,
   loading,
   empId,
+  getData,
+  setOpenModal,
+  empBasicInfo,
 }) => {
   const printRef = useRef();
-  const { orgId, intAccountId, buId, wgId, wId } = useSelector(
+  const { orgId, intAccountId, buId, wgId, wId, intEmployeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
 
   const [value, setValue] = useState(0);
   const [empBasic, setEmpBasic] = useState({});
-  const [approveListData, getData, approvalListLoading, setApproveListData] =
-    useAxiosGet();
+  const [
+    approveListData,
+    getApprovalListData,
+    approvalListLoading,
+    setApproveListData,
+  ] = useAxiosGet();
   const [assetHistory, setAssetHistory] = useState([]);
   const [employmentHistory, setEmploymentHistory] = useState([]);
   // Due Amount
@@ -43,6 +50,8 @@ const ManagementSeparationHistoryView = ({
   const [deductionRowDto, setDeductionRowDto] = useState([]);
   const [totalDuesAmount, setTotalDuesAmount] = useState(0);
   const [totalDeductionAmount, setTotalDeductionAmount] = useState(0);
+  const [, getById, getSingleDataLoading] = useAxiosGet({});
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -50,7 +59,7 @@ const ManagementSeparationHistoryView = ({
 
   useEffect(() => {
     if (id) {
-      getData(
+      getApprovalListData(
         `/SaasMasterData/GetEmpSeparationViewById?AccountId=${orgId}&Id=${id}`,
         (res) => {
           setEmpBasic(res);
@@ -59,17 +68,53 @@ const ManagementSeparationHistoryView = ({
           setEmploymentHistory(res?.employeeHistory);
         }
       );
-      getFinalSettlement(
-        `/SaasMasterData/GetFinalSattlementData?intApplicationId=${id}&intEmployeeId=${empId}&intAccountId=${intAccountId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
-        (data) => {
-          const duesData = data?.row.filter((item) => item?.isAddition === 1);
-          const deductionData = data?.row.filter(
-            (item) => item?.isAddition === 0
-          );
-          setDuesRowDto(duesData);
-          setDeductionRowDto(deductionData);
-        }
-      );
+      if (empBasicInfo?.intFinalSettlementId) {
+        getById(
+          `/SaasMasterData/GetEmpFinalSettlementById?AccountId=${orgId}&intBusinessUnitId=${buId}&FinalSettlementId=${empBasicInfo?.intFinalSettlementId}`,
+          (data) => {
+            const duesData = data?.payrollElementPayment.filter(
+              (item) => item?.intCalculationStatus === 1
+            );
+            const deductionData = data?.payrollElementPayment.filter(
+              (item) => item?.intCalculationStatus === 0
+            );
+            const modifyDuesData = duesData?.map((item) => ({
+              ...item,
+              strAdditionTypeName: item?.strPayrollElementName,
+              isAddition: item?.intCalculationStatus,
+              numAmount: parseFloat(item?.numAmount).toFixed(2),
+            }));
+            const modifyDeductionData = deductionData?.map((item) => ({
+              ...item,
+              strAdditionTypeName: item?.strPayrollElementName,
+              isAddition: item?.intCalculationStatus,
+              numAmount: parseFloat(item?.numAmount).toFixed(2),
+            }));
+            setDuesRowDto(modifyDuesData);
+            setDeductionRowDto(modifyDeductionData);
+          }
+        );
+      } else {
+        getFinalSettlement(
+          `/SaasMasterData/GetFinalSattlementData?intApplicationId=${id}&intEmployeeId=${empId}&intAccountId=${intAccountId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intWorkplaceId=${wId}`,
+          (data) => {
+            const duesData = data?.row.filter((item) => item?.isAddition === 1);
+            const deductionData = data?.row.filter(
+              (item) => item?.isAddition === 0
+            );
+            const modifyDuesData = duesData?.map((item) => ({
+              ...item,
+              numAmount: parseFloat(item?.numAmount).toFixed(2),
+            }));
+            const modifyDeductionData = deductionData?.map((item) => ({
+              ...item,
+              numAmount: parseFloat(item?.numAmount).toFixed(2),
+            }));
+            setDuesRowDto(modifyDuesData);
+            setDeductionRowDto(modifyDeductionData);
+          }
+        );
+      }
     }
   }, [id, empId, orgId, buId, wgId, wId, intAccountId]);
 
@@ -109,6 +154,9 @@ const ManagementSeparationHistoryView = ({
         />
       </div>
       <div ref={printRef}>
+        <h2 className="historyPrintView text-center mb-3" style={{ display: "none", fontSize: "30px" }}>
+          Full & Final Settlement
+        </h2>
         <EmpBasicInfo empBasic={empBasic} />
         <div className="tab-panel">
           <Box sx={{ width: "100%" }}>
@@ -158,7 +206,9 @@ const ManagementSeparationHistoryView = ({
             {type === "dueAmount" && (
               <TabPanel value={value} index={3}>
                 <DueAmount
-                  type={type}
+                  type={
+                    empBasicInfo?.intFinalSettlementId ? "view" : "dueAmount"
+                  }
                   finalSettlementLoading={finalSettlementLoading}
                   duesRowDto={duesRowDto}
                   deductionRowDto={deductionRowDto}
@@ -168,6 +218,13 @@ const ManagementSeparationHistoryView = ({
                   setTotalDeductionAmount={setTotalDeductionAmount}
                   totalDuesAmount={totalDuesAmount}
                   totalDeductionAmount={totalDeductionAmount}
+                  separationId={id}
+                  empId={empId}
+                  getData={getData}
+                  setOpenModal={setOpenModal}
+                  empBasicInfo={empBasicInfo}
+                  intEmployeeId={intEmployeeId}
+                  getSingleDataLoading={getSingleDataLoading}
                 />
               </TabPanel>
             )}
@@ -178,6 +235,10 @@ const ManagementSeparationHistoryView = ({
             approveListData={approveListData}
             assetHistory={assetHistory}
             employmentHistory={employmentHistory}
+            duesRowDto={duesRowDto}
+            deductionRowDto={deductionRowDto}
+            totalDuesAmount={totalDuesAmount}
+            totalDeductionAmount={totalDeductionAmount}
           />
         </div>
       </div>
