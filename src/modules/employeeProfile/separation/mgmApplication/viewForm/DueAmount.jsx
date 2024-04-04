@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import {
-  calculateTotalAmounts,
-} from "../utils";
+import { calculateTotalAmounts, dueAmountSaveHandler } from "../utils";
 import SalaryElementTable from "./SalaryElementTable";
 import { Divider } from "@mui/material";
 import PrimaryButton from "common/PrimaryButton";
 import Loading from "common/loading/Loading";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
+import { formatMoney } from "utility/formatMoney";
 
 const DueAmount = ({
   type,
@@ -18,8 +18,15 @@ const DueAmount = ({
   setTotalDeductionAmount,
   totalDuesAmount,
   totalDeductionAmount,
+  separationId,
+  empId,
+  getData,
+  setOpenModal,
+  empBasicInfo,
+  intEmployeeId,
+  getSingleDataLoading,
 }) => {
-
+  const [, saveDueAmount, dueAmountLoading] = useAxiosPost({});
   useEffect(() => {
     const { totalDuesAmount, totalDeductionAmount } = calculateTotalAmounts(
       deductionRowDto,
@@ -31,7 +38,9 @@ const DueAmount = ({
 
   return (
     <>
-      {finalSettlementLoading && <Loading />}
+      {(finalSettlementLoading || dueAmountLoading || getSingleDataLoading) && (
+        <Loading />
+      )}
       <div className="p-2">
         <div className="row">
           <div className="col-lg-6">
@@ -41,6 +50,7 @@ const DueAmount = ({
               setRowDto={setDuesRowDto}
               showHeader={true}
               isDisabled={true}
+              type={type}
             />
           </div>
           <div className="col-lg-6">
@@ -50,6 +60,7 @@ const DueAmount = ({
               setRowDto={setDeductionRowDto}
               showHeader={false}
               isDisabled={false}
+              type={type}
             />
           </div>
           <div className="col-lg-12 mt-2">
@@ -61,7 +72,7 @@ const DueAmount = ({
                       <b>{"Total Dues (BDT)"}</b>
                     </span>
                     <span>
-                      <b>{totalDuesAmount || 0}</b>
+                      <b>{formatMoney(totalDuesAmount || 0)}</b>
                     </span>
                   </p>
                 </div>
@@ -73,7 +84,7 @@ const DueAmount = ({
                       <b>{"Total Deductions (BDT)"}</b>
                     </span>
                     <span>
-                      <b>{totalDeductionAmount || 0}</b>
+                      <b>{formatMoney(totalDeductionAmount || 0)}</b>
                     </span>
                   </p>
                 </div>
@@ -88,20 +99,37 @@ const DueAmount = ({
                   <b>Employee Will Get (BDT)</b>
                 </span>
                 <span>
-                  <b>{totalDuesAmount - totalDeductionAmount}</b>
+                  <b>{formatMoney(totalDuesAmount - totalDeductionAmount)}</b>
                 </span>
               </p>
             </div>
-            <div className="d-flex justify-content-end my-3">
-              <PrimaryButton
-                type="button"
-                className="btn btn-green"
-                label="Save"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              />
-            </div>
+            {type !== "view" ? (
+              <div className="d-flex justify-content-end my-3">
+                <PrimaryButton
+                  type="button"
+                  className="btn btn-green"
+                  label="Save"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dueAmountSaveHandler(
+                      separationId,
+                      empId,
+                      empBasicInfo,
+                      totalDuesAmount,
+                      totalDeductionAmount,
+                      duesRowDto,
+                      deductionRowDto,
+                      saveDueAmount,
+                      intEmployeeId,
+                      () => {
+                        getData();
+                        setOpenModal(false);
+                      }
+                    );
+                  }}
+                />
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

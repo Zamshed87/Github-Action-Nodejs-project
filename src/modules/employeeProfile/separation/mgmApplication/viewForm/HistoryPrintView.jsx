@@ -2,15 +2,86 @@ import React from "react";
 import PBadge from "Components/Badge";
 import { Tag } from "antd";
 import moment from "moment";
+import { formatMoney } from "utility/formatMoney";
+import SalaryElementTable from "./SalaryElementTable";
+import { Divider } from "@mui/material";
 
 const HistoryPrintView = ({
   approveListData,
   assetHistory,
   employmentHistory,
+  duesRowDto,
+  deductionRowDto,
+  totalDuesAmount,
+  totalDeductionAmount,
 }) => {
   return (
     <>
-      <h6 className="mb-2">Approval History</h6>
+      <h6 className="mb-3" style={{ fontSize: "18px" }}>
+        Due Amount
+      </h6>
+      <div className="d-flex justify-content-between">
+        <div style={{ width: "48%" }}>
+          <SalaryElementTable
+            title="Dues"
+            rowDto={duesRowDto}
+            showHeader={true}
+            isDisabled={true}
+            type={"view"}
+          />
+        </div>
+        <div style={{ width: "48%" }}>
+          <SalaryElementTable
+            title="Deductions"
+            rowDto={deductionRowDto}
+            showHeader={false}
+            isDisabled={false}
+            type={"view"}
+          />
+        </div>
+      </div>
+      <div className="d-flex justify-content-between">
+        <div style={{ width: "48%" }}>
+          <div className="d-flex justify-content-end my-2">
+            <p>
+              <span className="mr-3">
+                <b>{"Total Dues (BDT)"}</b>
+              </span>
+              <span>
+                <b>{formatMoney(totalDuesAmount || 0)}</b>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div style={{ width: "48%" }}>
+          <div className="d-flex justify-content-end my-2">
+            <p>
+              <span className="mr-3">
+                <b>{"Total Deductions (BDT)"}</b>
+              </span>
+              <span>
+                <b>{formatMoney(totalDeductionAmount || 0)}</b>
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <Divider className="mb-2" />
+        <div className="d-flex justify-content-end my-2">
+          <p>
+            <span className="mr-3">
+              <b>Employee Will Get (BDT)</b>
+            </span>
+            <span>
+              <b>{formatMoney(totalDuesAmount - totalDeductionAmount)}</b>
+            </span>
+          </p>
+        </div>
+      </div>
+      <h6 className="mb-3 pt-2" style={{ fontSize: "18px" }}>
+        Approval History
+      </h6>
       <div className="table-card-body">
         <div className="table-card-styled">
           <table className="table">
@@ -57,7 +128,9 @@ const HistoryPrintView = ({
           </table>
         </div>
       </div>
-      <h6 className="mb-2">Employment History</h6>
+      <h6 className="mb-3 pt-2" style={{ fontSize: "18px" }}>
+        Employment History
+      </h6>
       <div className="table-card-body">
         <div className="table-card-styled">
           <table className="table">
@@ -98,7 +171,9 @@ const HistoryPrintView = ({
           </table>
         </div>
       </div>
-      <h6 className="mb-2">Asset History</h6>
+      <h6 className="mb-3 pt-2" style={{ fontSize: "18px" }}>
+        Asset History
+      </h6>
       <div className="table-card-body">
         <div className="table-card-styled">
           <table className="table">
