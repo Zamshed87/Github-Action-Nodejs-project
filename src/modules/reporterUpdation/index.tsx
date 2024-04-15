@@ -146,7 +146,7 @@ const ReporterUpdation = () => {
                   onSearch={(value) => {
                     getEmployee(value, CommonEmployeeDDL, buId, wgId);
                   }}
-                  showSearch
+                  showSearch={true}
                   filterOption={false}
                 />
               </Col>
