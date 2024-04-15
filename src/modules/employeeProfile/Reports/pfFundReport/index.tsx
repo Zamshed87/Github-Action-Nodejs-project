@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Form, Row } from "antd";
 import {
   DataTable,
@@ -6,6 +6,7 @@ import {
   PCard,
   PCardHeader,
   PForm,
+  PRadio,
   PSelect,
 } from "Components";
 import PBadge from "Components/Badge";
@@ -14,6 +15,7 @@ import { getSerial } from "Utils";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { formatMoney } from "utility/formatMoney";
 
 type TPFFundReport = {};
 const PFFundReport: React.FC<TPFFundReport> = () => {
@@ -36,10 +38,13 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
     }
   });
 
+  //State
+  const [elementType, setElementType] = useState<any>("");
+
   const [form] = Form.useForm();
 
   // Api Actions
-  const pfFundReportApi = useApiRequest({});
+  const pfFundReportApi = useApiRequest([]);
   const employeeDDLApi = useApiRequest([]);
 
   // Landing Api
@@ -66,6 +71,7 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
           params: {
             intAccountId: orgId,
             intEmployeeId: values?.employeeName?.value,
+            isCurrentFund: values?.elementType === "currentTotalFund" ? true : false,
             status: values?.status?.value,
             pageNo: pagination?.current || 1,
             pageSize: pagination?.pageSize || 25,
@@ -155,16 +161,21 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
       title: "Type",
       dataIndex: "types",
       width: 100,
+      isHidden: elementType === "currentTotalFund",
     },
     {
       title: "Employee Amount",
       dataIndex: "employeeContributionAmount",
       align: "right",
+      render: (data: any, record: any) =>
+        formatMoney(record?.employeeContributionAmount),
     },
     {
       title: "Employer Amount",
       dataIndex: "companyContributionAmount",
       align: "right",
+      render: (data: any, record: any) =>
+        formatMoney(record?.companyContributionAmount),
     },
     {
       title: "Status",
@@ -181,7 +192,7 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
         ),
       width: "50px",
     },
-  ];
+  ].filter((item) => !item?.isHidden);
 
   return pfFundReportFeature?.isView ? (
     <>
@@ -202,6 +213,7 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
                   form.setFieldsValue({
                     employeeName: option,
                   });
+                  pfFundReportApi.reset();
                 }}
                 options={employeeDDLApi?.data || []}
                 label="Employee Name"
@@ -223,8 +235,36 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
                   form.setFieldsValue({
                     status: option,
                   });
+                  pfFundReportApi.reset();
                 }}
                 label="Status"
+              />
+            </Col>
+            <Col className="mt-3 pt-1">
+              <PRadio
+                name="elementType"
+                type="group"
+                rules={[
+                  { required: true, message: "Please Select Element Type" },
+                ]}
+                options={[
+                  {
+                    label: "Current Total Fund",
+                    value: "currentTotalFund",
+                  },
+                  {
+                    label: "Fund Details",
+                    value: "fundDetails",
+                  },
+                ]}
+                onChange={(e: any) => {
+                  const value = e.target.value;
+                  setElementType(value);
+                  form.setFieldsValue({
+                    elementType: value,
+                  });
+                  pfFundReportApi.reset();
+                }}
               />
             </Col>
             <Col style={{ marginTop: "23px" }}>
