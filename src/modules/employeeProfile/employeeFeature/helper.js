@@ -315,6 +315,7 @@ export const getEmployeeProfileViewData = async (
       setForEdit &&
         setForEdit({
           tinNo: empBasic?.employeeProfileLandingView?.tinNo,
+          nid: empBasic?.empEmployeePhotoIdentity?.strNid,
           empId: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
           strReferenceId: empBasic?.employeeProfileLandingView?.strReferenceId,
           fullName: empBasic?.employeeProfileLandingView?.strEmployeeName,
