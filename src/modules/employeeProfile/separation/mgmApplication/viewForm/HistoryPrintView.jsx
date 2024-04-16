@@ -14,71 +14,76 @@ const HistoryPrintView = ({
   deductionRowDto,
   totalDuesAmount,
   totalDeductionAmount,
+  type,
 }) => {
   return (
     <>
-      <h6 className="mb-3" style={{ fontSize: "18px" }}>
-        Due Amount
-      </h6>
-      <div className="d-flex justify-content-between">
-        <div style={{ width: "48%" }}>
-          <SalaryElementTable
-            title="Dues"
-            rowDto={duesRowDto}
-            showHeader={true}
-            isDisabled={true}
-            type={"view"}
-          />
-        </div>
-        <div style={{ width: "48%" }}>
-          <SalaryElementTable
-            title="Deductions"
-            rowDto={deductionRowDto}
-            showHeader={false}
-            isDisabled={false}
-            type={"view"}
-          />
-        </div>
-      </div>
-      <div className="d-flex justify-content-between">
-        <div style={{ width: "48%" }}>
-          <div className="d-flex justify-content-end my-2">
-            <p>
-              <span className="mr-3">
-                <b>{"Total Dues (BDT)"}</b>
-              </span>
-              <span>
-                <b>{formatMoney(totalDuesAmount || 0)}</b>
-              </span>
-            </p>
+      {type === "dueAmount" && (
+        <>
+          <h6 className="mb-3" style={{ fontSize: "18px" }}>
+            Due Amount
+          </h6>
+          <div className="d-flex justify-content-between">
+            <div style={{ width: "48%" }}>
+              <SalaryElementTable
+                title="Dues"
+                rowDto={duesRowDto}
+                showHeader={true}
+                isDisabled={true}
+                type={"view"}
+              />
+            </div>
+            <div style={{ width: "48%" }}>
+              <SalaryElementTable
+                title="Deductions"
+                rowDto={deductionRowDto}
+                showHeader={false}
+                isDisabled={false}
+                type={"view"}
+              />
+            </div>
           </div>
-        </div>
-        <div style={{ width: "48%" }}>
-          <div className="d-flex justify-content-end my-2">
-            <p>
-              <span className="mr-3">
-                <b>{"Total Deductions (BDT)"}</b>
-              </span>
-              <span>
-                <b>{formatMoney(totalDeductionAmount || 0)}</b>
-              </span>
-            </p>
+          <div className="d-flex justify-content-between">
+            <div style={{ width: "48%" }}>
+              <div className="d-flex justify-content-end my-2">
+                <p>
+                  <span className="mr-3">
+                    <b>{"Total Dues (BDT)"}</b>
+                  </span>
+                  <span>
+                    <b>{formatMoney(totalDuesAmount || 0)}</b>
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div style={{ width: "48%" }}>
+              <div className="d-flex justify-content-end my-2">
+                <p>
+                  <span className="mr-3">
+                    <b>{"Total Deductions (BDT)"}</b>
+                  </span>
+                  <span>
+                    <b>{formatMoney(totalDeductionAmount || 0)}</b>
+                  </span>
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div>
-        <Divider className="mb-2" />
-        <div className="d-flex justify-content-end my-2">
-          <p>
-            <span className="mr-3">
-              <b>Employee Will Get (BDT)</b>
-            </span>
-            <span>
-              <b>{formatMoney(totalDuesAmount - totalDeductionAmount)}</b>
-            </span>
-          </p>
-        </div>
-      </div>
+          <div>
+            <Divider className="mb-2" />
+            <div className="d-flex justify-content-end my-2">
+              <p>
+                <span className="mr-3">
+                  <b>Employee Will Get (BDT)</b>
+                </span>
+                <span>
+                  <b>{formatMoney(totalDuesAmount - totalDeductionAmount)}</b>
+                </span>
+              </p>
+            </div>
+          </div>
+        </>
+      )}
       <h6 className="mb-3 pt-2" style={{ fontSize: "18px" }}>
         Approval History
       </h6>
