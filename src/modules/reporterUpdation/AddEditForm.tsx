@@ -2,7 +2,6 @@ import { PForm, PSelect } from "Components";
 import { ModalFooter } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import React from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { getEmployee } from "./utils";
 import { toast } from "react-toastify";

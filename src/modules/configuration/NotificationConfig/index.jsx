@@ -21,10 +21,10 @@ export default function NotificationConfig() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  // const { buId, orgId } = useSelector(
-  //   (state) => state?.auth?.profileData,
-  //   shallowEqual
-  // );
+  const { orgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   const [rowDto, setRowDto] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ export default function NotificationConfig() {
   }, []);
 
   useEffect(() => {
-    getNotificationSetupLanding(setRowDto, setLoading);
+    getNotificationSetupLanding(setRowDto, setLoading, orgId);
   }, []);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
@@ -50,20 +50,8 @@ export default function NotificationConfig() {
 
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -71,7 +59,9 @@ export default function NotificationConfig() {
                 <>
                   <div className="table-card">
                     <div className="table-card-heading">
-                      <div></div>
+                      <div>
+                        <h6>Notification Setup</h6>
+                      </div>
                       {/* <ul className="d-flex flex-wrap">
                         <li>
                           <PrimaryButton
@@ -98,10 +88,7 @@ export default function NotificationConfig() {
                         </li>
                       </ul> */}
                     </div>
-                    <div
-                      className="table-card-body"
-                      style={{ marginTop: "40px" }}
-                    >
+                    <div className="table-card-body">
                       <div className="table-card-styled tableOne">
                         {rowDto?.length > 0 ? (
                           <>
