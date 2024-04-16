@@ -76,10 +76,6 @@ const AddEditForm = ({
             setIsAddEditForm,
           });
         }}
-        initialValues={{
-          lineManager: "",
-          supervisor: "",
-        }}
       >
         <Row gutter={[10, 2]}>
           <Col md={12} sm={24}>

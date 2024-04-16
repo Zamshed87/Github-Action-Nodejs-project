@@ -105,12 +105,7 @@ const ReporterUpdation = () => {
   };
 
   return employeeFeature?.isView ? (
-    <PForm
-      form={form}
-      initialValues={{
-        employee: "",
-      }}
-    >
+    <PForm formName="bulkReporterChange" form={form}>
       <PCard>
         <PCardHeader
           title="Bulk Reporter Update"
@@ -133,7 +128,7 @@ const ReporterUpdation = () => {
                 <PSelect
                   name="employee"
                   label="Select an Employee"
-                  placeholder="Search Min 2 char"
+                  placeholder={"Search Min 2 char"}
                   options={CommonEmployeeDDL?.data || []}
                   loading={CommonEmployeeDDL?.loading}
                   onChange={(value, op) => {
@@ -146,7 +141,7 @@ const ReporterUpdation = () => {
                   onSearch={(value) => {
                     getEmployee(value, CommonEmployeeDDL, buId, wgId);
                   }}
-                  showSearch={true}
+                  showSearch
                   filterOption={false}
                 />
               </Col>
