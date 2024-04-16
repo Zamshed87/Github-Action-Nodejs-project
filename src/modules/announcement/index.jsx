@@ -40,7 +40,10 @@ import "./index.css";
 
 const initData = {
   search: "",
-  year: "",
+  year: {
+    value: parseInt(moment().year()),
+    label: moment().year(),
+  },
 };
 
 const validationSchema = Yup.object().shape({});
@@ -81,7 +84,7 @@ export default function AnnouncementCreate() {
     year: moment().year(),
   });
 
-  const getData = (fromDate, toDate) => {
+  const getData = () => {
     getAllAnnouncement(
       buId,
       orgId,
@@ -113,7 +116,7 @@ export default function AnnouncementCreate() {
   }, [buId, orgId, date?.year]);
 
   const demoPopup = (data) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: "Do you want to delete this announcement?",
       yesAlertFunc: () => {
@@ -121,7 +124,7 @@ export default function AnnouncementCreate() {
           announcement: {
             intAnnouncementId: data?.announcement?.intAnnouncementId,
           },
-          announcementRow: data?.announcementRow?.map((item) => {
+          announcementRow: data?.announcementRow?.map(() => {
             return {
               intAnnoucementId: data?.announcement?.intAnnouncementId,
             };
@@ -254,15 +257,9 @@ export default function AnnouncementCreate() {
     <>
       <Formik
         enableReinitialize={true}
-        initialValues={{
-          ...initData,
-          year: {
-            value: 2023,
-            label: "2023",
-          },
-        }}
+        initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           resetForm(initData);
         }}
       >
@@ -273,8 +270,6 @@ export default function AnnouncementCreate() {
           errors,
           touched,
           setFieldValue,
-          setValues,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -308,7 +303,7 @@ export default function AnnouncementCreate() {
                       )}
                       <li>
                         <FormikInput
-                          classes="search-input fixed-width mt-2 mt-md-0 mb-2 mb-md-0 tableCardHeaderSeach"
+                          classes="search-input fixed-width mt-md-0 mb-2 mb-md-0 tableCardHeaderSeach"
                           inputClasses="search-inner-input"
                           placeholder="Search"
                           value={values?.search}

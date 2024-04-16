@@ -120,7 +120,7 @@ function Confirmation() {
     document.title = "Confirmation";
   }, [dispatch]);
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     // setViewModal(event.currentTarget);
   };
   // const handleClose = () => {
@@ -138,7 +138,7 @@ function Confirmation() {
     });
   };
   const handleChangeRowsPerPage = (event, values) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(values?.filterFromDate, values?.filterToDate, "", {
@@ -232,7 +232,6 @@ function Confirmation() {
           errors,
           touched,
           setFieldValue,
-          isValid,
           setValues,
         }) => (
           <>
@@ -495,7 +494,7 @@ function Confirmation() {
                             onRowClick={(item) => {
                               if (item?.intEmploymentTypeId === 2) {
                                 setIsAddEditForm(true);
-                                let obj = {
+                                const obj = {
                                   partType: "EmployeeSalaryInfoByEmployeeId",
                                   businessUnitId: buId,
                                   workplaceGroupId: 0,
