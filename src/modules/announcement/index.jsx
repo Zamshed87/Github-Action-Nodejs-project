@@ -3,7 +3,6 @@ import {
   AddOutlined,
   CreateOutlined,
   DeleteOutlined,
-  SearchOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -15,7 +14,6 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import AntTable from "../../common/AntTable";
-import FormikInput from "../../common/FormikInput";
 import FormikSelect from "../../common/FormikSelect";
 import IConfirmModal from "../../common/IConfirmModal";
 import { LightTooltip } from "../../common/LightTooltip";
@@ -37,6 +35,7 @@ import {
   getSingleAnnouncementDeleteData,
 } from "./helper";
 import "./index.css";
+import MasterFilter from "common/MasterFilter";
 
 const initData = {
   search: "",
@@ -302,24 +301,20 @@ export default function AnnouncementCreate() {
                         </li>
                       )}
                       <li>
-                        <FormikInput
-                          classes="search-input fixed-width mt-md-0 mb-2 mb-md-0 tableCardHeaderSeach"
-                          inputClasses="search-inner-input"
-                          placeholder="Search"
-                          value={values?.search}
-                          name="search"
-                          type="text"
-                          trailicon={
-                            <SearchOutlined
-                              sx={{ color: "#323232", fontSize: "18px" }}
-                            />
-                          }
-                          onChange={(e) => {
-                            filterData(e.target.value, allData, setRowDto);
-                            setFieldValue("search", e.target.value);
+                        <MasterFilter
+                          isHiddenFilter
+                          width="200px"
+                          inputWidth="200px"
+                          value={values?.searchtText}
+                          setValue={(value) => {
+                            filterData(value, allData, setRowDto);
+                            setFieldValue("searchtText", value);
                           }}
-                          errors={errors}
-                          touched={touched}
+                          cancelHandler={() => {
+                            setFieldValue("searchtText", "");
+                            filterData("", allData, setRowDto);
+                          }}
+                          placeholder={"Search"}
                         />
                       </li>
                       <li className="pl-2">

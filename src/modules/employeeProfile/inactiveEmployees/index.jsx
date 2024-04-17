@@ -15,7 +15,6 @@ import Loading from "./../../../common/loading/Loading";
 import {
   activeEmployeeHandler,
   column,
-  getBuDetails,
   getNewInactiveEmpInfo,
   getTableDataInactiveEmployees,
   inactiveEmpColumns,
@@ -47,7 +46,7 @@ export default function ActiveInactiveEmployeeReport() {
   const dispatch = useDispatch();
 
   // eslint-disable-next-line no-unused-vars
-  const { buId, buName, wgId, wId, wName, employeeId } = useSelector(
+  const { buId, wgId, wId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -107,8 +106,6 @@ export default function ActiveInactiveEmployeeReport() {
     document.title = "Inactive Employees";
   }, []);
 
-  const saveHandler = (values) => {};
-
   let permission = null;
   permissionList.forEach((item) => {
     if (item?.menuReferenceId === 95) {
@@ -132,12 +129,13 @@ export default function ActiveInactiveEmployeeReport() {
       );
     };
 
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: "Are you want to sure you active this employee?",
       yesAlertFunc: () => {
         activeEmployeeHandler(paylaod, setLoading, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -186,7 +184,7 @@ export default function ActiveInactiveEmployeeReport() {
     toDate,
     values
   ) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -209,13 +207,11 @@ export default function ActiveInactiveEmployeeReport() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {permission?.isView ? (

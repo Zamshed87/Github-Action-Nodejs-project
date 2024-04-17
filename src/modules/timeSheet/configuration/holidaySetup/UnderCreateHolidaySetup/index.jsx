@@ -68,8 +68,7 @@ export default function UnderCreateHolidaySetup() {
         setSingleData,
         null,
         null,
-        wId,
-
+        wId
       );
     }
   }, [orgId, buId, params?.id]);
@@ -90,7 +89,7 @@ export default function UnderCreateHolidaySetup() {
   }, [orgId, buId, params?.id]);
 
   const saveHandler = (values, cb) => {
-    let payload = {
+    const payload = {
       partType: "Holiday",
       employeeId: employeeId,
       autoId: holidayId ? holidayId : 0,
@@ -207,7 +206,7 @@ export default function UnderCreateHolidaySetup() {
   };
 
   const deleteHandler = (item) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: "Are you sure, you want to delete this holiday item?",
       yesAlertFunc: () => {
@@ -297,6 +296,7 @@ export default function UnderCreateHolidaySetup() {
         };
         createTimeSheetAction(payload, setLoading, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -357,21 +357,13 @@ export default function UnderCreateHolidaySetup() {
           isConfirm: holidaySingleData ? holidaySingleData[0]?.IsConfirm : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -417,6 +409,7 @@ export default function UnderCreateHolidaySetup() {
                                   value={values?.fromDate}
                                   name="fromDate"
                                   min={`${singleData[0]?.Year}-01-01`}
+                                  max={`${singleData[0]?.Year}-12-31`}
                                   onChange={(e) => {
                                     setFieldValue("toDate", e.target.value);
                                     setFieldValue("fromDate", e.target.value);
@@ -439,6 +432,7 @@ export default function UnderCreateHolidaySetup() {
                                   value={values?.toDate}
                                   name="toDate"
                                   min={values?.fromDate}
+                                  max={`${singleData[0]?.Year}-12-31`}
                                   onChange={(e) => {
                                     setFieldValue("toDate", e.target.value);
                                   }}

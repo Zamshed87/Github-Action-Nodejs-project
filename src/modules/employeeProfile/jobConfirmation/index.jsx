@@ -30,7 +30,11 @@ import "./jobConfirmation.css";
 import { createCommonExcelFile } from "../../../utility/customExcel/generateExcelAction";
 import DefaultInput from "common/DefaultInput";
 import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
-import { getBuDetails, getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
+import {
+  getBuDetails,
+  getPeopleDeskAllDDL,
+  getWorkplaceDetails,
+} from "common/api";
 import FormikSelect from "common/FormikSelect";
 import { customStyles } from "utility/selectCustomStyle";
 
@@ -176,14 +180,7 @@ export default function JobConfirmationReport() {
   return (
     <>
       <Formik enableReinitialize={true} initialValues={initData}>
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          setValues,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
