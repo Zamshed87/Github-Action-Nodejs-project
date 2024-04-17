@@ -113,7 +113,7 @@ const ComputationPayement = ({ propsObj }) => {
             showHeader={showHeader}
             y={2000}
             x={800}
-            rowKey={(record, index) => record?.intFinalSettlementRowId}
+            rowKey={(record) => record?.intFinalSettlementRowId}
           />
         </div>
       </div>

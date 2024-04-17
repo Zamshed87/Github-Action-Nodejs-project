@@ -154,8 +154,11 @@ const ManagementSeparationHistoryView = ({
         />
       </div>
       <div ref={printRef}>
-        <h2 className="historyPrintView text-center mb-3" style={{ display: "none", fontSize: "30px" }}>
-          Full & Final Settlement
+        <h2
+          className="historyPrintView text-center mb-3"
+          style={{ display: "none", fontSize: "30px" }}
+        >
+          {type === "dueAmount" ? "Full & Final Settlement" : "Separation"}
         </h2>
         <EmpBasicInfo empBasic={empBasic} />
         <div className="tab-panel">
@@ -239,6 +242,7 @@ const ManagementSeparationHistoryView = ({
             deductionRowDto={deductionRowDto}
             totalDuesAmount={totalDuesAmount}
             totalDeductionAmount={totalDeductionAmount}
+            type={type}
           />
         </div>
       </div>

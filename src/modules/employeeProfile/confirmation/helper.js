@@ -1,4 +1,3 @@
-import { CreateOutlined } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../common/AvatarComponent";
@@ -20,14 +19,14 @@ export const confirmationEmpAction = async (
     // if (!values?.pinNo) {
     //   return toast.warning("PIN No. is reqired.");
     // }
-    let payload = {
+    const payload = {
       employeeId: singleData?.employeeId,
       // designationId: singleData?.designationId,
       confirmationDate: values?.confirmDate,
       // pinNo: values?.pinNo,
     };
     setLoading(true);
-    let res = await axios.post(`/Employee/ConfirmationEmployee`, payload);
+    const res = await axios.post(`/Employee/ConfirmationEmployee`, payload);
 
     setLoading(false);
     cb && cb();
@@ -59,8 +58,7 @@ export const getPeopleDeskAllLandingForConfirmation = async (
   intWorkplaceId
 ) => {
   setLoading && setLoading(true);
-  let url;
-  url = `/EmployeeAllLanding/EmployeeBasicForConfirmation?BusinessUnitId=${busId}&WorkplaceGroupId=${wgId}&FromDate=${joiningDate}&ToDate=${confirmDate}&PageNo=${
+  const url = `/EmployeeAllLanding/EmployeeBasicForConfirmation?BusinessUnitId=${busId}&WorkplaceGroupId=${wgId}&FromDate=${joiningDate}&ToDate=${confirmDate}&PageNo=${
     pagination?.current
   }&PageSize=${pagination?.pageSize}&SearchTxt=${
     searchText || ""
@@ -85,7 +83,7 @@ export const getPeopleDeskAllLandingForConfirmation = async (
 export const getEmployeeSalaryInfo = async (setter, setIsLoading, payload) => {
   setIsLoading(true);
   try {
-    let res = await axios.post(`/Payroll/EmployeeSalaryManagement`, payload);
+    const res = await axios.post(`/Payroll/EmployeeSalaryManagement`, payload);
     setIsLoading(false);
     setter(res?.data);
   } catch (err) {
@@ -100,8 +98,7 @@ export const empConfirmcolumns = (
   permission,
   orgId,
   setValues,
-  pages,
-  wgId
+  pages
 ) => {
   return [
     {
@@ -242,13 +239,14 @@ export const empConfirmcolumns = (
       sort: false,
       filter: false,
       width: 140,
-      render: (record, index) => {
+      render: (record) => {
         return (
           <div className="d-flex">
             {record?.confirmationStatus === "Confirm" ? (
               <>
                 <Chips label="Confirmed" classess="success" />
-                <button
+                {/* confirmation by fosu 🔥🔥 */}
+                {/* <button
                   type="button"
                   className="iconButton mt-0 mt-md-2 mt-lg-0 ml-2"
                   onClick={(e) => {
@@ -272,7 +270,7 @@ export const empConfirmcolumns = (
                   }}
                 >
                   <CreateOutlined />
-                </button>
+                </button> */}
               </>
             ) : (
               <button

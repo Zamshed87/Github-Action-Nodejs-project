@@ -68,11 +68,15 @@ const hasDDLConvert = (array, value, label) => {
     });
 };
 
-export const getNotificationSetupLanding = async (setter, setLoading) => {
+export const getNotificationSetupLanding = async (
+  setter,
+  setLoading,
+  orgId
+) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
-      `/SaasMasterData/NotificationPermissionLanding`
+      `/SaasMasterData/NotificationPermissionLanding?IntAccountId=${orgId}`
     );
     const modifyData = res?.data?.map((itm) => {
       return {

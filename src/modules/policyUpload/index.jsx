@@ -2,7 +2,6 @@
 import {
   AttachmentOutlined,
   DeleteOutlined,
-  SearchOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -13,7 +12,6 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import AntTable from "../../common/AntTable";
 import { getPeopleDeskAllDDL } from "../../common/api";
-import FormikInput from "../../common/FormikInput";
 import IConfirmModal from "../../common/IConfirmModal";
 import Loading from "../../common/loading/Loading";
 import NoResult from "../../common/NoResult";
@@ -29,6 +27,7 @@ import {
   getPolicyCategoryDDL,
   getPolicyLanding,
 } from "./helper";
+import MasterFilter from "common/MasterFilter";
 
 const initData = {
   search: "",
@@ -162,7 +161,7 @@ export default function PolicyUpload() {
   };
 
   const remover = (data) => {
-    let confirmObject = {
+    const confirmObject = {
       title: "Are you sure to delete this policy?",
       closeOnClickOutside: false,
       yesAlertFunc: () => {
@@ -171,6 +170,7 @@ export default function PolicyUpload() {
         };
         deletePolicy(data?.policyId, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -291,7 +291,7 @@ export default function PolicyUpload() {
           department: buId ? [{ value: 0, label: "All" }] : "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
@@ -304,7 +304,6 @@ export default function PolicyUpload() {
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -340,33 +339,20 @@ export default function PolicyUpload() {
                         </li>
                       )}
                       <li>
-                        <FormikInput
-                          classes="search-input fixed-width mt-2 mt-md-0 mb-2 mb-md-0 tableCardHeaderSeach"
-                          inputClasses="search-inner-input"
-                          placeholder="Search"
+                        <MasterFilter
+                          isHiddenFilter
+                          width="200px"
+                          inputWidth="200px"
                           value={values?.search}
-                          name="search"
-                          type="text"
-                          trailicon={
-                            <SearchOutlined
-                              sx={{
-                                color: "#323232",
-                                fontSize: "18px",
-                              }}
-                            />
-                          }
-                          onChange={(e) => {
-                            getPolicyLanding(
-                              orgId,
-                              buId,
-                              0,
-                              setRowDto,
-                              e.target.value
-                            );
-                            setFieldValue("search", e.target.value);
+                          setValue={(value) => {
+                            getPolicyLanding(orgId, buId, 0, setRowDto, value);
+                            setFieldValue("search", value);
                           }}
-                          errors={errors}
-                          touched={touched}
+                          cancelHandler={() => {
+                            setFieldValue("search", "");
+                            getPolicyLanding(orgId, buId, 0, setRowDto, "");
+                          }}
+                          placeholder={"Search"}
                         />
                       </li>
                     </ul>

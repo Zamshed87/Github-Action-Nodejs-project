@@ -179,7 +179,7 @@ const FormCard = ({ propsObj }) => {
               </button>
               {isEdit && (
                 <button
-                  onClick={(e) => {
+                  onClick={() => {
                     setIsEdit(false);
                     resetForm(initData);
                     setSingleData("");
