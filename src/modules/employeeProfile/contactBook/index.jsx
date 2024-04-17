@@ -10,10 +10,7 @@ import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStora
 import Loading from "./../../../common/loading/Loading";
 import "./contactBook.css";
 import { generateExcelAction } from "./Excel/excelConvert";
-import {
-  empSelfContactBookCol,
-  getEmpContactInfoNew,
-} from "./helper";
+import { empSelfContactBookCol, getEmpContactInfoNew } from "./helper";
 import PeopleDeskTable, {
   paginationSize,
 } from "../../../common/peopleDeskTable";
@@ -90,7 +87,7 @@ export default function ContactBook() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -103,20 +100,16 @@ export default function ContactBook() {
     );
   };
 
-  const saveHandler = (values) => {};
-
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={initData}
         onSubmit={(values, { resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+          resetForm(initData);
         }}
       >
-        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {(loading || apiLoading) && <Loading />}

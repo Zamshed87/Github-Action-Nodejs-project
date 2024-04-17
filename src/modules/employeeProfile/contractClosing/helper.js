@@ -50,13 +50,13 @@ export const extendContractEmpAction = async (
   cb
 ) => {
   try {
-    let payload = {
+    const payload = {
       employeeId: singleData?.EmployeeId,
       contractFromDate: values?.contractFromDate,
       contractToDate: values?.contractToDate,
     };
     setLoading(true);
-    let res = await axios.post(
+    const res = await axios.post(
       `/Employee/UpdateEmpBasicInfoByEmployeeId`,
       payload
     );

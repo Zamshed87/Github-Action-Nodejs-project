@@ -6,7 +6,6 @@ import {
   PForm,
   TableButton,
 } from "Components";
-import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
 import { Form, Tag, message } from "antd";
@@ -20,7 +19,6 @@ import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { dateFormatter } from "../../../utility/dateFormatter";
-import AddEditForm from "./addEditFile";
 import { columnForHeadOffice, getTableDataEmployee } from "./helper";
 import "./styles.css";
 import Loading from "common/loading/Loading";
@@ -42,7 +40,6 @@ function EmployeeFeatureNew() {
   );
 
   // state
-  const [open, setOpen] = useState(false);
   const [filterList, setFilterList] = useState<any>({});
 
   // Form Instance
@@ -199,7 +196,7 @@ function EmployeeFeatureNew() {
       fixed: "left",
       width: 40,
     },
-  
+
     {
       title: "Designation",
       dataIndex: "strDesignation",
@@ -579,7 +576,7 @@ function EmployeeFeatureNew() {
           />
         </PCard>
       </PForm>
-    {/* modal not used anymone 🔥 
+      {/* modal not used anymone 🔥 
       <PModal
         open={open}
         title="Create New Employee"

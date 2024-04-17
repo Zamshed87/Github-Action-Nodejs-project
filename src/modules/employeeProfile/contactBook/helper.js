@@ -14,7 +14,7 @@ export const getEmployeeContactInfo = async (
 ) => {
   setLoading && setLoading(true);
 
-  let status = statusId ? `&intStatusId=${statusId}` : "";
+  const status = statusId ? `&intStatusId=${statusId}` : "";
   try {
     const res = await axios.get(
       `/Employee/PeopleDeskAllLanding?TableName=${tableName}&AccountId=${accId}&BusinessUnitId=${busId}&intId=${id}${status}`

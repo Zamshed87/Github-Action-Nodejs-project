@@ -1,8 +1,6 @@
 import React from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-
-import { shallowEqual, useSelector } from "react-redux";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import Chips from "../../../../common/Chips";
 import { dateFormatter } from "../../../../utility/dateFormatter";
@@ -11,23 +9,19 @@ import { timeFormatter } from "../../../../utility/timeFormatter";
 
 const IOUApplicationTableItem = ({
   item,
-  rowDto,
-  setRowDto,
-  index,
+
   setSingleData,
   setCreateModal,
   setModalType,
-  setLoading,
-  setIsLoading,
-  getData,
+
   permission,
 }) => {
-  let LogoURL = item?.strProfileImageUrl;
-  const {
-    // userId,
-    orgId,
-    buId,
-  } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+  // let LogoURL = item?.strProfileImageUrl;
+  // const {
+  //   // userId,
+  //   orgId,
+  //   buId,
+  // } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   return (
     <>
@@ -88,7 +82,7 @@ const IOUApplicationTableItem = ({
             <button className="iconButton">
               <EditOutlinedIcon
                 sx={{ fontSize: "20px" }}
-                onClick={(e) => {
+                onClick={() => {
                   if (!permission?.isEdit)
                     return toast.warn("You don't have permission");
                   setModalType("edit");
