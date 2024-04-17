@@ -51,7 +51,8 @@ export const formatDBL = (
   buAddress
 ) => {
   const excel = {
-    name: "Bank Advice",
+    name: `DBL Report-${moment().format("ll")}`,
+
     sheets: [
       {
         name: "DBL Report",

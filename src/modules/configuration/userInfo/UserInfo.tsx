@@ -86,6 +86,7 @@ const UserInfoN: React.FC<TUserInfo> = () => {
         IsForXl: false,
       },
       onSuccess: (res) => {
+        console.log({ res });
         res?.data?.map((item: any, index: number) => {
           return {
             ...item,
