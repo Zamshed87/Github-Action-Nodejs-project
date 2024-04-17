@@ -5,7 +5,7 @@ import {
   GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarExport,
-  GridToolbarFilterButton
+  GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -22,10 +22,8 @@ const initData = {
 };
 
 const CustomReport = () => {
-  const [selectedRows, setSelectedRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
   const dispatch = useDispatch();
   const { orgId, buName, buId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -127,7 +125,7 @@ const CustomReport = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let CustomToolbar = () => (
+  const CustomToolbar = () => (
     <div className="pt-2">
       <GridToolbarContainer>
         <p style={{ color: "#637381", marginTop: "-10px" }}>
@@ -181,21 +179,13 @@ const CustomReport = () => {
     <Formik
       enableReinitialize={true}
       initialValues={initData}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
+      onSubmit={() => {
         // saveHandler(values, () => {
         //   resetForm(initData);
         // });
       }}
     >
-      {({
-        handleSubmit,
-        resetForm,
-        values,
-        errors,
-        touched,
-        setFieldValue,
-        isValid,
-      }) => (
+      {({ handleSubmit, values, setFieldValue }) => (
         <>
           <Form onSubmit={handleSubmit}>
             {loading && <Loading />}
@@ -240,13 +230,15 @@ const CustomReport = () => {
                       toolbarDensity: "",
                       toolbarExport: "",
                     }}
-                    onSelectionModelChange={(ids) => {
-                      const selectedIDs = new Set(ids);
-                      const selectedRows = rowDto.filter((row) =>
-                        selectedIDs.has(row.id)
-                      );
-                      setSelectedRows(selectedRows);
-                    }}
+                    onSelectionModelChange={
+                      (/* ids */) => {
+                        // const selectedIDs = new Set(ids);
+                        // const selectedRows = rowDto.filter((row) =>
+                        //   selectedIDs.has(row.id)
+                        // );
+                        // setSelectedRows(selectedRows);
+                      }
+                    }
                     columns={columns}
                     rows={rowDto}
                     components={{

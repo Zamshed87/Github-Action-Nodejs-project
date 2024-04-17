@@ -4,7 +4,6 @@ import { Print, SaveAlt } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
 import companyLogo from "../../../../assets/images/company/logo.png";
 import Loading from "../../../../common/loading/Loading";
 import DashboardHead from "../../../../layout/dashboardHead/DashboardHead";
@@ -45,35 +44,19 @@ const tableData = [
 ];
 
 export default function EmpOverallStaus() {
-  const { orgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-
-  const saveHandler = (values) => {};
-  const [loading, setLoading] = useState(false);
-  const [rowDto, setRowDto] = useState([...tableData]);
+  const [loading] = useState(false);
+  const [rowDto] = useState([...tableData]);
 
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -95,7 +78,6 @@ export default function EmpOverallStaus() {
                               <button
                                 type="button"
                                 className="btn-save "
-                                onClick={() => {}}
                                 style={{
                                   border: "transparent",
                                   width: "30px",
@@ -120,7 +102,6 @@ export default function EmpOverallStaus() {
                                   background: "#f2f2f7",
                                   borderRadius: "100px",
                                 }}
-                                onClick={(e) => {}}
                               >
                                 <Print
                                   sx={{ color: "#637381", fontSize: "16px" }}
