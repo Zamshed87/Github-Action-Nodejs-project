@@ -773,12 +773,9 @@ const CreateAndEditEmploye = () => {
                       });
                       if (value) {
                         getWorkplace();
-<<<<<<< HEAD
                         // getUserTypeDDL();
-=======
                         getUserTypeDDL();
                         getHolidayGroupDDL();
->>>>>>> 323219b685b3c086542b783617bdfeb208f1c2ab
                       }
                     }}
                     rules={[
