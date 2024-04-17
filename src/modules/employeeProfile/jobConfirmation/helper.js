@@ -22,9 +22,9 @@ export const getJobConfirmationInfo = async (
 ) => {
   setLoading && setLoading(true);
 
-  let status = statusId ? `&intStatusId=${statusId}` : "";
-  let search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
-  let intId = id ? `&intId=${id}` : "";
+  const status = statusId ? `&intStatusId=${statusId}` : "";
+  const search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
+  const intId = id ? `&intId=${id}` : "";
 
   try {
     const res = await axios.get(
@@ -158,8 +158,8 @@ export const jobConfirmColumns = (page, paginationSize) => {
 };
 
 // for excel
-export const getTableDataConfirmation = (row, keys, totalKey) => {
-  const data = row?.map((item, index) => {
+export const getTableDataConfirmation = (row, keys) => {
+  const data = row?.map((item) => {
     return keys?.map((key) => {
       return new Cell(
         key === "dteProbationaryCloseDate"

@@ -40,7 +40,7 @@ export const onFilterLoanApplication = (
   setRowDto
 ) => {
   const regex = new RegExp(keywords?.toLowerCase());
-  let newDta = loanRequestLanding?.filter(
+  const newDta = loanRequestLanding?.filter(
     (item) =>
       regex.test(item?.employeeName?.toLowerCase()) ||
       regex.test(item?.employeeCode?.toLowerCase()) ||
@@ -487,7 +487,7 @@ export const loanCrudAction = async (
       remark: item?.strRemarks || "",
       date: item?.date,
     }));
-    let payload = {
+    const payload = {
       partType: isDelete
         ? "LoanDelete"
         : values?.loanApplicationId
@@ -552,7 +552,7 @@ export const loanFilterAction = async (
   buId
 ) => {
   try {
-    let payload = {
+    const payload = {
       loanTypeId: values?.loanType?.value || 0,
       departmentId: values?.department?.value || 0,
       designationId: values?.designation?.value || 0,
@@ -566,7 +566,7 @@ export const loanFilterAction = async (
       businessUnitId: buId,
     };
     setLoading(true);
-    let res = await axios.post(
+    const res = await axios.post(
       `/Employee/GetLoanApplicationByAdvanceFilter`,
       payload
     );
@@ -581,7 +581,7 @@ export const loanFilterAction = async (
 
 export const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
+))(() => ({
   [`& .${tooltipClasses.arrow}`]: {
     color: "#fff !important",
   },
@@ -594,19 +594,12 @@ export const LightTooltip = styled(({ className, ...props }) => (
     fontSize: 11,
   },
 }));
-function isValidDate(dateString) {
-  const dateObject = new Date(dateString);
-  return !isNaN(dateObject.getTime());
-}
+// function isValidDate(dateString) {
+//   const dateObject = new Date(dateString);
+//   return !isNaN(dateObject.getTime());
+// }
 
-export const costInputHandler = (
-  name,
-  value,
-  sl,
-  tableData,
-  setTableData,
-  values
-) => {
+export const costInputHandler = (name, value, sl, tableData, setTableData) => {
   if (value >= 0) {
     const data = [...tableData];
     const row = data[sl];
@@ -654,7 +647,7 @@ export const handleAmendmentClick = (
     : moment();
 
   // Find the next available month that follows the sequence
-  let nextDate = newDate.clone();
+  const nextDate = newDate.clone();
   while (
     updatedTableData.some((row) => moment(row.date).isSame(nextDate, "month"))
   ) {
