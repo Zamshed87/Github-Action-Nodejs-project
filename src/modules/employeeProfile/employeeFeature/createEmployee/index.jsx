@@ -459,6 +459,24 @@ const CreateAndEditEmploye = () => {
         });
       },
     });
+
+    userTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "UserType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strUserType;
+          res[i].value = item?.intUserTypeId;
+        });
+      },
+    });
+
     religionDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -533,7 +551,7 @@ const CreateAndEditEmploye = () => {
       singleData.calenderType?.value === 2 && getCalendarByRosterDDL();
     }
   }, [orgId, buId, singleData, employeeId]);
-
+  console.log("sdgsg", userTypeDDL?.data?.[0]?.label);
   return (
     <div style={{ marginBottom: "60px" }}>
       {loading && <Loading />}
@@ -547,6 +565,14 @@ const CreateAndEditEmploye = () => {
             value: 1,
             label: "Not Applicable",
           },
+          // userType: {
+          //   value: 1,
+          //   label: "Not Applicable fhfdh",
+          // },
+          // userType: {
+          //   value: userTypeDDL?.data ? userTypeDDL?.data?.[0]?.value : 1,
+          //   label: userTypeDDL?.data ? userTypeDDL?.data?.[0]?.label : "test",
+          // },
         }}
       >
         <PCard>
@@ -726,7 +752,7 @@ const CreateAndEditEmploye = () => {
                       });
                       if (value) {
                         getWorkplace();
-                        getUserTypeDDL();
+                        // getUserTypeDDL();
                       }
                     }}
                     rules={[
@@ -814,6 +840,7 @@ const CreateAndEditEmploye = () => {
                       form.setFieldsValue({
                         joiningDate: value,
                         dteProbationaryCloseDate: moment(next180Days),
+                        generateDate: value
                       });
                     }}
                     // disabled={params?.id}
@@ -1471,9 +1498,13 @@ const CreateAndEditEmploye = () => {
                     {/* User Create */}
                     <Form.Item noStyle shouldUpdate>
                       {() => {
-                        const { isUsersection, employeeCode } =
-                          form.getFieldsValue();
-
+                        const {
+                          isUsersection,
+                          employeeCode,
+                          userType,
+                          otType,
+                        } = form.getFieldsValue();
+                        console.log({ userType, otType });
                         return !empId ? (
                           <>
                             <Col md={8} sm={24}>
@@ -1487,6 +1518,14 @@ const CreateAndEditEmploye = () => {
                                     form.setFieldsValue({
                                       loginUserId: employeeCode,
                                       password: "123456",
+                                      userType: {
+                                        value: userTypeDDL?.data
+                                          ? userTypeDDL?.data?.[0]?.value
+                                          : 1,
+                                        label: userTypeDDL?.data
+                                          ? userTypeDDL?.data?.[0]?.label
+                                          : "test",
+                                      },
                                     });
                                   }
                                 }}
@@ -1576,6 +1615,7 @@ const CreateAndEditEmploye = () => {
                                   <PSelect
                                     options={userTypeDDL.data || []}
                                     name="userType"
+                                    // value="userType"
                                     label="User Type"
                                     placeholder="User Type"
                                     onChange={(value, op) => {
