@@ -50,7 +50,7 @@ const TrainingAttendanceLanding = () => {
       }
       setLoading(true);
       const regex = new RegExp(keywords?.toLowerCase());
-      let newData = rowDto?.filter(
+      const newData = rowDto?.filter(
         (item) =>
           regex.test(item?.strTrainingName?.toLowerCase()) ||
           regex.test(item?.strResourcePerson?.toLowerCase()) ||
@@ -69,22 +69,8 @@ const TrainingAttendanceLanding = () => {
   }, [orgId, buId]);
   return (
     <>
-      <Formik
-        enableReinitialize={true}
-        initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-        
-        }}
-      >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -93,7 +79,10 @@ const TrainingAttendanceLanding = () => {
                   <div className="table-card-heading ">
                     <div className="d-flex align-items-center"></div>
                     <div className="table-header-right">
-                      <ul className="d-flex flex-wrap" style={{marginRight:"-7px"}}>
+                      <ul
+                        className="d-flex flex-wrap"
+                        style={{ marginRight: "-7px" }}
+                      >
                         {(isFilter || values?.search) && (
                           <li>
                             <ResetButton

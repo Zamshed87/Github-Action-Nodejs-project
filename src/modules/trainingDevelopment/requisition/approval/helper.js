@@ -5,8 +5,7 @@ export const getAllRequisitionListDataForApproval = async (
   payload,
   setter,
   setAllData,
-  setLoading,
-  cb
+  setLoading
 ) => {
   setLoading && setLoading(true);
   try {
@@ -15,15 +14,15 @@ export const getAllRequisitionListDataForApproval = async (
       payload
     );
     if (res?.data) {
-      const modifyData={
+      const modifyData = {
         ...res?.data,
-        listData:res?.data?.listData?.map(item=>{
-          return{
-          ...item,
-          strTraining:item?.application?.strTrainingName
-        }
-        })
-      }
+        listData: res?.data?.listData?.map((item) => {
+          return {
+            ...item,
+            strTraining: item?.application?.strTrainingName,
+          };
+        }),
+      };
       setAllData && setAllData(modifyData);
       setter(modifyData);
     }
@@ -36,7 +35,6 @@ export const getAllRequisitionListDataForApproval = async (
 };
 
 export const RequisitionApproveReject = async (payload, cb) => {
-  
   try {
     const res = await axios.post(
       `/ApprovalPipeline/TrainingRequisitionApprovalEngine`,

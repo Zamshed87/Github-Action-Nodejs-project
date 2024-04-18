@@ -116,7 +116,7 @@ const TrainingDetails = () => {
       setAllData
     );
   };
-  let permission = {
+  const permission = {
     isCreate: true,
   };
 

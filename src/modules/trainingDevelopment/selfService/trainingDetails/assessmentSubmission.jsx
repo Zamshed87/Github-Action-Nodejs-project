@@ -15,7 +15,7 @@ const AssessmentSubmission = ({
   setLoading,
   isSubmit,
   getData,
-  lastSubmission
+  lastSubmission,
 }) => {
   const { employeeId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -25,7 +25,7 @@ const AssessmentSubmission = ({
   const { handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: "",
-    onSubmit: (values) => {
+    onSubmit: () => {
       // const answeredQuestions = questions.filter(item=>item?.options?.filter(op=>op?.IsSelected))
 
       const payload = questions.map((item) => {
@@ -34,7 +34,9 @@ const AssessmentSubmission = ({
           options: item.options.filter((op) => op?.IsSelected),
         };
       });
-      const requiredAnswered = payload.filter((item) => item?.isRequired && item?.options[0]?.IsSelected);
+      const requiredAnswered = payload.filter(
+        (item) => item?.isRequired && item?.options[0]?.IsSelected
+      );
       const requiredQuestions = questions.filter((item) => item?.isRequired);
       if (requiredQuestions.length > requiredAnswered.length) {
         return toast.warn("Answer All required Questions");
@@ -55,7 +57,7 @@ const AssessmentSubmission = ({
     <form onSubmit={handleSubmit} className="mt-2 ml-3">
       <div className="d-flex" style={{ flexDirection: "column", gap: "15px" }}>
         {questions.map((question, index) => (
-          <div>
+          <div key={index}>
             <div
               className="d-flex"
               style={{
@@ -83,7 +85,7 @@ const AssessmentSubmission = ({
             </div>
             <div className="">
               {question?.options?.map((option, idx) => (
-                <div className="input-field-main">
+                <div key={idx} className="input-field-main">
                   <FormikRadio
                     styleobj={{
                       iconWidth: "15px",
@@ -94,7 +96,7 @@ const AssessmentSubmission = ({
                     name={question?.strQuestion}
                     label={option?.strOption}
                     value={idx}
-                    onChange={(e) => {
+                    onChange={() => {
                       // setFieldValue("summary", e.target.value);
                       const temp = [...questions];
 
@@ -131,7 +133,9 @@ const AssessmentSubmission = ({
           </div>
         ))}
       </div>
-      {(isSubmit && questions?.length > 0) && moment().format() <= moment(lastSubmission).format() ?(
+      {isSubmit &&
+      questions?.length > 0 &&
+      moment().format() <= moment(lastSubmission).format() ? (
         <PrimaryButton
           type="submit"
           className="btn btn-green flex-center mt-3 "

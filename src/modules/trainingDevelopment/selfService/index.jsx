@@ -53,7 +53,7 @@ const SelfTrainingDevelopment = () => {
       }
       setLoading(true);
       const regex = new RegExp(keywords?.toLowerCase());
-      let newData = rowDto?.filter(
+      const newData = rowDto?.filter(
         (item) =>
           regex.test(item?.strTrainingName?.toLowerCase()) ||
           regex.test(item?.strResourcePerson?.toLowerCase()) ||
@@ -67,7 +67,6 @@ const SelfTrainingDevelopment = () => {
       setLoading(false);
     }
   };
-  const saveHandler = (values) => {};
   useEffect(() => {
     allAttendanceList(
       orgId,
@@ -83,21 +82,11 @@ const SelfTrainingDevelopment = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}

@@ -1,6 +1,6 @@
 import {
   AddOutlined,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -42,7 +42,7 @@ const OutsideDuty = () => {
   });
 
   const getData = () => {
-    let newDate = { fromDate: date?.fromDate, toDate: date?.toDate };
+    const newDate = { fromDate: date?.fromDate, toDate: date?.toDate };
     extraSideLandingView(
       "ExtraSideDutyList",
       buId,
@@ -74,7 +74,7 @@ const OutsideDuty = () => {
   }, []);
 
   const saveHandler = (values) => {
-    let date = { fromDate: values?.fromDate, toDate: values?.toDate };
+    const date = { fromDate: values?.fromDate, toDate: values?.toDate };
     extraSideLandingView(
       "ExtraSideDutyList",
       buId,
@@ -100,21 +100,13 @@ const OutsideDuty = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values) => {
           saveHandler(values, () => {
             //
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -204,7 +196,6 @@ const OutsideDuty = () => {
                                 type="submit"
                                 className="btn btn-default flex-center"
                                 label={"Apply"}
-                                onClick={() => {}}
                                 onSubmit={() => handleSubmit()}
                               />
                             </div>

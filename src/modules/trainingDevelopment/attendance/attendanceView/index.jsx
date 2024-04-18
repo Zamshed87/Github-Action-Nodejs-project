@@ -16,7 +16,7 @@ import TrainingDetailsCard from "../../common/TrainingDetailsCard";
 import {
   employeeListColumn,
   trainingAbsentPresent,
-  trainingAttendanceList
+  trainingAttendanceList,
 } from "./helper";
 
 const initData = {
@@ -70,7 +70,6 @@ const AttendanceView = () => {
       };
     });
 
-
     trainingAbsentPresent(
       orgId,
       buId,
@@ -111,17 +110,18 @@ const AttendanceView = () => {
               <h2>Attendance Details</h2>
             </div>
             <div className="table-card-head-right">
-            {moment().format() < moment(state?.dteCourseCompletionDate).format() &&
-              <button
-                type="submit"
-                className="btn btn-green btn-green-disable"
-                disabled={payload?.length === 0}
-                onClick={() => handleSubmit(values?.initDate)}
-              >
-                {/* {isEdit ? "Update" : "Save"} */}
-                {"Save"}
-              </button>
-}
+              {moment().format() <
+                moment(state?.dteCourseCompletionDate).format() && (
+                <button
+                  type="submit"
+                  className="btn btn-green btn-green-disable"
+                  disabled={payload?.length === 0}
+                  onClick={() => handleSubmit(values?.initDate)}
+                >
+                  {/* {isEdit ? "Update" : "Save"} */}
+                  {"Save"}
+                </button>
+              )}
               {/* <PrimaryButton
                   type="button"
                   className="btn btn-default flex-center"
@@ -258,7 +258,7 @@ const AttendanceView = () => {
                             setFieldValue
                             // 15
                           )}
-                          onRowClick={(item) => {
+                          onRowClick={() => {
                             // history.push(
                             //   `/profile/iOU/application/${item?.intIOUId}`
                             // );

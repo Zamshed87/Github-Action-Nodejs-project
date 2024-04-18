@@ -21,11 +21,11 @@ export default function ViewRoleExtension() {
   const [empBasic, setEmpBasic] = useState([]);
   const [rowDto, setRowDto] = useState([]);
   const [allData, setAllData] = useState([]);
-  const [employeeRoles, getEmployeeRoles] = useAxiosGet();
+  const [, getEmployeeRoles] = useAxiosGet();
   const [orgTypeOrder, setOrgTypeOrder] = useState("desc");
   const [orgNameOrder, setOrgNameOrder] = useState("desc");
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -77,7 +77,7 @@ export default function ViewRoleExtension() {
     }
     setRowDto(modifyRowData);
   };
-  
+
   return (
     <>
       {loading && <Loading />}
@@ -165,7 +165,7 @@ export default function ViewRoleExtension() {
                             {rowDto?.map((item, index) => {
                               return (
                                 <>
-                                  <tr key={index} onClick={(e) => {}}>
+                                  <tr key={index}>
                                     <td>{index + 1}</td>
 
                                     <td>

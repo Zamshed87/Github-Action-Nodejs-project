@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
-import {
-  getPeopleDeskAllLanding,
-} from "../../../../../common/api";
+import { getPeopleDeskAllLanding } from "../../../../../common/api";
 import BackButton from "../../../../../common/BackButton";
 import FormikInput from "../../../../../common/FormikInput";
 import FormikSelect from "../../../../../common/FormikSelect";
@@ -42,16 +40,15 @@ export default function UnderCreateOffdaySetup() {
   const [rowDto, setRowDto] = useState([]);
 
   const saveHandler = (values, cb) => {
-    if (rowDto?.length < 1)
-      return toast.warn("Please add offday calender");
+    if (rowDto?.length < 1) return toast.warn("Please add offday calender");
 
-    let firstRowCalId = rowDto[0]?.calendarId;
-    let lastRowNextCalId = rowDto[rowDto?.length - 1]?.nextCalenderId;
+    const firstRowCalId = rowDto[0]?.calendarId;
+    const lastRowNextCalId = rowDto[rowDto?.length - 1]?.nextCalenderId;
 
     // firstRowCalId and lastRowNextCalId should be equal
     if (firstRowCalId !== lastRowNextCalId) return toast.warn("Invalid circle");
 
-    let payload = {
+    const payload = {
       partType: "Offday",
       timeSheetOffdayJsons: [...rowDto],
     };
@@ -71,7 +68,7 @@ export default function UnderCreateOffdaySetup() {
       return toast.warn("No. of change days should be less than 7");
     }
 
-    let payload = {
+    const payload = {
       offdayGroupId: +params?.id,
       weekdayId: +values?.calendarName?.value,
       weekdayName: values?.calendarName?.label,
@@ -89,11 +86,11 @@ export default function UnderCreateOffdaySetup() {
     }
   };
 
-  const filterCalenderListFunc = (values) => {
+  const filterCalenderListFunc = () => {
     // let filterCalenderList = weekdayDDL?.filter(
     //   (item) => item?.value !== values?.calendarName?.value
     // );
-    let filterCalenderList = [...weekdayDDL];
+    const filterCalenderList = [...weekdayDDL];
     return filterCalenderList;
   };
 
@@ -117,11 +114,11 @@ export default function UnderCreateOffdaySetup() {
   const commonSortByFilter = (filterType, property) => {
     filterType === "asc"
       ? setRowDto((prev) => [
-        ...prev?.sort((a, b) => (a[property] > b[property] ? -1 : 1)),
-      ])
+          ...prev?.sort((a, b) => (a[property] > b[property] ? -1 : 1)),
+        ])
       : setRowDto((prev) => [
-        ...prev?.sort((a, b) => (b[property] > a[property] ? -1 : 1)),
-      ]);
+          ...prev?.sort((a, b) => (b[property] > a[property] ? -1 : 1)),
+        ]);
   };
   // const {permissionList} = useSelector(
   //   (state) => state?.auth,
@@ -140,23 +137,14 @@ export default function UnderCreateOffdaySetup() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             // don't reset form, not use ful for the purpose
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          setValues,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -209,12 +197,12 @@ export default function UnderCreateOffdaySetup() {
                                 styles={customStyles}
                                 errors={errors}
                                 touched={touched}
-                              // offdayId means edit, if edit, don't need to disabled this
-                              // isDisabled={
-                              //   rowDto[0]?.offdayId
-                              //     ? false
-                              //     : rowDto?.length > 0
-                              // }
+                                // offdayId means edit, if edit, don't need to disabled this
+                                // isDisabled={
+                                //   rowDto[0]?.offdayId
+                                //     ? false
+                                //     : rowDto?.length > 0
+                                // }
                               />
                             </div>
                           </div>
@@ -293,7 +281,7 @@ export default function UnderCreateOffdaySetup() {
                             type="button"
                             className="btn btn-green btn-green-disable"
                             label="Clear"
-                            onClick={(e) => setRowDto([])}
+                            onClick={() => setRowDto([])}
                           />
                         </div>
                       </div>
@@ -379,7 +367,7 @@ export default function UnderCreateOffdaySetup() {
           id={params?.id}
           rosterName={params?.rosterName}
           setIsRosterSetup={setIsRosterSetup}
-        // getData={getData}
+          // getData={getData}
         />
       </ViewModal>
     </>

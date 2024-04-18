@@ -21,7 +21,7 @@ export const getAssessmentQuestions = async (
   }
 };
 
-export const deleteAssessment = async (scheduleId, status, setLoading, cb) => {
+export const deleteAssessment = async (scheduleId, status, setLoading) => {
   setLoading?.(true);
   try {
     const res = await axios.put(

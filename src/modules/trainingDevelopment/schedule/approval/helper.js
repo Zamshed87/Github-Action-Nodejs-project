@@ -1,15 +1,15 @@
+import { Cancel, CheckCircle } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Chips from "../../../../common/Chips";
+import FormikCheckBox from "../../../../common/FormikCheckbox";
+import MuiIcon from "../../../../common/MuiIcon";
+import { gray900, greenColor } from "../../../../utility/customColor";
 import {
   dateFormatter,
   dayMonthYearFormatter,
 } from "../../../../utility/dateFormatter";
-import Chips from "../../../../common/Chips";
-import { gray900, greenColor } from "../../../../utility/customColor";
-import FormikCheckBox from "../../../../common/FormikCheckbox";
-import { Cancel, CheckCircle } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
-import MuiIcon from "../../../../common/MuiIcon";
 
 export const getAllTrainingScheduleListDataForApproval = async (
   payload,
@@ -84,11 +84,11 @@ export const scheduleApprovalColumn = (
                 filterLanding?.every((item) => item?.selectCheckbox)
               }
               onChange={(e) => {
-                let data = filterLanding.map((item) => ({
+                const data = filterLanding.map((item) => ({
                   ...item,
                   selectCheckbox: e.target.checked,
                 }));
-                let data2 = landingApproval.map((item) => ({
+                const data2 = landingApproval.map((item) => ({
                   ...item,
                   selectCheckbox: e.target.checked,
                 }));
@@ -102,7 +102,7 @@ export const scheduleApprovalColumn = (
         </div>
       ),
       dataIndex: "trainingCode",
-      render: (_, record, index) => (
+      render: (_, record) => (
         <div className="d-flex align-items-center">
           <div className="mr-2" onClick={(e) => e.stopPropagation()}>
             <FormikCheckBox
@@ -116,7 +116,7 @@ export const scheduleApprovalColumn = (
               color={greenColor}
               checked={record?.selectCheckbox}
               onChange={(e) => {
-                let data = filterLanding?.map((item) => {
+                const data = filterLanding?.map((item) => {
                   if (
                     item?.application?.intScheduleId ===
                     record?.application?.intScheduleId
@@ -127,7 +127,7 @@ export const scheduleApprovalColumn = (
                     };
                   } else return item;
                 });
-                let data2 = landingApproval?.map((item) => {
+                const data2 = landingApproval?.map((item) => {
                   if (
                     item?.application?.intScheduleId ===
                     record?.application?.intScheduleId

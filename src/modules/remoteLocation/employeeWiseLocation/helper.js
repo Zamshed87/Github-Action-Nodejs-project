@@ -116,7 +116,7 @@ export const remoteLocColumns = (
         </div>
       ),
       dataIndex: "",
-      render: (_, record, index) => (
+      render: (_, record) => (
         <div>
           <FormikCheckBox
             styleObj={{
@@ -129,7 +129,7 @@ export const remoteLocColumns = (
             color={greenColor}
             checked={record?.selectCheckbox === true}
             onChange={(e) => {
-              let data = filterData?.resultList?.map((item) => {
+              const data = filterData?.resultList?.map((item) => {
                 if (item?.intMasterLocationId === record?.intMasterLocationId) {
                   return {
                     ...item,
@@ -138,7 +138,7 @@ export const remoteLocColumns = (
                   };
                 } else return item;
               });
-              let data2 = rowDto?.resultList?.map((item) => {
+              const data2 = rowDto?.resultList?.map((item) => {
                 if (item?.intMasterLocationId === record?.intMasterLocationId) {
                   return {
                     ...item,

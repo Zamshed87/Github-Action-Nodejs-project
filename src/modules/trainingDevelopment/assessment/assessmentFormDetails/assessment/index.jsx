@@ -30,7 +30,7 @@ const AssessmentPreview = ({ scheduleId }) => {
   }, [scheduleId]);
 
   const demoPopup = (status) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to Delete ? `,
       yesAlertFunc: () => {
@@ -39,6 +39,7 @@ const AssessmentPreview = ({ scheduleId }) => {
         };
         deleteAssessment(scheduleId, status, setLoading, cb);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);

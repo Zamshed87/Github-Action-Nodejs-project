@@ -1,16 +1,14 @@
 import { Close } from "@mui/icons-material";
 import { Alert, AlertTitle, IconButton } from "@mui/material";
 import { useFormik } from "formik";
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { shallowEqual, useSelector } from "react-redux";
 import AntTable from "../../../common/AntTable";
 import Chips from "../../../common/Chips";
-import Loading from "../../../common/loading/Loading";
 import MasterFilter from "../../../common/MasterFilter";
 import NoResult from "../../../common/NoResult";
+import Loading from "../../../common/loading/Loading";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { getAllLocation } from "./helper";
 
@@ -36,7 +34,7 @@ const AllLocationList = ({ show, setOpenModal, size, backdrop, classes }) => {
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter(
+      const newDta = allData?.filter(
         (item) =>
           regex.test(item?.strPlaceName?.toLowerCase()) ||
           regex.test(item?.locationLog?.toLowerCase())
