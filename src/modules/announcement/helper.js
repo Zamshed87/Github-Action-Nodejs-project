@@ -49,11 +49,14 @@ export const getAllAnnouncement = async (
   setAllData,
   setLoading,
   employeeId,
-  yearId
+  yearId,
+  wgId
 ) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(`/MasterData/GetAnnouncement?YearId=${yearId}`);
+    const res = await axios.get(
+      `/MasterData/GetAnnouncement?YearId=${yearId}&workplaceGroupId=${wgId}`
+    );
     if (res?.data) {
       setter(res?.data);
       setAllData && setAllData(res?.data);
@@ -75,7 +78,7 @@ export const getSingleAnnouncement = async (
     );
     if (res?.data) {
       //  workgroup
-      let wg = res?.data?.announcementRow
+      const wg = res?.data?.announcementRow
         ?.filter((item) => item?.strAnnounceCode === "Wg")
         .map((item) => {
           return {
@@ -85,7 +88,7 @@ export const getSingleAnnouncement = async (
           };
         });
       // workplace
-      let w = res?.data?.announcementRow
+      const w = res?.data?.announcementRow
         ?.filter((item) => item?.strAnnounceCode === "w")
         .map((item) => {
           return {
@@ -95,7 +98,7 @@ export const getSingleAnnouncement = async (
           };
         });
       // department
-      let dept = res?.data?.announcementRow
+      const dept = res?.data?.announcementRow
         ?.filter((item) => item?.strAnnounceCode === "Dept")
         .map((item) => {
           return {
@@ -105,7 +108,7 @@ export const getSingleAnnouncement = async (
           };
         });
       // designation
-      let desig = res?.data?.announcementRow
+      const desig = res?.data?.announcementRow
         ?.filter((item) => item?.strAnnounceCode === "Desig")
         .map((item) => {
           return {
@@ -115,7 +118,7 @@ export const getSingleAnnouncement = async (
           };
         });
       // user group
-      let ug = res?.data?.announcementRow
+      const ug = res?.data?.announcementRow
         ?.filter((item) => item?.strAnnounceCode === "UG")
         .map((item) => {
           return {
@@ -161,7 +164,7 @@ export const getSingleAnnouncementDeleteData = async (announcementId, cb) => {
   }
 };
 
-export const createAnnouncement = async (payload, setLoading, cb) => {
+export const createAnnouncement = async (payload, setLoading) => {
   setLoading(true);
   try {
     const res = await axios.post(`/MasterData/CreateEditAnnouncement`, payload);
@@ -190,7 +193,7 @@ export const deleteAnnouncement = async (payload, setLoading, cb) => {
 export const filterData = (keywords, allData, setRowDto) => {
   try {
     const regex = new RegExp(keywords?.toLowerCase());
-    let newData = allData?.filter((item) =>
+    const newData = allData?.filter((item) =>
       regex.test(item?.strTitle?.toLowerCase())
     );
     setRowDto(newData);

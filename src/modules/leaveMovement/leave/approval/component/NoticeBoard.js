@@ -1,14 +1,14 @@
 import { Form, Formik } from "formik";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { gray500, gray700 } from "../../../../../utility/customColor";
+import { useEffect, useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import FormikSelect from "../../../../../common/FormikSelect";
-import { yearDDLAction } from "../../../../../utility/yearDDL";
-import { customStyles } from "../../../../../utility/selectCustomStyle";
 import NoResult from "../../../../../common/NoResult";
+import { gray500, gray700 } from "../../../../../utility/customColor";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
+import { customStyles } from "../../../../../utility/selectCustomStyle";
+import { yearDDLAction } from "../../../../../utility/yearDDL";
 import { getAllAnnouncement } from "../../helper";
-
 
 const initData = {
   monthYear: moment().format("YYYY-MM"),
@@ -27,9 +27,20 @@ export default function NoticeBoard({
     year: moment().year(),
     month: moment().month() + 1,
   });
+  const { wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   useEffect(() => {
-    getAllAnnouncement(buId, orgId, employeeId, +date?.year, setAllNoticeData);
+    getAllAnnouncement(
+      buId,
+      orgId,
+      employeeId,
+      +date?.year,
+      setAllNoticeData,
+      wgId
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, orgId, employeeId, date]);
 
@@ -56,7 +67,6 @@ export default function NoticeBoard({
             label: "2023",
           },
         }}
-        onSubmit={(values) => {}}
       >
         {({ handleSubmit, errors, touched, setFieldValue, values }) => (
           <Form

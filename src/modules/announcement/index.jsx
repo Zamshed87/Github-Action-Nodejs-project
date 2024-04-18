@@ -67,7 +67,7 @@ export default function AnnouncementCreate() {
   const history = useHistory();
   const scrollRef = useRef();
 
-  const { orgId, buId, employeeId } = useSelector(
+  const { orgId, buId, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -91,7 +91,8 @@ export default function AnnouncementCreate() {
       setAllData,
       setLoading,
       employeeId,
-      +date?.year
+      +date?.year,
+      wgId
     );
   };
 
@@ -110,7 +111,8 @@ export default function AnnouncementCreate() {
       setAllData,
       setLoading,
       employeeId,
-      +date?.year
+      +date?.year,
+      wgId
     );
   }, [buId, orgId, date?.year]);
 
@@ -381,7 +383,8 @@ export default function AnnouncementCreate() {
                               setAllData,
                               setLoading,
                               employeeId,
-                              values?.year?.value
+                              values?.year?.value,
+                              wgId
                             );
                           }}
                         >
