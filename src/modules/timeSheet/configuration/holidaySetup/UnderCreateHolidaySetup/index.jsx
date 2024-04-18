@@ -45,10 +45,10 @@ export default function UnderCreateHolidaySetup() {
   const [isHolidayGroup, setIsHolidayGroup] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
+  const [, setRowDto] = useState([]);
+  const [, setAllData] = useState([]);
   const [holidayList, setHolidayList] = useState([]);
-  const [allHolidayList, setAllHolidayList] = useState([]);
+  const [, setAllHolidayList] = useState([]);
   const [singleData, setSingleData] = useState("");
   const [holidayId, setHolidayId] = useState("");
   const [holidaySingleData, setHolidaySingleData] = useState("");

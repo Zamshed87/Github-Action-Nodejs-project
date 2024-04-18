@@ -16,7 +16,7 @@ export const getHolidaySetupLanding = async (
       `/Employee/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${busId}&workplaceId=${wId}&intId=${id}`
     );
     if (res?.data) {
-      let newData = res?.data?.map((item) => {
+      const newData = res?.data?.map((item) => {
         return {
           ...item,
           noOfDays: item?.TotalDays ? +item?.TotalDays : +0,

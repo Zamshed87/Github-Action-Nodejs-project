@@ -72,9 +72,13 @@ export const employeeListColumn = (
             color={record?.strAttendanceStatus ? greenColor : blackColor40}
             checked={record?.strAttendanceStatus}
             onChange={(e) => {
-              let data = rowDto?.map((item) =>
+              const data = rowDto?.map((item) =>
                 item?.intEmployeeId === record?.intEmployeeId
-                  ? { ...item, strAttendanceStatus: !item?.strAttendanceStatus,isModified:true }
+                  ? {
+                      ...item,
+                      strAttendanceStatus: !item?.strAttendanceStatus,
+                      isModified: true,
+                    }
                   : item
               );
               setRowDto(data);
@@ -113,20 +117,17 @@ export const trainingAbsentPresent = async (
   orgId,
   buId,
   payload,
-  setLoading,
-  setter,
-  allData
+  setLoading
 ) => {
   setLoading && setLoading(true);
   try {
     // eslint-disable-next-line
     const res = await axios.post(`/Training/CreateTrainingAttendance`, payload);
     setLoading && setLoading(false);
-    if(res?.data?.statusCode===500){
+    if (res?.data?.statusCode === 500) {
       toast.warn(res?.data?.message);
-    }else{
+    } else {
       toast.success("Submitted Successfully");
-
     }
     // setter(allData)
   } catch (error) {

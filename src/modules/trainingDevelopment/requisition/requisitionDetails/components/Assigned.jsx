@@ -30,7 +30,7 @@ export default function Assigned({
           )}
           setColumnsData={(dataRow) => {
             if (dataRow?.length === rowDto?.length) {
-              let temp = dataRow?.map((item) => {
+              const temp = dataRow?.map((item) => {
                 return {
                   ...item,
                   selectCheckbox: false,
@@ -42,7 +42,7 @@ export default function Assigned({
               setFilterData(dataRow);
             }
           }}
-          onRowClick={(item) => {
+          onRowClick={() => {
             // history.push(
             //   `/profile/iOU/application/${item?.intIOUId}`
             // );

@@ -55,7 +55,7 @@ const RequisitionLanding = () => {
       }
       setLoading(true);
       const regex = new RegExp(keywords?.toLowerCase());
-      let newData = allData?.filter(
+      const newData = allData?.filter(
         (item) =>
           regex.test(item?.strDepartment?.toLowerCase()) ||
           regex.test(item?.Designation?.toLowerCase()) ||
@@ -72,8 +72,6 @@ const RequisitionLanding = () => {
       setLoading(false);
     }
   };
-  const saveHandler = (values) => {};
-
   // useEffect
 
   useEffect(() => {
@@ -92,21 +90,11 @@ const RequisitionLanding = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}

@@ -39,7 +39,7 @@ export const attendanceColumn = (history, page, paginationSize) => {
     {
       title: () => <span style={{ color: gray600 }}>Duration</span>,
       dataIndex: "numTotalDuration",
-      render: (numTotalDuration, record) => (
+      render: (numTotalDuration) => (
         <div className="d-flex align-items-center ml-2">
           <div>{numTotalDuration + " Hrs"}</div>
         </div>

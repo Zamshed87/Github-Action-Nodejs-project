@@ -66,14 +66,13 @@ export default function EmployeeLocations() {
     enableReinitialize: true,
     validationSchema,
     initialValues: initialValues,
-    onSubmit: (values) => saveHandler(values),
   });
 
   // for search
   const searchData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter(
+      const newDta = allData?.filter(
         (item) =>
           regex.test(item?.strEmployeeName?.toLowerCase()) ||
           regex.test(item?.strDesignation?.toLowerCase())
@@ -93,9 +92,6 @@ export default function EmployeeLocations() {
       setLoading
     );
   };
-
-  // on form submit
-  const saveHandler = (values) => {};
 
   // useEffect
   useEffect(() => {

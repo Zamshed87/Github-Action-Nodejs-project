@@ -12,14 +12,12 @@ const validationSchema = Yup.object().shape({
 });
 
 const AddTrainingName = ({
-  orgId,
   wgId,
   employeeId,
   accountId,
   buId,
   setTrainingNameDDL,
   setShow,
-  setLoading,
 }) => {
   const saveHandler = (values, cb) => {
     const payload = [
@@ -50,21 +48,13 @@ const AddTrainingName = ({
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               <div className="modalBody pt-0 px-0">

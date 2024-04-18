@@ -29,7 +29,7 @@ import {
 // import { dateFormatter } from "../../../../utility/dateFormatter";
 // import { timeFormatter } from "../../../../utility/timeFormatter";
 
-const CardTable = ({ propsObj }) => {
+export const CardTable = ({ propsObj }) => {
   const {
     setFieldValue,
     applicationListData,
@@ -37,8 +37,6 @@ const CardTable = ({ propsObj }) => {
     appliedStatus,
     allData,
     setAllData,
-    filterValues,
-    setFilterValues,
   } = propsObj;
 
   const { employeeId, isOfficeAdmin, orgId } = useSelector(
@@ -47,13 +45,13 @@ const CardTable = ({ propsObj }) => {
   );
 
   // eslint-disable-next-line no-unused-vars
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
 
   const demoPopup = (action, text, data) => {
-    let payload = [
+    const payload = [
       {
         applicationId: data?.application?.intRemoteAttendanceId,
         approverEmployeeId: employeeId,
@@ -81,12 +79,13 @@ const CardTable = ({ propsObj }) => {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to ${action}? `,
       yesAlertFunc: () => {
         TrainingScheduleApproveReject(payload, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -143,7 +142,7 @@ const CardTable = ({ propsObj }) => {
         </div>
       ),
       dataIndex: "employeeCode",
-      render: (_, record, index) => (
+      render: (_, record) => (
         <div onClick={(e) => e.stopPropagation()}>
           {!(
             appliedStatus?.label === "Approved" ||
@@ -161,7 +160,7 @@ const CardTable = ({ propsObj }) => {
               checked={record?.selectCheckbox}
               onChange={(e) => {
                 // let data = [...applicationListData?.listData];
-                let data = applicationListData?.listData.map((item) => {
+                const data = applicationListData?.listData.map((item) => {
                   if (
                     item?.application?.intAutoIncrement ===
                     record?.application?.intAutoIncrement
@@ -174,7 +173,7 @@ const CardTable = ({ propsObj }) => {
                     return item;
                   }
                 });
-                let data2 = allData?.listData.map((item) => {
+                const data2 = allData?.listData.map((item) => {
                   if (
                     item?.application?.intAutoIncrement ===
                     record?.application?.intAutoIncrement
@@ -310,10 +309,9 @@ const CardTable = ({ propsObj }) => {
           }}
           data={allData?.listData}
           columnsData={columns(page, paginationSize)}
-          onRowClick={(dataRow) => {}}
           setColumnsData={(dataRow) => {
             if (dataRow?.length === allData?.listData?.length) {
-              let temp = dataRow?.map((item) => {
+              const temp = dataRow?.map((item) => {
                 return {
                   ...item,
                   selectCheckbox: false,
@@ -335,221 +333,220 @@ const CardTable = ({ propsObj }) => {
   );
 };
 
-
 // <table className="table">
-        //   <thead>
-        //     <tr>
-        //       <th style={{ width: "25px", textAlign: "center" }}>SL</th>
-        //       {!(
-        //         appliedStatus?.label === "Approved" ||
-        //         appliedStatus?.label === "Rejected"
-        //       ) && (
-        //           <th scope="col">
-        //             <FormikCheckBox
-        //               styleObj={{
-        //                 margin: "0 auto!important",
-        //                 color: gray900,
-        //                 checkColor: greenColor,
-        //               }}
-        //               name="allSelected"
-        //               checked={
-        //                 applicationListData?.listData?.length > 0 &&
-        //                 applicationListData?.listData?.every(
-        //                   (item) => item?.selectCheckbox
-        //                 )
-        //               }
-        //               onChange={(e) => {
-        //                 setApplicationListData({
-        //                   listData: applicationListData?.listData?.map(
-        //                     (item) => ({
-        //                       ...item,
-        //                       selectCheckbox: e.target.checked,
-        //                     })
-        //                   ),
-        //                 });
-        //                 setFieldValue("allSelected", e.target.checked);
-        //               }}
-        //             />
-        //           </th>
-        //         )}
-        //       <th style={{ width: "100px" }}>Code</th>
-        //       <th scope="col">
-        //         <div
-        //           className="d-flex align-items-center pointer"
-        //           onClick={() => {
-        //             setEmpOrder(empOrder === "desc" ? "asc" : "desc");
-        //             commonSortByFilter(empOrder, "employeeName");
-        //           }}
-        //         >
-        //           Employee
-        //           <SortingIcon viewOrder={empOrder} />
-        //         </div>
-        //       </th>
-        //       <th scope="col">
-        //         <div
-        //           className="d-flex align-items-center pointer"
-        //           onClick={() => {
-        //             setDesgOrder(desgOrder === "desc" ? "asc" : "desc");
-        //             commonSortByFilter(desgOrder, "designation");
-        //           }}
-        //         >
-        //           Designation
-        //           <SortingIcon viewOrder={desgOrder} />
-        //         </div>
-        //       </th>
-        //       <th scope="col">
-        //         <div
-        //           className="d-flex align-items-center pointer"
-        //           onClick={() => {
-        //             setDeptOrder(deptOrder === "desc" ? "asc" : "desc");
-        //             commonSortByFilter(deptOrder, "department");
-        //           }}
-        //         >
-        //           Department
-        //           <SortingIcon viewOrder={deptOrder} />
-        //         </div>
-        //       </th>
-        //       <th>
-        //         <div>Attendance Date</div>
-        //       </th>
-        //       <th>
-        //         <div>Attendance Time</div>
-        //       </th>
-        //       <th>
-        //         <div>Attendance Type</div>
-        //       </th>
-        //       {isOfficeAdmin && (
-        //         <th scope="col">
-        //           <div className="d-flex align-items-center">Waiting Stage</div>
-        //         </th>
-        //       )}
-        //       <th>
-        //         <div className="d-flex align-items-center justify-content-center">
-        //           Status
-        //         </div>
-        //       </th>
-        //     </tr>
-        //   </thead>
-        //   <tbody>
-        //     {applicationListData?.listData?.length > 0 &&
-        //       applicationListData?.listData?.map((data, i) => (
-        //         <tr key={i}>
-        //           <td className="text-center">{i + 1}</td>
-        //           {!(
-        //             appliedStatus?.label === "Approved" ||
-        //             appliedStatus?.label === "Rejected"
-        //           ) && (
-        //               <td>
-        //                 <FormikCheckBox
-        //                   styleObj={{
-        //                     margin: "0 0 0 1px",
-        //                     color: gray900,
-        //                     checkedColor: greenColor,
-        //                   }}
-        //                   name="selectCheckbox"
-        //                   color={greenColor}
-        //                   checked={
-        //                     applicationListData?.listData[i]?.selectCheckbox
-        //                   }
-        //                   onChange={(e) => {
-        //                     let data = [...applicationListData?.listData];
-        //                     data[i].selectCheckbox = e.target.checked;
-        //                     setApplicationListData({ listData: [...data] });
-        //                   }}
-        //                 />
-        //               </td>
-        //             )}
-        //           <td>
-        //             <div className="tableBody-title"> {data?.employeeCode}</div>
-        //           </td>
-        //           <td>
-        //             <div className="employeeInfo d-flex align-items-center">
-        //               <AvatarComponent
-        //                 letterCount={1}
-        //                 label={data?.employeeName}
-        //               />
-        //               <div className="employeeTitle ml-2">
-        //                 <div className="employeeName tableBody-title">
-        //                   {data?.employeeName}
-        //                 </div>
-        //               </div>
-        //             </div>
-        //           </td>
-        //           <td>
-        //             <div className="tableBody-title">
-        //               {data?.designation}, {data?.employmentType}
-        //             </div>
-        //           </td>
-        //           <td>
-        //             <div className="tableBody-title">{data?.department}</div>
-        //           </td>
-        //           <td>
-        //             <div className="tableBody-title">
-        //               {dateFormatter(data?.application?.dteAttendanceDate)}
-        //             </div>
-        //           </td>
-        //           <td>
-        //             <div className="tableBody-title">
-        //               {moment(
-        //                 timeFormatter(data?.application?.dteAttendanceTime),
-        //                 "HH:mm:ss"
-        //               ).format("hh:mm A")}
-        //             </div>
-        //           </td>
-        //           <td>
-        //             <div className="tableBody-title">
-        //               {data?.application?.strAttendanceType}
-        //             </div>
-        //           </td>
-        //           {isOfficeAdmin && (
-        //             <td>
-        //               <div className="tableBody-title">
-        //                 {data?.currentStage}
-        //               </div>
-        //             </td>
-        //           )}
-        //           <td className="text-center" width="10%">
-        //             {data?.status === "Approved" && (
-        //               <Chips label="Approved" classess="success" />
-        //             )}
-        //             {data?.status === "Pending" && (
-        //               <>
-        //                 <div className="actionChip">
-        //                   <Chips label="Pending" classess=" warning" />
-        //                 </div>
-        //                 <div className="d-flex actionIcon justify-content-center">
-        //                   <Tooltip title="Accept">
-        //                     <div
-        //                       className="mx-2 muiIconHover success "
-        //                       onClick={() => {
-        //                         demoPopup("approve", "Approve", data);
-        //                       }}
-        //                     >
-        //                       <MuiIcon
-        //                         icon={<CheckCircle sx={{ color: "#34A853" }} />}
-        //                       />
-        //                     </div>
-        //                   </Tooltip>
-        //                   <Tooltip title="Reject">
-        //                     <div
-        //                       className="muiIconHover danger"
-        //                       onClick={() => {
-        //                         demoPopup("reject", "Reject", data);
-        //                       }}
-        //                     >
-        //                       <MuiIcon
-        //                         icon={<Cancel sx={{ color: "#FF696C" }} />}
-        //                       />
-        //                     </div>
-        //                   </Tooltip>
-        //                 </div>
-        //               </>
-        //             )}
-        //             {data?.status === "Rejected" && (
-        //               <Chips label="Rejected" classess="danger" />
-        //             )}
-        //           </td>
-        //         </tr>
-        //       ))}
-        //   </tbody>
-        // </table>
+//   <thead>
+//     <tr>
+//       <th style={{ width: "25px", textAlign: "center" }}>SL</th>
+//       {!(
+//         appliedStatus?.label === "Approved" ||
+//         appliedStatus?.label === "Rejected"
+//       ) && (
+//           <th scope="col">
+//             <FormikCheckBox
+//               styleObj={{
+//                 margin: "0 auto!important",
+//                 color: gray900,
+//                 checkColor: greenColor,
+//               }}
+//               name="allSelected"
+//               checked={
+//                 applicationListData?.listData?.length > 0 &&
+//                 applicationListData?.listData?.every(
+//                   (item) => item?.selectCheckbox
+//                 )
+//               }
+//               onChange={(e) => {
+//                 setApplicationListData({
+//                   listData: applicationListData?.listData?.map(
+//                     (item) => ({
+//                       ...item,
+//                       selectCheckbox: e.target.checked,
+//                     })
+//                   ),
+//                 });
+//                 setFieldValue("allSelected", e.target.checked);
+//               }}
+//             />
+//           </th>
+//         )}
+//       <th style={{ width: "100px" }}>Code</th>
+//       <th scope="col">
+//         <div
+//           className="d-flex align-items-center pointer"
+//           onClick={() => {
+//             setEmpOrder(empOrder === "desc" ? "asc" : "desc");
+//             commonSortByFilter(empOrder, "employeeName");
+//           }}
+//         >
+//           Employee
+//           <SortingIcon viewOrder={empOrder} />
+//         </div>
+//       </th>
+//       <th scope="col">
+//         <div
+//           className="d-flex align-items-center pointer"
+//           onClick={() => {
+//             setDesgOrder(desgOrder === "desc" ? "asc" : "desc");
+//             commonSortByFilter(desgOrder, "designation");
+//           }}
+//         >
+//           Designation
+//           <SortingIcon viewOrder={desgOrder} />
+//         </div>
+//       </th>
+//       <th scope="col">
+//         <div
+//           className="d-flex align-items-center pointer"
+//           onClick={() => {
+//             setDeptOrder(deptOrder === "desc" ? "asc" : "desc");
+//             commonSortByFilter(deptOrder, "department");
+//           }}
+//         >
+//           Department
+//           <SortingIcon viewOrder={deptOrder} />
+//         </div>
+//       </th>
+//       <th>
+//         <div>Attendance Date</div>
+//       </th>
+//       <th>
+//         <div>Attendance Time</div>
+//       </th>
+//       <th>
+//         <div>Attendance Type</div>
+//       </th>
+//       {isOfficeAdmin && (
+//         <th scope="col">
+//           <div className="d-flex align-items-center">Waiting Stage</div>
+//         </th>
+//       )}
+//       <th>
+//         <div className="d-flex align-items-center justify-content-center">
+//           Status
+//         </div>
+//       </th>
+//     </tr>
+//   </thead>
+//   <tbody>
+//     {applicationListData?.listData?.length > 0 &&
+//       applicationListData?.listData?.map((data, i) => (
+//         <tr key={i}>
+//           <td className="text-center">{i + 1}</td>
+//           {!(
+//             appliedStatus?.label === "Approved" ||
+//             appliedStatus?.label === "Rejected"
+//           ) && (
+//               <td>
+//                 <FormikCheckBox
+//                   styleObj={{
+//                     margin: "0 0 0 1px",
+//                     color: gray900,
+//                     checkedColor: greenColor,
+//                   }}
+//                   name="selectCheckbox"
+//                   color={greenColor}
+//                   checked={
+//                     applicationListData?.listData[i]?.selectCheckbox
+//                   }
+//                   onChange={(e) => {
+//                     let data = [...applicationListData?.listData];
+//                     data[i].selectCheckbox = e.target.checked;
+//                     setApplicationListData({ listData: [...data] });
+//                   }}
+//                 />
+//               </td>
+//             )}
+//           <td>
+//             <div className="tableBody-title"> {data?.employeeCode}</div>
+//           </td>
+//           <td>
+//             <div className="employeeInfo d-flex align-items-center">
+//               <AvatarComponent
+//                 letterCount={1}
+//                 label={data?.employeeName}
+//               />
+//               <div className="employeeTitle ml-2">
+//                 <div className="employeeName tableBody-title">
+//                   {data?.employeeName}
+//                 </div>
+//               </div>
+//             </div>
+//           </td>
+//           <td>
+//             <div className="tableBody-title">
+//               {data?.designation}, {data?.employmentType}
+//             </div>
+//           </td>
+//           <td>
+//             <div className="tableBody-title">{data?.department}</div>
+//           </td>
+//           <td>
+//             <div className="tableBody-title">
+//               {dateFormatter(data?.application?.dteAttendanceDate)}
+//             </div>
+//           </td>
+//           <td>
+//             <div className="tableBody-title">
+//               {moment(
+//                 timeFormatter(data?.application?.dteAttendanceTime),
+//                 "HH:mm:ss"
+//               ).format("hh:mm A")}
+//             </div>
+//           </td>
+//           <td>
+//             <div className="tableBody-title">
+//               {data?.application?.strAttendanceType}
+//             </div>
+//           </td>
+//           {isOfficeAdmin && (
+//             <td>
+//               <div className="tableBody-title">
+//                 {data?.currentStage}
+//               </div>
+//             </td>
+//           )}
+//           <td className="text-center" width="10%">
+//             {data?.status === "Approved" && (
+//               <Chips label="Approved" classess="success" />
+//             )}
+//             {data?.status === "Pending" && (
+//               <>
+//                 <div className="actionChip">
+//                   <Chips label="Pending" classess=" warning" />
+//                 </div>
+//                 <div className="d-flex actionIcon justify-content-center">
+//                   <Tooltip title="Accept">
+//                     <div
+//                       className="mx-2 muiIconHover success "
+//                       onClick={() => {
+//                         demoPopup("approve", "Approve", data);
+//                       }}
+//                     >
+//                       <MuiIcon
+//                         icon={<CheckCircle sx={{ color: "#34A853" }} />}
+//                       />
+//                     </div>
+//                   </Tooltip>
+//                   <Tooltip title="Reject">
+//                     <div
+//                       className="muiIconHover danger"
+//                       onClick={() => {
+//                         demoPopup("reject", "Reject", data);
+//                       }}
+//                     >
+//                       <MuiIcon
+//                         icon={<Cancel sx={{ color: "#FF696C" }} />}
+//                       />
+//                     </div>
+//                   </Tooltip>
+//                 </div>
+//               </>
+//             )}
+//             {data?.status === "Rejected" && (
+//               <Chips label="Rejected" classess="danger" />
+//             )}
+//           </td>
+//         </tr>
+//       ))}
+//   </tbody>
+// </table>

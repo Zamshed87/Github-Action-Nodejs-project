@@ -143,8 +143,6 @@ const ExternalTrainingCreate = () => {
           errors,
           touched,
           setFieldValue,
-          isValid,
-          setValues,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>

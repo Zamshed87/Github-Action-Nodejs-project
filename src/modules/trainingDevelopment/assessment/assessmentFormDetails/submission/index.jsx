@@ -27,7 +27,7 @@ const SubmissionDetails = ({ data }) => {
   const filterData = (keywords) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter(
+      const newDta = allData?.filter(
         (item) =>
           regex.test(item?.strEmployeeName?.toLowerCase()) ||
           regex.test(item?.strDesignationName?.toLowerCase()) ||
@@ -145,7 +145,7 @@ const SubmissionDetails = ({ data }) => {
                         paginationSize
                         // 15
                       )}
-                      onRowClick={(item) => {
+                      onRowClick={() => {
                         // history.push(
                         //   `/profile/iOU/application/${item?.intIOUId}`
                         // );

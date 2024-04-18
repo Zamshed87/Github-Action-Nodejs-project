@@ -32,7 +32,7 @@ export const createTrainingAssesmentAnswer = async (
   cb
 ) => {
   setLoading && setLoading(true);
-  const modify = payload.map((item, index) => {
+  const modify = payload.map((item) => {
     return {
       intAnswerId: 0,
       intQuestionId: item?.intQuestionId,

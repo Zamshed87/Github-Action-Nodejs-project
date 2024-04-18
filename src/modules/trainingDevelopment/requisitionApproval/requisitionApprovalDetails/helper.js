@@ -1,4 +1,4 @@
-import {  InfoOutlined } from "@mui/icons-material";
+import { InfoOutlined } from "@mui/icons-material";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import Chips from "../../../../common/Chips";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
@@ -28,7 +28,7 @@ export const employeeListColumn = (
               false
               //   rowDto?.length > 0 && rowDto?.every((item) => item?.isAssigned)
             }
-            onChange={(e) => {
+            onChange={() => {
               //   allGridCheck(e.target.checked);
               //   setRowDto(
               //     rowDto?.map((item) => ({
@@ -42,7 +42,7 @@ export const employeeListColumn = (
         </div>
       ),
       dataIndex: "strEmployeeCode",
-      render: (_, record, index) => (
+      render: (_, record) => (
         <div>
           <FormikCheckBox
             styleObj={{
@@ -55,7 +55,7 @@ export const employeeListColumn = (
             color={greenColor}
             checked={record?.isAssigned}
             disabled={record?.Status === "Approved"}
-            onChange={(e) => {
+            onChange={() => {
               //   rowDtoHandler(record);
             }}
           />

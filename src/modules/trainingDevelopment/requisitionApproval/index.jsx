@@ -6,7 +6,7 @@ import NoResult from "../../../common/NoResult";
 import { requisitionApprovalColumn } from "./helper";
 
 const RequisitionApprovalLanding = () => {
-   // eslint-disable-next-line
+  // eslint-disable-next-line
   const [rowDto, setRowDto] = useState([
     {
       strTrainingCode: "TRA-0001",
@@ -44,8 +44,8 @@ const RequisitionApprovalLanding = () => {
   ]);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
-   // eslint-disable-next-line
-   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="table-card">
@@ -64,7 +64,7 @@ const RequisitionApprovalLanding = () => {
                 width="200px"
                 //   value={values?.search}
                 value={""}
-                setValue={(value) => {
+                setValue={() => {
                   // setFieldValue("search", value);
                   // debounce(() => {
                   //   searchFromIouLanding(value, allData, setRowDto);
@@ -94,7 +94,7 @@ const RequisitionApprovalLanding = () => {
                     page,
                     paginationSize
                   )}
-                  onRowClick={(item) => {
+                  onRowClick={() => {
                     // history.push(
                     //   `/profile/iOU/application/${item?.intIOUId}`
                     // );
