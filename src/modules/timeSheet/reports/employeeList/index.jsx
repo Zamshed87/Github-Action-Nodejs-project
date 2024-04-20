@@ -102,7 +102,7 @@ export default function EmployeeList() {
   useEffect(() => {
     setHeaderList({});
     setEmpLanding([]);
-    getData(pages);
+    // getData(pages);
     // getPeopleDeskAllDDL(
     //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
     //   "intWorkplaceId",
@@ -132,12 +132,11 @@ export default function EmployeeList() {
     checkedHeaderList,
     values
   ) => {
-    console.log({ values });
     try {
       const payload = {
         businessUnitId: buId,
         workplaceGroupId: values?.workplaceGroup?.value || wgId,
-        workplaceId: values?.workplace?.value ? values?.workplace?.value : 0,
+        workplaceId: values?.workplace?.value || wId,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
