@@ -28,7 +28,7 @@ const AssessmentFormLanding = () => {
   const filterData = (keywords) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter(
+      const newDta = allData?.filter(
         (item) =>
           regex.test(item?.strTrainingName?.toLowerCase()) ||
           regex.test(item?.strTrainingCode?.toLowerCase()) ||
@@ -65,7 +65,7 @@ const AssessmentFormLanding = () => {
         <div className="table-card">
           <div className="table-card-heading">
             <div className="d-flex align-items-center"> </div>
-            <div className="table-header-right" style={{marginRight:"-8px"}}>
+            <div className="table-header-right" style={{ marginRight: "-8px" }}>
               <ul className="d-flex flex-wrap">
                 <li>
                   <MasterFilter

@@ -238,6 +238,8 @@ const EmpCheckList = () => {
                           downloadFile(
                             `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${
                               values?.workplace?.value || wId
+                            }&dteFromDate=${values?.fDate}&dteToDate=${
+                              values?.tDate
                             }`,
                             "Employee CheckList Report",
                             "xlsx",

@@ -124,12 +124,12 @@ const CreateEditSchedule = () => {
       enableReinitialize: true,
       validationSchema: validationSchema,
       initialValues: initialValues,
-      onSubmit: (values, { setSubmitting, resetForm }) => {
+      onSubmit: (values, { resetForm }) => {
         if (params?.id) {
           editSchedule([{ ...values, ...editField }], employeeId, orgId, buId);
         } else {
           if (editField?.id) {
-            let updated = rowDto?.filter((item) => item.id !== editField?.id);
+            const updated = rowDto?.filter((item) => item.id !== editField?.id);
             setRowDto([...updated, { id: editField?.id, ...values }]);
           } else {
             const currId = id;
@@ -495,7 +495,7 @@ const CreateEditSchedule = () => {
               classes="default-modal preview-modal"
               show={show}
               onHide={() => setShow(false)}
-            //   onHide={() => {}}
+              //   onHide={() => {}}
             >
               <AddTrainingName
                 orgId={orgId}
@@ -522,6 +522,7 @@ const CreateEditSchedule = () => {
             {rowDto?.map((item, index) => {
               return (
                 <SingleScheduleCard
+                  key={index}
                   item={{ serialNo: index + 1, ...item }}
                   handleRowDtoDelete={handleRowDtoDelete}
                   handleEdit={handleEdit}

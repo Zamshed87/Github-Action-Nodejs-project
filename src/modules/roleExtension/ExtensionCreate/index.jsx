@@ -45,7 +45,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
   const history = useHistory();
   const [rowDto, setRowDto] = useState([]);
 
-  const [employeeRoles, getEmployeeRoles] = useAxiosGet();
+  const [, getEmployeeRoles] = useAxiosGet();
 
   const saveHandler = (values, cb) => {
     const payload = {
@@ -67,10 +67,9 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
       .then((res) => {
         return res?.data;
       })
-      .catch((err) => []);
+      .catch(() => []);
   };
 
-  const [organizationTypeDDL, setOrganizationTypeDDL] = useState([]);
   const [organizationDDL, setOrganizationDDL] = useState([]);
 
   const [wingDDL, setWingDDL] = useState([]);
@@ -184,9 +183,9 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
     };
 
     // modify filter Arr
-    const modifyFinalArr = (filedType, values) => {
-      return;
-    };
+    // const modifyFinalArr = (filedType, values) => {
+    //   return;
+    // };
     // workplace Group
     if (isAllDataCheck(2)) {
       return toast.warn("Workplace Group has all data exsist...");
@@ -225,14 +224,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
           saveHandler(values, () => resetForm(initData));
         }}
       >
-        {({
-          values,
-          setFieldValue,
-          errors,
-          touched,
-          handleSubmit,
-          setValues,
-        }) => (
+        {({ values, setFieldValue, errors, touched, handleSubmit }) => (
           <>
             <Form onSubmit={handleSubmit}>
               <div className="table-card create-policy-apply-page-wrapper">
@@ -522,7 +514,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                             <th>SL</th>
                             <th>
                               <div
-                                onClick={(e) => {
+                                onClick={() => {
                                   setOrgTypeOrder(
                                     orgTypeOrder === "desc" ? "asc" : "desc"
                                   );
@@ -539,7 +531,7 @@ const CreateRoleExtension = ({ setCreateOrUpdate }) => {
                             </th>
                             <th>
                               <div
-                                onClick={(e) => {
+                                onClick={() => {
                                   setOrgOrder(
                                     orgOrder === "desc" ? "asc" : "desc"
                                   );

@@ -48,12 +48,7 @@ export const setOrganizationDDLFunc = (
     : null;
 };
 
-export const postRoleExtension = async (
-  payload,
-  history,
-  setLoading,
-  setCreateOrUpdate
-) => {
+export const postRoleExtension = async (payload, history, setLoading) => {
   setLoading && setLoading(true);
   try {
     const response = await axios.post(

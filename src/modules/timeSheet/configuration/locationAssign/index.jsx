@@ -1,7 +1,6 @@
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import SortingIcon from "../../../../common/SortingIcon";
@@ -19,7 +18,6 @@ const initData = {
 
 export default function LocationAssign() {
   // eslint-disable-next-line no-unused-vars
-  const history = useHistory();
   const [loading, setLoading] = useState(false);
 
   // row Data
@@ -36,66 +34,17 @@ export default function LocationAssign() {
     },
   ];
   const [rowDto, setRowDto] = useState(tableData);
-  const [allData, setAllData] = useState([]);
+  const [, setAllData] = useState([]);
 
   // filter
   // eslint-disable-next-line no-unused-vars
-  const [viewOrder, setViewOrder] = useState("desc");
+  const [viewOrder] = useState("desc");
 
-  // modal
-  // eslint-disable-next-line no-unused-vars
-  const [isHolidayGroup, setIsHolidayGroup] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // eslint-disable-next-line no-unused-vars
-  const handleClose = () => {
-    setIsHolidayGroup(false);
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const { orgId, buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-
-  // useEffect(() => {
-  //   getPeopleDeskAllLanding("HolidayGroup", orgId, buId, "", setRowDto, setAllData, setLoading);
-  // }, [orgId, buId]);
-
-  // search
-  // eslint-disable-next-line no-unused-vars
-  const filterData = (keywords, allData, setRowDto) => {
-    const regex = new RegExp(keywords?.toLowerCase());
-    let newDta = allData?.filter((item) =>
-      regex.test(item?.HolidayGroupName?.toLowerCase())
-    );
-    setRowDto({ Result: newDta });
-  };
-
-  // ascending & descending
-  // eslint-disable-next-line no-unused-vars
-  const commonSortByFilter = (filterType, property) => {
-    const newRowData = [...allData];
-    let modifyRowData = [];
-
-    if (filterType === "asc") {
-      modifyRowData = newRowData?.sort((a, b) => {
-        if (a[property] > b[property]) return -1;
-        return 1;
-      });
-    } else {
-      modifyRowData = newRowData?.sort((a, b) => {
-        if (b[property] > a[property]) return -1;
-        return 1;
-      });
-    }
-    setRowDto({ Result: modifyRowData });
-  };
-
-  const saveHandler = (values) => {};
 
   const [sideDrawer, setSideDrawer] = useState(false);
 
@@ -113,21 +62,11 @@ export default function LocationAssign() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}

@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import moment from "moment";
 import { useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import AntTable from "../../../../../common/AntTable";
@@ -12,15 +11,11 @@ import IConfirmModal from "../../../../../common/IConfirmModal";
 import MuiIcon from "../../../../../common/MuiIcon";
 import NoResult from "../../../../../common/NoResult";
 import { gray900, greenColor } from "../../../../../utility/customColor";
-import { dateFormatter } from "../../../../../utility/dateFormatter";
-import { timeFormatter } from "../../../../../utility/timeFormatter";
-// import { gray900, greenColor } from "../../../../utility/customColor";
-// import { dateFormatter } from "../../../../utility/dateFormatter";
-// import { timeFormatter } from "../../../../utility/timeFormatter";
 import {
   getAllRequisitionListDataForApproval,
   RequisitionApproveReject,
 } from "../helper";
+import Loading from "common/loading/Loading";
 
 const CardTable = ({ propsObj }) => {
   const {
@@ -30,8 +25,6 @@ const CardTable = ({ propsObj }) => {
     appliedStatus,
     allData,
     setAllData,
-    filterValues,
-    setFilterValues,
   } = propsObj;
 
   const { employeeId, isOfficeAdmin, orgId } = useSelector(
@@ -46,7 +39,7 @@ const CardTable = ({ propsObj }) => {
   const [paginationSize, setPaginationSize] = useState(15);
 
   const demoPopup = (action, text, data) => {
-    let payload = [
+    const payload = [
       {
         applicationId: data?.application?.intRequisitionId,
         approverEmployeeId: employeeId,
@@ -74,12 +67,13 @@ const CardTable = ({ propsObj }) => {
         setLoading
       );
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
-      message: ` Do you want to ${action}? `,
+      message: `Do you want to ${action}?`,
       yesAlertFunc: () => {
         RequisitionApproveReject(payload, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -136,7 +130,7 @@ const CardTable = ({ propsObj }) => {
         </div>
       ),
       dataIndex: "employeeCode",
-      render: (_, record, index) => (
+      render: (_, record) => (
         <div onClick={(e) => e.stopPropagation()}>
           {!(
             appliedStatus?.label === "Approved" ||
@@ -154,7 +148,7 @@ const CardTable = ({ propsObj }) => {
               checked={record?.selectCheckbox}
               onChange={(e) => {
                 // let data = [...applicationListData?.listData];
-                let data = applicationListData?.listData.map((item) => {
+                const data = applicationListData?.listData.map((item) => {
                   if (
                     item?.application?.intRequisitionId ===
                     record?.application?.intRequisitionId
@@ -167,7 +161,7 @@ const CardTable = ({ propsObj }) => {
                     return item;
                   }
                 });
-                let data2 = allData?.listData.map((item) => {
+                const data2 = allData?.listData.map((item) => {
                   if (
                     item?.application?.intRequisitionId ===
                     record?.application?.intRequisitionId
@@ -289,6 +283,7 @@ const CardTable = ({ propsObj }) => {
 
   return (
     <>
+      {loading && <Loading />}
       {allData?.listData?.length > 0 ? (
         <AntTable
           rowSelection={{
@@ -296,10 +291,9 @@ const CardTable = ({ propsObj }) => {
           }}
           data={allData?.listData}
           columnsData={columns(page, paginationSize)}
-          onRowClick={(dataRow) => {}}
           setColumnsData={(dataRow) => {
             if (dataRow?.length === allData?.listData?.length) {
-              let temp = dataRow?.map((item) => {
+              const temp = dataRow?.map((item) => {
                 return {
                   ...item,
                   selectCheckbox: false,

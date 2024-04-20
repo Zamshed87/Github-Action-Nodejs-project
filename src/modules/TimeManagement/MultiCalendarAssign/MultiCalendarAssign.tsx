@@ -5,11 +5,11 @@ import { getSerial } from "Utils";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { debounce } from "lodash";
 import { PModal } from "Components/Modal";
 import AssignMultipleCalendar from "./Assign/AssignMultipleCalendar";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type TMultiCalendarAssign = {};
 const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
   // Data From Store
@@ -140,14 +140,13 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     {
       title: "Generate Date",
       dataIndex: "generateDate",
-      render: (data: any, record: any, index: number) =>
+      render: (data: any) =>
         data ? moment(data).format("DD-MMM-YYYY") : "N/A",
     },
     {
       title: "Joining Date",
       dataIndex: "joiningDate",
-      render: (data: any, record: any, index: number) =>
-        moment(data).format("DD-MMM-YYYY"),
+      render: (data: any) => moment(data).format("DD-MMM-YYYY"),
     },
     {
       title: "Status",
@@ -155,7 +154,7 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
       align: "center",
       filter: true,
       filterKey: "status",
-      render: (data: any, record: any, index: number) =>
+      render: (data: any) =>
         // Write condition to check status
         data ? (
           <PBadge type="primary" text="Assigned" />
@@ -167,14 +166,14 @@ const MultiCalendarAssign: React.FC<TMultiCalendarAssign> = () => {
     {
       title: "Action",
       align: "center",
-      render: (data: any, record: any, index: number) => {
+      render: (data: any, record: any) => {
         return (
           <TableButton
             buttonsList={[
               {
                 isActive: record?.calendarAssignId,
                 type: "calender",
-                onClick: (e) => {
+                onClick: () => {
                   setSelectedRowData(record);
                   setOpen(true);
                 },

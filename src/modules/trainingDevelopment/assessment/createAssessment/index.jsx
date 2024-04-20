@@ -14,7 +14,7 @@ import {
   createAssessment,
   editAssessment,
   getAssessmentQuestions,
-  getSingleSchedule
+  getSingleSchedule,
 } from "./helper/helper";
 import uuid from "./helper/uuid";
 import CreateQuestion from "./question";
@@ -173,9 +173,7 @@ const AssessmentCreateEdit = () => {
             values,
             touched,
             errors,
-            handleChange,
             handleBlur,
-            isValid,
             setValues,
             setFieldValue,
           }) => (
@@ -245,6 +243,7 @@ const AssessmentCreateEdit = () => {
                           const questionRequired = `questions[${index}].isRequired`;
                           return (
                             <CreateQuestion
+                              key={index}
                               values={values}
                               newQuestion={newQuestion}
                               questionRequired={questionRequired}

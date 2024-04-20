@@ -19,7 +19,7 @@ export const onGetExternalTrainingLanding = (
 export const filterExternalTrainingLanding = (keywords, allData, setRowDto) => {
   try {
     const regex = new RegExp(keywords?.toLowerCase());
-    let newData = allData?.filter(
+    const newData = allData?.filter(
       (item) =>
         regex.test(item?.strTrainingName?.toLowerCase()) ||
         regex.test(item?.strDepartmentName?.toLowerCase()) ||
