@@ -14,7 +14,7 @@ import {
   ShowChartOutlined,
   VerifiedUserOutlined,
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { Link, useHistory } from "react-router-dom";
@@ -106,6 +106,9 @@ const Sidebar = ({ isOpenSidebar, setIsOpenSidebar }) => {
                   <div
                     className="d-flex justify-content-between align-items-center"
                     onClick={() => {
+                      const newTabOpen = (url) => {
+                        window.open(url, "_blank");
+                      };
                       setIsOpenSidebar(!isOpenSidebar);
                       setSelectedFirstLevelMenu(
                         firstLevel?.label === selectedFirstLevelMenu
@@ -119,13 +122,13 @@ const Sidebar = ({ isOpenSidebar, setIsOpenSidebar }) => {
                         firstLevel?.to === "/assetManagement" ||
                         firstLevel?.to === "/trainingAndDevelopment"
                       ) {
-                        history.push(
+                        newTabOpen(
                           firstLevel?.childList[0]?.childList[0]?.to
                         );
                       } else if (firstLevel?.to === "/approval") {
-                        history.push(firstLevel?.to);
+                        newTabOpen(firstLevel?.to);
                       } else {
-                        history.push(firstLevel?.childList[0]?.to);
+                        newTabOpen(firstLevel?.childList[0]?.to);
                       }
                     }}
                   >
