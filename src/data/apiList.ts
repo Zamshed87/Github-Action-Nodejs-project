@@ -102,11 +102,14 @@ export const apiList = {
   GetLandingForBulkReporter: "/Employee/SupervisorLineManagerChangeLanding",
   ChangeReporter: "/Employee/SupervisorLineManagerChange",
   BulkSalaryAssignLanding: "/Payroll/BulkSalaryAssignLanding",
+  ExtendedDesignationDDL: "/Cafeteria/ExtendedDesignationDDL",
+  CheckCafeteriaConfig: "/Cafeteria/CheckCafeteriaConfig",
+  CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
   EmployeeDDLWithCode:
     "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
   RefundOrEarningReport: "/EmployeeIncrement/RefundOrEarningReport",
   // costCenterReportLanding:
   //   "/PdfAndExcelReport/GetSalaryCostCenterReportMatador",
   costCenterReportLanding:
-  "/PdfAndExcelReport/GetSalarySummaryCostCenterReport_Matador",
+    "/PdfAndExcelReport/GetSalarySummaryCostCenterReport_Matador",
 };

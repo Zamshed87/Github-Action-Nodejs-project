@@ -1,14 +1,21 @@
-import { PButton, PCard, PCardHeader, PForm, PSelect } from "Components";
+import {
+  DataTable,
+  PButton,
+  PCard,
+  PCardHeader,
+  PForm,
+  PInput,
+  PSelect,
+} from "Components";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 
 const PricingSetupForm = () => {
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId },
+    profileData: { buId, wgId, employeeId, orgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30417),
@@ -21,7 +28,10 @@ const PricingSetupForm = () => {
   //   api states
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
-
+  const designation = useApiRequest([]);
+  const cafeApi = useApiRequest([]);
+  const [designationWiseRow, setDesignationWiseRow] = useState<any[]>([]);
+  const [rowDto, setRowDto] = React.useState<any[]>([]);
   // workplace wise
   const getWorkplaceGroup = () => {
     workplaceGroup?.action({
@@ -37,6 +47,25 @@ const PricingSetupForm = () => {
         res.forEach((item: any, i: any) => {
           res[i].label = item?.strWorkplaceGroup;
           res[i].value = item?.intWorkplaceGroupId;
+        });
+      },
+    });
+  };
+  const getDesignation = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    designation?.action({
+      urlKey: "ExtendedDesignationDDL",
+      method: "GET",
+      params: {
+        AccountId: orgId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        BusinessUnitId: buId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item: any, i: any) => {
+          res[i].label = item?.designationName;
+          res[i].value = item?.designationId;
         });
       },
     });
@@ -63,18 +92,180 @@ const PricingSetupForm = () => {
   useEffect(() => {
     getWorkplaceGroup();
   }, []);
+  // Table Header
+  const handleIsPerDayChange = (
+    value: number,
+    rowIndex: number,
+    property: string
+  ) => {
+    setDesignationWiseRow((prevRows) => {
+      const updatedRows = [...prevRows];
+      updatedRows[rowIndex][property] = value;
 
+      return updatedRows;
+    });
+    setRowDto(designationWiseRow);
+  };
+
+  const header: any = [
+    {
+      title: "SL",
+      render: (value: any, row: any, index: number) => index + 1,
+      align: "center",
+      width: 20,
+    },
+    {
+      title: "Workplace Group",
+      render: (value: any, row: any, index: number) =>
+        row?.workplaceGroup?.label,
+    },
+    {
+      title: "Workplace",
+      render: (value: any, row: any, index: number) => row?.workplace?.label,
+    },
+    {
+      title: "Designation",
+      render: (value: any, row: any, index: number) => row?.designation?.label,
+    },
+
+    {
+      title: "Own Contribution/Meal",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`OM_${index}`}
+            placeholder="Amount"
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const ownMeal = parseFloat(value);
+
+                  if (isNaN(ownMeal)) {
+                    callback("Amount Is Required");
+                  } else if (ownMeal < 0) {
+                    callback("Cant be Negative");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
+            // disabled={true}
+            onChange={(e: any) => {
+              handleIsPerDayChange(e, index, "ownContribution");
+              handleIsPerDayChange(
+                parseInt(
+                  `${
+                    row?.companyContribution ? e + +row?.companyContribution : e
+                  }`
+                ),
+                index,
+                "TotalCost"
+              );
+            }}
+          />
+        </>
+      ),
+    },
+
+    {
+      title: "Company Contribution/Meal",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`CCC_${index}`}
+            placeholder="Amount"
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const companyContribution = parseFloat(value);
+
+                  if (isNaN(companyContribution)) {
+                    callback("Amount Is Required");
+                  } else if (companyContribution < 0) {
+                    callback("Cant be Negative");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
+            // disabled={true}
+            onChange={(e: any) => {
+              handleIsPerDayChange(e, index, "companyContribution");
+
+              handleIsPerDayChange(
+                row?.ownContribution + e,
+                index,
+                "TotalCost"
+              );
+            }}
+          />
+        </>
+      ),
+    },
+    {
+      title: "Total Cost/Meal ",
+      render: (value: any, row: any, index: number) => row?.TotalCost,
+    },
+  ];
+  const submitHandler = (rowDto: any) => {
+    // console.log({ mealType });
+    const { pricingMatrixType, mealType } = form.getFieldsValue(true);
+    const cb = () => {
+      form.resetFields();
+      // setIsAddEditForm(false);
+      // getData();
+    };
+    let payload = rowDto.map((item: any, id: number) => {
+      return {
+        sl: id,
+        intConfigId: 0,
+        intAccountId: orgId,
+        intBusinessUnitId: buId,
+        intDesignationId: item?.designation?.value,
+        strDesignationName: item?.designation?.label,
+        monOwnContribution: item?.ownContribution,
+        monTotalCost: item?.TotalCost,
+        monCompanyContribution: item?.companyContribution,
+        isActive: true,
+        intMealConsumePlaceId: 0,
+        mealTypeId: mealType?.value,
+        mealTypeName: mealType?.label,
+        workPlaceId: item?.workplace?.value,
+        workPlaceGroupId: item?.workplaceGroup?.value,
+        pricingMatrixTypeId: pricingMatrixType?.value,
+        pricingMatrixTypeName: pricingMatrixType?.label,
+        minAmount: 0,
+        maxAmount: 0,
+        returnAllSalaryRangeData: true,
+      };
+    });
+
+    cafeApi.action({
+      urlKey: "CreateCafeteriaConfig",
+      method: "POST",
+      payload: payload,
+      onSuccess: () => {
+        cb();
+      },
+    });
+  };
   return (
     <PForm form={form} initialValues={{}}>
       <PCard>
         <PCardHeader
-          title="Bulk Salary Assign"
+          title="Cafeteria Pricing Setup"
           buttonList={[
             {
               type: "primary",
               content: "Save",
               onClick: () => {
-                // submitHandler();
+                submitHandler(rowDto);
               },
               //   disabled: selectedRow?.length > 0 ? false : true,
             },
@@ -105,11 +296,40 @@ const PricingSetupForm = () => {
                   mealType: op,
                 });
               }}
-              rules={[
-                { required: true, message: "Workplace Group is required" },
-              ]}
+              // disabled={isEdit}
+              rules={[{ required: true, message: "Meal Type is required" }]}
             />
           </Col>
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { mealType } = form.getFieldsValue();
+
+              return (
+                <>
+                  {mealType?.value === 2 ? (
+                    <>
+                      <Col md={6} sm={12} xs={24}>
+                        <PInput
+                          type="date"
+                          picker="month"
+                          name="date"
+                          label="Select a month"
+                          placeholder="Select a month"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please Select a month",
+                            },
+                          ]}
+                          format={"MMMM-YYYY"}
+                        />
+                      </Col>
+                    </>
+                  ) : undefined}
+                </>
+              );
+            }}
+          </Form.Item>
           <Col md={6} sm={12} xs={24}>
             <PSelect
               options={workplaceGroup?.data || []}
@@ -122,6 +342,7 @@ const PricingSetupForm = () => {
                   workplace: undefined,
                 });
                 getWorkplace();
+                getDesignation();
               }}
               rules={[
                 { required: true, message: "Workplace Group is required" },
@@ -138,6 +359,7 @@ const PricingSetupForm = () => {
                 form.setFieldsValue({
                   workplace: op,
                 });
+                getDesignation();
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
             />
@@ -146,15 +368,15 @@ const PricingSetupForm = () => {
             <PSelect
               options={[
                 {
-                  value: "1",
+                  value: 1,
                   label: "Designation Wise",
                 },
                 {
-                  value: "2",
+                  value: 2,
                   label: "Salary Range Wise",
                 },
                 {
-                  value: "3",
+                  value: 3,
                   label: "HR Position",
                 },
               ]}
@@ -168,20 +390,84 @@ const PricingSetupForm = () => {
                   pricingMatrixType: op,
                 });
               }}
+              // disabled={isEdit}
+
               rules={[
                 { required: true, message: "Pricing Matrix Type is required" },
               ]}
             />
           </Col>
 
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              const { pricingMatrixType } = form.getFieldsValue();
+
+              return (
+                <>
+                  {pricingMatrixType?.value === 1 ? (
+                    <>
+                      <Col md={6} sm={12} xs={24}>
+                        <PSelect
+                          mode="multiple"
+                          options={designation?.data || []}
+                          name="designationDDL"
+                          label="Designation"
+                          placeholder="Designation"
+                          onChange={(value, op) => {
+                            form.setFieldsValue({
+                              designationDDL: op,
+                            });
+
+                            // value && getWorkplace();
+                          }}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Off Day is required",
+                            },
+                          ]}
+                        />
+                      </Col>
+                    </>
+                  ) : undefined}
+                </>
+              );
+            }}
+          </Form.Item>
           <Col
             style={{
               marginTop: "23px",
             }}
           >
-            <PButton type="primary" content="View" onClick={() => {}} />
+            <PButton
+              type="primary"
+              action="submit"
+              content="Add"
+              onClick={() => {
+                const { designationDDL, workplace, workplaceGroup } =
+                  form.getFieldsValue(true);
+
+                setDesignationWiseRow(
+                  designationDDL?.map((item: any) => {
+                    return {
+                      workplace,
+                      workplaceGroup,
+                      designation: item,
+                    };
+                  })
+                );
+                // console.log(form.getFieldsValue(true));
+              }}
+            />
           </Col>
         </Row>
+        <DataTable
+          header={header}
+          bordered
+          data={designationWiseRow || []}
+          // loading={bulkLandingAPI?.loading}
+          // scroll={{ x: 1500 }}
+        />
       </PCard>
     </PForm>
   );

@@ -107,8 +107,6 @@ export const createEditEmpAction = async (
       strProbationayClosedByInDate: values?.probationayClosedBy?.label,
       nid: values?.nid || "",
       tinNo: values?.tinNo || "",
-      presentAddress: values?.presentAddress,
-      permanentAddress: values?.permanentAddress,
     };
     if (!isEdit) {
       payload = {
