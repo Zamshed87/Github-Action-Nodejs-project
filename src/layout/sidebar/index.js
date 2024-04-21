@@ -14,7 +14,7 @@ import {
   ShowChartOutlined,
   VerifiedUserOutlined,
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { Link, useHistory } from "react-router-dom";
@@ -126,6 +126,32 @@ const Sidebar = ({ isOpenSidebar, setIsOpenSidebar }) => {
                         history.push(firstLevel?.to);
                       } else {
                         history.push(firstLevel?.childList[0]?.to);
+                      }
+                    }}
+                    onDoubleClick={() => {
+                      const newTabOpen = (url) => {
+                        window.open(url, "_blank");
+                      };
+                      setIsOpenSidebar(!isOpenSidebar);
+                      setSelectedFirstLevelMenu(
+                        firstLevel?.label === selectedFirstLevelMenu
+                          ? ""
+                          : firstLevel?.label
+                      );
+                      dispatch(setFirstLevelNameAction(firstLevel?.label));
+
+                      if (
+                        firstLevel?.to === "/compensationAndBenefits" ||
+                        firstLevel?.to === "/assetManagement" ||
+                        firstLevel?.to === "/trainingAndDevelopment"
+                      ) {
+                        newTabOpen(
+                          firstLevel?.childList[0]?.childList[0]?.to
+                        );
+                      } else if (firstLevel?.to === "/approval") {
+                        newTabOpen(firstLevel?.to);
+                      } else {
+                        newTabOpen(firstLevel?.childList[0]?.to);
                       }
                     }}
                   >
