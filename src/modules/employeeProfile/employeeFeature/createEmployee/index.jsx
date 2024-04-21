@@ -1373,7 +1373,7 @@ const CreateAndEditEmploye = () => {
                     label="TIN No."
                   />
                 </Col>
-                {/* <Col md={12} sm={24}>
+                <Col md={12} sm={24}>
                   <PInput
                     type="text"
                     name="permanentAddress"
@@ -1388,7 +1388,7 @@ const CreateAndEditEmploye = () => {
                     label="Present Address"
                     placeholder="Present Address"
                   />
-                </Col> */}
+                </Col>
               </Row>
             </PCardBody>
           </div>

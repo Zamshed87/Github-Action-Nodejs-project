@@ -30,6 +30,8 @@ export const createEditEmpAction = async (
 ) => {
   try {
     let payload = {
+      presentAddress: values?.presentAddress,
+      permanentAddress: values?.permanentAddress,
       intPayscaleGradeId: values?.payScaleGrade?.value,
       strPayscaleGradeName: values?.payScaleGrade?.label,
       intSalaryTypeId: values?.salaryType?.value,
@@ -312,6 +314,13 @@ export const getEmployeeProfileViewData = async (
       setter && setter(res?.data);
       setForEdit &&
         setForEdit({
+          presentAddress: empBasic?.empEmployeeAddress?.find(
+            (i) => i?.strAddressType === "Present"
+          )?.strAddressDetails,
+
+          permanentAddress: empBasic?.empEmployeeAddress?.find(
+            (i) => i?.strAddressType === "Permanent"
+          )?.strAddressDetails,
           tinNo: empBasic?.employeeProfileLandingView?.tinNo,
           nid: empBasic?.empEmployeePhotoIdentity?.strNid,
           empId: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,
