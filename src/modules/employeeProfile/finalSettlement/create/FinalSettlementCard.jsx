@@ -15,7 +15,7 @@ const FinalSettlementCard = ({ finalSettlement }) => {
                 {finalSettlement?.employeeName}
               </h4>
             </div>
-            {settlementData(finalSettlement)?.map((dto, index) => (
+            {settlementData(finalSettlement)?.map((dto) => (
               <div className="single-info" key={dto?.title}>
                 <p
                   className="text-single-info"
@@ -83,7 +83,7 @@ const FinalSettlementCard = ({ finalSettlement }) => {
                 },
               ]}
               x={700}
-              rowKey={(record, index) => record?.salaryElement}
+              rowKey={(record) => record?.salaryElement}
             />
           </div>
         ) : (

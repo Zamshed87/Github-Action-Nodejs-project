@@ -46,12 +46,12 @@ export default function UnderCreateRosterSetup() {
     if (rowDto?.length < 2)
       return toast.warn("Please add atleast two calender");
 
-    let firstRowCalId = rowDto[0]?.calendarId;
-    let lastRowNextCalId = rowDto[rowDto?.length - 1]?.nextCalenderId;
+    const firstRowCalId = rowDto[0]?.calendarId;
+    const lastRowNextCalId = rowDto[rowDto?.length - 1]?.nextCalenderId;
 
     // firstRowCalId and lastRowNextCalId should be equal
     if (firstRowCalId !== lastRowNextCalId) return toast.warn("Invalid circle");
-    let temp = rowDto?.map((item) => {
+    const temp = rowDto?.map((item) => {
       return {
         calenderName: item?.calendarName || item?.calenderName,
         rosterGroupId: item?.rosterGroupId,
@@ -62,7 +62,7 @@ export default function UnderCreateRosterSetup() {
         IntCreatedBy: item?.insertByUserId || employeeId,
       };
     });
-    let payload = {
+    const payload = {
       partType: "Roster",
       businessUnitId: buId,
       timeSheetRosterJsons: [...temp],
@@ -85,7 +85,7 @@ export default function UnderCreateRosterSetup() {
     if (values?.noOfChangeDays < 0) {
       return toast.warn("No. of change days must be positive");
     }
-    let payload = {
+    const payload = {
       // =======
       calenderName: values?.calendarName?.label,
       rosterGroupId: +params?.id,
@@ -121,7 +121,7 @@ export default function UnderCreateRosterSetup() {
   };
 
   const filterCalenderListFunc = (values) => {
-    let filterCalenderList = calendarDDL?.filter(
+    const filterCalenderList = calendarDDL?.filter(
       (item) => item?.value !== values?.calendarName?.value
     );
     return filterCalenderList;
@@ -182,32 +182,7 @@ export default function UnderCreateRosterSetup() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          // // let temp = rowDto?.map((item) => {
-          // //   return {
-          // //     calenderName: item?.calendarName || item?.calenderName,
-          // //     rosterGroupId: item?.rosterGroupId,
-          // //     calendarId: +item?.calendarId,
-          // //     noOfDaysChange: item?.noOfDaysChange,
-          // //     nextCalenderId: +item?.nextCalenderId,
-          // //     nextCalendarName: item?.nextCalendarName,
-          // //     IntCreatedBy: item?.insertByUserId || employeeId,
-          // //   };
-          // // });
-          // setRowDto((prev) => {
-          //   return prev?.map((item) => {
-          //     return {
-          //       calenderName: item?.calendarName || item?.calenderName,
-          //       rosterGroupId: item?.rosterGroupId,
-          //       calendarId: +item?.calendarId,
-          //       noOfDaysChange: item?.noOfDaysChange,
-          //       nextCalenderId: +item?.nextCalenderId,
-          //       nextCalendarName: item?.nextCalendarName,
-          //       IntCreatedBy: item?.insertByUserId || employeeId,
-          //     };
-          //   });
-          // });
-
+        onSubmit={(values) => {
           saveHandler(values, () => {
             // don't reset form, not use ful for the purpose
             // resetForm(initData);
@@ -215,16 +190,7 @@ export default function UnderCreateRosterSetup() {
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          setValues,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -362,7 +328,7 @@ export default function UnderCreateRosterSetup() {
                             type="button"
                             className="btn btn-green btn-green-disable"
                             label="Clear"
-                            onClick={(e) => setRowDto([])}
+                            onClick={() => setRowDto([])}
                           />
                         </div>
                       </div>

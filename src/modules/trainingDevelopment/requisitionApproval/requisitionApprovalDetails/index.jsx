@@ -1,6 +1,4 @@
 import { useState } from "react";
-// import { shallowEqual, useSelector } from "react-redux";
-// import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import AntTable from "../../../../common/AntTable";
 import BackButton from "../../../../common/BackButton";
 import Loading from "../../../../common/loading/Loading";
@@ -61,7 +59,7 @@ const RequisitionApprovalDetails = () => {
 
   // eslint-disable-next-line
   const [loading, setLoading] = useState(false);
-  let permission = {
+  const permission = {
     isCreate: true,
   };
 
@@ -153,7 +151,7 @@ const RequisitionApprovalDetails = () => {
                         width="200px"
                         //   value={values?.search}
                         value={""}
-                        setValue={(value) => {
+                        setValue={() => {
                           // setFieldValue("search", value);
                           // debounce(() => {
                           //   searchFromIouLanding(value, allData, setRowDto);
@@ -188,7 +186,7 @@ const RequisitionApprovalDetails = () => {
                             paginationSize
                             // 15
                           )}
-                          onRowClick={(item) => {
+                          onRowClick={() => {
                             // history.push(
                             //   `/profile/iOU/application/${item?.intIOUId}`
                             // );

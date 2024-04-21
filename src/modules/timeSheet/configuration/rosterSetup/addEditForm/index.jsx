@@ -39,7 +39,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
   const [loading, setLoading] = useState(false);
   const [organizationDDL, setOrganizationDDL] = useState([]);
   const [workPlaceDDL, setWorkPlaceDDL] = useState([]);
-  const [loader, setLoader] = useState(false);
+  const [, setLoader] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
   }, [buId]);
 
   const saveHandler = (values, cb) => {
-    let payload = {
+    const payload = {
       partType: "RosterGroup",
       employeeId: employeeId,
       autoId: +id || 0,
@@ -74,7 +74,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
       fromDate: null,
       toDate: null,
       totalDays: 0,
-      calenderCode: "", 
+      calenderCode: "",
       calendarName: "",
       startTime: "00:00:00",
       extendedStartTime: "00:00:00",
@@ -114,7 +114,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
           workplace: { value: wId, label: wName },
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, (autoId, autoName) => {
             resetForm({ rosterGroupName: "" });
             setIsRosterSetup(false);
@@ -129,15 +129,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Box sx={style} className="rosterSetupModal">
               <Form onSubmit={handleSubmit}>

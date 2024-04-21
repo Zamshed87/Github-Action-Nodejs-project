@@ -68,7 +68,7 @@ export default function OffdaySetup() {
   const filterData = (keywords, allData, setRowDto) => {
     try {
       const regex = new RegExp(keywords?.toLowerCase());
-      let newDta = allData?.filter((item) =>
+      const newDta = allData?.filter((item) =>
         regex.test(item?.strOffdayGroupName?.toLowerCase())
       );
       setRowDto(newDta);
@@ -76,8 +76,6 @@ export default function OffdaySetup() {
       setRowDto([]);
     }
   };
-
-  const saveHandler = (values) => {};
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -118,21 +116,11 @@ export default function OffdaySetup() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}

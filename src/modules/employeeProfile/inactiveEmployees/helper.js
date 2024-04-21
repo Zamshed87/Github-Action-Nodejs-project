@@ -24,9 +24,9 @@ export const getInactiveEmployeesInfo = async (
   setPages
 ) => {
   setLoading && setLoading(true);
-  let search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
-  let status = statusId ? `&intStatusId=${statusId}` : "";
-  let intId = id ? `&intId=${id}` : "";
+  const search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
+  const status = statusId ? `&intStatusId=${statusId}` : "";
+  const intId = id ? `&intId=${id}` : "";
   const filterDate = `fromDate=${fromDate}&toDate=${toDate}`;
   try {
     const res = await axios.get(
@@ -86,7 +86,7 @@ export const getNewInactiveEmpInfo = async ({
 export const activeInactiveEmployee = async (values, setLoading, cb) => {
   try {
     setLoading(true);
-    let res = await axios.post(
+    const res = await axios.post(
       `/Employee/ActiveORInactiveEmployeeBasicInfo?accountId=${values?.intAccountId}&employeeId=${values?.EmployeeId}`
     );
     setLoading(false);
@@ -101,7 +101,7 @@ export const activeInactiveEmployee = async (values, setLoading, cb) => {
 export const activeEmployeeHandler = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
-    let res = await axios.post(
+    const res = await axios.post(
       `/Employee/PostAcitveCurrentInactiveEmployee`,
       payload
     );
@@ -258,8 +258,8 @@ export const inactiveEmpColumns = (
 };
 
 // for excel
-export const getTableDataInactiveEmployees = (row, keys, totalKey) => {
-  const data = row?.map((item, index) => {
+export const getTableDataInactiveEmployees = (row, keys) => {
+  const data = row?.map((item) => {
     return keys?.map((key) => {
       return new Cell(
         key === "dteJoiningDate" ? dateFormatter(item[key]) : item[key],

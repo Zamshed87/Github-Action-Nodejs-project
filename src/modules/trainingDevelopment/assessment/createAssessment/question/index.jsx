@@ -28,7 +28,7 @@ const CreateQuestion = ({
       const prevQueId = question?.queId;
       const newId = uuid();
       const copiedQuestion = { ...question, queId: newId };
-      let copiedAnswer = [];
+      const copiedAnswer = [];
       values?.answers?.forEach((ans) => {
         if (ans.queId === prevQueId) {
           copiedAnswer.push({
@@ -47,12 +47,13 @@ const CreateQuestion = ({
   };
 
   const demoPopup = () => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to Delete ? `,
       yesAlertFunc: () => {
         remove(index);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -186,6 +187,7 @@ const CreateQuestion = ({
 
                     return (
                       <CreateOptions
+                        key={index}
                         answer={answer}
                         newOption={newOption}
                         setFieldValue={setFieldValue}

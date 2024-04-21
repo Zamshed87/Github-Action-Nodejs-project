@@ -1,34 +1,21 @@
-import React from "react";
-import { Formik, Form } from "formik";
+import { Form, Formik } from "formik";
+import companyLogo from "../../../../assets/images/company/logo.png";
 import DashboardHead from "../../../../layout/dashboardHead/DashboardHead";
 import SideMenu from "../../../../layout/menuComponent/SideMenu";
-import companyLogo from "../../../../assets/images/company/logo.png";
 
 const initData = {};
 
 const TaxSlip = () => {
-  const saveHandler = (values) => {};
-
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit }) => (
           <>
             <Form onSubmit={handleSubmit}>
               <DashboardHead

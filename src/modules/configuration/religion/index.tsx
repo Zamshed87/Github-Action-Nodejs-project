@@ -15,7 +15,7 @@ function Religion() {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, wId, orgId } = useSelector(
+  const { buId, wgId, wId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -25,7 +25,6 @@ function Religion() {
   );
 
   // state
-  const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
   const [id, setId] = useState("");
 
@@ -35,20 +34,16 @@ function Religion() {
   // Api Instance
   const landingApi = useApiRequest({});
 
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any;
-    searchText?: string;
-    excelDownload?: boolean;
-  };
-  const landingApiCall = ({
-    pagination = {},
-    filerList,
-    searchText = "",
-  }: TLandingApi = {}) => {
+  // type TLandingApi = {
+  //   pagination?: {
+  //     current?: number;
+  //     pageSize?: number;
+  //   };
+  //   filerList?: any;
+  //   searchText?: string;
+  //   excelDownload?: boolean;
+  // };
+  const landingApiCall = () => {
     landingApi.action({
       urlKey: "GetAllReligion",
       method: "GET",
@@ -110,19 +105,13 @@ function Religion() {
   // console.log(landingApi?.data);
   return employeeFeature?.isView ? (
     <>
-      <PForm
-        form={form}
-        onFinish={() => {
-          setOpen(true);
-        }}
-      >
+      <PForm form={form}>
         <PCard>
           <PCardHeader
             title="Religion"
             // submitText="Employment Type"
             // submitIcon={<AddOutlined />}
             buttonList={[]}
-            onExport={() => {}}
           />
 
           {/* Example Using Data Table Designed By Ant-Design v4 */}
@@ -134,12 +123,8 @@ function Religion() {
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
               if (extra.action === "sort") return;
-              const { search } = form.getFieldsValue(true);
-              landingApiCall({
-                pagination,
-                filerList: filters,
-                searchText: search,
-              });
+              // const { search } = form.getFieldsValue(true);
+              landingApiCall();
             }}
             // scroll={{ x: 2000 }}
             onRow={(record) => ({

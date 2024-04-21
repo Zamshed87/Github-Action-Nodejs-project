@@ -5,7 +5,11 @@ import { IconButton, Popover } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { getFilterDDL, getPeopleDeskAllDDL, PeopleDeskSaasDDL } from "../../../../common/api";
+import {
+  getFilterDDL,
+  getPeopleDeskAllDDL,
+  PeopleDeskSaasDDL,
+} from "../../../../common/api";
 import BorderlessSelect from "../../../../common/BorderlessSelect";
 import DatePickerBorderLess from "../../../../common/DatePickerBorderless";
 import { borderlessSelectStyle } from "../../../../utility/BorderlessStyle";
@@ -26,8 +30,8 @@ const initData = {
   toDate: "",
 };
 
-const FilterModal = ({ propsObj, children }) => {
-  const { buId, employeeId, orgId,wgId } = useSelector(
+const FilterModal = ({ propsObj }) => {
+  const { buId, employeeId, orgId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -35,7 +39,6 @@ const FilterModal = ({ propsObj, children }) => {
     (state) => state?.auth?.keywords,
     shallowEqual
   );
-  const saveHandler = (values) => { };
 
   const [employeeDDL, setEmployeeDDL] = useState(false);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState(false);
@@ -45,7 +48,6 @@ const FilterModal = ({ propsObj, children }) => {
   const [employmentTypeDDL, setEmploymentTypeDDL] = useState(false);
   const [allDDL, setAllDDL] = useState([]);
   const [movementTypeDDL, setMovementTypeDDL] = useState([]);
-  const [empId, setEmployeeId] = useState("");
   const {
     id,
     open,
@@ -54,7 +56,7 @@ const FilterModal = ({ propsObj, children }) => {
     setEmployee,
     setIsFilter,
     masterFilterHandler,
-    isOfficeAdmin
+    isOfficeAdmin,
   } = propsObj;
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const FilterModal = ({ propsObj, children }) => {
       setMovementTypeDDL,
       "MovementTypeId",
       "MovementType",
-      empId ? empId : employeeId
+      employeeId
     );
     if (allDDL) {
       // workplaceGroupDDL
@@ -145,17 +147,15 @@ const FilterModal = ({ propsObj, children }) => {
       "strEmployeeName",
       setEmployeeDDL
     );
-  }, [employeeId,wgId]);
+  }, [employeeId, wgId]);
 
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
         {({
@@ -165,7 +165,6 @@ const FilterModal = ({ propsObj, children }) => {
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -190,7 +189,7 @@ const FilterModal = ({ propsObj, children }) => {
                   <div className="master-filter-header py-1">
                     <h3>Advanced Filter</h3>
                     <IconButton
-                      onClick={(e) => handleClose()}
+                      onClick={() => handleClose()}
                       className="btn btn-cross"
                     >
                       <Clear sx={{ fontSize: "18px", color: gray900 }} />
@@ -510,7 +509,7 @@ const FilterModal = ({ propsObj, children }) => {
                       <button
                         type="button"
                         className="btn btn-cancel"
-                        onClick={(e) => {
+                        onClick={() => {
                           handleClose();
                           setIsFilter(false);
                         }}
@@ -523,7 +522,7 @@ const FilterModal = ({ propsObj, children }) => {
                       <button
                         type="button"
                         className="btn btn-green"
-                        onClick={(e) => {
+                        onClick={() => {
                           setEmployee(values?.employee);
                           handleClose();
                           setIsFilter(true);

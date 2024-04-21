@@ -2,8 +2,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const modifiedInitialValues = (values) => {
-  let questions = [];
-  let answers = [];
+  const questions = [];
+  const answers = [];
 
   values.forEach((value) => {
     questions.push({

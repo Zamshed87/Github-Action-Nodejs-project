@@ -3,7 +3,6 @@ import {
   AddOutlined,
   CreateOutlined,
   DeleteOutlined,
-  SearchOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
@@ -15,7 +14,6 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import AntTable from "../../common/AntTable";
-import FormikInput from "../../common/FormikInput";
 import FormikSelect from "../../common/FormikSelect";
 import IConfirmModal from "../../common/IConfirmModal";
 import { LightTooltip } from "../../common/LightTooltip";
@@ -37,10 +35,14 @@ import {
   getSingleAnnouncementDeleteData,
 } from "./helper";
 import "./index.css";
+import MasterFilter from "common/MasterFilter";
 
 const initData = {
   search: "",
-  year: "",
+  year: {
+    value: parseInt(moment().year()),
+    label: moment().year(),
+  },
 };
 
 const validationSchema = Yup.object().shape({});
@@ -81,7 +83,7 @@ export default function AnnouncementCreate() {
     year: moment().year(),
   });
 
-  const getData = (fromDate, toDate) => {
+  const getData = () => {
     getAllAnnouncement(
       buId,
       orgId,
@@ -113,7 +115,7 @@ export default function AnnouncementCreate() {
   }, [buId, orgId, date?.year]);
 
   const demoPopup = (data) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: "Do you want to delete this announcement?",
       yesAlertFunc: () => {
@@ -121,7 +123,7 @@ export default function AnnouncementCreate() {
           announcement: {
             intAnnouncementId: data?.announcement?.intAnnouncementId,
           },
-          announcementRow: data?.announcementRow?.map((item) => {
+          announcementRow: data?.announcementRow?.map(() => {
             return {
               intAnnoucementId: data?.announcement?.intAnnouncementId,
             };
@@ -254,15 +256,9 @@ export default function AnnouncementCreate() {
     <>
       <Formik
         enableReinitialize={true}
-        initialValues={{
-          ...initData,
-          year: {
-            value: 2023,
-            label: "2023",
-          },
-        }}
+        initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           resetForm(initData);
         }}
       >
@@ -273,8 +269,6 @@ export default function AnnouncementCreate() {
           errors,
           touched,
           setFieldValue,
-          setValues,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -307,24 +301,20 @@ export default function AnnouncementCreate() {
                         </li>
                       )}
                       <li>
-                        <FormikInput
-                          classes="search-input fixed-width mt-2 mt-md-0 mb-2 mb-md-0 tableCardHeaderSeach"
-                          inputClasses="search-inner-input"
-                          placeholder="Search"
-                          value={values?.search}
-                          name="search"
-                          type="text"
-                          trailicon={
-                            <SearchOutlined
-                              sx={{ color: "#323232", fontSize: "18px" }}
-                            />
-                          }
-                          onChange={(e) => {
-                            filterData(e.target.value, allData, setRowDto);
-                            setFieldValue("search", e.target.value);
+                        <MasterFilter
+                          isHiddenFilter
+                          width="200px"
+                          inputWidth="200px"
+                          value={values?.searchtText}
+                          setValue={(value) => {
+                            filterData(value, allData, setRowDto);
+                            setFieldValue("searchtText", value);
                           }}
-                          errors={errors}
-                          touched={touched}
+                          cancelHandler={() => {
+                            setFieldValue("searchtText", "");
+                            filterData("", allData, setRowDto);
+                          }}
+                          placeholder={"Search"}
                         />
                       </li>
                       <li className="pl-2">

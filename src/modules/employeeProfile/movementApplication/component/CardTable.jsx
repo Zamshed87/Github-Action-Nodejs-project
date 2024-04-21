@@ -32,7 +32,7 @@ const CardTable = ({ propsObj }) => {
   } = propsObj;
 
   const demoPopup = (data) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: "Are you want to sure you delete your movement?",
       yesAlertFunc: () => {
@@ -76,7 +76,7 @@ const CardTable = ({ propsObj }) => {
   };
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
-  ))(({ theme }) => ({
+  ))(() => ({
     [`& .${tooltipClasses.arrow}`]: {
       color: "#fff !important",
     },
@@ -98,37 +98,37 @@ const CardTable = ({ propsObj }) => {
                 <div>SL</div>
               </th>
               <th>
-                <div className="sortable" onClick={() => {}}>
+                <div>
                   <span>Movement Type </span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => {}}>
+                <div>
                   <span>From Date </span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => {}}>
+                <div>
                   <span>Start Time</span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => {}}>
+                <div>
                   <span>To Date</span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => {}}>
+                <div>
                   <span>End Time</span>
                 </div>
               </th>
               <th>
-                <div className="sortable" onClick={() => {}}>
+                <div>
                   <span> Application Date</span>
                 </div>
               </th>
               <th>
-                <div className="sortable center" onClick={() => {}}>
+                <div className="sortable center">
                   <span>Status</span>
                 </div>
               </th>

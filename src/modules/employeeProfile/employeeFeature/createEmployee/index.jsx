@@ -97,6 +97,7 @@ const CreateAndEditEmploye = () => {
   const positionDDL = useApiRequest([]);
   const userTypeDDL = useApiRequest([]);
   const bloodGroupDDL = useApiRequest([]);
+  const holidayDDL = useApiRequest([]);
 
   const getEmpData = () => {
     getEmployeeProfileViewData(
@@ -209,6 +210,26 @@ const CreateAndEditEmploye = () => {
     });
   };
 
+  const getHolidayGroupDDL = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    holidayDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "HolidayGroup",
+        IntWorkplaceId: workplace?.value || wId,
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value || wgId,
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.HolidayGroupName;
+          res[i].value = item?.HolidayGroupId;
+        });
+      },
+    });
+  };
   const getCalendarDDL = () => {
     const { workplaceGroup, workplace } = form.getFieldsValue(true);
 
@@ -459,6 +480,24 @@ const CreateAndEditEmploye = () => {
         });
       },
     });
+
+    userTypeDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "UserType",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: wgId,
+        intId: 0, // employeeId, Previously set 0
+      },
+      onSuccess: (res) => {
+        res.forEach((item, i) => {
+          res[i].label = item?.strUserType;
+          res[i].value = item?.intUserTypeId;
+        });
+      },
+    });
+
     religionDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -533,7 +572,7 @@ const CreateAndEditEmploye = () => {
       singleData.calenderType?.value === 2 && getCalendarByRosterDDL();
     }
   }, [orgId, buId, singleData, employeeId]);
-
+  console.log("sdgsg", userTypeDDL?.data?.[0]?.label);
   return (
     <div style={{ marginBottom: "60px" }}>
       {loading && <Loading />}
@@ -547,6 +586,14 @@ const CreateAndEditEmploye = () => {
             value: 1,
             label: "Not Applicable",
           },
+          // userType: {
+          //   value: 1,
+          //   label: "Not Applicable fhfdh",
+          // },
+          // userType: {
+          //   value: userTypeDDL?.data ? userTypeDDL?.data?.[0]?.value : 1,
+          //   label: userTypeDDL?.data ? userTypeDDL?.data?.[0]?.label : "test",
+          // },
         }}
       >
         <PCard>
@@ -726,7 +773,9 @@ const CreateAndEditEmploye = () => {
                       });
                       if (value) {
                         getWorkplace();
+                        // getUserTypeDDL();
                         getUserTypeDDL();
+                        getHolidayGroupDDL();
                       }
                     }}
                     rules={[
@@ -763,6 +812,7 @@ const CreateAndEditEmploye = () => {
                         getEmployeePosition();
                         getEmploymentType();
                         getCalendarDDL();
+                        getHolidayGroupDDL();
                       }
                     }}
                     rules={[
@@ -814,6 +864,7 @@ const CreateAndEditEmploye = () => {
                       form.setFieldsValue({
                         joiningDate: value,
                         dteProbationaryCloseDate: moment(next180Days),
+                        generateDate: value
                       });
                     }}
                     // disabled={params?.id}
@@ -1323,6 +1374,22 @@ const CreateAndEditEmploye = () => {
                     label="TIN No."
                   />
                 </Col>
+                {/* <Col md={12} sm={24}>
+                  <PInput
+                    type="text"
+                    name="Permanent Address"
+                    label="Permanent Address"
+                    placeholder="Permanent Address"
+                  />
+                </Col>{" "}
+                <Col md={12} sm={24}>
+                  <PInput
+                    type="text"
+                    name="PresentAddress"
+                    label="Present Address"
+                    placeholder="Present Address"
+                  />
+                </Col> */}
               </Row>
             </PCardBody>
           </div>
@@ -1445,6 +1512,59 @@ const CreateAndEditEmploye = () => {
                             // disabled={params?.id}
                           />
                         </Col>
+                        {/* <Col md={8} sm={24}>
+                          <PSelect
+                            mode="multiple"
+                            options={[
+                              {
+                                value: 1,
+                                label: "Friday",
+                              },
+                              { value: 2, label: "Saturday" },
+                              { value: 3, label: "Sunday" },
+                              { value: 4, label: "Monday" },
+                              { value: 5, label: "Tuseday" },
+                              { value: 6, label: "Wednesday" },
+                              { value: 7, label: "Thursday" },
+                            ]}
+                            name="offday"
+                            label="Off Day"
+                            placeholder=" Off Day"
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                offday: op,
+                              });
+
+                              // value && getWorkplace();
+                            }}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Off Day is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                        <Col md={8} sm={24}>
+                          <PSelect
+                            options={holidayDDL?.data || []}
+                            name="holiday"
+                            label="Holiday"
+                            placeholder="Holiday"
+                            disabled={!workplaceGroup}
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                holiday: op,
+                              });
+                            }}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Holiday is required",
+                              },
+                            ]}
+                          />
+                        </Col> */}
                       </>
                     ) : undefined}
 
@@ -1471,9 +1591,13 @@ const CreateAndEditEmploye = () => {
                     {/* User Create */}
                     <Form.Item noStyle shouldUpdate>
                       {() => {
-                        const { isUsersection, employeeCode } =
-                          form.getFieldsValue();
-
+                        const {
+                          isUsersection,
+                          employeeCode,
+                          userType,
+                          otType,
+                        } = form.getFieldsValue();
+                        console.log({ userType, otType });
                         return !empId ? (
                           <>
                             <Col md={8} sm={24}>
@@ -1487,6 +1611,14 @@ const CreateAndEditEmploye = () => {
                                     form.setFieldsValue({
                                       loginUserId: employeeCode,
                                       password: "123456",
+                                      userType: {
+                                        value: userTypeDDL?.data
+                                          ? userTypeDDL?.data?.[0]?.value
+                                          : 1,
+                                        label: userTypeDDL?.data
+                                          ? userTypeDDL?.data?.[0]?.label
+                                          : "test",
+                                      },
                                     });
                                   }
                                 }}
@@ -1576,6 +1708,7 @@ const CreateAndEditEmploye = () => {
                                   <PSelect
                                     options={userTypeDDL.data || []}
                                     name="userType"
+                                    // value="userType"
                                     label="User Type"
                                     placeholder="User Type"
                                     onChange={(value, op) => {

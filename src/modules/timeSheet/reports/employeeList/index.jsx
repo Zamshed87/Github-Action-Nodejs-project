@@ -23,6 +23,7 @@ import FormikInput from "common/FormikInput";
 import { todayDate } from "utility/todayDate";
 import FormikSelect from "common/FormikSelect";
 import { customStyles } from "utility/selectCustomStyle";
+import { monthFirstDate } from "utility/dateFormatter";
 
 const initData = {
   searchString: "",
@@ -41,7 +42,7 @@ const initData = {
   contractualToDate: "",
   employmentStatus: "",
 
-  fromDate: todayDate(),
+  fromDate: monthFirstDate(),
   toDate: todayDate(),
   workplace: "",
   workplaceGroup: "",
@@ -99,6 +100,35 @@ export default function EmployeeList() {
     ...initHeaderList,
   });
 
+
+  const getData = async (
+    pagination,
+    IsForXl = "false",
+    searchText = "",
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList },
+    values
+  ) => {
+    setLandingLoading(true);
+
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+
+    getDataApiCall(
+      modifiedPayload,
+      pagination,
+      searchText,
+      currentFilterSelection,
+      checkedHeaderList,
+      values
+    );
+  };
+  
   useEffect(() => {
     setHeaderList({});
     setEmpLanding([]);
@@ -132,12 +162,11 @@ export default function EmployeeList() {
     checkedHeaderList,
     values
   ) => {
-    console.log({ values });
     try {
       const payload = {
         businessUnitId: buId,
-        workplaceGroupId: values?.workplaceGroup?.value || wgId,
-        workplaceId: values?.workplace?.value ? values?.workplace?.value : 0,
+        workplaceGroupId: values?.workplaceGroup?.value || 0,
+        workplaceId: values?.workplace?.value || 0,
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
@@ -183,33 +212,7 @@ export default function EmployeeList() {
     }
   });
 
-  const getData = async (
-    pagination,
-    IsForXl = "false",
-    searchText = "",
-    currentFilterSelection = -1,
-    filterOrderList = [],
-    checkedHeaderList = { ...initHeaderList },
-    values
-  ) => {
-    setLandingLoading(true);
 
-    const modifiedPayload = createPayloadStructure({
-      initHeaderList,
-      currentFilterSelection,
-      checkedHeaderList,
-      filterOrderList,
-    });
-
-    getDataApiCall(
-      modifiedPayload,
-      pagination,
-      searchText,
-      currentFilterSelection,
-      checkedHeaderList,
-      values
-    );
-  };
 
   const handleChangePage = (_, newPage, searchText, values) => {
     setPages((prev) => {
@@ -377,8 +380,8 @@ export default function EmployeeList() {
                             const paylaod = {
                               businessUnitId: 1,
                               workplaceGroupId:
-                                values?.workplaceGroup?.value || wgId,
-                              workplaceId: values?.workplace?.value || wId,
+                                values?.workplaceGroup?.value || 0,
+                              workplaceId: values?.workplace?.value || 0,
                               pageNo: 1,
                               pageSize: 25,
                               isPaginated: true,
@@ -549,6 +552,7 @@ export default function EmployeeList() {
                                 setFieldValue("workplaceGroup", valueOption);
                                 setFieldValue("workplace", "");
                                 if (valueOption?.value) {
+                                  console.log("workplaceGroup",valueOption)
                                   getPeopleDeskAllDDL(
                                     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
                                     "intWorkplaceId",

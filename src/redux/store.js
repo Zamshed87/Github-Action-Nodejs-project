@@ -5,7 +5,7 @@ import storage from "redux-persist/lib/storage";
 import { rootReducer } from "./rootReducer";
 
 const encrypt = createTransform(
-  (inboundState, key) => {
+  (inboundState) => {
     if (!inboundState) return inboundState;
     const cryptedText = CryptoJS.AES.encrypt(
       JSON.stringify(inboundState),
@@ -13,7 +13,7 @@ const encrypt = createTransform(
     );
     return cryptedText.toString();
   },
-  (outboundState, key) => {
+  (outboundState) => {
     if (!outboundState) return outboundState;
     const bytes = CryptoJS.AES.decrypt(
       outboundState,

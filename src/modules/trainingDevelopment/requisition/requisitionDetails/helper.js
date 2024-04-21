@@ -21,7 +21,7 @@ export const getRequisitionData = async (
 ) => {
   setIsLoading && setIsLoading(true);
   try {
-    let res = await axios.get(
+    const res = await axios.get(
       `/Training/GetTrainingRequisitionLanding?intScheduleId=${scheduleId}&IntAccountId=${accId}&intBusinessUnitId=${buId}`
     );
 
@@ -30,8 +30,7 @@ export const getRequisitionData = async (
     if (status === "Not Assigned") {
       // Not Assigned
       modifyResData = res?.data?.data?.filter(
-        (itm) =>
-          itm?.strStatus !== "Assigned" && itm?.strStatus !== "Pending"
+        (itm) => itm?.strStatus !== "Assigned" && itm?.strStatus !== "Pending"
       );
     }
     if (status === "Pending Assign") {
@@ -89,7 +88,7 @@ export const createRequisitionData = async (
     };
   });
   try {
-    let res = await axios.post(
+    const res = await axios.post(
       `/Training/CreateTrainingRequisition`,
       modifyResData
     );
@@ -105,8 +104,7 @@ export const editRequisitionData = async (
   orgId,
   employeeId,
   result,
-  setLoading,
-  state
+  setLoading
 ) => {
   setLoading && setLoading(true);
   let modifyResData = [];
@@ -116,7 +114,7 @@ export const editRequisitionData = async (
     strPhoneNo: result?.strPhoneNo || "N/A",
   };
   try {
-    let res = await axios.post(
+    const res = await axios.post(
       `/Training/EditTrainingRequisition`,
       modifyResData
     );
@@ -128,17 +126,7 @@ export const editRequisitionData = async (
   }
 };
 
-const rowDtoHandler = (
-  name,
-  rowDto,
-  setRowDto,
-  index,
-  value,
-  orgId,
-  employeeId,
-  setLoading,
-  state
-) => {
+const rowDtoHandler = (name, rowDto, setRowDto, index, value) => {
   const data = [...rowDto];
   data[index][name] = value;
 
@@ -202,11 +190,11 @@ export const employeeListColumn = (
                 //   setFieldValue("allSelected", e.target.checked);
                 // }}
                 onChange={(e) => {
-                  let data = filterData.map((item) => ({
+                  const data = filterData.map((item) => ({
                     ...item,
                     selectCheckbox: e.target.checked,
                   }));
-                  let data2 = rowDto.map((item) => ({
+                  const data2 = rowDto.map((item) => ({
                     ...item,
                     selectCheckbox: e.target.checked,
                   }));
@@ -219,7 +207,7 @@ export const employeeListColumn = (
         </div>
       ),
       dataIndex: "strEmployeeCode",
-      render: (_, record, index) => (
+      render: (_, record) => (
         <div>
           {rowDto[0].strStatus !== "Pending" &&
             rowDto[0].strStatus !== "Assigned" && (
@@ -245,7 +233,7 @@ export const employeeListColumn = (
                 //   setHolidayExceptionDto([...data]);
                 // }}
                 onChange={(e) => {
-                  let data = filterData?.map((item) => {
+                  const data = filterData?.map((item) => {
                     if (item?.strEmployeeCode === record?.strEmployeeCode) {
                       return {
                         ...item,
@@ -253,7 +241,7 @@ export const employeeListColumn = (
                       };
                     } else return item;
                   });
-                  let data2 = rowDto?.map((item) => {
+                  const data2 = rowDto?.map((item) => {
                     if (item?.strEmployeeCode === record?.strEmployeeCode) {
                       return {
                         ...item,
@@ -369,8 +357,7 @@ export const employeeListColumn = (
       title: "Status",
       dataIndex: "Status",
       hidden:
-        rowDto[0].strStatus !== "Pending" &&
-        rowDto[0].strStatus !== "Assigned",
+        rowDto[0].strStatus !== "Pending" && rowDto[0].strStatus !== "Assigned",
       render: (_, item) => (
         <div>
           {item?.strStatus === "Assigned" && (

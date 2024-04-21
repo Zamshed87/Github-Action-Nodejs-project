@@ -14,7 +14,11 @@ import FormikInput from "../../../common/FormikInput";
 import FormikSelect from "../../../common/FormikSelect";
 import NoResult from "../../../common/NoResult";
 import ResetButton from "../../../common/ResetButton";
-import { PeopleDeskSaasDDL, getBuDetails, getPeopleDeskAllDDL } from "../../../common/api";
+import {
+  PeopleDeskSaasDDL,
+  getBuDetails,
+  getPeopleDeskAllDDL,
+} from "../../../common/api";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable from "../../../common/peopleDeskTable";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
@@ -91,7 +95,7 @@ export default function ContactClosingReport() {
       wgId,
       setRowDto,
       setLoading,
-      "",
+      searchText,
       pagination?.current,
       pagination?.pageSize,
       setPages,
@@ -99,7 +103,7 @@ export default function ContactClosingReport() {
     );
   };
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
@@ -111,8 +115,8 @@ export default function ContactClosingReport() {
     });
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+  const handleChangeRowsPerPage = (event) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData({
@@ -199,7 +203,7 @@ export default function ContactClosingReport() {
             ? dateFormatterForInput(singleData?.dteContactToDate)
             : "",
         }}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={() => {
           // resetForm(initData);
         }}
       >

@@ -84,7 +84,7 @@ export default function SalaryDetailsReport() {
     getSalaryDetailsReportRDLC({
       setLoading: setCostCenterLoading,
       setterData: setCostCenterData,
-      url: `/PdfAndExcelReport/GetSalaryAllowanceNCostCenterReport_Matador?strPartName=htmlView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`,
+      url: `/PdfAndExcelReport/GetSalaryCostCenterReportMatador?strPartName=htmlView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`,
     });
   };
 

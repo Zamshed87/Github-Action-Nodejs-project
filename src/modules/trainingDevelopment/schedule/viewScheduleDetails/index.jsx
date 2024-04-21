@@ -36,7 +36,7 @@ const ViewTrainingScheduleDetails = () => {
   }, [params?.id]);
 
   const demoPopup = () => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to Delete ? `,
       yesAlertFunc: () => {
@@ -45,6 +45,7 @@ const ViewTrainingScheduleDetails = () => {
         };
         deleteSchedule(params?.id, setLoading, cb);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);

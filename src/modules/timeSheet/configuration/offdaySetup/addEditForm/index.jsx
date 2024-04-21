@@ -19,7 +19,7 @@ const validationSchema = Yup.object({
   rosterGroupName: Yup.string().required("Offday name is required"),
 });
 
-const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
+const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName }) => {
   const { orgId, buId, employeeId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -29,7 +29,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
   const history = useHistory();
 
   const saveHandler = (values, cb) => {
-    let payload = {
+    const payload = {
       partType: "OffdayGroup",
       employeeId: employeeId,
       autoId: +id || 0,
@@ -84,7 +84,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
           rosterGroupName: rosterName || "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, (autoId, autoName) => {
             resetForm({ rosterGroupName: "" });
             setIsRosterSetup(false);
@@ -95,20 +95,12 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Box sx={style} className="rosterSetupModal">
               <Form onSubmit={handleSubmit}>
                 {loading && <Loading />}
-                <div className="modalBody" style={{padding:"0px 12px"}}>
+                <div className="modalBody" style={{ padding: "0px 12px" }}>
                   <div>
                     <label>Offday Name </label>
                     <FormikInput
@@ -138,7 +130,7 @@ const RosterSetupCreate = ({ setIsRosterSetup, id, rosterName, getData }) => {
                     Cancel
                   </button>
                   <button
-                    style={{ height: "30px", width:"150px" }}
+                    style={{ height: "30px", width: "150px" }}
                     className="btn btn-green"
                     type="submit"
                   >

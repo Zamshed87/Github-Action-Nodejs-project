@@ -49,7 +49,7 @@ const EmLoanApplication = () => {
   const [view, setView] = useState(false);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const { orgId, buId, intProfileImageUrl, employeeId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -88,7 +88,7 @@ const EmLoanApplication = () => {
   return (
     <>
       <>
-        {loadingOnGetLoanLanding && <Loading />}
+        {(loadingOnGetLoanLanding || loading) && <Loading />}
         {permission?.isView ? (
           <div className="table-card">
             <div

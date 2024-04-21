@@ -105,6 +105,8 @@ export const apiList = {
   EmployeeDDLWithCode:
     "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
   RefundOrEarningReport: "/EmployeeIncrement/RefundOrEarningReport",
+  // costCenterReportLanding:
+  //   "/PdfAndExcelReport/GetSalaryCostCenterReportMatador",
   costCenterReportLanding:
-    "/PdfAndExcelReport/GetSalaryCostCenterReportMatador",
+  "/PdfAndExcelReport/GetSalarySummaryCostCenterReport_Matador",
 };
