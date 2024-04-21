@@ -2,7 +2,7 @@ import { PButton, PCard, PCardHeader, PForm, PSelect } from "Components";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 
 const PricingSetupForm = () => {
@@ -60,6 +60,9 @@ const PricingSetupForm = () => {
       },
     });
   };
+  useEffect(() => {
+    getWorkplaceGroup();
+  }, []);
 
   return (
     <PForm form={form} initialValues={{}}>
@@ -137,6 +140,37 @@ const PricingSetupForm = () => {
                 });
               }}
               rules={[{ required: true, message: "Workplace is required" }]}
+            />
+          </Col>
+          <Col md={6} sm={12} xs={24}>
+            <PSelect
+              options={[
+                {
+                  value: "1",
+                  label: "Designation Wise",
+                },
+                {
+                  value: "2",
+                  label: "Salary Range Wise",
+                },
+                {
+                  value: "3",
+                  label: "HR Position",
+                },
+              ]}
+              name="pricingMatrixType"
+              label="Pricing Matrix Type
+"
+              placeholder="Pricing Matrix Type
+"
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  pricingMatrixType: op,
+                });
+              }}
+              rules={[
+                { required: true, message: "Pricing Matrix Type is required" },
+              ]}
             />
           </Col>
 

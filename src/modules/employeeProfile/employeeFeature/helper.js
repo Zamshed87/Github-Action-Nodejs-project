@@ -28,10 +28,6 @@ export const createEditEmpAction = async (
   cb,
   isEdit
 ) => {
-  // let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
-  // let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
-  // console.log("values?.dateofBirth", values?.dateofBirth)
-  // console.log({values})
   try {
     let payload = {
       intPayscaleGradeId: values?.payScaleGrade?.value,
@@ -109,6 +105,8 @@ export const createEditEmpAction = async (
       strProbationayClosedByInDate: values?.probationayClosedBy?.label,
       nid: values?.nid || "",
       tinNo: values?.tinNo || "",
+      presentAddress: values?.presentAddress,
+      permanentAddress: values?.permanentAddress,
     };
     if (!isEdit) {
       payload = {

@@ -572,7 +572,6 @@ const CreateAndEditEmploye = () => {
       singleData.calenderType?.value === 2 && getCalendarByRosterDDL();
     }
   }, [orgId, buId, singleData, employeeId]);
-  console.log("sdgsg", userTypeDDL?.data?.[0]?.label);
   return (
     <div style={{ marginBottom: "60px" }}>
       {loading && <Loading />}
@@ -864,7 +863,7 @@ const CreateAndEditEmploye = () => {
                       form.setFieldsValue({
                         joiningDate: value,
                         dteProbationaryCloseDate: moment(next180Days),
-                        generateDate: value
+                        generateDate: value,
                       });
                     }}
                     // disabled={params?.id}
@@ -1377,7 +1376,7 @@ const CreateAndEditEmploye = () => {
                 {/* <Col md={12} sm={24}>
                   <PInput
                     type="text"
-                    name="Permanent Address"
+                    name="permanentAddress"
                     label="Permanent Address"
                     placeholder="Permanent Address"
                   />
@@ -1385,7 +1384,7 @@ const CreateAndEditEmploye = () => {
                 <Col md={12} sm={24}>
                   <PInput
                     type="text"
-                    name="PresentAddress"
+                    name="presentAddress"
                     label="Present Address"
                     placeholder="Present Address"
                   />
