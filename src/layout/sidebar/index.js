@@ -106,29 +106,6 @@ const Sidebar = ({ isOpenSidebar, setIsOpenSidebar }) => {
                   <div
                     className="d-flex justify-content-between align-items-center"
                     onClick={() => {
-                      setIsOpenSidebar(!isOpenSidebar);
-                      setSelectedFirstLevelMenu(
-                        firstLevel?.label === selectedFirstLevelMenu
-                          ? ""
-                          : firstLevel?.label
-                      );
-                      dispatch(setFirstLevelNameAction(firstLevel?.label));
-
-                      if (
-                        firstLevel?.to === "/compensationAndBenefits" ||
-                        firstLevel?.to === "/assetManagement" ||
-                        firstLevel?.to === "/trainingAndDevelopment"
-                      ) {
-                        history.push(
-                          firstLevel?.childList[0]?.childList[0]?.to
-                        );
-                      } else if (firstLevel?.to === "/approval") {
-                        history.push(firstLevel?.to);
-                      } else {
-                        history.push(firstLevel?.childList[0]?.to);
-                      }
-                    }}
-                    onDoubleClick={() => {
                       const newTabOpen = (url) => {
                         window.open(url, "_blank");
                       };
