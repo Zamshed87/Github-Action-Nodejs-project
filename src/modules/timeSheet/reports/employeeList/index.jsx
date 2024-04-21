@@ -552,7 +552,6 @@ export default function EmployeeList() {
                                 setFieldValue("workplaceGroup", valueOption);
                                 setFieldValue("workplace", "");
                                 if (valueOption?.value) {
-                                  console.log("workplaceGroup",valueOption)
                                   getPeopleDeskAllDDL(
                                     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
                                     "intWorkplaceId",
