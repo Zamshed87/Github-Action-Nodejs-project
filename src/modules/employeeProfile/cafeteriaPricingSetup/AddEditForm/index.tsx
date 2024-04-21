@@ -6,9 +6,11 @@ import {
   PForm,
   PInput,
   PSelect,
+  TableButton,
 } from "Components";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
+import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 
@@ -98,16 +100,15 @@ const PricingSetupForm = () => {
     rowIndex: number,
     property: string
   ) => {
-    setDesignationWiseRow((prevRows) => {
+    setRowDto((prevRows) => {
       const updatedRows = [...prevRows];
       updatedRows[rowIndex][property] = value;
 
       return updatedRows;
     });
-    setRowDto(designationWiseRow);
   };
 
-  const header: any = [
+  const headerForDesignation: any = [
     {
       title: "SL",
       render: (value: any, row: any, index: number) => index + 1,
@@ -213,14 +214,212 @@ const PricingSetupForm = () => {
       render: (value: any, row: any, index: number) => row?.TotalCost,
     },
   ];
+  const headerForSalary: any = [
+    {
+      title: "SL",
+      render: (value: any, row: any, index: number) => index + 1,
+      align: "center",
+      width: 20,
+    },
+    {
+      title: "Workplace Group",
+      render: (value: any, row: any, index: number) =>
+        row?.workplaceGroup?.label,
+    },
+    {
+      title: "Workplace",
+      render: (value: any, row: any, index: number) => row?.workplace?.label,
+    },
+    {
+      title: "Salary Range Min",
+      render: (dto: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`min_${index}`}
+            placeholder="Amount"
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const range = parseFloat(value);
+                  if (isNaN(range)) {
+                    callback("Amount Is Required");
+                  } else if (range < 0) {
+                    callback("Cant be Negative");
+                  } else if (
+                    index > 0 &&
+                    rowDto[index]?.minAmount <= rowDto[index - 1]?.maxAmount
+                  ) {
+                    callback(
+                      "min amount must be greater than previous rows max amount"
+                    );
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
+            // disabled={true}
+            onChange={(e: any) => {
+              handleIsPerDayChange(e, index, "minAmount");
+            }}
+          />
+        </>
+      ),
+    },
+    {
+      title: "Salary Range Max ",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`max_${index}`}
+            placeholder="Amount"
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const range = parseFloat(value);
+
+                  if (isNaN(range)) {
+                    callback("Amount Is Required");
+                  } else if (range < 0) {
+                    callback("Cant be Negative");
+                  } else if (rowDto[index]?.minAmount >= value) {
+                    callback("max amount must be greater than min amount");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
+            // disabled={true}
+            onChange={(e: any) => {
+              handleIsPerDayChange(e, index, "maxAmount");
+            }}
+          />
+        </>
+      ),
+    },
+
+    {
+      title: "Own Contribution/Meal",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`OM_${index}`}
+            placeholder="Amount"
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const ownMeal = parseFloat(value);
+
+                  if (isNaN(ownMeal)) {
+                    callback("Amount Is Required");
+                  } else if (ownMeal < 0) {
+                    callback("Cant be Negative");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
+            // disabled={true}
+            onChange={(e: any) => {
+              handleIsPerDayChange(e, index, "ownContribution");
+              handleIsPerDayChange(
+                parseInt(
+                  `${
+                    row?.companyContribution ? e + +row?.companyContribution : e
+                  }`
+                ),
+                index,
+                "TotalCost"
+              );
+            }}
+          />
+        </>
+      ),
+    },
+
+    {
+      title: "Company Contribution/Meal",
+      render: (value: any, row: any, index: number) => (
+        <>
+          <PInput
+            type="number"
+            name={`CCC_${index}`}
+            placeholder="Amount"
+            rules={[
+              // { required: true, message: "Amount Is Required" },
+              {
+                validator: (_, value, callback) => {
+                  const companyContribution = parseFloat(value);
+
+                  if (isNaN(companyContribution)) {
+                    callback("Amount Is Required");
+                  } else if (companyContribution < 0) {
+                    callback("Cant be Negative");
+                  } else {
+                    callback();
+                  }
+                },
+              },
+            ]}
+            // disabled={true}
+            onChange={(e: any) => {
+              handleIsPerDayChange(e, index, "companyContribution");
+
+              handleIsPerDayChange(
+                row?.ownContribution + e,
+                index,
+                "TotalCost"
+              );
+            }}
+          />
+        </>
+      ),
+    },
+    {
+      title: "Total Cost/Meal ",
+      render: (value: any, row: any, index: number) => row?.TotalCost,
+    },
+    {
+      width: 20,
+      align: "center",
+      render: (_: any, rec: any) => (
+        <TableButton
+          buttonsList={[
+            {
+              type: "plus",
+              onClick: () => {
+                setRowDto((prev) => [
+                  ...prev,
+                  {
+                    workplace: prev[0]?.workplace,
+                    workplaceGroup: prev[0]?.workplaceGroup,
+                  },
+                ]);
+              },
+            },
+          ]}
+          parentStyle={{ color: "green" }}
+        />
+      ),
+    },
+  ];
   const submitHandler = (rowDto: any) => {
     // console.log({ mealType });
-    const { pricingMatrixType, mealType } = form.getFieldsValue(true);
+    const { pricingMatrixType, mealType, date } = form.getFieldsValue(true);
     const cb = () => {
       form.resetFields();
       // setIsAddEditForm(false);
       // getData();
     };
+    console.log({ rowDto });
     let payload = rowDto.map((item: any, id: number) => {
       return {
         sl: id,
@@ -240,8 +439,8 @@ const PricingSetupForm = () => {
         workPlaceGroupId: item?.workplaceGroup?.value,
         pricingMatrixTypeId: pricingMatrixType?.value,
         pricingMatrixTypeName: pricingMatrixType?.label,
-        minAmount: 0,
-        maxAmount: 0,
+        minAmount: item?.minAmount,
+        maxAmount: item?.maxAmount,
         returnAllSalaryRangeData: true,
       };
     });
@@ -255,6 +454,8 @@ const PricingSetupForm = () => {
       },
     });
   };
+  // let l = form.getFieldsValue(true);
+  // console.log(moment(l?.date).format("yyyy"));
   return (
     <PForm form={form} initialValues={{}}>
       <PCard>
@@ -313,8 +514,8 @@ const PricingSetupForm = () => {
                           type="date"
                           picker="month"
                           name="date"
-                          label="Select a month"
-                          placeholder="Select a month"
+                          label="Select Month"
+                          placeholder="Select Month"
                           rules={[
                             {
                               required: true,
@@ -444,30 +645,59 @@ const PricingSetupForm = () => {
               action="submit"
               content="Add"
               onClick={() => {
-                const { designationDDL, workplace, workplaceGroup } =
-                  form.getFieldsValue(true);
-
-                setDesignationWiseRow(
-                  designationDDL?.map((item: any) => {
-                    return {
+                const {
+                  designationDDL,
+                  workplace,
+                  workplaceGroup,
+                  pricingMatrixType,
+                } = form.getFieldsValue(true);
+                if (pricingMatrixType?.value === 1) {
+                  setRowDto(
+                    designationDDL?.map((item: any) => {
+                      return {
+                        workplace,
+                        workplaceGroup,
+                        designation: item,
+                      };
+                    })
+                  );
+                } else {
+                  setRowDto([
+                    {
                       workplace,
                       workplaceGroup,
-                      designation: item,
-                    };
-                  })
-                );
+                    },
+                  ]);
+                }
+
                 // console.log(form.getFieldsValue(true));
               }}
             />
           </Col>
         </Row>
-        <DataTable
-          header={header}
-          bordered
-          data={designationWiseRow || []}
-          // loading={bulkLandingAPI?.loading}
-          // scroll={{ x: 1500 }}
-        />
+        <Form.Item shouldUpdate noStyle>
+          {() => {
+            const { pricingMatrixType } = form.getFieldsValue();
+
+            return (
+              <>
+                {pricingMatrixType?.value === 1 ? (
+                  <DataTable
+                    header={headerForDesignation}
+                    bordered
+                    data={rowDto || []}
+                  />
+                ) : pricingMatrixType?.value === 2 ? (
+                  <DataTable
+                    header={headerForSalary}
+                    bordered
+                    data={rowDto || []}
+                  />
+                ) : undefined}
+              </>
+            );
+          }}
+        </Form.Item>
       </PCard>
     </PForm>
   );
