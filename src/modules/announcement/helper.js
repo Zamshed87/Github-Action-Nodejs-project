@@ -49,11 +49,12 @@ export const getAllAnnouncement = async (
   setAllData,
   setLoading,
   employeeId,
-  yearId
+  yearId,
+  wgId
 ) => {
   setLoading && setLoading(true);
   try {
-    const res = await axios.get(`/MasterData/GetAnnouncement?YearId=${yearId}`);
+    const res = await axios.get(`/MasterData/GetAnnouncement?YearId=${yearId}&workplaceGroupId=${wgId}`);
     if (res?.data) {
       setter(res?.data);
       setAllData && setAllData(res?.data);
