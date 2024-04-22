@@ -464,7 +464,7 @@ const itemCategoryColumn = (rowDto, setRowDto, saveHandler, getData) => {
       width: 200,
       className: "text-center",
       render: (record, index) => (
-        <div className="d-flex justify-content-center ">
+        <div className="d-flex justify-content-center">
           {record?.isEdit ? (
             <>
               <PrimaryButton
