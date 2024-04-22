@@ -107,11 +107,11 @@ const PricingSetupForm = () => {
         ...rec,
         date: moment(rec?.strMonthName),
         workplaceGroup: {
-          label: rec?.strWorkplaceGroup,
+          label: rec?.strWorkPlaceGroupName,
           value: rec?.workPlaceId,
         },
         workplace: {
-          label: rec?.strWorkplace,
+          label: rec?.strWorkPlaceName,
           value: rec?.intWorkplaceId,
         },
         designationDDL: [
@@ -134,6 +134,18 @@ const PricingSetupForm = () => {
           ownContribution: rec?.monOwnContribution,
           companyContribution: rec?.monCompanyContribution,
           TotalCost: rec?.monTotalCost,
+          designation: {
+            label: rec?.strDesignationName,
+            value: rec?.intDesignationId,
+          },
+          workplace: {
+            label: rec?.strWorkPlaceName,
+            value: rec?.workPlaceId,
+          },
+          workplaceGroup: {
+            label: rec?.strWorkPlaceGroupName,
+            value: rec?.workPlaceGroupId,
+          },
         },
       ]);
       getDesignation();
@@ -587,11 +599,16 @@ const PricingSetupForm = () => {
       form.resetFields();
     };
 
-    if (rec?.intConfigId && rowDto[0]?.minAmount >= rowDto[0]?.maxAmount) {
+    if (
+      rec?.intConfigId &&
+      rowDto[0]?.minAmount &&
+      rowDto[0]?.minAmount >= rowDto[0]?.maxAmount
+    ) {
       toast.error("max amount must be greater than min amount");
       return;
     }
     const payload = rowDto.map((item: any, idx: number) => {
+      console.log({ item });
       return {
         sl: rec?.sl || idx,
         intConfigId: rec?.intConfigId || 0,
@@ -722,6 +739,7 @@ const PricingSetupForm = () => {
               name="workplaceGroup"
               label="Workplace Group"
               placeholder="Workplace Group"
+              disabled={+id ? true : false}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   workplaceGroup: op,
@@ -741,6 +759,7 @@ const PricingSetupForm = () => {
               name="workplace"
               label="Workplace"
               placeholder="Workplace"
+              disabled={+id ? true : false}
               onChange={(value, op) => {
                 form.setFieldsValue({
                   workplace: op,
@@ -798,6 +817,7 @@ const PricingSetupForm = () => {
                           name="designationDDL"
                           label="Designation"
                           placeholder="Designation"
+                          disabled={+id ? true : false}
                           onChange={(value, op) => {
                             form.setFieldsValue({
                               designationDDL: op,
