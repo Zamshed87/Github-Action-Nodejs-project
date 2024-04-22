@@ -141,29 +141,29 @@ function Workplace() {
       ),
     },
 
-    {
-      width: 50,
-      align: "center",
-      render: (_: any, rec: any) => (
-        <>
-          <TableButton
-            buttonsList={[
-              {
-                type: "edit",
-                onClick: (e: any) => {
-                  if (!employeeFeature?.isEdit) {
-                    return toast.warn("You don't have permission");
-                    e.stopPropagation();
-                  }
-                  setOpen(true);
-                  setId(rec);
-                },
-              },
-            ]}
-          />
-        </>
-      ),
-    },
+    // {
+    //   width: 50,
+    //   align: "center",
+    //   render: (_: any, rec: any) => (
+    //     <>
+    //       <TableButton
+    //         buttonsList={[
+    //           {
+    //             type: "edit",
+    //             onClick: (e: any) => {
+    //               if (!employeeFeature?.isEdit) {
+    //                 return toast.warn("You don't have permission");
+    //                 e.stopPropagation();
+    //               }
+    //               setOpen(true);
+    //               setId(rec);
+    //             },
+    //           },
+    //         ]}
+    //       />
+    //     </>
+    //   ),
+    // },
   ];
   // console.log(landingApi?.data);
   return employeeFeature?.isView ? (
