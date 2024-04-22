@@ -114,7 +114,7 @@ export default function AnnouncementCreate() {
       +date?.year,
       wgId
     );
-  }, [buId, orgId, date?.year]);
+  }, [buId, orgId, date?.year, wgId]);
 
   const demoPopup = (data) => {
     const confirmObject = {
