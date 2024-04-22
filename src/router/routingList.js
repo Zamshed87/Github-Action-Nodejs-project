@@ -1558,6 +1558,10 @@ export const routingList = [
     component: PricingSetupForm,
   },
   {
+    path: "/profile/cafeteriaManagement/cafeteriaPricingSetup/pricingSetupForm/:id",
+    component: PricingSetupForm,
+  },
+  {
     path: "/profile/cafeteriaManagement/foodCorner",
     component: FoodCornerForAll,
   },

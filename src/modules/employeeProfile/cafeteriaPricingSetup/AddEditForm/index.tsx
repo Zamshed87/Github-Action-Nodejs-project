@@ -11,13 +11,15 @@ import {
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import moment from "moment";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { shallowEqual, useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const PricingSetupForm = () => {
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId },
+    profileData: { buId, wgId, employeeId, orgId, wId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
   const permission = useMemo(
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30417),
@@ -26,13 +28,18 @@ const PricingSetupForm = () => {
 
   // Form Instance
   const [form] = Form.useForm();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id }: any = useParams();
+  const location = useLocation();
+
+  const { rec } = location?.state || ({} as any);
 
   //   api states
   const workplaceGroup = useApiRequest([]);
   const workplace = useApiRequest([]);
   const designation = useApiRequest([]);
   const cafeApi = useApiRequest([]);
-  const [designationWiseRow, setDesignationWiseRow] = useState<any[]>([]);
+  const cafeEditApi = useApiRequest([]);
   const [rowDto, setRowDto] = React.useState<any[]>([]);
   // workplace wise
   const getWorkplaceGroup = () => {
@@ -60,8 +67,8 @@ const PricingSetupForm = () => {
       method: "GET",
       params: {
         AccountId: orgId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
+        WorkplaceGroupId: workplaceGroup?.value || wgId,
+        IntWorkplaceId: workplace?.value || wId,
         BusinessUnitId: buId,
       },
       onSuccess: (res) => {
@@ -94,6 +101,44 @@ const PricingSetupForm = () => {
   useEffect(() => {
     getWorkplaceGroup();
   }, []);
+  useEffect(() => {
+    if (+id) {
+      form.setFieldsValue({
+        ...rec,
+        date: moment(rec?.strMonthName),
+        workplaceGroup: {
+          label: rec?.strWorkplaceGroup,
+          value: rec?.workPlaceId,
+        },
+        workplace: {
+          label: rec?.strWorkplace,
+          value: rec?.intWorkplaceId,
+        },
+        designationDDL: [
+          { label: rec?.strDesignationName, value: rec?.intDesignationId },
+        ],
+        pricingMatrixType: {
+          label: rec?.pricingMatrixTypeName,
+          value: rec?.pricingMatrixTypeId,
+        },
+        mealType: {
+          label: rec?.mealTypeName,
+          value: rec?.mealTypeId,
+        },
+      });
+      setRowDto([
+        {
+          ...rec,
+          minAmount: rec?.minAmount,
+          maxAmount: rec?.maxAmount,
+          ownContribution: rec?.monOwnContribution,
+          companyContribution: rec?.monCompanyContribution,
+          TotalCost: rec?.monTotalCost,
+        },
+      ]);
+      getDesignation();
+    }
+  }, [id]);
   // Table Header
   const handleIsPerDayChange = (
     value: number,
@@ -117,101 +162,148 @@ const PricingSetupForm = () => {
     },
     {
       title: "Workplace Group",
-      render: (value: any, row: any, index: number) =>
-        row?.workplaceGroup?.label,
+      render: (value: any, row: any) => row?.workplaceGroup?.label,
     },
     {
       title: "Workplace",
-      render: (value: any, row: any, index: number) => row?.workplace?.label,
+      render: (value: any, row: any) => row?.workplace?.label,
     },
     {
       title: "Designation",
-      render: (value: any, row: any, index: number) => row?.designation?.label,
+      render: (value: any, row: any) => row?.designation?.label,
     },
 
     {
       title: "Own Contribution/Meal",
-      render: (value: any, row: any, index: number) => (
-        <>
-          <PInput
-            type="number"
-            name={`OM_${index}`}
-            placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const ownMeal = parseFloat(value);
+      render: (value: any, row: any, index: number) =>
+        +id ? (
+          <>
+            <PInput
+              type="number"
+              // name={`OM_${index}`}
+              value={row?.ownContribution}
+              placeholder="Amount"
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "ownContribution");
+                handleIsPerDayChange(
+                  parseInt(
+                    `${
+                      row?.companyContribution
+                        ? e + +row?.companyContribution
+                        : e
+                    }`
+                  ),
+                  index,
+                  "TotalCost"
+                );
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <PInput
+              type="number"
+              name={`OM_${index}`}
+              // value={row?.ownContribution}
+              placeholder="Amount"
+              rules={[
+                // { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    const ownMeal = parseFloat(value);
 
-                  if (isNaN(ownMeal)) {
-                    callback("Amount Is Required");
-                  } else if (ownMeal < 0) {
-                    callback("Cant be Negative");
-                  } else {
-                    callback();
-                  }
+                    if (isNaN(ownMeal)) {
+                      callback("Amount Is Required");
+                    } else if (ownMeal < 0) {
+                      callback("Cant be Negative");
+                    } else {
+                      callback();
+                    }
+                  },
                 },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              handleIsPerDayChange(e, index, "ownContribution");
-              handleIsPerDayChange(
-                parseInt(
-                  `${
-                    row?.companyContribution ? e + +row?.companyContribution : e
-                  }`
-                ),
-                index,
-                "TotalCost"
-              );
-            }}
-          />
-        </>
-      ),
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "ownContribution");
+                handleIsPerDayChange(
+                  parseInt(
+                    `${
+                      row?.companyContribution
+                        ? e + +row?.companyContribution
+                        : e
+                    }`
+                  ),
+                  index,
+                  "TotalCost"
+                );
+              }}
+            />
+          </>
+        ),
     },
 
     {
       title: "Company Contribution/Meal",
-      render: (value: any, row: any, index: number) => (
-        <>
-          <PInput
-            type="number"
-            name={`CCC_${index}`}
-            placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const companyContribution = parseFloat(value);
+      render: (value: any, row: any, index: number) =>
+        +id ? (
+          <>
+            <PInput
+              type="number"
+              // name={`CCC_${index}`}
+              value={row?.companyContribution}
+              placeholder="Amount"
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "companyContribution");
 
-                  if (isNaN(companyContribution)) {
-                    callback("Amount Is Required");
-                  } else if (companyContribution < 0) {
-                    callback("Cant be Negative");
-                  } else {
-                    callback();
-                  }
+                handleIsPerDayChange(
+                  row?.ownContribution + e,
+                  index,
+                  "TotalCost"
+                );
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <PInput
+              type="number"
+              name={`CCC_${index}`}
+              placeholder="Amount"
+              rules={[
+                // { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    const companyContribution = parseFloat(value);
+
+                    if (isNaN(companyContribution)) {
+                      callback("Amount Is Required");
+                    } else if (companyContribution < 0) {
+                      callback("Cant be Negative");
+                    } else {
+                      callback();
+                    }
+                  },
                 },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              handleIsPerDayChange(e, index, "companyContribution");
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "companyContribution");
 
-              handleIsPerDayChange(
-                row?.ownContribution + e,
-                index,
-                "TotalCost"
-              );
-            }}
-          />
-        </>
-      ),
+                handleIsPerDayChange(
+                  row?.ownContribution + e,
+                  index,
+                  "TotalCost"
+                );
+              }}
+            />
+          </>
+        ),
     },
     {
       title: "Total Cost/Meal ",
-      render: (value: any, row: any, index: number) => row?.TotalCost,
+      render: (value: any, row: any) => row?.TotalCost,
     },
   ];
   const headerForSalary: any = [
@@ -223,211 +315,290 @@ const PricingSetupForm = () => {
     },
     {
       title: "Workplace Group",
-      render: (value: any, row: any, index: number) =>
-        row?.workplaceGroup?.label,
+      render: (value: any, row: any) => row?.workplaceGroup?.label,
     },
     {
       title: "Workplace",
-      render: (value: any, row: any, index: number) => row?.workplace?.label,
+      render: (value: any, row: any) => row?.workplace?.label,
     },
     {
       title: "Salary Range Min",
-      render: (dto: any, row: any, index: number) => (
-        <>
-          <PInput
-            type="number"
-            name={`min_${index}`}
-            placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const range = parseFloat(value);
-                  if (isNaN(range)) {
-                    callback("Amount Is Required");
-                  } else if (range < 0) {
-                    callback("Cant be Negative");
-                  } else if (
-                    index > 0 &&
-                    rowDto[index]?.minAmount <= rowDto[index - 1]?.maxAmount
-                  ) {
-                    callback(
-                      "min amount must be greater than previous rows max amount"
-                    );
-                  } else {
-                    callback();
-                  }
+      render: (dto: any, row: any, index: number) =>
+        +id ? (
+          <>
+            <PInput
+              type="number"
+              // name={`min_${index}`}
+              value={row?.minAmount}
+              placeholder="Amount"
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "minAmount");
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <PInput
+              type="number"
+              name={`min_${index}`}
+              placeholder="Amount"
+              rules={[
+                // { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    const range = parseFloat(value);
+                    if (isNaN(range)) {
+                      callback("Amount Is Required");
+                    } else if (range < 0) {
+                      callback("Cant be Negative");
+                    } else if (
+                      index > 0 &&
+                      rowDto[index]?.minAmount <= rowDto[index - 1]?.maxAmount
+                    ) {
+                      callback(
+                        "min amount must be greater than previous rows max amount"
+                      );
+                    } else {
+                      callback();
+                    }
+                  },
                 },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              handleIsPerDayChange(e, index, "minAmount");
-            }}
-          />
-        </>
-      ),
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "minAmount");
+              }}
+            />
+          </>
+        ),
     },
     {
       title: "Salary Range Max ",
-      render: (value: any, row: any, index: number) => (
-        <>
-          <PInput
-            type="number"
-            name={`max_${index}`}
-            placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const range = parseFloat(value);
+      render: (value: any, row: any, index: number) =>
+        +id ? (
+          <>
+            <PInput
+              type="number"
+              value={row?.maxAmount}
+              placeholder="Amount"
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "maxAmount");
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <PInput
+              type="number"
+              name={`max_${index}`}
+              // value={row?.maxAmount}
+              placeholder="Amount"
+              rules={[
+                // { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    const range = parseFloat(value);
 
-                  if (isNaN(range)) {
-                    callback("Amount Is Required");
-                  } else if (range < 0) {
-                    callback("Cant be Negative");
-                  } else if (rowDto[index]?.minAmount >= value) {
-                    callback("max amount must be greater than min amount");
-                  } else {
-                    callback();
-                  }
+                    if (isNaN(range)) {
+                      callback("Amount Is Required");
+                    } else if (range < 0) {
+                      callback("Cant be Negative");
+                    } else if (rowDto[index]?.minAmount >= value) {
+                      callback("max amount must be greater than min amount");
+                    } else {
+                      callback();
+                    }
+                  },
                 },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              handleIsPerDayChange(e, index, "maxAmount");
-            }}
-          />
-        </>
-      ),
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "maxAmount");
+              }}
+            />
+          </>
+        ),
     },
 
     {
       title: "Own Contribution/Meal",
-      render: (value: any, row: any, index: number) => (
-        <>
-          <PInput
-            type="number"
-            name={`OM_${index}`}
-            placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const ownMeal = parseFloat(value);
+      render: (value: any, row: any, index: number) =>
+        +id ? (
+          <>
+            <PInput
+              type="number"
+              // name={`OM_${index}`}
+              value={row?.ownContribution}
+              placeholder="Amount"
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "ownContribution");
+                handleIsPerDayChange(
+                  parseInt(
+                    `${
+                      row?.companyContribution
+                        ? e + +row?.companyContribution
+                        : e
+                    }`
+                  ),
+                  index,
+                  "TotalCost"
+                );
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <PInput
+              type="number"
+              name={`OM_${index}`}
+              placeholder="Amount"
+              rules={[
+                // { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    const ownMeal = parseFloat(value);
 
-                  if (isNaN(ownMeal)) {
-                    callback("Amount Is Required");
-                  } else if (ownMeal < 0) {
-                    callback("Cant be Negative");
-                  } else {
-                    callback();
-                  }
+                    if (isNaN(ownMeal)) {
+                      callback("Amount Is Required");
+                    } else if (ownMeal < 0) {
+                      callback("Cant be Negative");
+                    } else {
+                      callback();
+                    }
+                  },
                 },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              handleIsPerDayChange(e, index, "ownContribution");
-              handleIsPerDayChange(
-                parseInt(
-                  `${
-                    row?.companyContribution ? e + +row?.companyContribution : e
-                  }`
-                ),
-                index,
-                "TotalCost"
-              );
-            }}
-          />
-        </>
-      ),
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "ownContribution");
+                handleIsPerDayChange(
+                  parseInt(
+                    `${
+                      row?.companyContribution
+                        ? e + +row?.companyContribution
+                        : e
+                    }`
+                  ),
+                  index,
+                  "TotalCost"
+                );
+              }}
+            />
+          </>
+        ),
     },
 
     {
       title: "Company Contribution/Meal",
-      render: (value: any, row: any, index: number) => (
-        <>
-          <PInput
-            type="number"
-            name={`CCC_${index}`}
-            placeholder="Amount"
-            rules={[
-              // { required: true, message: "Amount Is Required" },
-              {
-                validator: (_, value, callback) => {
-                  const companyContribution = parseFloat(value);
+      render: (value: any, row: any, index: number) =>
+        +id ? (
+          <>
+            <PInput
+              type="number"
+              // name={`CCC_${index}`}
+              value={row?.companyContribution}
+              placeholder="Amount"
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "companyContribution");
 
-                  if (isNaN(companyContribution)) {
-                    callback("Amount Is Required");
-                  } else if (companyContribution < 0) {
-                    callback("Cant be Negative");
-                  } else {
-                    callback();
-                  }
+                handleIsPerDayChange(
+                  row?.ownContribution + e,
+                  index,
+                  "TotalCost"
+                );
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <PInput
+              type="number"
+              name={`CCC_${index}`}
+              // value={row?.companyContribution}
+              placeholder="Amount"
+              rules={[
+                // { required: true, message: "Amount Is Required" },
+                {
+                  validator: (_, value, callback) => {
+                    const companyContribution = parseFloat(value);
+
+                    if (isNaN(companyContribution)) {
+                      callback("Amount Is Required");
+                    } else if (companyContribution < 0) {
+                      callback("Cant be Negative");
+                    } else {
+                      callback();
+                    }
+                  },
                 },
-              },
-            ]}
-            // disabled={true}
-            onChange={(e: any) => {
-              handleIsPerDayChange(e, index, "companyContribution");
+              ]}
+              // disabled={true}
+              onChange={(e: any) => {
+                handleIsPerDayChange(e, index, "companyContribution");
 
-              handleIsPerDayChange(
-                row?.ownContribution + e,
-                index,
-                "TotalCost"
-              );
-            }}
-          />
-        </>
-      ),
+                handleIsPerDayChange(
+                  row?.ownContribution + e,
+                  index,
+                  "TotalCost"
+                );
+              }}
+            />
+          </>
+        ),
     },
     {
       title: "Total Cost/Meal ",
-      render: (value: any, row: any, index: number) => row?.TotalCost,
+      render: (value: any, row: any) => row?.TotalCost,
     },
     {
       width: 20,
       align: "center",
-      render: (_: any, rec: any) => (
+      render: () => (
         <TableButton
-          buttonsList={[
-            {
-              type: "plus",
-              onClick: () => {
-                setRowDto((prev) => [
-                  ...prev,
+          buttonsList={
+            +!id
+              ? [
                   {
-                    workplace: prev[0]?.workplace,
-                    workplaceGroup: prev[0]?.workplaceGroup,
+                    type: "plus",
+                    onClick: () => {
+                      setRowDto((prev) => [
+                        ...prev,
+                        {
+                          workplace: prev[0]?.workplace,
+                          workplaceGroup: prev[0]?.workplaceGroup,
+                        },
+                      ]);
+                    },
                   },
-                ]);
-              },
-            },
-          ]}
+                ]
+              : []
+          }
           parentStyle={{ color: "green" }}
         />
       ),
     },
   ];
   const submitHandler = (rowDto: any) => {
-    // console.log({ mealType });
     const { pricingMatrixType, mealType, date } = form.getFieldsValue(true);
+
     const cb = () => {
       form.resetFields();
-      // setIsAddEditForm(false);
-      // getData();
     };
-    console.log({ rowDto });
-    let payload = rowDto.map((item: any, id: number) => {
+
+    if (rec?.intConfigId && rowDto[0]?.minAmount >= rowDto[0]?.maxAmount) {
+      toast.error("max amount must be greater than min amount");
+      return;
+    }
+    const payload = rowDto.map((item: any, idx: number) => {
       return {
-        sl: id,
-        intConfigId: 0,
+        sl: rec?.sl || idx,
+        intConfigId: rec?.intConfigId || 0,
         intAccountId: orgId,
         intBusinessUnitId: buId,
-        intDesignationId: item?.designation?.value,
-        strDesignationName: item?.designation?.label,
+        intDesignationId: item?.designation?.value || 0,
+        strDesignationName: item?.designation?.label || "",
         monOwnContribution: item?.ownContribution,
         monTotalCost: item?.TotalCost,
         monCompanyContribution: item?.companyContribution,
@@ -442,29 +613,43 @@ const PricingSetupForm = () => {
         minAmount: item?.minAmount,
         maxAmount: item?.maxAmount,
         returnAllSalaryRangeData: true,
+        intMonthId: mealType === 2 ? moment(date).format("mm") : null,
+        intYearId: mealType === 2 ? moment(date).format("yyyy") : null,
+        strMonthName: mealType === 2 ? moment(date).format("MMMM") : null,
       };
     });
 
-    cafeApi.action({
-      urlKey: "CreateCafeteriaConfig",
-      method: "POST",
-      payload: payload,
-      onSuccess: () => {
-        cb();
-      },
-    });
+    if (rec?.intConfigId) {
+      cafeEditApi.action({
+        urlKey: "EditCafeteriaConfig",
+        method: "PUT",
+        payload: payload,
+        onSuccess: () => {
+          cb();
+        },
+      });
+    } else {
+      cafeApi.action({
+        urlKey: "CreateCafeteriaConfig",
+        method: "POST",
+        payload: payload,
+        onSuccess: () => {
+          cb();
+        },
+      });
+    }
   };
-  // let l = form.getFieldsValue(true);
-  // console.log(moment(l?.date).format("yyyy"));
+
   return (
     <PForm form={form} initialValues={{}}>
       <PCard>
         <PCardHeader
+          backButton
           title="Cafeteria Pricing Setup"
           buttonList={[
             {
               type: "primary",
-              content: "Save",
+              content: +id ? "Edit" : "Save",
               onClick: () => {
                 submitHandler(rowDto);
               },
@@ -497,7 +682,7 @@ const PricingSetupForm = () => {
                   mealType: op,
                 });
               }}
-              // disabled={isEdit}
+              disabled={+id ? true : false}
               rules={[{ required: true, message: "Meal Type is required" }]}
             />
           </Col>
@@ -591,8 +776,7 @@ const PricingSetupForm = () => {
                   pricingMatrixType: op,
                 });
               }}
-              // disabled={isEdit}
-
+              disabled={+id ? true : false}
               rules={[
                 { required: true, message: "Pricing Matrix Type is required" },
               ]}
@@ -658,6 +842,9 @@ const PricingSetupForm = () => {
                         workplace,
                         workplaceGroup,
                         designation: item,
+                        ownContribution: 0,
+                        companyContribution: 0,
+                        TotalCost: 0,
                       };
                     })
                   );
@@ -666,11 +853,12 @@ const PricingSetupForm = () => {
                     {
                       workplace,
                       workplaceGroup,
+                      ownContribution: 0,
+                      companyContribution: 0,
+                      TotalCost: 0,
                     },
                   ]);
                 }
-
-                // console.log(form.getFieldsValue(true));
               }}
             />
           </Col>

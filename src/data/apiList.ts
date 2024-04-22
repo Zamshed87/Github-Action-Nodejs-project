@@ -104,7 +104,10 @@ export const apiList = {
   BulkSalaryAssignLanding: "/Payroll/BulkSalaryAssignLanding",
   ExtendedDesignationDDL: "/Cafeteria/ExtendedDesignationDDL",
   CheckCafeteriaConfig: "/Cafeteria/CheckCafeteriaConfig",
+  CafeteriaConfigLanding: "/Cafeteria/CafeteriaConfigLanding",
+
   CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
+  EditCafeteriaConfig: "/Cafeteria/EditCafeteriaConfig",
   EmployeeDDLWithCode:
     "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
   RefundOrEarningReport: "/EmployeeIncrement/RefundOrEarningReport",
