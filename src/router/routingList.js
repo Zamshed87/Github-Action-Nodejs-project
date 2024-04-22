@@ -195,6 +195,12 @@ const AssetRegistration = lazy(() =>
 const AssetRegistrationCreate = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/registration/createEditForm/CreateEditForm.jsx")
 );
+const AssetAssign = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assign/index.jsx")
+);
+const AssetAssignCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assign/createEditForm/CreateEditForm.jsx")
+);
 const MarketVistApproval = lazy(() =>
   import("../modules/marketVisit/approval/index.jsx")
 );
@@ -2891,6 +2897,14 @@ export const routingList = [
   {
     path: "/assetManagement/assetControlPanel/registration/create",
     component: AssetRegistrationCreate,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assign",
+    component: AssetAssign,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assign/create",
+    component: AssetAssignCreate,
   },
   {
     path: "/assetManagement/registration/assets/edit/:id",
