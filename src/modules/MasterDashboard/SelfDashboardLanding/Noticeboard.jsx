@@ -10,6 +10,7 @@ import { customStyles } from "../../../utility/newSelectCustomStyle";
 import { yearDDLAction } from "../../../utility/yearDDL";
 import { getAllAnnouncement } from "../../dashboard/helper";
 import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
+import { shallowEqual, useSelector } from "react-redux";
 
 const initData = {
   monthYear: moment().format("YYYY-MM"),
@@ -29,8 +30,20 @@ export default function NoticeBoard({
     month: moment().month() + 1,
   });
 
+  const { wgId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+
   useEffect(() => {
-    getAllAnnouncement(buId, orgId, employeeId, +date?.year, setAllNoticeData);
+    getAllAnnouncement(
+      buId,
+      orgId,
+      employeeId,
+      +date?.year,
+      setAllNoticeData,
+      wgId
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, orgId, employeeId, date]);
 
@@ -57,7 +70,6 @@ export default function NoticeBoard({
             label: `${currentYear()}`,
           },
         }}
-        onSubmit={(values) => {}}
       >
         {({ handleSubmit, errors, touched, setFieldValue, values }) => (
           <Form

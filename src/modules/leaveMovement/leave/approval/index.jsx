@@ -35,7 +35,6 @@ import {
   greenColor,
   successColor,
 } from "../../../../utility/customColor";
-import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import {
   getAllAnnouncement,
@@ -49,7 +48,6 @@ import SingleNotice from "./component/SingleNotice";
 import LeaveApprovalEditForm from "./component/editForm";
 import "./leaveApproval.css";
 import ViewFormComponent from "./view-form";
-import { reject } from "lodash";
 
 const initData = {
   searchString: "",
@@ -75,7 +73,7 @@ export default function LeaveApproval() {
     value: 1,
     label: "Pending",
   });
-  const [isSupOrLineManager, setIsSupOrLineManager] = useState({
+  const [isSupOrLineManager] = useState({
     value: 1,
     label: "Supervisor",
   });
@@ -83,19 +81,17 @@ export default function LeaveApproval() {
   const [applicationData, setApplicationData] = useState([]);
   const [singleData, setSingleData] = useState("");
   const [viewModal, setViewModal] = useState(false);
-  const [imageFile, setImageFile] = useState("");
+  const [imageFile] = useState("");
   const [createModal, setCreateModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
-  const [allData, setAllData] = useState();
+  const [, setAllData] = useState();
   const [filterData, setFilterData] = useState([]);
   const [viewModalRow, setViewModalRow] = useState(false);
-  const [singleNoticeData, setSingleNoticeData] = useState("");
+  const [, setSingleNoticeData] = useState("");
   const [ApplicationId, setApplicationId] = useState(0);
   const [allNoticeData, setAllNoticeData] = useState([]);
   // filter
-
-  const debounce = useDebounce();
   const dispatch = useDispatch();
 
   const handleOpen = () => {
@@ -104,25 +100,6 @@ export default function LeaveApproval() {
 
   // for view Modal
   const handleViewClose = () => setViewModal(false);
-
-  // ascending & descending
-  const commonSortByFilter = (filterType, property) => {
-    const newRowData = [...allData?.listData];
-    let modifyRowData = [];
-
-    if (filterType === "asc") {
-      modifyRowData = newRowData?.sort((a, b) => {
-        if (a[property] > b[property]) return -1;
-        return 1;
-      });
-    } else {
-      modifyRowData = newRowData?.sort((a, b) => {
-        if (b[property] > a[property]) return -1;
-        return 1;
-      });
-    }
-    setAllLeaveApplicatonData({ listData: modifyRowData });
-  };
 
   useEffect(() => {
     const array = [];
@@ -335,6 +312,7 @@ export default function LeaveApproval() {
       yesAlertFunc: () => {
         leaveApproveReject(payload, callback);
       },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
@@ -403,7 +381,7 @@ export default function LeaveApproval() {
           </div>
         ),
         dataIndex: "employeeCode",
-        render: (employeeCode, record, index) => (
+        render: (employeeCode, record) => (
           <div className="d-flex align-items-center">
             <div className="mr-2" onClick={(e) => e.stopPropagation()}>
               <FormikCheckBox
@@ -418,7 +396,7 @@ export default function LeaveApproval() {
                 checked={record?.selectCheckbox}
                 onChange={(e) => {
                   e.stopPropagation();
-                  let leaveAppData = leaveApplicationData?.listData?.map(
+                  const leaveAppData = leaveApplicationData?.listData?.map(
                     (item) => {
                       if (
                         item?.leaveApplication?.intApplicationId ===
@@ -431,7 +409,7 @@ export default function LeaveApproval() {
                       } else return item;
                     }
                   );
-                  let data = filterData?.listData?.map((item) => {
+                  const data = filterData?.listData?.map((item) => {
                     if (
                       item?.leaveApplication?.intApplicationId ===
                       record?.leaveApplication?.intApplicationId
@@ -558,7 +536,7 @@ export default function LeaveApproval() {
       {
         title: "Date Range",
         dataIndex: "dateRange",
-        render: (dateRange, record) => (
+        render: (dateRange) => (
           <div className="d-flex align-items-center">
             <div>{dateRange}</div>
           </div>

@@ -28,6 +28,8 @@ import UserInfoN from "modules/configuration/userInfo/UserInfo";
 import UserRoleN from "modules/configuration/userRoleNameCreate/UserRole";
 import Workplace from "modules/configuration/workplace";
 import CommonAppPipeline from "modules/employeeProfile/AppPipeline";
+import CafeteriaPricingLanding from "modules/employeeProfile/cafeteriaPricingSetup";
+import PricingSetupForm from "modules/employeeProfile/cafeteriaPricingSetup/AddEditForm";
 
 import LeaveTypeCreate from "modules/leaveMovement/configuration/LeaveType";
 import MovementType from "modules/leaveMovement/configuration/MovementType";
@@ -1550,6 +1552,18 @@ export const routingList = [
   { path: "/profile/loanRequest", component: EmLoanApplication },
 
   { path: "/profile/confirmation", component: Confirmation },
+  {
+    path: "/profile/cafeteriaManagement/cafeteriaPricingSetup",
+    component: CafeteriaPricingLanding,
+  },
+  {
+    path: "/profile/cafeteriaManagement/cafeteriaPricingSetup/pricingSetupForm",
+    component: PricingSetupForm,
+  },
+  {
+    path: "/profile/cafeteriaManagement/cafeteriaPricingSetup/pricingSetupForm/:id",
+    component: PricingSetupForm,
+  },
   {
     path: "/profile/cafeteriaManagement/foodCorner",
     component: FoodCornerForAll,
