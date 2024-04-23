@@ -750,6 +750,9 @@ const EmMovementReportPrint = lazy(() =>
 const EmOverTimeReport = lazy(() =>
   import("../modules/employeeProfile/Reports/overTimeReport")
 );
+const EmOverTimeDailyReport = lazy(() =>
+  import("../modules/employeeProfile/Reports/overTimeDailyReport")
+);
 const RewardsAndPunishmentAdd = lazy(() =>
   import(
     "../modules/employeeProfile/rewardsAndPunishment/components/rewardsAndPunishmentAdd.jsx"
@@ -1694,6 +1697,10 @@ export const routingList = [
   {
     path: "/profile/reports/overTimeReport",
     component: EmOverTimeReport,
+  },
+  {
+    path: "/profile/reports/dailyOvertimeReport",
+    component: EmOverTimeDailyReport,
   },
   {
     path: "/profile/reports/jobcard",
