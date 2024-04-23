@@ -209,6 +209,9 @@ const AssetDepreciation = lazy(() =>
 const AssetDepreciationCreate = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/depreciation/createEditForm/CreateEditForm.jsx")
 );
+const AssetReport = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/report/index.jsx")
+);
 const MarketVistApproval = lazy(() =>
   import("../modules/marketVisit/approval/index.jsx")
 );
@@ -2940,6 +2943,10 @@ export const routingList = [
   {
     path: "/assetManagement/assetControlPanel/depreciation/create",
     component: AssetDepreciationCreate,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assetReport",
+    component: AssetReport,
   },
   {
     path: "/assetManagement/registration/assets/edit/:id",
