@@ -83,7 +83,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
     );
     getTopLevelDashboardDetails(`/Dashboard/TopLevelDashboard`);
     getTurnoverByDepartmentChartDetails(
-      `Dashboard/EmployeeTurnOverRatio?&IntAccountId=${orgId}`
+      `Dashboard/EmployeeTurnOverRatio?&IntAccountId=${orgId}&IntWorkplaceGroupId=${wgId}`
     );
     getTurnoverLastFiveYearsChartDetails(
       `/Dashboard/LastFiveYearEmployeeTurnOverRatio`
@@ -127,11 +127,11 @@ const ManagementDashboardLanding = ({ setLoading }) => {
   const turnoverByDepartmentChartValue =
     turnoverByDepartmentChartDetails.departmentWiseTurnoverRateViewModel
       ?.length &&
-    turnoverByDepartmentChartDetails?.departmentWiseTurnoverRateViewModel.map(
-      (item) => {
+    turnoverByDepartmentChartDetails?.departmentWiseTurnoverRateViewModel
+      ?.filter((i) => i?.turnoverRatio !== 0)
+      ?.map((item) => {
         return { x: item?.departmentName, y: item?.turnoverRatio };
-      }
-    );
+      });
   const TurnoverLastFiveYearsChartValue =
     turnoverLastFiveYearsChartDetails?.length &&
     turnoverLastFiveYearsChartDetails?.map((item) => {
@@ -1212,7 +1212,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                   <GraphChart
                     chartDataObj={turnoverByDepartmentChart}
                     type="bar"
-                    height="380px"
+                    height="550px"
                     width="100%"
                   />
                 </div>

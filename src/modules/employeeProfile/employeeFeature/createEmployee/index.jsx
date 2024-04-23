@@ -572,7 +572,7 @@ const CreateAndEditEmploye = () => {
       singleData.calenderType?.value === 2 && getCalendarByRosterDDL();
     }
   }, [orgId, buId, singleData, employeeId]);
-  console.log("sdgsg", userTypeDDL?.data?.[0]?.label);
+
   return (
     <div style={{ marginBottom: "60px" }}>
       {loading && <Loading />}
@@ -864,7 +864,7 @@ const CreateAndEditEmploye = () => {
                       form.setFieldsValue({
                         joiningDate: value,
                         dteProbationaryCloseDate: moment(next180Days),
-                        generateDate: value
+                        generateDate: value,
                       });
                     }}
                     // disabled={params?.id}
@@ -1374,10 +1374,10 @@ const CreateAndEditEmploye = () => {
                     label="TIN No."
                   />
                 </Col>
-                {/* <Col md={12} sm={24}>
+                <Col md={12} sm={24}>
                   <PInput
                     type="text"
-                    name="Permanent Address"
+                    name="permanentAddress"
                     label="Permanent Address"
                     placeholder="Permanent Address"
                   />
@@ -1385,11 +1385,11 @@ const CreateAndEditEmploye = () => {
                 <Col md={12} sm={24}>
                   <PInput
                     type="text"
-                    name="PresentAddress"
+                    name="presentAddress"
                     label="Present Address"
                     placeholder="Present Address"
                   />
-                </Col> */}
+                </Col>
               </Row>
             </PCardBody>
           </div>
@@ -1512,7 +1512,7 @@ const CreateAndEditEmploye = () => {
                             // disabled={params?.id}
                           />
                         </Col>
-                        {/* <Col md={8} sm={24}>
+                        <Col md={8} sm={24}>
                           <PSelect
                             mode="multiple"
                             options={[
@@ -1564,7 +1564,7 @@ const CreateAndEditEmploye = () => {
                               },
                             ]}
                           />
-                        </Col> */}
+                        </Col>
                       </>
                     ) : undefined}
 

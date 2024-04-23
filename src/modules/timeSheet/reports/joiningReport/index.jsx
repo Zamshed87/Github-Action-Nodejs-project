@@ -11,6 +11,7 @@ import { gray600 } from "../../../../utility/customColor";
 import {
   dateFormatter,
   dateFormatterForInput,
+  monthFirstDate,
 } from "../../../../utility/dateFormatter";
 import { toast } from "react-toastify";
 import PeopleDeskTable, {
@@ -29,7 +30,7 @@ import { customStyles } from "utility/selectCustomStyle";
 const todayDate = dateFormatterForInput(new Date());
 const initData = {
   search: "",
-  fromDate: todayDate,
+  fromDate: monthFirstDate(),
   toDate: todayDate,
   workplaceGroup: "",
   workplace: "",
@@ -58,14 +59,15 @@ export default function JoiningReport() {
       pagination?.current,
       pagination?.pageSize,
       isExcel,
-      values?.workplaceGroup?.value || wgId,
+      values?.workplaceGroup?.value || 0,
       setPages,
-      values?.workplace?.value || wId,
+      values?.workplace?.value || 0,
       orgId,
       values?.fromDate || todayDate,
       values?.toDate || todayDate
     );
   };
+
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   // hooks

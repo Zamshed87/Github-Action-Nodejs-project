@@ -1,51 +1,35 @@
-import { SaveAlt, SettingsBackupRestoreOutlined } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
+import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import axios from "axios";
-import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
-import { Form, Formik } from "formik";
-import { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import MasterFilter from "../../../../common/MasterFilter";
-import NoResult from "../../../../common/NoResult";
-import ResetButton from "../../../../common/ResetButton";
-import Loading from "../../../../common/loading/Loading";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
-import PeopleDeskTable from "../../../../common/peopleDeskTable";
+import FormikInput from "common/FormikInput";
+import FormikSelect from "common/FormikSelect";
+import MasterFilter from "common/MasterFilter";
+import NoResult from "common/NoResult";
+import ResetButton from "common/ResetButton";
+import {
+  getPeopleDeskWithoutAllDDL,
+  getWorkplaceDetails,
+} from "common/api";
+import Loading from "common/loading/Loading";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import PeopleDeskTable from "common/peopleDeskTable";
 import {
   createPayloadStructure,
   setHeaderListDataDynamically,
-} from "../../../../common/peopleDeskTable/helper";
-import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { gray900 } from "../../../../utility/customColor";
-import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { empReportListColumns } from "./helper";
-import FormikInput from "common/FormikInput";
-import { todayDate } from "utility/todayDate";
-import FormikSelect from "common/FormikSelect";
-import { customStyles } from "utility/selectCustomStyle";
+} from "common/peopleDeskTable/helper";
+import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { Form, Formik } from "formik";
+import { getDDLForAnnouncement } from "modules/announcement/helper";
+import { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { monthFirstDate } from "utility/dateFormatter";
+import { customStyles } from "utility/selectCustomStyle";
+import { empReportListColumns } from "./helper";
 
 const initData = {
   searchString: "",
-  payrollGroup: "",
-  supervisor: "",
-  rosterGroup: "",
+  attendenceDate: monthFirstDate(),
   department: "",
-  designation: "",
-  calendar: "",
-  gender: "",
-  religion: "",
-  employementType: "",
-  joiningFromDate: "",
-  joiningToDate: "",
-  contractualFromDate: "",
-  contractualToDate: "",
-  employmentStatus: "",
-
-  fromDate: monthFirstDate(),
-  toDate: todayDate(),
-  workplace: "",
-  workplaceGroup: "",
+  section: "",
 };
 
 const initHeaderList = {
@@ -69,10 +53,10 @@ const initHeaderList = {
   strBankList: [],
 };
 
-export default function EmployeeList() {
+export default function EmOverTimeDailyReport() {
   // redux
   const dispatch = useDispatch();
-  const { buId, wgId, wId, employeeId } = useSelector(
+  const { buId, wgId, wId, employeeId, orgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -83,23 +67,18 @@ export default function EmployeeList() {
   const [buDetails, setBuDetails] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [status, setStatus] = useState("");
+  const [sectionDDL, setSectionDDL] = useState([]);
 
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: 100,
-    total: 0,
-  });
-  const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
-  const [workplaceDDL, setWorkplaceDDL] = useState([]);
+
   const [resEmpLanding, setEmpLanding] = useState([]);
   const [headerList, setHeaderList] = useState({});
   const [filterOrderList, setFilterOrderList] = useState([]);
   const [initialHeaderListData, setInitialHeaderListData] = useState({});
   const [landingLoading, setLandingLoading] = useState(false);
+  const [departmentDDL, setDepartmentDDL] = useState([]);
   const [checkedHeaderList, setCheckedHeaderList] = useState({
     ...initHeaderList,
   });
-
 
   const getData = async (
     pagination,
@@ -110,6 +89,7 @@ export default function EmployeeList() {
     checkedHeaderList = { ...initHeaderList },
     values
   ) => {
+    console.log("pagination",pagination)
     setLandingLoading(true);
 
     const modifiedPayload = createPayloadStructure({
@@ -128,30 +108,29 @@ export default function EmployeeList() {
       values
     );
   };
-  
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: 100,
+    total: 0,
+  });
+
+  console.log("pages",pages)
   useEffect(() => {
     setHeaderList({});
     setEmpLanding([]);
     getData(pages);
-    // getPeopleDeskAllDDL(
-    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-    //   "intWorkplaceId",
-    //   "strWorkplace",
-    //   setWorkplaceDDL
-    // );
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
-      "intWorkplaceGroupId",
-      "strWorkplaceGroup",
-      setWorkplaceGroupDDL
+    getDDLForAnnouncement(
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmpDepartment&WorkplaceGroupId=${wgId}&BusinessUnitId=${buId}&intId=0&IntWorkplaceId=${wId}`,
+      "DepartmentId",
+      "DepartmentName",
+      setDepartmentDDL
     );
-    // getBuDetails(buId, setBuDetails, setLoading);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buId, wgId, wId]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Report-Employee List";
+    document.title = "Overtime Daily Report";
   }, [dispatch]);
 
   const getDataApiCall = async (
@@ -164,31 +143,31 @@ export default function EmployeeList() {
   ) => {
     try {
       const payload = {
-        businessUnitId: buId,
-        workplaceGroupId: values?.workplaceGroup?.value || 0,
-        workplaceId: values?.workplace?.value || 0,
-        pageNo: pagination.current,
+        accountId: employeeId || 0,
+        workplaceGroupId: wgId || 0,
+        departmentId: values?.department?.value || 0,
+        sectionId: values?.section?.value || 0,
+        attendanceDate: values?.attendenceDate || null,
+        searchText: searchText || "",
+        pageNumber: pagination.current,
         pageSize: pagination.pageSize,
         isPaginated: true,
         isHeaderNeed: true,
-        searchTxt: searchText || "",
-        fromDate: values?.fromDate || null,
-        toDate: values?.toDate || null,
+        intOTtype: 3,
       };
 
-      const res = await axios.post(`/Employee/EmployeeReportWithFilter`, {
+      const res = await axios.post(`/Payroll/GetDailyOvertimeEmployeeList`, {
         ...payload,
-        ...modifiedPayload,
+        // ...modifiedPayload,
       });
-
-      if (res?.data?.data) {
+      if (res?.data) {
         setHeaderListDataDynamically({
           currentFilterSelection,
           checkedHeaderList,
           headerListKey: "employeeHeader",
           headerList,
           setHeaderList,
-          response: res?.data,
+          response: res,
           filterOrderList,
           setFilterOrderList,
           initialHeaderListData,
@@ -207,12 +186,10 @@ export default function EmployeeList() {
   // menu permission
   let permission = null;
   permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 131) {
+    if (item?.menuReferenceId === 30418) {
       permission = item;
     }
   });
-
-
 
   const handleChangePage = (_, newPage, searchText, values) => {
     setPages((prev) => {
@@ -268,115 +245,14 @@ export default function EmployeeList() {
                 <div className="table-card">
                   <div className="table-card-heading pb-2">
                     <div className="d-flex justify-content-center align-items-center">
-                      <Tooltip title="Export CSV" arrow>
+                      {/* <Tooltip title="Export CSV" arrow>
                         <button
                           type="button"
                           className="btn-save"
                           onClick={(e) => {
                             e.stopPropagation();
                             setLoading(true);
-                            // const excelLanding = async () => {
-                            //   try {
-                            //     const res = await axios.post(
-                            //       `/Employee/EmployeeReportWithFilter`,
-                            //       {
-                            //         businessUnitId: 1,
-                            //         workplaceGroupId: wgId,
-                            //         workplaceId: wId,
-                            //         pageNo: 1,
-                            //         pageSize: 1000000,
-                            //         isPaginated: false,
-                            //         isHeaderNeed: true,
-                            //         searchTxt: "",
-                            //         strDesignationList: [],
-                            //         strDepartmentList: [],
-                            //         strSupervisorNameList: [],
-                            //         strEmploymentTypeList: [],
-                            //         strLinemanagerList: [],
-                            //         wingNameList: [],
-                            //         soleDepoNameList: [],
-                            //         regionNameList: [],
-                            //         areaNameList: [],
-                            //         territoryNameList: [],
-                            //         strWorkplaceGroupList: [],
-                            //         strWorkplaceList: [],
-                            //         strDivisionList: [],
-                            //         strSectionList: [],
-                            //         strHrPositionList: [],
-                            //         strDottedSupervisorNameList: [],
-                            //         strPayrollGroupList: [],
-                            //         strBankList: [],
-                            //       }
-                            //     );
-                            //     if (res?.data?.data?.length > 0) {
-                            //       const newData = res?.data?.data?.map(
-                            //         (item, index) => {
-                            //           return {
-                            //             ...item,
-                            //             sl: index + 1,
-                            //             dateOfJoining: dateFormatter(
-                            //               item?.dateOfJoining
-                            //             ),
-                            //             dateOfConfirmation: dateFormatter(
-                            //               item?.dateOfConfirmation
-                            //             ),
-                            //             dateOfBirth: dateFormatter(
-                            //               item?.dateOfBirth
-                            //             ),
-                            //           };
-                            //         }
-                            //       );
-                            //       const date = todayDate();
-
-                            //       createCommonExcelFile({
-                            //         titleWithDate: `Employee List -${dateFormatter(
-                            //           date
-                            //         )}`,
-                            //         fromDate: "",
-                            //         toDate: "",
-                            //         buAddress: buDetails?.strAddress,
-                            //         businessUnit: buDetails?.strWorkplace,
-                            //         tableHeader: columnForExcel,
-                            //         getTableData: () =>
-                            //           getTableDataEmployeeReports(
-                            //             newData,
-                            //             Object.keys(columnForExcel)
-                            //           ),
-                            //         tableFooter: [],
-                            //         extraInfo: {},
-                            //         tableHeadFontSize: 10,
-                            //         widthList: {
-                            //           B: 30,
-                            //           C: 30,
-                            //           D: 30,
-                            //           E: 30,
-                            //           G: 20,
-                            //           H: 30,
-                            //           T: 20,
-                            //           J: 30,
-                            //           K: 15,
-                            //           M: 25,
-                            //           N: 25,
-                            //           O: 20,
-                            //           P: 20,
-                            //           Q: 15,
-                            //           Y: 15,
-                            //           AF: 35,
-                            //         },
-                            //         commonCellRange: "A1:J1",
-                            //         CellAlignment: "left",
-                            //       });
-                            //       setLoading && setLoading(false);
-                            //     } else {
-                            //       setLoading && setLoading(false);
-                            //       toast.warn("Empty Employee Data");
-                            //     }
-                            //   } catch (error) {
-                            //     toast.warn("Failed to download excel");
-                            //     setLoading && setLoading(false);
-                            //   }
-                            // };
-                            // excelLanding();
+                           
                             const paylaod = {
                               businessUnitId: 1,
                               workplaceGroupId:
@@ -410,7 +286,7 @@ export default function EmployeeList() {
                             }}
                           />
                         </button>
-                      </Tooltip>
+                      </Tooltip> */}
                       <div className="ml-2">
                         {resEmpLanding?.length > 0 ? (
                           <>
@@ -510,53 +386,38 @@ export default function EmployeeList() {
                       <div className="row">
                         <div className="col-lg-2">
                           <div className="input-field-main">
-                            <label>From Joining Date</label>
+                            <label>Attendence Date</label>
                             <FormikInput
                               classes="input-sm"
-                              value={values?.fromDate}
-                              placeholder="From Joining Date"
-                              name="fromDate"
+                              value={values?.attendenceDate}
+                              placeholder="Attendence Date"
+                              name="attendenceDate"
                               type="date"
                               className="form-control"
                               onChange={(e) => {
-                                setFieldValue("fromDate", e.target.value);
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-lg-2">
-                          <div className="input-field-main">
-                            <label>To Joining Date</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.toDate}
-                              placeholder="To Joining Date"
-                              name="toDate"
-                              type="date"
-                              className="form-control"
-                              onChange={(e) => {
-                                setFieldValue("toDate", e.target.value);
+                                setFieldValue("attendenceDate", e.target.value);
                               }}
                             />
                           </div>
                         </div>
                         <div className="col-lg-3">
                           <div className="input-field-main">
-                            <label>Workplace Group</label>
+                            <label>Department</label>
                             <FormikSelect
-                              name="workplaceGroup"
-                              options={[...workplaceGroupDDL] || []}
-                              value={values?.workplaceGroup}
+                              name="department"
+                              options={[...departmentDDL] || []}
+                              value={values?.department}
                               onChange={(valueOption) => {
-                                setWorkplaceDDL([]);
-                                setFieldValue("workplaceGroup", valueOption);
+                                setFieldValue("department", valueOption);
                                 setFieldValue("workplace", "");
                                 if (valueOption?.value) {
-                                  getPeopleDeskAllDDL(
-                                    `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&BusinessUnitId=${buId}&WorkplaceGroupId=${valueOption?.value}&intId=${employeeId}`,
-                                    "intWorkplaceId",
-                                    "strWorkplace",
-                                    setWorkplaceDDL
+                                  getPeopleDeskWithoutAllDDL(
+                                    `/SaasMasterData/SectionDDL?AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceId=${
+                                      wId || 0
+                                    }&DepartmentId=${valueOption?.value}`,
+                                    "value",
+                                    "label",
+                                    setSectionDDL
                                   );
                                 }
                               }}
@@ -567,17 +428,13 @@ export default function EmployeeList() {
                         </div>
                         <div className="col-lg-3">
                           <div className="input-field-main">
-                            <label>Workplace</label>
+                            <label>Section</label>
                             <FormikSelect
-                              name="workplace"
-                              options={[...workplaceDDL] || []}
-                              value={values?.workplace}
+                              name="section"
+                              options={[...sectionDDL] || []}
+                              value={values?.section}
                               onChange={(valueOption) => {
-                                setFieldValue("workplace", valueOption);
-                                getWorkplaceDetails(
-                                  valueOption?.value,
-                                  setBuDetails
-                                );
+                                setFieldValue("section", valueOption);
                               }}
                               placeholder=""
                               styles={customStyles}
@@ -586,7 +443,7 @@ export default function EmployeeList() {
                         </div>
                         <div className="col-lg-1">
                           <button
-                            disabled={!values?.fromDate || !values?.toDate}
+                            // disabled={!values?.fromDate || !values?.toDate}
                             style={{ marginTop: "21px" }}
                             className="btn btn-green"
                             onClick={() => {

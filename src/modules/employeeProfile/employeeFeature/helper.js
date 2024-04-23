@@ -26,14 +26,14 @@ export const createEditEmpAction = async (
   intUrlId,
   setLoading,
   cb,
-  isEdit
+  isEdit,
+  orgId,
+  employeeId
 ) => {
-  // let { year2, month2 } = getYearMonth2(values?.dteInternCloseDate);
-  // let lastDaysInternCloseDate = getDaysInMonth2(year2, month2);
-  // console.log("values?.dateofBirth", values?.dateofBirth)
-  // console.log({values})
   try {
     let payload = {
+      presentAddress: values?.presentAddress,
+      permanentAddress: values?.permanentAddress,
       intPayscaleGradeId: values?.payScaleGrade?.value,
       strPayscaleGradeName: values?.payScaleGrade?.label,
       intSalaryTypeId: values?.salaryType?.value,
@@ -113,23 +113,70 @@ export const createEditEmpAction = async (
     if (!isEdit) {
       payload = {
         ...payload,
+        // calendarAssignViewModel: {
+        //   employeeId: 0,
+        //   joiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
+        //   generateStartDate: moment(values?.generateDate).format("YYYY-MM-DD"),
+        //   generateEndDate: null,
+        //   runningCalendarId:
+        //     values?.calenderType?.value === 2
+        //       ? values?.startingCalender?.value
+        //       : values?.calender?.value,
+        //   calendarType: values?.calenderType?.label,
+        //   nextChangeDate: values?.nextChangeDate
+        //     ? moment(values?.nextChangeDate).format("YYYY-MM-DD")
+        //     : null,
+        //   rosterGroupId:
+        //     values?.calenderType?.value === 2 ? values?.calender?.value : 0,
+        //   isAutoGenerate: false,
+        //   // intOtType: values?.intOtType?.value,
+        // },
         calendarAssignViewModel: {
-          employeeId: 0,
-          joiningDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
+          employeeList: "",
           generateStartDate: moment(values?.generateDate).format("YYYY-MM-DD"),
-          generateEndDate: null,
+          intCreatedBy: employeeId,
           runningCalendarId:
             values?.calenderType?.value === 2
               ? values?.startingCalender?.value
               : values?.calender?.value,
-          calendarType: values?.calenderType?.label,
           nextChangeDate: values?.nextChangeDate
             ? moment(values?.nextChangeDate).format("YYYY-MM-DD")
             : null,
+          calendarType: values?.calenderType?.label,
           rosterGroupId:
             values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-          isAutoGenerate: false,
-          // intOtType: values?.intOtType?.value,
+          generateEndDate: null,
+          isAutoGenerate: true,
+        },
+        holidayAssignViewModel: {
+          employeeList: "",
+          holidayGroupId: values?.holiday?.value,
+          holidayGroupName: values?.holiday?.label,
+          effectiveDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
+          accountId: orgId,
+          businessUnitId: buId,
+          workplaceGroupId: values?.workplaceGroup?.value,
+          isActive: true,
+          actionBy: employeeId,
+        },
+
+        offdayAssignViewModel: {
+          employeeList: "",
+          effectiveDate: moment(values?.joiningDate).format("YYYY-MM-DD"),
+          isSaturday: values?.offday?.find((i) => i.value === 2) ? true : false,
+          isSunday: values?.offday?.find((i) => i.value === 3) ? true : false,
+          isMonday: values?.offday?.find((i) => i.value === 4) ? true : false,
+          isTuesday: values?.offday?.find((i) => i.value === 5) ? true : false,
+          isWednesday: values?.offday?.find((i) => i.value === 6)
+            ? true
+            : false,
+          isThursday: values?.offday?.find((i) => i.value === 7) ? true : false,
+          isFriday: values?.offday?.find((i) => i.value === 1) ? true : false,
+          accountId: orgId,
+          businessUnitId: buId,
+          workplaceGroupId: values?.workplaceGroup?.value,
+          isActive: true,
+          actionBy: employeeId,
         },
       };
     }
@@ -314,6 +361,13 @@ export const getEmployeeProfileViewData = async (
       setter && setter(res?.data);
       setForEdit &&
         setForEdit({
+          presentAddress: empBasic?.empEmployeeAddress?.find(
+            (i) => i?.strAddressType === "Present"
+          )?.strAddressDetails,
+
+          permanentAddress: empBasic?.empEmployeeAddress?.find(
+            (i) => i?.strAddressType === "Permanent"
+          )?.strAddressDetails,
           tinNo: empBasic?.employeeProfileLandingView?.tinNo,
           nid: empBasic?.empEmployeePhotoIdentity?.strNid,
           empId: empBasic?.employeeProfileLandingView?.intEmployeeBasicInfoId,

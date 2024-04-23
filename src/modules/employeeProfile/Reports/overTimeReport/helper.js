@@ -154,13 +154,13 @@ export const empOverTimeDtoCol = (page, paginationSize) => {
       filter: false,
       width: 80,
     },
-    {
-      title: "Basic",
-      dataIndex: "basicSalary",
-      sort: false,
-      filter: false,
-      width: 80,
-    },
+    // {
+    //   title: "Basic",
+    //   dataIndex: "basicSalary",
+    //   sort: false,
+    //   filter: false,
+    //   width: 80,
+    // },
     {
       title: "Hour",
       dataIndex: "hours",

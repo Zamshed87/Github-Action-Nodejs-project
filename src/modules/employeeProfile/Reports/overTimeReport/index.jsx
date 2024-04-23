@@ -20,12 +20,13 @@ import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { monthFirstDate } from "../../../../utility/dateFormatter";
 import { todayDate } from "../../../../utility/todayDate";
 import { generateExcelAction } from "./excel/excelConvert";
-import {
-  empOverTimeDtoCol,
-  getOvertimeReportLanding,
-} from "./helper";
+import { empOverTimeDtoCol, getOvertimeReportLanding } from "./helper";
 import "./overTimeReport.css";
-import { getBuDetails, getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
+import {
+  getBuDetails,
+  getPeopleDeskAllDDL,
+  getWorkplaceDetails,
+} from "common/api";
 import FormikSelect from "common/FormikSelect";
 import { customStyles } from "utility/selectCustomStyle";
 
@@ -432,7 +433,7 @@ export default function EmOverTimeReport() {
                             }
                             uniqueKey="expenseId"
                             isCheckBox={false}
-                            isScrollAble={false}
+                            isScrollAble={true}
                           />
                         ) : (
                           <>

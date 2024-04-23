@@ -4,12 +4,9 @@ import DemoImg from "../../../assets/images/demo.png";
 import { DataTable, PCard, PCardHeader, PForm, TableButton } from "Components";
 import { PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Form, message } from "antd";
-import axios from "axios";
-import { debounce } from "lodash";
+import { Form } from "antd";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 // import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 // import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 // import { dateFormatter } from "../../../utility/dateFormatter";
@@ -28,7 +25,7 @@ function BusinessUnit() {
   const dispatch = useDispatch();
 
   // redux
-  const { buId, wgId, wgName, wId, orgId } = useSelector(
+  const { buId, wgId, wId, orgId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
