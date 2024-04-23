@@ -572,6 +572,7 @@ const CreateAndEditEmploye = () => {
       singleData.calenderType?.value === 2 && getCalendarByRosterDDL();
     }
   }, [orgId, buId, singleData, employeeId]);
+
   return (
     <div style={{ marginBottom: "60px" }}>
       {loading && <Loading />}
@@ -1511,7 +1512,7 @@ const CreateAndEditEmploye = () => {
                             // disabled={params?.id}
                           />
                         </Col>
-                        {/* <Col md={8} sm={24}>
+                        <Col md={8} sm={24}>
                           <PSelect
                             mode="multiple"
                             options={[
@@ -1563,7 +1564,7 @@ const CreateAndEditEmploye = () => {
                               },
                             ]}
                           />
-                        </Col> */}
+                        </Col>
                       </>
                     ) : undefined}
 

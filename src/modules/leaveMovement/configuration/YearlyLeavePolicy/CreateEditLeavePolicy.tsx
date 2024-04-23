@@ -287,8 +287,8 @@ const CreateEditLeavePolicy = () => {
                             isEarnLveIncludeHoliday: false,
                             intDayForOneEarnLve: undefined,
                             intEarnLveInDay: undefined,
-                            IntCompensatoryLveExpireInDays: undefined,
-                            isConpensatoryLveExpire: false,
+                            intCompensatoryLveExpireInDays: undefined,
+                            isCompensatoryLveExpire: false,
                           });
 
                           if (op.label === "Earn Leave/Annual Leave") {
@@ -1107,7 +1107,7 @@ const CreateEditLeavePolicy = () => {
                   <>
                     <Form.Item shouldUpdate noStyle>
                       {() => {
-                        const { intLeaveType, isConpensatoryLveExpire } =
+                        const { intLeaveType, isCompensatoryLveExpire } =
                           form.getFieldsValue();
 
                         // const empType = employeeType?.label;
@@ -1130,12 +1130,12 @@ const CreateEditLeavePolicy = () => {
                                 label="Compensatory Leave Expire"
                                 type="checkbox"
                                 layout="horizontal"
-                                name="isConpensatoryLveExpire"
+                                name="isCompensatoryLveExpire"
                               />
                             </Col>
                             <Col md={12} sm={24}>
                               <PInput
-                                disabled={!isConpensatoryLveExpire}
+                                disabled={!isCompensatoryLveExpire}
                                 type="number"
                                 name="intCompensatoryLveExpireInDays"
                                 label="Conpensatory Leave Expire In Days"
@@ -1143,13 +1143,59 @@ const CreateEditLeavePolicy = () => {
                                 size="small"
                                 rules={[
                                   {
-                                    required: isConpensatoryLveExpire,
+                                    required: isCompensatoryLveExpire,
                                     message:
                                       "Conpensatory Leave Expire In Days is required",
                                   },
                                   {
                                     message:
                                       "Conpensatory Leave Expire In Days must be positive",
+                                    pattern: new RegExp(
+                                      /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                    ),
+                                  },
+                                ]}
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PInput
+                                disabled={!isCompensatoryLveExpire}
+                                type="number"
+                                name="intMinWorkingHourForComl"
+                                label="Minimum Working Hour"
+                                placeholder="Minimum Working Hour"
+                                size="small"
+                                rules={[
+                                  {
+                                    required: isCompensatoryLveExpire,
+                                    message: "Minimum Working Hour is required",
+                                  },
+                                  {
+                                    message:
+                                      "Minimum Working Hour must be positive",
+                                    pattern: new RegExp(
+                                      /^[+]?([.]\d+|\d+([.]\d+)?)$/
+                                    ),
+                                  },
+                                ]}
+                              />
+                            </Col>
+                            <Col md={12} sm={24}>
+                              <PInput
+                                disabled={!isCompensatoryLveExpire}
+                                type="number"
+                                name="intMaxComlLveInMonth"
+                                label="Max Leave In Month"
+                                placeholder="Max Leave In Month"
+                                size="small"
+                                rules={[
+                                  {
+                                    required: isCompensatoryLveExpire,
+                                    message: "Max Leave In Month is required",
+                                  },
+                                  {
+                                    message:
+                                      "Max Leave In Month must be positive",
                                     pattern: new RegExp(
                                       /^[+]?([.]\d+|\d+([.]\d+)?)$/
                                     ),
@@ -1169,7 +1215,7 @@ const CreateEditLeavePolicy = () => {
                       {() => {
                         const {
                           intLeaveType,
-                          isConpensatoryLveExpire,
+                          isCompensatoryLveExpire,
                           isCompensatoryLve,
                         } = form.getFieldsValue();
                         console.log({ isCompensatoryLve });
