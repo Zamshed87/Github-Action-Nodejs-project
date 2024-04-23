@@ -181,7 +181,7 @@ export const getWeather = async (lat, long, setter) => {
         setter(data);
       }
     })
-    .catch((err) => {});
+    .catch();
 };
 
 export const getDefaultDashboardChange = async (loginId, roleId, cb) => {
@@ -201,10 +201,13 @@ export const getAllAnnouncement = async (
   accountId,
   employeeId,
   yearId,
-  setter
+  setter,
+  wgId
 ) => {
   try {
-    const res = await axios.get(`/MasterData/GetAnnouncement?YearId=${yearId}`);
+    const res = await axios.get(
+      `/MasterData/GetAnnouncement?YearId=${yearId}&workplaceGroupId=${wgId}`
+    );
     setter(res?.data);
   } catch (error) {
     setter([]);
@@ -216,7 +219,7 @@ export const getDashboardTotalEmployee = async (tableName, buId, setter) => {
     const res = await axios.get(
       `/emp/MasterData/PeopleDeskAllLanding?TableName=${tableName}&BusinessUnitId=${buId}`
     );
-    let totalEmployee = res?.data?.Result?.reduce(function (
+    const totalEmployee = res?.data?.Result?.reduce(function (
       accumulator,
       currentValue
     ) {
@@ -281,13 +284,7 @@ export const getDashboardDeptSecEmpTypeWiseEmployee = async (
   }
 };
 
-export const workannivarsayList = (
-  rowDto,
-  filterData,
-  setFilterData,
-  setRowDto,
-  setLoading
-) => {
+export const workannivarsayList = () => {
   return [
     {
       title: "SL",

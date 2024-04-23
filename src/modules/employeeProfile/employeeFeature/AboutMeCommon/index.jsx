@@ -205,7 +205,6 @@ function AboutMeDetails() {
       ) : (
         <NotPermittedPage />
       )}
-
       <PModal
         open={isAddEditForm}
         title={`Edit Employee(${empBasic?.employeeProfileLandingView?.strEmployeeName})`}

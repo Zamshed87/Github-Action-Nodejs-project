@@ -383,7 +383,8 @@ export default function AnnouncementCreate() {
                               setAllData,
                               setLoading,
                               employeeId,
-                              values?.year?.value
+                              values?.year?.value,
+                              wgId
                             );
                           }}
                         >
