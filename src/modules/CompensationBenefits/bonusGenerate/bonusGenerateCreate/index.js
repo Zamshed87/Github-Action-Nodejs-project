@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { dateFormatterForInput } from "utility/dateFormatter";
 import * as Yup from "yup";
 import AntTable from "../../../../common/AntTable";
 import BackButton from "../../../../common/BackButton";
@@ -277,6 +278,21 @@ const BonusGenerateCreate = () => {
     (itm) => wgName === itm?.strWorkplaceGroup
   );
 
+  const mergedData = rowDto.reduce((acc, cur) => {
+    if (!acc[cur.intEmployeeId]) {
+      // If the id doesn't exist in the accumulator, add it with all properties
+      acc[cur.intEmployeeId] = { ...cur };
+    } else {
+      // If the id exists, merge properties while keeping all previous properties
+      acc[cur.intEmployeeId] = { ...acc[cur.intEmployeeId], ...cur };
+    }
+    return acc;
+  }, {});
+  
+  const updatedRowDto = Object.values(mergedData);
+  
+  
+
   // marketingArea Check
   const isSameMaketingAreaHandler = (rowDto, value, property) => {
     let isCheck = false;
@@ -290,7 +306,6 @@ const BonusGenerateCreate = () => {
 
     return isCheck;
   };
-
   // useFormik hooks
   const {
     setFieldValue,
@@ -309,6 +324,7 @@ const BonusGenerateCreate = () => {
         value: singleData?.intBonusId,
         label: singleData?.strBonusName,
       },
+      effectiveDate: dateFormatterForInput(singleData?.dteEffectedDateTime),
       wing:
         +params?.id &&
         isSameMaketingAreaHandler(rowDto, singleData?.intWingId, "intWingId")
@@ -512,7 +528,7 @@ const BonusGenerateCreate = () => {
                       isClearable={false}
                       options={workplaceDDL || []}
                       value={values?.workplace}
-                      isDisabled={isEdit}
+                      // isDisabled={isEdit}
                       onChange={(valueOption) => {
                         setFieldValue("workplace", valueOption);
                       }}
@@ -804,7 +820,7 @@ const BonusGenerateCreate = () => {
                     </div>
                   </div>
                   <div className="col-lg-12"></div>
-                  {!isEdit && (
+                  { (
                     <div className="col-lg-3">
                       <div className="d-flex align-items-center">
                         <button
@@ -844,7 +860,8 @@ const BonusGenerateCreate = () => {
                                 values?.area?.value,
                                 values?.territory?.value
                               );
-                            } else {
+                            }
+                             else {
                               getEmployeeListForBonusGenerateOrRegenerate(
                                 orgId,
                                 employeeList,
@@ -940,8 +957,8 @@ const BonusGenerateCreate = () => {
 
                 <div className="table-card-styled employee-table-card tableOne">
                   <AntTable
-                    data={rowDto}
-                    columnsData={columns(rowDto, setRowDto, setFieldValue)}
+                    data={updatedRowDto}
+                    columnsData={columns(updatedRowDto, setRowDto, setFieldValue)}
                   />
                 </div>
               </>
