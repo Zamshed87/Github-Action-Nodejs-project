@@ -288,10 +288,8 @@ const BonusGenerateCreate = () => {
     }
     return acc;
   }, {});
-  
+
   const updatedRowDto = Object.values(mergedData);
-  
-  
 
   // marketingArea Check
   const isSameMaketingAreaHandler = (rowDto, value, property) => {
@@ -820,7 +818,7 @@ const BonusGenerateCreate = () => {
                     </div>
                   </div>
                   <div className="col-lg-12"></div>
-                  { (
+                  {
                     <div className="col-lg-3">
                       <div className="d-flex align-items-center">
                         <button
@@ -833,7 +831,8 @@ const BonusGenerateCreate = () => {
                             !values?.bonusSystemType ||
                             !values?.bonusName ||
                             !values?.effectiveDate ||
-                            !values?.workplace
+                            !values?.workplace ||
+                            singleData?.intWorkplaceGroupId !== wgId
                           }
                           onClick={() => {
                             if (+params?.id) {
@@ -860,8 +859,7 @@ const BonusGenerateCreate = () => {
                                 values?.area?.value,
                                 values?.territory?.value
                               );
-                            }
-                             else {
+                            } else {
                               getEmployeeListForBonusGenerateOrRegenerate(
                                 orgId,
                                 employeeList,
@@ -886,7 +884,7 @@ const BonusGenerateCreate = () => {
                         </button>
                       </div>
                     </div>
-                  )}
+                  }
                 </div>
               </div>
             </div>
@@ -958,7 +956,11 @@ const BonusGenerateCreate = () => {
                 <div className="table-card-styled employee-table-card tableOne">
                   <AntTable
                     data={updatedRowDto}
-                    columnsData={columns(updatedRowDto, setRowDto, setFieldValue)}
+                    columnsData={columns(
+                      updatedRowDto,
+                      setRowDto,
+                      setFieldValue
+                    )}
                   />
                 </div>
               </>
