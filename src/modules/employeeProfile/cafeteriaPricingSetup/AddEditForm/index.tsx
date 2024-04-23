@@ -2,6 +2,7 @@ import {
   DataTable,
   PButton,
   PCard,
+  PCardBody,
   PCardHeader,
   PForm,
   PInput,
@@ -608,7 +609,6 @@ const PricingSetupForm = () => {
       return;
     }
     const payload = rowDto.map((item: any, idx: number) => {
-      console.log({ item });
       return {
         sl: rec?.sl || idx,
         intConfigId: rec?.intConfigId || 0,
@@ -684,205 +684,210 @@ const PricingSetupForm = () => {
             },
           ]}
         ></PCardHeader>
-        <Row gutter={[10, 2]} className="mb-3">
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={[
-                { label: "Per Meal", value: 1 },
-                { label: "Per Month", value: 2 },
-              ]}
-              name="mealType"
-              label="Meal Type"
-              placeholder="Meal Type"
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  mealType: op,
-                });
-              }}
-              disabled={+id ? true : false}
-              rules={[{ required: true, message: "Meal Type is required" }]}
-            />
-          </Col>
-          <Form.Item shouldUpdate noStyle>
-            {() => {
-              const { mealType } = form.getFieldsValue();
+        <PCardBody className="mb-3">
+          <Row gutter={[10, 2]}>
+            <Col md={5} sm={12} xs={24}>
+              <PSelect
+                options={[
+                  { label: "Per Meal", value: 1 },
+                  { label: "Per Month", value: 2 },
+                ]}
+                name="mealType"
+                label="Meal Type"
+                placeholder="Meal Type"
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    mealType: op,
+                  });
+                }}
+                disabled={+id ? true : false}
+                rules={[{ required: true, message: "Meal Type is required" }]}
+              />
+            </Col>
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const { mealType } = form.getFieldsValue();
 
-              return (
-                <>
-                  {mealType?.value === 2 ? (
-                    <>
-                      <Col md={6} sm={12} xs={24}>
-                        <PInput
-                          type="date"
-                          picker="month"
-                          name="date"
-                          label="Select Month"
-                          placeholder="Select Month"
-                          rules={[
-                            {
-                              required: true,
-                              message: "Please Select a month",
-                            },
-                          ]}
-                          format={"MMMM-YYYY"}
-                        />
-                      </Col>
-                    </>
-                  ) : undefined}
-                </>
-              );
-            }}
-          </Form.Item>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={workplaceGroup?.data || []}
-              name="workplaceGroup"
-              label="Workplace Group"
-              placeholder="Workplace Group"
-              disabled={+id ? true : false}
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  workplaceGroup: op,
-                  workplace: undefined,
-                });
-                getWorkplace();
-                getDesignation();
+                return (
+                  <>
+                    {mealType?.value === 2 ? (
+                      <>
+                        <Col md={6} sm={12} xs={24}>
+                          <PInput
+                            type="date"
+                            picker="month"
+                            name="date"
+                            label="Select Month"
+                            placeholder="Select Month"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please Select a month",
+                              },
+                            ]}
+                            format={"MMMM-YYYY"}
+                          />
+                        </Col>
+                      </>
+                    ) : undefined}
+                  </>
+                );
               }}
-              rules={[
-                { required: true, message: "Workplace Group is required" },
-              ]}
-            />
-          </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={workplace?.data || []}
-              name="workplace"
-              label="Workplace"
-              placeholder="Workplace"
-              disabled={+id ? true : false}
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  workplace: op,
-                });
-                getDesignation();
-              }}
-              rules={[{ required: true, message: "Workplace is required" }]}
-            />
-          </Col>
-          <Col md={6} sm={12} xs={24}>
-            <PSelect
-              options={[
-                {
-                  value: 1,
-                  label: "Designation Wise",
-                },
-                {
-                  value: 2,
-                  label: "Salary Range Wise",
-                },
-                {
-                  value: 3,
-                  label: "HR Position",
-                },
-              ]}
-              name="pricingMatrixType"
-              label="Pricing Matrix Type
+            </Form.Item>
+            <Col md={5} sm={12} xs={24}>
+              <PSelect
+                options={workplaceGroup?.data || []}
+                name="workplaceGroup"
+                label="Workplace Group"
+                placeholder="Workplace Group"
+                disabled={+id ? true : false}
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    workplaceGroup: op,
+                    workplace: undefined,
+                  });
+                  getWorkplace();
+                  getDesignation();
+                }}
+                rules={[
+                  { required: true, message: "Workplace Group is required" },
+                ]}
+              />
+            </Col>
+            <Col md={5} sm={12} xs={24}>
+              <PSelect
+                options={workplace?.data || []}
+                name="workplace"
+                label="Workplace"
+                placeholder="Workplace"
+                disabled={+id ? true : false}
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    workplace: op,
+                  });
+                  getDesignation();
+                }}
+                rules={[{ required: true, message: "Workplace is required" }]}
+              />
+            </Col>
+            <Col md={5} sm={12} xs={24}>
+              <PSelect
+                options={[
+                  {
+                    value: 1,
+                    label: "Designation Wise",
+                  },
+                  {
+                    value: 2,
+                    label: "Salary Range Wise",
+                  },
+                  {
+                    value: 3,
+                    label: "HR Position",
+                  },
+                ]}
+                name="pricingMatrixType"
+                label="Pricing Matrix Type
 "
-              placeholder="Pricing Matrix Type
+                placeholder="Pricing Matrix Type
 "
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  pricingMatrixType: op,
-                });
+                onChange={(value, op) => {
+                  form.setFieldsValue({
+                    pricingMatrixType: op,
+                  });
+                }}
+                disabled={+id ? true : false}
+                rules={[
+                  {
+                    required: true,
+                    message: "Pricing Matrix Type is required",
+                  },
+                ]}
+              />
+            </Col>
+
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const { pricingMatrixType } = form.getFieldsValue();
+
+                return (
+                  <>
+                    {pricingMatrixType?.value === 1 ? (
+                      <>
+                        <Col md={5} sm={12} xs={24}>
+                          <PSelect
+                            mode="multiple"
+                            options={designation?.data || []}
+                            name="designationDDL"
+                            label="Designation"
+                            placeholder="Designation"
+                            disabled={+id ? true : false}
+                            onChange={(value, op) => {
+                              form.setFieldsValue({
+                                designationDDL: op,
+                              });
+
+                              // value && getWorkplace();
+                            }}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Off Day is required",
+                              },
+                            ]}
+                          />
+                        </Col>
+                      </>
+                    ) : undefined}
+                  </>
+                );
               }}
-              disabled={+id ? true : false}
-              rules={[
-                { required: true, message: "Pricing Matrix Type is required" },
-              ]}
-            />
-          </Col>
-
-          <Form.Item shouldUpdate noStyle>
-            {() => {
-              const { pricingMatrixType } = form.getFieldsValue();
-
-              return (
-                <>
-                  {pricingMatrixType?.value === 1 ? (
-                    <>
-                      <Col md={6} sm={12} xs={24}>
-                        <PSelect
-                          mode="multiple"
-                          options={designation?.data || []}
-                          name="designationDDL"
-                          label="Designation"
-                          placeholder="Designation"
-                          disabled={+id ? true : false}
-                          onChange={(value, op) => {
-                            form.setFieldsValue({
-                              designationDDL: op,
-                            });
-
-                            // value && getWorkplace();
-                          }}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Off Day is required",
-                            },
-                          ]}
-                        />
-                      </Col>
-                    </>
-                  ) : undefined}
-                </>
-              );
-            }}
-          </Form.Item>
-          <Col
-            style={{
-              marginTop: "23px",
-            }}
-          >
-            <PButton
-              type="primary"
-              action="submit"
-              content="Add"
-              onClick={() => {
-                const {
-                  designationDDL,
-                  workplace,
-                  workplaceGroup,
-                  pricingMatrixType,
-                } = form.getFieldsValue(true);
-                if (pricingMatrixType?.value === 1) {
-                  setRowDto(
-                    designationDDL?.map((item: any) => {
-                      return {
+            </Form.Item>
+            <Col
+              style={{
+                marginTop: "23px",
+              }}
+            >
+              <PButton
+                type="primary"
+                action="submit"
+                content="Add"
+                onClick={() => {
+                  const {
+                    designationDDL,
+                    workplace,
+                    workplaceGroup,
+                    pricingMatrixType,
+                  } = form.getFieldsValue(true);
+                  if (pricingMatrixType?.value === 1) {
+                    setRowDto(
+                      designationDDL?.map((item: any) => {
+                        return {
+                          workplace,
+                          workplaceGroup,
+                          designation: item,
+                          ownContribution: 0,
+                          companyContribution: 0,
+                          TotalCost: 0,
+                        };
+                      })
+                    );
+                  } else {
+                    setRowDto([
+                      {
                         workplace,
                         workplaceGroup,
-                        designation: item,
                         ownContribution: 0,
                         companyContribution: 0,
                         TotalCost: 0,
-                      };
-                    })
-                  );
-                } else {
-                  setRowDto([
-                    {
-                      workplace,
-                      workplaceGroup,
-                      ownContribution: 0,
-                      companyContribution: 0,
-                      TotalCost: 0,
-                    },
-                  ]);
-                }
-              }}
-            />
-          </Col>
-        </Row>
+                      },
+                    ]);
+                  }
+                }}
+              />
+            </Col>
+          </Row>
+        </PCardBody>
         <Form.Item shouldUpdate noStyle>
           {() => {
             const { pricingMatrixType } = form.getFieldsValue();
