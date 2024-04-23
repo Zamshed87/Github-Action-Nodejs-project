@@ -194,52 +194,6 @@ const BonusGenerateCreate = () => {
     }
   };
 
-  // on form submit
-
-  // send for approval
-
-  // const sendForApprovalHandler = (data, values) => {
-  //   const payload = {
-  //     strPartName: data?.isArrearBonus
-  //       ? "ArrearBonusGenerateSendToApproval"
-  //       : "BonusGenerateSendToApproval",
-  //     intBonusHeaderId: data?.intBonusHeaderId || 0,
-  //     intAccountId: data?.intAccountId || orgId,
-  //     intBusinessUnitId: data?.intBusinessUnitId || values?.businessUnit?.value,
-  //     intBonusId: data?.intBonusId || values?.bonusName?.value,
-  //     intPayrollGroupId: data?.intPayrollGroupId || values?.payrollGroup?.value,
-  //     intWorkplaceId: data?.intWorkplaceId || values?.workplace?.value,
-  //     intWorkplaceGroupId:
-  //       values?.intWorkplaceGroupId || values?.workplaceGroup?.value,
-  //     intReligionId: data?.intReligionId || values?.religion?.value,
-  //     dteEffectedDate: data?.dteEffectedDateTime || values?.effectiveDate,
-  //     intCreatedBy: employeeId,
-  //   };
-  //   const callback = () => {
-  //     getBonusGenerateLanding(
-  //       {
-  //         strPartName:
-  //           values?.bonusSystemType?.value === 1
-  //             ? "BonusGenerateLanding"
-  //             : "ArrearBonusGenerateLanding",
-  //         intBonusHeaderId: 0,
-  //         intAccountId: orgId,
-  //         intBusinessUnitId: buId,
-  //         intBonusId: 0,
-  //         intPayrollGroupId: 0,
-  //         intWorkplaceGroupId: 0,
-  //         intReligionId: 0,
-  //         dteEffectedDate: todayDate(),
-  //         intCreatedBy: employeeId,
-  //       },
-  //       setRowDto,
-  //       null,
-  //       setLoading
-  //     );
-  //   };
-  //   createBonusGenerateRequest(payload, setLoading, callback);
-  // };
-
   useEffect(() => {
     if (location?.state?.bonusObj) {
       getBonusInformationOnRegenerate(
@@ -278,18 +232,18 @@ const BonusGenerateCreate = () => {
     (itm) => wgName === itm?.strWorkplaceGroup
   );
 
-  const mergedData = rowDto.reduce((acc, cur) => {
-    if (!acc[cur.intEmployeeId]) {
-      // If the id doesn't exist in the accumulator, add it with all properties
-      acc[cur.intEmployeeId] = { ...cur };
-    } else {
-      // If the id exists, merge properties while keeping all previous properties
-      acc[cur.intEmployeeId] = { ...acc[cur.intEmployeeId], ...cur };
-    }
-    return acc;
-  }, {});
+  // const mergedData = rowDto.reduce((acc, cur) => {
+  //   if (!acc[cur.intEmployeeId]) {
+  //     // If the id doesn't exist in the accumulator, add it with all properties
+  //     acc[cur.intEmployeeId] = { ...cur };
+  //   } else {
+  //     // If the id exists, merge properties while keeping all previous properties
+  //     acc[cur.intEmployeeId] = { ...acc[cur.intEmployeeId], ...cur };
+  //   }
+  //   return acc;
+  // }, {});
 
-  const updatedRowDto = Object.values(mergedData);
+  // const updatedRowDto = Object.values(mergedData);
 
   // marketingArea Check
   const isSameMaketingAreaHandler = (rowDto, value, property) => {
@@ -304,6 +258,7 @@ const BonusGenerateCreate = () => {
 
     return isCheck;
   };
+  console.log("rowDto",rowDto)
   // useFormik hooks
   const {
     setFieldValue,
@@ -955,9 +910,9 @@ const BonusGenerateCreate = () => {
 
                 <div className="table-card-styled employee-table-card tableOne">
                   <AntTable
-                    data={updatedRowDto}
+                    data={rowDto}
                     columnsData={columns(
-                      updatedRowDto,
+                      rowDto,
                       setRowDto,
                       setFieldValue
                     )}
