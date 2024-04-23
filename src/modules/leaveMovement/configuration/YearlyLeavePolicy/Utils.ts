@@ -69,7 +69,7 @@ export const generatePayload = (
     isEncashable: values?.isEncashable || false,
     isCompensatoryLve:
       values?.intLeaveType?.label === "Compensatory Leave" ? true : false,
-    isConpensatoryLveExpire: values?.isConpensatoryLveExpire || false,
+    isCompensatoryLveExpire: values?.isCompensatoryLveExpire || false,
     isEarnLeave: values?.isEarnLeave || false,
     isEarnLveIncludeHoliday: values?.isEarnLveIncludeHoliday || false,
     isEarnLveIncludeOffday: values?.isEarnLveIncludeOffday || false,
@@ -121,6 +121,8 @@ export const generatePayload = (
     intEarnLveInDay: +values?.intEarnLveInDay || null,
     intMaxForAdvLveInYear: +values?.intMaxForAdvLveInYear || null,
     intExistingPolicyIdList: policyList,
+    intMaxComlLveInMonth: +values?.intMaxComlLveInMonth || null,
+    intMinWorkingHourForComl: +values?.intMinWorkingHourForComl || null,
   };
   return payload;
 };
