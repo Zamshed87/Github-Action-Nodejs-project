@@ -157,8 +157,8 @@ export const empReportListColumns = (
 
     {
       title: "Late",
-      dataIndex: "EmpOutTime",
-      key: "EmpOutTime",
+      dataIndex: "intOTLate",
+      key: "intOTLate",
       width: "150px",
       sort: false,
       filter: false,
@@ -166,8 +166,8 @@ export const empReportListColumns = (
 
     {
       title: "OT Hour",
-      dataIndex: "EmpOutTime",
-      key: "EmpOutTime",
+      dataIndex: "intOtbenefitsHour",
+      key: "intOtbenefitsHour",
       width: "150px",
       sort: false,
       filter: false,
@@ -175,8 +175,8 @@ export const empReportListColumns = (
 
     {
       title: "OT Rate",
-      dataIndex: "EmpOutTime",
-      key: "EmpOutTime",
+      dataIndex: "numPerMinunitRate",
+      key: "numPerMinunitRate",
       width: "150px",
       sort: false,
       filter: false,

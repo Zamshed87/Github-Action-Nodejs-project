@@ -158,7 +158,7 @@ export default function EmOverTimeDailyReport() {
 
       const res = await axios.post(`/Payroll/GetDailyOvertimeEmployeeList`, {
         ...payload,
-        ...modifiedPayload,
+        // ...modifiedPayload,
       });
       if (res?.data) {
         setHeaderListDataDynamically({
