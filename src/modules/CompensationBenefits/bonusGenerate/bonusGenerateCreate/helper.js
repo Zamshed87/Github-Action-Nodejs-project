@@ -40,6 +40,24 @@ export const getEmployeeListForBonusGenerateOrRegenerate = (
       values?.effectiveDate
     }&IntCreatedBy=0&WorkplaceGroupId=${wgId}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}&workplaceListId=${wgIdList}`,
     (res) => {
+      // const modifiedEmployeeList = [];
+
+      // res.forEach((item) => {
+      //   modifiedEmployeeList.push({
+      //     ...item,
+      //     isChecked: false,
+      //     strDepartmentSection: item?.strDepartmentSection || "",
+      //   });
+      // });
+
+      // if (isEdit) {
+      //   setEmployeeList((prev) => [...prev, ...modifiedEmployeeList]);
+      //   setRowDto((prev) => [...prev, ...modifiedEmployeeList]);
+      // } else {
+      //   setEmployeeList(modifiedEmployeeList);
+      //   setRowDto(modifiedEmployeeList);
+      // }
+
       const modifiedEmployeeList = [];
 
       res.forEach((item) => {
@@ -50,10 +68,32 @@ export const getEmployeeListForBonusGenerateOrRegenerate = (
         });
       });
 
+      // If isEdit, combine previous state with modifiedEmployeeList
       if (isEdit) {
-        setEmployeeList((prev) => [...prev, ...modifiedEmployeeList]);
-        setRowDto((prev) => [...prev, ...modifiedEmployeeList]);
+        setEmployeeList((prev) => {
+          const uniqueEmployeeList = prev.concat(
+            modifiedEmployeeList.filter(
+              (newItem) =>
+                !prev.some(
+                  (oldItem) => oldItem.intEmployeeId === newItem.intEmployeeId
+                )
+            )
+          );
+          return uniqueEmployeeList;
+        });
+        setRowDto((prev) => {
+          const uniqueRowDto = prev.concat(
+            modifiedEmployeeList.filter(
+              (newItem) =>
+                !prev.some(
+                  (oldItem) => oldItem.intEmployeeId === newItem.intEmployeeId
+                )
+            )
+          );
+          return uniqueRowDto;
+        });
       } else {
+        // If not isEdit, update state with modifiedEmployeeList
         setEmployeeList(modifiedEmployeeList);
         setRowDto(modifiedEmployeeList);
       }
@@ -175,7 +215,6 @@ export const onGenerateOrReGenerateBonus = (
   }
 
   const bonusObj = location?.state?.bonusObj;
-  console.log("bonusObj", bonusObj);
 
   let selectedEmployeeForBonus = [];
 
@@ -210,7 +249,7 @@ export const onGenerateOrReGenerateBonus = (
         intCreatedBy: employeeId,
         intBonusSetupId: item?.intBonusSetupId || 0,
         intDepartmentId: item?.intDepartmentId || 0,
-        strDepartmentName: item?.strDepartment || ""
+        strDepartmentName: item?.strDepartment || "",
       });
     }
   });
