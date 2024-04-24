@@ -296,7 +296,8 @@ const EmpCheckList = () => {
                               `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${
                                 values?.workplace?.value || wId
                               }`,
-                              setLoading
+                              setLoading,
+                              "Employee CheckList Report.pdf"
                             );
                           }
                         }}
