@@ -3,11 +3,20 @@ import { Tooltip } from "@mui/material";
 import { dateFormatter } from "utility/dateFormatter";
 import { formatMoney } from "utility/formatMoney";
 
+const linkAble = {
+  textAlign: "center",
+  color: "#1e1efb",
+  textDecoration: "underline",
+  cursor: "pointer",
+};
+
 const assetReportColumn = (
   page,
   paginationSize,
   setHistoryModal,
-  setItemId
+  setItemId,
+  setIsModalOpen,
+  setDepreciationModal
 ) => {
   return [
     {
@@ -74,7 +83,21 @@ const assetReportColumn = (
       dataIndex: "totalDepreciation",
       sort: false,
       filter: false,
-      render: (record) => formatMoney(record?.totalDepreciation),
+      render: (record) => {
+        <span
+          className={
+            record?.totalDepreciation > 0 ? linkAble : { textAlign: "left" }
+          }
+          onClick={() => {
+            if (record?.totalDepreciation > 0) {
+              setDepreciationModal(true);
+              setItemId(record?.assetId);
+            }
+          }}
+        >
+          {formatMoney(record?.totalDepreciation)}
+        </span>;
+      },
     },
     {
       title: "Rece.Value",
@@ -89,13 +112,42 @@ const assetReportColumn = (
       dataIndex: "noOfMaintenance",
       sort: false,
       filter: false,
+      render: (record) => {
+        <span
+          className={
+            record?.noOfMaintenance > 0 ? linkAble : { textAlign: "left" }
+          }
+          onClick={() => {
+            if (record?.noOfMaintenance > 0) {
+              setIsModalOpen(true);
+              setItemId(record?.assetId);
+            }
+          }}
+        >
+          {formatMoney(record?.noOfMaintenance)}
+        </span>;
+      },
     },
     {
       title: "৳ Maint.",
       dataIndex: "totalMaintenance",
       sort: false,
       filter: false,
-      render: (record) => formatMoney(record?.totalMaintenance),
+      render: (record) => {
+        <span
+          className={
+            record?.totalMaintenance > 0 ? linkAble : { textAlign: "left" }
+          }
+          onClick={() => {
+            if (record?.totalMaintenance > 0) {
+              setIsModalOpen(true);
+              setItemId(record?.assetId);
+            }
+          }}
+        >
+          {formatMoney(record?.totalMaintenance)}
+        </span>;
+      },
     },
   ];
 };
@@ -125,6 +177,70 @@ const employeeDetailsColumn = () => {
   ];
 };
 
+const maintenanceSummaryColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Head",
+      dataIndex: "maintenanceHead",
+      sort: true,
+      filter: false,
+    },
+    {
+      title: "From Date",
+      dataIndex: "fromDate",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.fromDate),
+    },
+    {
+      title: "To Date",
+      dataIndex: "toDate",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.toDate),
+    },
+    {
+      title: "Amount",
+      dataIndex: "cost",
+      sort: false,
+      filter: false,
+      render: (record) => formatMoney(record?.cost),
+    },
+  ];
+};
+
+const totalDepreciationColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Asset description",
+      dataIndex: "assetName",
+      sort: true,
+      filter: false,
+    },
+    {
+      title: "Amount",
+      dataIndex: "depreciation",
+      sort: false,
+      filter: false,
+      render: (record) => formatMoney(record?.depreciation),
+    },
+  ];
+};
+
 const getData = (
   getLandingData,
   setRowDto,
@@ -150,10 +266,15 @@ const getData = (
 };
 
 const getById = (getSingleData, id) => {
-  getSingleData(
-    `/AssetManagement/GetAssignToDetail?assetId=${id}`
-  );
+  getSingleData(`/AssetManagement/GetAssignToDetail?assetId=${id}`);
 };
 
-export { assetReportColumn, employeeDetailsColumn, getById, getData };
+export {
+  assetReportColumn,
+  employeeDetailsColumn,
+  getById,
+  getData,
+  maintenanceSummaryColumn,
+  totalDepreciationColumn
+};
 

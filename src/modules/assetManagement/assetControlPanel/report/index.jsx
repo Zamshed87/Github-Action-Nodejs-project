@@ -12,6 +12,8 @@ import NoResult from "common/NoResult";
 import { assetReportColumn, getData } from "./utils";
 import EmployeeHistoryView from "./modal/EmployeeHistoryView";
 import ViewModal from "common/ViewModal";
+import MaintenanceSummary from "./modal/MaintenanceSummary";
+import TotalDepreciationView from "./modal/TotalDepreciationView";
 
 const initData = {
   searchString: "",
@@ -32,6 +34,8 @@ const AssetReport = () => {
   });
   const [rowDto, getLandingData, loading, setRowDto] = useAxiosGet([]);
   const [historyModal, setHistoryModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [depreciationModal, setDepreciationModal] = useState(false);
   const [itemId, setItemId] = useState(null);
 
   const { values, setFieldValue, handleSubmit } = useFormik({
@@ -178,7 +182,9 @@ const AssetReport = () => {
                   pages?.current,
                   pages?.pageSize,
                   setHistoryModal,
-                  setItemId
+                  setItemId,
+                  setIsModalOpen,
+                  setDepreciationModal
                 )}
                 pages={pages}
                 rowDto={rowDto}
@@ -212,6 +218,26 @@ const AssetReport = () => {
         onHide={() => setHistoryModal(false)}
       >
         <EmployeeHistoryView id={itemId} />
+      </ViewModal>
+      <ViewModal
+        size="lg"
+        title="Maintenance Summary"
+        backdrop="static"
+        classes="default-modal preview-modal"
+        show={isModalOpen}
+        onHide={() => setIsModalOpen(false)}
+      >
+        <MaintenanceSummary id={itemId} />
+      </ViewModal>
+      <ViewModal
+        size="lg"
+        title="Depreciation Details"
+        backdrop="static"
+        classes="default-modal preview-modal"
+        show={depreciationModal}
+        onHide={() => setDepreciationModal(false)}
+      >
+        <TotalDepreciationView id={itemId} />
       </ViewModal>
     </>
   ) : (

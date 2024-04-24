@@ -174,7 +174,7 @@ const getData = (
   search
 ) => {
   getLandingData(
-    `/AssetManagement/GetAssetMaintainceLandingPasignation?accountId=${orgId}&branchId=${buId}&workplaceId=${wId}&workplaceGroupId=${wgId}&fromDate=&toDate=&assetId=0&PageSize=${pages?.pageSize}&PageNo=${pages?.current}&SearchItem=${search}`,
+    `/AssetManagement/GetAssetMaintainceLandingPasignation?accountId=${orgId}&branchId=${buId}&workplaceId=${wId}&workplaceGroupId=${wgId}&assetId=0&PageSize=${pages?.pageSize}&PageNo=${pages?.current}&SearchItem=${search}`,
     (res) => {
       setRowDto(res?.data);
       setPages?.({
