@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setHeaderListDataDynamically } from "common/peopleDeskTable/helper";
 import { toast } from "react-toastify";
 
 export const getBonusNameDDL = async (payload, setter) => {
@@ -8,16 +9,53 @@ export const getBonusNameDDL = async (payload, setter) => {
   } catch (error) {}
 };
 
-export const getBonusSetupLanding = async (payload, setter, setLoading) => {
-  setLoading && setLoading(true);
+export const getBonusSetupLanding = async (
+  payload,
+  modifiedPayload,
+  setter,
+  setLoading,
+  pagination,
+  searchText,
+  currentFilterSelection,
+  checkedHeaderList,
+  values,
+  headerList,
+  setHeaderList,
+  filterOrderList,
+  setFilterOrderList,
+  initialHeaderListData,
+  setInitialHeaderListData,
+  setPages
+) => {
+  console.log({payload});
   try {
-    const res = await axios.post(`/Employee/BonusAllLanding`, payload);
-    if (res?.data?.length > 0) {
-      const modified = res?.data?.map((item) => ({
+    const res = await axios.post(`/Employee/BonusSetupLandingPagination`, {
+      ...payload,
+      ...modifiedPayload,
+    });
+    if (res?.data?.datas?.length > 0) {
+      const modified = res?.data?.datas?.map((item) => ({
         ...item,
         statusValue: item?.isActive ? "Active" : "Inactive",
       }));
       modified?.length > 0 && setter(modified);
+      if (res?.data?.datas) {
+        setHeaderListDataDynamically({
+          currentFilterSelection,
+          checkedHeaderList,
+          headerListKey: "headerList",
+          headerList,
+          setHeaderList,
+          response: {...res?.data},
+          filterOrderList,
+          setFilterOrderList,
+          initialHeaderListData,
+          setInitialHeaderListData,
+          setter,
+          setPages,
+        });
+        setLoading(false);
+      }
     } else {
       setter([]);
     }
