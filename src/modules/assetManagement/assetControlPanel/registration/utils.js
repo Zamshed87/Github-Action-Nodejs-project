@@ -318,7 +318,7 @@ const assetRegistrationColumn = (
             {item?.status === "Assigned" && (
               <Chips
                 label={"Assign to" + " " + item?.assetAssignPerson}
-                classess="success"
+                classess="warning"
               />
             )}
             {item?.status === "On Maintaince" && (
@@ -326,7 +326,7 @@ const assetRegistrationColumn = (
                 label={
                   "On Maintenance to" + " " + item?.assetMaintainceByPerson
                 }
-                classess="warning"
+                classess="danger"
               />
             )}
             {item?.status === "On Rent" && (
