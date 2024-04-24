@@ -24,7 +24,7 @@ export const downloadFile = (url, fileName, extension, setLoading) => {
     });
 };
 
-export const getPDFAction = async (url, setLoading) => {
+export const getPDFAction = async (url, setLoading, fileName = "") => {
   try {
     setLoading(true);
     await axios
@@ -39,13 +39,33 @@ export const getPDFAction = async (url, setLoading) => {
         const fileURL = URL.createObjectURL(file);
         //Open the URL on new Window
         const pdfWindow = window.open();
-        pdfWindow.location.href = fileURL;
+
+        if (pdfWindow) {
+          // Navigate the window to the PDF URL
+          pdfWindow.location.href = fileURL;
+        } else {
+          console.log("inner error pdfWindow");
+          // Create a temporary link element
+          const link = document.createElement("a");
+          link.href = fileURL;
+          link.target = "_blank";
+          link.download = fileName ? fileName : "file.pdf";
+          // Programmatically click the link to trigger the download
+          document.body.appendChild(link);
+          link.click();
+          // // Clean up
+          document.body.removeChild(link);
+          URL.revokeObjectURL(fileURL);
+        }
       })
       .catch((error) => {
+        console.log("inner error", error);
         setLoading(false);
         toast.warn(error?.response?.data?.message || "Failed, try again");
       });
   } catch (error) {
+    console.log("root error", error);
+
     setLoading(false);
     toast.warn(error?.response?.data?.message || "Failed, try again");
   }
