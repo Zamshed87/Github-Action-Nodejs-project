@@ -46,7 +46,7 @@ const ViewTransferNPromotion = () => {
   }, []);
 
   const wantToDelete = (id) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to delete? `,
       yesAlertFunc: () => {
@@ -123,7 +123,7 @@ const ViewTransferNPromotion = () => {
             className="table-card-body card-style my-3"
             style={{ minHeight: "auto" }}
           >
-            <div className="mt-2">
+                       <div className="mt-2">
               <Accordion empBasic={empBasic} />
             </div>
 
