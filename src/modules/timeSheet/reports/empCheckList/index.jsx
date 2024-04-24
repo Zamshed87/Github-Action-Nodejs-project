@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
@@ -59,12 +59,15 @@ const EmpCheckList = () => {
     },
     validationSchema: validationSchema,
     onSubmit: () => {
-      if (orgId && buId && wId) {
+      if (!values?.workplace) {
+        return toast.warn("Select Workplace");
+      }
+      if (orgId && buId && values?.workplace?.value) {
         getAssignedSalaryDetailsReportRDLC(
           "htmlView",
           orgId,
           buId,
-          values?.workplace?.value || wId,
+          values?.workplace?.value,
           setLoading,
           setDetailsData,
           values?.fDate,
@@ -87,25 +90,41 @@ const EmpCheckList = () => {
 
   //   };
   useEffect(() => {
-    if (orgId && buId && wId) {
-      getAssignedSalaryDetailsReportRDLC(
-        "htmlView",
-        orgId,
-        buId,
-        values?.workplace?.value || wId,
-        setLoading,
-        setDetailsData,
-        values?.fDate,
-        values?.tDate
-      );
-    }
+    // if (orgId && buId && wId) {
+    //   getAssignedSalaryDetailsReportRDLC(
+    //     "htmlView",
+    //     orgId,
+    //     buId,
+    //     values?.workplace?.value || wId,
+    //     setLoading,
+    //     setDetailsData,
+    //     values?.fDate,
+    //     values?.tDate
+    //   );
+    // }
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceGroupId",
       "strWorkplaceGroup",
       setWorkplaceGroupDDL
     );
-  }, [orgId, buId, wId, wgId]);
+  }, [orgId, buId, wgId]);
+
+  //  default workplace data will be loading for the first time visiting 
+  useEffect(() => {
+    if (wId) {
+      getAssignedSalaryDetailsReportRDLC(
+        "htmlView",
+        orgId,
+        buId,
+        wId,
+        setLoading,
+        setDetailsData,
+        values?.fDate,
+        values?.tDate
+      );
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -277,7 +296,8 @@ const EmpCheckList = () => {
                               `/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceId=${
                                 values?.workplace?.value || wId
                               }`,
-                              setLoading
+                              setLoading,
+                              "Employee CheckList Report.pdf"
                             );
                           }
                         }}

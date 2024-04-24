@@ -182,6 +182,36 @@ const AssetApplication = lazy(() =>
 const AssetItemRegistration = lazy(() =>
   import("../modules/assetManagement/itemRegistration/index.jsx")
 );
+const AssetItemProfile = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/itemProfile/index.jsx")
+);
+const AssetCreateItemProfile = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/itemProfile/createEditForm/CreateEditForm.jsx")
+);
+const AssetEditItemProfile = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/itemProfile/createEditForm/CreateEditForm.jsx")
+);
+const AssetRegistration = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/registration/index.jsx")
+);
+const AssetRegistrationCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/registration/createEditForm/CreateEditForm.jsx")
+);
+const AssetAssign = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assign/index.jsx")
+);
+const AssetAssignCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/assign/createEditForm/CreateEditForm.jsx")
+);
+const AssetDepreciation = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/depreciation/index.jsx")
+);
+const AssetDepreciationCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/depreciation/createEditForm/CreateEditForm.jsx")
+);
+const AssetReport = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/report/index.jsx")
+);
 const MarketVistApproval = lazy(() =>
   import("../modules/marketVisit/approval/index.jsx")
 );
@@ -2877,6 +2907,46 @@ export const routingList = [
   {
     path: "/assetManagement/registration/items",
     component: AssetItemRegistration,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/itemProfile",
+    component: AssetItemProfile,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/itemProfile/create",
+    component: AssetCreateItemProfile,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/itemProfile/edit/:id",
+    component: AssetEditItemProfile,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/registration",
+    component: AssetRegistration,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/registration/create",
+    component: AssetRegistrationCreate,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assign",
+    component: AssetAssign,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assign/create",
+    component: AssetAssignCreate,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/depreciation",
+    component: AssetDepreciation,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/depreciation/create",
+    component: AssetDepreciationCreate,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assetReport",
+    component: AssetReport,
   },
   {
     path: "/assetManagement/registration/assets/edit/:id",

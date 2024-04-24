@@ -70,6 +70,7 @@ const initialValues = {
   department: "",
   designation: "",
   supervisor: "",
+  dottedSupervisor: "",
   lineManager: "",
   role: "",
   isRoleExtension: false,
@@ -150,6 +151,12 @@ const validationSchema = Yup.object().shape({
       value: Yup.string().required("Supervisor is required"),
     })
     .typeError("Supervisor is required"),
+    dottedSupervisor: Yup.object()
+    .shape({
+      label: Yup.string().required("Dotted Supervisor is required"),
+      value: Yup.string().required("Dotted Supervisor is required"),
+    })
+    .typeError("Dotted Supervisor is required"),
   lineManager: Yup.object()
     .shape({
       label: Yup.string().required("Line Manager is required"),
@@ -173,6 +180,7 @@ function CreateTransferPromotion() {
     (state) => state?.auth?.profileData,
     shallowEqual
   );
+console.log({state});
 
   const modifiedData = {
     employee: {
@@ -231,6 +239,10 @@ function CreateTransferPromotion() {
     supervisor: {
       value: state?.singleData?.intSupervisorId,
       label: state?.singleData?.supervisorName,
+    },
+    dottedSupervisor: {
+      value: state?.singleData?.intDottedSupervisorId,
+      label: state?.singleData?.dottedSupervisorName ,
     },
     lineManager: {
       value: state?.singleData?.intLineManagerId,
@@ -509,7 +521,7 @@ function CreateTransferPromotion() {
       intLineManagerId: values?.lineManager?.value,
       intSectionId: values?.section?.value,
       strSectionName: values?.section?.label,
-      intDottedSupervisorId: 0,
+      intDottedSupervisorId: values?.dottedSupervisor?.value,
       intWingId: values?.wing?.value || 0,
       intSoldDepoId: values?.soleDepo?.value || 0,
       intRegionId: values?.region?.value || 0,
@@ -803,6 +815,7 @@ function CreateTransferPromotion() {
                         department: "",
                         designation: "",
                         supervisor: "",
+                        dottedSupervisor:"",
                         lineManager: "",
                         section: "",
                         wing: "",
@@ -835,6 +848,7 @@ function CreateTransferPromotion() {
                         department: "",
                         designation: "",
                         supervisor: "",
+                        dottedSupervisor: "",
                         lineManager: "",
                         section: "",
                         hrPosition: "",
@@ -883,6 +897,7 @@ function CreateTransferPromotion() {
                         department: "",
                         designation: "",
                         supervisor: "",
+                        dottedSupervisor: "",
                         lineManager: "",
                         section: "",
                         hrPosition: "",
@@ -1122,6 +1137,7 @@ function CreateTransferPromotion() {
                         employmentType: valueOption,
                         designation: "",
                         supervisor: "",
+                        dottedSupervisor: "",
                         lineManager: "",
                         section: "",
                       }));
@@ -1148,6 +1164,7 @@ function CreateTransferPromotion() {
                         hrPosition: valueOption,
                         designation: "",
                         supervisor: "",
+                        dottedSupervisor: "",
                         lineManager: "",
                         section: "",
                       }));
@@ -1174,6 +1191,7 @@ function CreateTransferPromotion() {
                         department: valueOption,
                         designation: "",
                         supervisor: "",
+                        dottedSupervisor: "",
                         lineManager: "",
                         section: "",
                       }));
@@ -1232,6 +1250,7 @@ function CreateTransferPromotion() {
                         ...prev,
                         designation: valueOption,
                         supervisor: "",
+                        dottedSupervisor: "",
                         lineManager: "",
                       }));
                     }}
@@ -1253,6 +1272,46 @@ function CreateTransferPromotion() {
                       setValues((prev) => ({
                         ...prev,
                         supervisor: valueOption,
+                      }));
+                    }}
+                    placeholder="Search (min 3 letter)"
+                    loadOptions={(v) =>
+                      // getSearchEmployeeListNew(buId, intAccountId, v)
+                      {
+                        if (
+                          values?.workplaceGroup?.value &&
+                          values?.workplace?.value
+                        ) {
+                          return getSuperVisorLineMangerDottedByWorkplace({
+                            params: {
+                              DDLType: "EmployeeBasicInfoForEmpMgmt",
+                              AccountId: intAccountId,
+                              BusinessUnitId: buId,
+                              intId: employeeId,
+                              workplaceGroupId:
+                                values?.workplaceGroup?.value || wgId,
+                              strWorkplaceIdList:
+                                values?.workplace?.value || wId,
+                              searchTxt: v || "",
+                            },
+                          });
+                        }
+                      }
+                    }
+                    isDisabled={!values?.workplaceGroup || !values?.workplace}
+                  />
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="input-field-main">
+                  <label>Dotted Supervisor</label>
+                  <AsyncFormikSelect
+                    selectedValue={values?.dottedSupervisor}
+                    isSearchIcon={true}
+                    handleChange={(valueOption) => {
+                      setValues((prev) => ({
+                        ...prev,
+                        dottedSupervisor: valueOption,
                       }));
                     }}
                     placeholder="Search (min 3 letter)"
