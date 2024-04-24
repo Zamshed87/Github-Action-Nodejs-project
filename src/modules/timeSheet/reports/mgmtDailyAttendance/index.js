@@ -19,7 +19,6 @@ import { gray500 } from "../../../../utility/customColor";
 import { Avatar, DataTable } from "Components";
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
-import axios from "axios";
 import FormikSelect from "common/FormikSelect";
 import { getPeopleDeskAllDDL, getWorkplaceDetails } from "common/api";
 import { toast } from "react-toastify";
@@ -84,14 +83,7 @@ const MgmtDailyAttendance = () => {
     pageSize: paginationSize,
     total: 0,
   });
-  const [resEmpLanding, setEmpLanding] = useState([]);
-  const [headerList, setHeaderList] = useState({});
-  const [filterOrderList, setFilterOrderList] = useState([]);
-  const [initialHeaderListData, setInitialHeaderListData] = useState({});
-  const [landingLoading, setLandingLoading] = useState(false);
-  const [checkedHeaderList, setCheckedHeaderList] = useState({
-    ...initHeaderList,
-  });
+ 
   const debounce = useDebounce();
 
   //  menu permission
@@ -102,89 +94,7 @@ const MgmtDailyAttendance = () => {
     }
   });
 
-  // const getDataApiCall = async (
-  //   modifiedPayload,
-  //   pagination,
-  //   searchText,
-  //   currentFilterSelection = -1,
-  //   checkedHeaderList,
-  //   IsForXl,
-  //   date,
-  //   values
-  // ) => {
-  //   try {
-  //     const payload = {
-  //       intBusinessUnitId: buId,
-  //       intWorkplaceGroupId: values?.workplaceGroup?.value || 0,
-
-  //       intWorkplaceId: values?.workplace?.value || 0,
-  //       pageNo: pagination.current,
-  //       pageSize: pagination.pageSize,
-  //       isPaginated: true,
-  //       isHeaderNeed: true,
-  //       searchTxt: searchText || "",
-  //       isXls: IsForXl || false,
-  //       attendanceDate: date,
-  //     };
-
-  //     const res = await axios.post(`/Employee/GetDateWiseAttendanceReport`, {
-  //       ...payload,
-  //       ...modifiedPayload,
-  //     });
-
-  //     if (res?.data?.data) {
-  //       setHeaderListDataDynamically({
-  //         currentFilterSelection,
-  //         checkedHeaderList,
-  //         headerListKey: "dailyAttendanceHeader",
-  //         headerList,
-  //         setHeaderList,
-  //         response: res?.data,
-  //         filterOrderList,
-  //         setFilterOrderList,
-  //         initialHeaderListData,
-  //         setInitialHeaderListData,
-  //         setEmpLanding,
-  //         setPages,
-  //       });
-  //       setRowDto(res?.data);
-  //       setLandingLoading(false);
-  //     }
-  //   } catch (error) {
-  //     setLandingLoading(false);
-  //   }
-  // };
-
-  // const getData = async (
-  //   values,
-  //   pagination,
-  //   IsForXl = false,
-  //   searchText = "",
-  //   currentFilterSelection = -1,
-  //   filterOrderList = [],
-  //   checkedHeaderList = { ...initHeaderList },
-  //   date = todayDate()
-  // ) => {
-  //   setLandingLoading(true);
-
-  //   const modifiedPayload = createPayloadStructure({
-  //     initHeaderList,
-  //     currentFilterSelection,
-  //     checkedHeaderList,
-  //     filterOrderList,
-  //   });
-
-  //   getDataApiCall(
-  //     modifiedPayload,
-  //     pagination,
-  //     searchText,
-  //     currentFilterSelection,
-  //     checkedHeaderList,
-  //     IsForXl,
-  //     date,
-  //     values
-  //   );
-  // };
+  
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
     filerList,
@@ -405,7 +315,7 @@ const MgmtDailyAttendance = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {landingLoading && <Loading />}
+      {landingApi?.loading && <Loading />}
       {permission?.isView ? (
         <div className="table-card">
           <div className="table-card-heading mt-2 pt-1">
@@ -517,26 +427,10 @@ const MgmtDailyAttendance = () => {
                                   e.stopPropagation();
                                   const excelLanding = async () => {
                                     try {
-                                      const res = await axios.post(
-                                        `/Employee/GetDateWiseAttendanceReport`,
-                                        {
-                                          intBusinessUnitId: buId,
-                                          intWorkplaceGroupId:
-                                            values?.workplaceGroup?.value ||
-                                            wgId,
-                                          intWorkplaceId:
-                                            values?.workplace?.value || wId,
-                                          isPaginated: false,
-                                          isHeaderNeed: false,
-                                          searchTxt: "",
-                                          isXls: true,
-                                          attendanceDate: values?.date,
-                                          ...checkedHeaderList,
-                                        }
-                                      );
+                             
 
-                                      if (res?.data?.data?.length > 0) {
-                                        const newData = res?.data?.data?.map(
+                                      if (landingApi?.data?.data?.length > 0) {
+                                        const newData = landingApi?.data?.data?.map(
                                           (item, index) => {
                                             return {
                                               ...item,
@@ -557,18 +451,18 @@ const MgmtDailyAttendance = () => {
                                             getTableDataDailyAttendance(
                                               newData,
                                               Object.keys(column),
-                                              res?.data?.data
+                                              landingApi?.data?.data
                                             ),
                                           getSubTableData: () =>
                                             getTableDataSummaryHeadData(
-                                              res?.data
+                                              landingApi?.data
                                             ),
                                           subHeaderInfoArr: [
-                                            res?.data?.workplaceGroup
-                                              ? `Workplace Group-${res?.data?.data?.workplaceGroup}`
+                                            landingApi?.data?.workplaceGroup
+                                              ? `Workplace Group-${landingApi?.data?.data?.workplaceGroup}`
                                               : "",
-                                            res?.data?.workplace
-                                              ? `Workplace-${res?.data?.data?.workplace}`
+                                            landingApi?.data?.workplace
+                                              ? `Workplace-${landingApi?.data?.data?.workplace}`
                                               : "",
                                           ],
                                           subHeaderColumn,
@@ -613,7 +507,7 @@ const MgmtDailyAttendance = () => {
                                 style={{ color: "#101828" }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  const list = rowDto?.data?.map(
+                                  const list = landingApi?.data?.data?.map(
                                     (item) => item?.employeeId
                                   );
                                   getPDFAction(
@@ -629,8 +523,8 @@ const MgmtDailyAttendance = () => {
                                           }`
                                         : ""
                                     }${
-                                      rowDto?.data?.length !==
-                                      rowDto?.totalCount
+                                      landingApi?.data?.data?.length !==
+                                      landingApi?.data?.totalCount
                                         ? `&EmployeeIdList=${list}`
                                         : ""
                                     }${
@@ -839,49 +733,7 @@ const MgmtDailyAttendance = () => {
                   </div>
                 </div>
                 <div>
-                  {/* <PeopleDeskTable
-                    columnData={dailyAttendenceDtoCol(
-                      pages?.current,
-                      pages?.pageSize,
-                      headerList
-                    )}
-                    pages={pages}
-                    rowDto={resEmpLanding}
-                    setRowDto={setEmpLanding}
-                    checkedHeaderList={checkedHeaderList}
-                    setCheckedHeaderList={setCheckedHeaderList}
-                    handleChangePage={(e, newPage) =>
-                      handleChangePage(e, newPage, values?.search, values)
-                    }
-                    handleChangeRowsPerPage={(e) =>
-                      handleChangeRowsPerPage(e, values?.search, values)
-                    }
-                    getFilteredData={(
-                      currentFilterSelection,
-                      updatedFilterData,
-                      updatedCheckedHeaderData
-                    ) => {
-                      getData(
-                        values,
-                        {
-                          current: 1,
-                          pageSize: paginationSize,
-                          total: 0,
-                        },
-                        false,
-                        "",
-                        currentFilterSelection,
-                        updatedFilterData,
-                        updatedCheckedHeaderData,
-                        values?.date
-                      );
-                    }}
-                    filterOrderList={filterOrderList}
-                    setFilterOrderList={setFilterOrderList}
-                    uniqueKey="employeeId"
-                    isCheckBox={false}
-                    isScrollAble={true}
-                  /> */}
+                 
                   <DataTable
                     bordered
                     data={landingApi?.data?.data || []}

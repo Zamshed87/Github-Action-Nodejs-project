@@ -230,7 +230,7 @@ export const column = {
   department: "Department",
   section: "Section",
   employmentType: "Employment Type",
-  calendar: "Calendar Name",
+  calender: "Calendar Name",
   inTime: "In Time",
   outTime: "Out Time",
   dutyHours: "Duration",
