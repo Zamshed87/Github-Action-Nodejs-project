@@ -765,6 +765,7 @@ const CreateAndEditEmploye = () => {
                       form.setFieldsValue({
                         workplaceGroup: op,
                         workplace: undefined,
+                        calender: undefined,
                         employeeType: undefined,
                         department: undefined,
                         section: undefined,
@@ -800,6 +801,7 @@ const CreateAndEditEmploye = () => {
                       form.setFieldsValue({
                         workplace: op,
                         department: undefined,
+                        calender: undefined,
                         section: undefined,
                         designation: undefined,
                         hrPosition: undefined,

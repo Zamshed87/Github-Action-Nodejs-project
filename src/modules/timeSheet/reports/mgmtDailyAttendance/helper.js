@@ -47,6 +47,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       filter: false,
       className: "text-center",
       // width: 30,
+      fixed: "left",
     },
     {
       title: "Work. Group/Location",
@@ -54,6 +55,8 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       sort: false,
       filter: false,
       width: 200,
+      fixed: "left",
+
       render: (record) => record?.workplaceGroup || "N/A",
     },
     {
@@ -61,6 +64,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       dataIndex: "workplace",
       sort: false,
       filter: false,
+      fixed: "left",
       width: 200,
       render: (record) => record?.workplace || "N/A",
     },
@@ -70,6 +74,7 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       sort: false,
       filter: false,
       width: 80,
+      fixed: "left",
       render: (record) => record?.employeeCode || "N/A",
     },
     {
@@ -77,6 +82,8 @@ export const dailyAttendenceDtoCol = (page, paginationSize, headerList) => {
       dataIndex: "employeeName",
       sort: false,
       filter: false,
+      fixed: "left",
+
       render: (item) => (
         <div className="d-flex align-items-center justify-content-start">
           <div className="emp-avatar">
@@ -223,7 +230,7 @@ export const column = {
   department: "Department",
   section: "Section",
   employmentType: "Employment Type",
-  calendar: "Calendar Name",
+  calender: "Calendar Name",
   inTime: "In Time",
   outTime: "Out Time",
   dutyHours: "Duration",
