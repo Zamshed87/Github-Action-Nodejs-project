@@ -79,6 +79,14 @@ function EmLeaveApplication(props) {
     document.title = "Leave Application";
   }, []);
 
+  const formikRef = useRef();
+  useEffect(() => {
+    if (formikRef?.current) {
+      setEmployeeInfo([])
+      formikRef?.current?.setFieldValue("employee", "");
+    }
+  }, [wgId, buId]);
+
   return (
     <>
       <Formik
@@ -100,6 +108,7 @@ function EmLeaveApplication(props) {
             resetForm(initDataForLeaveApplication);
           });
         }}
+        innerRef={formikRef}
       >
         {({
           handleSubmit,
@@ -307,7 +316,7 @@ function EmLeaveApplication(props) {
                       />
                     </div>
                     <div className="col-lg-6 col-md-10 leave-movement-FormCard">
-                      <LeaveBalanceTable leaveBalanceData={leaveBalanceData} />
+                      <LeaveBalanceTable leaveBalanceData={leaveBalanceData} values={values} />
                     </div>
                   </div>
                   <div className="row">
