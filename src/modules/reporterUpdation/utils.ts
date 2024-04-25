@@ -72,6 +72,11 @@ export const header = (actionObj: any) => {
       dataIndex: "StrSupervisorName",
       sorter: true,
     },
+    {
+      title: "Dotted Supervisor",
+      dataIndex: "StrDottedSupervisorName",
+      sorter: true,
+    },
     actionObj,
   ];
 };
