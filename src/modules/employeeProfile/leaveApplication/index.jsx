@@ -79,6 +79,14 @@ function EmLeaveApplication(props) {
     document.title = "Leave Application";
   }, []);
 
+  const formikRef = useRef();
+  useEffect(() => {
+    if (formikRef?.current) {
+      setEmployeeInfo([])
+      formikRef?.current?.setFieldValue("employee", "");
+    }
+  }, [wgId, buId]);
+
   return (
     <>
       <Formik
@@ -100,6 +108,7 @@ function EmLeaveApplication(props) {
             resetForm(initDataForLeaveApplication);
           });
         }}
+        innerRef={formikRef}
       >
         {({
           handleSubmit,

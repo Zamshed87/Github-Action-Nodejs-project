@@ -2,9 +2,8 @@ import { InfoOutlined } from "@mui/icons-material";
 import { LightTooltip } from "common/LightTooltip";
 import ViewModal from "common/ViewModal";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import  {  useState } from "react";
 import { gray900 } from "utility/customColor";
-import { dateFormatter } from "utility/dateFormatter";
 
 const LeaveBalanceTable = ({ leaveBalanceData = [], show = false }) => {
   let leaves = leaveBalanceData;
@@ -14,86 +13,7 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false }) => {
     );
   }
   const [isView, setIsView] = useState(false);
-  const [singleObjList, setSingleObjList] = useState({
-    leaveTypeName: "Compensatory Leave",
-    totalLeaveBalance: 2,
-    totalLeaveAmount: 8,
-    totalLeaveTaken: 6,
-    compensatoryLeaveHistory: [
-      {
-        dteAttendenceDate: "05 April, 2024",
-        dteExpiryDate: "05 May, 2024",
-        strReason: "Offday",
-        strWorkingHour: "8 hr 0 min",
-        lveTaken: 0,
-        lveExpired: 0,
-        lveAmount: 1,
-      },
-      {
-        dteAttendenceDate: "16 February, 2024",
-        dteExpiryDate: "17 March, 2024",
-        strReason: "Offday",
-        strWorkingHour: "8 hr 0 min",
-        lveTaken: 0,
-        lveExpired: 1,
-        lveAmount: 1,
-      },
-      {
-        dteAttendenceDate: "26 February, 2024",
-        dteExpiryDate: "27 March, 2024",
-        strReason: "Holiday",
-        strWorkingHour: "8 hr 0 min",
-        lveTaken: 0,
-        lveExpired: 1,
-        lveAmount: 1,
-      },
-      {
-        dteAttendenceDate: "17 March, 2024",
-        dteExpiryDate: "16 April, 2024",
-        strReason: "Holiday",
-        strWorkingHour: "8 hr 0 min",
-        lveTaken: 0,
-        lveExpired: 1,
-        lveAmount: 1,
-      },
-      {
-        dteAttendenceDate: "19 April, 2024",
-        dteExpiryDate: "19 May, 2024",
-        strReason: "Offday",
-        strWorkingHour: "8 hr 0 min",
-        lveTaken: 0,
-        lveExpired: 0,
-        lveAmount: 1,
-      },
-      {
-        dteAttendenceDate: "19 January, 2024",
-        dteExpiryDate: "18 February, 2024",
-        strReason: "Offday",
-        strWorkingHour: "8 hr 0 min",
-        lveTaken: 0,
-        lveExpired: 1,
-        lveAmount: 1,
-      },
-      {
-        dteAttendenceDate: "23 February, 2024",
-        dteExpiryDate: "24 March, 2024",
-        strReason: "Offday",
-        strWorkingHour: "8 hr 0 min",
-        lveTaken: 0,
-        lveExpired: 1,
-        lveAmount: 1,
-      },
-      {
-        dteAttendenceDate: "02 February, 2024",
-        dteExpiryDate: "03 March, 2024",
-        strReason: "Offday",
-        strWorkingHour: "8 hr 0 min",
-        lveTaken: 0,
-        lveExpired: 1,
-        lveAmount: 1,
-      },
-    ],
-  });
+  const [singleObjList, setSingleObjList] = useState({});
   return (
     <>
       <div className="card-style" style={{ minHeight: "213px" }}>
@@ -122,13 +42,16 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false }) => {
                     <td>
                       <div className="d-flex align-items-center">
                         <p>{item?.strLeaveType} </p>
-                        {item?.strLeaveType === "Compensatory Leave" &&  item?.intBalanceLveInDay > 0 ? (
+                        {item?.strLeaveType === "Compensatory Leave" &&
+                        item?.intBalanceLveInDay > 0 ? (
                           <div>
                             <LightTooltip
                               title={"Leave History"}
                               arrow
                               onClick={() => {
+                                setSingleObjList({});
                                 setIsView(true);
+                                setSingleObjList(item);
                               }}
                             >
                               {" "}
