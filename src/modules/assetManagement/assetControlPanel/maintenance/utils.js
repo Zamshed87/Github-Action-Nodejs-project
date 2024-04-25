@@ -1,3 +1,5 @@
+import axios from "axios";
+import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 import { formatMoney } from "utility/formatMoney";
 import { todayDate } from "utility/todayDate";
@@ -174,7 +176,7 @@ const getData = (
   search
 ) => {
   getLandingData(
-    `/AssetManagement/GetAssetMaintainceLandingPasignation?accountId=${orgId}&branchId=${buId}&workplaceId=${wId}&workplaceGroupId=${wgId}&assetId=0&PageSize=${pages?.pageSize}&PageNo=${pages?.current}&SearchItem=${search}`,
+    `/AssetManagement/GetAssetMaintainceLandingPasignation?accountId=${orgId}&branchId=${buId}&workplaceId=${wId}&workplaceGroupId=${wgId}&assetId=&PageSize=${pages?.pageSize}&PageNo=${pages?.current}&SearchItem=${search}`,
     (res) => {
       setRowDto(res?.data);
       setPages?.({
@@ -186,10 +188,37 @@ const getData = (
   );
 };
 
+const getReceiveActions = async (
+  assetId,
+  cashInHandAmount,
+  cost,
+  setDisabled,
+  cb
+) => {
+  // if (+cashInHandAmount < +cost) {
+  //   return toast.warn("You have not enough cash in hand", {
+  //     toastId: "cashInHandAmount",
+  //   });
+  // }
+  setDisabled(true);
+  try {
+    const res = await axios.put(
+      `/AssetManagement/UpdateAssetMaintainceReceive?assetId=${assetId}`
+    );
+    setDisabled(false);
+    toast.success(res?.data?.message || "Submitted successfully", {
+      toastId: "toastId",
+    });
+    cb();
+  } catch (error) {
+    setDisabled(false);
+    toast.warn(error?.response?.data?.message, { toastId: "toastId" });
+  }
+};
+
 export {
   assetMaintenanceColumn,
-  getData,
-  initialValue,
+  getData, getReceiveActions, initialValue,
   saveHandler,
   validationSchema
 };

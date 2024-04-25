@@ -119,6 +119,8 @@ const rowDtoInputHandlerOnBlur = (name, value, index, rowDto, setRowDto) => {
   }
 };
 
+export const localUrl = "https://192.168.2.87:45455/api";
+
 const saveHandler = (
   values,
   rowDto,

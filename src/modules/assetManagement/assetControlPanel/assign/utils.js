@@ -174,7 +174,7 @@ const assignLandingColumn = (page, paginationSize, setUnassignLoading, cb) => {
               <ReplayOutlined
                 onClick={(e) => {
                   e.stopPropagation();
-                  assetUnassign(record?.assetAssignId, setUnassignLoading, cb);
+                  assetUnassign(record?.assetId, setUnassignLoading, cb);
                 }}
               />
             </button>

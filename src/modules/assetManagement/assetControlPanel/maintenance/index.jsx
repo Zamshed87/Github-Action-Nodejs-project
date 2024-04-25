@@ -200,6 +200,11 @@ const AssetMaintenance = () => {
                   pages?.current,
                   pages?.pageSize
                 )}
+                onRowClick={(data) => {
+                  history.push(
+                    `/assetManagement/assetControlPanel/maintenance/assetReceiveDetails/${data?.assetMaintenanceId}`
+                  );
+                }}
                 pages={pages}
                 rowDto={rowDto}
                 setRowDto={setRowDto}

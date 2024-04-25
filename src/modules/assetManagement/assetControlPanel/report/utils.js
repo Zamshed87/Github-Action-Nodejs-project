@@ -54,18 +54,20 @@ const assetReportColumn = (
       filter: false,
       render: (record) => (
         <div className="d-flex justify-content-center align-items-center">
-          <Tooltip title="Details" arrow>
-            <button style={{ border: 0, background: "none" }} type="button">
-              <InfoOutlined
-                sx={{ color: "#299647 !important" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setHistoryModal(true);
-                  setItemId(record?.assetId);
-                }}
-              />
-            </button>
-          </Tooltip>
+          {record?.employeeName && (
+            <Tooltip title="Details" arrow>
+              <button style={{ border: 0, background: "none" }} type="button">
+                <InfoOutlined
+                  sx={{ color: "#299647 !important" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setHistoryModal(true);
+                    setItemId(record?.assetId);
+                  }}
+                />
+              </button>
+            </Tooltip>
+          )}
           <div className="ml-2">{record?.employeeName}</div>
         </div>
       ),
@@ -83,9 +85,9 @@ const assetReportColumn = (
       dataIndex: "totalDepreciation",
       sort: false,
       filter: false,
-      render: (record) => {
+      render: (record) => (
         <span
-          className={
+          style={
             record?.totalDepreciation > 0 ? linkAble : { textAlign: "left" }
           }
           onClick={() => {
@@ -96,8 +98,8 @@ const assetReportColumn = (
           }}
         >
           {formatMoney(record?.totalDepreciation)}
-        </span>;
-      },
+        </span>
+      ),
     },
     {
       title: "Rece.Value",
@@ -112,11 +114,9 @@ const assetReportColumn = (
       dataIndex: "noOfMaintenance",
       sort: false,
       filter: false,
-      render: (record) => {
+      render: (record) => (
         <span
-          className={
-            record?.noOfMaintenance > 0 ? linkAble : { textAlign: "left" }
-          }
+          style={record?.noOfMaintenance > 0 ? linkAble : { textAlign: "left" }}
           onClick={() => {
             if (record?.noOfMaintenance > 0) {
               setIsModalOpen(true);
@@ -125,17 +125,17 @@ const assetReportColumn = (
           }}
         >
           {formatMoney(record?.noOfMaintenance)}
-        </span>;
-      },
+        </span>
+      ),
     },
     {
       title: "৳ Maint.",
       dataIndex: "totalMaintenance",
       sort: false,
       filter: false,
-      render: (record) => {
+      render: (record) => (
         <span
-          className={
+          style={
             record?.totalMaintenance > 0 ? linkAble : { textAlign: "left" }
           }
           onClick={() => {
@@ -146,8 +146,8 @@ const assetReportColumn = (
           }}
         >
           {formatMoney(record?.totalMaintenance)}
-        </span>;
-      },
+        </span>
+      ),
     },
   ];
 };
@@ -188,30 +188,30 @@ const maintenanceSummaryColumn = () => {
     },
     {
       title: "Head",
-      dataIndex: "maintenanceHead",
+      dataIndex: "MaintenanceHead",
       sort: true,
       filter: false,
     },
     {
       title: "From Date",
-      dataIndex: "fromDate",
+      dataIndex: "FromDate",
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.fromDate),
+      render: (record) => dateFormatter(record?.FromDate),
     },
     {
       title: "To Date",
-      dataIndex: "toDate",
+      dataIndex: "ToDate",
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.toDate),
+      render: (record) => dateFormatter(record?.FromDate),
     },
     {
       title: "Amount",
-      dataIndex: "cost",
+      dataIndex: "Cost",
       sort: false,
       filter: false,
-      render: (record) => formatMoney(record?.cost),
+      render: (record) => formatMoney(record?.Cost),
     },
   ];
 };
@@ -227,16 +227,16 @@ const totalDepreciationColumn = () => {
     },
     {
       title: "Asset description",
-      dataIndex: "assetName",
+      dataIndex: "AssetName",
       sort: true,
       filter: false,
     },
     {
       title: "Amount",
-      dataIndex: "depreciation",
+      dataIndex: "Depreciation",
       sort: false,
       filter: false,
-      render: (record) => formatMoney(record?.depreciation),
+      render: (record) => formatMoney(record?.Depreciation),
     },
   ];
 };

@@ -218,6 +218,15 @@ const AssetMaintenance = lazy(() =>
 const AssetMaintenanceCreate = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/maintenance/createEditForm/CreateEditForm.jsx")
 );
+const AssetReceiveDetails = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/maintenance/createEditForm/ReceiveAssetDetails.jsx")
+);
+const AssetDisposal = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/disposal/index.jsx")
+);
+const AssetDisposalCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/disposal/createEditForm/CreateEditForm.jsx")
+);
 const MarketVistApproval = lazy(() =>
   import("../modules/marketVisit/approval/index.jsx")
 );
@@ -2955,12 +2964,24 @@ export const routingList = [
     component: AssetReport,
   },
   {
+    path: "/assetManagement/assetControlPanel/maintenance/assetReceiveDetails/:id",
+    component: AssetReceiveDetails,
+  },
+  {
     path: "/assetManagement/assetControlPanel/maintenance/create",
     component: AssetMaintenanceCreate,
   },
   {
     path: "/assetManagement/assetControlPanel/maintenance",
     component: AssetMaintenance,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assetDisposal",
+    component: AssetDisposal,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assetDisposal/create",
+    component: AssetDisposalCreate,
   },
   {
     path: "/assetManagement/registration/assets/edit/:id",
