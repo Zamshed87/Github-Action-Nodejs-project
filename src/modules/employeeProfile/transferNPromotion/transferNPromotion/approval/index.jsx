@@ -39,6 +39,7 @@ import NoResult from "../../../../../common/NoResult";
 import AntTable from "../../../../../common/AntTable";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import "../styles.css";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   search: "",
@@ -764,11 +765,36 @@ export default function TransferNPromotionApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton
-                            title={"Transfer And Promotion Approval"}
-                          />
+                          <div className="d-flex align-items-center">
+                            <BackButton
+                              title={"Transfer And Promotion Approval"}
+                            />
+                            {filterData?.listData?.filter(
+                              (item) => item?.selectCheckbox
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-2",
+                                  onApprove: () => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  },
+                                  onReject: () => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  },
+                                }}
+                              />
+                            ) : null}
+                          </div>
                           {/* <div> */}
-                          {filterData?.listData?.filter(
+                          {/* {filterData?.listData?.filter(
                             (item) => item?.selectCheckbox
                           ).length > 0 && (
                             <div className="d-flex justify-content-between actionIcon">
@@ -779,7 +805,7 @@ export default function TransferNPromotionApproval() {
                                     width: "100px",
                                     // background: successBg,
                                     padding: "5px 10px",
-                                    borderRadius: "12px"
+                                    borderRadius: "12px",
                                   }}
                                 >
                                   <div
@@ -860,7 +886,7 @@ export default function TransferNPromotionApproval() {
                                 </div>
                               </Tooltip>
                             </div>
-                          )}
+                          )} */}
                           {/* </div> */}
                         </div>
 

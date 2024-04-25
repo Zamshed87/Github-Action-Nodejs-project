@@ -2203,3 +2203,41 @@ p.uplaod-para:hover,
 .small-checkbox span.MuiTypography-root {
   font-size: 14px;
 }
+
+.custom-approve-reject-flex-btn .btn-approve,
+.custom-approve-reject-flex-btn .btn-reject {
+  border: none;
+  border-radius: 25px;
+  font-size: 12px;
+  border: none;
+  height: 25px !important;
+  width: 75px !important;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Smooth transition */
+
+  padding: 1px 8px !important;
+  line-height: 18px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.custom-approve-reject-flex-btn .btn-approve {
+  color: var(--success);
+  background: var(--success-bg);
+  outline: 0.5px solid var(--success-bg);
+}
+.custom-approve-reject-flex-btn .btn-approve:hover {
+  color: white;
+  background: var(--success);
+}
+.custom-approve-reject-flex-btn .btn-reject {
+  color: var(--fail);
+  border: 0.5px solid var(--fail) !important;
+}
+.custom-approve-reject-flex-btn .btn-reject:hover {
+  color: white;
+  background: var(--fail);
+  outline: none;
+}
+/* 
+
+--fail: #F04438 !important;
+--fail-bg: #FEE4E2 !important; */
