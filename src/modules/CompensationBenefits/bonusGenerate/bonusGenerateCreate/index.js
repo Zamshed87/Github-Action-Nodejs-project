@@ -57,7 +57,6 @@ const initialValues = {
   effectiveDate: todayDate(),
   search: "",
   allSelected: false,
-
   // marketing
   wing: "",
   soleDepo: "",
@@ -167,13 +166,14 @@ const BonusGenerateCreate = () => {
   }, [orgId, buId, wgId]);
   // for initial
   useEffect(() => {
-    setWorkplaceDDL([]);
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Workplace&AccountId=${orgId}&BusinessUnitId=${0}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceId",
       "strWorkplace",
       setWorkplaceDDL
     );
+    setWorkplaceDDL([]);
+    console.log("workplaceddl",workplaceDDL)
   }, [orgId, buId, employeeId, wgId]);
 
   // filter data
@@ -258,7 +258,6 @@ const BonusGenerateCreate = () => {
 
     return isCheck;
   };
-  console.log("rowDto",rowDto)
   // useFormik hooks
   const {
     setFieldValue,
@@ -277,7 +276,9 @@ const BonusGenerateCreate = () => {
         value: singleData?.intBonusId,
         label: singleData?.strBonusName,
       },
-      effectiveDate: dateFormatterForInput(singleData?.dteEffectedDateTime),
+      effectiveDate: singleData
+        ? dateFormatterForInput(singleData?.dteEffectedDateTime)
+        : todayDate(),
       wing:
         +params?.id &&
         isSameMaketingAreaHandler(rowDto, singleData?.intWingId, "intWingId")
@@ -748,22 +749,13 @@ const BonusGenerateCreate = () => {
                       <DefaultInput
                         classes="input-sm"
                         placeholder=" "
-                        value={values?.effectiveDate}
+                        value={values?.effectiveDate || todayDate()}
                         name="effectiveDate"
                         type="date"
                         // disabled={isEdit}
                         onChange={(e) => {
                           setValues((prev) => ({
                             ...prev,
-                            // yearId: +e.target.value
-                            //   .split("")
-                            //   .slice(0, 4)
-                            //   .join(""),
-                            // monthId: +e.target.value
-                            //   .split("")
-                            //   .slice(-2)
-                            //   .join(""),
-                            // monthYear: e.target.value,
                             effectiveDate: e.target.value,
                           }));
                         }}
@@ -773,7 +765,7 @@ const BonusGenerateCreate = () => {
                     </div>
                   </div>
                   <div className="col-lg-12"></div>
-                  {
+                  {isEdit ? (
                     <div className="col-lg-3">
                       <div className="d-flex align-items-center">
                         <button
@@ -839,7 +831,72 @@ const BonusGenerateCreate = () => {
                         </button>
                       </div>
                     </div>
-                  }
+                  ) : (
+                    <div className="col-lg-3">
+                      <div className="d-flex align-items-center">
+                        <button
+                          style={{
+                            padding: "0px 10px",
+                          }}
+                          className="btn btn-default mr-2"
+                          type="button"
+                          disabled={
+                            !values?.bonusSystemType ||
+                            !values?.bonusName ||
+                            !values?.effectiveDate ||
+                            !values?.workplace
+                          }
+                          onClick={() => {
+                            if (+params?.id) {
+                              if (!isSameWgEmployee) {
+                                return toast.warning(
+                                  "Bonus generate must be same workplace group!"
+                                );
+                              }
+
+                              getEmployeeListForBonusGenerateOrRegenerate(
+                                orgId,
+                                employeeList,
+                                getEmployeeList,
+                                setEmployeeList,
+                                setRowDto,
+                                values,
+                                isEdit,
+                                location,
+                                buId,
+                                wgId,
+                                values?.wing?.value,
+                                values?.soleDepo?.value,
+                                values?.region?.value,
+                                values?.area?.value,
+                                values?.territory?.value
+                              );
+                            } else {
+                              getEmployeeListForBonusGenerateOrRegenerate(
+                                orgId,
+                                employeeList,
+                                getEmployeeList,
+                                setEmployeeList,
+                                setRowDto,
+                                values,
+                                isEdit,
+                                location,
+                                buId,
+                                wgId,
+                                values?.wing?.value,
+                                values?.soleDepo?.value,
+                                values?.region?.value,
+                                values?.area?.value,
+                                values?.territory?.value
+                              );
+                            }
+                          }}
+                        >
+                          View
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -911,11 +968,7 @@ const BonusGenerateCreate = () => {
                 <div className="table-card-styled employee-table-card tableOne">
                   <AntTable
                     data={rowDto}
-                    columnsData={columns(
-                      rowDto,
-                      setRowDto,
-                      setFieldValue
-                    )}
+                    columnsData={columns(rowDto, setRowDto, setFieldValue)}
                   />
                 </div>
               </>
