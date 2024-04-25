@@ -1,11 +1,17 @@
 import { InfoOutlined } from "@mui/icons-material";
 import { LightTooltip } from "common/LightTooltip";
 import ViewModal from "common/ViewModal";
+import Loading from "common/loading/Loading";
 import moment from "moment";
-import  {  useState } from "react";
+import { useEffect, useState } from "react";
 import { gray900 } from "utility/customColor";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-const LeaveBalanceTable = ({ leaveBalanceData = [], show = false }) => {
+const LeaveBalanceTable = ({
+  leaveBalanceData = [],
+  show = false,
+  values = {},
+}) => {
   let leaves = leaveBalanceData;
   if (show) {
     leaves = leaveBalanceData?.filter(
@@ -13,10 +19,15 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false }) => {
     );
   }
   const [isView, setIsView] = useState(false);
-  const [singleObjList, setSingleObjList] = useState({});
+  const [singleObjList, getSingleObjDataAPI, loading, setSingleObjList] =
+    useAxiosGet({});
+  useEffect(() => {
+    setSingleObjList({});
+  }, [values?.year?.value, values?.employee?.value]);
   return (
     <>
       <div className="card-style" style={{ minHeight: "213px" }}>
+        {loading && <Loading />}
         <div className="table-card-styled tableOne">
           <table className="table">
             <thead>
@@ -49,9 +60,23 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false }) => {
                               title={"Leave History"}
                               arrow
                               onClick={() => {
-                                setSingleObjList({});
-                                setIsView(true);
-                                setSingleObjList(item);
+                                // setSingleObjList({});
+                                if (
+                                  singleObjList?.compensatoryLeaveHistory
+                                    ?.length > 0
+                                ) {
+                                  setIsView(true);
+                                } else {
+                                  getSingleObjDataAPI(
+                                    `/LeaveMovement/CompensatoryLeaveHistory?yearId=${
+                                      values?.year?.value
+                                    }&empId=${values?.employee?.value || 0}`,
+                                    (res) => {
+                                      setIsView(true);
+                                      setSingleObjList(res);
+                                    }
+                                  );
+                                }
                               }}
                             >
                               {" "}
@@ -99,14 +124,17 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false }) => {
         backdrop="static"
         classes="default-modal preview-modal"
         show={isView}
-        onHide={() => setIsView(false)}
+        onHide={() => {
+          setIsView(false);
+          // setSingleObjList({});
+        }}
       >
         <div className="card-style" style={{ minHeight: "213px" }}>
           <div className="d-flex align-items-center justify-content-between px-3">
-            <p>Leave Type: {singleObjList?.strLeaveType}</p>
-            <p>Balance: {singleObjList?.intBalanceLveInDay}</p>
-            <p>Taken: {singleObjList?.intTakenLveInDay}</p>
-            <p className="mr-3">Total: {singleObjList?.intAllocatedLveInDay}</p>
+            <p>Leave Type: {singleObjList?.leaveTypeName}</p>
+            <p>Balance: {singleObjList?.totalLeaveBalance}</p>
+            <p>Taken: {singleObjList?.totalLeaveTaken}</p>
+            <p className="mr-3">Total: {singleObjList?.totalLeaveAmount}</p>
           </div>
           <div className="table-card-styled tableOne">
             <table className="table">
