@@ -26,6 +26,8 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const history = useHistory();
   const { state }: any = useLocation();
 
+  console.log("state",state)
+
   const dispatch = useDispatch();
 
   useEffect(() => {

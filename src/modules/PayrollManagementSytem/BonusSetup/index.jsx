@@ -311,20 +311,20 @@ export default function BonusSetupLanding() {
       },
       {
         title: "Status",
-        dataIndex: "statusValue",
-        render: (_, item) => (
+        // dataIndex: "isActive",
+        render: (item) => (
           <Chips
             label={item?.isActive ? "Active" : "Inactive"}
             classess={`${item?.isActive ? "success" : "danger"} p-2`}
           />
         ),
         sort: true,
-        filter: true,
+        filter: false,
       },
       {
-        title: "",
+        title: "Action",
         dataIndex: "",
-        render: (_, item) => (
+        render: (item) => (
           <div className="d-flex">
             <Tooltip title="Edit" arrow>
               <button className="iconButton" type="button">
