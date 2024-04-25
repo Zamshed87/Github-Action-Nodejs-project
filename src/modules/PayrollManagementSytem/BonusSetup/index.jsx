@@ -19,10 +19,8 @@ import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
 import { todayDate } from "../../../utility/todayDate";
 import AntTable from "../../../common/AntTable";
-
-const initData = {
-  status: "",
-};
+import { createPayloadStructure } from "common/peopleDeskTable/helper";
+import PeopleDeskTable from "common/peopleDeskTable";
 
 export default function BonusSetupLanding() {
   const dispatch = useDispatch();
@@ -35,6 +33,18 @@ export default function BonusSetupLanding() {
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
+  const initData = {
+    status: "",
+  };
+
+  const initHeaderList = {
+    strBonusNameList: [],
+    strWorkplaceList: [],
+    strReligionNameList: [],
+    strEmploymentTypeList: [],
+    hrPositionNameList: [],
+  };
+
   let permission = null;
   permissionList.forEach((item) => {
     if (item?.menuReferenceId === 72) {
@@ -46,53 +56,152 @@ export default function BonusSetupLanding() {
   const [rowDto, setRowDto] = useState([]);
 
   const [status, setStatus] = useState("");
+  const [headerList, setHeaderList] = useState({});
+  const [filterOrderList, setFilterOrderList] = useState([]);
+  const [initialHeaderListData, setInitialHeaderListData] = useState({});
+  const [checkedHeaderList, setCheckedHeaderList] = useState({
+    ...initHeaderList,
+  });
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Administration"));
     document.title = "Bonus Setup";
   }, [dispatch]);
 
-  const getData = () => {
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: 25,
+    total: 0,
+  });
+
+  const getData = async (
+    pagination,
+    IsForXl = "false",
+    searchText = "",
+    currentFilterSelection = -1,
+    filterOrderList = [],
+    checkedHeaderList = { ...initHeaderList },
+    values
+  ) => {
+    setLoading(true);
+    const modifiedPayload = createPayloadStructure({
+      initHeaderList,
+      currentFilterSelection,
+      checkedHeaderList,
+      filterOrderList,
+    });
+    const payload = {
+      accountId: orgId,
+      businessUnitId: buId,
+      workplaceGroupId: wgId,
+      pageNo: pagination?.current,
+      pageSize: pagination?.pageSize,
+    };
+
     getBonusSetupLanding(
-      {
-        strPartName: "BonusSetupList",
-        intBonusHeaderId: 0,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
-        intBonusId: 0,
-        intPayrollGroupId: 0,
-        intWorkplaceGroupId: wgId,
-        intWorkplaceId: wId,
-        intReligionId: 0,
-        dteEffectedDate: todayDate(),
-        intCreatedBy: employeeId,
-      },
+      payload,
+      modifiedPayload,
       setRowDto,
-      setLoading
+      setLoading,
+      pagination,
+      searchText,
+      currentFilterSelection,
+      checkedHeaderList,
+      values,
+      headerList,
+      setHeaderList,
+      filterOrderList,
+      setFilterOrderList,
+      initialHeaderListData,
+      setInitialHeaderListData,
+      setPages
     );
   };
 
-  useEffect(() => {
-    getBonusSetupLanding(
+  const handleChangePage = (_, newPage, searchText, values) => {
+    setPages((prev) => {
+      return { ...prev, current: newPage };
+    });
+
+    getData(
       {
-        strPartName: "BonusSetupList",
-        intBonusHeaderId: 0,
-        intAccountId: orgId,
-        intBusinessUnitId: buId,
-        intBonusId: 0,
-        intPayrollGroupId: 0,
-        intWorkplaceGroupId: wgId,
-        intWorkplaceId: wId,
-        intReligionId: 0,
-        dteEffectedDate: todayDate(),
-        intCreatedBy: employeeId,
+        current: newPage,
+        pageSize: pages?.pageSize,
+        total: pages?.total,
       },
-      setRowDto,
-      setLoading
+      "false",
+      searchText,
+      -1,
+      filterOrderList,
+      checkedHeaderList,
+      values
     );
+  };
+
+  const handleChangeRowsPerPage = (event, searchText, values) => {
+    setPages({
+      current: 1,
+      total: pages?.total,
+      pageSize: +event.target.value,
+    });
+    getData(
+      {
+        current: 1,
+        pageSize: +event.target.value,
+        total: pages?.total,
+      },
+      "false",
+      searchText,
+      -1,
+      filterOrderList,
+      checkedHeaderList,
+      values
+    );
+  };
+
+  // const getData = () => {
+  //   getBonusSetupLanding(
+  //     {
+  //       strPartName: "BonusSetupList",
+  //       intBonusHeaderId: 0,
+  //       intAccountId: orgId,
+  //       intBusinessUnitId: buId,
+  //       intBonusId: 0,
+  //       intPayrollGroupId: 0,
+  //       intWorkplaceGroupId: wgId,
+  //       intWorkplaceId: wId,
+  //       intReligionId: 0,
+  //       dteEffectedDate: todayDate(),
+  //       intCreatedBy: employeeId,
+  //     },
+  //     setRowDto,
+  //     setLoading
+  //   );
+  // };
+
+  useEffect(() => {
+    setHeaderList({});
+    getData(pages);
+    // getBonusSetupLanding(
+    //   {
+    //     strPartName: "BonusSetupList",
+    //     intBonusHeaderId: 0,
+    //     intAccountId: orgId,
+    //     intBusinessUnitId: buId,
+    //     intBonusId: 0,
+    //     intPayrollGroupId: 0,
+    //     intWorkplaceGroupId: wgId,
+    //     intWorkplaceId: wId,
+    //     intReligionId: 0,
+    //     dteEffectedDate: todayDate(),
+    //     intCreatedBy: employeeId,
+    //   },
+    //   setRowDto,
+    //   setLoading
+    // );
   }, [orgId, buId, employeeId, wId, wgId]);
 
-  const { setFieldValue, handleSubmit } = useFormik({
+  const { setFieldValue, handleSubmit, values } = useFormik({
     enableReinitialize: true,
     // validationSchema: validationSchema,
     initialValues: initData,
@@ -100,138 +209,145 @@ export default function BonusSetupLanding() {
       resetForm(initData);
     },
   });
-
-  const columns = [
-    {
-      title: "SL",
-      render: (text, record, index) => index + 1,
-      sorter: false,
-      filter: false,
-    },
-    {
-      title: "Bonus Name",
-      dataIndex: "strBonusName",
-      sorter: true,
-      filter: false,
-    },
-    {
-      title: "Religion",
-      dataIndex: "strReligionName",
-      sorter: true,
-      filter: false,
-    },
-    {
-      title: "Employee Type",
-      dataIndex: "strEmploymentType",
-      sorter: true,
-      filter: false,
-    },
-    {
-      title: "Workplace Name",
-      dataIndex: "strWorkplace",
-      sorter: true,
-      filter: false,
-      width: "120px",
-    },
-    {
-      title: "HR Position Name",
-      dataIndex: "HrPositionName",
-      sorter: true,
-      filter: false,
-      width: "120px",
-    },
-    {
-      title: "Service Length Type",
-      render: (_, item) => (
-        <>{item?.IsServiceLengthInDays ? "Days" : "Month"}</>
-      ),
-      sorter: true,
-      filter: false,
-    },
-    {
-      title: "Min. Service Length",
-      // dataIndex: "intMinimumServiceLengthMonth",
-      render: (_, item) => (
-        <>
-          {item?.intMinimumServiceLengthMonth > 0
-            ? item?.intMinimumServiceLengthMonth
-            : item?.intMinimumServiceLengthDays || "-"}
-        </>
-      ),
-      sorter: true,
-      filter: false,
-    },
-    {
-      title: `Max. Service Length`,
-      // dataIndex: "intMaximumServiceLengthMonth",
-      render: (_, item) => (
-        <>
-          {item?.intMaximumServiceLengthMonth > 0
-            ? item?.intMaximumServiceLengthMonth
-            : item?.intMaximumServiceLengthDays || "-"}
-        </>
-      ),
-      sorter: true,
-      filter: false,
-    },
-    {
-      title: "Bonus Percentage On",
-      dataIndex: "strBonusPercentageOn",
-      sorter: true,
-      filter: false,
-    },
-    {
-      title: "Bonus Percentage",
-      dataIndex: "numBonusPercentage",
-      sorter: true,
-      filter: false,
-    },
-    {
-      title: "Divided by Service Length",
-      dataIndex: "IsDividedbyServiceLength",
-      render: (data) => <>{data ? "True" : "False"}</>,
-      sorter: true,
-      filter: false,
-    },
-    {
-      title: "Status",
-      dataIndex: "statusValue",
-      render: (_, item) => (
-        <Chips
-          label={item?.isActive ? "Active" : "Inactive"}
-          classess={`${item?.isActive ? "success" : "danger"} p-2`}
-        />
-      ),
-      sorter: true,
-      filter: true,
-    },
-    {
-      title: "",
-      dataIndex: "",
-      render: (_, item) => (
-        <div className="d-flex">
-          <Tooltip title="Edit" arrow>
-            <button className="iconButton" type="button">
-              <EditOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!permission?.isEdit)
-                    return toast.warn("You don't have permission");
-                  history.push({
-                    pathname: `/administration/payrollConfiguration/bonusSetup/edit/${item?.intBonusSetupId}`,
-                    state: item,
-                  });
-                }}
-              />
-            </button>
-          </Tooltip>
-        </div>
-      ),
-      sorter: false,
-      filter: false,
-    },
-  ];
-
+  const columns = (page, paginationSize, wgId, headerList) => {
+    return [
+      {
+        title: "SL",
+        render: (_, index) => (page - 1) * paginationSize + index + 1,
+        sort: false,
+        filter: false,
+        className: "text-center",
+      },
+      {
+        title: "Bonus Name",
+        dataIndex: "strBonusName",
+        sort: true,
+        filter: true,
+        filterDropDownList: headerList[`strBonusNameList`] || [],
+        width: 200,
+      },
+      {
+        title: "Religion",
+        dataIndex: "strReligionName",
+        filterDropDownList: headerList[`strReligionNameList`] || [],
+        sort: true,
+        filter: true,
+      },
+      {
+        title: "Employee Type",
+        dataIndex: "strEmploymentType",
+        filterDropDownList: headerList[`strEmploymentTypeList`] || [],
+        sort: true,
+        filter: true,
+      },
+      {
+        title: "Workplace Name",
+        dataIndex: "strWorkplace",
+        filterDropDownList: headerList[`strWorkplaceList`] || [],
+        sort: true,
+        filter: true,
+        width: "120px",
+      },
+      {
+        title: "HR Position Name",
+        dataIndex: "hrPositionName",
+        filterDropDownList: headerList[`hrPositionNameList`] || [],
+        sort: true,
+        filter: true,
+        width: "120px",
+      },
+      {
+        title: "Service Length Type",
+        render: (_, item) => (
+          <>{item?.IsServiceLengthInDays ? "Days" : "Month"}</>
+        ),
+        sort: true,
+        filter: false,
+      },
+      {
+        title: "Min. Service Length",
+        // dataIndex: "intMinimumServiceLengthMonth",
+        render: (_, item) => (
+          <>
+            {item?.intMinimumServiceLengthMonth > 0
+              ? item?.intMinimumServiceLengthMonth
+              : item?.intMinimumServiceLengthDays || "0"}
+          </>
+        ),
+        sort: true,
+        filter: false,
+      },
+      {
+        title: `Max. Service Length`,
+        // dataIndex: "intMaximumServiceLengthMonth",
+        render: (_, item) => (
+          <>
+            {item?.intMaximumServiceLengthMonth > 0
+              ? item?.intMaximumServiceLengthMonth
+              : item?.intMaximumServiceLengthDays || "-"}
+          </>
+        ),
+        sort: true,
+        filter: false,
+      },
+      {
+        title: "Bonus Percentage On",
+        dataIndex: "strBonusPercentageOn",
+        sort: true,
+        filter: false,
+      },
+      {
+        title: "Bonus Percentage",
+        dataIndex: "numBonusPercentage",
+        sort: true,
+        filter: false,
+      },
+      {
+        title: "Divided by Service Length",
+        dataIndex: "IsDividedbyServiceLength",
+        render: (data) => <>{data ? "True" : "False"}</>,
+        sort: true,
+        filter: false,
+      },
+      {
+        title: "Status",
+        // dataIndex: "isActive",
+        render: (item) => (
+          <Chips
+            label={item?.isActive ? "Active" : "Inactive"}
+            classess={`${item?.isActive ? "success" : "danger"} p-2`}
+          />
+        ),
+        sort: true,
+        filter: false,
+      },
+      {
+        title: "Action",
+        dataIndex: "",
+        render: (item) => (
+          <div className="d-flex">
+            <Tooltip title="Edit" arrow>
+              <button className="iconButton" type="button">
+                <EditOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!permission?.isEdit)
+                      return toast.warn("You don't have permission");
+                    history.push({
+                      pathname: `/administration/payrollConfiguration/bonusSetup/edit/${item?.intBonusSetupId}`,
+                      state: item,
+                    });
+                  }}
+                />
+              </button>
+            </Tooltip>
+          </div>
+        ),
+        sort: false,
+        filter: false,
+      },
+    ];
+  };
   return (
     <>
       {loading && <Loading />}
@@ -283,19 +399,58 @@ export default function BonusSetupLanding() {
                   </li>
                 </ul>
               </div>
-              <div className="table-card-body">
-                <div className="table-card-styled tableOne">
-                  {rowDto?.length > 0 ? (
-                    <AntTable data={rowDto} columnsData={columns} />
-                  ) : (
-                    <>
-                      {!loading && (
-                        <NoResult title="You have no application." />
-                      )}
-                    </>
+              {rowDto?.length > 0 ? (
+                // <AntTable data={rowDto} columnsData={columns} />
+                <PeopleDeskTable
+                  columnData={columns(
+                    pages?.current,
+                    pages?.pageSize,
+                    wgId,
+                    headerList
                   )}
-                </div>
-              </div>
+                  pages={pages}
+                  rowDto={rowDto}
+                  setRowDto={loading}
+                  checkedHeaderList={checkedHeaderList}
+                  setCheckedHeaderList={setCheckedHeaderList}
+                  handleChangePage={(e, newPage) =>
+                    handleChangePage(e, newPage, values?.searchString, values)
+                  }
+                  handleChangeRowsPerPage={(e) => {
+                    handleChangeRowsPerPage(e, values?.searchString, values);
+                  }}
+                  filterOrderList={filterOrderList}
+                  setFilterOrderList={setFilterOrderList}
+                  uniqueKey="strEmployeeCode"
+                  getFilteredData={(
+                    currentFilterSelection,
+                    updatedFilterData,
+                    updatedCheckedHeaderData
+                  ) => {
+                    getData(
+                      {
+                        current: 1,
+                        pageSize: 25,
+                        total: 0,
+                      },
+                      "false",
+                      "",
+                      currentFilterSelection,
+                      updatedFilterData,
+                      updatedCheckedHeaderData,
+                      values
+                    );
+                  }}
+                  isCheckBox={false}
+                  isScrollAble={true}
+                  scrollCustomClass="emp-report-landing-table"
+                  handleSortingData={(obj) => {
+                    console.log("obj", obj);
+                  }}
+                />
+              ) : (
+                <>{!loading && <NoResult title="You have no application." />}</>
+              )}
             </div>
           </form>
         </>

@@ -13,11 +13,12 @@ export const onGetMonthlyAttendanceReport = (
   pages,
   setPages,
   srcTxt,
-  IsPaginated = true
+  IsPaginated = true,
+  wId
 ) => {
   let search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
   getMonthlyAttendanceInformation(
-    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate}&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=0&PageNo=${pages.current}&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`,
+    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate}&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=${pages.current}&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`,
     (data) => {
       setPages({
         ...pages,
