@@ -32,7 +32,7 @@ export const getEmployeeListForBonusGenerateOrRegenerate = (
   getEmployeeList(
     `/Employee/EligbleEmployeeForBonusGenerateLanding?StrPartName=${
       values?.bonusSystemType?.value === 1
-        ? "EligbleEmployeeListForBonusGenerate"
+        ? "EligbleEmployeeListForBonusReGenerate"
         : "EligbleEmployeeListForArearBonusGenerate"
     }&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntBonusHeaderId=${
       isEdit ? location?.state?.bonusObj?.intBonusHeaderId : 0

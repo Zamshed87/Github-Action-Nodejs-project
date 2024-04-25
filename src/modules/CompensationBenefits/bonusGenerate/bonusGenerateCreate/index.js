@@ -145,25 +145,25 @@ const BonusGenerateCreate = () => {
     // eslint-disable-next-line
   }, [orgId, buId, employeeId]);
 
-  useEffect(() => {
-    getPeopleDeskAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
-      "intBusinessUnitId",
-      "strBusinessUnit",
-      setBusinessUnitDDL
-    );
+  // useEffect(() => {
+  //   getPeopleDeskAllDDL(
+  //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
+  //     "intBusinessUnitId",
+  //     "strBusinessUnit",
+  //     setBusinessUnitDDL
+  //   );
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId, employeeId]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [orgId, buId, employeeId]);
 
-  useEffect(() => {
-    getPeopleDeskWithoutAllDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=0`,
-      "WingId",
-      "WingName",
-      setWingDDL
-    );
-  }, [orgId, buId, wgId]);
+  // useEffect(() => {
+  //   getPeopleDeskWithoutAllDDL(
+  //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WingDDL&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&ParentTerritoryId=0`,
+  //     "WingId",
+  //     "WingName",
+  //     setWingDDL
+  //   );
+  // }, [orgId, buId, wgId]);
   // for initial
   useEffect(() => {
     getPeopleDeskAllDDL(
@@ -172,8 +172,7 @@ const BonusGenerateCreate = () => {
       "strWorkplace",
       setWorkplaceDDL
     );
-    setWorkplaceDDL([]);
-    console.log("workplaceddl",workplaceDDL)
+    setFieldValue("workplace", []);
   }, [orgId, buId, employeeId, wgId]);
 
   // filter data
