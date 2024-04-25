@@ -110,7 +110,9 @@ const MonthlyAttendanceReport = () => {
         setRowDto,
         pages,
         setPages,
-        values?.search
+        values?.search,
+        true,
+        values?.workplace?.value || 0
       );
     },
   });
@@ -131,7 +133,9 @@ const MonthlyAttendanceReport = () => {
         setRowDto,
         pagination,
         setPages,
-        srcText
+        srcText,
+        true,
+        values?.workplace?.value || 0
       );
     }
     if (pages?.current !== pagination?.current) {
@@ -143,7 +147,9 @@ const MonthlyAttendanceReport = () => {
         setRowDto,
         pagination,
         setPages,
-        srcText
+        srcText,
+        true,
+        values?.workplace?.value || 0
       );
     }
   };
@@ -261,7 +267,9 @@ const MonthlyAttendanceReport = () => {
                         pages,
                         setPages,
                         "",
-                        false
+                        false,
+
+                        values?.workplace?.value || 0
                       );
                     }}
                   />
@@ -285,7 +293,8 @@ const MonthlyAttendanceReport = () => {
                       pages,
                       setPages,
                       value,
-                      false
+                      false,
+                      values?.workplace?.value || 0
                     );
                   } else {
                     onGetMonthlyAttendanceReport(
@@ -298,7 +307,8 @@ const MonthlyAttendanceReport = () => {
                       pages,
                       setPages,
                       "",
-                      false
+                      false,
+                      values?.workplace?.value || 0
                     );
                   }
                 }}
@@ -314,7 +324,8 @@ const MonthlyAttendanceReport = () => {
                     pages,
                     setPages,
                     "",
-                    false
+                    false,
+                    values?.workplace?.value || 0
                   );
                 }}
               />
