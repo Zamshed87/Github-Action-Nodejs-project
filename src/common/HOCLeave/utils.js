@@ -157,101 +157,115 @@ export const empMgmtLeaveApplicationDtoColumn = (
         <div className="d-flex justify-content-center">
           {record?.ApprovalStatus === "Pending" && (
             <Tooltip title="Edit" arrow>
-              <button className="iconButton" type="button">
-                <EditOutlined
-                  onClick={(e) => {
-                    setIsEdit(true);
-                    e.stopPropagation();
-                    scrollRef.current.scrollIntoView({
-                      behavior: "smooth",
-                    });
-                    setSingleData(record);
-                    setValues({
-                      ...values,
-                      leaveType: {
-                        value: record?.LeaveTypeId,
-                        label: record?.LeaveType,
-                      },
-                      fromDate: dateFormatterForInput(record?.AppliedFromDate),
-                      toDate: dateFormatterForInput(record?.AppliedToDate),
-                      location: record?.AddressDuetoLeave,
-                      reason: record?.Reason,
-                    });
+              {record?.LeaveTypeId !== 5 ? (
+                <button className="iconButton" type="button">
+                  <EditOutlined
+                    onClick={(e) => {
+                      setIsEdit(true);
+                      e.stopPropagation();
+                      scrollRef.current.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                      setSingleData(record);
+                      setValues({
+                        ...values,
+                        leaveType: {
+                          value: record?.LeaveTypeId,
+                          label: record?.LeaveType,
+                        },
+                        fromDate: dateFormatterForInput(
+                          record?.AppliedFromDate
+                        ),
+                        toDate: dateFormatterForInput(record?.AppliedToDate),
+                        location: record?.AddressDuetoLeave,
+                        reason: record?.Reason,
+                      });
 
-                    setImageFile({
-                      globalFileUrlId: record?.DocumentFileUrl,
-                    });
-                  }}
-                />
-              </button>
+                      setImageFile({
+                        globalFileUrlId: record?.DocumentFileUrl,
+                      });
+                    }}
+                  />
+                </button>
+              ) : null}
             </Tooltip>
           )}
           {record?.ApprovalStatus === "Pending" && (
             <Tooltip title="Delete" arrow>
-              <button type="button" className="iconButton">
-                <DeleteOutlineOutlinedIcon
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSingleData("");
-                    demoPopupForDelete(data, values);
-                  }}
-                />
-              </button>
+              {record?.LeaveTypeId !== 5 ? (
+                <button type="button" className="iconButton">
+                  <DeleteOutlineOutlinedIcon
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSingleData("");
+                      demoPopupForDelete(data, values);
+                    }}
+                  />
+                </button>
+              ) : null}
             </Tooltip>
           )}
 
           {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
             <Tooltip title="Delete" arrow>
-              <button type="button" className="iconButton">
-                <DeleteOutlineOutlinedIcon
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSingleData("");
-                    demoPopupForDelete(data, values);
-                  }}
-                />
-              </button>
+              {record?.LeaveTypeId !== 5 ? (
+                <button type="button" className="iconButton">
+                  <DeleteOutlineOutlinedIcon
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSingleData("");
+                      demoPopupForDelete(data, values);
+                    }}
+                  />
+                </button>
+              ) : null}
             </Tooltip>
           )}
           {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
             <Tooltip title="Edit" arrow>
-              <button className="iconButton" type="button">
-                <EditOutlined
-                  onClick={(e) => {
-                    setIsEdit(true);
-                    e.stopPropagation();
-                    scrollRef.current.scrollIntoView({
-                      behavior: "smooth",
-                    });
-                    setSingleData(record);
-                    setValues({
-                      ...values,
-                      leaveType: {
-                        value: record?.LeaveTypeId,
-                        label: record?.LeaveType,
-                        isHalfDayLeave: record?.HalfDay,
-                      },
-                      fromDate: dateFormatterForInput(record?.AppliedFromDate),
-                      toDate: dateFormatterForInput(record?.AppliedToDate),
-                      location: record?.AddressDuetoLeave,
-                      reason: record?.Reason,
-                      isHalfDay: record?.HalfDay
-                        ? { value: 1, label: "Half Day" }
-                        : "",
-                      halfTime: record?.HalfDay
-                        ? {
-                            value: record?.HalfDayRange?.includes("8") ? 0 : 1,
-                            label: record?.HalfDayRange,
-                          }
-                        : "",
-                    });
+              {record?.LeaveTypeId !== 5 ? (
+                <button className="iconButton" type="button">
+                  <EditOutlined
+                    onClick={(e) => {
+                      setIsEdit(true);
+                      e.stopPropagation();
+                      scrollRef.current.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                      setSingleData(record);
+                      setValues({
+                        ...values,
+                        leaveType: {
+                          value: record?.LeaveTypeId,
+                          label: record?.LeaveType,
+                          isHalfDayLeave: record?.HalfDay,
+                        },
+                        fromDate: dateFormatterForInput(
+                          record?.AppliedFromDate
+                        ),
+                        toDate: dateFormatterForInput(record?.AppliedToDate),
+                        location: record?.AddressDuetoLeave,
+                        reason: record?.Reason,
+                        isHalfDay: record?.HalfDay
+                          ? { value: 1, label: "Half Day" }
+                          : "",
+                        halfTime: record?.HalfDay
+                          ? {
+                              value: record?.HalfDayRange?.includes("8")
+                                ? 0
+                                : 1,
+                              label: record?.HalfDayRange,
+                            }
+                          : "",
+                      });
 
-                    setImageFile({
-                      globalFileUrlId: record?.DocumentFileUrl,
-                    });
-                  }}
-                />
-              </button>
+                      setImageFile({
+                        globalFileUrlId: record?.DocumentFileUrl,
+                      });
+                    }}
+                  />
+                </button>
+              ) : null}
             </Tooltip>
           )}
         </div>
