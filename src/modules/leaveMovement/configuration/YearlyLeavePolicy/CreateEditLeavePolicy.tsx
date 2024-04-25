@@ -1159,7 +1159,6 @@ const CreateEditLeavePolicy = () => {
                             </Col>
                             <Col md={12} sm={24}>
                               <PInput
-                                disabled={!isCompensatoryLveExpire}
                                 type="number"
                                 name="intMinWorkingHourForComl"
                                 label="Minimum Working Hour"
@@ -1167,7 +1166,9 @@ const CreateEditLeavePolicy = () => {
                                 size="small"
                                 rules={[
                                   {
-                                    required: isCompensatoryLveExpire,
+                                    required:
+                                      intLeaveType?.label ===
+                                      "Compensatory Leave",
                                     message: "Minimum Working Hour is required",
                                   },
                                   {
@@ -1182,7 +1183,6 @@ const CreateEditLeavePolicy = () => {
                             </Col>
                             <Col md={12} sm={24}>
                               <PInput
-                                disabled={!isCompensatoryLveExpire}
                                 type="number"
                                 name="intMaxComlLveInMonth"
                                 label="Max Leave In Month"
@@ -1190,7 +1190,9 @@ const CreateEditLeavePolicy = () => {
                                 size="small"
                                 rules={[
                                   {
-                                    required: isCompensatoryLveExpire,
+                                    required:
+                                      intLeaveType?.label ===
+                                      "Compensatory Leave",
                                     message: "Max Leave In Month is required",
                                   },
                                   {
