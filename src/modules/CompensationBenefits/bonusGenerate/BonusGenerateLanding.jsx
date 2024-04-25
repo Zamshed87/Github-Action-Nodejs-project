@@ -7,9 +7,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import AntTable from "../../../common/AntTable";
-// import { getPeopleDeskAllDDL } from "../../../common/api";
 import DefaultInput from "../../../common/DefaultInput";
-// import FormikSelect from "../../../common/FormikSelect";
 import Loading from "../../../common/loading/Loading";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
@@ -23,7 +21,6 @@ import {
   getDateOfYear,
   monthLastDate,
 } from "../../../utility/dateFormatter";
-// import { customStyles } from "../../../utility/selectCustomStyle";
 import { todayDate } from "../../../utility/todayDate";
 import {
   bonusGenerateColumn,
@@ -103,41 +100,7 @@ const BonusGenerateLanding = () => {
     return state?.localStorage;
   }, shallowEqual);
 
-  // DDl section
-  // const [bonusNameDDL, setBonusNameDDL] = useState([]);
-  // const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
-  // const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
-  // const [workplaceDDL, setWorkplaceDDL] = useState([]);
-  // const [payrollGroupDDL, setPayrollGroupDDL] = useState([]);
-  // const [religionDDL, setReligionDDL] = useState([]);
-
-  // useEffect(() => {
-  //   getBonusNameDDL(
-  //     {
-  //       strPartName: "BonusNameForGenerate",
-  //       intBonusHeaderId: 0,
-  //       intAccountId: orgId,
-  //       intBusinessUnitId: buId,
-  //       intBonusId: 0,
-  //       intPayrollGroupId: 0,
-  //       intWorkplaceGroupId: 0,
-  //       intReligionId: 0,
-  //       dteEffectedDate: todayDate(),
-  //       intCreatedBy: employeeId,
-  //     },
-  //     setBonusNameDDL
-  //   );
-  // }, [orgId, buId, employeeId]);
-
   useEffect(() => {
-    // getPeopleDeskAllDDL(
-    //   `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BusinessUnit&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=0&intId=${employeeId}`,
-    //   "intBusinessUnitId",
-    //   "strBusinessUnit",
-    //   setBusinessUnitDDL
-    // );
-    // getPeopleDeskAllDDL(`/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=PayrollGroup&AccountId=${orgId}&BusinessUnitId=${buId}`, "PayrollGroupId", "PayrollGroupName", setPayrollGroupDDL);
-    // getPeopleDeskAllDDL(`/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=Religion&AccountId=${orgId}&BusinessUnitId=${buId}&intId=0`, "ReligionId", "ReligionName", setReligionDDL);
     getBonusGenerateLanding(
       {
         strPartName:
@@ -251,8 +214,8 @@ const BonusGenerateLanding = () => {
       intBonusId: data?.intBonusId || values?.bonusName?.value,
       intPayrollGroupId: data?.intPayrollGroupId || values?.payrollGroup?.value,
       intWorkplaceId: data?.intWorkplaceId || values?.workplace?.value || 0,
-      intWorkplaceGroupId:
-        data?.intWorkplaceGroupId || values?.workplaceGroup?.value,
+      workplaceGroupId:
+        data?.intWorkplaceGroupId || values?.workplaceGroup?.value, // name change from himadri bhai
       intReligionId: data?.intReligionId || values?.religion?.value,
       dteEffectedDate: data?.dteEffectedDateTime || values?.effectiveDate,
       intCreatedBy: employeeId,

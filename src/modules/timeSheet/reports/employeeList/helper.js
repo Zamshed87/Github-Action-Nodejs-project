@@ -67,6 +67,7 @@ export const empReportListColumns = (
   wgId,
   headerList
 ) => {
+  console.log({page, paginationSize})
   return [
     {
       title: "SL",

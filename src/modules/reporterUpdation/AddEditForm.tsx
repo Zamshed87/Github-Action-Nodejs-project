@@ -48,9 +48,12 @@ const AddEditForm = ({
           ?.join(","),
       intSuperVisorId: values?.supervisor?.value,
       intLineManagetId: values?.lineManager?.value,
+      intDottedSupervisorId: values?.dottedSupervisor?.value,
     };
 
-    values?.supervisor?.value && values?.lineManager?.value
+    values?.supervisor?.value &&
+    values?.lineManager?.value &&
+    values?.dottedSupervisor?.value
       ? changeReporter.action({
           urlKey: "ChangeReporter",
           method: "POST",
@@ -96,7 +99,25 @@ const AddEditForm = ({
               filterOption={false}
             />
           </Col>
-
+          <Col md={12} sm={24}>
+            <PSelect
+              name="dottedSupervisor"
+              label="Select Dotted Supervisor"
+              placeholder="Search Min 2 char"
+              options={CommonEmployeeDDL?.data || []}
+              loading={CommonEmployeeDDL?.loading}
+              onChange={(value, op) => {
+                form.setFieldsValue({
+                  dottedSupervisor: op,
+                });
+              }}
+              onSearch={(value) => {
+                getEmployee(value, CommonEmployeeDDL, buId, wgId);
+              }}
+              showSearch
+              filterOption={false}
+            />
+          </Col>
           <Col md={12} sm={24}>
             <PSelect
               name="lineManager"
