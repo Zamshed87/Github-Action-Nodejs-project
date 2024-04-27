@@ -11,6 +11,7 @@ import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { dateFormatter } from "utility/dateFormatter";
 import Chips from "../../../../common/Chips";
 import IConfirmModal from "../../../../common/IConfirmModal";
 import MuiIcon from "../../../../common/MuiIcon";
@@ -18,7 +19,6 @@ import NoResult from "../../../../common/NoResult";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { failColor, successColor } from "../../../../utility/customColor";
 import ResetButton from "./../../../../common/ResetButton";
 import {
   bonusApproveRejectRequest,
@@ -39,18 +39,25 @@ const BonusApproval = () => {
   // filter
   const [status, setStatus] = useState("");
 
-  const { userId, orgId, buId, wId, wgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { userId, orgId, buId, wId, wgId, employeeId, isOfficeAdmin } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const getData = () => {
     const payload = {
-      strPartName: "BonusApprovalStatus",
-      intBusinessUnitId: buId,
-      workplaceId: wId,
-      businessUnitId: buId,
+      approverId: employeeId,
+      movementTypeId: 0,
       workplaceGroupId: wgId,
+      businessUnitId: buId,
+      departmentId: 0,
+      designationId: 0,
+      applicantId: 0,
+      fromDate: "",
+      toDate: "",
+      applicationStatus: "Pending", // appliedStatus?.label,
+      isAdmin: isOfficeAdmin,
+      isSupOrLineManager: 0,
+      accountId: orgId,
+      workplaceId: wId,
     };
     getBonusGenerateRequestReport(payload, setRowDto, setAllData, setLoading);
   };
@@ -79,7 +86,6 @@ const BonusApproval = () => {
     };
     IConfirmModal(confirmObject);
   };
-
   // Reject Handler
   const rejectHandler = (message, item) => {
     const payload = {
@@ -120,6 +126,75 @@ const BonusApproval = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Bonus Approval";
   }, []);
+
+  // for multipel
+  const demoPopup = (action, text, array) => {
+    let newArray = [];
+    const checkedList = array?.filter((item) => item?.selectCheckbox);
+    if (checkedList.length > 0) {
+      checkedList?.forEach((item) => {
+        if (text === "isReject") {
+          newArray.push({
+            isReject: true,
+            applicationId: item?.application?.intBonusHeaderId,
+            approverEmployeeId: employeeId,
+            accountId: orgId,
+            fromDate: item?.application?.dteCreatedAt,
+            toDate: item?.application?.dteCreatedAt,
+            isAdmin: isOfficeAdmin,
+          });
+        } else {
+          newArray.push({
+            isReject: false,
+            applicationId: item?.application?.intBonusHeaderId,
+            approverEmployeeId: employeeId,
+            accountId: orgId,
+            fromDate: item?.application?.dteCreatedAt,
+            toDate: item?.application?.dteCreatedAt,
+            isAdmin: isOfficeAdmin,
+          });
+        }
+      });
+    }
+    let confirmObject = {
+      closeOnClickOutside: false,
+      message: ` Do you want to  ${action} ? `,
+      yesAlertFunc: () => {
+        if (array.length) {
+          bonusApproveRejectRequest(newArray, getData);
+        }
+        newArray = [];
+      },
+      noAlertFunc: () => {
+        newArray = [];
+      },
+    };
+    IConfirmModal(confirmObject);
+  };
+
+  // for single row data approval
+  const demoPopupForTable = (action, text, data) => {
+    let payload = [
+      {
+        isReject: text === "Reject" ? true : false,
+        applicationId: data?.application?.intBonusHeaderId,
+        approverEmployeeId: employeeId,
+        accountId: orgId,
+        fromDate: data?.application?.dteCreatedAt,
+        toDate: data?.application?.dteCreatedAt,
+        isAdmin: isOfficeAdmin,
+      },
+    ];
+    let confirmObject = {
+      closeOnClickOutside: false,
+      message: ` Do you want to ${action}? `,
+      yesAlertFunc: () => {
+        bonusApproveRejectRequest(payload, getData);
+      },
+      noAlertFunc: () => {},
+    };
+    IConfirmModal(confirmObject);
+  };
 
   return (
     <>
@@ -192,30 +267,21 @@ const BonusApproval = () => {
                                   <table className="table">
                                     <thead>
                                       <tr>
+                                        <th>SL</th>
                                         <th>
                                           <div>Bonus Name</div>
                                         </th>
                                         <th>
-                                          <div>Religion</div>
+                                          <div>Effective Date</div>
                                         </th>
+
                                         <th>
-                                          <div>Employment Type</div>
-                                        </th>
-                                        <th>
-                                          <div className="text-center">
-                                            Service Length
-                                          </div>
-                                        </th>
-                                        <th>
-                                          <div>Bonus Percentage On</div>
-                                        </th>
-                                        <th>
-                                          <div className="text-center">
-                                            Bonus Percentage
+                                          <div className="text-left">
+                                            Bonus Amount
                                           </div>
                                         </th>
                                         <th width="20%">
-                                          <div className="text-center">
+                                          <div className="text-left">
                                             Status
                                           </div>
                                         </th>
@@ -225,94 +291,102 @@ const BonusApproval = () => {
                                       {rowDto?.map((data, index) => (
                                         <>
                                           <tr key={index}>
-                                            <td>{data?.strBonusName}</td>
-                                            <td>{data?.strReligionName}</td>
-                                            <td>{data?.strEmploymentType}</td>
-                                            <td className="text-center">
-                                              {
-                                                data?.intMinimumServiceLengthMonth
-                                              }
+                                            <td>{index + 1}</td>
+                                            <td>
+                                              {data?.application?.strBonusName}
                                             </td>
                                             <td>
-                                              {data?.strBonusPercentageOn}
-                                            </td>
-                                            <td className="text-center">
-                                              {data?.numBonusPercentage}
-                                            </td>
-                                            <td className="action-col text-center">
-                                              {data?.strApproveStatus ===
-                                                "Approved" && (
-                                                <Chips
-                                                  label="Approved"
-                                                  classess="success"
-                                                />
+                                              {dateFormatter(
+                                                data?.application
+                                                  ?.dteEffectedDateTime
                                               )}
-                                              {data?.strApproveStatus ===
-                                                "Pending" && (
-                                                <div className="d-flex align-items-center justify-content-center">
-                                                  <div className="d-flex actionIcon">
-                                                    <Tooltip title="Approve">
-                                                      <div
-                                                        className="mr-2 muiIconHover success "
-                                                        onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          approveHandler(
-                                                            "Approve",
-                                                            data
-                                                          );
-                                                        }}
-                                                      >
-                                                        <MuiIcon
-                                                          icon={
-                                                            <CheckCircle
-                                                              sx={{
-                                                                color:
-                                                                  successColor,
-                                                              }}
-                                                            />
-                                                          }
-                                                        />
-                                                      </div>
-                                                    </Tooltip>
-                                                    <Tooltip title="Reject">
-                                                      <div
-                                                        className="muiIconHover  danger"
-                                                        onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          rejectHandler(
-                                                            "Reject",
-                                                            data
-                                                          );
-                                                        }}
-                                                      >
-                                                        <MuiIcon
-                                                          icon={
-                                                            <Cancel
-                                                              sx={{
-                                                                color:
-                                                                  failColor,
-                                                              }}
-                                                            />
-                                                          }
-                                                        />
-                                                      </div>
-                                                    </Tooltip>
-                                                  </div>
-                                                </div>
-                                              )}
-                                              {data?.strApproveStatus ===
-                                                "Rejected" && (
-                                                <>
+                                            </td>
+                                            <td className="text-left">
+                                              {
+                                                data?.application
+                                                  ?.numBonusAmount
+                                              }
+                                            </td>
+
+                                            <td className="action-col text-right">
+                                              <div
+                                                className="text-right action-chip"
+                                                style={{ width: "70px" }}
+                                              >
+                                                {data?.application
+                                                  ?.strStatus ===
+                                                  "Approved" && (
+                                                  <Chips
+                                                    label="Approved"
+                                                    classess="success"
+                                                  />
+                                                )}
+                                                {data?.application
+                                                  ?.strStatus === "Pending" && (
+                                                  <>
+                                                    <div className="actionChip">
+                                                      <Chips
+                                                        label="Pending"
+                                                        classess=" warning"
+                                                      />
+                                                    </div>
+                                                    <div className="d-flex actionIcon justify-content-right">
+                                                      <Tooltip title="Accept">
+                                                        <div
+                                                          className="mx-2 muiIconHover success "
+                                                          onClick={() => {
+                                                            demoPopupForTable(
+                                                              "approve",
+                                                              "Approve",
+                                                              data
+                                                            );
+                                                          }}
+                                                        >
+                                                          <MuiIcon
+                                                            icon={
+                                                              <CheckCircle
+                                                                sx={{
+                                                                  color:
+                                                                    "#34A853",
+                                                                }}
+                                                              />
+                                                            }
+                                                          />
+                                                        </div>
+                                                      </Tooltip>
+                                                      <Tooltip title="Reject">
+                                                        <div
+                                                          className="muiIconHover danger"
+                                                          onClick={() => {
+                                                            demoPopupForTable(
+                                                              "reject", "Reject", data
+                                                            );
+                                                          }}
+                                                        >
+                                                          <MuiIcon
+                                                            icon={
+                                                              <Cancel
+                                                                sx={{
+                                                                  color:
+                                                                    "#FF696C",
+                                                                }}
+                                                              />
+                                                            }
+                                                          />
+                                                        </div>
+                                                      </Tooltip>
+                                                    </div>
+                                                  </>
+                                                )}
+                                                {data?.application
+                                                  ?.strStatus ===
+                                                  "Rejected" && (
                                                   <Chips
                                                     label="Rejected"
-                                                    classess="p-2"
-                                                    style={{
-                                                      background: "#FFE2E1",
-                                                      color: "#BD3044",
-                                                    }}
+                                                    classess="danger"
                                                   />
-                                                </>
-                                              )}
+                                                )}
+                                              </div>
                                             </td>
                                           </tr>
                                         </>
