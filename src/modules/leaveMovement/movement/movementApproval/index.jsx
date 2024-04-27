@@ -30,6 +30,7 @@ import NoResult from "../../../../common/NoResult";
 import AntTable from "../../../../common/AntTable";
 import { LightTooltip } from "../../../../common/LightTooltip";
 import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   search: "",
@@ -566,7 +567,33 @@ export default function MovementApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton title={"Movement Approval"} />
+                          <div className="d-flex align-items-center">
+                            <BackButton title={"Movement Approval"} />
+                            {filterLanding?.filter(
+                              (item) => item?.selectCheckbox
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-3",
+                                  onApprove: () => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      filterLanding
+                                    );
+                                  },
+                                  onReject: () => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      filterLanding
+                                    );
+                                  },
+                                }}
+                              />
+                            ) : null}
+                          </div>
+                          {/* <BackButton title={"Movement Approval"} />
                           <div>
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
@@ -598,60 +625,7 @@ export default function MovementApproval() {
                                 </button>
                               </div>
                             )}
-                            {/*   <ul className="d-flex flex-wrap">
-                              {isFilter && (
-                                <li>
-                                  <ResetButton
-                                    title="reset"
-                                    icon={
-                                      <SettingsBackupRestoreOutlined
-                                        sx={{ marginRight: "10px" }}
-                                      />
-                                    }
-                                    onClick={() => {
-                                      setIsFilter(false);
-                                      setFieldValue("search", "");
-                                      setAppliedStatus({
-                                        value: 1,
-                                        label: "Pending",
-                                      });
-                                      getLandingData();
-                                    }}
-                                  />
-                                </li>
-                              )}
-                              {permission?.isCreate && (
-                                <li>
-                                  <MasterFilter
-                                    styles={{
-                                      marginRight: "0px",
-                                    }}
-                                    isHiddenFilter
-                                    width="200px"
-                                    inputWidth="200px"
-                                    value={values?.search}
-                                    setValue={(value) => {
-                                      debounce(() => {
-                                        searchData(
-                                          value,
-                                          allData,
-                                          setApplicationListData
-                                        );
-                                      }, 500);
-                                      setFieldValue("search", value);
-                                    }}
-                                    cancelHandler={() => {
-                                      setFieldValue("search", "");
-                                      getLandingData(); // isSupOrLineManager?.value 
-                                    }}
-                                    handleClick={(e) =>
-                                      setfilterAnchorEl(e.currentTarget)
-                                    }
-                                  />
-                                </li>
-                              )}
-                            </ul> */}
-                          </div>
+                          </div> */}
                         </div>
                         <FilterBadgeComponent
                           propsObj={{

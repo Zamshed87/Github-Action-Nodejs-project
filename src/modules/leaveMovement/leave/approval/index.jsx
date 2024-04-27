@@ -48,6 +48,7 @@ import SingleNotice from "./component/SingleNotice";
 import LeaveApprovalEditForm from "./component/editForm";
 import "./leaveApproval.css";
 import ViewFormComponent from "./view-form";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   searchString: "",
@@ -701,10 +702,32 @@ export default function LeaveApproval() {
                           <div className="heading mt-2">
                             <div className="d-flex align-items-center">
                               <BackButton title={"Leave Approval"} />
+                              {filterData?.listData?.filter(
+                                (item) => item?.selectCheckbox
+                              ).length > 0 ? (
+                                <ApproveRejectComp
+                                  props={{
+                                    onApprove: () => {
+                                      demoPopup(
+                                        "approve",
+                                        "isApproved",
+                                        applicationData
+                                      );
+                                    },
+                                    onReject: () => {
+                                      demoPopup(
+                                        "reject",
+                                        "isReject",
+                                        applicationData
+                                      );
+                                    },
+                                  }}
+                                />
+                              ) : null}
                             </div>
 
                             <div>
-                              {filterData?.listData?.filter(
+                              {/* {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
                               ).length > 0 && (
                                 <div className="d-flex actionIcon">
@@ -733,7 +756,7 @@ export default function LeaveApproval() {
                                     Reject
                                   </button>
                                 </div>
-                              )}
+                              )} */}
                               <ul className="d-flex flex-wrap">
                                 {isFilter && (
                                   <li>
