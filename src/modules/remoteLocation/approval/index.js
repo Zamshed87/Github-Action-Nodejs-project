@@ -1,5 +1,6 @@
 import { Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import ApproveRejectComp from "common/ApproveRejectComp";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -364,39 +365,32 @@ const MasterLocationRegistration = () => {
                   <div className="col-md-12">
                     <div className="table-card">
                       <div className="table-card-heading">
-                        <BackButton title={"Location Approval"} />
-                        <div>
+                        <div className="d-flex align-items-center">
+                          <BackButton title={"Location Approval"} />
                           {filteredData &&
-                            filteredData?.listData?.filter(
-                              (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
-                                    demoPopup(
-                                      "approve",
-                                      "isApproved",
-                                      applicationData
-                                    );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
-                                    demoPopup(
-                                      "reject",
-                                      "isReject",
-                                      applicationData
-                                    );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            )}
+                          filteredData?.listData?.filter(
+                            (item) => item?.selectCheckbox
+                          ).length > 0 ? (
+                            <ApproveRejectComp
+                              props={{
+                                className: "ml-3",
+                                onApprove: () => {
+                                  demoPopup(
+                                    "approve",
+                                    "isApproved",
+                                    applicationData
+                                  );
+                                },
+                                onReject: () => {
+                                  demoPopup(
+                                    "reject",
+                                    "isReject",
+                                    applicationData
+                                  );
+                                },
+                              }}
+                            />
+                          ) : null}
                         </div>
                       </div>
                       <div className="table-card-body">

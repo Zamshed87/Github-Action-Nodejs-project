@@ -50,6 +50,8 @@ font-family: 'Inter', sans-serif;
   --label-color: #666666 !important;
   --menu-bg: #eaeaea !important;
   --toast-error: #f11014 !important;
+  --fail: #F04438 !important;
+  --fail-bg: #FEE4E2 !important;
 
   --light-red: #ffeeee !important;
   --light-sky: #eefbff !important;

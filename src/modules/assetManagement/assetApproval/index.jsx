@@ -1,9 +1,9 @@
 import {
   Cancel,
-  CheckCircle,
-  SettingsBackupRestoreOutlined,
+  CheckCircle
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import ApproveRejectComp from "common/ApproveRejectComp";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -13,11 +13,10 @@ import BackButton from "../../../common/BackButton";
 import Chips from "../../../common/Chips";
 import FormikCheckBox from "../../../common/FormikCheckbox";
 import IConfirmModal from "../../../common/IConfirmModal";
-import Loading from "../../../common/loading/Loading";
 import MuiIcon from "../../../common/MuiIcon";
 import NoResult from "../../../common/NoResult";
+import Loading from "../../../common/loading/Loading";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
-import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import {
   failColor,
@@ -28,6 +27,8 @@ import {
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { AssetApproveReject, getAssetListDataForApproval } from "./helper";
 import "./index.css";
+
+// import { DatePicker } from "@mui/lab";
 
 const initData = {
   search: "",
@@ -52,7 +53,6 @@ export default function AssetApproval() {
   const [applicationListData, setApplicationListData] = useState([]);
   const [applicationData, setApplicationData] = useState([]);
   const [allData, setAllData] = useState();
-  const [isFilter, setIsFilter] = useState(false);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
 
@@ -487,84 +487,31 @@ export default function AssetApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton title={"Asset Approval"} />
-                          <div>
+                          <div className="d-flex align-items-center">
+                            <BackButton title={"Asset Approval"} />
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-3",
+                                  onApprove: () => {
                                     demoPopup(
                                       "approve",
                                       "isApproved",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
+                                  },
+                                  onReject: () => {
                                     demoPopup(
                                       "reject",
                                       "isReject",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            )}
-                            <ul className="d-flex flex-wrap">
-                              {isFilter && (
-                                <li>
-                                  <ResetButton
-                                    title="reset"
-                                    icon={
-                                      <SettingsBackupRestoreOutlined
-                                        sx={{ marginRight: "10px" }}
-                                      />
-                                    }
-                                    onClick={() => {
-                                      setIsFilter(false);
-                                      setFieldValue("search", "");
-                                      getLandingData();
-                                    }}
-                                  />
-                                </li>
-                              )}
-                              {permission?.isCreate && (
-                                <li>
-                                  {/* <MasterFilter
-                                    styles={{
-                                      marginRight: "0px",
-                                    }}
-                                    isHiddenFilter
-                                    width="200px"
-                                    inputWidth="200px"
-                                    value={values?.search}
-                                    setValue={(value) => {
-                                      debounce(() => {
-                                        searchData(
-                                          value,
-                                          allData,
-                                          setApplicationListData
-                                        );
-                                      }, 500);
-                                      setFieldValue("search", value);
-                                    }}
-                                    cancelHandler={() => {
-                                      setFieldValue("search", "");
-                                      getLandingData();
-                                    }}
-                                  /> */}
-                                </li>
-                              )}
-                            </ul>
+                                  },
+                                }}
+                              />
+                            ) : null}
                           </div>
                         </div>
                         {permission?.isCreate ? (

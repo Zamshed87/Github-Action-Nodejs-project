@@ -37,6 +37,8 @@ import AvatarComponent from "../../../common/AvatarComponent";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import Chips from "../../../common/Chips";
 import AntTable from "../../../common/AntTable";
+import { LightTooltip } from "common/LightTooltip";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   search: "",
@@ -344,22 +346,6 @@ export default function AdjustmentIOUApproval() {
     document.title = "Adjustment IOU Approval";
   }, [dispatch]);
 
-  // landing table
-  const LightTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-  ))(() => ({
-    [`& .${tooltipClasses.arrow}`]: {
-      color: "#fff !important",
-    },
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: "#fff",
-      color: "rgba(0, 0, 0, 0.87)",
-      boxShadow:
-        "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
-      fontSize: 11,
-    },
-  }));
-
   const getLandingTable = (setFieldValue) => {
     return [
       {
@@ -652,38 +638,33 @@ export default function AdjustmentIOUApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton title={"Adjustment IOU Approval"} />
-                          <div>
+                          <div className="d-flex align-items-center">
+                            <BackButton title={"Adjustment IOU Approval"} />
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-3",
+                                  onApprove: () => {
                                     demoPopup(
                                       "approve",
                                       "isApproved",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
+                                  },
+                                  onReject: () => {
                                     demoPopup(
                                       "reject",
                                       "isReject",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            )}
+                                  },
+                                }}
+                              />
+                            ) : null}
+                          </div>
+                          <div>
                             <ul className="d-flex flex-wrap">
                               {isFilter && (
                                 <li>
