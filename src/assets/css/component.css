@@ -2204,7 +2204,9 @@ p.uplaod-para:hover,
   font-size: 14px;
 }
 
-.custom-approve-reject-flex-btn .btn-approve,
+/* approval btn component css here  */
+
+/* .custom-approve-reject-flex-btn .btn-approve,
 .custom-approve-reject-flex-btn .btn-reject {
   border: none;
   border-radius: 25px;
@@ -2212,32 +2214,87 @@ p.uplaod-para:hover,
   border: none;
   height: 25px !important;
   width: 75px !important;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Smooth transition */
-
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   padding: 1px 8px !important;
   line-height: 18px;
   font-weight: 600;
   text-transform: capitalize;
+} */
+
+.custom-approve-reject-flex-btn .approval-btn-container-approve,
+.custom-approve-reject-flex-btn .approval-btn-container-reject {
+  border: none;
+  border-radius: 25px;
+  font-size: 12px;
+  border: none;
+  height: 25px !important;
+  width: 110px !important;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Smooth transition */
+  padding: 1px 2px 1px 2px !important;
+  line-height: 18px;
+  font-weight: 600;
+  text-transform: capitalize;
+  cursor: pointer;
 }
-.custom-approve-reject-flex-btn .btn-approve {
+.custom-approve-reject-flex-btn .approval-btn-container-reject {
+  width: 95px !important;
+}
+.custom-approve-reject-flex-btn .approval-btn-container-approve {
   color: var(--success);
   background: var(--success-bg);
   outline: 0.5px solid var(--success-bg);
 }
-.custom-approve-reject-flex-btn .btn-approve:hover {
+.custom-approve-reject-flex-btn .approval-btn-container-approve:hover {
   color: white;
   background: var(--success);
 }
-.custom-approve-reject-flex-btn .btn-reject {
+.custom-approve-reject-flex-btn .approval-btn-container-reject {
   color: var(--fail);
   border: 0.5px solid var(--fail) !important;
 }
-.custom-approve-reject-flex-btn .btn-reject:hover {
+.custom-approve-reject-flex-btn .approval-btn-container-reject:hover {
   color: white;
   background: var(--fail);
   outline: none;
 }
-/* 
 
---fail: #F04438 !important;
---fail-bg: #FEE4E2 !important; */
+.custom-approve-reject-flex-btn button {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 13px;
+}
+.custom-approve-reject-flex-btn .btn-approve {
+  color: var(--success);
+}
+.custom-approve-reject-flex-btn .btn-approve::before {
+  content: " ";
+  margin-right: 2px;
+}
+.custom-approve-reject-flex-btn
+  .approval-btn-container-approve:hover
+  .btn-approve {
+  color: white;
+}
+.custom-approve-reject-flex-btn .btn-reject {
+  color: var(--fail);
+}
+.custom-approve-reject-flex-btn .btn-reject::before {
+  content: " ";
+  margin-right: 2px;
+}
+.custom-approve-reject-flex-btn
+  .approval-btn-container-reject:hover
+  .btn-reject {
+  color: white;
+}
+.custom-approve-reject-flex-btn
+  .approval-btn-container-approve:hover
+  .icon-approve {
+  color: white !important;
+}
+.custom-approve-reject-flex-btn
+  .approval-btn-container-reject:hover
+  .icon-reject {
+  color: white !important;
+}
