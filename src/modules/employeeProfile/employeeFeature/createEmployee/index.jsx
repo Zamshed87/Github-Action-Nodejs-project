@@ -238,9 +238,9 @@ const CreateAndEditEmploye = () => {
       method: "GET",
       params: {
         DDLType: "Calender",
-        IntWorkplaceId: workplace?.value || wId,
+        IntWorkplaceId: workplace?.value,
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value || wgId,
+        WorkplaceGroupId: workplaceGroup?.value,
         intId: 0, // employeeId, Previously set 0
       },
       onSuccess: (res) => {
@@ -774,6 +774,8 @@ const CreateAndEditEmploye = () => {
                       });
                       if (value) {
                         getWorkplace();
+                        getCalendarDDL();
+
                         // getUserTypeDDL();
                         getUserTypeDDL();
                         getHolidayGroupDDL();
@@ -1410,7 +1412,7 @@ const CreateAndEditEmploye = () => {
                       <>
                         <Form.Item shouldUpdate noStyle>
                           {() => {
-                            const { workplaceGroup, calenderType } =
+                            const { workplaceGroup, calenderType, workplace } =
                               form.getFieldsValue(true);
                             return (
                               <>
@@ -1459,7 +1461,7 @@ const CreateAndEditEmploye = () => {
                                         ? `Roster Name`
                                         : `Calendar Name`
                                     }
-                                    disabled={!workplaceGroup}
+                                    disabled={!workplace}
                                     onChange={(value, op) => {
                                       form.setFieldsValue({
                                         calender: op,
@@ -1483,7 +1485,7 @@ const CreateAndEditEmploye = () => {
                                         name="startingCalender"
                                         label="Starting Calendar"
                                         placeholder={"Starting Calendar"}
-                                        disabled={!workplaceGroup}
+                                        disabled={!workplace}
                                         onChange={(value, op) => {
                                           form.setFieldsValue({
                                             startingCalender: op,
