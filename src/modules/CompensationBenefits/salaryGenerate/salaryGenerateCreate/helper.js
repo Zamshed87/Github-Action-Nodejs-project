@@ -320,6 +320,12 @@ export const salaryGenerateCreateEditTableColumn = (
     filter: true,
   },
   {
+    title: "HR Position",
+    dataIndex: "strHRPostionName",
+    sorter: true,
+    filter: true,
+  },
+  {
     title: "Department",
     dataIndex: "strDepartment",
     sorter: true,
