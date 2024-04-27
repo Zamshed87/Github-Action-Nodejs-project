@@ -552,39 +552,6 @@ export default function SalaryGenerateApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton title={"Salary Generate Approval"} />
-                          <div>
-                            {applicationListData?.listData?.filter(
-                              (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
-                                    demoPopup(
-                                      "approve",
-                                      "isApproved",
-                                      applicationData
-                                    );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
-                                    demoPopup(
-                                      "reject",
-                                      "isReject",
-                                      applicationData
-                                    );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            )}
-                          </div>
                           <div className="d-flex align-items-center">
                             <BackButton title={"Salary Generate Approval"} />
                             {applicationListData?.listData?.filter(

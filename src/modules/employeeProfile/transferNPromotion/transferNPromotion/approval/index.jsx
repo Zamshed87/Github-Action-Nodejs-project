@@ -765,6 +765,7 @@ export default function TransferNPromotionApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
+                          
                           <div className="d-flex align-items-center">
                             <BackButton
                               title={"Transfer And Promotion Approval"}
@@ -793,101 +794,7 @@ export default function TransferNPromotionApproval() {
                               />
                             ) : null}
                           </div>
-                          {/* <div> */}
-                          {/* {filterData?.listData?.filter(
-                            (item) => item?.selectCheckbox
-                          ).length > 0 && (
-                            <div className="d-flex justify-content-between actionIcon">
-                              <Tooltip title="Accept">
-                                <div
-                                  className="d-flex align-items-center pointer approvalApproveContainer"
-                                  style={{
-                                    width: "100px",
-                                    // background: successBg,
-                                    padding: "5px 10px",
-                                    borderRadius: "12px",
-                                  }}
-                                >
-                                  <div
-                                    className="muiIconHover success"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                  <p
-                                    className="ml-2"
-                                    style={{
-                                      color: successColor,
-                                    }}
-                                  >
-                                    Approve ?
-                                  </p>
-                                </div>
-                              </Tooltip>
-                              <Tooltip title="Reject">
-                                <div
-                                  className="d-flex align-items-center pointer approvalRejectContainer"
-                                  style={{
-                                    // width: "100px",
-                                    padding: "5px 10px",
-                                    borderRadius: "12px",
-                                    marginLeft: "5px",
-                                    // `&:hover`: { background: warningBg },
-                                  }}
-                                >
-                                  <div
-                                    className="muiIconHover  danger "
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                  <p
-                                    className="ml-2"
-                                    style={{
-                                      color: failColor,
-                                    }}
-                                  >
-                                    Reject ?
-                                  </p>
-                                </div>
-                              </Tooltip>
-                            </div>
-                          )} */}
-                          {/* </div> */}
+                        
                         </div>
 
                         {permission?.isCreate ? (
