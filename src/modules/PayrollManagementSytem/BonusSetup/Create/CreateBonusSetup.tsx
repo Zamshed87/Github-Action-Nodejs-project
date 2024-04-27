@@ -42,8 +42,8 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       },
       hrPosition: [
         {
-          label: state?.HrPositionName || "",
-          value: state?.HrPositionId || 0,
+          label: state?.hrPositionName || "",
+          value: state?.hrPositionId || 0,
         },
       ],
       employmentType: [
@@ -63,7 +63,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
           value: state?.intReligion || 0,
         },
       ],
-      serviceLengthType: state?.IsServiceLengthInDays
+      serviceLengthType: state?.isServiceLengthInDays
         ? {
             label: "Day",
             value: 1,
@@ -76,7 +76,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       minServiceLengthDay: state?.intMinimumServiceLengthDays || 0,
       maxServiceLengthMonth: state?.intMaximumServiceLengthMonth || 0,
       maxServiceLengthDay: state?.intMaximumServiceLengthDays,
-      isDividedByLength: state?.IsDividedbyServiceLength,
+      isDividedByLength: state?.isDividedbyServiceLength,
     };
     if (state) {
       form.setFieldsValue(formData);

@@ -258,7 +258,7 @@ export default function BonusSetupLanding() {
       },
       {
         title: "Service Length Type",
-        render: (_, item) => (
+        render: (item) => (
           <>{item?.IsServiceLengthInDays ? "Days" : "Month"}</>
         ),
         sort: true,
@@ -267,7 +267,7 @@ export default function BonusSetupLanding() {
       {
         title: "Min. Service Length",
         // dataIndex: "intMinimumServiceLengthMonth",
-        render: (_, item) => (
+        render: (item) => (
           <>
             {item?.intMinimumServiceLengthMonth > 0
               ? item?.intMinimumServiceLengthMonth
@@ -280,7 +280,7 @@ export default function BonusSetupLanding() {
       {
         title: `Max. Service Length`,
         // dataIndex: "intMaximumServiceLengthMonth",
-        render: (_, item) => (
+        render: (item) => (
           <>
             {item?.intMaximumServiceLengthMonth > 0
               ? item?.intMaximumServiceLengthMonth
@@ -305,7 +305,7 @@ export default function BonusSetupLanding() {
       {
         title: "Divided by Service Length",
         dataIndex: "IsDividedbyServiceLength",
-        render: (data) => <>{data ? "True" : "False"}</>,
+        render: (data) => <>{data?.isDividedbyServiceLength ? "True" : "False"}</>,
         sort: true,
         filter: false,
       },

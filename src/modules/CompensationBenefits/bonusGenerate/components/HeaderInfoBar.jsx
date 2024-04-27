@@ -29,7 +29,7 @@ const HeaderInfoBar = ({ data, setLoading }) => {
       intBonusId: values?.intBonusId,
       intPayrollGroupId: values?.intPayrollGroupId,
       intWorkplaceId: values?.intWorkplaceId,
-      intWorkplaceGroupId: values?.intWorkplaceGroupId,
+      workplaceGroupId: values?.intWorkplaceGroupId,
       intReligionId: values?.intReligionId,
       dteEffectedDate: values?.dteEffectedDateTime,
       intCreatedBy: employeeId,

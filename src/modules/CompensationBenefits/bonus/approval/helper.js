@@ -24,12 +24,12 @@ export const getBonusGenerateRequestReport = async (
   setLoading && setLoading(true);
   try {
     const res = await axios.post(
-      `/emp/BonusManagement/BonusAllLanding`,
+      `/ApprovalPipeline/BonusGenerateHeaderLandingEngine`,
       payload
     );
-    if (res?.data) {
-      setAllData && setAllData(res?.data);
-      setter(res?.data);
+    if (res?.data?.listData) {
+      setAllData && setAllData(res?.data?.listData);
+      setter(res?.data?.listData);
       setLoading && setLoading(false);
       cb && cb();
     }
@@ -41,7 +41,7 @@ export const getBonusGenerateRequestReport = async (
 export const bonusApproveRejectRequest = async (payload, cb) => {
   try {
     const res = await axios.post(
-      `/emp/BonusManagement/CRUDBonusGenerate`,
+      `/ApprovalPipeline/BonusGenerateHeaderApprovalEngine`,
       payload
     );
     toast.success(res?.data?.message || "Successfully submitted");
