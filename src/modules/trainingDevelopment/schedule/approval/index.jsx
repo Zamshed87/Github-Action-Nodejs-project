@@ -10,6 +10,7 @@ import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 import { scheduleApprovalColumn } from "./helper";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   search: "",
@@ -88,18 +89,6 @@ export default function TrainingScheduleApproval() {
   useEffect(() => {
     getLandingData();
   }, [employeeId, wId]);
-
-  // const searchData = (keywords, allData, setRowDto) => {
-  //   try {
-  //     const regex = new RegExp(keywords?.toLowerCase());
-  //     let newDta = allData?.listData?.filter((item) =>
-  //       regex.test(item?.employeeName?.toLowerCase())
-  //     );
-  //     setRowDto({ listData: newDta });
-  //   } catch {
-  //     setRowDto([]);
-  //   }
-  // };
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
   let permission = null;
@@ -196,38 +185,31 @@ export default function TrainingScheduleApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton title={"Training Schedule Approval"} />
-                          <div>
+                          <div className="d-flex align-items-center">
+                            <BackButton title={"Training Schedule Approval"} />
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-3",
+                                  onApprove: () => {
                                     demoPopup(
                                       "approve",
                                       "isApproved",
                                       filterLanding
                                     );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
+                                  },
+                                  onReject: () => {
                                     demoPopup(
                                       "reject",
                                       "isReject",
                                       filterLanding
                                     );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            )}
+                                  },
+                                }}
+                              />
+                            ) : null}
                           </div>
                         </div>
                         {permission?.isCreate ? (

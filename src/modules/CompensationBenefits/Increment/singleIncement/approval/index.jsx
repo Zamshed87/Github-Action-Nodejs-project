@@ -14,6 +14,7 @@ import {
   getAllIncrementAndPromotionListDataForApproval,
   incrementNPromotionApproveReject,
 } from "./helper";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   search: "",
@@ -186,22 +187,13 @@ export default function IncrementNPromotionApproval() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-          dirty,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -211,138 +203,31 @@ export default function IncrementNPromotionApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton title={"Increment Approval"} />
-                          <div>
+                          <div className="d-flex align-items-center">
+                            <BackButton title={"Increment Approval"} />
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-3",
+                                  onApprove: () => {
                                     demoPopup(
                                       "approve",
                                       "isApproved",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                {/* <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip> */}
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
+                                  },
+                                  onReject: () => {
                                     demoPopup(
                                       "reject",
                                       "isReject",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                                {/* <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip> */}
-                              </div>
-                            )}
-                            <ul className="d-flex flex-wrap">
-                              {/* {isFilter && (
-                                <li>
-                                  <ResetButton
-                                    title="reset"
-                                    icon={
-                                      <SettingsBackupRestoreOutlined
-                                        sx={{ marginRight: "10px" }}
-                                      />
-                                    }
-                                    onClick={() => {
-                                      setIsFilter(false);
-                                      setFieldValue("search", "");
-                                      setAppliedStatus({
-                                        value: 1,
-                                        label: "Pending",
-                                      });
-                                      getLandingData();
-                                    }}
-                                  />
-                                </li>
-                              )} */}
-                              {/* {permission?.isCreate && (
-                                <li>
-                                  <MasterFilter
-                                    styles={{
-                                      marginRight: "0px",
-                                    }}
-                                    isHiddenFilter
-                                    width="200px"
-                                    inputWidth="200px"
-                                    value={values?.search}
-                                    setValue={(value) => {
-                                      debounce(() => {
-                                        searchData(
-                                          value,
-                                          allData,
-                                          setApplicationListData
-                                        );
-                                      }, 500);
-                                      setFieldValue("search", value);
-                                    }}
-                                    cancelHandler={() => {
-                                      setFieldValue("search", "");
-                                      getLandingData();
-                                    }}
-                                  />
-                                </li>
-                              )} */}
-                            </ul>
+                                  },
+                                }}
+                              />
+                            ) : null}
                           </div>
                         </div>
 

@@ -23,7 +23,9 @@ import {
   failColor,
   gray900,
   greenColor,
+  successBg,
   successColor,
+  warningBg,
 } from "../../../../../utility/customColor";
 import useDebounce from "../../../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../../../utility/dateFormatter";
@@ -36,6 +38,8 @@ import Chips from "../../../../../common/Chips";
 import NoResult from "../../../../../common/NoResult";
 import AntTable from "../../../../../common/AntTable";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import "../styles.css";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   search: "",
@@ -761,117 +765,36 @@ export default function TransferNPromotionApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton
-                            title={"Transfer And Promotion Approval"}
-                          />
-                          <div>
+                          
+                          <div className="d-flex align-items-center">
+                            <BackButton
+                              title={"Transfer And Promotion Approval"}
+                            />
                             {filterData?.listData?.filter(
                               (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <Tooltip title="Accept">
-                                  <div
-                                    className="muiIconHover success mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <CheckCircle
-                                          sx={{
-                                            color: successColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                                <Tooltip title="Reject">
-                                  <div
-                                    className="muiIconHover  danger"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    <MuiIcon
-                                      icon={
-                                        <Cancel
-                                          sx={{
-                                            color: failColor,
-                                            width: "25px !important",
-                                            height: "35px !important",
-                                            fontSize: "20px !important",
-                                          }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                                </Tooltip>
-                              </div>
-                            )}
-                            <ul className="d-flex flex-wrap">
-                              {isFilter && (
-                                <li>
-                                  <ResetButton
-                                    title="reset"
-                                    icon={
-                                      <SettingsBackupRestoreOutlined
-                                        sx={{ marginRight: "10px" }}
-                                      />
-                                    }
-                                    onClick={() => {
-                                      setIsFilter(false);
-                                      setFieldValue("search", "");
-                                      setAppliedStatus({
-                                        value: 1,
-                                        label: "Pending",
-                                      });
-                                      getLandingData();
-                                    }}
-                                  />
-                                </li>
-                              )}
-                              {/* {permission?.isCreate && (
-                                <li>
-                                  <MasterFilter
-                                    styles={{
-                                      marginRight: "0px",
-                                    }}
-                                    isHiddenFilter
-                                    width="200px"
-                                    inputWidth="200px"
-                                    value={values?.search}
-                                    setValue={(value) => {
-                                      debounce(() => {
-                                        searchData(
-                                          value,
-                                          allData,
-                                          setApplicationListData
-                                        );
-                                      }, 500);
-                                      setFieldValue("search", value);
-                                    }}
-                                    cancelHandler={() => {
-                                      setFieldValue("search", "");
-                                      getLandingData();
-                                    }}
-                                  />
-                                </li>
-                              )} */}
-                            </ul>
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-3",
+                                  onApprove: () => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      applicationData
+                                    );
+                                  },
+                                  onReject: () => {
+                                    demoPopup(
+                                      "reject",
+                                      "isReject",
+                                      applicationData
+                                    );
+                                  },
+                                }}
+                              />
+                            ) : null}
                           </div>
+                        
                         </div>
 
                         {permission?.isCreate ? (
