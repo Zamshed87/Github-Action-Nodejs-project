@@ -2204,23 +2204,7 @@ p.uplaod-para:hover,
   font-size: 14px;
 }
 
-/* approval btn component css here  */
-
-/* .custom-approve-reject-flex-btn .btn-approve,
-.custom-approve-reject-flex-btn .btn-reject {
-  border: none;
-  border-radius: 25px;
-  font-size: 12px;
-  border: none;
-  height: 25px !important;
-  width: 75px !important;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-  padding: 1px 8px !important;
-  line-height: 18px;
-  font-weight: 600;
-  text-transform: capitalize;
-} */
-
+/* approval btn component css here  ------------------------------ */
 .custom-approve-reject-flex-btn .approval-btn-container-approve,
 .custom-approve-reject-flex-btn .approval-btn-container-reject {
   border: none;
@@ -2257,7 +2241,6 @@ p.uplaod-para:hover,
   background: var(--fail);
   outline: none;
 }
-
 .custom-approve-reject-flex-btn button {
   border: none;
   outline: none;
@@ -2298,3 +2281,5 @@ p.uplaod-para:hover,
   .icon-reject {
   color: white !important;
 }
+/* approval btn component css end  ------------------------------ */
+

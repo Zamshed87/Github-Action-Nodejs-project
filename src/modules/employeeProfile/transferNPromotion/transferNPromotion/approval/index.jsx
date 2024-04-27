@@ -774,7 +774,7 @@ export default function TransferNPromotionApproval() {
                             ).length > 0 ? (
                               <ApproveRejectComp
                                 props={{
-                                  className: "ml-2",
+                                  className: "ml-3",
                                   onApprove: () => {
                                     demoPopup(
                                       "approve",

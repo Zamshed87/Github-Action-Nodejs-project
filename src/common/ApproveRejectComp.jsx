@@ -6,7 +6,7 @@ import { failColor, successColor } from "utility/customColor";
 const ApproveRejectComp = ({ props = {} }) => {
   const { className, onApprove = () => {}, onReject = () => {} } = props || {};
   return (
-    <div className={className}>
+    <div className={className ? className : "ml-3"}>
       <div
         style={{
           width: "180px",
