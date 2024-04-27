@@ -12,6 +12,7 @@ import FilterModal from "./component/FilterModal";
 import StyledTable from "./component/StyledTable";
 import { approveAttendance, getAttendanceApprovalLanding } from "./helper";
 import "./style.css";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   search: "",
@@ -164,85 +165,31 @@ export default function AttendanceApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton title={"Attendance Approval"} />
-                          <div>
+                          <div className="d-flex align-items-center">
+                            <BackButton title={"Attendance Approval"} />
                             {filterLanding?.filter(
                               (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-3",
+                                  onApprove: () => {
                                     demoPopup(
                                       "approve",
                                       "isApproved",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
+                                  },
+                                  onReject: () => {
                                     demoPopup(
                                       "reject",
                                       "isReject",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            )}
-                            {/*      <ul className="d-flex flex-wrap">
-                              {isFilter && (
-                                <li>
-                                  <ResetButton
-                                    title="reset"
-                                    icon={
-                                      <SettingsBackupRestoreOutlined
-                                        sx={{ marginRight: "10px" }}
-                                      />
-                                    }
-                                    onClick={() => {
-                                      setIsFilter(false);
-                                      setFieldValue("search", "");
-                                      getLandingData();
-                                    }}
-                                  />
-                                </li>
-                              )}
-                              {permission?.isCreate && (
-                                <li>
-                                  <MasterFilter
-                                    styles={{
-                                      marginRight: "0px",
-                                    }}
-                                    width="200px"
-                                    inputWidth="200px"
-                                    value={values?.search}
-                                    setValue={(value) => {
-                                      filterData(value, allData, setGridData);
-                                      setFieldValue("search", value);
-                                      if (value) {
-                                        setIsFilter(true);
-                                      } else {
-                                        setIsFilter(false);
-                                      }
-                                    }}
-                                    cancelHandler={() => {
-                                      setIsFilter(false);
-                                      setFieldValue("search", "");
-                                      getLandingData();
-                                    }}
-                                    handleClick={handleClick}
-                                    isHiddenFilter
-                                  />
-                                </li>
-                              )}
-                            </ul> */}
+                                  },
+                                }}
+                              />
+                            ) : null}
                           </div>
                         </div>
                         {permission?.isCreate ? (
