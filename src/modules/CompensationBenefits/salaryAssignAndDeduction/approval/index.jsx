@@ -5,27 +5,26 @@ import {
   CheckCircle,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import AntTable from "../../../../common/AntTable";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import BackButton from "../../../../common/BackButton";
 import Chips from "../../../../common/Chips";
 import FormikCheckBox from "../../../../common/FormikCheckbox";
 import IConfirmModal from "../../../../common/IConfirmModal";
-import Loading from "../../../../common/loading/Loading";
+import { LightTooltip } from "../../../../common/LightTooltip";
 import MasterFilter from "../../../../common/MasterFilter";
 import MuiIcon from "../../../../common/MuiIcon";
-import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import {
-  failColor,
-  gray900,
-  greenColor,
-  successColor,
-} from "../../../../utility/customColor";
+import { gray900, greenColor } from "../../../../utility/customColor";
 import useDebounce from "../../../../utility/customHooks/useDebounce";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import {
@@ -33,10 +32,7 @@ import {
   getAllAdditionNDeductionListDataForApproval,
 } from "../helper";
 import "./index.css";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import AntTable from "../../../../common/AntTable";
-import NoResult from "../../../../common/NoResult";
-import { LightTooltip } from "../../../../common/LightTooltip";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   search: "",
@@ -563,96 +559,35 @@ export default function AllowanceNDeductionApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton
-                            title={"Allowance & Deduction Approval"}
-                          />
-                          <div>
+                          <div className="d-flex align-items-center">
+                            <BackButton
+                              title={"Allowance & Deduction Approval"}
+                            />
                             {filterData?.listData?.filter(
                               (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-3",
+                                  onApprove: () => {
                                     demoPopup(
                                       "approve",
                                       "Approved",
                                       // applicationData
                                       filterData?.listData
                                     );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
+                                  },
+                                  onReject: () => {
                                     demoPopup(
                                       "reject",
                                       "Reject",
                                       // applicationData
                                       filterData?.listData
                                     );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            )}
-                            <ul className="d-flex flex-wrap">
-                              {isFilter && (
-                                <li className="d-none">
-                                  <ResetButton
-                                    title="reset"
-                                    icon={
-                                      <SettingsBackupRestoreOutlined
-                                        sx={{ marginRight: "10px" }}
-                                      />
-                                    }
-                                    onClick={() => {
-                                      setIsFilter(false);
-                                      setFieldValue("search", "");
-                                      setAppliedStatus({
-                                        value: 1,
-                                        label: "Pending",
-                                      });
-                                      getLandingData();
-                                    }}
-                                  />
-                                </li>
-                              )}
-                              {permission?.isCreate && (
-                                <li className="d-none">
-                                  <MasterFilter
-                                    styles={{
-                                      marginRight: "0px",
-                                    }}
-                                    isHiddenFilter
-                                    width="200px"
-                                    inputWidth="200px"
-                                    value={values?.search}
-                                    setValue={(value) => {
-                                      debounce(() => {
-                                        searchData(
-                                          value,
-                                          allData,
-                                          setApplicationListData
-                                        );
-                                      }, 500);
-                                      setFieldValue("search", value);
-                                    }}
-                                    cancelHandler={() => {
-                                      setFieldValue("search", "");
-                                      getLandingData();
-                                    }}
-                                    handleClick={
-                                      (e) => {}
-                                      // setfilterAnchorEl(e.currentTarget)
-                                    }
-                                  />
-                                </li>
-                              )}
-                            </ul>
+                                  },
+                                }}
+                              />
+                            ) : null}
                           </div>
                         </div>
                         {permission?.isCreate ? (

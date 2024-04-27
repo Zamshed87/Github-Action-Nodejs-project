@@ -4,20 +4,19 @@ import {
   InfoOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
-import { Tooltip, tooltipClasses } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { styled } from "@mui/styles";
 import BackButton from "../../../common/BackButton";
 import FilterBadgeComponent from "../../../common/FilterBadgeComponent";
 import IConfirmModal from "../../../common/IConfirmModal";
-import Loading from "../../../common/loading/Loading";
 import MasterFilter from "../../../common/MasterFilter";
 import MuiIcon from "../../../common/MuiIcon";
-import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../common/PopoverMasterFilter";
 import ResetButton from "../../../common/ResetButton";
+import Loading from "../../../common/loading/Loading";
+import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
 import {
   failColor,
@@ -27,16 +26,18 @@ import {
 } from "../../../utility/customColor";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import FilterModal from "./component/FilterModal";
-import { getAllIOUListDataForApproval, IOUApproveReject } from "./helper";
+import { IOUApproveReject, getAllIOUListDataForApproval } from "./helper";
 
+import ApproveRejectComp from "common/ApproveRejectComp";
+import { LightTooltip } from "common/LightTooltip";
+import AntTable from "../../../common/AntTable";
+import AvatarComponent from "../../../common/AvatarComponent";
+import Chips from "../../../common/Chips";
+import FormikCheckBox from "../../../common/FormikCheckbox";
+import NoResult from "../../../common/NoResult";
+import { dateFormatter } from "../../../utility/dateFormatter";
 import "./index.css";
 import ViewFormComponent from "./view-form";
-import FormikCheckBox from "../../../common/FormikCheckbox";
-import AvatarComponent from "../../../common/AvatarComponent";
-import { dateFormatter } from "../../../utility/dateFormatter";
-import Chips from "../../../common/Chips";
-import AntTable from "../../../common/AntTable";
-import NoResult from "../../../common/NoResult";
 
 const initData = {
   search: "",
@@ -299,14 +300,9 @@ export default function IOUApproval() {
     IConfirmModal(confirmObject);
   };
 
-  //  For cheaps future nedded
-  // const [filterDto, setFilterDto] = useState(...applicationListData);
-
-  // const history = useHistory();
-
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
-  let permission = null;
+  let permission = {};
   permissionList.forEach((item) => {
     if (item?.menuReferenceId === 30311) {
       permission = item;
@@ -319,22 +315,6 @@ export default function IOUApproval() {
     dispatch(setFirstLevelNameAction("Approval"));
     document.title = "IOU Approval";
   }, [dispatch]);
-
-  // landing table
-  const LightTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-  ))(() => ({
-    [`& .${tooltipClasses.arrow}`]: {
-      color: "#fff !important",
-    },
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: "#fff",
-      color: "rgba(0, 0, 0, 0.87)",
-      boxShadow:
-        "0px 1px 5px rgba(0, 0, 0, 0.05), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 2px 10px rgba(0, 0, 0, 0.08), 0px 1px 5px rgba(0, 0, 0, 0.05)",
-      fontSize: 11,
-    },
-  }));
 
   const getLandingTable = (setFieldValue, page, paginationSize) => {
     return [
@@ -643,38 +623,33 @@ export default function IOUApproval() {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <BackButton title={"IOU Approval"} />
-                          <div>
+                          <div className="d-flex align-items-center">
+                            <BackButton title={"IOU Approval"} />
                             {applicationListData?.listData?.filter(
                               (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon mr-3">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
+                            ).length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  className: "ml-3",
+                                  onApprove: () => {
                                     demoPopup(
                                       "approve",
                                       "isApproved",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
+                                  },
+                                  onReject: () => {
                                     demoPopup(
                                       "reject",
                                       "isReject",
                                       applicationData
                                     );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            )}
+                                  },
+                                }}
+                              />
+                            ) : null}
+                          </div>
+                          <div>
                             <ul className="d-flex flex-wrap">
                               {isFilter && (
                                 <li>
