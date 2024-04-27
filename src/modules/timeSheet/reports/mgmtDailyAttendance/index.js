@@ -63,7 +63,7 @@ const MgmtDailyAttendance = () => {
   const dispatch = useDispatch();
   const landingApi = useApiRequest({});
 
-  const { buId, wgId, wId, orgId, employeeId } = useSelector(
+  const { buId, wgId, wId, orgId, employeeId, buName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -83,7 +83,7 @@ const MgmtDailyAttendance = () => {
     pageSize: paginationSize,
     total: 0,
   });
- 
+
   const debounce = useDebounce();
 
   //  menu permission
@@ -94,7 +94,6 @@ const MgmtDailyAttendance = () => {
     }
   });
 
-  
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
     filerList,
@@ -254,10 +253,11 @@ const MgmtDailyAttendance = () => {
       dataIndex: "calender",
       sorter: true,
       filter: true,
-      filterKey: "calender",
+      filterKey: "calenderList",
       filterSearch: true,
       width: 50,
     },
+
     {
       title: "In Time",
       dataIndex: "inTime",
@@ -427,17 +427,16 @@ const MgmtDailyAttendance = () => {
                                   e.stopPropagation();
                                   const excelLanding = async () => {
                                     try {
-                             
-
                                       if (landingApi?.data?.data?.length > 0) {
-                                        const newData = landingApi?.data?.data?.map(
-                                          (item, index) => {
-                                            return {
-                                              ...item,
-                                              sl: index + 1,
-                                            };
-                                          }
-                                        );
+                                        const newData =
+                                          landingApi?.data?.data?.map(
+                                            (item, index) => {
+                                              return {
+                                                ...item,
+                                                sl: index + 1,
+                                              };
+                                            }
+                                          );
                                         // const date = todayDate();
 
                                         createCommonExcelFile({
@@ -445,7 +444,10 @@ const MgmtDailyAttendance = () => {
                                           fromDate: "",
                                           toDate: "",
                                           buAddress: buDetails?.strAddress,
-                                          businessUnit: buDetails?.strWorkplace,
+                                          businessUnit: values?.workplaceGroup
+                                            ?.value
+                                            ? buDetails?.strWorkplace
+                                            : buName,
                                           tableHeader: column,
                                           getTableData: () =>
                                             getTableDataDailyAttendance(
@@ -733,7 +735,6 @@ const MgmtDailyAttendance = () => {
                   </div>
                 </div>
                 <div>
-                 
                   <DataTable
                     bordered
                     data={landingApi?.data?.data || []}
