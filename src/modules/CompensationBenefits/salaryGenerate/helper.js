@@ -57,6 +57,7 @@ export const getSalaryGenerateRequestLanding = async (
   const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
   // Joining the values into a string separated by commas
   const workplaceListFromValues = valueArray.join(",");
+  const valueArrayHRPosition = values?.hrPosition?.map((obj) => obj.value);
   // const workplaceListFromValues ='"' + valueArray.join(',') + '"';
 
   const fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
@@ -80,7 +81,9 @@ export const getSalaryGenerateRequestLanding = async (
   }${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`;
 
   if (partName === `EmployeeListForSalaryGenerateRequest`) {
-    api += `&strWorkplaceIdList=${workplaceListFromValues || wId}`;
+    api += `&strWorkplaceIdList=${
+      workplaceListFromValues || wId
+    }&strHrPositionIdList=${valueArrayHRPosition || 0}`;
   } else if (partName === `SalaryGenerateRequestLanding`) {
     api += `&strSalaryCode=${values?.salaryCode?.strSalaryCode || ""}`;
   } else if (partName === `SalaryGenerateRequestRowByRequestId`) {
@@ -107,7 +110,6 @@ export const getSalaryGenerateRequestLanding = async (
     setLoading && setLoading(false);
   }
 };
-
 
 // salary generate landing by id in salary process
 export const getSalaryGenerateRequestById = async (
@@ -203,7 +205,7 @@ export const getSalaryGenerateRequestLandingById = async (
   wing = 0,
   soleDepo = 0,
   region = 0,
-  area = 0,
+  area = 0
   // territory = 0
 ) => {
   setLoading && setLoading(true);
@@ -245,13 +247,23 @@ export const getSalaryGenerateRequestLandingById = async (
       // new employee load
       if (isMarge) {
         setLoading && setLoading(true);
-        const valueArray = values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+        const valueArray =
+          values?.workplace?.map((obj) => obj?.intWorkplaceId) || [];
+        const valueArrayHRPosition = values?.hrPosition?.map(
+          (obj) => obj.value
+        );
         // Joining the values into a string separated by commas
         const workplaceListFromValues = valueArray.join(",");
         try {
           setLoading && setLoading(false);
           const secondRes = await axios.get(
-            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}&IntPageSize=${pages?.pageSize}&strWorkplaceIdList=${workplaceListFromValues || wId}${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
+            `/Payroll/SalarySelectQueryAll?partName=EmployeeListForSalaryGenerateRequest&intBusinessUnitId=${buId}&intMonthId=${monthId}&intYearId=${yearId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}&IntPageSize=${
+              pages?.pageSize
+            }&strWorkplaceIdList=${
+              workplaceListFromValues || wId
+            }&strHrPositionIdList=${
+              valueArrayHRPosition || 0
+            }${fromDateParams}${toDateParams}${wingParams}${soleDepoParams}${regionParams}${areaParams}${territoryParams}`
           );
 
           if (secondRes?.data) {
@@ -310,7 +322,8 @@ export const getSalaryGenerateRequestHeaderId = async (
       // month default
       const initYear = res?.data[0]?.intYear; // 2022
       const initMonth = res?.data[0]?.intMonth; // 6
-      const modifyMonthResult = initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
+      const modifyMonthResult =
+        initMonth <= 9 ? `0${initMonth}` : `${initMonth}`;
 
       const modifyObj = {
         ...res?.data[0],

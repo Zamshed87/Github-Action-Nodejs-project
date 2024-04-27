@@ -59,6 +59,7 @@ const SalaryGenerateCreate = () => {
   const [takeHomePayTax, setTakeHomePayTax] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
+  const [hrPositionDDL, setHrPositionDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: 500,
@@ -145,6 +146,7 @@ const SalaryGenerateCreate = () => {
 
   useEffect(() => {
     setFieldValue("workplace", []);
+    setFieldValue("hrPosition", []);
     setRowDto([]);
   }, [wgId]);
 
@@ -177,6 +179,7 @@ const SalaryGenerateCreate = () => {
       );
     }
     setFieldValue("workplace", []);
+    setFieldValue("hrPosition", []);
   }, [params, orgId, wgId, buId]);
   const saveHandler = async (values) => {
     const { empIdList, payload, callback } = salaryGeneratepayloadHandler(
@@ -262,8 +265,9 @@ const SalaryGenerateCreate = () => {
       strEmpIdList: isAllAssign ? allEmployeeString : empIdList.join(","),
     };
     const callback = () => {
-      setAllEmployeeString("")
+      setAllEmployeeString("");
       setFieldValue("workplace", []);
+      setFieldValue("hrPosition", []);
       setAllAssign(false);
       if (+params?.id) {
         getSalaryGenerateRequestLandingById(
@@ -300,7 +304,7 @@ const SalaryGenerateCreate = () => {
         resetForm(salaryGenerateInitialValues);
         setIsEdit(false);
         setRowDto([]);
-        setAllEmployeeString("")
+        setAllEmployeeString("");
       }
     };
     return { empIdList, payload, callback };
@@ -650,6 +654,15 @@ const SalaryGenerateCreate = () => {
                         value={values?.workplace}
                         onChange={(valueOption) => {
                           setFieldValue("workplace", valueOption);
+                          const values = valueOption.map((item) => item.value);
+                          const valuesStr = values.join(",");
+
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${valuesStr}&BusinessUnitId=${buId}&intId=0`,
+                            "PositionId",
+                            "PositionName",
+                            setHrPositionDDL
+                          );
                         }}
                         styles={{
                           ...customStyles,
@@ -693,6 +706,61 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
+
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>HR Position</label>
+                      <FormikSelect
+                        name="hrPosition"
+                        isClearable={false}
+                        options={hrPositionDDL || []}
+                        value={values?.hrPosition}
+                        onChange={(valueOption) => {
+                          
+                          setFieldValue("hrPosition", valueOption);
+                        }}
+                        styles={{
+                          ...customStyles,
+                          control: (provided, state) => ({
+                            ...provided,
+                            minHeight: "auto",
+                            height:
+                              values?.hrPosition?.length > 1 ? "auto" : "auto",
+                            borderRadius: "4px",
+                            boxShadow: `${success500}!important`,
+                            ":hover": {
+                              borderColor: `${gray600}!important`,
+                            },
+                            ":focus": {
+                              borderColor: `${gray600}!important`,
+                            },
+                          }),
+                          valueContainer: (provided, state) => ({
+                            ...provided,
+                            height:
+                              values?.hrPosition?.length > 1 ? "auto" : "auto",
+                            padding: "0 6px",
+                          }),
+                          multiValue: (styles) => {
+                            return {
+                              ...styles,
+                              position: "relative",
+                              top: "-1px",
+                            };
+                          },
+                          multiValueLabel: (styles) => ({
+                            ...styles,
+                            padding: "0",
+                          }),
+                        }}
+                        isMulti
+                        // isDisabled={singleData}
+                        errors={errors}
+                        placeholder="HR Position"
+                        touched={touched}
+                      />
+                    </div>
+                  </div>
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Description</label>
@@ -710,7 +778,7 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-9 d-flex">
+                  <div className="col-md-9 d-flex mt-4">
                     {values?.salaryTpe?.value === "PartialSalary" ? (
                       <button
                         style={{
