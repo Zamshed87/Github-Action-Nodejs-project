@@ -676,7 +676,6 @@ const PricingSetupForm = () => {
           mealType?.value === 2 ? moment(date).format("MMMM") : null,
       };
     });
-    console.log({ payload });
 
     if (rec?.intConfigId) {
       cafeEditApi.action({

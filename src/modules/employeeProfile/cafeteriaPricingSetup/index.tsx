@@ -110,7 +110,6 @@ const CafeteriaPricingLanding = () => {
             {
               type: "edit",
               onClick: () => {
-                console.log({ _, rec });
                 history.push({
                   pathname: `/profile/cafeteriaManagement/cafeteriaPricingSetup/pricingSetupForm/${rec?.intConfigId}`,
                   state: {
@@ -124,7 +123,6 @@ const CafeteriaPricingLanding = () => {
       ),
     },
   ];
-  console.log({ landing });
   return permission?.isView ? (
     <PCard>
       <PCardHeader
