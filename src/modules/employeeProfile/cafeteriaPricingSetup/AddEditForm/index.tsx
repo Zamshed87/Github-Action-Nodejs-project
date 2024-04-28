@@ -640,7 +640,7 @@ const PricingSetupForm = () => {
       cafeEditApi.action({
         urlKey: "EditCafeteriaConfig",
         method: "PUT",
-        payload: payload,
+        payload: payload[0],
         onSuccess: () => {
           cb();
         },
