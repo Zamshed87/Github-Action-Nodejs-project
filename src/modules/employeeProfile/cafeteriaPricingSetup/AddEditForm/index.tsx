@@ -14,8 +14,9 @@ import { Col, Form, Row } from "antd";
 import moment from "moment";
 import React, { useEffect, useMemo } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { dateFormatterForInput } from "utility/dateFormatter";
 
 const PricingSetupForm = () => {
   const {
@@ -32,6 +33,7 @@ const PricingSetupForm = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id }: any = useParams();
   const location = useLocation();
+  const history = useHistory();
 
   const { rec } = location?.state || ({} as any);
 
@@ -106,7 +108,7 @@ const PricingSetupForm = () => {
     if (+id) {
       form.setFieldsValue({
         ...rec,
-        date: moment(rec?.strMonthName),
+        date: moment().month(rec?.strMonthName),
         workplaceGroup: {
           label: rec?.strWorkPlaceGroupName,
           value: rec?.workPlaceId,
@@ -196,6 +198,9 @@ const PricingSetupForm = () => {
               // name={`OM_${index}`}
               value={row?.ownContribution}
               placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               // disabled={true}
               onChange={(e: any) => {
                 handleIsPerDayChange(e, index, "ownContribution");
@@ -220,6 +225,9 @@ const PricingSetupForm = () => {
               name={`OM_${index}`}
               // value={row?.ownContribution}
               placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               rules={[
                 // { required: true, message: "Amount Is Required" },
                 {
@@ -267,6 +275,9 @@ const PricingSetupForm = () => {
               value={row?.companyContribution}
               placeholder="Amount"
               // disabled={true}
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               onChange={(e: any) => {
                 handleIsPerDayChange(e, index, "companyContribution");
 
@@ -300,6 +311,9 @@ const PricingSetupForm = () => {
                   },
                 },
               ]}
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               // disabled={true}
               onChange={(e: any) => {
                 handleIsPerDayChange(e, index, "companyContribution");
@@ -344,6 +358,9 @@ const PricingSetupForm = () => {
               // name={`min_${index}`}
               value={row?.minAmount}
               placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               onChange={(e: any) => {
                 handleIsPerDayChange(e, index, "minAmount");
               }}
@@ -355,6 +372,9 @@ const PricingSetupForm = () => {
               type="number"
               name={`min_${index}`}
               placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               rules={[
                 // { required: true, message: "Amount Is Required" },
                 {
@@ -394,6 +414,9 @@ const PricingSetupForm = () => {
               type="number"
               value={row?.maxAmount}
               placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               onChange={(e: any) => {
                 handleIsPerDayChange(e, index, "maxAmount");
               }}
@@ -424,6 +447,9 @@ const PricingSetupForm = () => {
                   },
                 },
               ]}
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               // disabled={true}
               onChange={(e: any) => {
                 handleIsPerDayChange(e, index, "maxAmount");
@@ -443,6 +469,9 @@ const PricingSetupForm = () => {
               // name={`OM_${index}`}
               value={row?.ownContribution}
               placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               // disabled={true}
               onChange={(e: any) => {
                 handleIsPerDayChange(e, index, "ownContribution");
@@ -466,6 +495,9 @@ const PricingSetupForm = () => {
               type="number"
               name={`OM_${index}`}
               placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               rules={[
                 // { required: true, message: "Amount Is Required" },
                 {
@@ -512,6 +544,9 @@ const PricingSetupForm = () => {
               // name={`CCC_${index}`}
               value={row?.companyContribution}
               placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               // disabled={true}
               onChange={(e: any) => {
                 handleIsPerDayChange(e, index, "companyContribution");
@@ -531,6 +566,9 @@ const PricingSetupForm = () => {
               name={`CCC_${index}`}
               // value={row?.companyContribution}
               placeholder="Amount"
+              onPressEnter={(e: any) => {
+                e.preventDefault();
+              }}
               rules={[
                 // { required: true, message: "Amount Is Required" },
                 {
@@ -595,7 +633,6 @@ const PricingSetupForm = () => {
   ];
   const submitHandler = (rowDto: any) => {
     const { pricingMatrixType, mealType, date } = form.getFieldsValue(true);
-
     const cb = () => {
       form.resetFields();
     };
@@ -630,9 +667,13 @@ const PricingSetupForm = () => {
         minAmount: item?.minAmount,
         maxAmount: item?.maxAmount,
         returnAllSalaryRangeData: true,
-        intMonthId: mealType === 2 ? moment(date).format("mm") : null,
-        intYearId: mealType === 2 ? moment(date).format("yyyy") : null,
-        strMonthName: mealType === 2 ? moment(date).format("MMMM") : null,
+        intMonthId:
+          mealType?.value === 2
+            ? moment(date)?.format("l").split("/")?.[0]
+            : null,
+        intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
+        strMonthName:
+          mealType?.value === 2 ? moment(date).format("MMMM") : null,
       };
     });
 
@@ -643,7 +684,9 @@ const PricingSetupForm = () => {
         payload: payload[0],
         onSuccess: () => {
           cb();
+          history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
         },
+        toast: true,
       });
     } else {
       cafeApi.action({
@@ -652,7 +695,9 @@ const PricingSetupForm = () => {
         payload: payload,
         onSuccess: () => {
           cb();
+          history.push("/profile/cafeteriaManagement/cafeteriaPricingSetup");
         },
+        toast: true,
       });
     }
   };
