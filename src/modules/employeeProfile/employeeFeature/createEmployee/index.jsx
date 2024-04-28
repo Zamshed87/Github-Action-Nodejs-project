@@ -775,7 +775,7 @@ const CreateAndEditEmploye = () => {
                       if (value) {
                         getWorkplace();
                         getCalendarDDL();
-
+                        getRosterGroupDDL();
                         // getUserTypeDDL();
                         getUserTypeDDL();
                         getHolidayGroupDDL();
