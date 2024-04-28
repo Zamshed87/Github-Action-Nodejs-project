@@ -293,7 +293,7 @@ export default function MovementApplication() {
         dataIndex: "LeaveType",
         render: (_, record) => (
           <div className="d-flex align-items-center ">
-            <LightTooltip
+            {/* <LightTooltip
               title={
                 <div className="movement-tooltip p-2">
                   <div className="border-bottom">
@@ -315,7 +315,7 @@ export default function MovementApplication() {
                   fontSize: "16px",
                 }}
               />
-            </LightTooltip>
+            </LightTooltip> */}
             <span> {record?.MovementType}</span>
           </div>
         ),
@@ -357,6 +357,15 @@ export default function MovementApplication() {
         filter: false,
         sorter: false,
       },
+      {
+        title: "Location",
+        dataIndex: "Location",
+      },
+      {
+        title: "Reason",
+        dataIndex: "Reason",
+      },
+
       {
         title: "Status",
         dataIndex: "Status",
