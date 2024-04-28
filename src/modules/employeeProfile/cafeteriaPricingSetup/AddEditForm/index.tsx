@@ -16,6 +16,7 @@ import React, { useEffect, useMemo } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { dateFormatterForInput } from "utility/dateFormatter";
 
 const PricingSetupForm = () => {
   const {
@@ -107,7 +108,7 @@ const PricingSetupForm = () => {
     if (+id) {
       form.setFieldsValue({
         ...rec,
-        date: moment(rec?.strMonthName),
+        date: moment().month(rec?.strMonthName),
         workplaceGroup: {
           label: rec?.strWorkPlaceGroupName,
           value: rec?.workPlaceId,
@@ -632,7 +633,6 @@ const PricingSetupForm = () => {
   ];
   const submitHandler = (rowDto: any) => {
     const { pricingMatrixType, mealType, date } = form.getFieldsValue(true);
-
     const cb = () => {
       form.resetFields();
     };
@@ -667,11 +667,16 @@ const PricingSetupForm = () => {
         minAmount: item?.minAmount,
         maxAmount: item?.maxAmount,
         returnAllSalaryRangeData: true,
-        intMonthId: mealType === 2 ? moment(date).format("mm") : null,
-        intYearId: mealType === 2 ? moment(date).format("yyyy") : null,
-        strMonthName: mealType === 2 ? moment(date).format("MMMM") : null,
+        intMonthId:
+          mealType?.value === 2
+            ? moment(date)?.format("l").split("/")?.[0]
+            : null,
+        intYearId: mealType?.value === 2 ? moment(date).format("yyyy") : null,
+        strMonthName:
+          mealType?.value === 2 ? moment(date).format("MMMM") : null,
       };
     });
+    console.log({ payload });
 
     if (rec?.intConfigId) {
       cafeEditApi.action({
