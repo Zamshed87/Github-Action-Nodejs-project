@@ -16,6 +16,8 @@ import { AddOutlined } from "@mui/icons-material";
 import FormikInput from "common/FormikInput";
 import ViewModal from "common/ViewModal";
 import CreateMaintenanceHead from "../modal/CreateMaintenanceHead";
+import CreateServiceProviderName from "../modal/CreateServiceProviderName";
+import { localUrl } from "../../registration/utils";
 
 const AssetMaintenanceForm = () => {
   const dispatch = useDispatch();
@@ -28,8 +30,10 @@ const AssetMaintenanceForm = () => {
   const [, saveAssetMaintenance, loading] = useAxiosPost({});
   const [assetDDL, getAsset] = useAxiosGet([]);
   const [maintenanceHeadDDL, getMaintenanceHead] = useAxiosGet([]);
+  const [serviceProviderNameDDL, getServiceProviderName] = useAxiosGet([]);
   const [employeeDDL, getEmployee] = useAxiosGet([]);
   const [isView, setIsView] = useState(false);
+  const [isProviderNameView, setIsProviderNameView] = useState(false);
 
   useEffect(() => {
     getAsset(
@@ -37,6 +41,9 @@ const AssetMaintenanceForm = () => {
     );
     getMaintenanceHead(
       `/AssetManagement/GetMaintenceHeadDDL?accountId=${orgId}&branchId=${buId}&workplaceId=${wId}&workplaceGroupId=${wgId}`
+    );
+    getServiceProviderName(
+      `/AssetManagement/GetServiceProviderNameDDL?accountId=${orgId}&branchId=${buId}&workplaceId=${wId}&workplaceGroupId=${wgId}`
     );
     getEmployee(`/Employee/AllEmployeeDDL?intAccountId=${orgId}`);
   }, [orgId, buId, wId, wgId]);
@@ -63,6 +70,7 @@ const AssetMaintenanceForm = () => {
           employeeId,
           userName,
           () => {
+            resetForm(initialValue);
             history.goBack();
           }
         );
@@ -117,7 +125,7 @@ const AssetMaintenanceForm = () => {
                       <div className="d-flex justify-content-between align-items-center">
                         <div>
                           <label>
-                            Maintenance Head <Required />
+                            Maintenance Type <Required />
                           </label>
                         </div>
                         <div className="pb-1">
@@ -149,7 +157,7 @@ const AssetMaintenanceForm = () => {
                     </div>
                     <div className="col-lg-3">
                       <label>
-                        Employee <Required />{" "}
+                        Handed Over To <Required />{" "}
                       </label>
                       <FormikSelect
                         placeholder=""
@@ -167,7 +175,7 @@ const AssetMaintenanceForm = () => {
                     </div>
                     <div className="col-lg-3">
                       <label>
-                        From Date <Required />{" "}
+                        Maintenance Start Date <Required />{" "}
                       </label>
                       <FormikInput
                         classes="input-sm"
@@ -183,52 +191,34 @@ const AssetMaintenanceForm = () => {
                       />
                     </div>
                     <div className="col-lg-3">
-                      <label>
-                        To Date <Required />{" "}
-                      </label>
-                      <FormikInput
-                        classes="input-sm"
-                        placeholder=" "
-                        value={values?.toDate}
-                        min={values?.fromDate}
-                        name="toDate"
-                        type="date"
-                        onChange={(e) => {
-                          setFieldValue("toDate", e.target.value);
-                        }}
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                    <div className="col-lg-3">
-                      <label>
-                        Cost <Required />{" "}
-                      </label>
-                      <FormikInput
-                        classes="input-sm"
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div>
+                          <label>
+                            Service Provider Name <Required />{" "}
+                          </label>
+                        </div>
+                        <div className="pb-1">
+                          <button
+                            type="button"
+                            className="btn add-ddl-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsProviderNameView(true);
+                            }}
+                          >
+                            <AddOutlined sx={{ fontSize: "16px" }} />
+                          </button>
+                        </div>
+                      </div>
+                      <FormikSelect
                         placeholder=""
-                        value={values?.cost}
-                        name="cost"
-                        type="number"
-                        onChange={(e) => {
-                          setFieldValue("cost", e.target.value);
-                        }}
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                    <div className="col-lg-3">
-                      <label>
-                        Service Provider Name <Required />{" "}
-                      </label>
-                      <FormikInput
                         classes="input-sm"
-                        placeholder=""
-                        value={values?.serviceProviderName}
+                        styles={customStyles}
                         name="serviceProviderName"
-                        type="text"
-                        onChange={(e) => {
-                          setFieldValue("serviceProviderName", e.target.value);
+                        options={serviceProviderNameDDL || []}
+                        value={values?.serviceProviderName}
+                        onChange={(valueOption) => {
+                          setFieldValue("serviceProviderName", valueOption);
                         }}
                         errors={errors}
                         touched={touched}
@@ -290,6 +280,23 @@ const AssetMaintenanceForm = () => {
               wgId={wgId}
               setIsView={setIsView}
               getMaintenanceHead={getMaintenanceHead}
+            />
+          </ViewModal>
+          <ViewModal
+            size="lg"
+            title="Create Service Provider Name"
+            backdrop="static"
+            classes="default-modal preview-modal"
+            show={isProviderNameView}
+            onHide={() => setIsProviderNameView(false)}
+          >
+            <CreateServiceProviderName
+              orgId={orgId}
+              buId={buId}
+              wId={wId}
+              wgId={wgId}
+              setIsProviderNameView={setIsProviderNameView}
+              getServiceProviderName={getServiceProviderName}
             />
           </ViewModal>
         </>

@@ -14,6 +14,10 @@ import EmployeeHistoryView from "./modal/EmployeeHistoryView";
 import ViewModal from "common/ViewModal";
 import MaintenanceSummary from "./modal/MaintenanceSummary";
 import TotalDepreciationView from "./modal/TotalDepreciationView";
+import PrimaryButton from "common/PrimaryButton";
+import { AddOutlined } from "@mui/icons-material";
+import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 const initData = {
   searchString: "",
@@ -22,6 +26,7 @@ const initData = {
 const AssetReport = () => {
   const debounce = useDebounce();
   const dispatch = useDispatch();
+  const history = useHistory();
   const { orgId, buId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
@@ -37,6 +42,7 @@ const AssetReport = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [depreciationModal, setDepreciationModal] = useState(false);
   const [itemId, setItemId] = useState(null);
+  const [unassignLoading, setUnassignLoading] = useState(false);
 
   const { values, setFieldValue, handleSubmit } = useFormik({
     initialValues: initData,
@@ -121,7 +127,7 @@ const AssetReport = () => {
 
   return permission?.isView ? (
     <>
-      {loading && <Loading />}
+      {(loading || unassignLoading) && <Loading />}
       <form onSubmit={handleSubmit}>
         <div className="table-card">
           <div className="table-card-heading">
@@ -173,6 +179,31 @@ const AssetReport = () => {
                   }}
                 />
               </li>
+              <li>
+                <PrimaryButton
+                  type="button"
+                  className="btn btn-default flex-center"
+                  label="Registration"
+                  icon={
+                    <AddOutlined
+                      sx={{
+                        marginRight: "0px",
+                        fontSize: "15px",
+                      }}
+                    />
+                  }
+                  onClick={() => {
+                    if (!permission?.isEdit) {
+                      return toast.warn("You don't have permission", {
+                        toastId: "permission",
+                      });
+                    }
+                    history.push(
+                      "/assetManagement/assetControlPanel/registration/create"
+                    );
+                  }}
+                />
+              </li>
             </ul>
           </div>
           <div className="table-card-body">
@@ -184,7 +215,22 @@ const AssetReport = () => {
                   setHistoryModal,
                   setItemId,
                   setIsModalOpen,
-                  setDepreciationModal
+                  setDepreciationModal,
+                  history,
+                  setUnassignLoading,
+                  () => {
+                    getData(
+                      getLandingData,
+                      setRowDto,
+                      orgId,
+                      buId,
+                      wId,
+                      wgId,
+                      pages,
+                      setPages,
+                      ""
+                    );
+                  }
                 )}
                 pages={pages}
                 rowDto={rowDto}

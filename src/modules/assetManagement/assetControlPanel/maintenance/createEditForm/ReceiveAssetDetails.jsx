@@ -9,13 +9,11 @@ import PrimaryButton from "common/PrimaryButton";
 import BackButton from "common/BackButton";
 import { dateFormatter } from "utility/dateFormatter";
 import { Typography } from "@mui/material";
-import {
-  Article,
-  AttachMoney,
-  LocalShipping,
-  LocationOn,
-} from "@mui/icons-material";
+import { Article, LocalShipping, LocationOn } from "@mui/icons-material";
 import { getReceiveActions } from "../utils";
+import { todayDate } from "utility/todayDate";
+import FormikInput from "common/FormikInput";
+import { toast } from "react-toastify";
 
 const ReceiveAssetDetails = () => {
   const history = useHistory();
@@ -42,6 +40,8 @@ const ReceiveAssetDetails = () => {
             },
             fromDate: dateFormatter(res?.FromDate),
             toDate: dateFormatter(res?.ToDate),
+            cost: "",
+            receiveDate: todayDate(),
           };
           setSingleData(obj);
         }
@@ -58,21 +58,26 @@ const ReceiveAssetDetails = () => {
   return (
     <Formik
       enableReinitialize={true}
-      // initialValues={initialValue}
+      initialValues={singleData}
       // validationSchema={validationSchema}
       onSubmit={(values, { setSubmitting, resetForm }) => {
-        getReceiveActions(
-          singleData?.AssetId,
-          singleData?.CashInHandAmount,
-          singleData?.Cost,
-          setDisabled,
-          () => {
-            history.goBack();
-          }
-        );
+        if (!values?.receiveDate)
+          return toast.warn("Please select a receive date", {
+            toastId: "receiveDate",
+          });
+        if (!values?.cost)
+          return toast.warn("Please enter a cost", { toastId: "cost" });
+        const payload = {
+          assetId: +id,
+          maintenanceDate: values?.receiveDate,
+          cost: +values?.cost || 0,
+        };
+        getReceiveActions(payload, setDisabled, () => {
+          history.goBack();
+        });
       }}
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, setFieldValue, values, errors, touched }) => (
         <>
           {(loading || disabled) && <Loading />}
           <Form onSubmit={handleSubmit}>
@@ -105,7 +110,13 @@ const ReceiveAssetDetails = () => {
                       style={{ padding: "16px" }}
                     >
                       <div className="d-flex justify-content-start align-items-center ">
-                        <Article sx={{ margin: "3px" }} />
+                        <Article
+                          sx={{
+                            margin: "3px",
+                            color: "#229a16 !important",
+                            fontSize: "30px",
+                          }}
+                        />
                         <Typography
                           sx={{
                             "&.MuiTypography-root": {
@@ -116,7 +127,7 @@ const ReceiveAssetDetails = () => {
                             },
                           }}
                         >
-                          Asset Details
+                          <h2>Asset Details</h2>
                         </Typography>
                       </div>
                     </div>
@@ -132,7 +143,13 @@ const ReceiveAssetDetails = () => {
                     >
                       <div className="d-flex justify-content-between">
                         <div className="d-flex justify-content-start align-items-center">
-                          <LocalShipping sx={{ margin: "16px 0" }} />
+                          <LocalShipping
+                            sx={{
+                              margin: "16px 0",
+                              color: "#229a16 !important",
+                              fontSize: "30px",
+                            }}
+                          />
                           <div style={{ paddingLeft: "16px" }}>
                             <Typography
                               sx={{
@@ -144,7 +161,7 @@ const ReceiveAssetDetails = () => {
                                 },
                               }}
                             >
-                              Service Provider Name
+                              <h6>Service Provider Name</h6>
                             </Typography>
                             <Typography
                               sx={{
@@ -155,7 +172,7 @@ const ReceiveAssetDetails = () => {
                                 },
                               }}
                             >
-                              {singleData?.ServiceProviderName}
+                              <span>{singleData?.ServiceProviderName}</span>
                             </Typography>
                           </div>
                         </div>
@@ -171,7 +188,7 @@ const ReceiveAssetDetails = () => {
                                 },
                               }}
                             >
-                              From Date
+                              <h6>Maintenance Start Date - </h6>
                             </Typography>
                             <Typography
                               sx={{
@@ -183,40 +200,20 @@ const ReceiveAssetDetails = () => {
                                 },
                               }}
                             >
-                              {dateFormatter(singleData?.FromDate)}
-                            </Typography>
-                          </div>
-
-                          <div className="d-flex align-items-center">
-                            <Typography
-                              sx={{
-                                "&.MuiTypography-root": {
-                                  fontSize: "14px",
-                                  fontWeight: "400",
-                                  lineHeight: "16.00px",
-                                },
-                              }}
-                            >
-                              To Date
-                            </Typography>
-                            <Typography
-                              sx={{
-                                "&.MuiTypography-root": {
-                                  fontSize: "14px",
-                                  fontWeight: "500",
-                                  lineHeight: "16.00px",
-                                  paddingLeft: "8px",
-                                },
-                              }}
-                            >
-                              {dateFormatter(singleData?.ToDate)}
+                              <span>{dateFormatter(singleData?.FromDate)}</span>
                             </Typography>
                           </div>
                         </div>
                       </div>
 
                       <div className="d-flex justify-content-start align-items-center">
-                        <LocationOn sx={{ margin: "16px 0" }} />
+                        <LocationOn
+                          sx={{
+                            margin: "16px 0",
+                            color: "#229a16 !important",
+                            fontSize: "30px",
+                          }}
+                        />
                         <div style={{ paddingLeft: "16px" }}>
                           <Typography
                             sx={{
@@ -228,7 +225,7 @@ const ReceiveAssetDetails = () => {
                               },
                             }}
                           >
-                            Service Provider Address
+                            <h6>Service Provider Address</h6>
                           </Typography>
                           <Typography
                             sx={{
@@ -239,7 +236,7 @@ const ReceiveAssetDetails = () => {
                               },
                             }}
                           >
-                            {singleData?.ServiceProviderAddress}
+                            <span>{singleData?.ServiceProviderAddress}</span>
                           </Typography>
                         </div>
                       </div>
@@ -263,7 +260,7 @@ const ReceiveAssetDetails = () => {
                             },
                           }}
                         >
-                          Asset Item Name
+                          <h6>Asset Item Name</h6>
                         </Typography>
                         <div className="d-flex justify-content-between align-items-center">
                           <Typography
@@ -275,7 +272,7 @@ const ReceiveAssetDetails = () => {
                               },
                             }}
                           >
-                            {singleData?.asset?.label}
+                            <span>{singleData?.asset?.label}</span>
                           </Typography>
                         </div>
                       </div>
@@ -292,7 +289,7 @@ const ReceiveAssetDetails = () => {
                             },
                           }}
                         >
-                          Asset Item Code
+                          <h6>Asset Item Code</h6>
                         </Typography>
                         <div className="d-flex justify-content-between align-items-center">
                           <Typography
@@ -304,7 +301,7 @@ const ReceiveAssetDetails = () => {
                               },
                             }}
                           >
-                            {singleData?.AssetCode}
+                            <span>{singleData?.AssetCode}</span>
                           </Typography>
                         </div>
                       </div>
@@ -321,7 +318,7 @@ const ReceiveAssetDetails = () => {
                             },
                           }}
                         >
-                          Employee Name
+                          <h6>Employee Name</h6>
                         </Typography>
                         <div className="d-flex justify-content-between align-items-center">
                           <Typography
@@ -333,13 +330,13 @@ const ReceiveAssetDetails = () => {
                               },
                             }}
                           >
-                            {singleData?.EmployeeName}
+                            <span>{singleData?.EmployeeName}</span>
                           </Typography>
                         </div>
                       </div>
                       <div
                         className="d-flex justify-content-between"
-                        style={{ padding: "8px 0" }}
+                        style={{ paddingTop: "8px" }}
                       >
                         <Typography
                           sx={{
@@ -350,20 +347,76 @@ const ReceiveAssetDetails = () => {
                             },
                           }}
                         >
-                          Cost
+                          <h6>Receive Date</h6>
                         </Typography>
                         <div className="d-flex justify-content-between align-items-center">
-                          <AttachMoney sx={{ marginRight: "6px" }} />
                           <Typography
                             sx={{
                               "&.MuiTypography-root": {
                                 fontSize: "16px",
                                 fontWeight: "500",
                                 lineHeight: "16.41px",
+                                width: "250px",
                               },
                             }}
                           >
-                            {singleData?.Cost}
+                            <FormikInput
+                              classes="input-sm"
+                              placeholder=""
+                              value={values?.receiveDate}
+                              name="receiveDate"
+                              type="date"
+                              onChange={(e) => {
+                                setFieldValue("receiveDate", e.target.value);
+                              }}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </Typography>
+                        </div>
+                      </div>
+                      <div
+                        className="d-flex justify-content-between"
+                        // style={{ padding: "8px 0" }}
+                      >
+                        <Typography
+                          sx={{
+                            "&.MuiTypography-root": {
+                              fontSize: "14px",
+                              fontWeight: "400",
+                              lineHeight: "16.41px",
+                            },
+                          }}
+                        >
+                          <h6>Cost</h6>
+                        </Typography>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <Typography
+                            sx={{
+                              "&.MuiTypography-root": {
+                                fontSize: "16px",
+                                fontWeight: "500",
+                                lineHeight: "16.41px",
+                                width: "250px",
+                              },
+                            }}
+                          >
+                            <FormikInput
+                              classes="input-sm"
+                              placeholder=" "
+                              value={values?.cost}
+                              name="cost"
+                              type="number"
+                              onChange={(e) => {
+                                if (e.target.value > 0) {
+                                  setFieldValue("cost", e.target.value);
+                                } else {
+                                  setFieldValue("cost", "");
+                                }
+                              }}
+                              errors={errors}
+                              touched={touched}
+                            />
                           </Typography>
                         </div>
                       </div>
@@ -387,20 +440,20 @@ const ReceiveAssetDetails = () => {
                             },
                           }}
                         >
-                          Description
+                          <h6>Description</h6>
                         </Typography>
                         <div className="d-flex justify-content-between align-items-center">
                           <Typography
                             sx={{
                               "&.MuiTypography-root": {
                                 fontSize: "14px",
-                                fontWeight: "700",
+                                fontWeight: "400",
                                 lineHeight: "16.41px",
                               },
                             }}
                             style={{ padding: "10px 0 0 0" }}
                           >
-                            {singleData?.Narration}
+                            <span>{singleData?.Narration}</span>
                           </Typography>
                         </div>
                       </div>

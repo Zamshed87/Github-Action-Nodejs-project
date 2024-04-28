@@ -1,7 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
-import { formatMoney } from "utility/formatMoney";
 import { todayDate } from "utility/todayDate";
 import * as Yup from "yup";
 
@@ -10,8 +9,6 @@ const initialValue = {
   maintenanceHeadDDL: "",
   employeeDDL: "",
   fromDate: todayDate(),
-  toDate: todayDate(),
-  cost: "",
   serviceProviderName: "",
   serviceProviderAddress: "",
   description: "",
@@ -27,24 +24,26 @@ const validationSchema = Yup.object().shape({
     .required("Asset is required"),
   maintenanceHeadDDL: Yup.object()
     .shape({
-      label: Yup.string().required("MaintenanceHead is required"),
-      value: Yup.string().required("MaintenanceHead is required"),
+      label: Yup.string().required("Maintenance type is required"),
+      value: Yup.string().required("Maintenance type is required"),
     })
     .nullable()
-    .required("MaintenanceHead is required"),
+    .required("Maintenance type is required"),
   employeeDDL: Yup.object()
     .shape({
-      label: Yup.string().required("Employee is required"),
-      value: Yup.string().required("Employee is required"),
+      label: Yup.string().required("Handed over to is required"),
+      value: Yup.string().required("Handed over to is required"),
     })
     .nullable()
-    .required("Employee is required"),
-  fromDate: Yup.string().required("From Date is required"),
-  toDate: Yup.string().required("To Date is required"),
-  cost: Yup.string().required("Cost  is required"),
-  serviceProviderName: Yup.string().required(
-    "Service provider Name is required"
-  ),
+    .required("Handed over to is required"),
+  fromDate: Yup.string().required("Maintenance start date is required"),
+  serviceProviderName: Yup.object()
+    .shape({
+      label: Yup.string().required("Service provider name is required"),
+      value: Yup.string().required("Service provider name is required"),
+    })
+    .nullable()
+    .required("Service provider name is required"),
   serviceProviderAddress: Yup.string().required(
     "Service provider Address is required"
   ),
@@ -69,7 +68,8 @@ const saveHandler = (
     assetId: values?.asset?.value,
     employeeId: values?.employeeDDL?.value,
     employeeName: values?.employeeDDL?.label,
-    serviceProviderName: values?.serviceProviderName || "",
+    serviceProviderName: values?.serviceProviderName?.label || "",
+    serviceProviderId: values?.serviceProviderName?.value || "",
     serviceProviderAddress: values?.serviceProviderAddress || "",
     cost: +values?.cost || 0,
     narration: values?.description || "",
@@ -111,7 +111,7 @@ const assetMaintenanceColumn = (page, paginationSize) => {
       filter: false,
     },
     {
-      title: "Employee Name",
+      title: "Handed Over To",
       dataIndex: "employeeName",
       sort: false,
       filter: false,
@@ -129,7 +129,7 @@ const assetMaintenanceColumn = (page, paginationSize) => {
       filter: false,
     },
     {
-      title: "From Date",
+      title: "Maintenance Start Date",
       dataIndex: "fromDate",
       sort: false,
       filter: false,
@@ -137,23 +137,6 @@ const assetMaintenanceColumn = (page, paginationSize) => {
       render: (record) => {
         return dateFormatter(record?.fromDate);
       },
-    },
-    {
-      title: "To Date",
-      dataIndex: "toDate",
-      sort: false,
-      filter: false,
-      render: (record) => {
-        return dateFormatter(record?.toDate);
-      },
-    },
-    {
-      title: "Cost",
-      dataIndex: "cost",
-      sort: false,
-      filter: false,
-      className: "text-right",
-      render: (record) => formatMoney(record?.cost),
     },
     {
       title: "Description",
@@ -189,21 +172,15 @@ const getData = (
 };
 
 const getReceiveActions = async (
-  assetId,
-  cashInHandAmount,
-  cost,
+  payload,
   setDisabled,
   cb
 ) => {
-  // if (+cashInHandAmount < +cost) {
-  //   return toast.warn("You have not enough cash in hand", {
-  //     toastId: "cashInHandAmount",
-  //   });
-  // }
   setDisabled(true);
   try {
     const res = await axios.put(
-      `/AssetManagement/UpdateAssetMaintainceReceive?assetId=${assetId}`
+      `/AssetManagement/UpdateAssetMaintainceReceive`,
+      payload,
     );
     setDisabled(false);
     toast.success(res?.data?.message || "Submitted successfully", {
@@ -218,7 +195,9 @@ const getReceiveActions = async (
 
 export {
   assetMaintenanceColumn,
-  getData, getReceiveActions, initialValue,
+  getData,
+  getReceiveActions,
+  initialValue,
   saveHandler,
   validationSchema
 };

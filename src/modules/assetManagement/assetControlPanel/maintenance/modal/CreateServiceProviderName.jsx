@@ -1,41 +1,41 @@
 import React from "react";
 import { Form, Formik } from "formik";
+import FormikInput from "common/FormikInput";
 import Loading from "common/loading/Loading";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
-import FormikInput from "common/FormikInput";
 import * as Yup from "yup";
 import { localUrl } from "../../registration/utils";
 
 const initData = {
-  newMaintenanceType: "",
+  serviceProviderNewName: "",
 };
 
 const validationSchema = Yup.object().shape({
-  newMaintenanceType: Yup.string().required(
-    "Maintenance type new name is required"
+  serviceProviderNewName: Yup.string().required(
+    "Service provider new name is required"
   ),
 });
 
-const CreateMaintenanceHead = ({
+const CreateServiceProviderName = ({
   orgId,
   buId,
   wId,
   wgId,
-  setIsView,
-  getMaintenanceHead,
+  setIsProviderNameView,
+  getServiceProviderName,
 }) => {
-  const [, saveMaintenanceHead, loading] = useAxiosPost({});
+  const [, saveServiceProviderName, loading] = useAxiosPost({});
   const saveHandler = (values, cb) => {
     const payload = {
-      maintenanceHeadName: values?.newMaintenanceType,
+      maintenanceHeadName: values?.serviceProviderNewName,
       accountId: orgId,
       branchId: buId,
       workplaceId: wId,
       workplaceGroupId: wgId,
-      typeName: "Maintenance Head",
-      typeId: 1,
+      typeName: "Service Provider Name",
+      typeId: 2,
     };
-    saveMaintenanceHead(
+    saveServiceProviderName(
       `/AssetManagement/CreateMaintenanceHead`,
       payload,
       cb,
@@ -51,10 +51,10 @@ const CreateMaintenanceHead = ({
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           saveHandler(values, () => {
-            setIsView(false);
+            setIsProviderNameView(false);
             resetForm(initData);
-            getMaintenanceHead(
-              `/AssetManagement/GetMaintenceHeadDDL?accountId=${orgId}&branchId=${buId}&workplaceId=${wId}&workplaceGroupId=${wgId}`
+            getServiceProviderName(
+              `/AssetManagement/GetServiceProviderNameDDL?accountId=${orgId}&branchId=${buId}&workplaceId=${wId}&workplaceGroupId=${wgId}`
             );
           });
         }}
@@ -65,16 +65,16 @@ const CreateMaintenanceHead = ({
               <div className="row mx-0">
                 <div className="col-lg-4">
                   <div className="input-field-main">
-                    <label>Maintenance Type Name</label>
+                    <label>Service Provider New Name</label>
                     <FormikInput
                       classes="input-sm"
-                      value={values?.newMaintenanceType}
+                      value={values?.serviceProviderNewName}
                       placeholder=""
-                      name="newMaintenanceType"
+                      name="serviceProviderNewName"
                       type="text"
                       className="form-control"
                       onChange={(e) => {
-                        setFieldValue("newMaintenanceType", e.target.value);
+                        setFieldValue("serviceProviderNewName", e.target.value);
                       }}
                       errors={errors}
                       touched={touched}
@@ -98,4 +98,4 @@ const CreateMaintenanceHead = ({
   );
 };
 
-export default CreateMaintenanceHead;
+export default CreateServiceProviderName;

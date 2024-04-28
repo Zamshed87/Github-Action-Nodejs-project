@@ -1,7 +1,14 @@
-import { InfoOutlined } from "@mui/icons-material";
+import {
+  AddOutlined,
+  EditOutlined,
+  InfoOutlined,
+  ReplayOutlined,
+} from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import Chips from "common/Chips";
 import { dateFormatter } from "utility/dateFormatter";
 import { formatMoney } from "utility/formatMoney";
+import { assetUnassign } from "../assign/utils";
 
 const linkAble = {
   textAlign: "center",
@@ -16,7 +23,10 @@ const assetReportColumn = (
   setHistoryModal,
   setItemId,
   setIsModalOpen,
-  setDepreciationModal
+  setDepreciationModal,
+  history,
+  setUnassignLoading,
+  cb
 ) => {
   return [
     {
@@ -73,6 +83,13 @@ const assetReportColumn = (
       ),
     },
     {
+      title: "Reg. Date",
+      dataIndex: "registrationDate",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.registrationDate),
+    },
+    {
       title: "Book Value",
       dataIndex: "bookValue",
       sort: true,
@@ -124,7 +141,7 @@ const assetReportColumn = (
             }
           }}
         >
-          {formatMoney(record?.noOfMaintenance)}
+          {record?.noOfMaintenance}
         </span>
       ),
     },
@@ -147,6 +164,88 @@ const assetReportColumn = (
         >
           {formatMoney(record?.totalMaintenance)}
         </span>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      sort: false,
+      filter: false,
+      className: "text-center",
+      render: (item) => {
+        return (
+          <div>
+            {item?.status === "Available" && (
+              <Chips label="Available" classess="success" />
+            )}
+            {item?.status === "Assigned" && (
+              <Chips
+                label={"Assign to" + " " + item?.assetAssignPerson}
+                classess="warning"
+              />
+            )}
+            {item?.status === "On Maintaince" && (
+              <Chips
+                label={
+                  "On Maintenance to" + " " + item?.assetMaintainceByPerson
+                }
+                classess="danger"
+              />
+            )}
+            {item?.status === "On Rent" && (
+              <Chips
+                label={"On Rent" + " " + item?.assetRentPerson}
+                classess="hold"
+              />
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Actions",
+      dataIndex: "action",
+      sort: false,
+      filter: false,
+      className: "text-center",
+      width: 120,
+      render: (record) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="Edit Registration" arrow>
+            <button className="iconButton" type="button">
+              <EditOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  history.push(
+                    `/assetManagement/assetControlPanel/registration/edit/${record?.assetRegId}`
+                  );
+                }}
+              />
+            </button>
+          </Tooltip>
+          <Tooltip title="Create Assign" arrow>
+            <button className="iconButton" type="button">
+              <AddOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  history.push(
+                    `/assetManagement/assetControlPanel/assign/create`
+                  );
+                }}
+              />
+            </button>
+          </Tooltip>
+          <Tooltip title="Unassign" arrow>
+            <button type="button" className="iconButton">
+              <ReplayOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  assetUnassign(record?.assetId, setUnassignLoading, cb);
+                }}
+              />
+            </button>
+          </Tooltip>
+        </div>
       ),
     },
   ];

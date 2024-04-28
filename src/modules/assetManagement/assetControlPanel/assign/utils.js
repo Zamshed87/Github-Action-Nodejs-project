@@ -232,8 +232,7 @@ const assetUnassign = async (assetId, setLoading, cb) => {
 export {
   addAssignHandler,
   assetAssignColumn,
-  assignLandingColumn,
-  getData,
+  assetUnassign, assignLandingColumn, getData,
   initialValue,
   saveHandler
 };
