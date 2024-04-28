@@ -116,6 +116,7 @@ const AntTable = ({
         }}
         rowKey={rowKey}
         rowClassName={rowClassName || ""}
+        showSorterTooltip={false}
       />
     </div>
   );
