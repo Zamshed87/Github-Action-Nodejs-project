@@ -19,3 +19,9 @@
   border: "1px solid rgba(0, 0, 0, 0.12)";
 }
 
+.approvalApproveContainer:hover {
+  background-color: #E2FDE9;
+}
+.approvalRejectContainer:hover {
+  background-color: #FEF0C7;
+}

@@ -41,6 +41,7 @@ import ViewFormComponent from "./view-form";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
 import AntTable from "../../../../common/AntTable";
+import ApproveRejectComp from "common/ApproveRejectComp";
 
 const initData = {
   searchString: "",
@@ -660,122 +661,29 @@ export default function LoanApproval() {
                           <div className="heading mt-2">
                             <div className="d-flex align-items-center">
                               <BackButton title={"Loan Approval"} />
-                              {/* <div className="ml-3">
-                                <Tooltip title="Print">
-                                  <button
-                                    className="btn-save"
-                                    type="button"
-                                    style={{
-                                      border: "transparent",
-                                      width: "30px",
-                                      height: "30px",
-                                      background: "#f2f2f7",
-                                      borderRadius: "100px",
-                                    }}
-                                    onClick={() => {
-                                      // getPDFAction(
-                                      //   `/emp/PdfAndExcelReport/PdfAllLeaveApplicatonListForApprove?ViewType=${viewType}&EmployeeId=${employeeId}&WorkplaceGroupId=${workplaceGroupId}&DepartmentId=${departmentId}&DesignationId=${designationId}&ApplicantId=${
-                                      //     applicantId || 0
-                                      //   }&LeaveTypeId=${leaveTypeId}&FromDate=${fromDate}&ToDate=${toDate}&ApplicationId=${0}`,
-                                      //   setLoading
-                                      // );
-                                    }}
-                                  >
-                                    <PrintIcon
-                                      sx={{
-                                        color: "#637381",
-                                        fontSize: "16px",
-                                      }}
-                                    />
-                                  </button>
-                                </Tooltip>
-                              </div> */}
-                            </div>
-
-                            <div>
                               {filterData?.listData?.filter(
                                 (item) => item?.selectCheckbox
-                              ).length > 0 && (
-                                <div className="d-flex actionIcon">
-                                  <button
-                                    className="btn-green mr-2"
-                                    onClick={() => {
+                              ).length > 0 ? (
+                                <ApproveRejectComp
+                                  props={{
+                                    className: "ml-3",
+                                    onApprove: () => {
                                       demoPopup(
                                         "approve",
                                         "isApproved",
                                         applicationData
                                       );
-                                    }}
-                                  >
-                                    Approve
-                                  </button>
-                                  <button
-                                    className="btn-red"
-                                    onClick={() => {
+                                    },
+                                    onReject: () => {
                                       demoPopup(
                                         "reject",
                                         "isReject",
                                         applicationData
                                       );
-                                    }}
-                                  >
-                                    Reject
-                                  </button>
-                                </div>
-                              )}
-                              <ul className="d-flex flex-wrap">
-                                {isFilter && (
-                                  <li>
-                                    <ResetButton
-                                      title="reset"
-                                      icon={
-                                        <SettingsBackupRestoreOutlined
-                                          sx={{ marginRight: "10px" }}
-                                        />
-                                      }
-                                      onClick={() => {
-                                        setIsFilter(false);
-                                        setAppliedStatus({
-                                          value: 1,
-                                          label: "Pending",
-                                        });
-                                        setFieldValue("searchString", "");
-                                        getLandingData();
-                                      }}
-                                    />
-                                  </li>
-                                )}
-                                {/* {permission?.isCreate && (
-                                  <li>
-                                    <MasterFilter
-                                      styles={{
-                                        marginRight: "0px",
-                                      }}
-                                      width="200px"
-                                      inputWidth="200px"
-                                      value={values?.searchString}
-                                      setValue={(value) => {
-                                        debounce(() => {
-                                          searchData(
-                                            value,
-                                            allData,
-                                            setAllLoanApplicatonData
-                                          );
-                                        }, 500);
-                                        setFieldValue("searchString", value);
-                                      }}
-                                      cancelHandler={() => {
-                                        setFieldValue("searchString", "");
-                                        getLandingData();
-                                      }}
-                                      isHiddenFilter
-                                      handleClick={(e) =>
-                                        setfilterAnchorEl(e.currentTarget)
-                                      }
-                                    />
-                                  </li>
-                                )} */}
-                              </ul>
+                                    },
+                                  }}
+                                />
+                              ) : null}
                             </div>
                           </div>
                           <FilterBadgeComponent
