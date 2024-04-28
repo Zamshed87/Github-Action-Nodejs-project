@@ -206,6 +206,7 @@ const AssetRegistration = () => {
                       touched,
                       pages,
                       setEditLoading,
+                      history,
                       () => {
                         getData(
                           getLandingData,

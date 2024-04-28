@@ -1,13 +1,32 @@
-import { InfoOutlined } from "@mui/icons-material";
+import {
+  AddOutlined,
+  EditOutlined,
+  InfoOutlined,
+  ReplayOutlined,
+} from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import Chips from "common/Chips";
 import { dateFormatter } from "utility/dateFormatter";
 import { formatMoney } from "utility/formatMoney";
+import { assetUnassign } from "../assign/utils";
+
+const linkAble = {
+  textAlign: "center",
+  color: "#1e1efb",
+  textDecoration: "underline",
+  cursor: "pointer",
+};
 
 const assetReportColumn = (
   page,
   paginationSize,
   setHistoryModal,
-  setItemId
+  setItemId,
+  setIsModalOpen,
+  setDepreciationModal,
+  history,
+  setUnassignLoading,
+  cb
 ) => {
   return [
     {
@@ -45,21 +64,30 @@ const assetReportColumn = (
       filter: false,
       render: (record) => (
         <div className="d-flex justify-content-center align-items-center">
-          <Tooltip title="Details" arrow>
-            <button style={{ border: 0, background: "none" }} type="button">
-              <InfoOutlined
-                sx={{ color: "#299647 !important" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setHistoryModal(true);
-                  setItemId(record?.assetId);
-                }}
-              />
-            </button>
-          </Tooltip>
+          {record?.employeeName && (
+            <Tooltip title="Details" arrow>
+              <button style={{ border: 0, background: "none" }} type="button">
+                <InfoOutlined
+                  sx={{ color: "#299647 !important" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setHistoryModal(true);
+                    setItemId(record?.assetId);
+                  }}
+                />
+              </button>
+            </Tooltip>
+          )}
           <div className="ml-2">{record?.employeeName}</div>
         </div>
       ),
+    },
+    {
+      title: "Reg. Date",
+      dataIndex: "registrationDate",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.registrationDate),
     },
     {
       title: "Book Value",
@@ -74,7 +102,21 @@ const assetReportColumn = (
       dataIndex: "totalDepreciation",
       sort: false,
       filter: false,
-      render: (record) => formatMoney(record?.totalDepreciation),
+      render: (record) => (
+        <span
+          style={
+            record?.totalDepreciation > 0 ? linkAble : { textAlign: "left" }
+          }
+          onClick={() => {
+            if (record?.totalDepreciation > 0) {
+              setDepreciationModal(true);
+              setItemId(record?.assetId);
+            }
+          }}
+        >
+          {formatMoney(record?.totalDepreciation)}
+        </span>
+      ),
     },
     {
       title: "Rece.Value",
@@ -89,13 +131,122 @@ const assetReportColumn = (
       dataIndex: "noOfMaintenance",
       sort: false,
       filter: false,
+      render: (record) => (
+        <span
+          style={record?.noOfMaintenance > 0 ? linkAble : { textAlign: "left" }}
+          onClick={() => {
+            if (record?.noOfMaintenance > 0) {
+              setIsModalOpen(true);
+              setItemId(record?.assetId);
+            }
+          }}
+        >
+          {record?.noOfMaintenance}
+        </span>
+      ),
     },
     {
       title: "৳ Maint.",
       dataIndex: "totalMaintenance",
       sort: false,
       filter: false,
-      render: (record) => formatMoney(record?.totalMaintenance),
+      render: (record) => (
+        <span
+          style={
+            record?.totalMaintenance > 0 ? linkAble : { textAlign: "left" }
+          }
+          onClick={() => {
+            if (record?.totalMaintenance > 0) {
+              setIsModalOpen(true);
+              setItemId(record?.assetId);
+            }
+          }}
+        >
+          {formatMoney(record?.totalMaintenance)}
+        </span>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      sort: false,
+      filter: false,
+      className: "text-center",
+      render: (item) => {
+        return (
+          <div>
+            {item?.status === "Available" && (
+              <Chips label="Available" classess="success" />
+            )}
+            {item?.status === "Assigned" && (
+              <Chips
+                label={"Assign to" + " " + item?.assetAssignPerson}
+                classess="warning"
+              />
+            )}
+            {item?.status === "On Maintaince" && (
+              <Chips
+                label={
+                  "On Maintenance to" + " " + item?.assetMaintainceByPerson
+                }
+                classess="danger"
+              />
+            )}
+            {item?.status === "On Rent" && (
+              <Chips
+                label={"On Rent" + " " + item?.assetRentPerson}
+                classess="hold"
+              />
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Actions",
+      dataIndex: "action",
+      sort: false,
+      filter: false,
+      className: "text-center",
+      width: 120,
+      render: (record) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="Edit Registration" arrow>
+            <button className="iconButton" type="button">
+              <EditOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  history.push(
+                    `/assetManagement/assetControlPanel/registration/edit/${record?.assetRegId}`
+                  );
+                }}
+              />
+            </button>
+          </Tooltip>
+          <Tooltip title="Create Assign" arrow>
+            <button className="iconButton" type="button">
+              <AddOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  history.push(
+                    `/assetManagement/assetControlPanel/assign/create`
+                  );
+                }}
+              />
+            </button>
+          </Tooltip>
+          <Tooltip title="Unassign" arrow>
+            <button type="button" className="iconButton">
+              <ReplayOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  assetUnassign(record?.assetId, setUnassignLoading, cb);
+                }}
+              />
+            </button>
+          </Tooltip>
+        </div>
+      ),
     },
   ];
 };
@@ -125,6 +276,70 @@ const employeeDetailsColumn = () => {
   ];
 };
 
+const maintenanceSummaryColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Head",
+      dataIndex: "MaintenanceHead",
+      sort: true,
+      filter: false,
+    },
+    {
+      title: "From Date",
+      dataIndex: "FromDate",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.FromDate),
+    },
+    {
+      title: "To Date",
+      dataIndex: "ToDate",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.FromDate),
+    },
+    {
+      title: "Amount",
+      dataIndex: "Cost",
+      sort: false,
+      filter: false,
+      render: (record) => formatMoney(record?.Cost),
+    },
+  ];
+};
+
+const totalDepreciationColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Asset description",
+      dataIndex: "AssetName",
+      sort: true,
+      filter: false,
+    },
+    {
+      title: "Amount",
+      dataIndex: "Depreciation",
+      sort: false,
+      filter: false,
+      render: (record) => formatMoney(record?.Depreciation),
+    },
+  ];
+};
+
 const getData = (
   getLandingData,
   setRowDto,
@@ -150,10 +365,15 @@ const getData = (
 };
 
 const getById = (getSingleData, id) => {
-  getSingleData(
-    `/AssetManagement/GetAssignToDetail?assetId=${id}`
-  );
+  getSingleData(`/AssetManagement/GetAssignToDetail?assetId=${id}`);
 };
 
-export { assetReportColumn, employeeDetailsColumn, getById, getData };
+export {
+  assetReportColumn,
+  employeeDetailsColumn,
+  getById,
+  getData,
+  maintenanceSummaryColumn,
+  totalDepreciationColumn
+};
 
