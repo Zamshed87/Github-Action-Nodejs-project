@@ -359,9 +359,7 @@ const BonusApproval = () => {
                                                           className="muiIconHover danger"
                                                           onClick={() => {
                                                             demoPopupForTable(
-                                                              "approve",
-                                                              "Approve",
-                                                              data
+                                                              "reject", "Reject", data
                                                             );
                                                           }}
                                                         >

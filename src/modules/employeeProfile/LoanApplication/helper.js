@@ -220,30 +220,30 @@ export const loanRequestLandingTableColumns = (
       className: "text-center",
       width: 150,
     },
-    {
-      title: () => <span style={{ color: gray600 }}>Approve Loan Amount</span>,
-      render: (_, data) => (
-        <>
-          {data?.approveLoanAmount
-            ? numberWithCommas(data?.approveLoanAmount)
-            : "N/A"}
-        </>
-      ),
-      width: 150,
-    },
-    {
-      title: () => (
-        <span style={{ color: gray600 }}>Approve Installment Amount</span>
-      ),
-      render: (_, data) => (
-        <>
-          {data?.approveNumberOfInstallmentAmount
-            ? numberWithCommas(data?.approveNumberOfInstallmentAmount)
-            : "N/A"}
-        </>
-      ),
-      width: 150,
-    },
+    // {
+    //   title: () => <span style={{ color: gray600 }}>Approve Loan Amount</span>,
+    //   render: (_, data) => (
+    //     <>
+    //       {data?.approveLoanAmount
+    //         ? numberWithCommas(data?.approveLoanAmount)
+    //         : "N/A"}
+    //     </>
+    //   ),
+    //   width: 150,
+    // },
+    // {
+    //   title: () => (
+    //     <span style={{ color: gray600 }}>Approve Installment Amount</span>
+    //   ),
+    //   render: (_, data) => (
+    //     <>
+    //       {data?.approveNumberOfInstallmentAmount
+    //         ? numberWithCommas(data?.approveNumberOfInstallmentAmount)
+    //         : "N/A"}
+    //     </>
+    //   ),
+    //   width: 150,
+    // },
     {
       title: "Effective Date",
       dataIndex: "effectiveDate",
@@ -260,11 +260,11 @@ export const loanRequestLandingTableColumns = (
       dataType: "date",
       width: 150,
     },
-    {
-      title: () => <span style={{ color: gray600 }}>Approve Installments</span>,
-      dataIndex: "approveNumberOfInstallment",
-      width: 200,
-    },
+    // {
+    //   title: () => <span style={{ color: gray600 }}>Approve Installments</span>,
+    //   dataIndex: "approveNumberOfInstallment",
+    //   width: 200,
+    // },
     {
       title: "Application Status",
       dataIndex: "applicationStatus",

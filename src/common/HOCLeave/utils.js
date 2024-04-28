@@ -1,6 +1,5 @@
 import { Attachment, EditOutlined } from "@mui/icons-material";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Tooltip } from "@mui/material";
 import moment from "moment";
 import * as Yup from "yup";
@@ -10,7 +9,6 @@ import {
   dateFormatterForInput,
 } from "../../utility/dateFormatter";
 import Chips from "../Chips";
-import { LightTooltip } from "../LightTooltip";
 
 export const initDataForLeaveApplication = {
   search: "",
@@ -64,7 +62,7 @@ export const empMgmtLeaveApplicationDtoColumn = (
       dataIndex: "LeaveType",
       render: (_, record) => (
         <div className="d-flex align-items-center ">
-          <LightTooltip
+          {/* <LightTooltip
             title={
               <div className="movement-tooltip p-2">
                 <div className="border-bottom">
@@ -84,7 +82,7 @@ export const empMgmtLeaveApplicationDtoColumn = (
             <InfoOutlinedIcon
               sx={{ marginRight: "12px", color: "rgba(0, 0, 0, 0.6)" }}
             />
-          </LightTooltip>
+          </LightTooltip> */}
           <div className="d-flex align-items-center">
             <div>{record?.LeaveType}</div>
             <div className="leave-application-document ml-1">
@@ -105,13 +103,7 @@ export const empMgmtLeaveApplicationDtoColumn = (
       sorter: false,
       filter: true,
     },
-    {
-      title: "Location",
-      dataIndex: "AddressDuetoLeave",
-      sorter: true,
-      filter: true,
-      isNumber: true,
-    },
+
     {
       title: "From Date",
       dataIndex: "AppliedFromDate",
@@ -136,6 +128,20 @@ export const empMgmtLeaveApplicationDtoColumn = (
     {
       title: "Half Day",
       dataIndex: "HalfDayRange",
+    },
+    {
+      title: "Location",
+      dataIndex: "AddressDuetoLeave",
+      // sorter: true,
+      // filter: true,
+      // isNumber: true,
+    },
+    {
+      title: "Reason",
+      dataIndex: "Reason",
+      // sorter: true,
+      // filter: true,
+      // isNumber: true,
     },
     {
       title: "Status",

@@ -858,7 +858,50 @@ const CreateEditLeavePolicy = () => {
 
                       return (
                         <>
-                          <Col md={12} sm={24}>
+                          <Divider
+                            style={{
+                              marginBlock: "4px",
+                              marginTop: "6px",
+                              fontSize: "14px",
+                              fontWeight: 600,
+                            }}
+                            orientation="left"
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px",
+                              }}
+                            >
+                              <PInput
+                                type="checkbox"
+                                layout="horizontal"
+                                name="isDependOnServiceLength"
+                                disabled={
+                                  intLeaveType?.label ===
+                                    "Earn Leave/Annual Leave" ||
+                                  intLeaveType?.label === "Compensatory Leave"
+                                }
+                                onChange={(e) => {
+                                  setTableData([]);
+                                  if (e.target.checked) {
+                                    form.setFieldsValue({
+                                      intAllocatedLveInDay: undefined,
+                                    });
+                                  } else {
+                                    form.setFieldsValue({
+                                      intLveInDay: undefined,
+                                      intEndServiceLengthInYear: undefined,
+                                      intStartServiceLengthInYear: undefined,
+                                    });
+                                  }
+                                }}
+                              />
+                              <span>Depends on Service Length</span>
+                            </div>
+                          </Divider>
+                          {/* <Col md={12} sm={24}>
                             <PInput
                               label="Depends on Service Length"
                               type="checkbox"
@@ -884,7 +927,7 @@ const CreateEditLeavePolicy = () => {
                                 }
                               }}
                             />
-                          </Col>
+                          </Col> */}
                           <Col md={12} sm={24}>
                             <PSelect
                               options={[
@@ -1017,11 +1060,11 @@ const CreateEditLeavePolicy = () => {
                       );
                     }}
                   </Form.Item>
-                  <Col md={12} sm={24}>
+                  <Col md={15} sm={24}>
                     {tableData?.length > 0 && (
                       <div
                         className="table-card-body pt-3 "
-                        style={{ marginLeft: "-1em" }}
+                        style={{ marginLeft: "-.8em" }}
                       >
                         <div
                           className=" table-card-styled tableOne"

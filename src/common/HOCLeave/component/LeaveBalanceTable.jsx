@@ -52,9 +52,9 @@ const LeaveBalanceTable = ({
                   <tr key={item?.strLeaveType}>
                     <td>
                       <div className="d-flex align-items-center">
-                        <p>{item?.strLeaveType} </p>
+                        <p>{item?.strLeaveType} &nbsp; </p>
                         {item?.strLeaveType === "Compensatory Leave" &&
-                        item?.intBalanceLveInDay > 0 ? (
+                        item?.intAllocatedLveInDay > 0 ? (
                           <div>
                             <LightTooltip
                               title={"Leave History"}

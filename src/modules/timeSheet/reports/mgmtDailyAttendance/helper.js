@@ -229,6 +229,7 @@ export const column = {
   designation: "Designation",
   department: "Department",
   section: "Section",
+  hrPosition: "HR Position",
   employmentType: "Employment Type",
   calender: "Calendar Name",
   inTime: "In Time",

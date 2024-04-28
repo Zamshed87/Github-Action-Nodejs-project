@@ -111,6 +111,7 @@ const AntScrollTable = ({
           };
         }}
         rowClassName={rowClassName || ""}
+        showSorterTooltip={false}
       />
     </div>
   );

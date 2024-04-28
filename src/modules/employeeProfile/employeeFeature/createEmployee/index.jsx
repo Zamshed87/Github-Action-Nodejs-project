@@ -238,9 +238,9 @@ const CreateAndEditEmploye = () => {
       method: "GET",
       params: {
         DDLType: "Calender",
-        IntWorkplaceId: workplace?.value || wId,
+        IntWorkplaceId: workplace?.value,
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value || wgId,
+        WorkplaceGroupId: workplaceGroup?.value,
         intId: 0, // employeeId, Previously set 0
       },
       onSuccess: (res) => {
@@ -253,7 +253,7 @@ const CreateAndEditEmploye = () => {
   };
 
   const getRosterGroupDDL = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
     rosterGroupDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -261,6 +261,7 @@ const CreateAndEditEmploye = () => {
         DDLType: "RosterGroup",
         BusinessUnitId: buId,
         WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
         intId: 0, // employeeId, Previously set 0
       },
       onSuccess: (res) => {
@@ -774,6 +775,8 @@ const CreateAndEditEmploye = () => {
                       });
                       if (value) {
                         getWorkplace();
+                        getCalendarDDL();
+                        getRosterGroupDDL();
                         // getUserTypeDDL();
                         getUserTypeDDL();
                         getHolidayGroupDDL();
@@ -810,7 +813,8 @@ const CreateAndEditEmploye = () => {
                       if (value) {
                         getEmployeDepartment();
                         getEmployeDesignation();
-                        getEmployeeStatus();
+                        getRosterGroupDDL();
+                        -getEmployeeStatus();
                         getEmployeePosition();
                         getEmploymentType();
                         getCalendarDDL();
@@ -1410,7 +1414,7 @@ const CreateAndEditEmploye = () => {
                       <>
                         <Form.Item shouldUpdate noStyle>
                           {() => {
-                            const { workplaceGroup, calenderType } =
+                            const { workplaceGroup, calenderType, workplace } =
                               form.getFieldsValue(true);
                             return (
                               <>
@@ -1459,7 +1463,7 @@ const CreateAndEditEmploye = () => {
                                         ? `Roster Name`
                                         : `Calendar Name`
                                     }
-                                    disabled={!workplaceGroup}
+                                    disabled={!workplace}
                                     onChange={(value, op) => {
                                       form.setFieldsValue({
                                         calender: op,
@@ -1483,7 +1487,7 @@ const CreateAndEditEmploye = () => {
                                         name="startingCalender"
                                         label="Starting Calendar"
                                         placeholder={"Starting Calendar"}
-                                        disabled={!workplaceGroup}
+                                        disabled={!workplace}
                                         onChange={(value, op) => {
                                           form.setFieldsValue({
                                             startingCalender: op,
