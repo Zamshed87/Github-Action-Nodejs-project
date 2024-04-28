@@ -253,7 +253,7 @@ const CreateAndEditEmploye = () => {
   };
 
   const getRosterGroupDDL = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
     rosterGroupDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
@@ -261,6 +261,7 @@ const CreateAndEditEmploye = () => {
         DDLType: "RosterGroup",
         BusinessUnitId: buId,
         WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
         intId: 0, // employeeId, Previously set 0
       },
       onSuccess: (res) => {
@@ -812,7 +813,8 @@ const CreateAndEditEmploye = () => {
                       if (value) {
                         getEmployeDepartment();
                         getEmployeDesignation();
-                        getEmployeeStatus();
+                        getRosterGroupDDL();
+                        -getEmployeeStatus();
                         getEmployeePosition();
                         getEmploymentType();
                         getCalendarDDL();
