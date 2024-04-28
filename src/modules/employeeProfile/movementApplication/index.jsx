@@ -303,7 +303,7 @@ export default function EmMovementApplication() {
         dataIndex: "MovementType",
         render: (_, record) => (
           <div className="d-flex align-items-center ">
-            <LightTooltip
+            {/* <LightTooltip
               title={
                 <div className="movement-tooltip p-2">
                   <div className="border-bottom">
@@ -325,7 +325,7 @@ export default function EmMovementApplication() {
                   fontSize: "16px",
                 }}
               />
-            </LightTooltip>
+            </LightTooltip> */}
             <span> {record?.MovementType}</span>
           </div>
         ),
@@ -367,6 +367,15 @@ export default function EmMovementApplication() {
         filter: false,
         sorter: false,
       },
+      {
+        title: "Location",
+        dataIndex: "Location",
+      },
+      {
+        title: "Reason",
+        dataIndex: "Reason",
+      },
+
       {
         title: "Status",
         dataIndex: "Status",
