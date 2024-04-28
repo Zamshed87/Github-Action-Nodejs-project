@@ -62,11 +62,7 @@ export const header = (actionObj: any) => {
       dataIndex: "StrSectionName",
       sorter: true,
     },
-    {
-      title: "Line Manager",
-      dataIndex: "StrLineManagerName",
-      sorter: true,
-    },
+
     {
       title: "Supervisor",
       dataIndex: "StrSupervisorName",
@@ -75,6 +71,11 @@ export const header = (actionObj: any) => {
     {
       title: "Dotted Supervisor",
       dataIndex: "StrDottedSupervisorName",
+      sorter: true,
+    },
+    {
+      title: "Line Manager",
+      dataIndex: "StrLineManagerName",
       sorter: true,
     },
     actionObj,
