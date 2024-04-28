@@ -567,6 +567,7 @@ export default function TransferNPromotionApproval() {
                               color: "rgba(95, 99, 104, 1)",
                               fontSize: "14px",
                             }}
+                            key={i}
                           >
                             <td className="text-center">
                               <div>{i + 1}</div>
