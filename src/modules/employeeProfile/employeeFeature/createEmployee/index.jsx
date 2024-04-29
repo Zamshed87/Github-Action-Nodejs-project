@@ -900,6 +900,7 @@ const CreateAndEditEmploye = () => {
                                 name="probationayClosedBy"
                                 label="Probation Period"
                                 placeholder="Probation Period"
+                                allowClear
                                 onChange={(value, op) => {
                                   const nextDate =
                                     calculateProbationCloseDateByDateOrMonth({
@@ -1039,6 +1040,7 @@ const CreateAndEditEmploye = () => {
                     options={empSectionDDL.data || []}
                     name="section"
                     showSearch
+                    allowClear
                     filterOption={true}
                     label="Section"
                     placeholder="Section"
@@ -1149,6 +1151,7 @@ const CreateAndEditEmploye = () => {
                             options={dottedSupervisorDDL?.data || []}
                             name="dottedSupervisor"
                             label="Dotted Supervisor"
+                            allowClear
                             placeholder={`${
                               workplaceGroup?.value
                                 ? "Search minimum 2 character"
@@ -1214,6 +1217,7 @@ const CreateAndEditEmploye = () => {
                     showSearch
                     filterOption={true}
                     label="Salary Type"
+                    allowClear
                     placeholder="Salary Type"
                     onChange={(value, op) => {
                       form.setFieldsValue({
@@ -1239,6 +1243,7 @@ const CreateAndEditEmploye = () => {
                     name="otType"
                     label="Overtime Type"
                     placeholder={"Overtime Type"}
+                    allowClear
                     // disabled={!calenderType}
                     onChange={(value, op) => {
                       form.setFieldsValue({
@@ -1341,6 +1346,7 @@ const CreateAndEditEmploye = () => {
                     name="bloodGroup"
                     label="Blood Group"
                     placeholder="Blood Group"
+                    allowClear
                     onChange={(value, op) => {
                       form.setFieldsValue({
                         bloodGroup: op,
