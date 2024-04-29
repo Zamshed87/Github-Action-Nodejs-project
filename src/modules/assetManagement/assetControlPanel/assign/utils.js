@@ -104,6 +104,7 @@ const addAssignHandler = (
     startDate: values?.startDate,
     actionById: employeeId,
     actionByName: userName,
+    isDepartment: values?.assignTo === "department" ? true : false,
   };
   setRowDto([...rowDto, obj]);
   cb();
