@@ -3,7 +3,6 @@ import { Tooltip } from "@mui/material";
 import FormikInput from "common/FormikInput";
 import IConfirmModal from "common/IConfirmModal";
 import PrimaryButton from "common/PrimaryButton";
-import { formatMoney } from "utility/formatMoney";
 import { todayDate } from "utility/todayDate";
 import * as Yup from "yup";
 
@@ -44,16 +43,6 @@ const itemProfileColumn = (
       filter: false,
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      sort: true,
-      filter: false,
-      className: "text-right",
-      render: (record) => {
-        return formatMoney(record?.price);
-      },
-    },
-    {
       title: "UoM",
       dataIndex: "itemUom",
       sort: true,
@@ -77,6 +66,7 @@ const itemProfileColumn = (
       sort: false,
       filter: false,
       className: "text-center",
+      width: 100,
       render: (record) => (
         <div className="d-flex justify-content-center">
           <Tooltip title="Edit" arrow>
@@ -159,8 +149,6 @@ const initialValue = {
   itemCategory: "",
   itemUoM: "",
   description: "",
-  price: "",
-  barcode: "",
   itemSubcategory: "",
   manufacturerName: "",
 };
@@ -168,8 +156,6 @@ const initialValue = {
 const validationSchema = Yup.object().shape({
   isAutoCode: Yup.boolean(),
   description: Yup.string().required("Description is required"),
-  price: Yup.string().required("Price is required"),
-  barcode: Yup.string().required("Barcode is required"),
   itemSubcategory: Yup.object()
     .shape({
       label: Yup.string().required("Item subcategory is required"),
@@ -226,20 +212,15 @@ const saveItemProfileHandler = (
     description: values?.description,
     itemUomId: values?.itemUoM?.value,
     itemUom: values?.itemUoM?.label,
-    barcode: values?.barcode,
+    barcode: values?.barcode || "",
     active: true,
     createdAt: todayDate(),
-    price: +values?.price,
+    price: +values?.price || 0,
     itemSubCategoryId: values?.itemSubcategory?.value,
     updatedAt: todayDate(),
     updatedBy: employeeId,
   };
-  saveItemProfile(
-    `/AssetManagement/SaveItem`,
-    payload,
-    cb,
-    true
-  );
+  saveItemProfile(`/AssetManagement/SaveItem`, payload, cb, true);
 };
 
 const getById = (
@@ -268,8 +249,6 @@ const getById = (
           value: res?.itemUomId,
         },
         description: res?.description,
-        price: res?.price,
-        barcode: res?.barcode || "",
         itemSubcategory: {
           label: res?.itemSubCategoryName,
           value: res?.itemSubCategoryId,

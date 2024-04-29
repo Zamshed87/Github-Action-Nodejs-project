@@ -197,6 +197,9 @@ const AssetRegistration = lazy(() =>
 const AssetRegistrationCreate = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/registration/createEditForm/CreateEditForm.jsx")
 );
+const AssetRegistrationEdit = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/registration/createEditForm/CreateEditForm.jsx")
+);
 const AssetAssign = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/assign/index.jsx")
 );
@@ -211,6 +214,21 @@ const AssetDepreciationCreate = lazy(() =>
 );
 const AssetReport = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/report/index.jsx")
+);
+const AssetMaintenance = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/maintenance/index.jsx")
+);
+const AssetMaintenanceCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/maintenance/createEditForm/CreateEditForm.jsx")
+);
+const AssetReceiveDetails = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/maintenance/createEditForm/ReceiveAssetDetails.jsx")
+);
+const AssetDisposal = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/disposal/index.jsx")
+);
+const AssetDisposalCreate = lazy(() =>
+  import("../modules/assetManagement/assetControlPanel/disposal/createEditForm/CreateEditForm.jsx")
 );
 const MarketVistApproval = lazy(() =>
   import("../modules/marketVisit/approval/index.jsx")
@@ -2929,6 +2947,10 @@ export const routingList = [
     component: AssetRegistrationCreate,
   },
   {
+    path: "/assetManagement/assetControlPanel/registration/edit/:id",
+    component: AssetRegistrationEdit,
+  },
+  {
     path: "/assetManagement/assetControlPanel/assign",
     component: AssetAssign,
   },
@@ -2947,6 +2969,26 @@ export const routingList = [
   {
     path: "/assetManagement/assetControlPanel/assetReport",
     component: AssetReport,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/maintenance/assetReceiveDetails/:id",
+    component: AssetReceiveDetails,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/maintenance/create",
+    component: AssetMaintenanceCreate,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/maintenance",
+    component: AssetMaintenance,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assetDisposal",
+    component: AssetDisposal,
+  },
+  {
+    path: "/assetManagement/assetControlPanel/assetDisposal/create",
+    component: AssetDisposalCreate,
   },
   {
     path: "/assetManagement/registration/assets/edit/:id",

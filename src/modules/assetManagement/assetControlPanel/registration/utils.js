@@ -1,3 +1,5 @@
+import { EditOutlined } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import axios from "axios";
 import Chips from "common/Chips";
 import FormikInput from "common/FormikInput";
@@ -11,6 +13,7 @@ const initialValue = {
   itemName: "",
   qty: "",
   rate: "",
+  startNumber: "",
   isDepreciation: false,
   percentage: "",
   identifierBy: "",
@@ -26,7 +29,7 @@ const itemAddHandler = (values, setRowDto, cb) => {
       itemId: values?.itemName?.value,
       itemCode: values?.itemName?.itemCode,
       rate: +values?.rate,
-      value: values?.isAutoValue ? values?.itemName?.totalQuantity + i + 1 : "",
+      value: values?.isAutoValue ? (+values?.startNumber || 1) + i : "",
     };
     data.push(obj);
   }
@@ -57,16 +60,23 @@ const registrationColumn = (errors, touched, rowDto, setRowDto) => {
       filter: false,
     },
     {
+      title: "Price",
+      dataIndex: "rate",
+      sort: false,
+      filter: false,
+      render: (record) => formatMoney(record?.rate),
+    },
+    {
       title: "Value (Identifier)",
       dataIndex: "value",
       sort: false,
       filter: false,
       width: 300,
       render: (record, index) => (
-        <>
+        <div className="d-flex align-items-center">
           <FormikInput
             classes="input-sm"
-            placeholder=" "
+            placeholder=""
             value={record?.value}
             name="value"
             type="text"
@@ -91,7 +101,7 @@ const registrationColumn = (errors, touched, rowDto, setRowDto) => {
             errors={errors}
             touched={touched}
           />
-        </>
+        </div>
       ),
     },
   ];
@@ -119,7 +129,10 @@ const rowDtoInputHandlerOnBlur = (name, value, index, rowDto, setRowDto) => {
   }
 };
 
+export const localUrl = "https://192.168.3.91:45455/api";
+
 const saveHandler = (
+  id,
   values,
   rowDto,
   itemCode,
@@ -128,6 +141,7 @@ const saveHandler = (
   buId,
   wId,
   wgId,
+  setEditLoading,
   cb
 ) => {
   if (!values?.identifierBy)
@@ -135,7 +149,17 @@ const saveHandler = (
   if (values?.isDepreciation && !values?.percentage)
     return toast.warn("Please select percentage", { toastId: "percentage" });
   if (rowDto?.length === 0)
-    return toast.warn("Please add item", { toastId: "item" });
+    return toast.warn("Please add atlest one item", { toastId: "item" });
+  const editPayload = {
+    assetRegisterId: +id,
+    identifier: values?.identifierBy,
+    percentage: +values?.percentage || 0,
+    isDepreciation: values?.isDepreciation,
+    updateList: rowDto?.map((item) => ({
+      id: item?.assetId,
+      value: item?.value.toString(),
+    })),
+  };
   const payload = {
     headerAsset: {
       purchaseReceiveId: 0,
@@ -146,7 +170,7 @@ const saveHandler = (
       assetRegisterDate: todayDate(),
       accountId: orgId,
       branchId: buId,
-      percentage: +values?.percentage || "",
+      percentage: +values?.percentage || 0,
       isDepreciation: values?.isDepreciation,
       identification: values?.identifierBy,
     },
@@ -157,11 +181,40 @@ const saveHandler = (
       bookValue: item?.rate,
     })),
   };
-  saveRegistration(
-    `/AssetManagement/CreateAssetRegisterService`,
-    payload,
-    cb,
-    true
+  if (id) {
+    updateRegisteredAsset(editPayload, setEditLoading, cb);
+  } else {
+    saveRegistration(
+      `/AssetManagement/CreateAssetRegisterService`,
+      payload,
+      cb,
+      true
+    );
+  }
+};
+
+const getById = (id, getSingleData, setSingleData, setRowDto) => {
+  getSingleData(
+    `/AssetManagement/GetAssetRegisterById?AssetRegisterId=${id}`,
+    (res) => {
+      const headerData = res?.objHeader;
+      const rowData = res?.objRow;
+      const modifyHeaderData = {
+        isDepreciation: headerData?.isDepreciation,
+        percentage: headerData?.depreciationPercent,
+        identifierBy: headerData?.identification,
+      };
+      setSingleData(modifyHeaderData);
+      const modifyRowData = rowData?.map((item) => ({
+        ...item,
+        itemId: item?.itemId,
+        itemName: item?.itemName,
+        itemCode: headerData?.purchaseReceiveCode,
+        value: item?.identificationValue,
+        rate: item?.bookValue,
+      }));
+      setRowDto(modifyRowData);
+    }
   );
 };
 
@@ -175,6 +228,7 @@ const assetRegistrationColumn = (
   touched,
   pages,
   setEditLoading,
+  history,
   cb
 ) => {
   return [
@@ -318,7 +372,7 @@ const assetRegistrationColumn = (
             {item?.status === "Assigned" && (
               <Chips
                 label={"Assign to" + " " + item?.assetAssignPerson}
-                classess="success"
+                classess="warning"
               />
             )}
             {item?.status === "On Maintaince" && (
@@ -326,7 +380,7 @@ const assetRegistrationColumn = (
                 label={
                   "On Maintenance to" + " " + item?.assetMaintainceByPerson
                 }
-                classess="warning"
+                classess="danger"
               />
             )}
             {item?.status === "On Rent" && (
@@ -385,24 +439,36 @@ const assetRegistrationColumn = (
               />
             </>
           ) : (
-            <PrimaryButton
-              type="button"
-              className="btn btn-default"
-              label="Edit"
-              customStyle={{ padding: "2px 10px", fontSize: "12px" }}
-              onClick={(e) => {
-                e.stopPropagation();
-                inputHandler(
-                  "isEdit",
-                  true,
-                  index,
-                  rowDto,
-                  setRowDto,
-                  setPages,
-                  pages
-                );
-              }}
-            />
+            // <PrimaryButton
+            //   type="button"
+            //   className="btn btn-default"
+            //   label="Edit"
+            //   customStyle={{ padding: "2px 10px", fontSize: "12px" }}
+            //   onClick={(e) => {
+            //     e.stopPropagation();
+            //     inputHandler(
+            //       "isEdit",
+            //       true,
+            //       index,
+            //       rowDto,
+            //       setRowDto,
+            //       setPages,
+            //       pages
+            //     );
+            //   }}
+            // />
+            <Tooltip title="Edit" arrow>
+              <button className="iconButton" type="button">
+                <EditOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    history.push(
+                      `/assetManagement/assetControlPanel/registration/edit/${record?.assetRegisterId}`
+                    );
+                  }}
+                />
+              </button>
+            </Tooltip>
           )}
         </div>
       ),
@@ -450,14 +516,14 @@ const updateRegisteredAsset = async (payload, setLoading, cb) => {
   setLoading(true);
   try {
     const res = await axios.put(
-      "/AssetManagement/EditAssetRegistration",
+      `/AssetManagement/EditAssetRegistration`,
       payload
     );
-    cb();
     setLoading(false);
     toast.success(res?.data?.message || "Submitted successfully", {
       toastId: "toastId",
     });
+    cb();
   } catch (error) {
     setLoading(false);
     toast.warn(error?.response?.data?.message || "Something went wrong", {
@@ -468,6 +534,7 @@ const updateRegisteredAsset = async (payload, setLoading, cb) => {
 
 export {
   assetRegistrationColumn,
+  getById,
   getData,
   initialValue,
   itemAddHandler,

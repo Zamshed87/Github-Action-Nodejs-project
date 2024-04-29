@@ -228,40 +228,6 @@ const ItemProfileForm = () => {
                       />
                     </div>
                     <div className="col-lg-3">
-                      <label>
-                        Price <Required />
-                      </label>
-                      <FormikInput
-                        classes="input-sm"
-                        placeholder=" "
-                        value={values?.price}
-                        name="price"
-                        type="number"
-                        onChange={(e) => {
-                          setFieldValue("price", e.target.value);
-                        }}
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                    <div className="col-lg-3">
-                      <label>
-                        Barcode <Required />
-                      </label>
-                      <FormikInput
-                        classes="input-sm"
-                        placeholder=" "
-                        value={values?.barcode}
-                        name="barcode"
-                        type="text"
-                        onChange={(e) => {
-                          setFieldValue("barcode", e.target.value);
-                        }}
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                    <div className="col-lg-3">
                       <div className="d-flex justify-content-between align-items-center">
                         <div>
                           <label>
@@ -415,7 +381,7 @@ const ItemProfileForm = () => {
                       />
                     </div>
                     <div className="col-lg-3">
-                      <label>Manufacturer Name</label>
+                      <label>Manufacturer/Brand Name</label>
                       <FormikInput
                         classes="input-sm"
                         placeholder=" "

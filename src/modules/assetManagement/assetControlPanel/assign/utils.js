@@ -104,6 +104,7 @@ const addAssignHandler = (
     startDate: values?.startDate,
     actionById: employeeId,
     actionByName: userName,
+    isDepartment: values?.assignTo === "department" ? true : false,
   };
   setRowDto([...rowDto, obj]);
   cb();
@@ -174,7 +175,7 @@ const assignLandingColumn = (page, paginationSize, setUnassignLoading, cb) => {
               <ReplayOutlined
                 onClick={(e) => {
                   e.stopPropagation();
-                  assetUnassign(record?.assetAssignId, setUnassignLoading, cb);
+                  assetUnassign(record?.assetId, setUnassignLoading, cb);
                 }}
               />
             </button>
@@ -232,8 +233,7 @@ const assetUnassign = async (assetId, setLoading, cb) => {
 export {
   addAssignHandler,
   assetAssignColumn,
-  assignLandingColumn,
-  getData,
+  assetUnassign, assignLandingColumn, getData,
   initialValue,
   saveHandler
 };
