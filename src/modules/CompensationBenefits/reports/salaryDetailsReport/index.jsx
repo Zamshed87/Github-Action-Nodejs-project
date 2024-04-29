@@ -107,15 +107,21 @@ export default function SalaryDetailsReport() {
     });
   };
   const getHrPosition = async (values, op) => {
-    console.log({ values, op });
     setLoading && setLoading(true);
-    const api = `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intBusinessUnitId=${buId}&intAccountId=${orgId}&strSalaryCode=${op?.value}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}`;
+    const api = `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&strSalaryCode=${op?.value}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}`;
 
     try {
       const res = await axios.get(api);
       if (res?.data) {
-        console.log({ res });
+        const data = res?.data?.map((item) => {
+          return {
+            value: item?.intWorkplaceId,
+            label: `${item?.strHrPosition}-${item?.strWorkplaceName}`,
+          };
+        });
+        setHrPositionDDL(data);
       }
+      setLoading(false);
     } catch (error) {
       isDevServer && console.log(error);
       setLoading && setLoading(false);
@@ -200,7 +206,6 @@ export default function SalaryDetailsReport() {
                         options={[...payrollPolicyDDL] || []}
                         value={values?.payrollPolicy}
                         onChange={(valueOption) => {
-                          console.log({ valueOption });
                           setValues((prev) => ({
                             ...prev,
                             payrollPolicy: valueOption,
@@ -301,12 +306,6 @@ export default function SalaryDetailsReport() {
                               ...prev,
                               paymentType: valueOption,
                             }));
-                            setRowDto([]);
-                            setDetailsData("");
-                            getHrPosition();
-
-                            setAllData([]);
-                            setTableColumn([]);
                           }}
                           placeholder=""
                           styles={customStyles}
