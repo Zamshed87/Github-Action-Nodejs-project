@@ -1,11 +1,17 @@
 import {
   AddOutlined,
+  AttachFile,
+  Attachment,
+  AttachmentOutlined,
+  DeleteOutlineOutlined,
   EditOutlined,
   InfoOutlined,
   ReplayOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import Chips from "common/Chips";
+import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { toast } from "react-toastify";
 import { dateFormatter } from "utility/dateFormatter";
 import { formatMoney } from "utility/formatMoney";
 import { assetUnassign } from "../assign/utils";
@@ -26,6 +32,8 @@ const assetReportColumn = (
   setDepreciationModal,
   history,
   setUnassignLoading,
+  setIsAttachmentShow,
+  setIsAttachmentView,
   cb
 ) => {
   return [
@@ -81,13 +89,6 @@ const assetReportColumn = (
           <div className="ml-2">{record?.employeeName}</div>
         </div>
       ),
-    },
-    {
-      title: "Reg. Date",
-      dataIndex: "registrationDate",
-      sort: false,
-      filter: false,
-      render: (record) => dateFormatter(record?.registrationDate),
     },
     {
       title: "Book Value",
@@ -211,6 +212,28 @@ const assetReportColumn = (
       width: 120,
       render: (record) => (
         <div className="d-flex justify-content-center">
+          <Tooltip title="Attachment View" arrow>
+            <button className="iconButton" type="button">
+              <Attachment
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setItemId(record?.assetId);
+                  setIsAttachmentView(true);
+                }}
+              />
+            </button>
+          </Tooltip>
+          <Tooltip title="Attachment Upload" arrow>
+            <button className="iconButton" type="button">
+              <AttachFile
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setItemId(record?.assetId);
+                  setIsAttachmentShow(true);
+                }}
+              />
+            </button>
+          </Tooltip>
           <Tooltip title="Edit Registration" arrow>
             <button className="iconButton" type="button">
               <EditOutlined
@@ -223,28 +246,32 @@ const assetReportColumn = (
               />
             </button>
           </Tooltip>
-          <Tooltip title="Create Assign" arrow>
-            <button className="iconButton" type="button">
-              <AddOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  history.push(
-                    `/assetManagement/assetControlPanel/assign/create`
-                  );
-                }}
-              />
-            </button>
-          </Tooltip>
-          <Tooltip title="Unassign" arrow>
-            <button type="button" className="iconButton">
-              <ReplayOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  assetUnassign(record?.assetId, setUnassignLoading, cb);
-                }}
-              />
-            </button>
-          </Tooltip>
+          {!record?.isAssign && (
+            <Tooltip title="Create Assign" arrow>
+              <button className="iconButton" type="button">
+                <AddOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    history.push(
+                      `/assetManagement/assetControlPanel/assign/create`
+                    );
+                  }}
+                />
+              </button>
+            </Tooltip>
+          )}
+          {record?.isAssign && !record?.isOnMaintaince && (
+            <Tooltip title="Unassign" arrow>
+              <button type="button" className="iconButton">
+                <ReplayOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    assetUnassign(record?.assetId, setUnassignLoading, cb);
+                  }}
+                />
+              </button>
+            </Tooltip>
+          )}
         </div>
       ),
     },
@@ -286,7 +313,7 @@ const maintenanceSummaryColumn = () => {
       className: "text-center",
     },
     {
-      title: "Head",
+      title: "Maintenance Type",
       dataIndex: "MaintenanceHead",
       sort: true,
       filter: false,
@@ -347,12 +374,15 @@ const getData = (
   buId,
   wId,
   wgId,
+  empOrDeptId,
+  empOrDeptTypeId,
+  statusId,
   pages,
   setPages,
   search
 ) => {
   getLandingData(
-    `/AssetManagement/GetAssetDetailLandingPaginationReport?accountId=${orgId}&branchId=${buId}&viewOrder=desc&workplaceId=${wId}&workplaceGroupId=${wgId}&PageSize=${pages?.pageSize}&PageNo=${pages?.current}&SearchItem=${search}`,
+    `/AssetManagement/GetAssetDetailLandingPaginationReport?accountId=${orgId}&branchId=${buId}&intdeptOrEmpID=${empOrDeptId}&intDeporEmpType=${empOrDeptTypeId}&statusType=${statusId}&viewOrder=desc&workplaceId=${wId}&workplaceGroupId=${wgId}&PageSize=${pages?.pageSize}&PageNo=${pages?.current}&SearchItem=${search}`,
     (res) => {
       setRowDto(res?.data);
       setPages?.({
@@ -368,12 +398,125 @@ const getById = (getSingleData, id) => {
   getSingleData(`/AssetManagement/GetAssignToDetail?assetId=${id}`);
 };
 
+const addDocumentHandler = (values, documentFile, rowDto, setRowDto, cb) => {
+  if (!documentFile)
+    return toast.warn("Please attach a file", { toastId: "document" });
+  const obj = {
+    globalImageUrlID: documentFile?.globalFileUrlId,
+    attachmentFileName: documentFile?.fileName,
+    documentName: values?.documentName,
+  };
+  setRowDto([...rowDto, obj]);
+  cb();
+};
+
+const documentAttachmentColumn = (dispatch, rowDto, setRowDto, type) => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Document Name",
+      dataIndex: "documentName",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Attachment",
+      dataIndex: "attachmentFileName",
+      sort: false,
+      filter: false,
+      render: (record) => (
+        <div
+          className="d-inline-block"
+          onClick={() => {
+            dispatch(getDownlloadFileView_Action(record?.globalImageUrlID));
+          }}
+        >
+          <div
+            className="d-flex align-items-center"
+            style={{
+              fontSize: "12px",
+              fontWeight: "500",
+              color: "#0072E5",
+              cursor: "pointer",
+            }}
+          >
+            <AttachmentOutlined sx={{ marginRight: "5px", color: "#0072E5" }} />
+            {record?.attachmentFileName || "Attachment"}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Actions",
+      dataIndex: "action",
+      sort: false,
+      filter: false,
+      width: 100,
+      className: "text-center",
+      isHidden: type === "view",
+      render: (_, index) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="Delete" arrow>
+            <button type="button" className="iconButton">
+              <DeleteOutlineOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteRowData(index, rowDto, setRowDto);
+                }}
+              />
+            </button>
+          </Tooltip>
+        </div>
+      ),
+    },
+  ].filter((item) => !item?.isHidden);
+};
+
+const deleteRowData = (index, rowDto, setRowDto) => {
+  const rowData = rowDto?.filter((item, i) => i !== index);
+  setRowDto(rowData);
+};
+
+const saveAttachmentHandler = (
+  assetId,
+  rowDto,
+  assetImageFile,
+  saveAttachmentUpload,
+  cb
+) => {
+  if (!rowDto.length)
+    return toast.warn("Please add atleast one row", { toastId: "row" });
+  const payload = {
+    documentTypeId: 36,
+    documentTypeName: "Asset Document",
+    assetId: assetId,
+    globalImageUrlID: assetImageFile?.globalFileUrlId,
+    attachmentName: assetImageFile?.fileName,
+    multipleDocument: rowDto,
+  };
+  saveAttachmentUpload(
+    `/AssetManagement/CreateAssetDocumentUploadService`,
+    payload,
+    cb,
+    true
+  );
+};
+
 export {
+  addDocumentHandler,
   assetReportColumn,
+  documentAttachmentColumn,
   employeeDetailsColumn,
   getById,
   getData,
   maintenanceSummaryColumn,
+  saveAttachmentHandler,
   totalDepreciationColumn
 };
 
