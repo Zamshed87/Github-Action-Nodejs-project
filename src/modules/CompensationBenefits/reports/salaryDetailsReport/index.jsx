@@ -400,20 +400,17 @@ export default function SalaryDetailsReport() {
                             if (detailsData?.length <= 0) {
                               return toast.warn("No Data Found");
                             }
-                            /*    createSalaryDetailsReportExcelHandeler({
-                              monthYear: moment(values?.monthYear).format(
-                                "MMMM-YYYY"
-                              ),
-                              buAddress: buDetails?.strBusinessUnitAddress,
-                              businessUnit: !state?.data
-                                ? state?.strBusinessUnit
-                                : state?.data?.strBusinessUnit,
-                              data: resDetailsReport,
-                              tableColumn,
-                              tableAllowanceHead,
-                              tableDeductionHead,
-                            }); */
-                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
+                            const hrPositions =
+                              values?.hrPosition?.length > 0
+                                ? `&strHrPositionList=${values?.hrPosition?.map(
+                                    (i) => i.id
+                                  )}`
+                                : "";
+                            const payment =
+                              values?.paymentType?.value > 0
+                                ? `&intPaymentMethod=${values?.paymentType?.value}`
+                                : "";
+                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}${hrPositions}${payment}`;
                             downloadFile(
                               url,
                               "Salary Details Report",
@@ -451,7 +448,17 @@ export default function SalaryDetailsReport() {
                           if (detailsData?.length <= 0) {
                             return toast.warn("No Data Found");
                           } else {
-                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
+                            const hrPositions =
+                              values?.hrPosition?.length > 0
+                                ? `&strHrPositionList=${values?.hrPosition?.map(
+                                    (i) => i.id
+                                  )}`
+                                : "";
+                            const payment =
+                              values?.paymentType?.value > 0
+                                ? `&intPaymentMethod=${values?.paymentType?.value}`
+                                : "";
+                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}${hrPositions}${payment}`;
 
                             getPDFAction(url, setLoading);
                           }
