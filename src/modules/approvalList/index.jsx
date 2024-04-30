@@ -24,6 +24,11 @@ import { getApprovalDashboardLanding } from "./helper";
 import "./index.css";
 import { handleMostClickedMenuListAction } from "commonRedux/auth/actions";
 import { isDevServer } from "App";
+import useDebounce from "utility/customHooks/useDebounce";
+import ResetButton from "common/ResetButton";
+import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
+import MasterFilter from "common/MasterFilter";
+import { commonDtofilter } from "utility/commonDtoHelper";
 
 const initData = {
   search: "",
@@ -39,10 +44,11 @@ export default function ApprovalList() {
 
   const [approvalPermissions, setApprovalPermissions] = useState([]);
   const [newTableData, setNewTableData] = useState([]);
+  const [newTableAllData, setNewTableAllData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if(wgId && wId){
+    if (wgId && wId) {
       getApprovalDashboardLanding(
         orgId,
         employeeId,
@@ -211,13 +217,20 @@ export default function ApprovalList() {
       }
     });
     setNewTableData(arr);
+    setNewTableAllData(arr);
   }, [approvalPermissions]);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Approval"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Approval";
+
+    // Cleanup function
+    return () => {
+      document.title = ""; // Reset document title on unmount
+    };
   }, []);
+  const debounce = useDebounce();
 
   return (
     <>
@@ -228,7 +241,7 @@ export default function ApprovalList() {
           // console.log(values);
         }}
       >
-        {({ handleSubmit }) => (
+        {({ handleSubmit, values, resetForm, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -239,7 +252,58 @@ export default function ApprovalList() {
                     style={{ margin: "10px 0 14px 0" }}
                   >
                     <h2>Pending Applications</h2>
-                    <div className="table-card-head-right"></div>
+                    <div className="table-card-head-right">
+                      <ul>
+                        {values?.search && (
+                          <li>
+                            <ResetButton
+                              classes="btn-filter-reset"
+                              title="reset"
+                              icon={
+                                <SettingsBackupRestoreOutlined
+                                  sx={{
+                                    marginRight: "10px",
+                                    fontSize: "16px",
+                                  }}
+                                />
+                              }
+                              onClick={() => {
+                                setNewTableData(newTableAllData);
+                                resetForm();
+                              }}
+                            />
+                          </li>
+                        )}
+
+                        <li>
+                          <MasterFilter
+                            width="200px"
+                            inputWidth="200px"
+                            value={values?.search}
+                            setValue={(value) => {
+                              setFieldValue("search", value);
+                              debounce(() => {
+                                //  keywords = "", setRowDto, key, rowDto, func
+                                commonDtofilter(
+                                  value,
+                                  setNewTableData,
+                                  "menuName",
+                                  newTableData,
+                                  () => {
+                                    setNewTableData(newTableAllData);
+                                  }
+                                );
+                              }, 500);
+                            }}
+                            cancelHandler={() => {
+                              setNewTableData(newTableAllData);
+                              setFieldValue("search", "");
+                            }}
+                            isHiddenFilter
+                          />
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                   <div className="table-card-body">
                     <div className="application-table">
@@ -250,7 +314,10 @@ export default function ApprovalList() {
                               ?.filter((item) =>
                                 isDevServer ? true : item?.totalCount
                               )
-                              .map((data, index) => (
+                              ?.sort((a, b) =>
+                                a?.menuName?.localeCompare(b?.menuName)
+                              ) // ascenidng order ---
+                              ?.map((data, index) => (
                                 <tr
                                   className="hasEvent"
                                   onClick={() => {

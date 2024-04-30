@@ -14,7 +14,7 @@ import { getPeopleDeskAllDDL } from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500 } from "../../../../utility/customColor";
+import { gray500, gray600, success500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/newSelectCustomStyle";
 import { getMonthName } from "./../../../../utility/monthIdToMonthName";
 import { getSalaryDetailsReportRDLC, getSalaryReport } from "./helper";
@@ -22,11 +22,15 @@ import { createSalaryDetailsReportExcelHandeler } from "../../salaryGenerate/hel
 import { downloadFile, getPDFAction } from "../../../../utility/downloadFile";
 // import SalaryTableReport from "./SalaryTableReport";
 import SalaryDetailsReportTable from "./SalaryDetailsReportTable";
+import axios from "axios";
+import { isDevServer } from "App";
 
 const initData = {
   search: "",
   businessUnit: "",
   payrollPolicy: "",
+  paymentType: "",
+  hrPosition: "",
   monthYear: moment().format("YYYY-MM"),
   monthId: new Date().getMonth() + 1,
   yearId: new Date().getFullYear(),
@@ -67,6 +71,7 @@ export default function SalaryDetailsReport() {
   const [tableDeductionHead, setTableDeductionHead] = useState([]);
   // DDl section
   const [payrollPolicyDDL, setPayrollPolicyDDL] = useState([]);
+  const [hrPositionDDL, setHrPositionDDL] = useState([]);
 
   // useFormik hooks
   const {
@@ -87,33 +92,41 @@ export default function SalaryDetailsReport() {
   const [detailsReportLoading, setDetailsReportLoading] = useState(false);
   // on form submit
   const saveHandler = (values) => {
-    // getSalaryReport(
-    //   "DynamicSalaryColumnList",
-    //   orgId,
-    //   buId,
-    //   wgId,
-    //   values?.monthId,
-    //   values?.yearId,
-    //   values?.payrollPolicy?.value,
-    //   0,
-    //   0,
-    //   employeeId,
-    //   setRowDto,
-    //   setAllData,
-    //   setTableColumn,
-    //   setLoading,
-    //   setTableAllowanceHead,
-    //   setTableDeductionHead
-    // );
-    getSalaryDetailsReportRDLC(
-      {
-        setLoading: setDetailsReportLoading,
-        setterData: setDetailsData,
-        url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`
-      }
-    )
+    const hrPositions =
+      values?.hrPosition?.length > 0
+        ? `&strHrPositionList=${values?.hrPosition?.map((i) => i.id)}`
+        : "";
+    const payment =
+      values?.paymentType?.value > 0
+        ? `&intPaymentMethod=${values?.paymentType?.value}`
+        : "";
+    getSalaryDetailsReportRDLC({
+      setLoading: setDetailsReportLoading,
+      setterData: setDetailsData,
+      url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}${hrPositions}${payment}`,
+    });
   };
+  const getHrPosition = async (values, op) => {
+    setLoading && setLoading(true);
+    const api = `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&strSalaryCode=${op?.value}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}`;
 
+    try {
+      const res = await axios.get(api);
+      if (res?.data) {
+        const data = res?.data?.map((item) => {
+          return {
+            value: item?.intWorkplaceId,
+            label: `${item?.strHrPosition}-${item?.strWorkplaceName}`,
+          };
+        });
+        setHrPositionDDL(data);
+      }
+      setLoading(false);
+    } catch (error) {
+      isDevServer && console.log(error);
+      setLoading && setLoading(false);
+    }
+  };
   useEffect(() => {
     if (values?.monthId || values?.yearId) {
       getPeopleDeskAllDDL(
@@ -197,9 +210,15 @@ export default function SalaryDetailsReport() {
                             ...prev,
                             payrollPolicy: valueOption,
                           }));
+                          setFieldValue("payrollPolicy", valueOption);
                           setRowDto([]);
                           setDetailsData("");
-
+                          getHrPosition(values, valueOption);
+                          getSalaryDetailsReportRDLC({
+                            setLoading: setDetailsReportLoading,
+                            setterData: setDetailsData,
+                            url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${valueOption?.value}`,
+                          });
                           setAllData([]);
                           setTableColumn([]);
                         }}
@@ -211,6 +230,92 @@ export default function SalaryDetailsReport() {
                       />
                     </div>
                   </div>
+
+                  {values?.payrollPolicy?.value ? (
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>Hr Positoin</label>
+                        <FormikSelect
+                          placeholder=" "
+                          classes="input-sm"
+                          styles={{
+                            ...customStyles,
+                            control: (provided, state) => ({
+                              ...provided,
+                              minHeight: "auto",
+                              height:
+                                values?.hrPosition?.length > 1
+                                  ? "auto"
+                                  : "30px",
+                              borderRadius: "4px",
+                              boxShadow: `${success500}!important`,
+                              ":hover": {
+                                borderColor: `${gray600}!important`,
+                              },
+                              ":focus": {
+                                borderColor: `${gray600}!important`,
+                              },
+                            }),
+                            valueContainer: (provided, state) => ({
+                              ...provided,
+                              height:
+                                values?.department?.length > 1
+                                  ? "auto"
+                                  : "30px",
+                              padding: "0 6px",
+                            }),
+                            multiValue: (styles) => {
+                              return {
+                                ...styles,
+                                position: "relative",
+                                top: "-1px",
+                              };
+                            },
+                            multiValueLabel: (styles) => ({
+                              ...styles,
+                              padding: "0",
+                            }),
+                          }}
+                          name="hrPosition"
+                          options={hrPositionDDL || []}
+                          value={values?.hrPosition}
+                          onChange={(valueOption) => {
+                            setFieldValue("hrPosition", valueOption);
+                          }}
+                          isMulti
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                  {values?.payrollPolicy?.value ? (
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>Payment Method </label>
+                        <FormikSelect
+                          name="paymentType"
+                          options={[
+                            { value: 1, label: "Bank" },
+                            { value: 3, label: "Cash" },
+                            { value: 2, label: "Digital" },
+                          ]}
+                          value={values?.paymentType}
+                          onChange={(valueOption) => {
+                            setValues((prev) => ({
+                              ...prev,
+                              paymentType: valueOption,
+                            }));
+                          }}
+                          placeholder=""
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+
                   <div className="col-lg-3">
                     <div className="d-flex align-items-center">
                       <button
@@ -295,20 +400,17 @@ export default function SalaryDetailsReport() {
                             if (detailsData?.length <= 0) {
                               return toast.warn("No Data Found");
                             }
-                            /*    createSalaryDetailsReportExcelHandeler({
-                              monthYear: moment(values?.monthYear).format(
-                                "MMMM-YYYY"
-                              ),
-                              buAddress: buDetails?.strBusinessUnitAddress,
-                              businessUnit: !state?.data
-                                ? state?.strBusinessUnit
-                                : state?.data?.strBusinessUnit,
-                              data: resDetailsReport,
-                              tableColumn,
-                              tableAllowanceHead,
-                              tableDeductionHead,
-                            }); */
-                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`
+                            const hrPositions =
+                              values?.hrPosition?.length > 0
+                                ? `&strHrPositionList=${values?.hrPosition?.map(
+                                    (i) => i.id
+                                  )}`
+                                : "";
+                            const payment =
+                              values?.paymentType?.value > 0
+                                ? `&intPaymentMethod=${values?.paymentType?.value}`
+                                : "";
+                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}${hrPositions}${payment}`;
                             downloadFile(
                               url,
                               "Salary Details Report",
@@ -346,12 +448,19 @@ export default function SalaryDetailsReport() {
                           if (detailsData?.length <= 0) {
                             return toast.warn("No Data Found");
                           } else {
-                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`
-                          
-                            getPDFAction(
-                              url,
-                              setLoading
-                            );
+                            const hrPositions =
+                              values?.hrPosition?.length > 0
+                                ? `&strHrPositionList=${values?.hrPosition?.map(
+                                    (i) => i.id
+                                  )}`
+                                : "";
+                            const payment =
+                              values?.paymentType?.value > 0
+                                ? `&intPaymentMethod=${values?.paymentType?.value}`
+                                : "";
+                            const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}${hrPositions}${payment}`;
+
+                            getPDFAction(url, setLoading);
                           }
                         }}
                         // disabled={detailsData?.length <= 0}
