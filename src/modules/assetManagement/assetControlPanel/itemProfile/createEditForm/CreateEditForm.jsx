@@ -157,42 +157,6 @@ const ItemProfileForm = () => {
               <div className="table-card-body">
                 <div className="card-style">
                   <div className="row py-2 px-1">
-                    <div className="col-lg-12">
-                      <label>Is Manual Code</label>
-                      <FormikCheckBox
-                        height="15px"
-                        styleobj={{
-                          color: gray900,
-                          checkedColor: greenColor,
-                          padding: "0px 0px 0px 10px",
-                        }}
-                        label=""
-                        name="isAutoCode"
-                        checked={values?.isAutoCode}
-                        onChange={(e) => {
-                          setFieldValue("isAutoCode", e.target.checked);
-                        }}
-                      />
-                    </div>
-                    {values?.isAutoCode ? (
-                      <div className="col-lg-3">
-                        <label>
-                          Item Code <Required />
-                        </label>
-                        <FormikInput
-                          classes="input-sm"
-                          placeholder=" "
-                          value={values?.itemCode}
-                          name="itemCode"
-                          type="text"
-                          onChange={(e) => {
-                            setFieldValue("itemCode", e.target.value);
-                          }}
-                          errors={errors}
-                          touched={touched}
-                        />
-                      </div>
-                    ) : null}
                     <div className="col-lg-3">
                       <label>
                         Item Name <Required />

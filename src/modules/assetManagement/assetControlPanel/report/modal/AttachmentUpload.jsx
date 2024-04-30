@@ -64,7 +64,7 @@ const AttachmentUpload = ({
         </span>
       </p>
       <br />
-      {imageFile?.globalFileUrlId && (
+      {imageFile?.globalFileUrlId ? (
         <div className="d-inline-block" onClick={handleDownloadClick}>
           <div
             className="d-flex align-items-center"
@@ -79,7 +79,7 @@ const AttachmentUpload = ({
             {imageFile?.fileName || "Attachment"}
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
