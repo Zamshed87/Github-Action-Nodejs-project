@@ -224,11 +224,12 @@ const bonusExcelHeader = {
   sl: "SL",
   intEmployeeId: "Employee Id",
   employeeName: "Employee Name",
+  strWorkPlaceName: "Workplace Name",
   strDesignationName: "Designation",
   dteJoiningDate: "Joining Date",
   strServiceLength: "Job Duration",
   numSalary: "Gross Salary (TK)",
-  numBonusPercentage: "Bonus Percentage",
+  // numBonusPercentage: "Bonus Percentage",
   numBonusAmount: "Bonus Amount(TK)",
   remarks: "Remarks/Signature",
 };
@@ -278,6 +279,7 @@ export const createBonusGenExcelHandeler = ({
 };
 
 const getExcelTableData = (row) => {
+  console.log("row",row)
   const data = row?.map((item, index) => {
     return [
       new Cell(
@@ -305,7 +307,13 @@ const getExcelTableData = (row) => {
         item?.DeptName?.trim() ? true : false,
         item?.DeptName?.trim() ? 10 : 9
       ).getCell(),
-
+      new Cell(
+        !item?.DeptName?.trim() ? item?.strWorkPlaceName : " ",
+        "left",
+        "text",
+        item?.DeptName?.trim() ? true : false,
+        item?.DeptName?.trim() ? 10 : 9
+      ).getCell(),
       new Cell(
         !item?.DeptName?.trim() ? item?.strDesignationName : " ",
         "left",
@@ -338,17 +346,17 @@ const getExcelTableData = (row) => {
         item?.DeptName?.trim() ? true : false,
         item?.DeptName?.trim() ? 10 : 9
       ).getCell(),
-      new Cell(
-        item?.DeptName
-          ? item?.DeptName === "Sub-Total:"
-            ? ` `
-            : ` `
-          : `${item?.numBonusPercentage}%`,
-        "center",
-        "text",
-        item?.DeptName?.trim() ? true : false,
-        item?.DeptName?.trim() ? 10 : 9
-      ).getCell(),
+      // new Cell(
+      //   item?.DeptName
+      //     ? item?.DeptName === "Sub-Total:"
+      //       ? ` `
+      //       : ` `
+      //     : `${item?.numBonusPercentage}%`,
+      //   "center",
+      //   "text",
+      //   item?.DeptName?.trim() ? true : false,
+      //   item?.DeptName?.trim() ? 10 : 9
+      // ).getCell(),
       new Cell(
         item?.DeptName
           ? item?.DeptName === "Sub-Total:"
