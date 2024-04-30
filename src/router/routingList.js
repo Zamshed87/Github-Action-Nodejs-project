@@ -2164,10 +2164,10 @@ export const routingList = [
     path: "/approval",
     component: ApprovalList,
   },
-  {
-    path: "/approval",
-    component: ApprovalList,
-  },
+  // {
+  //   path: "/approval",
+  //   component: ApprovalList,
+  // },
   {
     path: "/approval/leaveApproval",
     component: LeaveApproval,
