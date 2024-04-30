@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { Form, Formik } from "formik";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   addAssignHandler,
   assetAssignColumn,
@@ -24,6 +24,7 @@ import NoResult from "common/NoResult";
 import PeopleDeskTable from "common/peopleDeskTable";
 
 const AssetAssignForm = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const history = useHistory();
   const { orgId, buId, wgId, wId, employeeId, userName } = useSelector(
@@ -66,7 +67,18 @@ const AssetAssignForm = () => {
   return (
     <Formik
       enableReinitialize={true}
-      initialValues={initialValue}
+      initialValues={{
+        ...initialValue,
+        assetName: location?.state?.data?.assetId && {
+          code: location?.state?.data?.assetCode,
+          value: location?.state?.data?.assetId,
+          label:
+            location?.state?.data?.assetName +
+            "(" +
+            location?.state?.data?.value +
+            ")",
+        },
+      }}
       onSubmit={(values, { setSubmitting, resetForm }) => {
         saveHandler(rowDto, saveAssetAssign, () => {
           resetForm(initialValue);

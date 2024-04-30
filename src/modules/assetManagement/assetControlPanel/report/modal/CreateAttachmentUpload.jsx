@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Form, Formik } from "formik";
 import { useDispatch } from "react-redux";
 import Loading from "common/loading/Loading";
@@ -14,6 +14,7 @@ import {
 import NoResult from "common/NoResult";
 import PeopleDeskTable from "common/peopleDeskTable";
 import useAxiosPost from "utility/customHooks/useAxiosPost";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const CreateAttachmentUpload = ({ assetId, setIsAttachmentShow }) => {
   const dispatch = useDispatch();
@@ -22,9 +23,25 @@ const CreateAttachmentUpload = ({ assetId, setIsAttachmentShow }) => {
   const [documentFile, setDocumentFile] = useState("");
   const [rowDto, setRowDto] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [, getSingleData, singleLoading] = useAxiosGet({});
   // image
   const assetImageRef = useRef(null);
   const documentRef = useRef(null);
+
+  useEffect(() => {
+    if (assetId) {
+      getSingleData(
+        `/AssetManagement/GetAssetDocumentUploadService?intAssetId=${assetId}`,
+        (res) => {
+          setAssetImageFile({
+            globalFileUrlId: res?.globalImageUrlID,
+            fileName: res?.attachmentName,
+          });
+          setRowDto(res?.multipleDocument || []);
+        }
+      );
+    }
+  }, [assetId]);
 
   return (
     <Formik
@@ -56,7 +73,7 @@ const CreateAttachmentUpload = ({ assetId, setIsAttachmentShow }) => {
         setFieldValue,
       }) => (
         <>
-          {(loading || attachmentUploadLoading) && <Loading />}
+          {(loading || attachmentUploadLoading || singleLoading) && <Loading />}
           <Form onSubmit={handleSubmit}>
             <div className="pl-4 pr-4 pb-4">
               <div className="row">
