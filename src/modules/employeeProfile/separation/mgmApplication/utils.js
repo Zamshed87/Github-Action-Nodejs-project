@@ -235,75 +235,26 @@ const statusDDL = [
   { value: 4, label: "Released" },
 ];
 
-const duesRowDtoData = [
-  {
-    id: 1,
-    strPayrollElementName: "Salary",
-    strRemarks: "",
-    numAmount: 30000,
-  },
-  {
-    id: 2,
-    strPayrollElementName: "Provident Fund",
-    strRemarks: "",
-    numAmount: 15000,
-  },
-  {
-    id: 3,
-    strPayrollElementName: "Company Contribution (PF)",
-    strRemarks: "",
-    numAmount: 15000,
-  },
-  {
-    id: 4,
-    strPayrollElementName: "Gratuity",
-    strRemarks: "",
-    numAmount: 100000,
-  },
-  {
-    id: 5,
-    strPayrollElementName: "Other Dues",
-    strRemarks: "",
-    numAmount: 500,
-  },
-];
+const calculateTotalAmounts = (deductionDataset, duesDataset) => {
+  let totalDuesAmount = 0;
+  let totalDeductionAmount = 0;
 
-const deductionRowDtoData = [
-  {
-    id: 1,
-    strPayrollElementName: "Personal Loan",
-    strRemarks: "",
-    numAmount: 0,
-  },
-  {
-    id: 2,
-    strPayrollElementName: "Advance",
-    strRemarks: "",
-    numAmount: 0,
-  },
-  {
-    id: 3,
-    strPayrollElementName: "Lunch",
-    strRemarks: "",
-    numAmount: 0,
-  },
-  {
-    id: 4,
-    strPayrollElementName: "AIT",
-    strRemarks: "",
-    numAmount: 0,
-  },
-  {
-    id: 5,
-    strPayrollElementName: "Other Deductions",
-    strRemarks: "",
-    numAmount: 0,
-  },
-];
+  const combinedDataset = [...deductionDataset, ...duesDataset];
+
+  combinedDataset.forEach((item) => {
+    item?.isAddition === 0
+      ? (totalDeductionAmount += item?.numAmount)
+      : (totalDuesAmount += item?.numAmount);
+  });
+
+  return { totalDuesAmount, totalDeductionAmount };
+};
 
 export {
   approvalListHeader,
-  assetHeader, deductionRowDtoData, duesRowDtoData, employmentHeader,
+  assetHeader,
+  calculateTotalAmounts,
+  employmentHeader,
   statusDDL
 };
 
