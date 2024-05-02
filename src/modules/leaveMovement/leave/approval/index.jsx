@@ -727,36 +727,6 @@ export default function LeaveApproval() {
                             </div>
 
                             <div>
-                              {/* {filterData?.listData?.filter(
-                                (item) => item?.selectCheckbox
-                              ).length > 0 && (
-                                <div className="d-flex actionIcon">
-                                  <button
-                                    className="btn-green mr-2"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "approve",
-                                        "isApproved",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    Approve
-                                  </button>
-                                  <button
-                                    className="btn-red"
-                                    onClick={() => {
-                                      demoPopup(
-                                        "reject",
-                                        "isReject",
-                                        applicationData
-                                      );
-                                    }}
-                                  >
-                                    Reject
-                                  </button>
-                                </div>
-                              )} */}
                               <ul className="d-flex flex-wrap">
                                 {isFilter && (
                                   <li>
@@ -779,36 +749,6 @@ export default function LeaveApproval() {
                                     />
                                   </li>
                                 )}
-                                {/* {permission?.isCreate && (
-                                  <li>
-                                    <MasterFilter
-                                      styles={{
-                                        marginRight: "0px",
-                                      }}
-                                      width="200px"
-                                      inputWidth="200px"
-                                      value={values?.searchString}
-                                      setValue={(value) => {
-                                        debounce(() => {
-                                          searchData(
-                                            value,
-                                            allData,
-                                            setAllLeaveApplicatonData
-                                          );
-                                        }, 500);
-                                        setFieldValue("searchString", value);
-                                      }}
-                                      cancelHandler={() => {
-                                        setFieldValue("searchString", "");
-                                        getLandingData();
-                                      }}
-                                      isHiddenFilter
-                                      handleClick={(e) =>
-                                        setfilterAnchorEl(e.currentTarget)
-                                      }
-                                    />
-                                  </li>
-                                )} */}
                               </ul>
                             </div>
                           </div>
@@ -865,12 +805,6 @@ export default function LeaveApproval() {
                         </div>
                       </div>
                     </div>
-                    {/* <div
-                      className="col-md-3 pr-0 h-100"
-                      style={{
-                        boxShadow: "0px 1px 4px 1px rgba(99, 115, 129, 0.3)",
-                      }}
-                    ></div> */}
                   </div>
                 </div>
 
