@@ -33,6 +33,7 @@ const assetReportColumn = (
   history,
   setUnassignLoading,
   setIsAttachmentShow,
+  setIsProfileView,
   cb
 ) => {
   return [
@@ -244,6 +245,7 @@ const assetReportColumn = (
               <VisibilityOutlined
                 onClick={(e) => {
                   e.stopPropagation();
+                  setIsProfileView(true);
                 }}
               />
             </button>
@@ -545,15 +547,173 @@ const saveAttachmentHandler = (
   );
 };
 
+const depreciationColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.date),
+    },
+    {
+      title: "Depreciation Code",
+      dataIndex: "depreciationCode",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Amount",
+      dataIndex: "Cost",
+      sort: false,
+      filter: false,
+      render: (record) => formatMoney(record?.Cost),
+    },
+    {
+      title: "Depreciation Run By",
+      dataIndex: "depreciationRunBy",
+      sort: false,
+      filter: false,
+    },
+  ];
+};
+
+const maintenanceColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.date),
+    },
+    {
+      title: "Maintenance Type",
+      dataIndex: "maintenanceType",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Maintenance Cost",
+      dataIndex: "Cost",
+      sort: false,
+      filter: false,
+      render: (record) => formatMoney(record?.Cost),
+    },
+    {
+      title: "Technician",
+      dataIndex: "depreciationRunBy",
+      sort: false,
+      filter: false,
+    },
+  ];
+};
+
+const usesHistoryColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "From Date",
+      dataIndex: "date",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.date),
+    },
+    {
+      title: "To Date",
+      dataIndex: "date",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.date),
+    },
+    {
+      title: "Employee/Department",
+      dataIndex: "depreciationRunBy",
+      sort: false,
+      filter: false,
+    },
+  ];
+};
+
+const documentsColumn = (dispatch) => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Document Name",
+      dataIndex: "documentName",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      sort: false,
+      filter: false,
+      width: 100,
+      className: "text-center",
+      render: (record) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="View" arrow>
+            <button type="button" className="iconButton">
+              <VisibilityOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  dispatch(
+                    getDownlloadFileView_Action(record?.globalImageUrlID)
+                  );
+                }}
+              />
+            </button>
+          </Tooltip>
+        </div>
+      ),
+    },
+  ];
+};
+
 export {
   addDocumentHandler,
   assetReportColumn,
-  documentAttachmentColumn,
-  employeeDetailsColumn,
-  getById,
+  depreciationColumn,
+  documentAttachmentColumn, documentsColumn,
+  employeeDetailsColumn, getById,
   getData,
+  maintenanceColumn,
   maintenanceSummaryColumn,
   saveAttachmentHandler,
-  totalDepreciationColumn
+  totalDepreciationColumn,
+  usesHistoryColumn
 };
 
