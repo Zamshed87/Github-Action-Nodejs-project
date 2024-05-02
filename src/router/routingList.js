@@ -36,6 +36,7 @@ import MovementType from "modules/leaveMovement/configuration/MovementType";
 import ReporterUpdation from "modules/reporterUpdation";
 import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/AttendenceAdjust";
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
+import EmployeeList from "modules/timeSheet/reports/employeeList/index.tsx";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
 import MgmtDailyAttendance from "modules/timeSheet/reports/mgmtDailyAttendance/index.tsx";
@@ -1273,9 +1274,9 @@ const AttendanceReport = lazy(() =>
 const AttendanceRawDataProcess = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceRawDataProcess/indexN.jsx")
 );
-const EmployeeList = lazy(() =>
-  import("../modules/timeSheet/reports/employeeList/index.jsx")
-);
+// const EmployeeList = lazy(() =>
+//   import("../modules/timeSheet/reports/employeeList/index.jsx")
+// );
 const ExpenseReport = lazy(() =>
   import("../modules/timeSheet/reports/expenseReport/index.jsx")
 );
