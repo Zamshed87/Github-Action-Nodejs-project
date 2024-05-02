@@ -1,16 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  ArrowBack,
   Cancel,
   CheckCircle,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import AntTable from "common/AntTable";
+import ApproveRejectComp from "common/ApproveRejectComp";
+import BackButton from "common/BackButton";
 import { Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { dateFormatter } from "utility/dateFormatter";
 import Chips from "../../../../common/Chips";
 import IConfirmModal from "../../../../common/IConfirmModal";
@@ -21,6 +22,7 @@ import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import ResetButton from "./../../../../common/ResetButton";
 import {
+  bonusApprovalTableColumn,
   bonusApproveRejectRequest,
   getBonusGenerateRequestReport,
 } from "./helper";
@@ -34,13 +36,16 @@ const BonusApproval = () => {
 
   // rowDto
   const [rowDto, setRowDto] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const [allData, setAllData] = useState([]);
 
   // filter
   const [status, setStatus] = useState("");
 
-  const { userId, orgId, buId, wId, wgId, employeeId, isOfficeAdmin } =
-    useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { orgId, buId, wId, wgId, employeeId, isOfficeAdmin } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   const getData = () => {
     const payload = {
@@ -59,66 +64,26 @@ const BonusApproval = () => {
       accountId: orgId,
       workplaceId: wId,
     };
-    getBonusGenerateRequestReport(payload, setRowDto, setAllData, setLoading);
+    getBonusGenerateRequestReport(
+      payload,
+      setRowDto,
+      setAllData,
+      setLoading,
+      (res) => {
+        setFilterData(res);
+      }
+    );
   };
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId]);
 
-  // Approve Handler
-  const approveHandler = (message, item) => {
-    const payload = {
-      strPartName: "BonusApproval",
-      jsonObj: {
-        autoId: item?.intBonusHeaderId,
-        approveStatusId: 1,
-        approveBy: userId,
-      },
-    };
-    const confirmObject = {
-      closeOnClickOutside: false,
-      message: `Are your sure for ${message}?`,
-      yesAlertFunc: () => {
-        bonusApproveRejectRequest(payload, getData);
-      },
-      noAlertFunc: () => {},
-    };
-    IConfirmModal(confirmObject);
-  };
-  // Reject Handler
-  const rejectHandler = (message, item) => {
-    const payload = {
-      strPartName: "BonusApproval",
-      jsonObj: {
-        autoId: item?.intBonusHeaderId,
-        approveStatusId: 2,
-        approveBy: userId,
-      },
-    };
-    const confirmObject = {
-      closeOnClickOutside: false,
-      message: `Are your sure for ${message}`,
-      yesAlertFunc: () => {
-        bonusApproveRejectRequest(payload, getData);
-      },
-      noAlertFunc: () => {},
-    };
-    IConfirmModal(confirmObject);
-  };
-
-  const saveHandler = (values) => {};
-
-  const history = useHistory();
-
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
-  let permission = null;
-  permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 110) {
-      permission = item;
-    }
-  });
+  const permission = useMemo(() => {
+    return permissionList.find((item) => item?.menuReferenceId === 110) || {};
+  }, [permissionList]);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -128,9 +93,9 @@ const BonusApproval = () => {
   }, []);
 
   // for multipel
-  const demoPopup = (action, text, array) => {
+  const demoPopup = (action, text, filterData) => {
     let newArray = [];
-    const checkedList = array?.filter((item) => item?.selectCheckbox);
+    const checkedList = filterData?.filter((item) => item?.selectCheckbox);
     if (checkedList.length > 0) {
       checkedList?.forEach((item) => {
         if (text === "isReject") {
@@ -156,11 +121,11 @@ const BonusApproval = () => {
         }
       });
     }
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
-        if (array.length) {
+        if (filterData.length) {
           bonusApproveRejectRequest(newArray, getData);
         }
         newArray = [];
@@ -174,7 +139,7 @@ const BonusApproval = () => {
 
   // for single row data approval
   const demoPopupForTable = (action, text, data) => {
-    let payload = [
+    const payload = [
       {
         isReject: text === "Reject" ? true : false,
         applicationId: data?.application?.intBonusHeaderId,
@@ -185,13 +150,15 @@ const BonusApproval = () => {
         isAdmin: isOfficeAdmin,
       },
     ];
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to ${action}? `,
       yesAlertFunc: () => {
         bonusApproveRejectRequest(payload, getData);
       },
-      noAlertFunc: () => {},
+      noAlertFunc: () => {
+        //
+      },
     };
     IConfirmModal(confirmObject);
   };
@@ -201,10 +168,8 @@ const BonusApproval = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={() => {
+          //
         }}
       >
         {({ handleSubmit, values, setFieldValue }) => (
@@ -217,25 +182,25 @@ const BonusApproval = () => {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <div style={{ color: "rgba(0, 0, 0, 0.7)" }}>
-                            <Tooltip title="Back">
-                              <ArrowBack
-                                onClick={() => history.goBack()}
-                                sx={{
-                                  fontSize: "16px",
-                                  marginRight: "10px",
-                                  cursor: "pointer",
+                          <div className="d-flex align-items-center">
+                            <BackButton title={"Bonus Approval"} />
+                            {filterData?.filter((item) => item?.selectCheckbox)
+                              .length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  onApprove: () => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      filterData
+                                    );
+                                  },
+                                  onReject: () => {
+                                    demoPopup("reject", "isReject", filterData);
+                                  },
                                 }}
                               />
-                            </Tooltip>
-                            <h3
-                              style={{
-                                display: "inline-block",
-                                fontSize: "13px",
-                              }}
-                            >
-                              Bonus Approval
-                            </h3>
+                            ) : null}
                           </div>
                           <div className="table-card-head-right">
                             <ul>
@@ -264,7 +229,7 @@ const BonusApproval = () => {
                             <div className="table-card-styled tableOne">
                               {rowDto?.length > 0 ? (
                                 <>
-                                  <table className="table">
+                                  <table className="table d-none">
                                     <thead>
                                       <tr>
                                         <th>SL</th>
@@ -359,7 +324,9 @@ const BonusApproval = () => {
                                                           className="muiIconHover danger"
                                                           onClick={() => {
                                                             demoPopupForTable(
-                                                              "reject", "Reject", data
+                                                              "reject",
+                                                              "Reject",
+                                                              data
                                                             );
                                                           }}
                                                         >
@@ -393,6 +360,26 @@ const BonusApproval = () => {
                                       ))}
                                     </tbody>
                                   </table>
+                                  <AntTable
+                                    data={rowDto || []}
+                                    columnsData={bonusApprovalTableColumn({
+                                      setFieldValue,
+                                      setFilterData,
+                                      rowData: rowDto,
+                                      filterData,
+                                      setRowData: setRowDto,
+                                      demoPopupForTable,
+                                    })}
+                                    setColumnsData={(dataRow) => {
+                                      setFilterData(dataRow);
+                                    }}
+                                    // setPage={setPage}
+                                    // setPaginationSize={setPaginationSize}
+                                    rowKey={(record) =>
+                                      record?.leaveApplication?.intApplicationId
+                                    }
+                                    removePagination={true}
+                                  />
                                 </>
                               ) : (
                                 <>
