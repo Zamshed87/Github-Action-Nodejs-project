@@ -1,21 +1,15 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Cancel,
-  CheckCircle,
-  SettingsBackupRestoreOutlined,
+  SettingsBackupRestoreOutlined
 } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
 import AntTable from "common/AntTable";
 import ApproveRejectComp from "common/ApproveRejectComp";
 import BackButton from "common/BackButton";
 import { Form, Formik } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { dateFormatter } from "utility/dateFormatter";
-import Chips from "../../../../common/Chips";
 import IConfirmModal from "../../../../common/IConfirmModal";
-import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
@@ -76,8 +70,7 @@ const BonusApproval = () => {
   };
   useEffect(() => {
     getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId]);
+  }, [orgId, buId, wgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
@@ -229,137 +222,6 @@ const BonusApproval = () => {
                             <div className="table-card-styled tableOne">
                               {rowDto?.length > 0 ? (
                                 <>
-                                  <table className="table d-none">
-                                    <thead>
-                                      <tr>
-                                        <th>SL</th>
-                                        <th>
-                                          <div>Bonus Name</div>
-                                        </th>
-                                        <th>
-                                          <div>Effective Date</div>
-                                        </th>
-
-                                        <th>
-                                          <div className="text-left">
-                                            Bonus Amount
-                                          </div>
-                                        </th>
-                                        <th width="20%">
-                                          <div className="text-left">
-                                            Status
-                                          </div>
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {rowDto?.map((data, index) => (
-                                        <>
-                                          <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>
-                                              {data?.application?.strBonusName}
-                                            </td>
-                                            <td>
-                                              {dateFormatter(
-                                                data?.application
-                                                  ?.dteEffectedDateTime
-                                              )}
-                                            </td>
-                                            <td className="text-left">
-                                              {
-                                                data?.application
-                                                  ?.numBonusAmount
-                                              }
-                                            </td>
-
-                                            <td className="action-col text-right">
-                                              <div
-                                                className="text-right action-chip"
-                                                style={{ width: "70px" }}
-                                              >
-                                                {data?.application
-                                                  ?.strStatus ===
-                                                  "Approved" && (
-                                                  <Chips
-                                                    label="Approved"
-                                                    classess="success"
-                                                  />
-                                                )}
-                                                {data?.application
-                                                  ?.strStatus === "Pending" && (
-                                                  <>
-                                                    <div className="actionChip">
-                                                      <Chips
-                                                        label="Pending"
-                                                        classess=" warning"
-                                                      />
-                                                    </div>
-                                                    <div className="d-flex actionIcon justify-content-right">
-                                                      <Tooltip title="Accept">
-                                                        <div
-                                                          className="mx-2 muiIconHover success "
-                                                          onClick={() => {
-                                                            demoPopupForTable(
-                                                              "approve",
-                                                              "Approve",
-                                                              data
-                                                            );
-                                                          }}
-                                                        >
-                                                          <MuiIcon
-                                                            icon={
-                                                              <CheckCircle
-                                                                sx={{
-                                                                  color:
-                                                                    "#34A853",
-                                                                }}
-                                                              />
-                                                            }
-                                                          />
-                                                        </div>
-                                                      </Tooltip>
-                                                      <Tooltip title="Reject">
-                                                        <div
-                                                          className="muiIconHover danger"
-                                                          onClick={() => {
-                                                            demoPopupForTable(
-                                                              "reject",
-                                                              "Reject",
-                                                              data
-                                                            );
-                                                          }}
-                                                        >
-                                                          <MuiIcon
-                                                            icon={
-                                                              <Cancel
-                                                                sx={{
-                                                                  color:
-                                                                    "#FF696C",
-                                                                }}
-                                                              />
-                                                            }
-                                                          />
-                                                        </div>
-                                                      </Tooltip>
-                                                    </div>
-                                                  </>
-                                                )}
-                                                {data?.application
-                                                  ?.strStatus ===
-                                                  "Rejected" && (
-                                                  <Chips
-                                                    label="Rejected"
-                                                    classess="danger"
-                                                  />
-                                                )}
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        </>
-                                      ))}
-                                    </tbody>
-                                  </table>
                                   <AntTable
                                     data={rowDto || []}
                                     columnsData={bonusApprovalTableColumn({
@@ -373,8 +235,6 @@ const BonusApproval = () => {
                                     setColumnsData={(dataRow) => {
                                       setFilterData(dataRow);
                                     }}
-                                    // setPage={setPage}
-                                    // setPaginationSize={setPaginationSize}
                                     rowKey={(record) =>
                                       record?.leaveApplication?.intApplicationId
                                     }
