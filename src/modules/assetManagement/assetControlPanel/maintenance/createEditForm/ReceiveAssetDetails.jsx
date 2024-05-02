@@ -7,7 +7,7 @@ import { useHistory, useParams } from "react-router-dom";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import PrimaryButton from "common/PrimaryButton";
 import BackButton from "common/BackButton";
-import { dateFormatter } from "utility/dateFormatter";
+import { dateFormatter, dateFormatterForInput } from "utility/dateFormatter";
 import { Typography } from "@mui/material";
 import { Article, LocalShipping, LocationOn } from "@mui/icons-material";
 import { getReceiveActions } from "../utils";
@@ -364,6 +364,7 @@ const ReceiveAssetDetails = () => {
                               classes="input-sm"
                               placeholder=""
                               value={values?.receiveDate}
+                              min={dateFormatterForInput(singleData?.FromDate)}
                               name="receiveDate"
                               type="date"
                               onChange={(e) => {
