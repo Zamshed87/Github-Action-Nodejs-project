@@ -40,6 +40,7 @@ import { isDevServer } from "App";
 import { dateFormatter } from "utility/dateFormatter";
 import moment from "moment";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import useDebounce from "utility/customHooks/useDebounce";
 
 const MgmtDailyAttendance = () => {
   const dispatch = useDispatch();
@@ -54,6 +55,7 @@ const MgmtDailyAttendance = () => {
   );
 
   const landingApi = useApiRequest({});
+  const debounce = useDebounce();
 
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
@@ -756,14 +758,15 @@ const MgmtDailyAttendance = () => {
                           type="text"
                           placeholder="search"
                           onChange={(e: any) => {
-                            console.log(e.target.value, "search");
-                            landingApiCall({
-                              pagination: {
-                                current: 1,
-                                pageSize: paginationSize,
-                              },
-                              searchText: e.target.value,
-                            });
+                            debounce(() => {
+                              landingApiCall({
+                                pagination: {
+                                  current: 1,
+                                  pageSize: paginationSize,
+                                },
+                                searchText: e.target.value,
+                              });
+                            }, 500);
                           }}
                         />
                       </li>
