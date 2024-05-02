@@ -18,7 +18,8 @@ const initData = {
   process: "",
 };
 
-export default function AdditionDeduction() {
+// never used this component this component ,, why ? 
+function AdditionDeduction() {
 
   const history = useHistory();
   const saveHandler = (values) => { };
@@ -47,7 +48,7 @@ export default function AdditionDeduction() {
         {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              <DashboardHead companyLogo={companyLogo} moduleTitle={"Compensation & Benefits"} />
+              {/* <Dashboard Head companyLogo={companyLogo} moduleTitle={"Compensation & Benefits"} /> */}
               <div className="all-candidate">
                 <div className="container-fluid">
                   <div className="row">

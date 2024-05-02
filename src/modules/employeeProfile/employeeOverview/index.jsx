@@ -8,11 +8,12 @@ import OverviewTab from "./components/OverviewTab";
 // always it should be last position import
 import "./employeeOverview.css";
 
-export default function EmployeeOverview() {
+// this component is not used in the project
+ function EmployeeOverview() {
   return (
     <>
       <div>
-        <DashboardHead companyLogo={companyLogo} moduleTitle={"Employee Management"} />
+        {/* <Dashboard Head companyLogo={companyLogo} moduleTitle={"Employee Management"} /> */}
         <div className="employee-profile">
           <div className="container-fluid">
             <div className="row">

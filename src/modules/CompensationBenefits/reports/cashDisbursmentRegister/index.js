@@ -1,11 +1,9 @@
-import React from "react";
-import { Formik, Form } from "formik";
-import DashboardHead from "../../../../layout/dashboardHead/DashboardHead";
+import { Form, Formik } from "formik";
 import SideMenu from "../../../../layout/menuComponent/SideMenu";
-import companyLogo from "../../../../assets/images/company/logo.png";
 
 const initData = {};
 
+// this component is not used in the project
 const CashDisbursementRegister = () => {
   const saveHandler = (values) => {};
 
@@ -31,10 +29,10 @@ const CashDisbursementRegister = () => {
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              <DashboardHead
+              {/* <Dashboard Head
                 companyLogo={companyLogo}
                 moduleTitle={"Compensation & Benefits"}
-              />
+              /> */}
               <div className="loan-application">
                 <div className="container-fluid">
                   <div className="row">
@@ -60,4 +58,4 @@ const CashDisbursementRegister = () => {
   );
 };
 
-export default CashDisbursementRegister;
+// export default CashDisbursementRegister;

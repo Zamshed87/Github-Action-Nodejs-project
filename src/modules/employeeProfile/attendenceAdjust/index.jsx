@@ -68,7 +68,8 @@ const initData = {
   monthYear: "",
 };
 
-export default function EmAttendenceAdjust() {
+// this component is not used in the project
+function EmAttendenceAdjust() {
   const [loading, setLoading] = useState(false);
 
   // row data
@@ -277,10 +278,10 @@ export default function EmAttendenceAdjust() {
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
-              <DashboardHead
+              {/* <Dashboard Head
                 companyLogo={companyLogo}
                 moduleTitle={"Employee Management"}
-              />
+              /> */}
               <div className="all-candidate">
                 <div className="container-fluid">
                   <div className="row">

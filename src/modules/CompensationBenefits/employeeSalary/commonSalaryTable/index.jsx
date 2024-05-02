@@ -23,6 +23,7 @@ let date = new Date();
 let monthId = date.getMonth() + 1;
 let yearId = date.getFullYear();
 
+// this component is not used in the project
 const CommonSalaryTable = () => {
   const { buId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -143,10 +144,10 @@ const CommonSalaryTable = () => {
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
-              <DashboardHead
+              {/* <Dashboard Head
                 companyLogo={companyLogo}
                 moduleTitle={"Compensation & Benefits"}
-              />
+              /> */}
               <div className="common-salary-table">
                 <div className="container-fluid">
                   <div className="row">
@@ -330,4 +331,4 @@ const CommonSalaryTable = () => {
   );
 };
 
-export default CommonSalaryTable;
+// export default CommonSalaryTable;

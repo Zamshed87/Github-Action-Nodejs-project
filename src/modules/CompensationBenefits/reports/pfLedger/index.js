@@ -1,11 +1,9 @@
-import React from "react";
-import { Formik, Form } from "formik";
-import DashboardHead from "../../../../layout/dashboardHead/DashboardHead";
+import { Form, Formik } from "formik";
 import SideMenu from "../../../../layout/menuComponent/SideMenu";
-import companyLogo from "../../../../assets/images/company/logo.png";
 
 const initData = {};
 
+// this component is not used in the project
 const PfLedger = () => {
   const saveHandler = (values) => {};
 
@@ -31,10 +29,10 @@ const PfLedger = () => {
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              <DashboardHead
+              {/* <Dashboard Head
                 companyLogo={companyLogo}
                 moduleTitle={"Compensation & Benefits"}
-              />
+              /> */}
               <div className="loan-application">
                 <div className="container-fluid">
                   <div className="row">
@@ -58,4 +56,4 @@ const PfLedger = () => {
   );
 };
 
-export default PfLedger;
+// export default PfLedger;

@@ -17,7 +17,8 @@ const initData = {
 
 const validationSchema = Yup.object({});
 
-export default function AdditonDeductionCreate() {
+// this component is not used in the project 
+ function AdditonDeductionCreate() {
   const saveHandler = (values) => {};
 
   // const loadUserList = (v) => {
@@ -56,10 +57,10 @@ export default function AdditonDeductionCreate() {
         }) => (
           <>
             <Form onSubmit={handleSubmit} className="employeeProfile-form-main">
-              <DashboardHead
+              {/* <Dashboard Head
                 companyLogo={companyLogo}
                 moduleTitle={"Compensation & Benefits"}
-              />
+              /> */}
               <div className="employee-profile-main">
                 <div className="container-fluid">
                   <div className="row">

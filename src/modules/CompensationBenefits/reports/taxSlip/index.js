@@ -1,10 +1,9 @@
 import { Form, Formik } from "formik";
-import companyLogo from "../../../../assets/images/company/logo.png";
-import DashboardHead from "../../../../layout/dashboardHead/DashboardHead";
 import SideMenu from "../../../../layout/menuComponent/SideMenu";
 
 const initData = {};
 
+// this component is not used in the project
 const TaxSlip = () => {
   return (
     <>
@@ -18,10 +17,10 @@ const TaxSlip = () => {
         {({ handleSubmit }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              <DashboardHead
+              {/* <Dashboard Head
                 companyLogo={companyLogo}
                 moduleTitle={"Compensation & Benefits"}
-              />
+              /> */}
               <div className="loan-application">
                 <div className="container-fluid">
                   <div className="row">
@@ -45,4 +44,4 @@ const TaxSlip = () => {
   );
 };
 
-export default TaxSlip;
+// export default TaxSlip;

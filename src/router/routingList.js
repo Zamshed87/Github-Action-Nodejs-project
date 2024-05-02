@@ -38,7 +38,6 @@ import AttendenceAdjustN from "modules/timeSheet/attendence/attendenceAdjust/Att
 import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
-import MgmtDailyAttendance from "modules/timeSheet/reports/mgmtDailyAttendance/index.tsx";
 import { lazy } from "react";
 
 const CreateAndEditEmploye = lazy(() =>
@@ -187,43 +186,31 @@ const AssetItemProfile = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/itemProfile/index.jsx")
 );
 const AssetCreateItemProfile = lazy(() =>
-  import(
-    "../modules/assetManagement/assetControlPanel/itemProfile/createEditForm/CreateEditForm.jsx"
-  )
+  import("../modules/assetManagement/assetControlPanel/itemProfile/createEditForm/CreateEditForm.jsx")
 );
 const AssetEditItemProfile = lazy(() =>
-  import(
-    "../modules/assetManagement/assetControlPanel/itemProfile/createEditForm/CreateEditForm.jsx"
-  )
+  import("../modules/assetManagement/assetControlPanel/itemProfile/createEditForm/CreateEditForm.jsx")
 );
 const AssetRegistration = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/registration/index.jsx")
 );
 const AssetRegistrationCreate = lazy(() =>
-  import(
-    "../modules/assetManagement/assetControlPanel/registration/createEditForm/CreateEditForm.jsx"
-  )
+  import("../modules/assetManagement/assetControlPanel/registration/createEditForm/CreateEditForm.jsx")
 );
 const AssetRegistrationEdit = lazy(() =>
-  import(
-    "../modules/assetManagement/assetControlPanel/registration/createEditForm/CreateEditForm.jsx"
-  )
+  import("../modules/assetManagement/assetControlPanel/registration/createEditForm/CreateEditForm.jsx")
 );
 const AssetAssign = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/assign/index.jsx")
 );
 const AssetAssignCreate = lazy(() =>
-  import(
-    "../modules/assetManagement/assetControlPanel/assign/createEditForm/CreateEditForm.jsx"
-  )
+  import("../modules/assetManagement/assetControlPanel/assign/createEditForm/CreateEditForm.jsx")
 );
 const AssetDepreciation = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/depreciation/index.jsx")
 );
 const AssetDepreciationCreate = lazy(() =>
-  import(
-    "../modules/assetManagement/assetControlPanel/depreciation/createEditForm/CreateEditForm.jsx"
-  )
+  import("../modules/assetManagement/assetControlPanel/depreciation/createEditForm/CreateEditForm.jsx")
 );
 const AssetReport = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/report/index.jsx")
@@ -232,22 +219,16 @@ const AssetMaintenance = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/maintenance/index.jsx")
 );
 const AssetMaintenanceCreate = lazy(() =>
-  import(
-    "../modules/assetManagement/assetControlPanel/maintenance/createEditForm/CreateEditForm.jsx"
-  )
+  import("../modules/assetManagement/assetControlPanel/maintenance/createEditForm/CreateEditForm.jsx")
 );
 const AssetReceiveDetails = lazy(() =>
-  import(
-    "../modules/assetManagement/assetControlPanel/maintenance/createEditForm/ReceiveAssetDetails.jsx"
-  )
+  import("../modules/assetManagement/assetControlPanel/maintenance/createEditForm/ReceiveAssetDetails.jsx")
 );
 const AssetDisposal = lazy(() =>
   import("../modules/assetManagement/assetControlPanel/disposal/index.jsx")
 );
 const AssetDisposalCreate = lazy(() =>
-  import(
-    "../modules/assetManagement/assetControlPanel/disposal/createEditForm/CreateEditForm.jsx"
-  )
+  import("../modules/assetManagement/assetControlPanel/disposal/createEditForm/CreateEditForm.jsx")
 );
 const MarketVistApproval = lazy(() =>
   import("../modules/marketVisit/approval/index.jsx")
@@ -1279,9 +1260,9 @@ const EmployeeList = lazy(() =>
 const ExpenseReport = lazy(() =>
   import("../modules/timeSheet/reports/expenseReport/index.jsx")
 );
-// const MgmtDailyAttendance = lazy(() =>
-//   import("../modules/timeSheet/reports/mgmtDailyAttendance/index.js")
-// );
+const MgmtDailyAttendance = lazy(() =>
+  import("../modules/timeSheet/reports/mgmtDailyAttendance/index.js")
+);
 const RosterDetails = lazy(() =>
   import("../modules/timeSheet/reports/rosterDetails/index.jsx")
 );

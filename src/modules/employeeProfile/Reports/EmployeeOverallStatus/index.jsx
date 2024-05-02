@@ -43,7 +43,8 @@ const tableData = [
   },
 ];
 
-export default function EmpOverallStaus() {
+// this component is not used in the project
+function EmpOverallStaus() {
   const [loading] = useState(false);
   const [rowDto] = useState([...tableData]);
 
@@ -60,10 +61,10 @@ export default function EmpOverallStaus() {
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
-              <DashboardHead
+              {/* <Dashboard Head
                 companyLogo={companyLogo}
                 moduleTitle={"Employee Management"}
-              />
+              /> */}
               <div className="all-candidate">
                 <div className="container-fluid">
                   <div className="row">

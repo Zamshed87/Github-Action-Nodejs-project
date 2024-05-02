@@ -2,13 +2,12 @@
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import companyLogo from "../../../../assets/images/company/logo.png";
 import Loading from "../../../../common/loading/Loading";
-import DashboardHead from "../../../../layout/dashboardHead/DashboardHead";
 import SideMenu from "../../../../layout/menuComponent/SideMenu";
 
 const initData = {};
 
+// this component is not used in the project
 const LoanType = () => {
   const { orgId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -41,10 +40,10 @@ const LoanType = () => {
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
-              <DashboardHead
+              {/* <Dashboard Head
                 companyLogo={companyLogo}
                 moduleTitle={"Administration"}
-              />
+              /> */}
               <div className="holiday-exception">
                 <div className="container-fluid">
                   <div className="row">
@@ -71,4 +70,4 @@ const LoanType = () => {
   );
 };
 
-export default LoanType;
+// export default LoanType;
