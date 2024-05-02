@@ -71,30 +71,30 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
               backgroundColor: "rgba(247, 220, 92, 1)",
             }}
           >
-            <div>B.Unit & Workplace</div>
-          </td> 
-     
+            <div>B.Unit, Workplace Group & Workplace</div>
+          </td>
+
           <td
             style={{
               backgroundColor: "rgba(247, 220, 92, 1)",
             }}
           >
-            Dept & Designation
+            Dept, Section & Designation
           </td>
           <td
             style={{
               backgroundColor: "rgba(129, 225, 255, 1)",
             }}
           >
-            B.Unit & Workplace
+            B.Unit, Workplace Group & Workplace
           </td>
-    
+
           <td
             style={{
               backgroundColor: "rgba(129, 225, 255, 1)",
             }}
           >
-            Dept & Designation
+            Dept, Section & Designation
           </td>
         </tr>
       </thead>
@@ -120,10 +120,11 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
               className=" "
             >
               <div>{transferNpromotion?.businessUnitNameFrom}</div>
+              <div>{transferNpromotion?.workplaceGroupNameFrom}</div>
               <div>{transferNpromotion?.workplaceNameFrom}</div>
             </div>
           </td>
-     
+
           <td
             style={{
               backgroundColor: "rgba(254, 249, 223, 1)",
@@ -135,6 +136,7 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
               }}
             >
               <div>{transferNpromotion?.departmentNameFrom}</div>
+              <div>{transferNpromotion?.sectionNameFrom || "N/A"}</div>
               <div>{transferNpromotion?.designationNameFrom}</div>
             </div>
           </td>
@@ -150,10 +152,11 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
               className=""
             >
               <div>{transferNpromotion?.businessUnitName}</div>
+              <div>{transferNpromotion?.workplaceGroupName}</div>
               <div>{transferNpromotion?.workplaceName}</div>
             </div>
           </td>
-  
+
           <td
             style={{
               backgroundColor: "rgba(230, 246, 253, 1)",
@@ -166,6 +169,7 @@ const ViewJoiningTable = ({ transferNpromotion }) => {
               className=""
             >
               <div>{transferNpromotion?.departmentName}</div>
+              <div>{transferNpromotion?.strSectionName || "N/A"}</div>
               <div>{transferNpromotion?.designationName}</div>
             </div>
           </td>
