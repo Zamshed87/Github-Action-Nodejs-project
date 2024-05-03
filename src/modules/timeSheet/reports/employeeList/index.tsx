@@ -26,6 +26,7 @@ import useDebounce from "utility/customHooks/useDebounce";
 import { dateFormatter } from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
 import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
+import { debounce } from "lodash";
 
 const EmployeeList = () => {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ const EmployeeList = () => {
   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
-  const debounce = useDebounce();
+  //   const debounce = useDebounce();
 
   const [filterList, setFilterList] = useState({});
   const [, setBuDetails] = useState({});
@@ -57,7 +58,7 @@ const EmployeeList = () => {
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Report-Employee List";
+    document.title = "Employee List";
     () => {
       document.title = "PeopleDesk";
     };
@@ -475,7 +476,12 @@ const EmployeeList = () => {
       width: 100,
     },
   ];
-
+  const searchFunc = debounce((value) => {
+    landingApiCall({
+      filerList: filterList,
+      searchText: value,
+    });
+  }, 500);
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -497,12 +503,10 @@ const EmployeeList = () => {
             exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             onSearch={(e) => {
-              debounce((value: any) => {
-                landingApiCall({
-                  filerList: filterList,
-                  searchText: e.target.value,
-                });
-              }, 500);
+              searchFunc(e?.target?.value);
+              form.setFieldsValue({
+                search: e?.target?.value,
+              });
             }}
             onExport={() => {
               const excelLanding = async () => {
