@@ -41,6 +41,8 @@ import { dateFormatter } from "utility/dateFormatter";
 import moment from "moment";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import useDebounce from "utility/customHooks/useDebounce";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
+import { SearchOutlined } from "@ant-design/icons";
 
 const MgmtDailyAttendance = () => {
   const dispatch = useDispatch();
@@ -53,6 +55,8 @@ const MgmtDailyAttendance = () => {
     () => permissionList?.find((item: any) => item?.menuReferenceId === 30327),
     []
   );
+  // menu permission
+  const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
   const debounce = useDebounce();
@@ -486,389 +490,396 @@ const MgmtDailyAttendance = () => {
     },
   ];
 
-  return (
-    <PForm
-      form={form}
-      initialValues={{
-        date: moment(todayDate()),
-      }}
-      onFinish={() => {
-        landingApiCall({
-          pagination: {
-            current: landingApi?.data?.page,
-            pageSize: landingApi?.data?.totalCount,
-          },
-        });
-      }}
-    >
-      <PCard>
-        <PCardHeader backButton title="Daily Attendance Report"></PCardHeader>
-        <PCardBody className="mb-3">
-          <Row gutter={[10, 2]}>
-            <Col md={5} sm={12} xs={24}>
-              <PInput
-                type="date"
-                name="date"
-                label="Date"
-                placeholder="Date"
-                rules={[
-                  {
-                    required: true,
-                    message: "Date is required",
-                  },
-                ]}
-                onChange={(value) => {
-                  console.log({ value }, "date");
-                  form.setFieldsValue({
-                    date: value,
-                  });
+  return employeeFeature?.isView ? (
+    <>
+      <PForm
+        form={form}
+        initialValues={{
+          date: moment(todayDate()),
+        }}
+        onFinish={() => {
+          landingApiCall({
+            pagination: {
+              current: landingApi?.data?.page,
+              pageSize: landingApi?.data?.totalCount,
+            },
+          });
+        }}
+      >
+        <PCard>
+          <PCardHeader backButton title="Daily Attendance Report"></PCardHeader>
+          <PCardBody className="mb-3">
+            <Row gutter={[10, 2]}>
+              <Col md={5} sm={12} xs={24}>
+                <PInput
+                  type="date"
+                  name="date"
+                  label="Date"
+                  placeholder="Date"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Date is required",
+                    },
+                  ]}
+                  onChange={(value) => {
+                    console.log({ value }, "date");
+                    form.setFieldsValue({
+                      date: value,
+                    });
+                  }}
+                />
+              </Col>
+
+              <Col md={5} sm={12} xs={24}>
+                <PSelect
+                  options={workplaceGroup?.data || []}
+                  name="workplaceGroup"
+                  label="Workplace Group"
+                  placeholder="Workplace Group"
+                  disabled={+id ? true : false}
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      workplaceGroup: op,
+                      workplace: undefined,
+                    });
+                    getWorkplace();
+                  }}
+                  rules={
+                    [
+                      //   { required: true, message: "Workplace Group is required" },
+                    ]
+                  }
+                />
+              </Col>
+              <Col md={5} sm={12} xs={24}>
+                <PSelect
+                  options={workplace?.data || []}
+                  name="workplace"
+                  label="Workplace"
+                  placeholder="Workplace"
+                  disabled={+id ? true : false}
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      workplace: op,
+                    });
+                    getWorkplaceDetails(value, setBuDetails);
+                  }}
+                  // rules={[{ required: true, message: "Workplace is required" }]}
+                />
+              </Col>
+
+              <Col
+                style={{
+                  marginTop: "23px",
                 }}
-              />
-            </Col>
-
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={workplaceGroup?.data || []}
-                name="workplaceGroup"
-                label="Workplace Group"
-                placeholder="Workplace Group"
-                disabled={+id ? true : false}
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    workplaceGroup: op,
-                    workplace: undefined,
-                  });
-                  getWorkplace();
+              >
+                <PButton type="primary" action="submit" content="View" />
+              </Col>
+            </Row>
+          </PCardBody>
+          <div className="d-flex justify-content-between">
+            <div>
+              <h2
+                style={{
+                  color: gray500,
+                  fontSize: "14px",
+                  margin: "5px 0px 10px 0px",
                 }}
-                rules={
-                  [
-                    //   { required: true, message: "Workplace Group is required" },
-                  ]
-                }
-              />
-            </Col>
-            <Col md={5} sm={12} xs={24}>
-              <PSelect
-                options={workplace?.data || []}
-                name="workplace"
-                label="Workplace"
-                placeholder="Workplace"
-                disabled={+id ? true : false}
-                onChange={(value, op) => {
-                  form.setFieldsValue({
-                    workplace: op,
-                  });
-                  getWorkplaceDetails(value, setBuDetails);
-                }}
-                // rules={[{ required: true, message: "Workplace is required" }]}
-              />
-            </Col>
+              >
+                Daily Attendance Report
+              </h2>
+            </div>
 
-            <Col
-              style={{
-                marginTop: "23px",
-              }}
-            >
-              <PButton type="primary" action="submit" content="View" />
-            </Col>
-          </Row>
-        </PCardBody>
-        <div className="d-flex justify-content-between">
-          <div>
-            <h2
-              style={{
-                color: gray500,
-                fontSize: "14px",
-                margin: "5px 0px 10px 0px",
-              }}
-            >
-              Daily Attendance Report
-            </h2>
-          </div>
+            <div>
+              <ul className="d-flex flex-wrap">
+                {landingApi?.data?.data?.length > 0 && (
+                  <>
+                    <Form.Item shouldUpdate noStyle>
+                      {() => {
+                        const { date, workplace, workplaceGroup } =
+                          form.getFieldsValue();
+                        return (
+                          <>
+                            <li className="pr-2">
+                              <Tooltip title="Export CSV" arrow>
+                                <IconButton
+                                  style={{ color: "#101828" }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const excelLanding = async () => {
+                                      try {
+                                        if (
+                                          landingApi?.data?.data?.length > 0
+                                        ) {
+                                          const newData =
+                                            landingApi?.data?.data?.map(
+                                              (item: any, index: any) => {
+                                                return {
+                                                  ...item,
+                                                  sl: index + 1,
+                                                };
+                                              }
+                                            );
+                                          // const date = todayDate();
 
-          <div>
-            <ul className="d-flex flex-wrap">
-              {landingApi?.data?.data?.length > 0 && (
-                <>
-                  <Form.Item shouldUpdate noStyle>
-                    {() => {
-                      const { date, workplace, workplaceGroup } =
-                        form.getFieldsValue();
-                      return (
-                        <>
-                          <li className="pr-2">
-                            <Tooltip title="Export CSV" arrow>
-                              <IconButton
-                                style={{ color: "#101828" }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  const excelLanding = async () => {
-                                    try {
-                                      if (landingApi?.data?.data?.length > 0) {
-                                        const newData =
-                                          landingApi?.data?.data?.map(
-                                            (item: any, index: any) => {
-                                              return {
-                                                ...item,
-                                                sl: index + 1,
-                                              };
-                                            }
-                                          );
-                                        // const date = todayDate();
-
-                                        createCommonExcelFile({
-                                          titleWithDate: `Daily Attendance ${dateFormatter(
-                                            date
-                                          )} `,
-                                          fromDate: "",
-                                          toDate: "",
-                                          buAddress: (buDetails as any)
-                                            ?.strAddress,
-                                          businessUnit: workplaceGroup?.value
-                                            ? (buDetails as any)?.strWorkplace
-                                            : buName,
-                                          tableHeader: column,
-                                          getTableData: () =>
-                                            getTableDataDailyAttendance(
-                                              newData,
-                                              Object.keys(column),
-                                              landingApi?.data?.data
-                                            ),
-                                          getSubTableData: () =>
-                                            getTableDataSummaryHeadData(
-                                              landingApi?.data
-                                            ),
-                                          subHeaderInfoArr: [
-                                            landingApi?.data?.workplaceGroup
-                                              ? `Workplace Group-${landingApi?.data?.data[0]?.workplaceGroup}`
-                                              : "",
-                                            landingApi?.data?.workplace
-                                              ? `Workplace-${landingApi?.data?.data[0]?.workplace}`
-                                              : "",
-                                          ],
-                                          subHeaderColumn,
-                                          tableFooter: [],
-                                          extraInfo: {},
-                                          tableHeadFontSize: 10,
-                                          widthList: {
-                                            B: 30,
-                                            C: 30,
-                                            D: 15,
-                                            E: 25,
-                                            F: 20,
-                                            G: 25,
-                                            H: 15,
-                                            I: 15,
-                                            J: 20,
-                                            K: 20,
-                                          },
-                                          commonCellRange: "A1:J1",
-                                          CellAlignment: "left",
-                                        });
-                                      } else {
-                                        toast.warn("Empty Employee Data");
+                                          createCommonExcelFile({
+                                            titleWithDate: `Daily Attendance ${dateFormatter(
+                                              date
+                                            )} `,
+                                            fromDate: "",
+                                            toDate: "",
+                                            buAddress: (buDetails as any)
+                                              ?.strAddress,
+                                            businessUnit: workplaceGroup?.value
+                                              ? (buDetails as any)?.strWorkplace
+                                              : buName,
+                                            tableHeader: column,
+                                            getTableData: () =>
+                                              getTableDataDailyAttendance(
+                                                newData,
+                                                Object.keys(column),
+                                                landingApi?.data?.data
+                                              ),
+                                            getSubTableData: () =>
+                                              getTableDataSummaryHeadData(
+                                                landingApi?.data
+                                              ),
+                                            subHeaderInfoArr: [
+                                              landingApi?.data?.workplaceGroup
+                                                ? `Workplace Group-${landingApi?.data?.data[0]?.workplaceGroup}`
+                                                : "",
+                                              landingApi?.data?.workplace
+                                                ? `Workplace-${landingApi?.data?.data[0]?.workplace}`
+                                                : "",
+                                            ],
+                                            subHeaderColumn,
+                                            tableFooter: [],
+                                            extraInfo: {},
+                                            tableHeadFontSize: 10,
+                                            widthList: {
+                                              B: 30,
+                                              C: 30,
+                                              D: 15,
+                                              E: 25,
+                                              F: 20,
+                                              G: 25,
+                                              H: 15,
+                                              I: 15,
+                                              J: 20,
+                                              K: 20,
+                                            },
+                                            commonCellRange: "A1:J1",
+                                            CellAlignment: "left",
+                                          });
+                                        } else {
+                                          toast.warn("Empty Employee Data");
+                                        }
+                                      } catch (error) {
+                                        isDevServer && console.log(error);
+                                        toast.warn("Failed to download excel");
                                       }
-                                    } catch (error) {
-                                      isDevServer && console.log(error);
-                                      toast.warn("Failed to download excel");
-                                    }
-                                  };
-                                  excelLanding();
-                                }}
-                              >
-                                <DownloadIcon />
-                              </IconButton>
-                            </Tooltip>
+                                    };
+                                    excelLanding();
+                                  }}
+                                >
+                                  <DownloadIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </li>
+                            <li className="pr-2 ">
+                              <Tooltip title="Print" arrow>
+                                <IconButton
+                                  style={{ color: "#101828" }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const list = landingApi?.data?.data?.map(
+                                      (item: any) => item?.employeeId
+                                    );
+                                    getPDFAction(
+                                      `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${moment(
+                                        date
+                                      ).format("YYYY-MM-DD")}${
+                                        buId ? `&IntBusinessUnitId=${buId}` : ""
+                                      }${
+                                        workplaceGroup?.value
+                                          ? `&IntWorkplaceGroupId=${
+                                              workplaceGroup?.value || 0
+                                            }`
+                                          : ""
+                                      }${
+                                        landingApi?.data?.data?.length !==
+                                        landingApi?.data?.totalCount
+                                          ? `&EmployeeIdList=${list}`
+                                          : ""
+                                      }${
+                                        workplace?.value
+                                          ? `&IntWorkplaceId=${
+                                              workplace?.value || 0
+                                            }`
+                                          : ""
+                                      }`,
+                                      setLoading
+                                    );
+                                  }}
+                                >
+                                  <LocalPrintshopIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </li>
+                          </>
+                        );
+                      }}
+                    </Form.Item>
+                  </>
+                )}
+                <Form.Item shouldUpdate noStyle>
+                  {() => {
+                    const { search } = form.getFieldsValue();
+                    return (
+                      <>
+                        {search && (
+                          <li className="pt-1">
+                            <ResetButton
+                              classes="btn-filter-reset"
+                              title="Reset"
+                              styles={{}}
+                              icon={<SettingsBackupRestoreOutlined />}
+                              onClick={() => {
+                                landingApiCall({
+                                  pagination: {
+                                    current: 1,
+                                    pageSize: paginationSize,
+                                  },
+                                  searchText: "",
+                                });
+                                form.setFieldsValue({ search: "" });
+                              }}
+                            />
                           </li>
-                          <li className="pr-2 ">
-                            <Tooltip title="Print" arrow>
-                              <IconButton
-                                style={{ color: "#101828" }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  const list = landingApi?.data?.data?.map(
-                                    (item: any) => item?.employeeId
-                                  );
-                                  getPDFAction(
-                                    `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${moment(
-                                      date
-                                    ).format("YYYY-MM-DD")}${
-                                      buId ? `&IntBusinessUnitId=${buId}` : ""
-                                    }${
-                                      workplaceGroup?.value
-                                        ? `&IntWorkplaceGroupId=${
-                                            workplaceGroup?.value || 0
-                                          }`
-                                        : ""
-                                    }${
-                                      landingApi?.data?.data?.length !==
-                                      landingApi?.data?.totalCount
-                                        ? `&EmployeeIdList=${list}`
-                                        : ""
-                                    }${
-                                      workplace?.value
-                                        ? `&IntWorkplaceId=${
-                                            workplace?.value || 0
-                                          }`
-                                        : ""
-                                    }`,
-                                    setLoading
-                                  );
-                                }}
-                              >
-                                <LocalPrintshopIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </li>
-                        </>
-                      );
-                    }}
-                  </Form.Item>
-                </>
-              )}
-              <Form.Item shouldUpdate noStyle>
-                {() => {
-                  const { search } = form.getFieldsValue();
-                  return (
-                    <>
-                      {search && (
-                        <li className="pt-1">
-                          <ResetButton
-                            classes="btn-filter-reset"
-                            title="Reset"
-                            styles={{}}
-                            icon={<SettingsBackupRestoreOutlined />}
-                            onClick={() => {
-                              landingApiCall({
-                                pagination: {
-                                  current: 1,
-                                  pageSize: paginationSize,
-                                },
-                                searchText: "",
-                              });
-                              form.setFieldsValue({ search: "" });
+                        )}
+                        <li>
+                          <PInput
+                            // label="Reason"
+                            prefix={<SearchOutlined />}
+                            name={"search"}
+                            type="text"
+                            placeholder="search"
+                            onChange={(e: any) => {
+                              debounce(() => {
+                                landingApiCall({
+                                  pagination: {
+                                    current: 1,
+                                    pageSize: paginationSize,
+                                  },
+                                  searchText: e.target.value,
+                                });
+                              }, 500);
                             }}
                           />
                         </li>
-                      )}
-                      <li>
-                        <PInput
-                          // label="Reason"
-                          name={"search"}
-                          type="text"
-                          placeholder="search"
-                          onChange={(e: any) => {
-                            debounce(() => {
-                              landingApiCall({
-                                pagination: {
-                                  current: 1,
-                                  pageSize: paginationSize,
-                                },
-                                searchText: e.target.value,
-                              });
-                            }, 500);
-                          }}
-                        />
-                      </li>
-                    </>
-                  );
-                }}
-              </Form.Item>
-            </ul>
+                      </>
+                    );
+                  }}
+                </Form.Item>
+              </ul>
+            </div>
           </div>
-        </div>
-        <div
-          style={{ marginLeft: "-7px" }}
-          className=" d-flex justify-content-between align-items-center my-2"
-        >
-          <div className="d-flex align-items-center">
-            <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
-              Total Employee:
-            </Typography>
-            <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
-              {landingApi?.data?.totalEmployee || 0}
-            </Typography>
+          <div
+            style={{ marginLeft: "-7px" }}
+            className=" d-flex justify-content-between align-items-center my-2"
+          >
+            <div className="d-flex align-items-center">
+              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+                Total Employee:
+              </Typography>
+              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+                {landingApi?.data?.totalEmployee || 0}
+              </Typography>
+            </div>
+            <div className="d-flex align-items-center">
+              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+                Present:
+              </Typography>
+              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+                {landingApi?.data?.presentCount || 0}
+              </Typography>
+            </div>
+            <div className="d-flex align-items-center">
+              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+                Absent:
+              </Typography>
+              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+                {landingApi?.data?.absentCount || 0}
+              </Typography>
+            </div>
+            <div className="d-flex align-items-center ">
+              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+                Late:
+              </Typography>
+              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+                {landingApi?.data?.lateCount || 0}
+              </Typography>
+            </div>
+            <div className="d-flex align-items-center ">
+              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+                Leave:
+              </Typography>
+              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+                {landingApi?.data?.leaveCount || 0}
+              </Typography>
+            </div>
+            <div className="d-flex align-items-center ">
+              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+                Movement:
+              </Typography>
+              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+                {landingApi?.data?.movementCount || 0}
+              </Typography>
+            </div>
+            <div className="d-flex align-items-center ">
+              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+                Weekend:
+              </Typography>
+              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+                {landingApi?.data?.weekendCount || 0}
+              </Typography>
+            </div>
+            <div className="d-flex align-items-center ">
+              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+                Holiday:
+              </Typography>
+              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+                {landingApi?.data?.holidayCount || 0}
+              </Typography>
+            </div>
           </div>
-          <div className="d-flex align-items-center">
-            <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
-              Present:
-            </Typography>
-            <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
-              {landingApi?.data?.presentCount || 0}
-            </Typography>
-          </div>
-          <div className="d-flex align-items-center">
-            <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
-              Absent:
-            </Typography>
-            <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
-              {landingApi?.data?.absentCount || 0}
-            </Typography>
-          </div>
-          <div className="d-flex align-items-center ">
-            <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
-              Late:
-            </Typography>
-            <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
-              {landingApi?.data?.lateCount || 0}
-            </Typography>
-          </div>
-          <div className="d-flex align-items-center ">
-            <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
-              Leave:
-            </Typography>
-            <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
-              {landingApi?.data?.leaveCount || 0}
-            </Typography>
-          </div>
-          <div className="d-flex align-items-center ">
-            <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
-              Movement:
-            </Typography>
-            <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
-              {landingApi?.data?.movementCount || 0}
-            </Typography>
-          </div>
-          <div className="d-flex align-items-center ">
-            <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
-              Weekend:
-            </Typography>
-            <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
-              {landingApi?.data?.weekendCount || 0}
-            </Typography>
-          </div>
-          <div className="d-flex align-items-center ">
-            <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
-              Holiday:
-            </Typography>
-            <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
-              {landingApi?.data?.holidayCount || 0}
-            </Typography>
-          </div>
-        </div>
-        <DataTable
-          bordered
-          data={landingApi?.data?.data || []}
-          loading={landingApi?.loading}
-          header={header}
-          pagination={{
-            pageSize: landingApi?.data?.pageSize,
-            total: landingApi?.data?.totalCount,
-          }}
-          filterData={landingApi?.data?.dailyAttendanceHeader}
-          onChange={(pagination, filters, sorter, extra) => {
-            // Return if sort function is called
-            if (extra.action === "sort") return;
-            setFilterList(filters);
-            landingApiCall({
-              pagination,
-              filerList: filters,
-            });
-          }}
-          scroll={{ x: 2000 }}
-        />
-      </PCard>
-    </PForm>
+          <DataTable
+            bordered
+            data={landingApi?.data?.data || []}
+            loading={landingApi?.loading}
+            header={header}
+            pagination={{
+              pageSize: landingApi?.data?.pageSize,
+              total: landingApi?.data?.totalCount,
+            }}
+            filterData={landingApi?.data?.dailyAttendanceHeader}
+            onChange={(pagination, filters, sorter, extra) => {
+              // Return if sort function is called
+              if (extra.action === "sort") return;
+              setFilterList(filters);
+              landingApiCall({
+                pagination,
+                filerList: filters,
+              });
+            }}
+            scroll={{ x: 2000 }}
+          />
+        </PCard>
+      </PForm>
+    </>
+  ) : (
+    <NotPermittedPage />
   );
 };
 
