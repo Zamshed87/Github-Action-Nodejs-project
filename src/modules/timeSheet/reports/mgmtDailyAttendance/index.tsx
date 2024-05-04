@@ -1,4 +1,3 @@
-import { IconButton, Tooltip, Typography } from "@mui/material";
 import {
   Avatar,
   DataTable,
@@ -10,14 +9,13 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import DownloadIcon from "@mui/icons-material/Download";
 
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tooltip, Typography } from "antd";
 import { getWorkplaceDetails } from "common/api";
 import { paginationSize } from "common/peopleDeskTable";
-import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
+import { MdLocalPrintshop } from "react-icons/md";
 
 import React, { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -34,15 +32,13 @@ import {
   subHeaderColumn,
 } from "./helper";
 import { getPDFAction } from "utility/downloadFile";
-import ResetButton from "common/ResetButton";
-import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
 import { isDevServer } from "App";
 import { dateFormatter } from "utility/dateFormatter";
 import moment from "moment";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
-import useDebounce from "utility/customHooks/useDebounce";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { SearchOutlined } from "@ant-design/icons";
+import { debounce } from "lodash";
+import { MdFileDownload } from "react-icons/md";
 
 const MgmtDailyAttendance = () => {
   const dispatch = useDispatch();
@@ -59,7 +55,6 @@ const MgmtDailyAttendance = () => {
   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
-  const debounce = useDebounce();
 
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
@@ -489,7 +484,11 @@ const MgmtDailyAttendance = () => {
       width: 35,
     },
   ];
-
+  const searchFunc = debounce((value) => {
+    landingApiCall({
+      searchText: value,
+    });
+  }, 500);
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -507,7 +506,16 @@ const MgmtDailyAttendance = () => {
         }}
       >
         <PCard>
-          <PCardHeader backButton title="Daily Attendance Report"></PCardHeader>
+          <PCardHeader
+            backButton
+            title="Daily Attendance Report"
+            onSearch={(e) => {
+              searchFunc(e?.target?.value);
+              form.setFieldsValue({
+                search: e?.target?.value,
+              });
+            }}
+          ></PCardHeader>
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
@@ -523,7 +531,6 @@ const MgmtDailyAttendance = () => {
                     },
                   ]}
                   onChange={(value) => {
-                    console.log({ value }, "date");
                     form.setFieldsValue({
                       date: value,
                     });
@@ -602,9 +609,14 @@ const MgmtDailyAttendance = () => {
                         return (
                           <>
                             <li className="pr-2">
-                              <Tooltip title="Export CSV" arrow>
-                                <IconButton
-                                  style={{ color: "#101828" }}
+                              <Tooltip placement="bottom" title="Export CSV">
+                                <MdFileDownload
+                                  style={{
+                                    color: "#101828",
+                                    width: "25px",
+                                    height: "25px",
+                                    cursor: "pointer",
+                                  }}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     const excelLanding = async () => {
@@ -682,15 +694,18 @@ const MgmtDailyAttendance = () => {
                                     };
                                     excelLanding();
                                   }}
-                                >
-                                  <DownloadIcon />
-                                </IconButton>
+                                ></MdFileDownload>
                               </Tooltip>
                             </li>
                             <li className="pr-2 ">
-                              <Tooltip title="Print" arrow>
-                                <IconButton
-                                  style={{ color: "#101828" }}
+                              <Tooltip placement="bottom" title="Print">
+                                <MdLocalPrintshop
+                                  style={{
+                                    color: "#101828",
+                                    width: "25px",
+                                    height: "25px",
+                                    cursor: "pointer",
+                                  }}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     const list = landingApi?.data?.data?.map(
@@ -722,9 +737,7 @@ const MgmtDailyAttendance = () => {
                                       setLoading
                                     );
                                   }}
-                                >
-                                  <LocalPrintshopIcon />
-                                </IconButton>
+                                ></MdLocalPrintshop>
                               </Tooltip>
                             </li>
                           </>
@@ -733,55 +746,6 @@ const MgmtDailyAttendance = () => {
                     </Form.Item>
                   </>
                 )}
-                <Form.Item shouldUpdate noStyle>
-                  {() => {
-                    const { search } = form.getFieldsValue();
-                    return (
-                      <>
-                        {search && (
-                          <li className="pt-1">
-                            <ResetButton
-                              classes="btn-filter-reset"
-                              title="Reset"
-                              styles={{}}
-                              icon={<SettingsBackupRestoreOutlined />}
-                              onClick={() => {
-                                landingApiCall({
-                                  pagination: {
-                                    current: 1,
-                                    pageSize: paginationSize,
-                                  },
-                                  searchText: "",
-                                });
-                                form.setFieldsValue({ search: "" });
-                              }}
-                            />
-                          </li>
-                        )}
-                        <li>
-                          <PInput
-                            // label="Reason"
-                            prefix={<SearchOutlined />}
-                            name={"search"}
-                            type="text"
-                            placeholder="search"
-                            onChange={(e: any) => {
-                              debounce(() => {
-                                landingApiCall({
-                                  pagination: {
-                                    current: 1,
-                                    pageSize: paginationSize,
-                                  },
-                                  searchText: e.target.value,
-                                });
-                              }, 500);
-                            }}
-                          />
-                        </li>
-                      </>
-                    );
-                  }}
-                </Form.Item>
               </ul>
             </div>
           </div>
@@ -790,68 +754,158 @@ const MgmtDailyAttendance = () => {
             className=" d-flex justify-content-between align-items-center my-2"
           >
             <div className="d-flex align-items-center">
-              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+              <Typography.Title
+                level={5}
+                style={{
+                  marginLeft: "8px",
+                  fontSize: "12px",
+                }}
+              >
                 Total Employee:
-              </Typography>
-              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+              </Typography.Title>
+              <Typography.Title
+                level={5}
+                style={{
+                  marginLeft: "5px",
+                  marginTop: "-.5px",
+                  fontSize: "12px",
+                }}
+              >
                 {landingApi?.data?.totalEmployee || 0}
-              </Typography>
+              </Typography.Title>
             </div>
             <div className="d-flex align-items-center">
-              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+              <Typography.Title
+                level={5}
+                style={{ marginLeft: "32px", fontSize: "12px" }}
+              >
+                {" "}
                 Present:
-              </Typography>
-              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+              </Typography.Title>
+              <Typography.Title
+                level={5}
+                style={{
+                  marginLeft: "5px",
+                  marginTop: "-.5px",
+                  fontSize: "12px",
+                }}
+              >
                 {landingApi?.data?.presentCount || 0}
-              </Typography>
+              </Typography.Title>
             </div>
             <div className="d-flex align-items-center">
-              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+              <Typography.Title
+                level={5}
+                style={{ marginLeft: "32px", fontSize: "12px" }}
+              >
+                {" "}
                 Absent:
-              </Typography>
-              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+              </Typography.Title>
+              <Typography.Title
+                level={5}
+                style={{
+                  marginLeft: "5px",
+                  marginTop: "-.5px",
+                  fontSize: "12px",
+                }}
+              >
                 {landingApi?.data?.absentCount || 0}
-              </Typography>
+              </Typography.Title>
             </div>
             <div className="d-flex align-items-center ">
-              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+              <Typography.Title
+                level={5}
+                style={{ marginLeft: "32px", fontSize: "12px" }}
+              >
+                {" "}
                 Late:
-              </Typography>
-              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+              </Typography.Title>
+              <Typography.Title
+                level={5}
+                style={{
+                  marginLeft: "5px",
+                  marginTop: "-.5px",
+                  fontSize: "12px",
+                }}
+              >
                 {landingApi?.data?.lateCount || 0}
-              </Typography>
+              </Typography.Title>
             </div>
             <div className="d-flex align-items-center ">
-              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+              <Typography.Title
+                level={5}
+                style={{ marginLeft: "32px", fontSize: "12px" }}
+              >
+                {" "}
                 Leave:
-              </Typography>
-              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+              </Typography.Title>
+              <Typography.Title
+                level={5}
+                style={{
+                  marginLeft: "5px",
+                  marginTop: "-.5px",
+                  fontSize: "12px",
+                }}
+              >
                 {landingApi?.data?.leaveCount || 0}
-              </Typography>
+              </Typography.Title>
             </div>
             <div className="d-flex align-items-center ">
-              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+              <Typography.Title
+                level={5}
+                style={{ marginLeft: "32px", fontSize: "12px" }}
+              >
+                {" "}
                 Movement:
-              </Typography>
-              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+              </Typography.Title>
+              <Typography.Title
+                level={5}
+                style={{
+                  marginLeft: "5px",
+                  marginTop: "-.5px",
+                  fontSize: "12px",
+                }}
+              >
                 {landingApi?.data?.movementCount || 0}
-              </Typography>
+              </Typography.Title>
             </div>
             <div className="d-flex align-items-center ">
-              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+              <Typography.Title
+                level={5}
+                style={{ marginLeft: "32px", fontSize: "12px" }}
+              >
+                {" "}
                 Weekend:
-              </Typography>
-              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+              </Typography.Title>
+              <Typography.Title
+                level={5}
+                style={{
+                  marginLeft: "5px",
+                  marginTop: "-.5px",
+                  fontSize: "12px",
+                }}
+              >
                 {landingApi?.data?.weekendCount || 0}
-              </Typography>
+              </Typography.Title>
             </div>
             <div className="d-flex align-items-center ">
-              <Typography fontWeight={500} className="ml-3" fontSize={"12px"}>
+              <Typography.Title
+                level={5}
+                style={{ marginLeft: "32px", fontSize: "12px" }}
+              >
                 Holiday:
-              </Typography>
-              <Typography fontWeight={500} className="ml-2" fontSize={"12px"}>
+              </Typography.Title>
+              <Typography.Title
+                level={5}
+                style={{
+                  marginLeft: "5px",
+                  marginTop: "-.5px",
+                  fontSize: "12px",
+                }}
+              >
+                {/* <Typography fontWeight={500} className="ml-2" > */}
                 {landingApi?.data?.holidayCount || 0}
-              </Typography>
+              </Typography.Title>
             </div>
           </div>
           <DataTable

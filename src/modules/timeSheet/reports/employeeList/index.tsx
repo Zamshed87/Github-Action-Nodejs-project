@@ -9,6 +9,8 @@ import {
   PInput,
   PSelect,
 } from "Components";
+import type { RangePickerProps } from "antd/es/date-picker";
+
 import { useApiRequest } from "Hooks";
 import { getSerial } from "Utils";
 import { Col, Form, Row, Tag } from "antd";
@@ -22,7 +24,6 @@ import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import useDebounce from "utility/customHooks/useDebounce";
 import { dateFormatter } from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
 import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
@@ -482,6 +483,12 @@ const EmployeeList = () => {
       searchText: value,
     });
   }, 500);
+  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
+    const { fromDate } = form.getFieldsValue(true);
+    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
+    // Disable dates before fromDate and after next3daysForEmp
+    return current && current < fromDateMoment.startOf("day");
+  };
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -512,7 +519,6 @@ const EmployeeList = () => {
               const excelLanding = async () => {
                 setExcelLoading(true);
                 try {
-                  console.log({ filterList });
                   const values = form.getFieldsValue(true);
                   const payload = {
                     businessUnitId: buId,
@@ -582,14 +588,14 @@ const EmployeeList = () => {
                 <PInput
                   type="date"
                   name="fromDate"
-                  label="Date"
-                  placeholder="Date"
-                  rules={[
-                    {
-                      required: true,
-                      message: "rom Date is required",
-                    },
-                  ]}
+                  label="From Date"
+                  placeholder="From Date"
+                  //   rules={[
+                  //     {
+                  //       required: true,
+                  //       message: "from Date is required",
+                  //     },
+                  //   ]}
                   onChange={(value) => {
                     form.setFieldsValue({
                       fromDate: value,
@@ -601,14 +607,15 @@ const EmployeeList = () => {
                 <PInput
                   type="date"
                   name="toDate"
-                  label="Date"
-                  placeholder="Date"
-                  rules={[
-                    {
-                      required: true,
-                      message: "To Date is required",
-                    },
-                  ]}
+                  label="To Date"
+                  placeholder="To Date"
+                  disabledDate={disabledDate}
+                  //   rules={[
+                  //     {
+                  //       required: true,
+                  //       message: "To Date is required",
+                  //     },
+                  //   ]}
                   onChange={(value) => {
                     form.setFieldsValue({
                       toDate: value,
