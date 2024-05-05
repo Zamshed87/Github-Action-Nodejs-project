@@ -577,39 +577,7 @@ export default function LeaveApproval() {
             {status === "Approved" && (
               <Chips label="Approved" classess="success" />
             )}
-            {/* {status === "Pending" && (
-              <>
-                <div className="actionChip">
-                  <Chips label="Pending" classess=" warning" />
-                </div>
-                <div className="d-flex actionIcon justify-content-center">
-                  <Tooltip title="Approve">
-                    <div
-                      className="mx-2 muiIconHover success "
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        singlePopup("approve", "Approve", record);
-                      }}
-                    >
-                      <MuiIcon
-                        icon={<CheckCircle sx={{ color: successColor }} />}
-                      />
-                    </div>
-                  </Tooltip>
-                  <Tooltip title="Reject">
-                    <div
-                      className="muiIconHover  danger"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        singlePopup("reject", "Reject", record);
-                      }}
-                    >
-                      <MuiIcon icon={<Cancel sx={{ color: failColor }} />} />
-                    </div>
-                  </Tooltip>
-                </div>
-              </>
-            )} */}
+            
             {status === "Pending" && (
               <>
                 <div className="actionChip">

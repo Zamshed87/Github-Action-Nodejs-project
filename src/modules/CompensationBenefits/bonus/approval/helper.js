@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+
 // search
 export const filterData = (keywords, allData, setRowDto) => {
   try {
@@ -27,9 +28,9 @@ export const getBonusGenerateRequestReport = async (
       `/ApprovalPipeline/BonusGenerateHeaderLandingEngine`,
       payload
     );
-    if (res?.data?.listData) {
-      setAllData && setAllData(res?.data?.listData);
-      setter(res?.data?.listData);
+    if (res?.data) {
+      setAllData && setAllData(res?.data);
+      setter(res?.data);
       setLoading && setLoading(false);
       cb && cb();
     }
@@ -50,3 +51,6 @@ export const bonusApproveRejectRequest = async (payload, cb) => {
     toast.error(error?.response?.data?.message || "Something went wrong");
   }
 };
+
+
+
