@@ -100,7 +100,6 @@ export default function EmployeeList() {
     ...initHeaderList,
   });
 
-
   const getData = async (
     pagination,
     IsForXl = "false",
@@ -128,7 +127,7 @@ export default function EmployeeList() {
       values
     );
   };
-  
+
   useEffect(() => {
     setHeaderList({});
     setEmpLanding([]);
@@ -211,8 +210,6 @@ export default function EmployeeList() {
       permission = item;
     }
   });
-
-
 
   const handleChangePage = (_, newPage, searchText, values) => {
     setPages((prev) => {

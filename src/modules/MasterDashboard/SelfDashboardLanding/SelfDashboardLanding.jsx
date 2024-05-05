@@ -28,7 +28,7 @@ import Loading from "common/loading/Loading";
 import { useHistory } from "react-router-dom";
 
 const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
-  const { orgId, employeeId, buId } = useSelector(
+  const { orgId, employeeId, buId, wgId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -64,12 +64,12 @@ const SelfDashboardLanding = ({ setDashboardRoles, setLoading }) => {
   // ];
 
   const getData = () => {
-    getBirthAnniversary(setRowDto, setLoadingForBirth);
+    getBirthAnniversary(setRowDto, setLoadingForBirth, buId, wgId);
   };
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [wgId]);
   return (
     <>
       {/* {loadingForBirth && <Loading />} */}

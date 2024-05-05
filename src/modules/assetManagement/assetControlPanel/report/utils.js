@@ -1,12 +1,12 @@
 import {
   AddOutlined,
   AttachFile,
-  Attachment,
   AttachmentOutlined,
   DeleteOutlineOutlined,
   EditOutlined,
   InfoOutlined,
   ReplayOutlined,
+  VisibilityOutlined,
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import Chips from "common/Chips";
@@ -33,7 +33,7 @@ const assetReportColumn = (
   history,
   setUnassignLoading,
   setIsAttachmentShow,
-  setIsAttachmentView,
+  setIsProfileView,
   cb
 ) => {
   return [
@@ -57,6 +57,7 @@ const assetReportColumn = (
       dataIndex: "assetName",
       sort: true,
       filter: false,
+      width: 180,
     },
     {
       title: "Identification",
@@ -180,24 +181,51 @@ const assetReportColumn = (
               <Chips label="Available" classess="success" />
             )}
             {item?.status === "Assigned" && (
-              <Chips
-                label={"Assign to" + " " + item?.assetAssignPerson}
-                classess="warning"
-              />
+              <Tooltip
+                title={"Assign to" + " " + item?.assetAssignPerson}
+                arrow
+              >
+                <button style={{ border: 0 }} type="button">
+                  <Chips
+                    label={truncateString(
+                      "Assign to" + " " + item?.assetAssignPerson,
+                      10
+                    )}
+                    classess="warning"
+                  />
+                </button>
+              </Tooltip>
             )}
             {item?.status === "On Maintaince" && (
-              <Chips
-                label={
+              <Tooltip
+                title={
                   "On Maintenance to" + " " + item?.assetMaintainceByPerson
                 }
-                classess="danger"
-              />
+                arrow
+              >
+                <button style={{ border: 0 }} type="button">
+                  <Chips
+                    label={truncateString(
+                      "On Maintenance to" + " " + item?.assetMaintainceByPerson,
+                      10
+                    )}
+                    classess="danger"
+                  />
+                </button>
+              </Tooltip>
             )}
             {item?.status === "On Rent" && (
-              <Chips
-                label={"On Rent" + " " + item?.assetRentPerson}
-                classess="hold"
-              />
+              <Tooltip title={"On Rent" + " " + item?.assetRentPerson} arrow>
+                <button style={{ border: 0 }} type="button">
+                  <Chips
+                    label={truncateString(
+                      "On Rent" + " " + item?.assetRentPerson,
+                      10
+                    )}
+                    classess="hold"
+                  />
+                </button>
+              </Tooltip>
             )}
           </div>
         );
@@ -212,13 +240,12 @@ const assetReportColumn = (
       width: 120,
       render: (record) => (
         <div className="d-flex justify-content-center">
-          <Tooltip title="Attachment View" arrow>
+          <Tooltip title="Profile View" arrow>
             <button className="iconButton" type="button">
-              <Attachment
+              <VisibilityOutlined
                 onClick={(e) => {
                   e.stopPropagation();
-                  setItemId(record?.assetId);
-                  setIsAttachmentView(true);
+                  setIsProfileView(true);
                 }}
               />
             </button>
@@ -247,13 +274,16 @@ const assetReportColumn = (
             </button>
           </Tooltip>
           {!record?.isAssign && (
-            <Tooltip title="Create Assign" arrow>
+            <Tooltip title="Assign" arrow>
               <button className="iconButton" type="button">
                 <AddOutlined
                   onClick={(e) => {
                     e.stopPropagation();
                     history.push(
-                      `/assetManagement/assetControlPanel/assign/create`
+                      `/assetManagement/assetControlPanel/assign/create`,
+                      {
+                        data: record,
+                      }
                     );
                   }}
                 />
@@ -277,6 +307,14 @@ const assetReportColumn = (
     },
   ];
 };
+
+function truncateString(str, maxLength) {
+  if (str.length <= maxLength) {
+    return str;
+  } else {
+    return str.substring(0, maxLength) + "...";
+  }
+}
 
 const employeeDetailsColumn = () => {
   return [
@@ -319,18 +357,18 @@ const maintenanceSummaryColumn = () => {
       filter: false,
     },
     {
-      title: "From Date",
+      title: "Maintenance Start Date",
       dataIndex: "FromDate",
       sort: false,
       filter: false,
       render: (record) => dateFormatter(record?.FromDate),
     },
     {
-      title: "To Date",
+      title: "Receive Date",
       dataIndex: "ToDate",
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.FromDate),
+      render: (record) => (record?.ToDate ? dateFormatter(record?.ToDate) : ""),
     },
     {
       title: "Amount",
@@ -402,6 +440,7 @@ const addDocumentHandler = (values, documentFile, rowDto, setRowDto, cb) => {
   if (!documentFile)
     return toast.warn("Please attach a file", { toastId: "document" });
   const obj = {
+    assetDocumentId: 0,
     globalImageUrlID: documentFile?.globalFileUrlId,
     attachmentFileName: documentFile?.fileName,
     documentName: values?.documentName,
@@ -508,15 +547,173 @@ const saveAttachmentHandler = (
   );
 };
 
+const depreciationColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.date),
+    },
+    {
+      title: "Depreciation Code",
+      dataIndex: "depreciationCode",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Amount",
+      dataIndex: "Cost",
+      sort: false,
+      filter: false,
+      render: (record) => formatMoney(record?.Cost),
+    },
+    {
+      title: "Depreciation Run By",
+      dataIndex: "depreciationRunBy",
+      sort: false,
+      filter: false,
+    },
+  ];
+};
+
+const maintenanceColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.date),
+    },
+    {
+      title: "Maintenance Type",
+      dataIndex: "maintenanceType",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Maintenance Cost",
+      dataIndex: "Cost",
+      sort: false,
+      filter: false,
+      render: (record) => formatMoney(record?.Cost),
+    },
+    {
+      title: "Technician",
+      dataIndex: "depreciationRunBy",
+      sort: false,
+      filter: false,
+    },
+  ];
+};
+
+const usesHistoryColumn = () => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "From Date",
+      dataIndex: "date",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.date),
+    },
+    {
+      title: "To Date",
+      dataIndex: "date",
+      sort: false,
+      filter: false,
+      render: (record) => dateFormatter(record?.date),
+    },
+    {
+      title: "Employee/Department",
+      dataIndex: "depreciationRunBy",
+      sort: false,
+      filter: false,
+    },
+  ];
+};
+
+const documentsColumn = (dispatch) => {
+  return [
+    {
+      title: "SL",
+      render: (_, index) => index + 1,
+      sort: false,
+      filter: false,
+      className: "text-center",
+    },
+    {
+      title: "Document Name",
+      dataIndex: "documentName",
+      sort: false,
+      filter: false,
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      sort: false,
+      filter: false,
+      width: 100,
+      className: "text-center",
+      render: (record) => (
+        <div className="d-flex justify-content-center">
+          <Tooltip title="View" arrow>
+            <button type="button" className="iconButton">
+              <VisibilityOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  dispatch(
+                    getDownlloadFileView_Action(record?.globalImageUrlID)
+                  );
+                }}
+              />
+            </button>
+          </Tooltip>
+        </div>
+      ),
+    },
+  ];
+};
+
 export {
   addDocumentHandler,
   assetReportColumn,
-  documentAttachmentColumn,
-  employeeDetailsColumn,
-  getById,
+  depreciationColumn,
+  documentAttachmentColumn, documentsColumn,
+  employeeDetailsColumn, getById,
   getData,
+  maintenanceColumn,
   maintenanceSummaryColumn,
   saveAttachmentHandler,
-  totalDepreciationColumn
+  totalDepreciationColumn,
+  usesHistoryColumn
 };
 
