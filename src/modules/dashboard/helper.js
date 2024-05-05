@@ -54,11 +54,13 @@ export const getMidLevelDashboard = async (
   } catch (error) {}
 };
 
-export const getBirthAnniversary = async (setter, setLoading) => {
+export const getBirthAnniversary = async (setter, setLoading, buId, wgId) => {
   try {
     setLoading && setLoading(true);
 
-    const res = await axios.get(`/SaasMasterData/BirthDayWorkAnniversary`);
+    const res = await axios.get(
+      `/SaasMasterData/BirthDayWorkAnniversary?businessUnitId=${buId}&workplaceGroupId=${wgId}`
+    );
     if (res?.status === 200) {
       setter(res?.data);
       setLoading && setLoading(false);
