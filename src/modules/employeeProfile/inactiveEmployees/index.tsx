@@ -12,7 +12,7 @@ import {
 import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tag, Tooltip } from "antd";
 import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -23,18 +23,24 @@ import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  dateFormatter,
-  monthFirstDate,
-  monthLastDate,
-} from "utility/dateFormatter";
+import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
+import { MdOutlineGroupAdd } from "react-icons/md";
+
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { todayDate } from "utility/todayDate";
-import { column, getTableDataConfirmation } from "./helper";
+import {
+  column,
+  getTableDataInactiveEmployees,
+  activeEmployeeHandler,
+} from "./helper";
+import IConfirmModal from "common/IConfirmModal";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { getCurrentMonthName } from "utility/monthIdToMonthName";
+import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 
-const JobConfirmationReport = () => {
+const ActiveInactiveEmployeeReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
@@ -42,7 +48,7 @@ const JobConfirmationReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 94),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 95),
     []
   );
   // menu permission
@@ -54,11 +60,14 @@ const JobConfirmationReport = () => {
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
   });
+  const [, getExcelData, apiLoading] = useAxiosGet();
+
   const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
@@ -68,7 +77,7 @@ const JobConfirmationReport = () => {
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Need Confirmation";
+    document.title = "Inactive Employees";
     () => {
       document.title = "PeopleDesk";
     };
@@ -134,19 +143,19 @@ const JobConfirmationReport = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "PeopleDeskAllLanding",
+      urlKey: "GetInactiveEmployeeList",
       method: "GET",
       params: {
-        TableName: "EmployeeBasicForJobConfirmationReport",
         AccountId: orgId,
         BusinessUnitId: buId,
+        IsXls: false,
         WorkplaceGroupId: values?.workplaceGroup?.value,
-        PageNo: pagination.current || pages?.current,
-        PageSize: pagination.pageSize || pages?.pageSize,
-        intStatusId: 2,
+        PageNo: pagination.current || 1,
+        PageSize: pagination.pageSize || 25,
         FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        ToDate: moment(values?.todate).format("YYYY-MM-DD"),
         WorkplaceId: values?.workplace?.value,
-        SearchTxt: searchText,
+        searchTxt: searchText,
       },
     });
   };
@@ -155,6 +164,26 @@ const JobConfirmationReport = () => {
     getWorkplaceGroup();
     landingApiCall();
   }, []);
+  const activeUserHandler = (item: any) => {
+    const paylaod = {
+      intEmployeeId: item?.intEmployeeId,
+    };
+
+    const callback = () => {
+      landingApiCall({});
+    };
+
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: "Are you want to sure you active this employee?",
+      yesAlertFunc: () => {
+        activeEmployeeHandler(paylaod, setLoading, callback);
+      },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      noAlertFunc: () => {},
+    };
+    IConfirmModal(confirmObject);
+  };
   const header: any = [
     {
       title: "SL",
@@ -167,31 +196,31 @@ const JobConfirmationReport = () => {
 
     {
       title: "Work. Group/Location",
-      dataIndex: "WorkplaceGroupName",
+      dataIndex: "strWorkplaceGroup",
       width: 120,
       fixed: "left",
     },
     {
       title: "Workplace/Concern",
-      dataIndex: "WorkplaceName",
+      dataIndex: "strWorkplace",
       width: 120,
       fixed: "left",
     },
     {
       title: "Employee Id",
-      dataIndex: "EmployeeCode",
+      dataIndex: "strEmployeeCode",
       width: 70,
       fixed: "left",
     },
 
     {
       title: "Employee Name",
-      dataIndex: "EmployeeName",
+      dataIndex: "strEmployeeName",
       render: (_: any, rec: any) => {
         return (
           <div className="d-flex align-items-center">
-            <Avatar title={rec?.EmployeeName} />
-            <span className="ml-2">{rec?.EmployeeName}</span>
+            <Avatar title={rec?.strEmployeeName} />
+            <span className="ml-2">{rec?.strEmployeeName}</span>
           </div>
         );
       },
@@ -201,53 +230,77 @@ const JobConfirmationReport = () => {
 
     {
       title: "Designation",
-      dataIndex: "DesignationName",
+      dataIndex: "strDesignation",
 
       width: 100,
     },
-    {
-      title: "Supervisor",
-      dataIndex: "SupervisorName",
 
-      width: 100,
-    },
     {
       title: "Department",
-      dataIndex: "DepartmentName",
+      dataIndex: "strDepartment",
 
       width: 100,
     },
-
     {
-      title: "Employment Type",
-      dataIndex: "strEmploymentType",
+      title: "Section",
+      dataIndex: "strSection",
 
       width: 100,
     },
+
     {
       title: "Date of Joining",
-      dataIndex: "JoiningDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.JoiningDate),
+      dataIndex: "dteJoiningDate",
+      //   render: (_: any, rec: any) => dateFormatter(rec?.JoiningDate),
+      width: 80,
+    },
+    {
+      title: "Inactive Date",
+      dataIndex: "dteLastInactivateDate",
+
+      width: 100,
+    },
+    {
+      title: "Last Present date      ",
+      dataIndex: "dteLastPresentDate",
+      width: 80,
+    },
+    {
+      title: "Reason      ",
+      dataIndex: "reason",
+      width: 80,
+    },
+    {
+      title: "Mobile Number            ",
+      dataIndex: "strPersonalNumber",
       width: 80,
     },
 
     {
-      title: "Service Length",
-      dataIndex: "ServiceLength",
-      width: 80,
-    },
+      title: "Status",
+      dataIndex: "strStatus",
+      render: (_: any, rec: any) => (
+        <div className="d-flex align-items-center justify-content-center">
+          <div>
+            {rec?.strStatus === "Inactive" && (
+              <Tag color="red">{rec?.strStatus}</Tag>
+            )}
+          </div>
 
-    {
-      title: "Confirmation Date",
-      dataIndex: "ConfirmationDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.ConfirmationDate),
-      width: 70,
-    },
-    {
-      title: "Probation Close Date",
-      dataIndex: "dteProbationaryCloseDate",
-      render: (_: any, rec: any) =>
-        dateFormatter(rec?.dteProbationaryCloseDate),
+          <Tooltip title="Active">
+            <button
+              type="button"
+              className="iconButton mt-0 mt-md-2 mt-lg-0 ml-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                activeUserHandler(rec);
+              }}
+            >
+              <MdOutlineGroupAdd />
+            </button>
+          </Tooltip>
+        </div>
+      ),
       width: 80,
     },
   ];
@@ -267,14 +320,14 @@ const JobConfirmationReport = () => {
       <PForm
         form={form}
         initialValues={{
-          fromDate: moment(monthFirstDate()),
-          toDate: moment(monthLastDate()),
+          fromDate: moment(getDateOfYear("first")),
+          toDate: moment(getDateOfYear("last")),
         }}
         onFinish={() => {
           landingApiCall({
             pagination: {
-              current: pages?.current,
-              pageSize: landingApi?.data[0]?.totalCount,
+              current: landingApi?.data?.currentPage,
+              pageSize: landingApi?.data?.totalCount,
             },
           });
         }}
@@ -284,7 +337,7 @@ const JobConfirmationReport = () => {
           <PCardHeader
             backButton
             exportIcon={true}
-            title={`Total ${landingApi?.data[0]?.totalCount || 0} employees`}
+            title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
@@ -296,53 +349,61 @@ const JobConfirmationReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-                  if (landingApi?.data?.length <= 0) {
-                    return toast.warning("Data is empty !!!!", {
-                      toastId: 1,
-                    });
-                  }
-                  const newData = landingApi?.data?.map(
-                    (item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                      };
+                  getExcelData(
+                    `/Employee/GetInactiveEmployeeList?BusinessUnitId=${buId}&WorkplaceGroupId=${
+                      values?.workplaceGroup?.value || wgId
+                    }&WorkplaceId=${
+                      values?.workplace?.value || wId
+                    }&IsXls=true&PageNo=1&PageSize=10000&FromDate=${moment(
+                      values?.fromDate
+                    ).format("YYYY-MM-DD")}&ToDate=${moment(
+                      values?.toDate
+                    ).format("YYYY-MM-DD")}`,
+                    (res: any) => {
+                      const newData = res?.data?.map(
+                        (item: any, index: any) => {
+                          return {
+                            ...item,
+                            sl: index + 1,
+                          };
+                        }
+                      );
+                      createCommonExcelFile({
+                        titleWithDate: `Inactive Employee list for the month of ${getCurrentMonthName()}-${currentYear()}`,
+                        fromDate: "",
+                        toDate: "",
+                        buAddress: (buDetails as any)?.strAddress,
+                        businessUnit: values?.workplaceGroup?.value
+                          ? (buDetails as any)?.strWorkplace
+                          : buName,
+                        tableHeader: column,
+                        getTableData: () =>
+                          getTableDataInactiveEmployees(
+                            newData,
+                            Object.keys(column)
+                          ),
+                        getSubTableData: () => {},
+                        subHeaderInfoArr: [],
+                        subHeaderColumn: [],
+                        tableFooter: [],
+                        extraInfo: {},
+                        tableHeadFontSize: 10,
+                        widthList: {
+                          C: 30,
+                          D: 30,
+                          E: 25,
+                          F: 20,
+                          G: 25,
+                          H: 25,
+                          I: 25,
+                          K: 20,
+                        },
+                        commonCellRange: "A1:J1",
+                        CellAlignment: "left",
+                      });
                     }
                   );
-                  createCommonExcelFile({
-                    titleWithDate: `Job Confirmation ${dateFormatter(
-                      todayDate()
-                    )} `,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column,
-                    getTableData: () =>
-                      getTableDataConfirmation(newData, Object.keys(column)),
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      B: 30,
-                      C: 30,
-                      D: 15,
-                      E: 25,
-                      F: 20,
-                      G: 25,
-                      H: 15,
-                      I: 15,
-                      J: 20,
-                      K: 20,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
+
                   setExcelLoading(false);
                 } catch (error: any) {
                   toast.error("Failed to download excel");
@@ -361,12 +422,6 @@ const JobConfirmationReport = () => {
                   name="fromDate"
                   label="From Date"
                   placeholder="From Date"
-                  //   rules={[
-                  //     {
-                  //       required: true,
-                  //       message: "from Date is required",
-                  //     },
-                  //   ]}
                   onChange={(value) => {
                     form.setFieldsValue({
                       fromDate: value,
@@ -381,12 +436,6 @@ const JobConfirmationReport = () => {
                   label="To Date"
                   placeholder="To Date"
                   disabledDate={disabledDate}
-                  //   rules={[
-                  //     {
-                  //       required: true,
-                  //       message: "To Date is required",
-                  //     },
-                  //   ]}
                   onChange={(value) => {
                     form.setFieldsValue({
                       toDate: value,
@@ -445,22 +494,18 @@ const JobConfirmationReport = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={landingApi?.data?.data || []}
             loading={landingApi?.loading}
             header={header}
             pagination={{
-              pageSize: pages?.pageSize,
-              total: landingApi?.data[0]?.totalCount,
+              pageSize: landingApi?.data?.pageSize,
+              total: landingApi?.data?.totalCount,
             }}
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
               if (extra.action === "sort") return;
               setFilterList(filters);
-              setPages({
-                current: pagination.current,
-                pageSize: pagination.pageSize,
-                total: pagination.total,
-              });
+
               landingApiCall({
                 pagination,
               });
@@ -475,4 +520,4 @@ const JobConfirmationReport = () => {
   );
 };
 
-export default JobConfirmationReport;
+export default ActiveInactiveEmployeeReport;

@@ -703,7 +703,7 @@ const FoodCornerForAll = lazy(() =>
   import("../modules/employeeProfile/foodCornerForAll/FoodCorner.jsx")
 );
 const ActiveInactiveEmployeeReport = lazy(() =>
-  import("../modules/employeeProfile/inactiveEmployees/index.jsx")
+  import("../modules/employeeProfile/inactiveEmployees/index.tsx")
 );
 const JobConfirmationReport = lazy(() =>
   import("../modules/employeeProfile/jobConfirmation/index.tsx")
