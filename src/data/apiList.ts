@@ -109,6 +109,7 @@ export const apiList = {
   CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
   EditCafeteriaConfig: "/Cafeteria/EditCafeteriaConfig",
   GetDateWiseAttendanceReport: "/Employee/GetDateWiseAttendanceReport",
+  PeopleDeskAllLanding: "/Employee/PeopleDeskAllLanding",
   EmployeeReportWithFilter: "/Employee/EmployeeReportWithFilter",
   EmployeeDDLWithCode:
     "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
