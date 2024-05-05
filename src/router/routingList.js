@@ -326,29 +326,8 @@ const PayrollGroup = lazy(() =>
 const PayRollMonth = lazy(() =>
   import("../modules/CompensationBenefits/Configuration/payrollMonth/index.jsx")
 );
-const AdditonDeductionCreate = lazy(() =>
-  import(
-    "../modules/CompensationBenefits/employeeSalary/additionDeduction/create/index.jsx"
-  )
-);
-const AdditionDeduction = lazy(() =>
-  import(
-    "../modules/CompensationBenefits/employeeSalary/additionDeduction/index.jsx"
-  )
-);
-// const EmployeeSalaryApproval = lazy(() =>
-//   import("../modules/CompensationBenefits/employeeSalary/approval")
-// );
-const CommonSalaryTable = lazy(() =>
-  import(
-    "../modules/CompensationBenefits/employeeSalary/commonSalaryTable/index.jsx"
-  )
-);
 const SalaryAssign = lazy(() =>
   import("../modules/CompensationBenefits/employeeSalary/salaryAssign/index.js")
-);
-const SalaryHold = lazy(() =>
-  import("../modules/CompensationBenefits/employeeSalary/salaryHold/index.js")
 );
 const IncomeTaxAssign = lazy(() =>
   import("../modules/CompensationBenefits/IncomeTaxAssign/index.jsx")
@@ -392,11 +371,6 @@ const PFCompLanding = lazy(() =>
 const PfFundLanding = lazy(() =>
   import("../modules/CompensationBenefits/pfFund/index.tsx")
 );
-const CashDisbursementRegister = lazy(() =>
-  import(
-    "../modules/CompensationBenefits/reports/cashDisbursmentRegister/index.js"
-  )
-);
 const GoForPrintSalary = lazy(() =>
   import(
     "../modules/CompensationBenefits/reports/DeptWiseSalary/components/GoForPrint.jsx"
@@ -404,9 +378,6 @@ const GoForPrintSalary = lazy(() =>
 );
 const DeptWiseSalary = lazy(() =>
   import("../modules/CompensationBenefits/reports/DeptWiseSalary/index.jsx")
-);
-const PfLedger = lazy(() =>
-  import("../modules/CompensationBenefits/reports/pfLedger/index.js")
 );
 const SalaryDetailsReport = lazy(() =>
   import(
@@ -443,9 +414,6 @@ const SingleSalaryReport = lazy(() =>
   import(
     "../modules/CompensationBenefits/reports/salaryReport/singleSalaryReport.jsx"
   )
-);
-const TaxSlip = lazy(() =>
-  import("../modules/CompensationBenefits/reports/taxSlip/index.js")
 );
 const BulkAddEditForm = lazy(() =>
   import(
@@ -507,18 +475,6 @@ const SelfTrainingDevelopment = lazy(() =>
 );
 const TrainingDetails = lazy(() =>
   import("../modules/trainingDevelopment/selfService/trainingDetails/index.jsx")
-);
-const EligibleEmpList = lazy(() =>
-  import("../modules/CompensationBenefits/tax/eligibleEmpList/index.js")
-);
-const ProvisionAmountCalc = lazy(() =>
-  import("../modules/CompensationBenefits/tax/provisionAmountCalc/index.js")
-);
-const TaxCalc = lazy(() =>
-  import("../modules/CompensationBenefits/tax/taxCalc/index.js")
-);
-const TaxDeduction = lazy(() =>
-  import("../modules/CompensationBenefits/tax/taxDeduction/index.js")
 );
 const CalenderModule = lazy(() =>
   import("../modules/componentModule/calenderModule/index.jsx")
@@ -695,9 +651,6 @@ const PrintPreview = lazy(() =>
 // const CommonAppPipeline = lazy(() =>
 //   import("../modules/employeeProfile/AppPipeline/index.jsx")
 // );
-const EmAttendenceAdjust = lazy(() =>
-  import("../modules/employeeProfile/attendenceAdjust/index.jsx")
-);
 const BulkEmployeeCreate = lazy(() =>
   import("../modules/employeeProfile/bulkEmployeeCreate/index.jsx")
 );
@@ -772,9 +725,6 @@ const EmployeeJobCard = lazy(() =>
 );
 const PfFundReport = lazy(() =>
   import("../modules/employeeProfile/Reports/pfFundReport/index.tsx")
-);
-const EmpOverallStaus = lazy(() =>
-  import("../modules/employeeProfile/Reports/EmployeeOverallStatus/index.jsx")
 );
 const EmLeaveHistory = lazy(() =>
   import("../modules/employeeProfile/Reports/leaveHistory/index.js")
@@ -1024,9 +974,7 @@ const Application = lazy(() =>
 const LoanApproval = lazy(() =>
   import("../modules/loanManagement/loan/approval/index.jsx")
 );
-const LoanType = lazy(() =>
-  import("../modules/loanManagement/loan/loanType/index.js")
-);
+
 const Reschedule = lazy(() =>
   import("../modules/loanManagement/loan/reschedule/index.jsx")
 );
@@ -1477,8 +1425,6 @@ export const routingList = [
     path: "/profile/reports/separationReport/print",
     component: SeparationReportPrintPage,
   },
-  //separation end
-  { path: "/profile/attendenceAdjust", component: EmAttendenceAdjust },
   {
     path: "/profile/overTime/manualEntry/create",
     component: AddEditOverTime,
@@ -1760,10 +1706,6 @@ export const routingList = [
     component: PfFundReport,
   },
   {
-    path: "/profile/reports/empOverallStatus",
-    component: EmpOverallStaus,
-  },
-  {
     path: "/profile/expense/expenseApplication/view/:id",
     component: MgtExpenseApplicationView,
   },
@@ -1937,7 +1879,6 @@ export const routingList = [
     path: "/administration/timeManagement/multiCalendarAssign",
     component: MultiCalendarAssign,
   },
-  { path: "/administration/loanManagement/loanType", component: LoanType },
   {
     path: "/administration/configuration/business-unit",
     component: BusinessUnit,
@@ -2386,24 +2327,8 @@ export const routingList = [
     component: BulkSalaryAssign,
   },
   {
-    path: "/compensationAndBenefits/employeeSalary/additionDeduction",
-    component: AdditionDeduction,
-  },
-  {
     path: "/compensationAndBenefits/salaryTaxCertificate",
     component: SalaryTaxCertificate,
-  },
-  {
-    path: "/compensationAndBenefits/employeeSalary/additionDeduction/create",
-    component: AdditonDeductionCreate,
-  },
-  {
-    path: "/compensationAndBenefits/generateSalary/commonSalaryTable/:id",
-    component: CommonSalaryTable,
-  },
-  {
-    path: "/compensationAndBenefits/employeeSalary/salaryHold",
-    component: SalaryHold,
   },
   {
     path: "/compensationAndBenefits/payrollProcess/bonusGenerate/view/:id",
@@ -2481,25 +2406,10 @@ export const routingList = [
     path: "/compensationAndBenefits/pfandgratuity/pfWithdraw",
     component: PFCompLanding,
   },
-  // PF Withdraw for Compensation & benefit end
-  {
-    path: "/compensationAndBenefits/tax/eligibleEmployeeList",
-    component: EligibleEmpList,
-  },
-  {
-    path: "/compensationAndBenefits/tax/provisionAmountCalculation",
-    component: ProvisionAmountCalc,
-  },
-  {
-    path: "/compensationAndBenefits/tax/taxDeduction",
-    component: TaxDeduction,
-  },
   {
     path: "/SelfService/report/salaryPaySlip",
     component: SalaryPaySlipSelfReport,
   },
-  { path: "/compensationAndBenefits/tax/taxCalculation", component: TaxCalc },
-  { path: "/compensationAndBenefits/reports/PFLedger", component: PfLedger },
   {
     path: "/compensationAndBenefits/reports/salaryPaySlip",
     component: SalaryPaySlip,
@@ -2548,11 +2458,6 @@ export const routingList = [
     path: "/compensationAndBenefits/reports/salary&AllowenceCostCenterReport",
     component: SalaryCostCenterReport,
   },
-  {
-    path: "/compensationAndBenefits/reports/cashDisbursementRegister",
-    component: CashDisbursementRegister,
-  },
-  { path: "/compensationAndBenefits/reports/taxSlip", component: TaxSlip },
   // increment/promotion start
   { path: "/compensationAndBenefits/increment", component: IncrementLanding },
   {
