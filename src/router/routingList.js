@@ -1343,7 +1343,7 @@ const DailyAttendenceReport = lazy(() =>
   import("./../modules/timeSheet/reports/dailyAttendance/Landing/index")
 );
 const MgmtInOutReport = lazy(() =>
-  import("../modules/timeSheet/reports/invalidInOutReport/index.js")
+  import("../modules/timeSheet/reports/invalidInOutReport/index.tsx")
 );
 const EmployeeLocations = lazy(() =>
   import("../modules/remoteLocation/employeeLocations/index.jsx")
