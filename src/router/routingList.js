@@ -1241,7 +1241,7 @@ const RosterReport = lazy(() =>
   import("../modules/timeSheet/reports/rosterReport/index.jsx")
 );
 const MonthlyInOutReport = lazy(() =>
-  import("../modules/timeSheet/reports/monthlyInOutReport/index.jsx")
+  import("../modules/timeSheet/reports/monthlyInOutReport/index.tsx")
 );
 const MonthlyAttendanceReport = lazy(() =>
   import("../modules/timeSheet/reports/monthlyAttendanceReport/index.tsx")
