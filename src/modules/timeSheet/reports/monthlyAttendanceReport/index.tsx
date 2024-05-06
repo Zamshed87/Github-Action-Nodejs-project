@@ -31,10 +31,13 @@ import {
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { todayDate } from "utility/todayDate";
-import { column, getTableDataConfirmation } from "./helper";
+import { column, getTableDataMonthlyAttendance } from "./helper";
+import { fromToDateList } from "../helper";
+import { gray600 } from "utility/customColor";
+import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
+import axios from "axios";
 
-const JobConfirmationReport = () => {
+const MonthlyAttendanceReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
@@ -42,7 +45,7 @@ const JobConfirmationReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 94),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30339),
     []
   );
   // menu permission
@@ -68,7 +71,7 @@ const JobConfirmationReport = () => {
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Need Confirmation";
+    document.title = "Monthly Attendance Report";
     () => {
       document.title = "PeopleDesk";
     };
@@ -115,7 +118,7 @@ const JobConfirmationReport = () => {
       },
     });
   };
-
+  // data call
   type TLandingApi = {
     pagination?: {
       current?: number;
@@ -134,18 +137,20 @@ const JobConfirmationReport = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "PeopleDeskAllLanding",
+      urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
       params: {
-        TableName: "EmployeeBasicForJobConfirmationReport",
+        ReportType: "monthly_attendance_report_for_all_employee",
         AccountId: orgId,
         BusinessUnitId: buId,
         WorkplaceGroupId: values?.workplaceGroup?.value,
+        WorkplaceId: values?.workplace?.value,
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
-        intStatusId: 2,
-        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        WorkplaceId: values?.workplace?.value,
+        EmployeeId: 0,
+        IsPaginated: true,
+        DteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        DteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         SearchTxt: searchText,
       },
     });
@@ -155,102 +160,93 @@ const JobConfirmationReport = () => {
     getWorkplaceGroup();
     landingApiCall();
   }, []);
-  const header: any = [
-    {
-      title: "SL",
-      render: (_: any, rec: any, index: number) =>
-        (pages?.current - 1) * pages?.pageSize + index + 1,
-      fixed: "left",
-      width: 35,
-      align: "center",
-    },
+  //   table column
+  const header: any = () => {
+    const values = form.getFieldsValue(true);
+    const dateList = fromToDateList(
+      moment(values?.fromDate).format("YYYY-MM-DD"),
+      moment(values?.toDate).format("YYYY-MM-DD")
+    );
+    const d =
+      dateList?.length > 0 &&
+      dateList.map((item: any) => ({
+        title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
+        render: (_: any, record: any) =>
+          record?.[item?.date] ? (
+            <span style={getChipStyle(record?.[item?.date])}>
+              {record?.[item?.date]}
+            </span>
+          ) : (
+            "-"
+          ),
+        width: 150,
+      }));
 
-    {
-      title: "Work. Group/Location",
-      dataIndex: "WorkplaceGroupName",
-      width: 120,
-      fixed: "left",
-    },
-    {
-      title: "Workplace/Concern",
-      dataIndex: "WorkplaceName",
-      width: 120,
-      fixed: "left",
-    },
-    {
-      title: "Employee Id",
-      dataIndex: "EmployeeCode",
-      width: 70,
-      fixed: "left",
-    },
-
-    {
-      title: "Employee Name",
-      dataIndex: "EmployeeName",
-      render: (_: any, rec: any) => {
-        return (
-          <div className="d-flex align-items-center">
-            <Avatar title={rec?.EmployeeName} />
-            <span className="ml-2">{rec?.EmployeeName}</span>
-          </div>
-        );
+    return [
+      {
+        title: "SL",
+        render: (_: any, rec: any, index: number) =>
+          (pages?.current - 1) * pages?.pageSize + index + 1,
+        fixed: "left",
+        width: 35,
+        align: "center",
       },
-      fixed: "left",
-      width: 120,
-    },
 
-    {
-      title: "Designation",
-      dataIndex: "DesignationName",
+      {
+        title: "Work. Group/Location",
+        dataIndex: "strWorkplaceGroup",
+        width: 120,
+        fixed: "left",
+      },
+      {
+        title: "Workplace/Concern",
+        dataIndex: "strWorkplace",
+        width: 130,
+        fixed: "left",
+      },
+      {
+        title: "Employee Id",
+        dataIndex: "EmployeeCode",
+        width: 80,
+        fixed: "left",
+      },
 
-      width: 100,
-    },
-    {
-      title: "Supervisor",
-      dataIndex: "SupervisorName",
+      {
+        title: "Employee Name",
+        dataIndex: "strEmployeeName",
+        render: (_: any, rec: any) => {
+          return (
+            <div className="d-flex align-items-center">
+              <Avatar title={rec?.strEmployeeName} />
+              <span className="ml-2">{rec?.strEmployeeName}</span>
+            </div>
+          );
+        },
+        fixed: "left",
+        width: 120,
+      },
 
-      width: 100,
-    },
-    {
-      title: "Department",
-      dataIndex: "DepartmentName",
+      {
+        title: "Designation",
+        dataIndex: "strDesignation",
 
-      width: 100,
-    },
+        width: 100,
+      },
+      {
+        title: "Section",
+        dataIndex: "strSectionName",
 
-    {
-      title: "Employment Type",
-      dataIndex: "strEmploymentType",
+        width: 100,
+      },
+      {
+        title: "Department",
+        dataIndex: "strDepartment",
 
-      width: 100,
-    },
-    {
-      title: "Date of Joining",
-      dataIndex: "JoiningDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.JoiningDate),
-      width: 80,
-    },
-
-    {
-      title: "Service Length",
-      dataIndex: "ServiceLength",
-      width: 80,
-    },
-
-    {
-      title: "Confirmation Date",
-      dataIndex: "ConfirmationDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.ConfirmationDate),
-      width: 70,
-    },
-    {
-      title: "Probation Close Date",
-      dataIndex: "dteProbationaryCloseDate",
-      render: (_: any, rec: any) =>
-        dateFormatter(rec?.dteProbationaryCloseDate),
-      width: 80,
-    },
-  ];
+        width: 100,
+      },
+      ...(d as any),
+    ];
+  };
   const searchFunc = debounce((value) => {
     landingApiCall({
       searchText: value,
@@ -296,55 +292,81 @@ const JobConfirmationReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-                  if (landingApi?.data?.length <= 0) {
-                    return toast.warning("Data is empty !!!!", {
-                      toastId: 1,
-                    });
-                  }
-                  const newData = landingApi?.data?.map(
-                    (item: any, index: any) => {
+
+                  const res = await axios.get(
+                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&DteFromDate=${moment(
+                      values?.fromDate
+                    ).format("YYYY-MM-DD")}&DteToDate=${moment(
+                      values?.toDate
+                    ).format("YYYY-MM-DD")}&EmployeeId=0&WorkplaceGroupId=${
+                      values?.workplaceGroup?.value
+                    }&WorkplaceId=${
+                      values?.workplace?.value
+                    }&AccountId=${orgId}&PageNo=1&PageSize=1000&IsPaginated=false`
+                  );
+                  if (res?.data) {
+                    setExcelLoading(true);
+                    if (res?.data < 1) {
+                      return toast.error("No Attendance Data Found");
+                    }
+
+                    const newData = res?.data?.map((item: any, index: any) => {
                       return {
                         ...item,
                         sl: index + 1,
                       };
-                    }
-                  );
-                  createCommonExcelFile({
-                    titleWithDate: `Job Confirmation ${dateFormatter(
-                      todayDate()
-                    )} `,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column,
-                    getTableData: () =>
-                      getTableDataConfirmation(newData, Object.keys(column)),
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      B: 30,
-                      C: 30,
-                      D: 15,
-                      E: 25,
-                      F: 20,
-                      G: 25,
-                      H: 15,
-                      I: 15,
-                      J: 20,
-                      K: 20,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
-                  setExcelLoading(false);
+                    });
+                    createCommonExcelFile({
+                      titleWithDate: `Monthly Attendance Report - ${dateFormatter(
+                        moment(values?.fromDate).format("YYYY-MM-DD")
+                      )} to ${dateFormatter(
+                        moment(values?.toDate).format("YYYY-MM-DD")
+                      )}`,
+                      fromDate: "",
+                      toDate: "",
+                      buAddress: (buDetails as any)?.strAddress,
+                      businessUnit: values?.workplaceGroup?.value
+                        ? (buDetails as any)?.strWorkplace
+                        : buName,
+                      tableHeader: column(
+                        moment(values?.fromDate).format("YYYY-MM-DD"),
+                        moment(values?.toDate).format("YYYY-MM-DD")
+                      ),
+                      getTableData: () =>
+                        getTableDataMonthlyAttendance(
+                          newData,
+                          Object.keys(
+                            column(
+                              moment(values?.fromDate).format("YYYY-MM-DD"),
+                              moment(values?.toDate).format("YYYY-MM-DD")
+                            )
+                          )
+                        ),
+
+                      // eslint-disable-next-line @typescript-eslint/no-empty-function
+                      getSubTableData: () => {},
+                      subHeaderInfoArr: [],
+                      subHeaderColumn: [],
+                      tableFooter: [],
+                      extraInfo: {},
+                      tableHeadFontSize: 10,
+                      widthList: {
+                        C: 30,
+                        B: 30,
+                        D: 30,
+                        E: 25,
+                        F: 20,
+                        G: 25,
+                        H: 15,
+                        I: 15,
+                        J: 20,
+                        K: 20,
+                      },
+                      commonCellRange: "A1:J1",
+                      CellAlignment: "left",
+                    });
+                    setExcelLoading(false);
+                  }
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
@@ -362,12 +384,6 @@ const JobConfirmationReport = () => {
                   name="fromDate"
                   label="From Date"
                   placeholder="From Date"
-                  //   rules={[
-                  //     {
-                  //       required: true,
-                  //       message: "from Date is required",
-                  //     },
-                  //   ]}
                   onChange={(value) => {
                     form.setFieldsValue({
                       fromDate: value,
@@ -382,12 +398,6 @@ const JobConfirmationReport = () => {
                   label="To Date"
                   placeholder="To Date"
                   disabledDate={disabledDate}
-                  //   rules={[
-                  //     {
-                  //       required: true,
-                  //       message: "To Date is required",
-                  //     },
-                  //   ]}
                   onChange={(value) => {
                     form.setFieldsValue({
                       toDate: value,
@@ -448,7 +458,7 @@ const JobConfirmationReport = () => {
             bordered
             data={landingApi?.data?.length > 0 ? landingApi?.data : []}
             loading={landingApi?.loading}
-            header={header}
+            header={header()}
             pagination={{
               pageSize: pages?.pageSize,
               total: landingApi?.data[0]?.totalCount,
@@ -476,4 +486,4 @@ const JobConfirmationReport = () => {
   );
 };
 
-export default JobConfirmationReport;
+export default MonthlyAttendanceReport;
