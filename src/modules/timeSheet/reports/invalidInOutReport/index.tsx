@@ -13,8 +13,6 @@ import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
-import { getWorkplaceDetails } from "common/api";
-import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
@@ -22,7 +20,6 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   dateFormatter,
   monthFirstDate,
@@ -30,30 +27,24 @@ import {
 } from "utility/dateFormatter";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
-import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { todayDate } from "utility/todayDate";
-import { column, getTableDataConfirmation } from "./helper";
 
-const JobConfirmationReport = () => {
+const MgmtInOutReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, employeeId, orgId },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 94),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30341),
     []
   );
   // menu permission
   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
-  //   const debounce = useDebounce();
 
   const [, setFilterList] = useState({});
-  const [buDetails, setBuDetails] = useState({});
-  const [excelLoading, setExcelLoading] = useState(false);
   const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -134,18 +125,19 @@ const JobConfirmationReport = () => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "PeopleDeskAllLanding",
+      urlKey: "TimeManagementDynamicPIVOTReport",
       method: "GET",
       params: {
-        TableName: "EmployeeBasicForJobConfirmationReport",
+        ReportType: "InvalidInOutAttendanceData",
         AccountId: orgId,
         BusinessUnitId: buId,
         WorkplaceGroupId: values?.workplaceGroup?.value,
+        WorkplaceId: values?.workplace?.value,
         PageNo: pagination.current || pages?.current,
         PageSize: pagination.pageSize || pages?.pageSize,
-        intStatusId: 2,
-        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        WorkplaceId: values?.workplace?.value,
+        IsPaginated: true,
+        DteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        DteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
         SearchTxt: searchText,
       },
     });
@@ -161,26 +153,14 @@ const JobConfirmationReport = () => {
       render: (_: any, rec: any, index: number) =>
         (pages?.current - 1) * pages?.pageSize + index + 1,
       fixed: "left",
-      width: 35,
+      width: 15,
       align: "center",
     },
 
     {
-      title: "Work. Group/Location",
-      dataIndex: "WorkplaceGroupName",
-      width: 120,
-      fixed: "left",
-    },
-    {
-      title: "Workplace/Concern",
-      dataIndex: "WorkplaceName",
-      width: 120,
-      fixed: "left",
-    },
-    {
       title: "Employee Id",
-      dataIndex: "EmployeeCode",
-      width: 70,
+      dataIndex: "EmployeeId",
+      width: 30,
       fixed: "left",
     },
 
@@ -196,59 +176,38 @@ const JobConfirmationReport = () => {
         );
       },
       fixed: "left",
-      width: 120,
+      width: 70,
     },
 
     {
       title: "Designation",
-      dataIndex: "DesignationName",
+      dataIndex: "Designation",
 
-      width: 100,
-    },
-    {
-      title: "Supervisor",
-      dataIndex: "SupervisorName",
-
-      width: 100,
+      width: 50,
     },
     {
       title: "Department",
-      dataIndex: "DepartmentName",
+      dataIndex: "Department",
 
-      width: 100,
+      width: 50,
     },
 
     {
-      title: "Employment Type",
-      dataIndex: "strEmploymentType",
-
-      width: 100,
-    },
-    {
-      title: "Date of Joining",
-      dataIndex: "JoiningDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.JoiningDate),
-      width: 80,
+      title: "Date",
+      dataIndex: "AttendanceDate",
+      render: (_: any, rec: any) => dateFormatter(rec?.AttendanceDate),
+      width: 30,
     },
 
     {
-      title: "Service Length",
-      dataIndex: "ServiceLength",
-      width: 80,
-    },
-
-    {
-      title: "Confirmation Date",
-      dataIndex: "ConfirmationDate",
-      render: (_: any, rec: any) => dateFormatter(rec?.ConfirmationDate),
-      width: 70,
+      title: "Attendance Time",
+      dataIndex: "AttendanceTime",
+      width: 30,
     },
     {
-      title: "Probation Close Date",
-      dataIndex: "dteProbationaryCloseDate",
-      render: (_: any, rec: any) =>
-        dateFormatter(rec?.dteProbationaryCloseDate),
-      width: 80,
+      title: "Attendance Source",
+      dataIndex: "AttendanceSource",
+      width: 50,
     },
   ];
   const searchFunc = debounce((value) => {
@@ -280,79 +239,17 @@ const JobConfirmationReport = () => {
         }}
       >
         <PCard>
-          {excelLoading && <Loading />}
           <PCardHeader
             backButton
-            exportIcon={true}
-            title={`Total ${landingApi?.data[0]?.totalCount || 0} employees`}
+            // exportIcon={true}
+            title={`Invalid In/Out Report`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
                 search: e?.target?.value,
               });
             }}
-            onExport={() => {
-              const excelLanding = async () => {
-                setExcelLoading(true);
-                try {
-                  const values = form.getFieldsValue(true);
-                  if (landingApi?.data?.length <= 0) {
-                    return toast.warning("Data is empty !!!!", {
-                      toastId: 1,
-                    });
-                  }
-                  const newData = landingApi?.data?.map(
-                    (item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                      };
-                    }
-                  );
-                  createCommonExcelFile({
-                    titleWithDate: `Job Confirmation ${dateFormatter(
-                      todayDate()
-                    )} `,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column,
-                    getTableData: () =>
-                      getTableDataConfirmation(newData, Object.keys(column)),
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      B: 30,
-                      C: 30,
-                      D: 15,
-                      E: 25,
-                      F: 20,
-                      G: 25,
-                      H: 15,
-                      I: 15,
-                      J: 20,
-                      K: 20,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
-                  setExcelLoading(false);
-                } catch (error: any) {
-                  toast.error("Failed to download excel");
-                  setExcelLoading(false);
-                  // console.log(error?.message);
-                }
-              };
-              excelLanding();
-            }}
+            // onExport={() => {}}
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
@@ -362,12 +259,6 @@ const JobConfirmationReport = () => {
                   name="fromDate"
                   label="From Date"
                   placeholder="From Date"
-                  //   rules={[
-                  //     {
-                  //       required: true,
-                  //       message: "from Date is required",
-                  //     },
-                  //   ]}
                   onChange={(value) => {
                     form.setFieldsValue({
                       fromDate: value,
@@ -382,12 +273,6 @@ const JobConfirmationReport = () => {
                   label="To Date"
                   placeholder="To Date"
                   disabledDate={disabledDate}
-                  //   rules={[
-                  //     {
-                  //       required: true,
-                  //       message: "To Date is required",
-                  //     },
-                  //   ]}
                   onChange={(value) => {
                     form.setFieldsValue({
                       toDate: value,
@@ -428,7 +313,6 @@ const JobConfirmationReport = () => {
                     form.setFieldsValue({
                       workplace: op,
                     });
-                    getWorkplaceDetails(value, setBuDetails);
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />
@@ -466,7 +350,6 @@ const JobConfirmationReport = () => {
                 pagination,
               });
             }}
-            scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>
@@ -476,4 +359,4 @@ const JobConfirmationReport = () => {
   );
 };
 
-export default JobConfirmationReport;
+export default MgmtInOutReport;
