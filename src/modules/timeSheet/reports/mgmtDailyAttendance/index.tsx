@@ -356,7 +356,7 @@ const MgmtDailyAttendance = () => {
     {
       title: "Workplace/Concern",
       dataIndex: "workplace",
-      width: 55,
+      width: 60,
       fixed: "left",
     },
     {
@@ -379,7 +379,7 @@ const MgmtDailyAttendance = () => {
       },
       sorter: true,
       fixed: "left",
-      width: 50,
+      width: 70,
     },
 
     {
@@ -430,7 +430,7 @@ const MgmtDailyAttendance = () => {
       filter: true,
       filterKey: "calenderList",
       filterSearch: true,
-      width: 50,
+      width: 70,
     },
 
     {
