@@ -27,11 +27,7 @@ import {
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import { todayDate } from "../../../../utility/todayDate";
 import axios from "axios";
-import {
-  fromToDateList,
-  getRosterReport,
-  rosterReportDtoCol,
-} from "../helper";
+import { fromToDateList, getRosterReport, rosterReportDtoCol } from "../helper";
 import "../rosterReport/rosterDetails.css";
 import { getTableDataMonthlyInOut, montlyInOutXlCol } from "./helper";
 import { createCommonExcelFile } from "../../../../utility/customExcel/generateExcelAction";
@@ -74,15 +70,6 @@ export default function MonthlyInOutReport() {
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
 
-  // const [isFilter, setIsFilter] = useState({
-  //   workplace: "",
-  //   workplaceGroup: "",
-  //   department: "",
-  //   designation: "",
-  //   calendarType: "",
-  //   rosterGroupName: "",
-  //   date: "",
-  // });
   const [tableRowDto, setTableRowDto] = useState([]);
   const [columnList, setColumnList] = useState([]);
   const [pages, setPages] = useState({
@@ -90,10 +77,6 @@ export default function MonthlyInOutReport() {
     pageSize: paginationSize,
     total: 0,
   });
-
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
 
   const getData = (fromDate, toDate) => {
     getRosterReport(
