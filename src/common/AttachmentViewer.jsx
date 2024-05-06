@@ -1,5 +1,5 @@
 import axios from "axios";
-// import PDFViewer from "mgr-pdf-viewer-react";
+// import PDFViewer from "mgr-pdf-viewer-react"; // react version issue this package not working for react 18 
 import DownloadIcon from "@mui/icons-material/Download";
 import { Modal } from "react-bootstrap";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
