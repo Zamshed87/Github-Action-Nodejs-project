@@ -22,7 +22,8 @@ import { Form, Formik } from "formik";
 import Required from "common/Required";
 import FormikSelect from "common/FormikSelect";
 import { customStyles } from "utility/selectCustomStyle";
-import AttachmentView from "./modal/AttachmentView";
+import ProfileView from "./modal/ProfileView";
+import { PModal } from "Components/Modal";
 
 const initData = {
   searchString: "",
@@ -52,7 +53,7 @@ const AssetReport = () => {
   const [itemId, setItemId] = useState(null);
   const [unassignLoading, setUnassignLoading] = useState(false);
   const [isAttachmentShow, setIsAttachmentShow] = useState(false);
-  const [isAttachmentView, setIsAttachmentView] = useState(false);
+  const [isProfileView, setIsProfileView] = useState(false);
   const [empDDL, getEmp, , setEmpDDL] = useAxiosGet([]);
   const [deptDDL, getDept, , setDeptDDL] = useAxiosGet([]);
 
@@ -358,7 +359,7 @@ const AssetReport = () => {
                         history,
                         setUnassignLoading,
                         setIsAttachmentShow,
-                        setIsAttachmentView,
+                        setIsProfileView,
                         () => {
                           getData(
                             getLandingData,
@@ -450,16 +451,15 @@ const AssetReport = () => {
           setIsAttachmentShow={setIsAttachmentShow}
         />
       </ViewModal>
-      <ViewModal
-        size="lg"
-        title="Attachment View"
-        backdrop="static"
-        classes="default-modal preview-modal"
-        show={isAttachmentView}
-        onHide={() => setIsAttachmentView(false)}
-      >
-        <AttachmentView  assetId={itemId} />
-      </ViewModal>
+      <PModal
+        title="Asset Profile"
+        open={isProfileView}
+        onCancel={() => {
+          setIsProfileView(false);
+        }}
+        components={<ProfileView />}
+        width={1000}
+      />
     </>
   ) : (
     <NotPermittedPage />

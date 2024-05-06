@@ -593,39 +593,7 @@ export default function MovementApproval() {
                               />
                             ) : null}
                           </div>
-                          {/* <BackButton title={"Movement Approval"} />
-                          <div>
-                            {filterLanding?.filter(
-                              (item) => item?.selectCheckbox
-                            ).length > 0 && (
-                              <div className="d-flex actionIcon">
-                                <button
-                                  className="btn-green mr-2"
-                                  onClick={() => {
-                                    demoPopup(
-                                      "approve",
-                                      "isApproved",
-                                      filterLanding
-                                    );
-                                  }}
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  className="btn-red"
-                                  onClick={() => {
-                                    demoPopup(
-                                      "reject",
-                                      "isReject",
-                                      filterLanding
-                                    );
-                                  }}
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            )}
-                          </div> */}
+                          
                         </div>
                         <FilterBadgeComponent
                           propsObj={{

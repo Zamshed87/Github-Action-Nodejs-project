@@ -74,7 +74,7 @@ const saveHandler = (
     cost: +values?.cost || 0,
     narration: values?.description || "",
     fromDate: values?.fromDate || "",
-    toDate: values?.toDate || "",
+    toDate: values?.toDate || todayDate(),
     actionByName: userName,
     actionById: employeeId,
     maintenanceHeadId: values?.maintenanceHeadDDL?.value,

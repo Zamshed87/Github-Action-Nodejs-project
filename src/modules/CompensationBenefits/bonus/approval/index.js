@@ -1,26 +1,31 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  ArrowBack,
   Cancel,
   CheckCircle,
-  SettingsBackupRestoreOutlined,
+  SettingsBackupRestoreOutlined
 } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
+import AntTable from "common/AntTable";
+import ApproveRejectComp from "common/ApproveRejectComp";
+import BackButton from "common/BackButton";
+import Chips from "common/Chips";
+import FormikCheckBox from "common/FormikCheckbox";
+import MuiIcon from "common/MuiIcon";
 import { Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Tooltip } from "react-bootstrap";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { gray900, greenColor } from "utility/customColor";
 import { dateFormatter } from "utility/dateFormatter";
-import Chips from "../../../../common/Chips";
+import { formatMoney } from "utility/formatMoney";
 import IConfirmModal from "../../../../common/IConfirmModal";
-import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import ResetButton from "./../../../../common/ResetButton";
 import {
+  bonusApprovalTableColumn,
   bonusApproveRejectRequest,
   getBonusGenerateRequestReport,
 } from "./helper";
@@ -31,16 +36,24 @@ const initData = {
 
 const BonusApproval = () => {
   const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const [paginationSize, setPaginationSize] = useState(15);
+  const [applicationData, setApplicationData] = useState([]);
+  
   // rowDto
   const [rowDto, setRowDto] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const [allData, setAllData] = useState([]);
 
   // filter
   const [status, setStatus] = useState("");
 
-  const { userId, orgId, buId, wId, wgId, employeeId, isOfficeAdmin } =
-    useSelector((state) => state?.auth?.profileData, shallowEqual);
+  const { orgId, buId, wId, wgId, employeeId, isOfficeAdmin } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
 
   const getData = () => {
     const payload = {
@@ -59,66 +72,42 @@ const BonusApproval = () => {
       accountId: orgId,
       workplaceId: wId,
     };
-    getBonusGenerateRequestReport(payload, setRowDto, setAllData, setLoading);
+    getBonusGenerateRequestReport(
+      payload,
+      setRowDto,
+      setAllData,
+      setLoading,
+      (res) => {
+        setFilterData(res);
+      }
+    );
   };
   useEffect(() => {
     getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId, buId]);
-
-  // Approve Handler
-  const approveHandler = (message, item) => {
-    const payload = {
-      strPartName: "BonusApproval",
-      jsonObj: {
-        autoId: item?.intBonusHeaderId,
-        approveStatusId: 1,
-        approveBy: userId,
-      },
-    };
-    const confirmObject = {
-      closeOnClickOutside: false,
-      message: `Are your sure for ${message}?`,
-      yesAlertFunc: () => {
-        bonusApproveRejectRequest(payload, getData);
-      },
-      noAlertFunc: () => {},
-    };
-    IConfirmModal(confirmObject);
-  };
-  // Reject Handler
-  const rejectHandler = (message, item) => {
-    const payload = {
-      strPartName: "BonusApproval",
-      jsonObj: {
-        autoId: item?.intBonusHeaderId,
-        approveStatusId: 2,
-        approveBy: userId,
-      },
-    };
-    const confirmObject = {
-      closeOnClickOutside: false,
-      message: `Are your sure for ${message}`,
-      yesAlertFunc: () => {
-        bonusApproveRejectRequest(payload, getData);
-      },
-      noAlertFunc: () => {},
-    };
-    IConfirmModal(confirmObject);
-  };
-
-  const saveHandler = (values) => {};
-
-  const history = useHistory();
+  }, [orgId, buId, wgId, wId]);
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
-  let permission = null;
-  permissionList.forEach((item) => {
-    if (item?.menuReferenceId === 110) {
-      permission = item;
-    }
-  });
+  const permission = useMemo(() => {
+    return permissionList.find((item) => item?.menuReferenceId === 110) || {};
+  }, [permissionList]);
+
+  useEffect(() => {
+    const array = [];
+    filterData?.listData?.forEach((data) => {
+      if (data?.selectCheckbox) {
+        array.push({
+          applicationId: data?.leaveApplication?.intApplicationId,
+          fromDate: data?.leaveApplication?.dteFromDate,
+          toDate: data?.leaveApplication?.dteToDate,
+          approverEmployeeId: employeeId,
+          accountId: orgId,
+          isAdmin: isOfficeAdmin,
+        });
+      }
+      setApplicationData(array);
+    });
+  }, [filterData]);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -128,9 +117,9 @@ const BonusApproval = () => {
   }, []);
 
   // for multipel
-  const demoPopup = (action, text, array) => {
+  const demoPopup = (action, text, filterData) => {
     let newArray = [];
-    const checkedList = array?.filter((item) => item?.selectCheckbox);
+    const checkedList = filterData?.filter((item) => item?.selectCheckbox);
     if (checkedList.length > 0) {
       checkedList?.forEach((item) => {
         if (text === "isReject") {
@@ -156,11 +145,11 @@ const BonusApproval = () => {
         }
       });
     }
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to  ${action} ? `,
       yesAlertFunc: () => {
-        if (array.length) {
+        if (filterData.length) {
           bonusApproveRejectRequest(newArray, getData);
         }
         newArray = [];
@@ -174,7 +163,7 @@ const BonusApproval = () => {
 
   // for single row data approval
   const demoPopupForTable = (action, text, data) => {
-    let payload = [
+    const payload = [
       {
         isReject: text === "Reject" ? true : false,
         applicationId: data?.application?.intBonusHeaderId,
@@ -185,15 +174,211 @@ const BonusApproval = () => {
         isAdmin: isOfficeAdmin,
       },
     ];
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: ` Do you want to ${action}? `,
       yesAlertFunc: () => {
         bonusApproveRejectRequest(payload, getData);
       },
-      noAlertFunc: () => {},
+      noAlertFunc: () => {
+        //
+      },
     };
     IConfirmModal(confirmObject);
+  };
+
+  const getLandingTableForBonus = (setFieldValue, page, paginationSize) => {
+    return [
+      {
+        title: "SL",
+        render: (text, record, index) =>
+          (page - 1) * paginationSize + index + 1,
+        sorter: false,
+        filter: false,
+        className: "text-center",
+      },
+      {
+        title: () => (
+          <div className="d-flex align-items-center">
+            <div className="mr-2">
+              
+              <FormikCheckBox
+                styleObj={{
+                  margin: "0 auto!important",
+                  padding: "0 !important",
+                  color: gray900,
+                  checkedColor: greenColor,
+                }}
+                name="allSelected"
+                checked={
+                  filterData?.listData?.length > 0 &&
+                  filterData?.listData?.every((item) => item?.selectCheckbox)
+                }
+                onChange={(e) => {
+                  setRowDto({
+                    listData: filterData?.listData?.map((item) => ({
+                      ...item,
+                      selectCheckbox: e.target.checked,
+                    })),
+                  });
+                  setFilterData({
+                    listData: filterData?.listData?.map((item) => ({
+                      ...item,
+                      selectCheckbox: e.target.checked,
+                    })),
+                  });
+                  setFieldValue("allSelected", e.target.checked);
+                }}
+              />
+            </div>
+            <div>Bonus Name</div>
+          </div>
+        ),
+        dataIndex: "strBonusName",
+        render: (strBonusName, record) => (
+          <div className="d-flex align-items-center">
+            <div className="mr-2" onClick={(e) => e.stopPropagation()}>
+              <FormikCheckBox
+                styleObj={{
+                  margin: "0 auto!important",
+                  color: gray900,
+                  checkedColor: greenColor,
+                  padding: "0px",
+                }}
+                name="selectCheckbox"
+                color={greenColor}
+                checked={record?.selectCheckbox}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  const BonusData = filterData?.listData?.map((item) => {
+                    console.log("record",record)
+                    if (
+                      item?.application?.intBonusId ===
+                      record?.application?.intBonusId
+                    ) {
+                      return {
+                        ...item,
+                        selectCheckbox: e.target.checked,
+                      };
+                    } else return item;
+                  });
+                  const data = filterData?.listData?.map((item) => {
+                    if (
+                      item?.record?.application?.intBonusId ===
+                      record?.record?.application?.intBonusId
+                    ) {
+                      return {
+                        ...item,
+                        selectCheckbox: e.target.checked,
+                      };
+                    } else return item;
+                  });
+                  setFilterData({ listData: [...BonusData] });
+                  setFilterData({ listData: [...data] });
+                }}
+              />
+            </div>
+            <div className="d-flex align-items-center">
+              <span className="ml-2">{strBonusName}</span>
+            </div>
+          </div>
+        ),
+        sorter: true,
+        filter: true,
+      },
+
+      {
+        title: "Effective Date",
+        dataIndex: "dteEffectedDateTime",
+        render: (_, record) => (
+          <div className="d-flex align-items-center">
+            <div>
+              {dateFormatter(record?.application?.dteEffectedDateTime)}
+            </div>
+          </div>
+        ),
+        sorter: false,
+        filter: false,
+      },
+      {
+        title: "Bonus Amount",
+        dataIndex: "numBonusAmount",
+        render: (_, record) => (
+          <div className="d-flex align-items-center">
+            <div>
+              {formatMoney(record?.application?.numBonusAmount)}
+            </div>
+          </div>
+        ),
+        sorter: false,
+        filter: false,
+      },
+
+
+      {
+        title: "Status",
+        dataIndex: "strStatus",
+        render: (_, record) => (
+          <div className="text-center action-chip">
+            {record?.application?.strStatus === "Approved" && (
+              <Chips label="Approved" classess="success" />
+            )}
+
+            {record?.application?.strStatus === "Pending" && (
+              <>
+                <div className="actionChip">
+                  <Chips label="Pending" classess=" warning" />
+                </div>
+                <div className="d-flex actionIcon justify-content-right">
+                  <Tooltip title="Accept">
+                    <div
+                      className="mx-2 muiIconHover success "
+                      onClick={() => {
+                        demoPopupForTable("approve", "Approve", record);
+                      }}
+                    >
+                      <MuiIcon
+                        icon={
+                          <CheckCircle
+                            sx={{
+                              color: "#34A853",
+                            }}
+                          />
+                        }
+                      />
+                    </div>
+                  </Tooltip>
+                  <Tooltip title="Reject">
+                    <div
+                      className="muiIconHover danger"
+                      onClick={() => {
+                        demoPopupForTable("reject", "Reject", record);
+                      }}
+                    >
+                      <MuiIcon
+                        icon={
+                          <Cancel
+                            sx={{
+                              color: "#FF696C",
+                            }}
+                          />
+                        }
+                      />
+                    </div>
+                  </Tooltip>
+                </div>
+              </>
+            )}
+            {record?.application?.strStatus === "Rejected" && (
+              <Chips label="Rejected" classess="danger" />
+            )}
+          </div>
+        ),
+        filter: true,
+        sorter: true,
+        width: 120,
+      },
+    ];
   };
 
   return (
@@ -201,10 +386,8 @@ const BonusApproval = () => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={() => {
+          //
         }}
       >
         {({ handleSubmit, values, setFieldValue }) => (
@@ -217,25 +400,25 @@ const BonusApproval = () => {
                     <div className="col-md-12">
                       <div className="table-card">
                         <div className="table-card-heading">
-                          <div style={{ color: "rgba(0, 0, 0, 0.7)" }}>
-                            <Tooltip title="Back">
-                              <ArrowBack
-                                onClick={() => history.goBack()}
-                                sx={{
-                                  fontSize: "16px",
-                                  marginRight: "10px",
-                                  cursor: "pointer",
+                          <div className="d-flex align-items-center">
+                            <BackButton title={"Bonus Approval"} />
+                            {filterData?.filter((item) => item?.selectCheckbox)
+                              .length > 0 ? (
+                              <ApproveRejectComp
+                                props={{
+                                  onApprove: () => {
+                                    demoPopup(
+                                      "approve",
+                                      "isApproved",
+                                      filterData
+                                    );
+                                  },
+                                  onReject: () => {
+                                    demoPopup("reject", "isReject", filterData);
+                                  },
                                 }}
                               />
-                            </Tooltip>
-                            <h3
-                              style={{
-                                display: "inline-block",
-                                fontSize: "13px",
-                              }}
-                            >
-                              Bonus Approval
-                            </h3>
+                            ) : null}
                           </div>
                           <div className="table-card-head-right">
                             <ul>
@@ -249,7 +432,7 @@ const BonusApproval = () => {
                                       />
                                     }
                                     onClick={() => {
-                                      setRowDto(allData);
+                                      setRowDto(filterData);
                                       setFieldValue("search", "");
                                       setStatus("");
                                     }}
@@ -262,137 +445,26 @@ const BonusApproval = () => {
                         {permission?.isCreate ? (
                           <div className="table-card-body">
                             <div className="table-card-styled tableOne">
-                              {rowDto?.length > 0 ? (
+                              {rowDto?.listData?.length > 0 ? (
                                 <>
-                                  <table className="table">
-                                    <thead>
-                                      <tr>
-                                        <th>SL</th>
-                                        <th>
-                                          <div>Bonus Name</div>
-                                        </th>
-                                        <th>
-                                          <div>Effective Date</div>
-                                        </th>
-
-                                        <th>
-                                          <div className="text-left">
-                                            Bonus Amount
-                                          </div>
-                                        </th>
-                                        <th width="20%">
-                                          <div className="text-left">
-                                            Status
-                                          </div>
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {rowDto?.map((data, index) => (
-                                        <>
-                                          <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>
-                                              {data?.application?.strBonusName}
-                                            </td>
-                                            <td>
-                                              {dateFormatter(
-                                                data?.application
-                                                  ?.dteEffectedDateTime
-                                              )}
-                                            </td>
-                                            <td className="text-left">
-                                              {
-                                                data?.application
-                                                  ?.numBonusAmount
-                                              }
-                                            </td>
-
-                                            <td className="action-col text-right">
-                                              <div
-                                                className="text-right action-chip"
-                                                style={{ width: "70px" }}
-                                              >
-                                                {data?.application
-                                                  ?.strStatus ===
-                                                  "Approved" && (
-                                                  <Chips
-                                                    label="Approved"
-                                                    classess="success"
-                                                  />
-                                                )}
-                                                {data?.application
-                                                  ?.strStatus === "Pending" && (
-                                                  <>
-                                                    <div className="actionChip">
-                                                      <Chips
-                                                        label="Pending"
-                                                        classess=" warning"
-                                                      />
-                                                    </div>
-                                                    <div className="d-flex actionIcon justify-content-right">
-                                                      <Tooltip title="Accept">
-                                                        <div
-                                                          className="mx-2 muiIconHover success "
-                                                          onClick={() => {
-                                                            demoPopupForTable(
-                                                              "approve",
-                                                              "Approve",
-                                                              data
-                                                            );
-                                                          }}
-                                                        >
-                                                          <MuiIcon
-                                                            icon={
-                                                              <CheckCircle
-                                                                sx={{
-                                                                  color:
-                                                                    "#34A853",
-                                                                }}
-                                                              />
-                                                            }
-                                                          />
-                                                        </div>
-                                                      </Tooltip>
-                                                      <Tooltip title="Reject">
-                                                        <div
-                                                          className="muiIconHover danger"
-                                                          onClick={() => {
-                                                            demoPopupForTable(
-                                                              "reject", "Reject", data
-                                                            );
-                                                          }}
-                                                        >
-                                                          <MuiIcon
-                                                            icon={
-                                                              <Cancel
-                                                                sx={{
-                                                                  color:
-                                                                    "#FF696C",
-                                                                }}
-                                                              />
-                                                            }
-                                                          />
-                                                        </div>
-                                                      </Tooltip>
-                                                    </div>
-                                                  </>
-                                                )}
-                                                {data?.application
-                                                  ?.strStatus ===
-                                                  "Rejected" && (
-                                                  <Chips
-                                                    label="Rejected"
-                                                    classess="danger"
-                                                  />
-                                                )}
-                                              </div>
-                                            </td>
-                                          </tr>
-                                        </>
-                                      ))}
-                                    </tbody>
-                                  </table>
+                                  <AntTable
+                                    data={rowDto || []}
+                                    columnsData={bonusApprovalTableColumn({
+                                      setFieldValue,
+                                      setFilterData,
+                                      rowData: rowDto,
+                                      filterData,
+                                      setRowData: setRowDto,
+                                      demoPopupForTable,
+                                    })}
+                                    setColumnsData={(dataRow) => {
+                                      setFilterData(dataRow);
+                                    }}
+                                    rowKey={(record) =>
+                                      record?.leaveApplication?.intApplicationId
+                                    }
+                                    removePagination={true}
+                                  />
                                 </>
                               ) : (
                                 <>
