@@ -1,6 +1,7 @@
 import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
+import * as Yup from "yup";
 
 export function format_ms(time_ms) {
   let hours = 0;
@@ -199,3 +200,34 @@ export const getTimeSheetCalenderById = async (
     setLoading && setLoading(false);
   }
 };
+
+export const initData = {
+  calendarName: "",
+  startTime: "",
+  endTime: "",
+  minWork: "",
+  lastStartTime: "",
+  allowedStartTime: "",
+  breakStartTime: "",
+  breakEndTime: "",
+  officeStartTime: "",
+  officeCloseTime: "",
+  isLunchBreakAsWorkingHour: false,
+  nightShift: false,
+  isEmployeeUpdate: false,
+  dteEmployeeUpdateFromDate: "",
+  dteEmployeeUpdateToDate: "",
+};
+
+export const validationSchema = Yup.object({
+  calendarName: Yup.string().required("Calendar Name is required"),
+  startTime: Yup.string().required("Start Time is required"),
+  endTime: Yup.string().required("End Time is required"),
+  minWork: Yup.number()
+    .min(0, "Min Working is invalid")
+    .required("Min Working is required"),
+  lastStartTime: Yup.string().required("Last Start Time is required"),
+  allowedStartTime: Yup.string().required("Allowed Start Time is required"),
+  officeStartTime: Yup.string().required("Office Open Time is required"),
+  officeCloseTime: Yup.string().required("Office Close Time is required"),
+});
