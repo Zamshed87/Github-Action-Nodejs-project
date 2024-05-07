@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Box } from "@mui/system";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import * as Yup from "yup";
+
 import { getPeopleDeskAllDDL } from "../../../../../common/api";
 import FormikCheckBox from "../../../../../common/FormikCheckbox";
 import FormikInput from "../../../../../common/FormikInput";
@@ -12,7 +10,9 @@ import { gray900, greenColor } from "../../../../../utility/customColor";
 import { createTimeSheetActionForCalender } from "../../../helper";
 import {
   getTimeSheetCalenderById,
+  initData,
   onCreateCalendarSetupWithValidation,
+  validationSchema,
 } from "./helper";
 import FormikSelect from "../../../../../common/FormikSelect";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
@@ -21,6 +21,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import { DeleteOutline, InfoOutlined } from "@mui/icons-material";
 import { calculateNextDate } from "utility/dateFormatter";
 import { toast } from "react-toastify";
+import moment from "moment";
 const style = {
   width: "100%",
   backgroundColor: "#fff",
@@ -28,37 +29,6 @@ const style = {
   borderRadius: "4px",
   boxSizing: "border-box",
 };
-
-const initData = {
-  calendarName: "",
-  startTime: "",
-  endTime: "",
-  minWork: "",
-  lastStartTime: "",
-  allowedStartTime: "",
-  breakStartTime: "",
-  breakEndTime: "",
-  officeStartTime: "",
-  officeCloseTime: "",
-  isLunchBreakAsWorkingHour: false,
-  nightShift: false,
-  isEmployeeUpdate: false,
-  dteEmployeeUpdateFromDate: "",
-  dteEmployeeUpdateToDate: "",
-};
-
-const validationSchema = Yup.object({
-  calendarName: Yup.string().required("Calendar Name is required"),
-  startTime: Yup.string().required("Start Time is required"),
-  endTime: Yup.string().required("End Time is required"),
-  minWork: Yup.number()
-    .min(0, "Min Working is invalid")
-    .required("Min Working is required"),
-  lastStartTime: Yup.string().required("Last Start Time is required"),
-  allowedStartTime: Yup.string().required("Allowed Start Time is required"),
-  officeStartTime: Yup.string().required("Office Open Time is required"),
-  officeCloseTime: Yup.string().required("Office Close Time is required"),
-});
 
 const CalendarSetupModal = ({
   onHide,
@@ -171,7 +141,21 @@ const CalendarSetupModal = ({
       setDeleteRowData
     );
   };
-  console.log({id})
+
+  const timesState = (current, comparer) => {
+    const time1 = moment(current, "HH:mm:ss");
+    const time2 = moment(comparer, "HH:mm:ss");
+
+    // Compare the two times
+    if (time1.isBefore(time2)) {
+      return "before";
+    } else if (time1.isAfter(time2)) {
+      return "after";
+    } else {
+      return "equal";
+    }
+  };
+
   return (
     <>
       <Formik
@@ -182,17 +166,23 @@ const CalendarSetupModal = ({
           if (id && !values?.isEmployeeUpdate) {
             return toast.warn("Please select is Employee Update Checkbox");
           }
-          if (id && values?.isEmployeeUpdate && (!values?.dteEmployeeUpdateFromDate || !values?.dteEmployeeUpdateToDate)) {
-            return toast.warn("Please select Employee Generate From Date and Employee Generate To Date");
+          if (
+            id &&
+            values?.isEmployeeUpdate &&
+            (!values?.dteEmployeeUpdateFromDate ||
+              !values?.dteEmployeeUpdateToDate)
+          ) {
+            return toast.warn(
+              "Please select Employee Generate From Date and Employee Generate To Date"
+            );
           }
           saveHandler(values, () => {
-              if (id) {
-                resetForm(modifySingleData);
-              } else {
-                resetForm(initData);
-              }
+            if (id) {
+              resetForm(modifySingleData);
+            } else {
+              resetForm(initData);
+            }
           });
-          
         }}
       >
         {({ handleSubmit, values, errors, touched, setFieldValue }) => (
@@ -233,6 +223,19 @@ const CalendarSetupModal = ({
                         touched={touched}
                       />
                     </div>
+                    <div className="col-12">
+                      <FormikCheckBox
+                        name="nightShift"
+                        styleObj={{
+                          color: greenColor,
+                        }}
+                        label="Is Night Shift?"
+                        checked={values?.nightShift}
+                        onChange={(e) => {
+                          setFieldValue("nightShift", e.target.checked);
+                        }}
+                      />
+                    </div>
                     <div className="col-6">
                       <label>Office Opening Time </label>
                       <FormikInput
@@ -240,8 +243,51 @@ const CalendarSetupModal = ({
                         value={values?.officeStartTime}
                         onChange={(e) => {
                           setFieldValue("officeStartTime", e.target.value);
+                          setFieldValue("officeCloseTime", "");
+                          setFieldValue("startTime", "");
+                          setFieldValue("endTime", "");
+                          setFieldValue("allowedStartTime", "");
+                          setFieldValue("lastStartTime", "");
+                          setFieldValue("breakStartTime", "");
+                          setFieldValue("breakEndTime", "");
                         }}
                         name="officeStartTime"
+                        type="time"
+                        className="form-control"
+                        placeholder=""
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
+                    <div className="col-6">
+                      <label>Office Closing Time </label>
+                      <FormikInput
+                        classes="input-sm"
+                        value={values?.officeCloseTime}
+                        onChange={(e) => {
+                          if (values.nightShift) {
+                            setFieldValue("officeCloseTime", e.target.value);
+                          } else {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "after"
+                            ) {
+                              setFieldValue("officeCloseTime", e.target.value);
+                            } else {
+                              setFieldValue("officeCloseTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          }
+                          setFieldValue("startTime", "");
+                          setFieldValue("endTime", "");
+                          setFieldValue("allowedStartTime", "");
+                          setFieldValue("lastStartTime", "");
+                          setFieldValue("breakStartTime", "");
+                          setFieldValue("breakEndTime", "");
+                        }}
+                        name="officeCloseTime"
                         type="time"
                         className="form-control"
                         placeholder=""
@@ -255,19 +301,110 @@ const CalendarSetupModal = ({
                         classes="input-sm"
                         value={values?.startTime}
                         onChange={(e) => {
-                          setFieldValue("startTime", e.target.value);
-                          // if (singleData?.length > 0) {
-                          //   let duration = parseInt(format_ms(moment.duration(values?.endTime) - moment.duration(values?.startTime)))
-                          //   if (duration > 12) {
-                          //     setFieldValue('minWork', duration - 12)
-
-                          //   } else {
-                          //     setFieldValue('minWork', duration)
-
-                          //   }
-                          // }
+                          if (values.nightShift) {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "equal" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "before"
+                            ) {
+                              setFieldValue("startTime", e.target.value);
+                            } else {
+                              setFieldValue("startTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          } else {
+                            if (
+                              (timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "after" ||
+                                timesState(
+                                  e.target.value,
+                                  values?.officeStartTime
+                                ) === "equal") &&
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "before"
+                            ) {
+                              setFieldValue("startTime", e.target.value);
+                            } else {
+                              setFieldValue("startTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          }
+                          setFieldValue("endTime", "");
+                          setFieldValue("allowedStartTime", "");
+                          setFieldValue("lastStartTime", "");
+                          setFieldValue("breakStartTime", "");
+                          setFieldValue("breakEndTime", "");
                         }}
                         name="startTime"
+                        type="time"
+                        className="form-control"
+                        placeholder=""
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
+                    <div className="col-6">
+                      <label>End Time </label>
+                      <FormikInput
+                        classes="input-sm"
+                        value={values?.endTime}
+                        onChange={(e) => {
+                          if (values.nightShift) {
+                            if (
+                              timesState(e.target.value, values?.startTime) ===
+                                "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "before" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "equal"
+                            ) {
+                              setFieldValue("endTime", e.target.value);
+                            } else {
+                              setFieldValue("endTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          } else {
+                            if (
+                              timesState(e.target.value, values?.startTime) ===
+                                "after" &&
+                              (timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "before" ||
+                                timesState(
+                                  e.target.value,
+                                  values?.officeCloseTime
+                                ) === "equal")
+                            ) {
+                              setFieldValue("endTime", e.target.value);
+                            } else {
+                              setFieldValue("endTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          }
+                          setFieldValue("allowedStartTime", "");
+                          setFieldValue("lastStartTime", "");
+                          setFieldValue("breakStartTime", "");
+                          setFieldValue("breakEndTime", "");
+                        }}
+                        name="endTime"
                         type="time"
                         className="form-control"
                         placeholder=""
@@ -297,7 +434,38 @@ const CalendarSetupModal = ({
                         classes="input-sm"
                         value={values?.allowedStartTime}
                         onChange={(e) => {
-                          setFieldValue("allowedStartTime", e.target.value);
+                          if (values.nightShift) {
+                            if (
+                              timesState(e.target.value, values?.startTime) ===
+                                "after" ||
+                              timesState(e.target.value, values?.startTime) ===
+                                "equal" ||
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("allowedStartTime", e.target.value);
+                            } else {
+                              setFieldValue("allowedStartTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          } else {
+                            if (
+                              (timesState(e.target.value, values?.startTime) ===
+                                "after" ||
+                                timesState(
+                                  e.target.value,
+                                  values?.startTime
+                                ) === "equal") &&
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("allowedStartTime", e.target.value);
+                            } else {
+                              setFieldValue("allowedStartTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          }
+                          setFieldValue("lastStartTime", "");
                         }}
                         name="allowedStartTime"
                         type="time"
@@ -329,9 +497,45 @@ const CalendarSetupModal = ({
                       <FormikInput
                         classes="input-sm"
                         value={values?.lastStartTime}
-                        onChange={(e) =>
-                          setFieldValue("lastStartTime", e.target.value)
-                        }
+                        onChange={(e) => {
+                          if (values.nightShift) {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.allowedStartTime
+                              ) === "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.allowedStartTime
+                              ) === "equal" ||
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("lastStartTime", e.target.value);
+                            } else {
+                              setFieldValue("lastStartTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          } else {
+                            if (
+                              (timesState(
+                                e.target.value,
+                                values?.allowedStartTime
+                              ) === "after" ||
+                                timesState(
+                                  e.target.value,
+                                  values?.allowedStartTime
+                                ) === "equal") &&
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("lastStartTime", e.target.value);
+                            } else {
+                              setFieldValue("lastStartTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          }
+                        }}
                         name="lastStartTime"
                         type="time"
                         className="form-control"
@@ -341,13 +545,51 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Lunch Start Time</label>
+                      <label>
+                        {values?.nightShift ? "Dinner" : "Lunch"} Start Time
+                      </label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.breakStartTime}
-                        onChange={(e) =>
-                          setFieldValue("breakStartTime", e.target.value)
-                        }
+                        onChange={(e) => {
+                          if (values.nightShift) {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "equal" ||
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("breakStartTime", e.target.value);
+                            } else {
+                              setFieldValue("breakStartTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          } else {
+                            if (
+                              (timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "after" ||
+                                timesState(
+                                  e.target.value,
+                                  values?.officeStartTime
+                                ) === "equal") &&
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("breakStartTime", e.target.value);
+                            } else {
+                              setFieldValue("breakStartTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          }
+                        }}
                         name="breakStartTime"
                         type="time"
                         className="form-control"
@@ -357,13 +599,49 @@ const CalendarSetupModal = ({
                       />
                     </div>
                     <div className="col-6">
-                      <label>Lunch End Time</label>
+                      <label>
+                        {values?.nightShift ? "Dinner" : "Lunch"} End Time
+                      </label>
                       <FormikInput
                         classes="input-sm"
                         value={values?.breakEndTime}
-                        onChange={(e) =>
-                          setFieldValue("breakEndTime", e.target.value)
-                        }
+                        onChange={(e) => {
+                          if (values.nightShift) {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.breakStartTime
+                              ) === "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "before" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "equal"
+                            ) {
+                              setFieldValue("breakEndTime", e.target.value);
+                            } else {
+                              setFieldValue("breakEndTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          } else {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.breakStartTime
+                              ) === "after" &&
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("breakEndTime", e.target.value);
+                            } else {
+                              setFieldValue("breakEndTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
+                          }
+                        }}
                         name="breakEndTime"
                         type="time"
                         className="form-control"
@@ -372,61 +650,7 @@ const CalendarSetupModal = ({
                         touched={touched}
                       />
                     </div>
-                    <div className="col-6">
-                      <label>End Time </label>
-                      <FormikInput
-                        classes="input-sm"
-                        value={values?.endTime}
-                        onChange={(e) => {
-                          setFieldValue("endTime", e.target.value);
-                          // if (singleData?.length > 0) {
-                          //   let duration = parseInt(format_ms(moment.duration(values?.endTime) - moment.duration(values?.startTime)))
-                          //   if (duration > 12) {
-                          //     setFieldValue('minWork', duration - 12)
 
-                          //   } else {
-                          //     setFieldValue('minWork', duration)
-
-                          //   }
-                          // }
-                        }}
-                        name="endTime"
-                        type="time"
-                        className="form-control"
-                        placeholder=""
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                    <div className="col-6">
-                      <label>Office Closing Time </label>
-                      <FormikInput
-                        classes="input-sm"
-                        value={values?.officeCloseTime}
-                        onChange={(e) => {
-                          setFieldValue("officeCloseTime", e.target.value);
-                        }}
-                        name="officeCloseTime"
-                        type="time"
-                        className="form-control"
-                        placeholder=""
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                    <div className="col-12">
-                      <FormikCheckBox
-                        name="nightShift"
-                        styleObj={{
-                          color: greenColor,
-                        }}
-                        label="Is Night Shift"
-                        checked={values?.nightShift}
-                        onChange={(e) => {
-                          setFieldValue("nightShift", e.target.checked);
-                        }}
-                      />
-                    </div>
                     <div className="col-12">
                       <FormikCheckBox
                         name="isLunchBreakAsWorkingHour"
