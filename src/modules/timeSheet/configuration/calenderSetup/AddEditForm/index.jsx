@@ -243,6 +243,13 @@ const CalendarSetupModal = ({
                         value={values?.officeStartTime}
                         onChange={(e) => {
                           setFieldValue("officeStartTime", e.target.value);
+                          setFieldValue("officeCloseTime", "");
+                          setFieldValue("startTime", "");
+                          setFieldValue("endTime", "");
+                          setFieldValue("allowedStartTime", "");
+                          setFieldValue("lastStartTime", "");
+                          setFieldValue("breakStartTime", "");
+                          setFieldValue("breakEndTime", "");
                         }}
                         name="officeStartTime"
                         type="time"
@@ -259,6 +266,7 @@ const CalendarSetupModal = ({
                         value={values?.officeCloseTime}
                         onChange={(e) => {
                           if (values.nightShift) {
+                            setFieldValue("officeCloseTime", e.target.value);
                           } else {
                             if (
                               timesState(
@@ -272,6 +280,12 @@ const CalendarSetupModal = ({
                               return toast.warning("Given time is not valid");
                             }
                           }
+                          setFieldValue("startTime", "");
+                          setFieldValue("endTime", "");
+                          setFieldValue("allowedStartTime", "");
+                          setFieldValue("lastStartTime", "");
+                          setFieldValue("breakStartTime", "");
+                          setFieldValue("breakEndTime", "");
                         }}
                         name="officeCloseTime"
                         type="time"
@@ -288,6 +302,25 @@ const CalendarSetupModal = ({
                         value={values?.startTime}
                         onChange={(e) => {
                           if (values.nightShift) {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "equal" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "before"
+                            ) {
+                              setFieldValue("startTime", e.target.value);
+                            } else {
+                              setFieldValue("startTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
                           } else {
                             if (
                               (timesState(
@@ -309,6 +342,11 @@ const CalendarSetupModal = ({
                               return toast.warning("Given time is not valid");
                             }
                           }
+                          setFieldValue("endTime", "");
+                          setFieldValue("allowedStartTime", "");
+                          setFieldValue("lastStartTime", "");
+                          setFieldValue("breakStartTime", "");
+                          setFieldValue("breakEndTime", "");
                         }}
                         name="startTime"
                         type="time"
@@ -325,6 +363,23 @@ const CalendarSetupModal = ({
                         value={values?.endTime}
                         onChange={(e) => {
                           if (values.nightShift) {
+                            if (
+                              timesState(e.target.value, values?.startTime) ===
+                                "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "before" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "equal"
+                            ) {
+                              setFieldValue("endTime", e.target.value);
+                            } else {
+                              setFieldValue("endTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
                           } else {
                             if (
                               timesState(e.target.value, values?.startTime) ===
@@ -344,6 +399,10 @@ const CalendarSetupModal = ({
                               return toast.warning("Given time is not valid");
                             }
                           }
+                          setFieldValue("allowedStartTime", "");
+                          setFieldValue("lastStartTime", "");
+                          setFieldValue("breakStartTime", "");
+                          setFieldValue("breakEndTime", "");
                         }}
                         name="endTime"
                         type="time"
@@ -376,6 +435,19 @@ const CalendarSetupModal = ({
                         value={values?.allowedStartTime}
                         onChange={(e) => {
                           if (values.nightShift) {
+                            if (
+                              timesState(e.target.value, values?.startTime) ===
+                                "after" ||
+                              timesState(e.target.value, values?.startTime) ===
+                                "equal" ||
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("allowedStartTime", e.target.value);
+                            } else {
+                              setFieldValue("allowedStartTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
                           } else {
                             if (
                               (timesState(e.target.value, values?.startTime) ===
@@ -393,6 +465,7 @@ const CalendarSetupModal = ({
                               return toast.warning("Given time is not valid");
                             }
                           }
+                          setFieldValue("lastStartTime", "");
                         }}
                         name="allowedStartTime"
                         type="time"
@@ -426,6 +499,23 @@ const CalendarSetupModal = ({
                         value={values?.lastStartTime}
                         onChange={(e) => {
                           if (values.nightShift) {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.allowedStartTime
+                              ) === "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.allowedStartTime
+                              ) === "equal" ||
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("lastStartTime", e.target.value);
+                            } else {
+                              setFieldValue("lastStartTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
                           } else {
                             if (
                               (timesState(
@@ -463,13 +553,32 @@ const CalendarSetupModal = ({
                         value={values?.breakStartTime}
                         onChange={(e) => {
                           if (values.nightShift) {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "equal" ||
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
+                            ) {
+                              setFieldValue("breakStartTime", e.target.value);
+                            } else {
+                              setFieldValue("breakStartTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
                           } else {
                             if (
-                              (timesState(e.target.value, values?.startTime) ===
-                                "after" ||
+                              (timesState(
+                                e.target.value,
+                                values?.officeStartTime
+                              ) === "after" ||
                                 timesState(
                                   e.target.value,
-                                  values?.startTime
+                                  values?.officeStartTime
                                 ) === "equal") &&
                               timesState(e.target.value, values?.endTime) ===
                                 "before"
@@ -498,14 +607,31 @@ const CalendarSetupModal = ({
                         value={values?.breakEndTime}
                         onChange={(e) => {
                           if (values.nightShift) {
+                            if (
+                              timesState(
+                                e.target.value,
+                                values?.breakStartTime
+                              ) === "after" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "before" ||
+                              timesState(
+                                e.target.value,
+                                values?.officeCloseTime
+                              ) === "equal"
+                            ) {
+                              setFieldValue("breakEndTime", e.target.value);
+                            } else {
+                              setFieldValue("breakEndTime", "");
+                              return toast.warning("Given time is not valid");
+                            }
                           } else {
                             if (
-                              (timesState(e.target.value, values?.startTime) ===
-                                "after" ||
-                                timesState(
-                                  e.target.value,
-                                  values?.startTime
-                                ) === "equal") &&
+                              timesState(
+                                e.target.value,
+                                values?.breakStartTime
+                              ) === "after" &&
                               timesState(e.target.value, values?.endTime) ===
                                 "before"
                             ) {
