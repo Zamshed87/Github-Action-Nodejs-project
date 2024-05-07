@@ -7,6 +7,7 @@ import PayrollElement from "modules/PayrollManagementSytem/PayrollElement/Payrol
 import PayrollGroupCreate from "modules/PayrollManagementSytem/SalaryBreakdown/Create/PayrollGroupCreate";
 import SalaryBreakdownN from "modules/PayrollManagementSytem/SalaryBreakdown/indexN";
 import SeparationSetupLanding from "modules/PayrollManagementSytem/SeparationSetup";
+import HolidayOffdaySwap from "modules/TimeManagement/HolidayOffdaySwap";
 import EmployeeDivision from "modules/configuration/EmployeeDivision/EmployeeDivision";
 import BankBranch from "modules/configuration/bankBranch";
 import BusinessUnit from "modules/configuration/busisnessUnit";
@@ -1896,6 +1897,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/multiCalendarAssign",
     component: MultiCalendarAssign,
+  },
+  {
+    path: "/administration/timeManagement/holidayOffdaySwap",
+    component: HolidayOffdaySwap,
   },
   {
     path: "/administration/configuration/business-unit",
