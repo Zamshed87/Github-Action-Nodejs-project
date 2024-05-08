@@ -437,7 +437,7 @@ const MgmtDailyAttendance = () => {
       title: "In Time",
       dataIndex: "inTime",
       render: (_: any, rec: any) => {
-        rec?.inTime ? convertTo12HourFormat(rec?.inTime) : "N/A";
+        return rec?.inTime ? convertTo12HourFormat(rec?.inTime) : "N/A";
       },
       width: 35,
     },
@@ -445,7 +445,7 @@ const MgmtDailyAttendance = () => {
       title: "Out Time",
       dataIndex: "outTime",
       render: (_: any, rec: any) => {
-        rec?.outTime ? convertTo12HourFormat(rec?.outTime) : "N/A";
+        return rec?.outTime ? convertTo12HourFormat(rec?.outTime) : "N/A";
       },
       width: 35,
     },
@@ -489,6 +489,7 @@ const MgmtDailyAttendance = () => {
       searchText: value,
     });
   }, 500);
+
   return employeeFeature?.isView ? (
     <>
       <PForm
