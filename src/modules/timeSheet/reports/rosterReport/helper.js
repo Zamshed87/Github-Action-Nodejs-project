@@ -145,3 +145,25 @@ export const getfromToDateList = (fromDate, toDate) => {
   }
   return dateList;
 };
+export const column = (fromDate, toDate) => {
+  const dateList = fromToDateList(fromDate, toDate);
+  let tempObj = {};
+  dateList?.length > 0 &&
+    dateList.forEach((item) => {
+      tempObj = {
+        ...tempObj,
+        [item?.date]: item?.level,
+      };
+    });
+  return {
+    sl: "SL",
+    strWorkplaceGroup: "Workplace Group",
+    strWorkplace: "Workplace",
+    strDepartment: "Department",
+    strSectionName: "Section",
+    EmployeeCode: "Code",
+    strEmployeeName: "Employee Name",
+    strDesignation: "Designation",
+    ...tempObj,
+  };
+};
