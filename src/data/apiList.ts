@@ -114,6 +114,8 @@ export const apiList = {
   PeopleDeskAllLanding: "/Employee/PeopleDeskAllLanding",
   GetInactiveEmployeeList: "/Employee/GetInactiveEmployeeList",
   EmployeeReportWithFilter: "/Employee/EmployeeReportWithFilter",
+  GetEmpAttendanceReport: "/TimeSheetReport/GetEmpAttendanceReport",
+  EmployeeSeparationListFilter: "/Employee/EmployeeSeparationListFilter",
   EmployeeDDLWithCode:
     "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
   RefundOrEarningReport: "/EmployeeIncrement/RefundOrEarningReport",
@@ -121,4 +123,6 @@ export const apiList = {
   //   "/PdfAndExcelReport/GetSalaryCostCenterReportMatador",
   costCenterReportLanding:
     "/PdfAndExcelReport/GetSalarySummaryCostCenterReport_Matador",
+  holidayOffdayLanding: "/Employee/HolidayOffdaySwapEmployeeLanding",
+  holidayOffdayAssignPost: "/Employee/HolidayOffdaySwapEmployeeAssign",
 };

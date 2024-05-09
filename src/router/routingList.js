@@ -817,7 +817,7 @@ const SeparationReportPrintPage = lazy(() =>
   import("../modules/employeeProfile/separation/report/GoForPrint/index.jsx")
 );
 const SeparationReport = lazy(() =>
-  import("../modules/employeeProfile/separation/report/index.jsx")
+  import("../modules/employeeProfile/separation/report/index.tsx")
 );
 const SelfApplicationSeparationForm = lazy(() =>
   import(
@@ -1214,7 +1214,7 @@ const GorForPrint = lazy(() =>
   import("../modules/timeSheet/reports/attendanceReport/GorForPrint.jsx")
 );
 const AttendanceReport = lazy(() =>
-  import("../modules/timeSheet/reports/attendanceReport/index.jsx")
+  import("../modules/timeSheet/reports/attendanceReport/index.tsx")
 );
 // const AttendanceRawDataProcess = lazy(() =>
 //   import("../modules/timeSheet/attendence/attendanceRawDataProcess/index.jsx")
@@ -1239,7 +1239,7 @@ const RosterReportPrint = lazy(() =>
 );
 
 const RosterReport = lazy(() =>
-  import("../modules/timeSheet/reports/rosterReport/index.jsx")
+  import("../modules/timeSheet/reports/rosterReport/index.tsx")
 );
 const MonthlyInOutReport = lazy(() =>
   import("../modules/timeSheet/reports/monthlyInOutReport/index.tsx")

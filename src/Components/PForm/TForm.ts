@@ -139,6 +139,7 @@ type InputTypeMapping = {
   checkbox: CheckboxProps & BaseProps;
   textarea: InputProps & BaseProps;
   search: InputProps & BaseProps;
+  time: InputProps & BaseProps;
 };
 
 export type InputType = keyof InputTypeMapping;
