@@ -817,7 +817,7 @@ const SeparationReportPrintPage = lazy(() =>
   import("../modules/employeeProfile/separation/report/GoForPrint/index.jsx")
 );
 const SeparationReport = lazy(() =>
-  import("../modules/employeeProfile/separation/report/index.jsx")
+  import("../modules/employeeProfile/separation/report/index.tsx")
 );
 const SelfApplicationSeparationForm = lazy(() =>
   import(
