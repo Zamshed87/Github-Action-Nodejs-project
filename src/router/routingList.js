@@ -1214,7 +1214,7 @@ const GorForPrint = lazy(() =>
   import("../modules/timeSheet/reports/attendanceReport/GorForPrint.jsx")
 );
 const AttendanceReport = lazy(() =>
-  import("../modules/timeSheet/reports/attendanceReport/index.jsx")
+  import("../modules/timeSheet/reports/attendanceReport/index.tsx")
 );
 // const AttendanceRawDataProcess = lazy(() =>
 //   import("../modules/timeSheet/attendence/attendanceRawDataProcess/index.jsx")
