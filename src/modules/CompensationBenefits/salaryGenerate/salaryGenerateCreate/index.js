@@ -169,7 +169,7 @@ const SalaryGenerateCreate = () => {
         buId,
         (data) => {
           getWorkplaceNhrPosition(
-            `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intAccountId=${data?.intAccountId}&strSalaryCode=${data?.strSalaryCode}`,
+            `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intAccountId=${data?.intAccountId}&strSalaryCode=${data?.strSalaryCode}&intBusinessUnitId=${data?.intBusinessUnitId}&intWorkplaceGroupId=${data?.intWorkplaceGroupId}`,
             (WorkplaceNhrPosition) => {
               console.log({ WorkplaceNhrPosition });
               // setFieldValue("workplace", []);
