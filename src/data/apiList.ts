@@ -114,6 +114,7 @@ export const apiList = {
   PeopleDeskAllLanding: "/Employee/PeopleDeskAllLanding",
   GetInactiveEmployeeList: "/Employee/GetInactiveEmployeeList",
   EmployeeReportWithFilter: "/Employee/EmployeeReportWithFilter",
+  EmployeeSeparationListFilter: "/Employee/EmployeeSeparationListFilter",
   EmployeeDDLWithCode:
     "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
   RefundOrEarningReport: "/EmployeeIncrement/RefundOrEarningReport",

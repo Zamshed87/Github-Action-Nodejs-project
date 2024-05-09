@@ -210,3 +210,21 @@ export const empSeparationCol = (page, paginationSize) => {
     },
   ];
 };
+export const column = {
+  sl: "SL",
+  strWorkplaceGroupName: "Workplace Group",
+  strWorkplaceName: "Workplace",
+  strEmployeeCode: "Employee Id",
+  strEmployeeName: "Employee Name",
+  strDesignation: "Designation",
+
+  strDepartment: "Department",
+  strSectionName: "Section",
+
+  dteJoiningDate: "Joining Date",
+  dteSeparationDate: "Separation Date",
+  strSeparationTypeName: "Separation Type",
+  serviceLength: "Service Length",
+  dteCreatedAt: "Application Date",
+  approvalStatus: "Status",
+};
