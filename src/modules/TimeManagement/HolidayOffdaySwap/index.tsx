@@ -346,6 +346,14 @@ const HolidayOffdaySwap = () => {
                 content="Save"
                 onClick={() => {
                   if (form.getFieldValue("changedTo")) {
+                    if (
+                      form.getFieldValue("changedTo").format("YYYY-MM-DD") ===
+                      form.getFieldValue("attendenceDate").format("YYYY-MM-DD")
+                    ) {
+                      return toast.error(
+                        "Attendance date and Swaped date cannot be same"
+                      );
+                    }
                     postholidayOffdaySwap();
                   } else {
                     return toast.warning("please give a valid date");

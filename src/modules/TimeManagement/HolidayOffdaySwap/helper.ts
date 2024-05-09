@@ -43,5 +43,9 @@ export const header: any = () => {
       title: "Calender Name",
       dataIndex: "strCalenderName",
     },
+    {
+      title: "Swap Date",
+      dataIndex: "strSwapDate",
+    },
   ];
 };
