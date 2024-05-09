@@ -58,6 +58,7 @@ export const getSalaryGenerateRequestLanding = async (
   // Joining the values into a string separated by commas
   const workplaceListFromValues = valueArray.join(",");
   const valueArrayHRPosition = values?.hrPosition?.map((obj) => obj.value);
+  const intBankOrWalletType = `&intBankOrWalletType=${values?.walletType?.value || 0}`;
   // const workplaceListFromValues ='"' + valueArray.join(',') + '"';
 
   const fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
@@ -83,7 +84,7 @@ export const getSalaryGenerateRequestLanding = async (
   if (partName === `EmployeeListForSalaryGenerateRequest`) {
     api += `&strWorkplaceIdList=${
       workplaceListFromValues || wId
-    }&strHrPositionIdList=${valueArrayHRPosition || 0}`;
+    }&strHrPositionIdList=${valueArrayHRPosition || 0}${intBankOrWalletType}`;
   } else if (partName === `SalaryGenerateRequestLanding`) {
     api += `&strSalaryCode=${values?.salaryCode?.strSalaryCode || ""}`;
   } else if (partName === `SalaryGenerateRequestRowByRequestId`) {
@@ -308,7 +309,8 @@ export const getSalaryGenerateRequestHeaderId = async (
   setter,
   setLoading,
   wgId,
-  buId
+  buId,
+  cb = null
 ) => {
   setLoading && setLoading(true);
 
@@ -367,6 +369,7 @@ export const getSalaryGenerateRequestHeaderId = async (
         toDate: dateFormatterForInput(res?.data[0]?.dteSalaryGenerateTo),
       };
       setter(modifyObj);
+      cb && cb(modifyObj);
       setLoading && setLoading(false);
     }
   } catch (error) {
