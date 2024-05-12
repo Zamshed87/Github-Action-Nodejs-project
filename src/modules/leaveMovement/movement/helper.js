@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const createMovementApplication = async (payload,setLoading, cb) => {
+export const createMovementApplication = async (payload, setLoading, cb) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.post(
@@ -12,7 +12,7 @@ export const createMovementApplication = async (payload,setLoading, cb) => {
     toast.success(res?.data?.Result?.Message || "Submitted Successfully");
     setLoading && setLoading(false);
   } catch (error) {
-    toast.warn(error?.response?.data?.message || "Something went wrong");    
+    toast.warn(error?.response?.data?.message || "Something went wrong");
     setLoading && setLoading(false);
   }
 };
@@ -67,20 +67,32 @@ export const getAllMovementApplicatonListDataForApproval = async (
 };
 
 export const movementApproveReject = async (payload, cb, setLoading) => {
-  setLoading?.(true)
+  setLoading?.(true);
   try {
-    const res = await axios.post(`/ApprovalPipeline/MovementApplicationApproval`, payload);
-    if(res?.status === 200){
-      setLoading?.(false)
-      cb?.()
+    const res = await axios.post(
+      `/ApprovalPipeline/MovementApplicationApproval`,
+      payload
+    );
+    if (res?.status === 200) {
+      setLoading?.(false);
+      cb?.();
     }
     toast.success(res?.data || "Submitted Successfully");
   } catch (error) {
-    setLoading?.(false)
+    setLoading?.(false);
     toast.warn(error?.response?.data?.message || "Something went wrong");
   }
 };
-export const getMovementApplicationFilter = async (tableName,accId,buId,id,data, setter,setAllData, setLoading) => {
+export const getMovementApplicationFilter = async (
+  tableName,
+  accId,
+  buId,
+  id,
+  data,
+  setter,
+  setAllData,
+  setLoading
+) => {
   setLoading && setLoading(true);
   try {
     const res = await axios.get(
@@ -94,4 +106,18 @@ export const getMovementApplicationFilter = async (tableName,accId,buId,id,data,
   } catch (error) {
     setLoading && setLoading(false);
   }
+};
+
+export const inputHandler = (
+  name,
+  value,
+  sl,
+  landingApproval,
+  setLandingApproval
+) => {
+  let data = [...landingApproval];
+  let _sl = data[sl];
+  _sl[name] = value;
+
+  setLandingApproval(landingApproval);
 };
