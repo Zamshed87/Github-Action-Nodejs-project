@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import ReactQuill from "react-quill";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import * as Yup from "yup";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import BackButton from "../../../../../common/BackButton";
 import Loading from "../../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../../commonRedux/reduxForLocalStorage/actions";
@@ -17,6 +17,7 @@ import { AttachmentOutlined, Close, FileUpload } from "@mui/icons-material";
 import {
   getPeopleDeskAllDDL,
   getSearchEmployeeList,
+  getSearchEmployeeListWithWarning,
   multiple_attachment_actions,
 } from "../../../../../common/api";
 import { getDownlloadFileView_Action } from "../../../../../commonRedux/auth/actions";
@@ -27,6 +28,7 @@ import NotPermittedPage from "../../../../../common/notPermitted/NotPermittedPag
 import { toast } from "react-toastify";
 import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
 import useAxiosGet from "../../../../../utility/customHooks/useAxiosGet";
+import IConfirmModal from "common/IConfirmModal";
 
 const initData = {
   employeeName: "",
@@ -57,6 +59,7 @@ export default function ManagementApplicationSeparationForm() {
   const params = useParams();
   const dispatch = useDispatch();
   const inputFile = useRef(null);
+  const history = useHistory();
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -82,9 +85,25 @@ export default function ManagementApplicationSeparationForm() {
   const [imgRow, setImgRow] = useState([]);
   const [imageFile, setImageFile] = useState([]);
   const [editImageRow, setEditImageRow] = useState([]);
+  const [isLoanModal, setIsLoanModal] = useState(false);
 
   const onButtonClick = () => {
     inputFile.current.click();
+  };
+
+  const demoPopup = () => {
+    const confirmObject = {
+      closeOnClickOutside: false,
+      message: "This employee has already taken out a loan. Would you like to Separate with the loan?",
+      yesAlertFunc: () => {
+        setIsLoanModal(true);
+      },
+      noAlertFunc: () => {
+        setIsLoanModal(false);
+        history.push("/profile/separation");
+      },
+    };
+    IConfirmModal(confirmObject);
   };
 
   useEffect(() => {
@@ -297,10 +316,17 @@ export default function ManagementApplicationSeparationForm() {
                         selectedValue={values?.employeeName}
                         isSearchIcon={true}
                         handleChange={(valueOption) => {
+                          valueOption?.isLoan
+                            ? demoPopup()
+                            : setIsLoanModal(false);
                           setFieldValue("employeeName", valueOption);
                           if (valueOption) {
                             getLastWorkingDay(
-                              `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${valueOption?.departmentId || 0}&employmentType=${valueOption?.employmentTypeId}&designationId=${valueOption?.designation}`,
+                              `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${
+                                valueOption?.departmentId || 0
+                              }&employmentType=${
+                                valueOption?.employmentTypeId
+                              }&designationId=${valueOption?.designation}`,
                               (data) => {
                                 const formattedLastWorkingDay = new Date(data);
                                 const formattedMinDate = formattedLastWorkingDay
@@ -315,7 +341,7 @@ export default function ManagementApplicationSeparationForm() {
                         }}
                         placeholder="Search (min 3 letter)"
                         loadOptions={(v) =>
-                          getSearchEmployeeList(buId, wgId, v)
+                          getSearchEmployeeListWithWarning(buId, wgId, v)
                         }
                       />
                     </div>
