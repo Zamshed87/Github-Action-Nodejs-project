@@ -610,6 +610,12 @@ const leavePolicyAssign = async (payload, cb, setLandingLoading) => {
     }
     setLandingLoading(false);
   } catch (error) {
+    toast.warn(
+      error?.response?.data?.message ||
+        error?.data?.message ||
+        error?.message ||
+        "Something went wrong"
+    );
     setLandingLoading(false);
   }
 };
