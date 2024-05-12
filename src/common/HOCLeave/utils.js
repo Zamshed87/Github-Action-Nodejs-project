@@ -1,6 +1,8 @@
 import { Attachment, EditOutlined } from "@mui/icons-material";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Tooltip } from "@mui/material";
+import { LightTooltip } from "common/LightTooltip";
 import moment from "moment";
 import * as Yup from "yup";
 import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
@@ -46,7 +48,12 @@ export const empMgmtLeaveApplicationDtoColumn = (
   setSingleData,
   setImageFile,
   demoPopupForDelete,
-  isOfficeAdmin
+  isOfficeAdmin,
+  showTooltip,
+  setShowTooltip,
+  handleIconHover,
+  loading,
+  setLoading
   // demoPopupForDeleteAdmin
 ) => {
   return [
@@ -147,11 +154,47 @@ export const empMgmtLeaveApplicationDtoColumn = (
       title: "Status",
       dataIndex: "ApprovalStatus",
       render: (data, record) => (
-        <div>
-          {data === "Approved" && <Chips label={data} classess="success" />}
-          {data === "Pending" && <Chips label={data} classess="warning" />}
-          {data === "Rejected" && <Chips label={data} classess="danger" />}
-          {data === "Process" && <Chips label={data} classess="primary" />}
+        <div className="d-flex">
+          <div className="d-flex align-items-center">
+            <LightTooltip
+              onMouseEnter={() =>
+                handleIconHover(record, values, setShowTooltip)
+              }
+              title={
+                <div>
+                  {showTooltip?.data?.length ? (
+                    showTooltip.data?.map((tooltipItem, index) => (
+                      <div key={index} className="movement-tooltip p-1">
+                        <div className="border-bottom">
+                          <p className="tooltip-title">
+                            {tooltipItem?.strApproverName}
+                          </p>
+                          <p className="tooltip-subTitle">
+                            {tooltipItem?.strComments}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="movement-tooltip p-1">
+                      <p className="tooltip-title">No Remarks</p>
+                    </div>
+                  )}
+                </div>
+              }
+              arrow
+            >
+              <InfoOutlinedIcon
+                sx={{ marginRight: "12px", color: "rgba(0, 0, 0, 0.6)" }}
+              />
+            </LightTooltip>
+          </div>
+          <div>
+            {data === "Approved" && <Chips label={data} classess="success" />}
+            {data === "Pending" && <Chips label={data} classess="warning" />}
+            {data === "Rejected" && <Chips label={data} classess="danger" />}
+            {data === "Process" && <Chips label={data} classess="primary" />}
+          </div>
         </div>
       ),
       sorter: true,
