@@ -75,7 +75,7 @@ export const getSalaryGenerateRequestLanding = async (
     monthId || +currentMonth()
   }&intYearId=${
     yearId || currentYear
-  }&intWorkplaceGroupId=${wgId}&intBankOrWalletType=0${fromDateParams}&IntPageSize=${
+  }&intWorkplaceGroupId=${wgId}${fromDateParams}&IntPageSize=${
     pages?.pageSize
   }&IntPageNo=${
     pages?.current
