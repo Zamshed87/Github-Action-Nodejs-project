@@ -171,7 +171,6 @@ const SalaryGenerateCreate = () => {
           getWorkplaceNhrPosition(
             `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intAccountId=${data?.intAccountId}&strSalaryCode=${data?.strSalaryCode}&intBusinessUnitId=${data?.intBusinessUnitId}&intWorkplaceGroupId=${data?.intWorkplaceGroupId}`,
             (WorkplaceNhrPosition) => {
-              console.log({ WorkplaceNhrPosition });
               const hrPositions =
                 WorkplaceNhrPosition.map((item) => ({
                   value: item.intHrPosition,
@@ -182,12 +181,6 @@ const SalaryGenerateCreate = () => {
                   WorkplaceNhrPosition.map((item) => item.intWorkplaceId)
                 ),
               ];
-              console.log({ uniqueWorkplaceIds });
-              // const workplaces =
-              //   uniqueWorkplaceIds.map((item) => ({
-              //     value: item.intWorkplaceId,
-              //     label: item.strWorkplaceName,
-              //   })) || [];
               const workplaces = uniqueWorkplaceIds.map((id) => {
                 const correspondingItem = WorkplaceNhrPosition.find(
                   (item) => item.intWorkplaceId === id
@@ -532,7 +525,6 @@ const SalaryGenerateCreate = () => {
       : salaryGenerateInitialValues,
     onSubmit: (values) => saveHandler(values),
   });
-  console.log({ values });
 
   return (
     <>
