@@ -258,7 +258,7 @@ const RequisitionApproval = lazy(() =>
 );
 const MonthlyPunchReportDetails = lazy(() =>
   import(
-    "../modules/employeeProfile/Reports/monthlyPunchDetailsReport/index.jsx"
+    "../modules/employeeProfile/Reports/monthlyPunchDetailsReport/index.tsx"
   )
 );
 const AccountCreateForm = lazy(() =>
