@@ -139,7 +139,7 @@ const AttendanceGenerateProcessForm = () => {
                         styleMode="medium"
                         styles={{
                           ...customStyles,
-                          control: (provided, state) => ({
+                          control: (provided) => ({
                             ...provided,
                             minHeight: "auto!important",
                             height: "auto!important",
@@ -152,7 +152,7 @@ const AttendanceGenerateProcessForm = () => {
                               borderColor: `${gray600}!important`,
                             },
                           }),
-                          valueContainer: (provided, state) => ({
+                          valueContainer: (provided) => ({
                             ...provided,
                             height: "auto!important",
                             padding: "0 0px",
