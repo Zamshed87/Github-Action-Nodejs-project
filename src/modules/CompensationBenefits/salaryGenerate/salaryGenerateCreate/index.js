@@ -172,8 +172,36 @@ const SalaryGenerateCreate = () => {
             `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intAccountId=${data?.intAccountId}&strSalaryCode=${data?.strSalaryCode}&intBusinessUnitId=${data?.intBusinessUnitId}&intWorkplaceGroupId=${data?.intWorkplaceGroupId}`,
             (WorkplaceNhrPosition) => {
               console.log({ WorkplaceNhrPosition });
-              // setFieldValue("workplace", []);
-              // setFieldValue("hrPosition", []);
+              const hrPositions =
+                WorkplaceNhrPosition.map((item) => ({
+                  value: item.intHrPosition,
+                  label: item.strHrPosition,
+                })) || [];
+              const uniqueWorkplaceIds = [
+                ...new Set(
+                  WorkplaceNhrPosition.map((item) => item.intWorkplaceId)
+                ),
+              ];
+              console.log({ uniqueWorkplaceIds });
+              // const workplaces =
+              //   uniqueWorkplaceIds.map((item) => ({
+              //     value: item.intWorkplaceId,
+              //     label: item.strWorkplaceName,
+              //   })) || [];
+              const workplaces = uniqueWorkplaceIds.map((id) => {
+                const correspondingItem = WorkplaceNhrPosition.find(
+                  (item) => item.intWorkplaceId === id
+                );
+                return {
+                  value: id,
+                  intWorkplaceId: id,
+                  label: correspondingItem
+                    ? correspondingItem.strWorkplaceName
+                    : "",
+                };
+              });
+              setFieldValue("workplace", workplaces);
+              setFieldValue("hrPosition", hrPositions);
             }
           );
         }
@@ -504,7 +532,7 @@ const SalaryGenerateCreate = () => {
       : salaryGenerateInitialValues,
     onSubmit: (values) => saveHandler(values),
   });
-  // console.log({rowDto, allData})
+  console.log({ values });
 
   return (
     <>
@@ -816,7 +844,7 @@ const SalaryGenerateCreate = () => {
                         styles={customStyles}
                         errors={errors}
                         touched={touched}
-                        isDisabled={singleData}
+                        // isDisabled={singleData}
                       />
                     </div>
                   </div>
