@@ -50,6 +50,18 @@ function AttendanceRawDataProcess() {
     total: 0,
   });
 
+  useEffect(() =>{
+    onGetAttendanceResponse(
+      wId,
+      wgId,
+      pages?.pageSize,
+      pages?.current,
+      setRes,
+      setLoading,
+      setPages
+    );
+  },[])
+
   const { handleSubmit, values, setFieldValue, errors, touched, resetForm } =
     useFormik({
       enableReinitialize: true,
@@ -93,7 +105,6 @@ function AttendanceRawDataProcess() {
     dispatch(setFirstLevelNameAction("Employee Management"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-console.log('res',res)
   const landingApi = (pagination) => {
     console.log(pagination)
     onGetAttendanceResponse(
@@ -206,12 +217,12 @@ console.log('res',res)
                   type="date"
                   min={values?.fromDate}
                   max={
-                    calcDateDiff(values?.fromDate, today) < 3
-                      ? today
-                      : moment(values?.fromDate)
-                          .add(2, "days")
-                          .format("YYYY-MM-DD")
-                  }
+                    values?.employee ? 
+                    // Condition 1: If employee is selected, set max date to 45 days from fromDate
+                    moment(values?.fromDate).add(44, 'days').format("YYYY-MM-DD") : 
+                    // Condition 2: If no employee is selected, set max date to 7 days from fromDate
+                    moment(values?.fromDate).add(6, 'days').format("YYYY-MM-DD")
+                }
                   className="form-control"
                   onChange={(e) => {
                     setFieldValue("toDate", e.target.value);
