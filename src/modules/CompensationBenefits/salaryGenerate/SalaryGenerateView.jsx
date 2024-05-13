@@ -14,7 +14,7 @@ import PrimaryButton from "../../../common/PrimaryButton";
 import ScrollableTable from "../../../common/ScrollableTable";
 import Loading from "../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { greenColor } from "../../../utility/customColor";
+import { gray600, greenColor, success500 } from "../../../utility/customColor";
 import { downloadFile, getPDFAction } from "../../../utility/downloadFile";
 import { getRowTotal } from "../../../utility/getRowTotal";
 import { getMonthName } from "../../../utility/monthUtility";
@@ -31,11 +31,16 @@ import {
   salaryGenerateApproveReject,
 } from "./helper";
 import { getBuDetails } from "common/api";
+import { customStyles } from "utility/selectCustomStyle";
+import FormikSelect from "common/FormikSelect";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const initData = {
   search: "",
   salaryType: "",
   summary: "1",
+  hrPosition: [],
+  walletType: "",
 };
 
 const validationSchema = Yup.object({});
@@ -65,7 +70,8 @@ const SalaryGenerateView = () => {
   const [totalDBPay, setTotalDBPay] = useState(0);
   const [totalCashPay, setTotalCashPay] = useState(0);
   const [buDetails, setBuDetails] = useState({});
-
+  const [hrPositionDDL, getWorkplaceNhrPosition, , setHrPositionDDL] =
+    useAxiosGet([]);
   // const [tableAllowanceHead, setTableAllowanceHead] = useState([]);
   // const [tableDeductionHead, setTableDeductionHead] = useState([]);
   // const [tableColumn, setTableColumn] = useState([]);
@@ -78,7 +84,7 @@ const SalaryGenerateView = () => {
   const year = state?.intYear;
   const monthYear = `${month}, ${year}`;
 
-  const { values, setFieldValue, handleSubmit } = useFormik({
+  const { values, setFieldValue, handleSubmit, setValues } = useFormik({
     enableReinitialize: true,
     initialValues: initData,
     validationSchema: validationSchema,
@@ -235,6 +241,34 @@ const SalaryGenerateView = () => {
         setTableAllowanceHead,
         setTableDeductionHead
       ); */
+    getWorkplaceNhrPosition(
+      `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intAccountId=${orgId}&strSalaryCode=${
+        !state?.data ? state?.strSalaryCode : state?.data?.strSalaryCode
+      }&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}`,
+      (WorkplaceNhrPosition) => {
+        const hrPositions =
+          WorkplaceNhrPosition.map((item) => ({
+            value: item.intHrPosition,
+            label: item.strHrPosition,
+          })) || [];
+        // const uniqueWorkplaceIds = [
+        //   ...new Set(WorkplaceNhrPosition.map((item) => item.intWorkplaceId)),
+        // ];
+        // const workplaces = uniqueWorkplaceIds.map((id) => {
+        //   const correspondingItem = WorkplaceNhrPosition.find(
+        //     (item) => item.intWorkplaceId === id
+        //   );
+        //   return {
+        //     value: id,
+        //     intWorkplaceId: id,
+        //     label: correspondingItem ? correspondingItem.strWorkplaceName : "",
+        //   };
+        // });
+        // setFieldValue("workplace", workplaces);
+        // setFieldValue("hrPosition", hrPositions);
+        setHrPositionDDL(hrPositions);
+      }
+    );
     if (!detailsData?.length > 0) {
       const parameter = {
         partName: partName,
@@ -254,7 +288,7 @@ const SalaryGenerateView = () => {
           !state?.data ? state?.intYear : state?.data?.intYear
         }&strSalaryCode=${
           !state?.data ? state?.strSalaryCode : state?.data?.strSalaryCode
-        }`,
+        }&strHrPositionList=&intPaymentMethod=0`,
       };
       getSalaryDetailsReportRDLC(parameter);
     }
@@ -305,6 +339,155 @@ const SalaryGenerateView = () => {
               data={!state?.data ? state : state?.data}
               setLoading={setLoading}
             />
+            {values?.summary === "2" && (
+              <div className="card-style" style={{ margin: "10px 5px" }}>
+                <div className="row">
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>HR Position</label>
+                      <FormikSelect
+                        name="hrPosition"
+                        isClearable={false}
+                        options={hrPositionDDL || []}
+                        value={values?.hrPosition}
+                        onChange={(valueOption) => {
+                          setFieldValue("hrPosition", valueOption);
+                          const valueArrayHRPosition = valueOption?.map(
+                            (obj) => obj.value
+                          );
+
+                          const parameter = {
+                            setterData: setDetailsData,
+                            setLoading: setDetailsReportLoading,
+                            url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                              !state?.data
+                                ? state?.intMonth
+                                : state?.data?.intMonth
+                            }&intYearId=${
+                              !state?.data
+                                ? state?.intYear
+                                : state?.data?.intYear
+                            }&strSalaryCode=${
+                              !state?.data
+                                ? state?.strSalaryCode
+                                : state?.data?.strSalaryCode
+                            }&strHrPositionList=${
+                              valueArrayHRPosition || 0
+                            }&intPaymentMethod=${
+                              values?.walletType?.value || 0
+                            }`,
+                          };
+                          getSalaryDetailsReportRDLC(parameter);
+                        }}
+                        styles={{
+                          ...customStyles,
+                          control: (provided, state) => ({
+                            ...provided,
+                            minHeight: "auto",
+                            height:
+                              values?.hrPosition?.length > 1 ? "auto" : "auto",
+                            borderRadius: "4px",
+                            boxShadow: `${success500}!important`,
+                            ":hover": {
+                              borderColor: `${gray600}!important`,
+                            },
+                            ":focus": {
+                              borderColor: `${gray600}!important`,
+                            },
+                          }),
+                          valueContainer: (provided, state) => ({
+                            ...provided,
+                            height:
+                              values?.hrPosition?.length > 1 ? "auto" : "auto",
+                            padding: "0 6px",
+                          }),
+                          multiValue: (styles) => {
+                            return {
+                              ...styles,
+                              position: "relative",
+                              top: "-1px",
+                            };
+                          },
+                          multiValueLabel: (styles) => ({
+                            ...styles,
+                            padding: "0",
+                          }),
+                        }}
+                        isMulti
+                        // isDisabled={singleData}
+
+                        placeholder="HR Position"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>Payment Method</label>
+                      {/* 
+                          (@intBankOrWalletType, 0) = 0 OR 
+                          (@intBankOrWalletType = 1 AND sah.numBankPayInAmount > 0) 
+                          (@intBankOrWalletType = 2 AND sah.numDigitalPayInAmount > 0))
+                          (@intBankOrWalletType = 3 AND sah.numCashPayInAmount > 0)
+                      
+                      */}
+                      <FormikSelect
+                        name="walletType"
+                        options={
+                          [
+                            {
+                              value: 1,
+                              label: "Bank Pay",
+                            },
+                            {
+                              value: 2,
+                              label: "Digital Pay",
+                            },
+                            {
+                              value: 3,
+                              label: "Cash Pay",
+                            },
+                          ] || []
+                        }
+                        value={values?.walletType}
+                        onChange={(valueOption) => {
+                          setValues((prev) => ({
+                            ...prev,
+                            walletType: valueOption,
+                          }));
+                          const valueArrayHRPosition = (
+                            values?.hrPosition || []
+                          )?.map((obj) => obj.value);
+
+                          const parameter = {
+                            setterData: setDetailsData,
+                            setLoading: setDetailsReportLoading,
+                            url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                              !state?.data
+                                ? state?.intMonth
+                                : state?.data?.intMonth
+                            }&intYearId=${
+                              !state?.data
+                                ? state?.intYear
+                                : state?.data?.intYear
+                            }&strSalaryCode=${
+                              !state?.data
+                                ? state?.strSalaryCode
+                                : state?.data?.strSalaryCode
+                            }&strHrPositionList=${
+                              valueArrayHRPosition || 0
+                            }&intPaymentMethod=${valueOption?.value || 0}`,
+                          };
+                          getSalaryDetailsReportRDLC(parameter);
+                        }}
+                        placeholder=""
+                        styles={customStyles}
+                        // isDisabled={singleData}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="d-flex justify-content-between align-items-center mb-2">
               <div
                 className="d-flex justify-content-between align-items-center"
@@ -345,6 +528,8 @@ const SalaryGenerateView = () => {
                           label="Summary"
                           value={"1"}
                           onChange={(e) => {
+                            setFieldValue("hrPosition", []);
+                            setFieldValue("walletType", "");
                             setFieldValue("summary", e.target.value);
                           }}
                           checked={values?.summary === "1"}
@@ -444,7 +629,19 @@ const SalaryGenerateView = () => {
                               tableColumn,
                               tableAllowanceHead,
                               tableDeductionHead,
-                            }); */
+                            }); 
+                            
+                            &strHrPositionList=${
+                              valueArrayHRPosition || 0
+                            }&intPaymentMethod=${valueOption?.value || 0}`,
+                            const valueArrayHRPosition = (
+                              values?.hrPosition || []
+                            )?.map((obj) => obj.value);
+                            
+                            */
+                            const valueArrayHRPosition = (
+                              values?.hrPosition || []
+                            )?.map((obj) => obj.value);
                             const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_Excel?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
                               !state?.data
                                 ? state?.intMonth
@@ -457,7 +654,12 @@ const SalaryGenerateView = () => {
                               !state?.data
                                 ? state?.strSalaryCode
                                 : state?.data?.strSalaryCode
+                            }&strHrPositionList=${
+                              valueArrayHRPosition || 0
+                            }&intPaymentMethod=${
+                              values?.walletType?.value || 0
                             }`;
+
                             downloadFile(
                               url,
                               "Salary Details Report",
@@ -510,6 +712,9 @@ const SalaryGenerateView = () => {
                           if (detailsData?.length <= 0) {
                             return toast.warn("No Data Found");
                           } else {
+                            const valueArrayHRPosition = (
+                              values?.hrPosition || []
+                            )?.map((obj) => obj.value);
                             const url = `/PdfAndExcelReport/GetSalaryLandingData_Matador_PDF?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
                               !state?.data
                                 ? state?.intMonth
@@ -522,6 +727,10 @@ const SalaryGenerateView = () => {
                               !state?.data
                                 ? state?.strSalaryCode
                                 : state?.data?.strSalaryCode
+                            }&strHrPositionList=${
+                              valueArrayHRPosition || 0
+                            }&intPaymentMethod=${
+                              values?.walletType?.value || 0
                             }`;
 
                             getPDFAction(url, setLoading);
