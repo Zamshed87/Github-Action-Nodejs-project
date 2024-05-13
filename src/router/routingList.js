@@ -686,7 +686,7 @@ const ContactBook = lazy(() =>
   import("../modules/employeeProfile/contactBook/index.jsx")
 );
 const ContactClosingReport = lazy(() =>
-  import("../modules/employeeProfile/contractClosing/index.jsx")
+  import("../modules/employeeProfile/contractClosing/index.tsx")
 );
 const SelfDashboard = lazy(() =>
   import("../modules/employeeProfile/dashboard/index.jsx")
