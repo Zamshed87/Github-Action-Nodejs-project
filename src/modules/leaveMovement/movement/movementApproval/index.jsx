@@ -20,6 +20,7 @@ import { dateFormatter } from "../../../../utility/dateFormatter";
 import { timeFormatter } from "../../../../utility/timeFormatter";
 import {
   getAllMovementApplicatonListDataForApproval,
+  inputHandler,
   movementApproveReject,
 } from "../helper";
 import Loading from "./../../../../common/loading/Loading";
@@ -31,6 +32,7 @@ import AntTable from "../../../../common/AntTable";
 import { LightTooltip } from "../../../../common/LightTooltip";
 import useAxiosPost from "../../../../utility/customHooks/useAxiosPost";
 import ApproveRejectComp from "common/ApproveRejectComp";
+import FormikInput from "common/FormikInput";
 
 const initData = {
   search: "",
@@ -46,19 +48,12 @@ const initData = {
 };
 
 export default function MovementApproval() {
-  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { employeeId, isOfficeAdmin, orgId, wId, wgId, buId, userName } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
   // const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [applicationListData, setApplicationListData] = useState([]);
   const [allData, setAllData] = useState();
-
-  // const [isSupOrLineManager, setIsSupOrLineManager] = useState({
-  //   value: 1,
-  //   label: "Supervisor",
-  // });
   const [
     landingApproval,
     getLandingApproval,
@@ -126,7 +121,6 @@ export default function MovementApproval() {
             ? "Reject"
             : values?.appStatus?.label || "Pending",
         isAdmin: isOfficeAdmin,
-        // isSupOrLineManager: isSupOrLineManager?.value,
         isSupOrLineManager: 0,
         accountId: orgId,
       },
@@ -155,18 +149,6 @@ export default function MovementApproval() {
   };
 
   const saveHandler = (values) => {};
-  // const searchData = (keywords, allData, setRowDto) => {
-  //   try {
-  //     const regex = new RegExp(keywords?.toLowerCase());
-  //     let newDta = allData?.listData?.filter((item) =>
-  //       regex.test(item?.employeeName?.toLowerCase())
-  //     );
-  //     setRowDto({ listData: newDta });
-  //   } catch {
-  //     setRowDto([]);
-  //   }
-  // };
-
   // for multiple approval
   const demoPopup = (action, text, array) => {
     let newArray = [];
@@ -182,6 +164,8 @@ export default function MovementApproval() {
             fromDate: item?.movementApplication?.dteFromDate,
             toDate: item?.movementApplication?.dteToDate,
             isAdmin: isOfficeAdmin,
+            approverEmployeeName: userName || "",
+            comments: item?.remarks || "",
           });
         } else {
           newArray.push({
@@ -192,6 +176,8 @@ export default function MovementApproval() {
             fromDate: item?.movementApplication?.dteFromDate,
             toDate: item?.movementApplication?.dteToDate,
             isAdmin: isOfficeAdmin,
+            approverEmployeeName: userName || "",
+            comments: item?.remarks || "",
           });
         }
       });
@@ -223,6 +209,8 @@ export default function MovementApproval() {
         toDate: data?.movementApplication?.dteToDate,
         accountId: orgId,
         isAdmin: isOfficeAdmin,
+        approverEmployeeName: userName || "",
+        comments: data?.remarks || "",
       },
     ];
     let confirmObject = {
@@ -256,7 +244,7 @@ export default function MovementApproval() {
     getLandingData(/* isSupOrLineManager?.value */);
   }, [employeeId, wId]);
 
-  const columns = (setFieldValue, page, paginationSize) => {
+  const columns = (setFieldValue, page, paginationSize, values) => {
     return [
       {
         title: "SL",
@@ -339,7 +327,7 @@ export default function MovementApproval() {
                   });
                   setFilterLanding(data);
                   setLandingApproval(data2);
-                  // setApplicationListData({ listData: [...data] });
+                  setApplicationListData(data);
                 }}
               />
             </div>
@@ -483,6 +471,35 @@ export default function MovementApproval() {
         isDate: true,
       },
       {
+        title: "Remarks",
+        render: (_, data, index) => (
+          <div className="d-flex align-items-center">
+            <div>
+              <FormikInput
+                classes="input-sm"
+                value={values?.remarks}
+                name="remarks"
+                type="text"
+                className="form-control"
+                placeholder="Remarks"
+                onChange={(e) => {
+                  inputHandler(
+                    "remarks",
+                    e.target.value,
+                    index,
+                    landingApproval,
+                    setLandingApproval
+                  );
+                }}
+              />
+            </div>
+          </div>
+        ),
+        filter: false,
+        sorter: false,
+        width: "130px",
+      },
+      {
         title: "Waiting Stage",
         dataIndex: "currentStage",
         filter: false,
@@ -537,6 +554,7 @@ export default function MovementApproval() {
       },
     ];
   };
+  console.log("kjsdf", landingApproval);
   return (
     <>
       <Formik
@@ -593,7 +611,6 @@ export default function MovementApproval() {
                               />
                             ) : null}
                           </div>
-                          
                         </div>
                         <FilterBadgeComponent
                           propsObj={{
@@ -615,7 +632,8 @@ export default function MovementApproval() {
                                   columnsData={columns(
                                     setFieldValue,
                                     page,
-                                    paginationSize
+                                    paginationSize,
+                                    values
                                   )}
                                   setPage={setPage}
                                   setPaginationSize={setPaginationSize}

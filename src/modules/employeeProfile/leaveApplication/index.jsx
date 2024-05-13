@@ -68,6 +68,9 @@ function EmLeaveApplication(props) {
     wgId,
     permission,
     isOfficeAdmin,
+    showTooltip,
+    setShowTooltip,
+    handleIconHover,
     // demoPopupForDeleteAdmin,
   } = props?.propjObj;
 
@@ -82,7 +85,7 @@ function EmLeaveApplication(props) {
   const formikRef = useRef();
   useEffect(() => {
     if (formikRef?.current) {
-      setEmployeeInfo([])
+      setEmployeeInfo([]);
       formikRef?.current?.setFieldValue("employee", "");
     }
   }, [wgId, buId]);
@@ -316,7 +319,10 @@ function EmLeaveApplication(props) {
                       />
                     </div>
                     <div className="col-lg-6 col-md-10 leave-movement-FormCard">
-                      <LeaveBalanceTable leaveBalanceData={leaveBalanceData} values={values} />
+                      <LeaveBalanceTable
+                        leaveBalanceData={leaveBalanceData}
+                        values={values}
+                      />
                     </div>
                   </div>
                   <div className="row">
@@ -364,8 +370,12 @@ function EmLeaveApplication(props) {
                                 setSingleData,
                                 setImageFile,
                                 demoPopupForDelete,
-                                isOfficeAdmin
-                                // demoPopupForDeleteAdmin
+                                isOfficeAdmin,
+                                showTooltip,
+                                setShowTooltip,
+                                handleIconHover,
+                                loading,
+                                setLoading
                               )}
                               onRowClick={(item) => {
                                 setSingleData(item);

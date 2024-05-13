@@ -138,48 +138,6 @@ function LeavePolicyAssign() {
                 </div>
                 <div className="table-card-head-right">
                   <ul>
-                    {/* {checkedList.length > 1 && (
-                      <li>
-                        <ResetButton
-                          title="reset"
-                          icon={
-                            <SettingsBackupRestoreOutlined
-                              sx={{ marginRight: "10px" }}
-                            />
-                          }
-                          onClick={() => {
-                            getData(
-                              { current: 1, pageSize: paginationSize },
-                              setLandingLoading,
-                              buId,
-                              wgId,
-                              wId,
-                              headerList,
-                              setHeaderList,
-                              setFilterOrderList,
-                              initialHeaderListData,
-                              setInitialHeaderListData,
-                              setPages,
-                              setEmpIDString,
-                              setRowDto,
-                              "",
-                              [],
-                              -1,
-                              filterOrderList,
-                              checkedHeaderList,
-                              null,
-                              state?.list,
-                              values?.year?.value,
-                              setCheckedList
-                            );
-
-                            // setRowDto(allData);
-                            setCheckedList([]);
-                            setFieldValue("searchString", "");
-                          }}
-                        />
-                      </li>
-                    )} */}
                     <li>
                       {rowDto?.length > 0 && (
                         <div className="d-flex">

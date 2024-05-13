@@ -159,3 +159,27 @@ export const getAttendanceReport = async (
     setLoading(false);
   }
 };
+export const column = {
+  sl: "SL",
+  workplaceGroup: "Workplace Group",
+  workplace: "Workplace",
+  employeeCode: "Employee Id",
+  employeeName: "Employee Name",
+  designation: "Designation",
+  department: "Department",
+  section: "Section",
+  hrPosition: "HR Position",
+  employmentType: "Employment Type",
+  workingDays: "Working Days",
+  present: "Present",
+  absent: "Absent",
+  late: "Late",
+  movement: "Movement",
+  casualLeave: "Casual Leave",
+  sickLeave: "Sick Leave",
+  earnLeave: "Earn Leave",
+  medicalLeave: "Medical Leave",
+  specialLeave: "Special Leave",
+  weekend: "Off Day",
+  holiday: "Holiday",
+};

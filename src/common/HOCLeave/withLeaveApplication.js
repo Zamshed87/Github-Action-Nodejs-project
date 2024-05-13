@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -44,6 +45,7 @@ const withLeaveApplication = (WrappedComponent) => {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [loadingForInfo, setLoadingForInfo] = useState(false);
+    const [showTooltip, setShowTooltip] = useState([]);
 
     const open = Boolean(anchorEl);
     const id = open ? "simple-popover" : undefined;
@@ -69,6 +71,24 @@ const withLeaveApplication = (WrappedComponent) => {
         null,
         wgId
       );
+    };
+
+    const handleIconHover = async (data, values, setShowTooltip) => {
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `/ApprovalHistoryLog/GetApprovalLogHistoriesById?BusinessUnitId=${buId}&applicationId=${
+            data?.intApplicationId
+          }&employeeId=${
+            values?.employee?.value || employeeId
+          }&applicationType=leave`
+        );
+        setShowTooltip(res);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
     };
 
     const demoPopupForDelete = (item, values) => {
@@ -317,6 +337,9 @@ const withLeaveApplication = (WrappedComponent) => {
           wgId,
           permission,
           isOfficeAdmin,
+          handleIconHover,
+          showTooltip,
+          setShowTooltip,
           // demoPopupForDeleteAdmin,
         }}
       />

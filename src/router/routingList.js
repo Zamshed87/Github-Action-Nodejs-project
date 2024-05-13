@@ -258,7 +258,7 @@ const RequisitionApproval = lazy(() =>
 );
 const MonthlyPunchReportDetails = lazy(() =>
   import(
-    "../modules/employeeProfile/Reports/monthlyPunchDetailsReport/index.jsx"
+    "../modules/employeeProfile/Reports/monthlyPunchDetailsReport/index.tsx"
   )
 );
 const AccountCreateForm = lazy(() =>
@@ -686,7 +686,7 @@ const ContactBook = lazy(() =>
   import("../modules/employeeProfile/contactBook/index.jsx")
 );
 const ContactClosingReport = lazy(() =>
-  import("../modules/employeeProfile/contractClosing/index.jsx")
+  import("../modules/employeeProfile/contractClosing/index.tsx")
 );
 const SelfDashboard = lazy(() =>
   import("../modules/employeeProfile/dashboard/index.jsx")
@@ -1214,7 +1214,7 @@ const GorForPrint = lazy(() =>
   import("../modules/timeSheet/reports/attendanceReport/GorForPrint.jsx")
 );
 const AttendanceReport = lazy(() =>
-  import("../modules/timeSheet/reports/attendanceReport/index.jsx")
+  import("../modules/timeSheet/reports/attendanceReport/index.tsx")
 );
 // const AttendanceRawDataProcess = lazy(() =>
 //   import("../modules/timeSheet/attendence/attendanceRawDataProcess/index.jsx")
@@ -3061,3 +3061,8 @@ export const routingList = [
 
   { path: "/components/test", component: Test },
 ];
+
+
+
+// Those hidden menu just use for develper
+//http://localhost:3013/profile/timeManagement/attendanceRawDataProcess

@@ -584,6 +584,25 @@ export const getSearchEmployeeList = (buId, wgId, v) => {
     .catch((err) => []);
 };
 
+export const getSearchEmployeeListWithWarning = (buId, wgId, v) => {
+  if (v?.length < 2) return [];
+  return axios
+    .get(
+      `/Employee/GetCommonEmployeeDDLWithWarning?businessUnitId=${buId}&workplaceGroupId=${wgId}&searchText=${v}`
+    )
+    .then((res) => {
+      const modifiedData = res?.data?.map((item) => {
+        return {
+          ...item,
+          value: item?.employeeId,
+          label: item?.employeeName,
+        };
+      });
+      return modifiedData;
+    })
+    .catch((err) => []);
+};
+
 export const getSearchEmployeeListNew = (buId, intAccountId, v) => {
   if (v?.length < 2) return [];
 
