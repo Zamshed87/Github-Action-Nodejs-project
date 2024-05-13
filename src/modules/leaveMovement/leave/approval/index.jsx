@@ -39,6 +39,7 @@ import { dateFormatter } from "../../../../utility/dateFormatter";
 import {
   getAllAnnouncement,
   getAllLeaveApplicatonListDataForApproval,
+  inputHandler,
   leaveApproveReject,
 } from "../helper";
 import Loading from "./../../../../common/loading/Loading";
@@ -49,6 +50,7 @@ import LeaveApprovalEditForm from "./component/editForm";
 import "./leaveApproval.css";
 import ViewFormComponent from "./view-form";
 import ApproveRejectComp from "common/ApproveRejectComp";
+import FormikInput from "common/FormikInput";
 
 const initData = {
   searchString: "",
@@ -64,10 +66,8 @@ const initData = {
 };
 
 export default function LeaveApproval() {
-  const { orgId, employeeId, isOfficeAdmin, wgId, wId, buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { orgId, employeeId, isOfficeAdmin, wgId, wId, buId, userName } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   // Don't delete this state if you delete you should changes every place in leave folder
   const [appliedStatus, setAppliedStatus] = useState({
@@ -113,6 +113,8 @@ export default function LeaveApproval() {
           approverEmployeeId: employeeId,
           accountId: orgId,
           isAdmin: isOfficeAdmin,
+          approverEmployeeName: userName || "",
+          comments: data?.remarks || "",
         });
       }
       setApplicationData(array);
@@ -276,6 +278,8 @@ export default function LeaveApproval() {
         isReject: text === "Approve" ? false : true,
         accountId: orgId,
         isAdmin: isOfficeAdmin,
+        approverEmployeeName: userName || "",
+        comments: item?.remarks || "",
       },
     ];
 
@@ -335,7 +339,7 @@ export default function LeaveApproval() {
     document.title = "Leave Approval";
   }, []);
 
-  const getLandingTable = (setFieldValue, page, paginationSize) => {
+  const getLandingTable = (setFieldValue, page, paginationSize, values) => {
     return [
       {
         title: "SL",
@@ -423,10 +427,6 @@ export default function LeaveApproval() {
                   });
                   setAllLeaveApplicatonData({ listData: [...leaveAppData] });
                   setFilterData({ listData: [...data] });
-
-                  // let data = [...leaveApplicationData?.listData];
-                  // data[index].selectCheckbox = e.target.checked;
-                  // setAllLeaveApplicatonData({ listData: [...data] });
                 }}
               />
             </div>
@@ -559,6 +559,40 @@ export default function LeaveApproval() {
         sorter: false,
       },
       {
+        title: "Remarks",
+        render: (_, record, index) => (
+          <div className="d-flex align-items-center">
+            <div
+              onClick={(e) => {
+                console.log("e", e);
+                e.stopPropagation();
+              }}
+            >
+              <FormikInput
+                classes="input-sm"
+                value={values?.remarks}
+                name="remarks"
+                type="text"
+                className="form-control"
+                placeholder="Remarks"
+                onChange={(e) => {
+                  inputHandler(
+                    "remarks",
+                    e.target.value,
+                    index,
+                    leaveApplicationData?.listData,
+                    setApplicationData
+                  );
+                }}
+              />
+            </div>
+          </div>
+        ),
+        filter: false,
+        sorter: false,
+        width: "130px",
+      },
+      {
         title: "Waiting Stage",
         dataIndex: "currentStage",
         render: (currentStage) => (
@@ -577,7 +611,7 @@ export default function LeaveApproval() {
             {status === "Approved" && (
               <Chips label="Approved" classess="success" />
             )}
-            
+
             {status === "Pending" && (
               <>
                 <div className="actionChip">
@@ -744,7 +778,8 @@ export default function LeaveApproval() {
                                     columnsData={getLandingTable(
                                       setFieldValue,
                                       page,
-                                      paginationSize
+                                      paginationSize,
+                                      values
                                     )}
                                     setColumnsData={(dataRow) => {
                                       setFilterData({ listData: dataRow });
