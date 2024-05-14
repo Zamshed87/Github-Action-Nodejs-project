@@ -39,6 +39,7 @@ import AntTable from "../../../../common/AntTable";
 import NoResult from "../../../../common/NoResult";
 import DefaultInput from "../../../../common/DefaultInput";
 import { getMovementApplicationFilterEmpManagement } from "../../../employeeProfile/movementApplication/helper";
+import moment from "moment";
 
 const initData = {
   search: "",
@@ -142,8 +143,8 @@ export default function MovementApplication() {
       movementTypeId: values?.movementType?.value,
       fromDate: values.fromDate,
       toDate: values.toDate,
-      fromTime: values?.startTime,
-      toTime: values?.endTime,
+      fromTime: moment(values?.startTime, "HH:mm:ss").format("HH:mm:ss"),
+      toTime: moment(values?.endTime, "HH:mm:ss").format("HH:mm:ss"),
       reason: values?.reason,
       location: values?.location,
       accountId: orgId,
