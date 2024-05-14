@@ -188,3 +188,14 @@ export const contactClosingColumns = (
     },
   ];
 };
+export const column = {
+  sl: "SL",
+  EmployeeCode: "Code",
+  EmployeeName: "Employee Name",
+  DepartmentName: "Department",
+  DesignationName: "Designation",
+  strEmploymentType: "Employment Type",
+  dteContactFromDate: "Contractual From Date",
+  dteContactToDate: "Contractual To Date",
+  dteJoiningDate: "Joining Date",
+};

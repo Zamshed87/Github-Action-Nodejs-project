@@ -78,6 +78,7 @@ export const apiList = {
   GetAllBankWallet: "/MasterData/GetAllBankWallet",
   SaveTaxChallanConfig: "/SaasMasterData/SaveTaxChallanConfig",
   CreateBankBranch: "/Employee/CreateBankBranch",
+  UpdateEmpBasicInfoByEmployeeId: "/Employee/UpdateEmpBasicInfoByEmployeeId",
   GetEmpIdCardExternalInfo: "/SaasMasterData/GetEmpIdCardExternalInfo",
   CreateOrUpdateEmpIdCardExternalInfo:
     "SaasMasterData/CreateOrUpdateEmpIdCardExternalInfo",
@@ -116,6 +117,7 @@ export const apiList = {
   EmployeeReportWithFilter: "/Employee/EmployeeReportWithFilter",
   GetEmpAttendanceReport: "/TimeSheetReport/GetEmpAttendanceReport",
   EmployeeSeparationListFilter: "/Employee/EmployeeSeparationListFilter",
+  ContractualClosing: "/Employee/ContractualClosing",
   EmployeeDDLWithCode:
     "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
   RefundOrEarningReport: "/EmployeeIncrement/RefundOrEarningReport",

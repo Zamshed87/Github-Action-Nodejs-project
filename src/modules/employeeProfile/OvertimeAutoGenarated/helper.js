@@ -239,7 +239,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       dataIndex: "numTotalAmount",
       render: (_, item) => (
         <div className="text-right pr-2">
-          {numberWithCommas(item?.numTotalAmount)}
+          {numberWithCommas(Math.round(item?.numTotalAmount)) || ""}
         </div>
       ),
       key: "numTotalAmount",
