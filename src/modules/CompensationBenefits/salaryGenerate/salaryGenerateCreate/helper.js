@@ -37,7 +37,7 @@ export const columnsData = (
   rowDto,
   offDaylanding,
   setOffDaylanding,
-  modifyData,
+  modifyData
   // setRowDto,
   // setFieldValue
 ) => {
@@ -262,26 +262,24 @@ export const salaryGenerateCreateEditTableColumn = (
               // const copyRowDto = [...rowDto];
               // copyRowDto[index].isSalaryGenerate =
               //   !copyRowDto[index].isSalaryGenerate;
-                const updateList = rowDto?.slice()?.map(emp => {
-                  if (emp?.strEmployeeCode === record?.strEmployeeCode) {
-                    return {
-                      ...emp,
-                      isSalaryGenerate: !emp?.isSalaryGenerate
-                    }
-                  }
-                  return emp
-                
-                });
-                const updateList2 = allData?.slice()?.map(emp => {
-                  if (emp?.strEmployeeCode === record?.strEmployeeCode) {
-                    return {
-                      ...emp,
-                      isSalaryGenerate: !emp?.isSalaryGenerate
-                    }
-                  }
-                  return emp
-                
-                });
+              const updateList = rowDto?.slice()?.map((emp) => {
+                if (emp?.strEmployeeCode === record?.strEmployeeCode) {
+                  return {
+                    ...emp,
+                    isSalaryGenerate: !emp?.isSalaryGenerate,
+                  };
+                }
+                return emp;
+              });
+              const updateList2 = allData?.slice()?.map((emp) => {
+                if (emp?.strEmployeeCode === record?.strEmployeeCode) {
+                  return {
+                    ...emp,
+                    isSalaryGenerate: !emp?.isSalaryGenerate,
+                  };
+                }
+                return emp;
+              });
               setRowDto(updateList);
               setAllData(updateList2);
             }}
@@ -342,6 +340,18 @@ export const salaryGenerateCreateEditTableColumn = (
     dataIndex: "strWorkplace",
     sorter: true,
     filter: true,
+  },
+  {
+    title: "Bank Pay",
+    dataIndex: "numBankPayInAmount",
+    sorter: true,
+    isNumber: true,
+  },
+  {
+    title: "Cash Pay",
+    dataIndex: "numCashPayInAmount",
+    sorter: true,
+    isNumber: true,
   },
   // {
   //   title: "Workplace Group",

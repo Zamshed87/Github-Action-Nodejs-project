@@ -45,6 +45,7 @@ import useDebounce from "../../../utility/customHooks/useDebounce";
 import { LightTooltip } from "../../../common/LightTooltip";
 import AsyncFormikSelect from "../../../common/AsyncFormikSelect";
 import moment from "moment";
+import axios from "axios";
 
 const initData = {
   search: "",
@@ -101,7 +102,7 @@ export default function EmMovementApplication() {
   const [isFilter, setIsFilter] = useState(false);
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
-
+  const [showTooltip, setShowTooltip] = useState([]);
   const scrollRef = useRef();
 
   const open = Boolean(anchorEl);
@@ -288,6 +289,24 @@ export default function EmMovementApplication() {
     IConfirmModal(confirmObject);
   };
 
+  const handleIconHover = async (data, values, setShowTooltip) => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `/ApprovalHistoryLog/GetApprovalLogHistoriesById?BusinessUnitId=${buId}&applicationId=${
+          data?.MovementId
+        }&employeeId=${
+          values?.employee?.value || employeeId
+        }&applicationType=Movement`
+      );
+      setShowTooltip(res);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
   const columns = (values, setValues) => {
     return [
       {
@@ -379,12 +398,55 @@ export default function EmMovementApplication() {
       {
         title: "Status",
         dataIndex: "Status",
-        render: (data) => (
-          <div>
-            {data === "Approved" && <Chips label={data} classess="success" />}
-            {data === "Pending" && <Chips label={data} classess="warning" />}
-            {data === "Rejected" && <Chips label={data} classess="danger" />}
-            {data === "Process" && <Chips label={data} classess="primary" />}
+        render: (status, data) => (
+          <div className="d-flex">
+            <div className="d-flex align-items-center">
+              <LightTooltip
+                onMouseEnter={() =>
+                  handleIconHover(data, values, setShowTooltip)
+                }
+                title={
+                  <div>
+                    {showTooltip?.data?.length ? (
+                      showTooltip.data.map((tooltipItem, index) => (
+                        <div key={index} className="movement-tooltip p-1">
+                          <div className="border-bottom">
+                            <p className="tooltip-title">
+                              {tooltipItem?.strApproverName}
+                            </p>
+                            <p className="tooltip-subTitle">
+                              {tooltipItem?.strComments}
+                            </p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="movement-tooltip p-1">
+                        <p className="tooltip-title">No Remarks</p>
+                      </div>
+                    )}
+                  </div>
+                }
+              >
+                <InfoOutlinedIcon
+                  sx={{ marginRight: "12px", color: "rgba(0, 0, 0, 0.6)" }}
+                />
+              </LightTooltip>
+            </div>
+            <div>
+              {status === "Approved" && (
+                <Chips label={status} classess="success" />
+              )}
+              {status === "Pending" && (
+                <Chips label={status} classess="warning" />
+              )}
+              {status === "Rejected" && (
+                <Chips label={status} classess="danger" />
+              )}
+              {status === "Process" && (
+                <Chips label={status} classess="primary" />
+              )}
+            </div>
           </div>
         ),
         sorter: false,

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 import AntTable from "../../../../common/AntTable";
 import BackButton from "../../../../common/BackButton";
 import DefaultInput from "../../../../common/DefaultInput";
@@ -150,6 +151,12 @@ const SalaryGenerateCreate = () => {
     setRowDto([]);
   }, [wgId]);
 
+  const [
+    workplaceNhrPosition,
+    getWorkplaceNhrPosition,
+    ,
+    setWorkplaceNhrPosition,
+  ] = useAxiosGet([]);
   // for edit
   useEffect(() => {
     if (+params?.id) {
@@ -159,7 +166,38 @@ const SalaryGenerateCreate = () => {
         setSingleData,
         setLoading,
         wgId,
-        buId
+        buId,
+        (data) => {
+          getWorkplaceNhrPosition(
+            `/Payroll/SalarySelectQueryAll?partName=HrPositionListBySalaryCode&intAccountId=${data?.intAccountId}&strSalaryCode=${data?.strSalaryCode}&intBusinessUnitId=${data?.intBusinessUnitId}&intWorkplaceGroupId=${data?.intWorkplaceGroupId}`,
+            (WorkplaceNhrPosition) => {
+              const hrPositions =
+                WorkplaceNhrPosition.map((item) => ({
+                  value: item.intHrPosition,
+                  label: item.strHrPosition,
+                })) || [];
+              const uniqueWorkplaceIds = [
+                ...new Set(
+                  WorkplaceNhrPosition.map((item) => item.intWorkplaceId)
+                ),
+              ];
+              const workplaces = uniqueWorkplaceIds.map((id) => {
+                const correspondingItem = WorkplaceNhrPosition.find(
+                  (item) => item.intWorkplaceId === id
+                );
+                return {
+                  value: id,
+                  intWorkplaceId: id,
+                  label: correspondingItem
+                    ? correspondingItem.strWorkplaceName
+                    : "",
+                };
+              });
+              setFieldValue("workplace", workplaces);
+              setFieldValue("hrPosition", hrPositions);
+            }
+          );
+        }
       );
     }
   }, [params, wgId, buId]);
@@ -487,7 +525,6 @@ const SalaryGenerateCreate = () => {
       : salaryGenerateInitialValues,
     onSubmit: (values) => saveHandler(values),
   });
-  // console.log({rowDto, allData})
 
   return (
     <>
@@ -716,7 +753,6 @@ const SalaryGenerateCreate = () => {
                         options={hrPositionDDL || []}
                         value={values?.hrPosition}
                         onChange={(valueOption) => {
-                          
                           setFieldValue("hrPosition", valueOption);
                         }}
                         styles={{
@@ -758,6 +794,49 @@ const SalaryGenerateCreate = () => {
                         errors={errors}
                         placeholder="HR Position"
                         touched={touched}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>Payment Method</label>
+                      {/* 
+                          (@intBankOrWalletType, 0) = 0 OR 
+                          (@intBankOrWalletType = 1 AND sah.numBankPayInAmount > 0) 
+                          (@intBankOrWalletType = 2 AND sah.numDigitalPayInAmount > 0))
+                          (@intBankOrWalletType = 3 AND sah.numCashPayInAmount > 0)
+                      
+                      */}
+                      <FormikSelect
+                        name="walletType"
+                        options={
+                          [
+                            {
+                              value: 1,
+                              label: "Bank Pay",
+                            },
+                            {
+                              value: 2,
+                              label: "Digital Pay",
+                            },
+                            {
+                              value: 3,
+                              label: "Cash Pay",
+                            },
+                          ] || []
+                        }
+                        value={values?.walletType}
+                        onChange={(valueOption) => {
+                          setValues((prev) => ({
+                            ...prev,
+                            walletType: valueOption,
+                          }));
+                        }}
+                        placeholder=""
+                        styles={customStyles}
+                        errors={errors}
+                        touched={touched}
+                        // isDisabled={singleData}
                       />
                     </div>
                   </div>

@@ -195,3 +195,19 @@ export const getEncashmentBalanceByEmployeeId = async (empId, cb) => {
     res?.data?.totalBalance && cb(res?.data?.totalBalance);
   } catch (err) {}
 };
+
+export const inputHandler = (
+  name,
+  value,
+  sl,
+  leaveApplicationData,
+  setAllLeaveApplicatonData
+) => {
+  let data = [...leaveApplicationData];
+  let _sl = data[sl];
+  _sl[name] = value;
+
+  setAllLeaveApplicatonData({
+    listData: leaveApplicationData,
+  });
+};
