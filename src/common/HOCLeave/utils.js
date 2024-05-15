@@ -4,6 +4,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Tooltip } from "@mui/material";
 import { LightTooltip } from "common/LightTooltip";
 import moment from "moment";
+import { todayDate } from "utility/todayDate";
 import * as Yup from "yup";
 import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
 import {
@@ -18,8 +19,8 @@ export const initDataForLeaveApplication = {
   employee: "",
   location: "",
   reason: "",
-  fromDate: "",
-  toDate: "",
+  fromDate: todayDate(),
+  toDate: todayDate(),
   halfTime: "",
   isHalfDay: "",
   isSelfService: false,

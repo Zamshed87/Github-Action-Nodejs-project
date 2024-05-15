@@ -34,19 +34,19 @@ import Loading from "./../../../../common/loading/Loading";
 import FilterModal from "./component/FilterModal";
 import FormCard from "./component/FormCard";
 import "./index.css";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import AntTable from "../../../../common/AntTable";
 import NoResult from "../../../../common/NoResult";
 import DefaultInput from "../../../../common/DefaultInput";
 import { getMovementApplicationFilterEmpManagement } from "../../../employeeProfile/movementApplication/helper";
 import moment from "moment";
+import { todayDate } from "utility/todayDate";
 
 const initData = {
   search: "",
   movementType: "",
-  fromDate: "",
+  fromDate: todayDate(),
   startTime: "",
-  toDate: "",
+  toDate: todayDate(),
   endTime: "",
   location: "",
   reason: "",
