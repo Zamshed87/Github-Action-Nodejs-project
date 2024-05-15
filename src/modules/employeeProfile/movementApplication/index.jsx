@@ -46,13 +46,14 @@ import { LightTooltip } from "../../../common/LightTooltip";
 import AsyncFormikSelect from "../../../common/AsyncFormikSelect";
 import moment from "moment";
 import axios from "axios";
+import { todayDate } from "utility/todayDate";
 
 const initData = {
   search: "",
   movementType: "",
-  fromDate: "",
+  fromDate: todayDate(),
   startTime: "",
-  toDate: "",
+  toDate: todayDate(),
   endTime: "",
   location: "",
   reason: "",
