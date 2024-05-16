@@ -61,7 +61,6 @@ const EmployeeIdCardLanding = () => {
       workplace: "",
       workplaceGroup: "",
     },
-    onSubmit: (values) => {},
   });
 
   // landing api call
@@ -71,8 +70,7 @@ const EmployeeIdCardLanding = () => {
     searchText,
     checkedList,
     currentFilterSelection,
-    checkedHeaderList,
-    isAssigned = null
+    checkedHeaderList
   ) => {
     const payload = {
       accountId: orgId,
@@ -157,7 +155,7 @@ const EmployeeIdCardLanding = () => {
     );
   };
 
-  let permission = useMemo(
+  const permission = useMemo(
     () => permissionList.find((item) => item?.menuReferenceId === 30386),
     [permissionList]
   );
@@ -177,7 +175,7 @@ const EmployeeIdCardLanding = () => {
       });
       payload = empIdList.join(",");
     }
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: isAll
         ? `Download All Employees Card?`
@@ -190,13 +188,13 @@ const EmployeeIdCardLanding = () => {
           setIsLoading
         );
       },
-      noAlertFunc: () => {},
     };
     IConfirmModal(confirmObject);
   };
 
   useEffect(() => {
     getData(pages);
+    setCheckedList([]);
     getPeopleDeskAllDDL(
       `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplaceGroup&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&intId=${employeeId}`,
       "intWorkplaceGroupId",
@@ -225,7 +223,7 @@ const EmployeeIdCardLanding = () => {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData(
@@ -246,6 +244,9 @@ const EmployeeIdCardLanding = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Employee ID Card";
   }, []);
+
+  console.log(checkedList);
+
   return (
     <>
       {(isLoading || landingLoading) && <Loading />}
@@ -375,7 +376,7 @@ const EmployeeIdCardLanding = () => {
                         0
                       );
                     }}
-                    handleClick={(event) => {
+                    handleClick={() => {
                       // setAnchorEl(event.currentTarget);
                     }}
                     width="200px"
