@@ -45,3 +45,15 @@ export const getMovementHistory = async (
     toast.error(error?.response?.data?.message);
   }
 };
+export const column = {
+  sl: "SL",
+  workplaceGroupName: "Workplace Group",
+  workplaceName: "Workplace",
+  employeeCode: "Employee Id",
+  employeeName: "Employee Name",
+  designationName: "Designation",
+  departmentName: "Department",
+  sectionName: "Section",
+  rawDuration: "Duration (Day)",
+  reason: "Reason",
+};

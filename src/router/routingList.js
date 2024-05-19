@@ -758,7 +758,7 @@ const EmLoanReportPrint = lazy(() =>
   import("../modules/employeeProfile/Reports/LoanHistory/LoanReportPrint.jsx")
 );
 const EmMovementHistory = lazy(() =>
-  import("../modules/employeeProfile/Reports/movementHistory/index.js")
+  import("../modules/employeeProfile/Reports/movementHistory/index.tsx")
 );
 const EmMovementReportPrint = lazy(() =>
   import(
