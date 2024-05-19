@@ -752,7 +752,7 @@ const EmLeaveReportPrint = lazy(() =>
   import("../modules/employeeProfile/Reports/leaveHistory/LeaveReportPrint.jsx")
 );
 const EmLoanHistory = lazy(() =>
-  import("../modules/employeeProfile/Reports/LoanHistory/index.jsx")
+  import("../modules/employeeProfile/Reports/LoanHistory/index.tsx")
 );
 const EmLoanReportPrint = lazy(() =>
   import("../modules/employeeProfile/Reports/LoanHistory/LoanReportPrint.jsx")
@@ -3061,8 +3061,6 @@ export const routingList = [
 
   { path: "/components/test", component: Test },
 ];
-
-
 
 // Those hidden menu just use for develper
 //http://localhost:3013/profile/timeManagement/attendanceRawDataProcess

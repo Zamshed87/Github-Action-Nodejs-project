@@ -117,6 +117,8 @@ export const apiList = {
   EmployeeReportWithFilter: "/Employee/EmployeeReportWithFilter",
   GetEmpAttendanceReport: "/TimeSheetReport/GetEmpAttendanceReport",
   EmployeeSeparationListFilter: "/Employee/EmployeeSeparationListFilter",
+  GetLoanApplicationByAdvanceFilter:
+    "/Employee/GetLoanApplicationByAdvanceFilter",
   ContractualClosing: "/Employee/ContractualClosing",
   EmployeeDDLWithCode:
     "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
