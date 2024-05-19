@@ -3,15 +3,14 @@ import FormikInput from "../../../common/FormikInput";
 import { useDispatch } from "react-redux";
 import { attachment_action } from "../helper";
 import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
-import { AttachmentOutlined, FileUpload } from '@mui/icons-material';
+import { AttachmentOutlined, FileUpload } from "@mui/icons-material";
 import "../style.css";
 import FormikSelect from "../../../common/FormikSelect";
 import { customStyles } from "../../../utility/selectCustomStyle";
-import { AddOutlined } from '@mui/icons-material';
+import { AddOutlined } from "@mui/icons-material";
 import ViewModal from "../../../common/ViewModal";
 import AddPolicyCategory from "./AddPolicyCategory";
 import { gray600, success500 } from "../../../utility/customColor";
-
 
 const FormCard = ({
   propsObj,
@@ -24,7 +23,7 @@ const FormCard = ({
   setPolicyCategoryDDL,
   orgId,
   buId,
-  employeeId
+  employeeId,
 }) => {
   const dispatch = useDispatch();
   const { values, setFieldValue, errors, touched } = propsObj;
@@ -64,7 +63,7 @@ const FormCard = ({
                   setShow(true);
                 }}
               >
-                <AddOutlined sx={{ fontSize: '16px' }} />
+                <AddOutlined sx={{ fontSize: "16px" }} />
               </button>
             </div>
           </div>
@@ -116,7 +115,7 @@ const FormCard = ({
                 return {
                   ...styles,
                   position: "relative",
-                  top: "-1px"
+                  top: "-1px",
                 };
               },
               multiValueLabel: (styles) => ({
@@ -164,24 +163,26 @@ const FormCard = ({
                 return {
                   ...styles,
                   position: "relative",
-                  top: "-1px"
+                  top: "-1px",
                 };
               },
               multiValueLabel: (styles) => ({
                 ...styles,
                 padding: "0",
                 position: "relative",
-                top: "-1px"
+                top: "-1px",
               }),
             }}
             name="department"
-            options={[
-              {
-                value: 0,
-                label: "All"
-              },
-              ...departmentDDL
-            ] || []}
+            options={
+              [
+                {
+                  value: 0,
+                  label: "All",
+                },
+                ...departmentDDL,
+              ] || []
+            }
             value={values?.department}
             onChange={(valueOption) => {
               setFieldValue("department", valueOption);
@@ -194,7 +195,8 @@ const FormCard = ({
         <div className="col-lg-3">
           <p
             onClick={onButtonClick}
-            className="d-inline-block mt-2 pointer uplaod-para">
+            className="d-inline-block mt-2 pointer uplaod-para"
+          >
             <input
               onChange={(e) => {
                 if (e.target.files?.[0]) {
@@ -225,16 +227,21 @@ const FormCard = ({
               <FileUpload
                 sx={{
                   marginRight: "5px",
-                  fontSize: "18px"
+                  fontSize: "18px",
                 }}
-              /> Upload files
+              />{" "}
+              Upload files
             </span>
-          </p> <br />
+            <sub className="text-danger"> (Max file size: 1MB)</sub>
+          </p>{" "}
+          <br />
           {imageFile?.globalFileUrlId ? (
             <div
               className="d-inline-block"
               onClick={() => {
-                dispatch(getDownlloadFileView_Action(imageFile?.globalFileUrlId));
+                dispatch(
+                  getDownlloadFileView_Action(imageFile?.globalFileUrlId)
+                );
               }}
             >
               <div
@@ -243,14 +250,18 @@ const FormCard = ({
                   fontSize: "12px",
                   fontWeight: "500",
                   color: "#0072E5",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
               >
-                <AttachmentOutlined sx={{ marginRight: "5px", color: "#0072E5" }} />
+                <AttachmentOutlined
+                  sx={{ marginRight: "5px", color: "#0072E5" }}
+                />
                 {imageFile?.fileName || "Attachment"}
               </div>
             </div>
-          ) : ""}
+          ) : (
+            ""
+          )}
         </div>
         <div className="col-12"></div>
         <div className="col-lg-1">
@@ -258,7 +269,7 @@ const FormCard = ({
             <button
               className="btn btn-green btn-green-disable"
               type="submit"
-              style={{ marginTop: '12px' }}
+              style={{ marginTop: "12px" }}
             >
               Save
             </button>
@@ -282,7 +293,6 @@ const FormCard = ({
           setShow={setShow}
         />
       </ViewModal>
-
     </>
   );
 };

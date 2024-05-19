@@ -65,7 +65,7 @@ export const attachment_action = async (
     return data;
   } catch (error) {
     setLoading && setLoading(false);
-    toast.error("File Size is too Large minimum of 4MB or inValid File!");
+    toast.error("File Size is too Large minimum of 1MB or inValid File!");
   }
 };
 
