@@ -746,19 +746,19 @@ const PfFundReport = lazy(() =>
   import("../modules/employeeProfile/Reports/pfFundReport/index.tsx")
 );
 const EmLeaveHistory = lazy(() =>
-  import("../modules/employeeProfile/Reports/leaveHistory/index.js")
+  import("../modules/employeeProfile/Reports/leaveHistory/index.tsx")
 );
 const EmLeaveReportPrint = lazy(() =>
   import("../modules/employeeProfile/Reports/leaveHistory/LeaveReportPrint.jsx")
 );
 const EmLoanHistory = lazy(() =>
-  import("../modules/employeeProfile/Reports/LoanHistory/index.jsx")
+  import("../modules/employeeProfile/Reports/LoanHistory/index.tsx")
 );
 const EmLoanReportPrint = lazy(() =>
   import("../modules/employeeProfile/Reports/LoanHistory/LoanReportPrint.jsx")
 );
 const EmMovementHistory = lazy(() =>
-  import("../modules/employeeProfile/Reports/movementHistory/index.js")
+  import("../modules/employeeProfile/Reports/movementHistory/index.tsx")
 );
 const EmMovementReportPrint = lazy(() =>
   import(
@@ -766,7 +766,7 @@ const EmMovementReportPrint = lazy(() =>
   )
 );
 const EmOverTimeReport = lazy(() =>
-  import("../modules/employeeProfile/Reports/overTimeReport")
+  import("../modules/employeeProfile/Reports/overTimeReport/index.tsx")
 );
 const EmOverTimeDailyReport = lazy(() =>
   import("../modules/employeeProfile/Reports/overTimeDailyReport")
@@ -3061,8 +3061,6 @@ export const routingList = [
 
   { path: "/components/test", component: Test },
 ];
-
-
 
 // Those hidden menu just use for develper
 //http://localhost:3013/profile/timeManagement/attendanceRawDataProcess

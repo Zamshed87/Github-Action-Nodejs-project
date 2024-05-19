@@ -10,10 +10,14 @@ import { useHistory } from "react-router-dom";
 import { PInput } from "Components/PForm";
 import { PButton, buttonType } from "Components/Button/PButton";
 import { debounce } from "lodash";
+import { MdPrint } from "react-icons/md";
+import { gray200 } from "utility/customColor";
 type PCardHeaderType = {
   title?: string | React.ReactNode;
   text?: string | React.ReactNode;
   exportIcon?: boolean | React.ReactNode;
+  printIcon?: boolean | React.ReactNode;
+  pdfExport?: (e: any) => void;
   onExport?: (e: any) => void;
   backButton?: boolean | string;
   onSearch?: (e: any) => void;
@@ -34,6 +38,8 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
     text,
     exportIcon,
     onExport,
+    printIcon,
+    pdfExport,
     backButton,
     onSearch,
     submitText,
@@ -68,6 +74,21 @@ export const PCardHeader: React.FC<PCardHeaderType> = (props) => {
         {isShowExportIcon ? (
           <div className="export_icon" onClick={onExport}>
             <DownloadOutlined />
+          </div>
+        ) : undefined}
+        {printIcon ? (
+          <div
+            className="export_icon"
+            style={{
+              background: "var(--gray200)",
+              borderRadius: "50%",
+              padding: "3px 6px",
+              fontSize: "14px",
+              cursor: "pointer",
+            }}
+            onClick={pdfExport}
+          >
+            <MdPrint />
           </div>
         ) : undefined}
 
