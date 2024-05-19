@@ -241,7 +241,6 @@ const MgtExpenseApplicationCreate = () => {
           errors,
           touched,
           setFieldValue,
-          
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -435,6 +434,7 @@ const MgtExpenseApplicationCreate = () => {
                       />{" "}
                       Upload files
                     </span>
+                    <sub className="text-danger"> (Max file size: 1MB)</sub>
                   </p>
                   {imageFile?.length
                     ? imageFile.map((image, i) => (
