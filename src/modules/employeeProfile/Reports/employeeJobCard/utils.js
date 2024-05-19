@@ -23,7 +23,7 @@ export const createJobCardExcelHandler = ({
     numOverTime: "Over Time",
     CalendarName: "Calendar Name",
     AttStatus: "Attendance Status",
-    strRemarkss: "Remarks",
+    Remarks: "Remarks",
   };
   createCommonExcelFile({
     titleWithDate: `Job Card Report `,
@@ -250,7 +250,7 @@ export const JobCardTableHeadColumn = (page, paginationSize) => {
     },
     {
       title: "Remarks",
-      dataIndex: "strRemarkss",
+      dataIndex: "Remarks",
       sorter: true,
       filter: true,
       isNumber: true,
