@@ -766,7 +766,7 @@ const EmMovementReportPrint = lazy(() =>
   )
 );
 const EmOverTimeReport = lazy(() =>
-  import("../modules/employeeProfile/Reports/overTimeReport")
+  import("../modules/employeeProfile/Reports/overTimeReport/index.tsx")
 );
 const EmOverTimeDailyReport = lazy(() =>
   import("../modules/employeeProfile/Reports/overTimeDailyReport")
