@@ -746,7 +746,7 @@ const PfFundReport = lazy(() =>
   import("../modules/employeeProfile/Reports/pfFundReport/index.tsx")
 );
 const EmLeaveHistory = lazy(() =>
-  import("../modules/employeeProfile/Reports/leaveHistory/index.js")
+  import("../modules/employeeProfile/Reports/leaveHistory/index.tsx")
 );
 const EmLeaveReportPrint = lazy(() =>
   import("../modules/employeeProfile/Reports/leaveHistory/LeaveReportPrint.jsx")
