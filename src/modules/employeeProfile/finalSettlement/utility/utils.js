@@ -370,7 +370,7 @@ const finalSettlementColumns = (
               onClick={(e) => {
                 e.stopPropagation();
                 setId(record?.intSeparationId);
-                setEmpId(null);
+                setEmpId(record?.intEmployeeId);
                 setEmpBasicInfo(record);
                 setOpenModal(true);
                 setType("dueAmount");
