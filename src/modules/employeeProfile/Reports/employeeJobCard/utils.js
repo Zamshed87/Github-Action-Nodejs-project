@@ -1,7 +1,7 @@
 import Chips from "common/Chips";
 import { Cell } from "utility/customExcel/createExcelHelper";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { dateFormatterForInput } from "utility/dateFormatter";
+import { dateFormatter, dateFormatterForInput } from "utility/dateFormatter";
 
 export const createJobCardExcelHandler = ({
   BuDetails,
@@ -77,6 +77,8 @@ export const createJobCardExcelHandler = ({
         return [
           new Cell(obj?.employeeName || 0, "center", "text", true).getCell(),
           new Cell(obj?.workplaceGroup || 0, "center", "text").getCell(),
+          new Cell(obj?.workplaceName || 0, "center", "text").getCell(),
+          new Cell(obj?.joiningDate || 0, "center", "text").getCell(),
           new Cell(obj?.designation || 0, "center", "text").getCell(),
           new Cell(obj?.department || 0, "center", "text").getCell(),
           new Cell(obj?.totalPresent || 0, "center", "text").getCell(),
@@ -90,6 +92,8 @@ export const createJobCardExcelHandler = ({
       return generateSubHeadData({
         employeeName: `${empInfo?.[0]?.EmployeeName} - ${empInfo?.[0]?.EmployeeCode}`,
         workplaceGroup: empInfo?.[0]?.WorkplaceGroupName || "-",
+        workplaceName: empInfo?.[0]?.WorkplaceName || "-",
+        joiningDate: dateFormatter(empInfo?.[0]?.JoiningDate) || "-",
         designation: empInfo?.[0]?.DesignationName || "-",
         department: empInfo?.[0]?.DepartmentName || "-",
         totalPresent: `${rowDto?.[0]?.totalPresent || 0} Days`,
@@ -103,6 +107,8 @@ export const createJobCardExcelHandler = ({
     subHeaderColumn: {
       employeeName: "Employee & Code",
       workplaceGroup: "Workplace Group",
+      workplaceName: "Workplace Name",
+      joiningDate: "Joining Date",
       designation: "Designation",
       department: "Department",
       totalPresent: "Total Present",

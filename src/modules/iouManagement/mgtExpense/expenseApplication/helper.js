@@ -1,11 +1,11 @@
 import { EditOutlined, InfoOutlined } from "@mui/icons-material";
-import { styled, Tooltip, tooltipClasses } from "@mui/material";
+import { Tooltip, styled, tooltipClasses } from "@mui/material";
+import axios from "axios";
 import AvatarComponent from "../../../../common/AvatarComponent";
 import Chips from "../../../../common/Chips";
 import { gray900 } from "../../../../utility/customColor";
 import { dateFormatter } from "../../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../../utility/numberWithCommas";
-import axios from "axios";
 
 export const getExpenseApplicationById = async (
   id,
@@ -195,7 +195,7 @@ export const expenseLandingTableColumn = (page, paginationSize, history) => {
       title: "Status",
       dataIndex: "status",
       filter: false,
-      width: 80,
+      width: 100,
       render: (item) => (
         <>
           {item?.status === "Approved" && (

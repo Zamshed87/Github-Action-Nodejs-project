@@ -15,6 +15,7 @@ import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
+  dateFormatter,
   monthFirstDate,
   monthLastDate,
 } from "../../../../utility/dateFormatter";
@@ -322,6 +323,10 @@ export default function EmployeeJobCard() {
                             Workplace Group:{" "}
                             <strong>{empInfo?.[0]?.WorkplaceGroupName}</strong>{" "}
                           </p>
+                          <p>
+                            Workplace Name:{" "}
+                            <strong>{empInfo?.[0]?.WorkplaceName}</strong>{" "}
+                          </p>
                         </div>
                       </div>
                       <div className="col-md-3">
@@ -331,13 +336,18 @@ export default function EmployeeJobCard() {
                             borderRight: "1px solid rgba(0, 0, 0, 0.12)",
                           }}
                         >
+                          {console.log("empInfo",empInfo)}
                           <p>
                             HR Position:{" "}
                             <strong>{empInfo?.[0]?.PositionName}</strong>
                           </p>
-                          <p>
+                          {/* <p>
                             Business Unit:{" "}
                             <strong>{empInfo?.[0]?.BusinessUnitName}</strong>
+                          </p> */}
+                          <p>
+                           Joining Date:{" "}
+                            <strong>{dateFormatter(empInfo?.[0]?.JoiningDate)}</strong>
                           </p>
                         </div>
                       </div>
