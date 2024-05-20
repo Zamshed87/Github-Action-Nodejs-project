@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PrintOutlined } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import ReactToPrint from "react-to-print";
@@ -13,17 +13,40 @@ import {
   usesHistoryColumn,
 } from "../utils";
 import PeopleDeskTable from "common/peopleDeskTable";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { printDateTime } from "utility/getPrintDateTime";
+import { formatMoney } from "utility/formatMoney";
+import { dateFormatter } from "utility/dateFormatter";
+import { APIUrl } from "App";
 
-const ProfileView = () => {
+const ProfileView = ({ assetId }) => {
   const printRef = useRef();
   const dispatch = useDispatch();
-  const [singleData, getSingleData, loading, setSingleData] = useAxiosGet({});
+  const { orgId, buId, wgId, wId } = useSelector(
+    (state) => state?.auth?.profileData,
+    shallowEqual
+  );
+  const [singleData, getSingleData, loading, setSingleData] = useAxiosGet(null);
   const [depreciationRowDto, setDepreciationRowDto] = useState([]);
   const [maintenanceRowDto, setMaintenanceRowDto] = useState([]);
   const [usesHistoryRowDto, setUsesHistoryRowDto] = useState([]);
   const [documentsRowDto, setDocumentsRowDto] = useState([]);
+
+  useEffect(() => {
+    if (assetId) {
+      getSingleData(
+        `/AssetManagement/GetAssetProfileReport?accountId=${orgId}&branchId=${buId}&AssetId=${assetId}&workplaceId=${wId}&workplaceGroupId=${wgId}`,
+        (res) => {
+          setSingleData(res?.AssetHeaderData);
+          setDepreciationRowDto(res?.Depreciation);
+          setMaintenanceRowDto(res?.MaintenanceOrServicingLog);
+          setUsesHistoryRowDto(res?.UsesHistory);
+          setDocumentsRowDto(res?.Documents);
+        }
+      );
+    }
+  }, [assetId, orgId, buId, wId, wgId]);
+
   return (
     <>
       <div className="mb-2 d-flex justify-content-end">
@@ -77,9 +100,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "80%" }}>
                   <span>: </span>
-                  {
-                    "Lenovo IdeaPad 1 14AMN7 AMD Ryzen 5 512GB SSD 14 FHD Laptop with DDR5 RAM"
-                  }
+                  {singleData?.AssetName}
                 </p>
               </div>
             </div>
@@ -98,7 +119,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "25%" }}>
                   <span>: </span>
-                  {"163,000"}
+                  {formatMoney(singleData?.AcquisitionValue)}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -115,7 +136,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "25%" }}>
                   <span>: </span>
-                  {"15,000"}
+                  {formatMoney(singleData?.TotalDepreciationValue)}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -132,7 +153,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "25%" }}>
                   <span>: </span>
-                  {"148,000"}
+                  {formatMoney(singleData?.NetBookValue)}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -149,7 +170,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "25%" }}>
                   <span>: </span>
-                  {"1605"}
+                  {formatMoney(singleData?.MaintenaceOrServicingCost)}
                 </p>
               </div>
             </div>
@@ -170,7 +191,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"AT-78-145365"}
+                  {singleData?.AssetNo}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -187,7 +208,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"10-12-2022"}
+                  {dateFormatter(singleData?.AcquisitionDate)}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -204,7 +225,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"Global Brand Pvt Ltd."}
+                  {singleData?.Supplier || "N/A"}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -221,7 +242,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"Ryzen 5 7520U"}
+                  {singleData?.Model || "N/A"}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -238,7 +259,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"Dev-13"}
+                  {singleData?.Serialnumber || "N/A"}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -255,7 +276,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"2 Year six month days"}
+                  {singleData?.Age || "N/A"}
                 </p>
               </div>
             </div>
@@ -274,7 +295,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"IT Equipment"}
+                  {singleData?.CategoryName || "N/A"}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -291,7 +312,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"Laptop"}
+                  {singleData?.SubCategoryName}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -308,7 +329,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"163,000"}
+                  {formatMoney(singleData?.AcquisitionValue)}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -325,7 +346,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"Lenovo"}
+                  {singleData?.BrandValue || "N/A"}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -342,7 +363,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"06-10-2025"}
+                  {dateFormatter(singleData?.WarrantyEndDate) || "N/A"}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -359,7 +380,7 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  {"25-12-2022"}
+                  {dateFormatter(singleData?.RegistrationDate) || "N/A"}
                 </p>
               </div>
               <div className="single-info d-flex justify-content-between mb-1">
@@ -376,14 +397,30 @@ const ProfileView = () => {
                 </p>
                 <p style={{ width: "53.3%" }}>
                   <span>: </span>
-                  <Chips label={"Available"} classess="success" />
+                  {singleData?.Status === "Available" ? (
+                    <Chips label={"Available"} classess="success" />
+                  ) : singleData?.Status === "Maintenance" ? (
+                    <Chips label={"Maintenance"} classess="danger" />
+                  ) : singleData?.Status === "Assign" ? (
+                    <Chips label={"Assign"} classess="warning" />
+                  ) : null}
                 </p>
               </div>
             </div>
-            <div style={{ width: "30%" }}>
+            <div
+              style={{
+                width: "30%",
+                border: "1px solid #101828 !important",
+                boxShadow:
+                  "0px 0.497024px 0.994048px rgba(0, 0, 0, 0.3), 0px 0.994048px 2.98214px 0.994048px rgba(0, 0, 0, 0.15)",
+              }}
+            >
               <img
-                // src={`${APIUrl}/Document/DownloadFile?id=${strProfileImageUrl}`}
-                src="https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                src={
+                  singleData?.ImageProfileID
+                    ? `${APIUrl}/Document/DownloadFile?id=${singleData?.ImageProfileID}`
+                    : "https://icon-library.com/images/no-picture-available-icon/no-picture-available-icon-1.jpg"
+                }
                 alt="asset-image"
                 style={{ width: "100%", height: "180px", objectFit: "cover" }}
               />
@@ -404,7 +441,7 @@ const ProfileView = () => {
               </p>
               <p style={{ width: "80%" }}>
                 <span>: </span>
-                {"25-05-2024"}
+                {dateFormatter(singleData?.LastDepreciationrunDate) || "N/A"}
               </p>
             </div>
             <div className="single-info d-flex justify-content-between mb-1">
@@ -421,9 +458,7 @@ const ProfileView = () => {
               </p>
               <p style={{ width: "80%" }}>
                 <span>: </span>
-                {
-                  "Lenovo IdeaPad 1 14AMN7 AMD Ryzen 5 512GB SSD 14 FHD Laptop with DDR5 RAM"
-                }
+                {singleData?.AssetDescription || "N/A"}
               </p>
             </div>
             <div className="single-info d-flex justify-content-between mb-1">
@@ -440,7 +475,7 @@ const ProfileView = () => {
               </p>
               <p style={{ width: "80%" }}>
                 <span>: </span>
-                {"Purchase for Production Department"}
+                {singleData?.Note || "N/A"}
               </p>
             </div>
           </div>
@@ -453,7 +488,8 @@ const ProfileView = () => {
                 columnData={depreciationColumn()}
                 rowDto={depreciationRowDto}
                 setRowDto={setDepreciationRowDto}
-                uniqueKey="id"
+                // uniqueKey="id"
+                isPagination={false}
               />
             ) : (
               <>
@@ -472,7 +508,8 @@ const ProfileView = () => {
                 columnData={maintenanceColumn()}
                 rowDto={maintenanceRowDto}
                 setRowDto={setMaintenanceRowDto}
-                uniqueKey="id"
+                // uniqueKey="id"
+                isPagination={false}
               />
             ) : (
               <>
@@ -491,7 +528,8 @@ const ProfileView = () => {
                 columnData={usesHistoryColumn()}
                 rowDto={usesHistoryRowDto}
                 setRowDto={setUsesHistoryRowDto}
-                uniqueKey="id"
+                // uniqueKey="id"
+                isPagination={false}
               />
             ) : (
               <>
@@ -510,7 +548,8 @@ const ProfileView = () => {
                 columnData={documentsColumn(dispatch)}
                 rowDto={documentsRowDto}
                 setRowDto={setDocumentsRowDto}
-                uniqueKey="id"
+                // uniqueKey="id"
+                isPagination={false}
               />
             ) : (
               <>

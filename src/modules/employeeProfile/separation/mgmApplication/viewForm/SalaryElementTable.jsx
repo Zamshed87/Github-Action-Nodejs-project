@@ -34,7 +34,7 @@ const SalaryElementTable = ({
                 dataIndex: "strRemarks",
                 className: "text-left",
                 render: (_, record, index) =>
-                  type === "view" ? (
+                  type === "dueView" ? (
                     <span>{record?.strRemarks || "N/A"}</span>
                   ) : (
                     <span>
@@ -76,7 +76,7 @@ const SalaryElementTable = ({
                 align: "right",
                 width: "140px",
                 render: (_, record, index) =>
-                  type === "view" ? (
+                  type === "dueView" ? (
                     <span>{formatMoney(record?.numAmount)}</span>
                   ) : (
                     <span>
