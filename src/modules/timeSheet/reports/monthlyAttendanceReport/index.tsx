@@ -278,7 +278,6 @@ const MonthlyAttendanceReport = () => {
         <PCard>
           {excelLoading && <Loading />}
           <PCardHeader
-            backButton
             exportIcon={true}
             title={`Total ${landingApi?.data[0]?.totalCount || 0} employees`}
             onSearch={(e) => {
