@@ -232,3 +232,28 @@ export function calculateNextDate(inputDate, n) {
   const resultDate = `${yearStr}-${monthStr}-${dayStr}`;
   return resultDate;
 }
+export function calculateNextDateAntd(inputDate, n) {
+  const dateParts = inputDate.split("/");
+  const year = parseInt(dateParts[2]);
+  const month = parseInt(dateParts[1]);
+  const day = parseInt(dateParts[0]);
+  const currentDate = new Date(year, month - 1, day);
+
+  for (let i = 0; i < n; i++) {
+    currentDate.setDate(currentDate.getDate() + 1); // Add one day
+    // Check if we need to handle month boundaries (30/31 days)
+    const nextMonth = new Date(year, month, 1);
+    if (
+      currentDate.getDate() === 1 &&
+      currentDate.getMonth() !== nextMonth.getMonth()
+    ) {
+      currentDate.setDate(1); // Set day to 1 if it's a new month
+    }
+  }
+  // Format the result date as "YYYY-MM-DD"
+  const yearStr = currentDate.getFullYear();
+  const monthStr = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const dayStr = String(currentDate.getDate()).padStart(2, "0");
+  const resultDate = `${dayStr}/${monthStr}/${yearStr}`;
+  return resultDate;
+}

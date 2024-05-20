@@ -40,6 +40,9 @@ import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import EmployeeList from "modules/timeSheet/reports/employeeList/index.tsx";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
+import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
+import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
+
 import { lazy } from "react";
 
 const CreateAndEditEmploye = lazy(() =>
@@ -709,9 +712,9 @@ const ActiveInactiveEmployeeReport = lazy(() =>
 const JobConfirmationReport = lazy(() =>
   import("../modules/employeeProfile/jobConfirmation/index.tsx")
 );
-const EmLeaveApplication = lazy(() =>
-  import("../modules/employeeProfile/leaveApplication/index.jsx")
-);
+// const EmLeaveApplicationT = lazy(() =>
+//   import("../modules/employeeProfile/leaveApplication/index.jsx")
+// );
 const EmLoanApplication = lazy(() =>
   import("../modules/employeeProfile/LoanApplication/index.jsx")
 );
@@ -1561,7 +1564,7 @@ export const routingList = [
   //   path: "/profile/traininganddevelopment/calendarbooking",
   //   component: CalenderBooking,
   // },
-  { path: "/profile/leaveApplication", component: EmLeaveApplication },
+  { path: "/profile/leaveApplication", component: EmLeaveApplicationT },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
 
@@ -2061,7 +2064,7 @@ export const routingList = [
   },
   {
     path: "/SelfService/leaveAndMovement/leaveApplication",
-    component: LeaveApplication,
+    component: TLeaveApplication,
   },
   {
     path: "/SelfService/leaveAndMovement/leaveEncashment",

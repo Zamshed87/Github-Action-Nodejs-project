@@ -1,0 +1,951 @@
+old index ---- 
+import {
+  Attachment,
+  EditOutlined,
+  SettingsBackupRestoreOutlined,
+} from "@mui/icons-material";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { Tooltip } from "@mui/material";
+import { Form, Formik } from "formik";
+import React, { useEffect, useRef, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
+import { APIUrl } from "../../../App";
+import DemoImg from "../../../assets/images/demo.png";
+import AntTable from "../../../common/AntTable";
+import {
+  getPeopleDeskAllDDL,
+  getPeopleDeskAllLanding,
+  makeAddress,
+} from "../../../common/api";
+import Chips from "../../../common/Chips";
+import DefaultInput from "../../../common/DefaultInput";
+import FormikSelect from "../../../common/FormikSelect";
+import IConfirmModal from "../../../common/IConfirmModal";
+import Loading from "../../../common/loading/Loading";
+import MasterFilter from "../../../common/MasterFilter";
+import NoResult from "../../../common/NoResult";
+import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
+import ResetButton from "../../../common/ResetButton";
+import { getDownlloadFileView_Action } from "../../../commonRedux/auth/actions";
+import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
+import { gray500 } from "../../../utility/customColor";
+import {
+  dateFormatter,
+  dateFormatterForInput,
+  monthFirstDate,
+  monthLastDate,
+} from "../../../utility/dateFormatter";
+import { customStyles } from "../../../utility/selectCustomStyle";
+import LeaveBalanceTable from "./component/LeaveBalanceTable";
+import PopOverFilter from "./component/PopOverFilter";
+import {
+  createLeaveApplication,
+  getEmployeeLeaveBalanceAndHistoryWithFilter,
+} from "./helper";
+import "./leaveApplication.css";
+import LeaveForm from "./leaveForm/LeaveForm";
+import ViewFormComponent from "./view-form";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { LightTooltip } from "../../../common/LightTooltip";
+
+const initData = {
+  search: "",
+  leaveType: "",
+  fromDate: "",
+  toDate: "",
+  location: "",
+  reason: "",
+  filterToDate: monthLastDate(),
+  filterFromDate: monthFirstDate(),
+  employee: "",
+};
+
+const validationSchema = Yup.object().shape({
+  location: Yup.string().required("Location is required"),
+  reason: Yup.string().required("Reason is required"),
+  fromDate: Yup.string().required("From Date is required"),
+  toDate: Yup.string().required("To Date is required"),
+  leaveType: Yup.object()
+    .shape({
+      label: Yup.string().required("Leave type is required"),
+      value: Yup.string().required("Leave type is required"),
+    })
+    .typeError("Leave type is required"),
+});
+
+
+function EmLeaveApplication() {
+  const scrollRef = useRef();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setFirstLevelNameAction("Employee Management"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const {
+    isOfficeAdmin,
+    userName,
+    intProfileImageUrl,
+    orgId,
+    buId,
+    employeeId,
+  } = useSelector((state) => state?.auth?.profileData, shallowEqual);
+
+  // row Data
+  const [allData, setAllData] = useState([]);
+  const [singleData, setSingleData] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [employee, setEmployee] = useState("");
+  const [imageFile, setImageFile] = useState("");
+  const [leaveHistoryData, setLeaveHistoryData] = useState([]);
+  const [viewModal, setViewModal] = useState(false);
+  const [othersEmployee, setOthersEmployee] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [empLocation, setEmpLocation] = useState("");
+  const [isFilter, setIsFilter] = useState(false);
+  const [employeeDDL, setEmployeeDDL] = useState([]);
+
+  useEffect(() => {
+    getPeopleDeskAllLanding(
+      "EmployeeBasicById",
+      orgId,
+      buId,
+      employee?.intEmployeeBasicInfoId
+        ? employee?.intEmployeeBasicInfoId
+        : employeeId,
+      setOthersEmployee,
+      null,
+      setLoading
+    );
+    getPeopleDeskAllLanding(
+      "AddressDetailsByEmployeeId",
+      orgId,
+      buId,
+      employee?.intEmployeeBasicInfoId 
+        ? employee?.intEmployeeBasicInfoId
+        : employeeId,
+      setEmpLocation,
+      null,
+      setLoading
+    );
+    getPeopleDeskAllDDL(
+      `/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin?EmployeeId=${employeeId}`,
+      "intEmployeeBasicInfoId",
+      "strEmployeeName",
+      setEmployeeDDL
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employee?.intEmployeeBasicInfoId]);
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  const handleOpen = () => {
+    setViewModal(false);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  // for view Modal
+  // const handleViewOpen = () => setViewModal(true);
+  const handleViewClose = () => setViewModal(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const getData = (values) => {
+    getEmployeeLeaveBalanceAndHistoryWithFilter(
+      employee?.intEmployeeBasicInfoId
+        ? employee?.intEmployeeBasicInfoId
+        : values?.employee.value
+        ? values?.employee.value
+        : employeeId,
+      "LeaveHistory",
+      "",
+      "",
+      values?.filterFromDate || monthFirstDate(),
+      values?.filterToDate || monthLastDate(),
+      "",
+      setLeaveHistoryData,
+      setLoading,
+      setAllData
+    );
+  };
+
+  const demoPopup = (action, values, cb) => {
+    const callback = () => {
+      getData(values);
+      setSingleData("");
+      setIsEdit(false);
+      cb();
+      setImageFile("");
+    };
+    const payload = {
+      partId: singleData?.intApplicationId ? 2 : 1,
+      leaveApplicationId: singleData ? singleData?.intApplicationId : 0,
+      leaveTypeId: values?.leaveType?.value,
+      employeeId: employee ? employee?.intEmployeeBasicInfoId : employeeId,
+      accountId: orgId,
+      businessUnitId: buId,
+      applicationDate: new Date(),
+      appliedFromDate: values?.fromDate,
+      appliedToDate: values?.toDate,
+      documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
+      leaveReason: values?.reason,
+      addressDuetoLeave: values?.location,
+      insertBy: employeeId,
+    };
+    let confirmObject = {
+      closeOnClickOutside: false,
+      message: `Do you want to ${action} ?`,
+      yesAlertFunc: () => {
+        if (employee) {
+          createLeaveApplication(payload, setLoading, callback);
+        } else {
+          createLeaveApplication(payload, setLoading, callback);
+        }
+      },
+      noAlertFunc: () => {},
+    };
+    IConfirmModal(confirmObject);
+  };
+
+  const saveHandler = (values, cb) => {
+    demoPopup("Apply", values, cb);
+  };
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employee?.intEmployeeBasicInfoId]);
+
+  const searchData = (keywords, allData, setRowDto) => {
+    try {
+      const regex = new RegExp(keywords?.toLowerCase());
+      let newDta = allData?.filter((item) =>
+        regex.test(item?.LeaveType?.toLowerCase())
+      );
+      setRowDto(newDta);
+    } catch {
+      setRowDto([]);
+    }
+  };
+  let address = "";
+  if (empLocation?.Result?.length) {
+    address = makeAddress([
+      empLocation?.Result[0]?.strAddressDetails,
+      empLocation?.Result[0]?.strPostOfficeName,
+      empLocation?.Result[0]?.strDistrictName,
+      empLocation?.Result[0]?.strDivisionName,
+    ]);
+  }
+
+  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+
+  let permission = null;
+  permissionList.forEach((item) => {
+    if (item?.menuReferenceId === 87) {
+      permission = item;
+    }
+  });
+
+  const demoPopupForDelete = (item, values) => {
+    const payload = {
+      partId: 3,
+      leaveApplicationId: item?.intApplicationId,
+      leaveTypeId: item?.LeaveTypeId,
+      employeeId: employeeId,
+      accountId: orgId,
+      businessUnitId: buId,
+      applicationDate: item?.ApplicationDate,
+      appliedFromDate: item?.AppliedFromDate,
+      appliedToDate: item?.AppliedToDate,
+      documentFile: item?.DocumentFileUrl ? item?.DocumentFileUrl : 0,
+      leaveReason: item?.Reason,
+      addressDuetoLeave: item?.AddressDuetoLeave,
+      insertBy: employeeId,
+    };
+
+    const callback = () => {
+      getData(values);
+    };
+
+    let confirmObject = {
+      closeOnClickOutside: false,
+      message: "Are you want to sure you delete your leave?",
+      yesAlertFunc: () => {
+        createLeaveApplication(payload, setLoading, callback);
+      },
+      noAlertFunc: () => {
+        //   history.push("/components/dialogs")
+      },
+    };
+    IConfirmModal(confirmObject);
+  };
+
+  const columns = (setValues, values) => {
+    return [
+      {
+        title: "SL",
+        render: (text, record, index) => index + 1,
+        sorter: false,
+        filter: false,
+        className: "text-center",
+      },
+      {
+        title: "Leave Type",
+        dataIndex: "LeaveType",
+        render: (_, record) => (
+          <div className="d-flex align-items-center ">
+            <LightTooltip
+              title={
+                <div className="movement-tooltip p-2">
+                  <div className="border-bottom">
+                    <p className="tooltip-title">Reason</p>
+                    <p className="tooltip-subTitle">{record?.Reason}</p>
+                  </div>
+                  <div>
+                    <p className="tooltip-title mt-2">Location</p>
+                    <p className="tooltip-subTitle mb-0">
+                      {record?.AddressDuetoLeave}
+                    </p>
+                  </div>
+                </div>
+              }
+              arrow
+            >
+              <InfoOutlinedIcon
+                sx={{ marginRight: "12px", color: "rgba(0, 0, 0, 0.6)" }}
+              />
+            </LightTooltip>
+            <div className="d-flex align-items-center">
+              <div>{record?.LeaveType}</div>
+              <div className="leave-application-document ml-1">
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(
+                      getDownlloadFileView_Action(record?.DocumentFileUrl)
+                    );
+                  }}
+                >
+                  {record?.DocumentFileUrl !== 0 && <Attachment />}
+                </span>
+              </div>
+            </div>
+          </div>
+        ),
+        sorter: false,
+        filter: true,
+      },
+      {
+        title: "Location",
+        dataIndex: "AddressDuetoLeave",
+        sorter: true,
+        filter: true,
+        isNumber: true,
+      },
+      {
+        title: "From Date",
+        dataIndex: "AppliedFromDate",
+        render: (date) => dateFormatter(date),
+        sorter: false,
+        filter: false,
+      },
+      {
+        title: "To Date",
+        dataIndex: "AppliedToDate",
+        render: (date) => dateFormatter(date),
+        sorter: false,
+        filter: false,
+      },
+      {
+        title: "Application Date",
+        dataIndex: "ApplicationDate",
+        render: (date) => dateFormatter(date),
+        sorter: false,
+        filter: false,
+      },
+      {
+        // className: "text-center",
+        title: "Status",
+        dataIndex: "ApprovalStatus",
+        render: (data, record) => (
+          <div>
+            {data === "Approved" && <Chips label={data} classess="success" />}
+            {data === "Pending" && <Chips label={data} classess="warning" />}
+            {data === "Rejected" && <Chips label={data} classess="danger" />}
+            {data === "Process" && <Chips label={data} classess="primary" />}
+          </div>
+        ),
+        sorter: true,
+        filter: true,
+      },
+      {
+        className: "text-center",
+        render: (data, record) => (
+          <div className="d-flex justify-content-center">
+            {record?.ApprovalStatus === "Pending" && (
+              <Tooltip title="Edit" arrow>
+                <button className="iconButton" type="button">
+                  <EditOutlined
+                    onClick={(e) => {
+                      setIsEdit(true);
+                      e.stopPropagation();
+                      scrollRef.current.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                      setSingleData(record);
+                      setValues({
+                        ...values,
+                        leaveType: {
+                          value: record?.LeaveTypeId,
+                          label: record?.LeaveType,
+                        },
+                        fromDate: dateFormatterForInput(
+                          record?.AppliedFromDate
+                        ),
+                        toDate: dateFormatterForInput(record?.AppliedToDate),
+                        location: record?.AddressDuetoLeave,
+                        reason: record?.Reason,
+                      });
+
+                      setImageFile({
+                        globalFileUrlId: record?.DocumentFileUrl,
+                      });
+                    }}
+                  />
+                </button>
+              </Tooltip>
+            )}
+
+            {record?.ApprovalStatus === "Pending" && (
+              <Tooltip title="Delete" arrow>
+                <button type="button" className="iconButton">
+                  <DeleteOutlineOutlinedIcon
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSingleData("");
+                      demoPopupForDelete(data, values);
+                    }}
+                  />
+                </button>
+              </Tooltip>
+            )}
+          </div>
+        ),
+      },
+    ];
+  };
+
+  return (
+    <>
+      <Formik
+        enableReinitialize={true}
+        initialValues={{
+          ...initData,
+          location: address ? address : "",
+          employee: {
+            value: employee?.intEmployeeBasicInfoId
+              ? employee?.intEmployeeBasicInfoId
+              : employeeId,
+            label: employee?.strEmployeeName
+              ? employee?.strEmployeeName
+              : userName,
+          },
+        }}
+        validationSchema={validationSchema}
+        onSubmit={(values, { setSubmitting, resetForm }) => {
+          saveHandler(values, () => {
+            resetForm(initData);
+          });
+        }}
+      >
+        {({
+          handleSubmit,
+          resetForm,
+          values,
+          setValues,
+          errors,
+          touched,
+          setFieldValue,
+          isValid,
+          setErrors,
+        }) => (
+          <>
+            {loading && <Loading />}
+            <Form onSubmit={handleSubmit}>
+              {permission?.isCreate ? (
+                <div className="table-card">
+                  <div ref={scrollRef} className="table-card-heading pb-1 pr-0">
+                    <div className="employeeInfo d-flex align-items-center  ml-lg-0 ml-md-4">
+                      {employee?.intEmployeeBasicInfoId ? (
+                        <img
+                          src={
+                            othersEmployee?.[0]?.strProfileImageUrl
+                              ? `${APIUrl}/Document/DownloadFile?id=${othersEmployee?.[0]?.strProfileImageUrl}`
+                              : DemoImg
+                          }
+                          alt="Profile"
+                          style={{
+                            width: "35px",
+                            height: "35px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src={
+                            intProfileImageUrl
+                              ? `${APIUrl}/Document/DownloadFile?id=${intProfileImageUrl}`
+                              : DemoImg
+                          }
+                          alt="Profile"
+                          style={{
+                            width: "35px",
+                            height: "35px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+                      <div className="employeeTitle ml-2">
+                        <p className="employeeName">
+                          {employee?.strEmployeeName
+                            ? employee?.strEmployeeName
+                            : userName}
+                        </p>
+                        <p className="employeePosition">
+                          {othersEmployee?.[0]?.DesignationName}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="table-card-head-right" >
+                      <ul>
+                        {isFilter && (
+                          <li>
+                            <ResetButton
+                              classes="btn-filter-reset"
+                              title="reset"
+                              icon={
+                                <SettingsBackupRestoreOutlined
+                                  sx={{ marginRight: "10px", fontSize: "16px" }}
+                                />
+                              }
+                              styles={{
+                                marginRight: "16px",
+                              }}
+                              onClick={() => {
+                                setEmployee("");
+                                setIsFilter(false);
+                                setFieldValue("search", "");
+                                getData();
+                                resetForm();
+                              }}
+                            />
+                          </li>
+                        )}
+                        <li>
+                          <div
+                            className="input-field-main d-flex align-items-center"
+                          >
+                            <label htmlFor="" className="mr-2">Employee</label>
+                            <div style={{width: "250px"}}>
+                            <FormikSelect
+                              isClearable={false}
+                              menuPosition="fixed"
+                              name="employee"
+                              options={employeeDDL || []}
+                              value={values?.employee}
+                              onChange={(valueOption) => {
+                                setFieldValue("employee", valueOption);
+                                setEmployee(valueOption);
+                                getEmployeeLeaveBalanceAndHistoryWithFilter(
+                                  valueOption?.value
+                                    ? valueOption?.value
+                                    : employeeId,
+                                  "LeaveHistory",
+                                  "",
+                                  "",
+                                  values?.filterFromDate || monthFirstDate(),
+                                  values?.filterToDate || monthLastDate(),
+                                  "",
+                                  setLeaveHistoryData,
+                                  setLoading,
+                                  setAllData
+                                );
+                                resetForm();
+                              }}
+                              styles={customStyles}
+                              placeholder=""
+                            />
+                            </div>
+                           
+                          </div>
+                        </li>
+                        {/* <li>
+                          <MasterFilter
+                            isHiddenFilter
+                            styles={{
+                              marginRight: "0px",
+                            }}
+                            width="200px"
+                            inputWidth="200px"
+                            value={values?.search}
+                            setValue={(value) => {
+                              searchData(value, allData, setLeaveHistoryData);
+                              setFieldValue("search", value);
+                            }}
+                            cancelHandler={() => {
+                              getData();
+                              setFieldValue("search", "");
+                            }}
+                            handleClick={handleClick}
+                          />
+                        </li> */}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="row justify-content-center">
+                    <div className="col-lg-6 col-md-10 leave-movement-FormCard">
+                      <LeaveForm
+                        propsObj={{
+                          singleData,
+                          handleSubmit,
+                          initData,
+                          resetForm,
+                          values,
+                          setValues,
+                          errors,
+                          touched,
+                          setFieldValue,
+                          isValid,
+                          imageFile,
+                          setImageFile,
+                          setLeaveHistoryData,
+                          isEdit,
+                          setIsEdit,
+                          setSingleData,
+                          employee,
+                        }}
+                      />
+                    </div>
+                    <div className="col-lg-6 col-md-10 leave-movement-FormCard">
+                      <LeaveBalanceTable
+                        employee={employee}
+                        setAllData={setAllData}
+                        setLoading={setLoading}
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-12 my-3">
+                      <div className="table-card-body pl-lg-1 pl-md-3">
+                        <div>
+                          <div className="d-flex align-items-center justify-content-between">
+                            <h2 style={{ color: gray500, fontSize: "14px" }}>
+                              Leave List
+                            </h2>
+                            <MasterFilter
+                              isHiddenFilter
+                              styles={{
+                                marginRight: "0px",
+                              }}
+                              width="200px"
+                              inputWidth="200px"
+                              value={values?.search}
+                              setValue={(value) => {
+                                searchData(value, allData, setLeaveHistoryData);
+                                setFieldValue("search", value);
+                              }}
+                              cancelHandler={() => {
+                                getData();
+                                setFieldValue("search", "");
+                              }}
+                              handleClick={handleClick}
+                            />
+                          </div>
+
+                          <div className="card-style my-2">
+                            <div className="row">
+                              <div className="col-lg-3">
+                                <div className="input-field-main">
+                                  <label>Leave From Date</label>
+                                  <DefaultInput
+                                    classes="input-sm"
+                                    value={values?.filterFromDate}
+                                    name="filterFromDate"
+                                    type="date"
+                                    className="form-control"
+                                    onChange={(e) => {
+                                      setFieldValue(
+                                        "filterFromDate",
+                                        e.target.value
+                                      );
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-3">
+                                <div className="input-field-main">
+                                  <label>Leave To Date</label>
+                                  <DefaultInput
+                                    classes="input-sm"
+                                    value={values?.filterToDate}
+                                    name="filterToDate"
+                                    type="date"
+                                    className="form-control"
+                                    onChange={(e) => {
+                                      setFieldValue(
+                                        "filterToDate",
+                                        e.target.value
+                                      );
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-1">
+                                <button
+                                  type="button"
+                                  style={{ marginTop: "23px" }}
+                                  className="btn btn-green"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    getEmployeeLeaveBalanceAndHistoryWithFilter(
+                                      values?.employee?.value
+                                        ? values?.employee?.value
+                                        : employeeId,
+                                      "LeaveHistory",
+                                      "",
+                                      "",
+                                      values?.filterFromDate ||
+                                        monthFirstDate(),
+                                      values?.filterToDate || monthLastDate(),
+                                      "",
+                                      setLeaveHistoryData,
+                                      setLoading,
+                                      setAllData
+                                    );
+                                    resetForm();
+                                  }}
+                                >
+                                  View
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          className="table-card-styled table-responsive tableOne mt-2"
+                          style={{ height: "190px" }}
+                        >
+                          {leaveHistoryData?.length > 0 ? (
+                            <AntTable
+                              data={leaveHistoryData}
+                              columnsData={columns(setValues, values)}
+                              onRowClick={(item) => {
+                                setSingleData(item);
+                                setViewModal(true);
+                              }}
+                              removePagination
+                            />
+                          ) : (
+                            <>
+                              {!loading && (
+                                <NoResult title="No Result Found" para="" />
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <NotPermittedPage />
+              )}
+
+              {/* View Form Modal */}
+              <ViewFormComponent
+                show={viewModal}
+                title={"Leave Details"}
+                onHide={handleViewClose}
+                size="lg"
+                backdrop="static"
+                classes="default-modal"
+                handleOpen={handleOpen}
+                id={id}
+                orgId={orgId}
+                buId={buId}
+                singleData={singleData}
+                setSingleData={setSingleData}
+                setValues={setValues}
+                values={values}
+                setImageFile={setImageFile}
+                scrollRef={scrollRef}
+                setLeaveHistoryData={setLeaveHistoryData}
+                setIsEdit={setIsEdit}
+                employee={employee}
+                setAllData={setAllData}
+                getData={getData}
+              />
+              <PopOverFilter
+                propsObj={{
+                  id,
+                  open,
+                  anchorEl,
+                  handleClose,
+                  setEmployee,
+                  setLeaveHistoryData,
+                  setLoading,
+                  setIsFilter,
+                  isOfficeAdmin,
+                }}
+                masterFilterHandler={handleClick}
+              />
+            </Form>
+          </>
+        )}
+      </Formik>
+    </>
+  );
+}
+export default EmLeaveApplication;
+old index end --- 
+
+old helper start --- 
+import axios from "axios";
+import { toast } from "react-toastify";
+
+export const getEmployeeLeaveBalanceAndHistory = async (
+  employeeId,
+  viewType,
+  setter,
+  setLoading,
+  setAllData
+) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `/LeaveMovement/GetEmployeeLeaveBalanceAndHistory?EmployeeId=${employeeId}&ViewType=${viewType}`
+    );
+    if (res?.data) {
+      setter(res?.data);
+      setAllData && setAllData(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
+
+export const attachment_action = async (attachment, setLoading) => {
+  setLoading && setLoading(true);
+  let formData = new FormData();
+  formData.append("files", attachment[0]);
+  try {
+    let { data } = await axios.post("/Document/UploadFile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    setLoading && setLoading(false);
+    toast.success("Upload  successfully");
+    return data;
+  } catch (error) {
+    setLoading && setLoading(false);
+    toast.error("File Size is too large or inValid File!");
+    return error;
+  }
+};
+
+export const createLeaveApplication = async (payload, setLoading, cb) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.post(
+      `/LeaveMovement/CRUDLeaveApplication`,
+      payload
+    );
+    cb && cb();
+    toast.success(res?.data?.Result?.Message || "Submitted Successfully");
+    setLoading && setLoading(false);
+  } catch (error) {
+    toast.warn(error?.response?.data?.message || "Something went wrong");
+    setLoading && setLoading(false);
+  }
+};
+
+export const getAllLeaveApplicatonListData2 = async (
+  payload,
+  setter,
+  setAllData,
+  setLoading,
+  cb
+) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.post(
+      `/LeaveMovement/GetAllLeaveApplicatonListForApprove`,
+      payload
+    );
+    if (res?.data) {
+      setAllData && setAllData(res?.data);
+      setter(res?.data);
+    }
+    cb && cb();
+    setLoading && setLoading(false);
+  } catch (error) {
+    setter([]);
+
+    setLoading && setLoading(false);
+  }
+};
+
+export const leaveApproveReject = async (payload, setLoading, cb) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.post(`/LeaveMovement/LeaveApprove`, payload);
+    cb && cb();
+    toast.success(res?.data?.Result?.Message || "Submitted Successfully");
+    setLoading && setLoading(false);
+  } catch (error) {
+    toast.warn(error?.response?.data?.message || "Something went wrong");
+    setLoading && setLoading(false);
+  }
+};
+
+export const getEmployeeLeaveBalanceAndHistoryWithFilter = async (
+  employeeId,
+  viewType,
+  leaveTypeId,
+  applicationDate,
+  fromDate,
+  toDate,
+  statusId,
+  setter,
+  setLoading,
+  setAllData
+) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `/LeaveMovement/GetEmployeeLeaveBalanceAndHistory?EmployeeId=${employeeId}&ViewType=${viewType}&LeaveTypeId=${leaveTypeId}&ApplicationDate=${applicationDate}&FromDate=${fromDate}&ToDate=${toDate}&StatusId=${statusId}`
+    );
+    if (res?.data) {
+      setter(res?.data);
+      setAllData && setAllData(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
+old helper end --- 
