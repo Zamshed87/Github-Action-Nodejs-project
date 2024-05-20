@@ -23,12 +23,12 @@ import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
 
 const initData = {
   employee: "",
-
   duration: "Daily",
   otInfo: [
     {
       date: "",
       overTimeHour: "",
+      overTimeRate: "",
       reason: "",
     },
   ],
@@ -47,6 +47,7 @@ const validationSchema = Yup.object().shape({
     Yup.object().shape({
       date: Yup.string().required("Date is required"),
       overTimeHour: Yup.string().required("Overtime Hour is required"),
+      overTimeRate: Yup.string().required("Overtime Rate is required"),
     })
   ),
 });
@@ -104,7 +105,7 @@ export default function AddEditOverTime() {
   }, [params?.id, state?.EmployeeId, buId, wgId, wId]);
 
   const saveHandler = (values, cb) => {
-    let payload = values?.otInfo?.map((data) => {
+    const payload = values?.otInfo?.map((data) => {
       // let modifiedData = {
       //   employeeCode: params?.id
       //     ? values?.employee?.label
@@ -129,7 +130,7 @@ export default function AddEditOverTime() {
       //   dteUpdatedAt: todayDate(),
       // };
 
-      let modifiedData = {
+      const modifiedData = {
         intOverTimeId: state?.OvertimeId || 0,
         intEmployeeId: state?.EmployeeId || values?.employee?.employeeId,
         employeeCode: state?.EmployeeCode || values?.employee?.employeeCode,
@@ -145,6 +146,8 @@ export default function AddEditOverTime() {
               : `${moment(data?.date).format("YYYY-MM")}-01`
             : data?.date,
         numOverTimeHour: +data?.overTimeHour,
+        numOverTimeRate: +data?.overTimeRate,
+        numOverTimeAmount: +data?.overTimeHour * +data?.overTimeRate,
         strReason: data?.reason,
         strDailyOrMonthly: values?.duration,
         isActive: true,
@@ -214,6 +217,7 @@ export default function AddEditOverTime() {
                   ? moment(singleData?.date).format("YYYY-MM")
                   : singleData?.date,
               overTimeHour: singleData?.overTimeHour,
+              overTimeRate: singleData?.numOverTimeRate,
               reason: singleData?.reason,
             },
           ],
@@ -221,7 +225,7 @@ export default function AddEditOverTime() {
       : initData,
 
     validationSchema,
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: (values, { resetForm }) => {
       saveHandler(values, () => {
         if (!params?.id) {
           resetForm(initData);
@@ -333,6 +337,7 @@ export default function AddEditOverTime() {
                           {
                             date: "",
                             overTimeHour: "",
+                            overTimeRate: "",
                             reason: "",
                           },
                         ]);
@@ -355,6 +360,7 @@ export default function AddEditOverTime() {
                           {
                             date: "",
                             overTimeHour: "",
+                            overTimeRate: "",
                             reason: "",
                           },
                         ]);
@@ -374,7 +380,7 @@ export default function AddEditOverTime() {
                       {form?.values.otInfo?.map((data, index) => (
                         <>
                           {values?.duration === "Monthly" && (
-                            <div className="col-3">
+                            <div className="col-lg-2">
                               <div className="input-field-main">
                                 <label>Month</label>
                                 <DefaultInput
@@ -398,7 +404,7 @@ export default function AddEditOverTime() {
                           )}
 
                           {values?.duration === "Daily" && (
-                            <div className="col-lg-3">
+                            <div className="col-lg-2">
                               <div className="input-field-main">
                                 <label>Date</label>
                                 <DefaultInput
@@ -422,7 +428,7 @@ export default function AddEditOverTime() {
                           )}
 
                           {/* hourly form */}
-                          <div className="col-lg-3">
+                          <div className="col-lg-2">
                             <div className="input-field-main">
                               <label>Overtime Hour</label>
                               <DefaultInput
@@ -457,8 +463,49 @@ export default function AddEditOverTime() {
                               />
                             </div>
                           </div>
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>Overtime Rate</label>
+                              <DefaultInput
+                                classes="input-sm"
+                                type="number"
+                                name={`otInfo.${index}.overTimeRate`}
+                                value={values?.otInfo[index]?.overTimeRate}
+                                onChange={(e) => {
+                                  if (varifyNumber(e)) {
+                                    return toast.warning(
+                                      `Please provide a valid number`
+                                    );
+                                  }
+                                  setFieldValue(
+                                    `otInfo.${index}.overTimeRate`,
+                                    e.target.value
+                                  );
+                                }}
+                                errors={errors}
+                                touched={touched}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-2">
+                            <div className="input-field-main">
+                              <label>Overtime Amount</label>
+                              <DefaultInput
+                                classes="input-sm"
+                                type="number"
+                                name={`otAmount`}
+                                value={
+                                  +values?.otInfo[index]?.overTimeRate *
+                                    +values?.otInfo[index]?.overTimeHour || 0
+                                }
+                                errors={errors}
+                                touched={touched}
+                                disabled={true}
+                              />
+                            </div>
+                          </div>
 
-                          <div className="col-lg-3">
+                          <div className="col-lg-2">
                             <div className="input-field-main">
                               <label>Reason (Optional)</label>
                               <DefaultInput
@@ -480,7 +527,7 @@ export default function AddEditOverTime() {
                           </div>
 
                           {!params.id && (
-                            <div className="col-lg-3 d-flex align-items-center">
+                            <div className="col-lg-2 d-flex align-items-center">
                               {index > 0 && (
                                 <RemoveCircleIcon
                                   sx={{
@@ -508,6 +555,7 @@ export default function AddEditOverTime() {
                                       push({
                                         date: "",
                                         overTimeHour: "",
+                                        overTimeRate: "",
                                         reason: "",
                                       });
                                     }}
@@ -531,6 +579,7 @@ export default function AddEditOverTime() {
                               push({
                                 date: "",
                                 overTimeHour: "",
+                                overTimeRate: "",
                                 reason: "",
                               });
                             }}
