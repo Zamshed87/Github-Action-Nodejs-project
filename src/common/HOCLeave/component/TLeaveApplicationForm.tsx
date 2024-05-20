@@ -17,10 +17,15 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 // import "./styles.css";
 import moment from "moment";
-import { calculateNextDateAntd, getDateOfYear } from "utility/dateFormatter";
+import {
+  calculateNextDateAntd,
+  dateFormatterForInput,
+  getDateOfYear,
+} from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
 import FileUploadComponents from "utility/Upload/FileUploadComponents";
 import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
+import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
 type LeaveApplicationForm = any;
 
 const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
@@ -35,6 +40,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
     singleData,
     values,
     imageFile,
+    setImageFile,
     isEdit,
     leaveTypeDDL,
     homeReset,
@@ -69,6 +75,14 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         toDate: moment(singleData?.AppliedToDate),
         location: singleData?.AddressDuetoLeave,
         reason: singleData?.Reason,
+        leaveDays: singleData?.HalfDay
+          ? "0.5 Days"
+          : `${
+              +fromDateToDateDiff(
+                dateFormatterForInput(singleData?.AppliedFromDate),
+                dateFormatterForInput(singleData?.AppliedToDate)
+              )?.split(" ")[0] + 1
+            } Days` || "",
       });
     }
   }, [singleData]);
@@ -112,6 +126,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
           fromDate: moment(todayDate()),
           toDate: moment(todayDate()),
           halfTime: "8:30 AM – 12:30 PM",
+          leaveDays: 1,
         }}
       >
         <PCardBody styles={{ marginTop: "51.5px" }}>
@@ -180,6 +195,22 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                               halfTime: undefined,
                             });
                           }
+
+                          if (date && toDate) {
+                            const totalLeaves = `${
+                              +fromDateToDateDiff(
+                                moment(date).format("YYYY-MM-DD"),
+                                moment(date).format("YYYY-MM-DD")
+                              )?.split(" ")[0] + 1
+                            } Days`;
+                            form.setFieldsValue({
+                              leaveDays: totalLeaves,
+                            });
+                          } else {
+                            form.setFieldsValue({
+                              leaveDays: 0,
+                            });
+                          }
                         }}
                       />
                     </Col>
@@ -196,6 +227,22 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                           },
                         ]}
                         onChange={(date, dateString) => {
+                          if (date && fromDate) {
+                            const totalLeaves = `${
+                              +fromDateToDateDiff(
+                                moment(fromDate).format("YYYY-MM-DD"),
+                                moment(date).format("YYYY-MM-DD")
+                              )?.split(" ")[0] + 1
+                            } Days`;
+                            form.setFieldsValue({
+                              leaveDays: totalLeaves,
+                            });
+                          } else {
+                            form.setFieldsValue({
+                              leaveDays: 0,
+                            });
+                          }
+
                           form.setFieldsValue({
                             toDate: date,
                           });
@@ -251,6 +298,11 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                               form.setFieldsValue({
                                 isHalfDay: value,
                                 halfTime: undefined,
+                                leaveDays: 1,
+                              });
+                            } else {
+                              form.setFieldsValue({
+                                leaveDays: 0.5,
                               });
                             }
                           }}
@@ -285,7 +337,16 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 );
               }}
             </Form.Item>
-            <Col md={8} sm={24}>
+            <Col md={4} sm={24}>
+              <PInput
+                type="text"
+                name="leaveDays"
+                placeholder="Leave Days"
+                label="Leave Days"
+                disabled={true}
+              />
+            </Col>
+            <Col md={7} sm={24}>
               <PInput
                 type="text"
                 name="location"
@@ -294,7 +355,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 rules={[{ required: true, message: "Location Is Required" }]}
               />
             </Col>
-            <Col md={16} sm={24}>
+            <Col md={13} sm={24}>
               <PInput
                 type="textarea"
                 name="reason"
@@ -406,6 +467,8 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                   content={"Reset"}
                   onClick={() => {
                     form.resetFields();
+                    setAttachmentList([]);
+                    setImageFile({});
                   }}
                 />
               </Col>

@@ -43,6 +43,7 @@ import LateReport from "modules/timeSheet/reports/lateReport";
 import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
 import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
 
+import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 
 const CreateAndEditEmploye = lazy(() =>
@@ -61,7 +62,7 @@ const EarlyReport = lazy(() =>
   import("modules/timeSheet/reports/earlyInoutReport")
 );
 const AbsentReport = lazy(() =>
-  import("modules/timeSheet/reports/absentReport")
+  import("modules/timeSheet/reports/absentReport/index.tsx")
 );
 const CreateEditLeavePolicy = lazy(() =>
   import(
@@ -972,9 +973,9 @@ const AppPipeline = lazy(() =>
 const YearlyLeavePolicy = lazy(() =>
   import("../modules/leaveMovement/configuration/YearlyLeavePolicy/index.jsx")
 );
-const LeaveApplication = lazy(() =>
-  import("../modules/leaveMovement/leave/application/index.jsx")
-);
+// const LeaveApplication = lazy(() =>
+//   import("../modules/leaveMovement/leave/application/index.jsx")
+// );
 const LeaveApproval = lazy(() =>
   import("../modules/leaveMovement/leave/approval/index.jsx")
 );
@@ -2865,6 +2866,10 @@ export const routingList = [
   {
     path: "/assetManagement/assetControlPanel/itemProfile/create",
     component: AssetCreateItemProfile,
+  },
+  {
+    path: "/profile/reports/monthlyLeaveReport",
+    component: MonthlyLeaveReport,
   },
   {
     path: "/assetManagement/assetControlPanel/itemProfile/edit/:id",
