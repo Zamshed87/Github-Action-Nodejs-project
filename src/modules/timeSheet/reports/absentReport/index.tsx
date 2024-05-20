@@ -132,7 +132,6 @@ const AbsentReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-    console.log({ filerList });
     const payload = {
       intAccountId: orgId,
       fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),

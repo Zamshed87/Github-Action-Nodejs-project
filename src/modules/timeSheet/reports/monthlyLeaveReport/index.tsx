@@ -51,11 +51,10 @@ const MonthlyLeaveReport = () => {
   const landingApi = useApiRequest({});
   const empDepartmentDDL = useApiRequest({});
   //   const debounce = useDebounce();
-  console.log({ landingApi });
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
-  const [pages, setPages] = useState({
+  const [pages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
@@ -156,7 +155,6 @@ const MonthlyLeaveReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-    console.log({ values });
     const dept = values?.department?.map((item: any) => item?.value);
     landingApi.action({
       urlKey: "MonthlyleaveReport",
@@ -184,26 +182,6 @@ const MonthlyLeaveReport = () => {
   }, []);
   //   table column
   const header: any = () => {
-    const values = form.getFieldsValue(true);
-    // const dateList = fromToDateList(
-    //   moment(values?.fromDate).format("YYYY-MM-DD"),
-    //   moment(values?.toDate).format("YYYY-MM-DD")
-    // );
-    // const d =
-    //   dateList?.length > 0 &&
-    //   dateList.map((item: any) => ({
-    //     title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
-    //     render: (_: any, record: any) =>
-    //       record?.[item?.date] ? (
-    //         <span style={getChipStyle(record?.[item?.date])}>
-    //           {record?.[item?.date]}
-    //         </span>
-    //       ) : (
-    //         "-"
-    //       ),
-    //     width: 150,
-    //   }));
-
     return [
       {
         title: "SL",
@@ -368,78 +346,85 @@ const MonthlyLeaveReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
+                  const dept = values?.department?.map(
+                    (item: any) => item?.value
+                  );
 
-                  //   const res = await axios.get(
-                  //     `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&DteFromDate=${moment(
-                  //       values?.fromDate
-                  //     ).format("YYYY-MM-DD")}&DteToDate=${moment(
-                  //       values?.toDate
-                  //     ).format("YYYY-MM-DD")}&EmployeeId=0&WorkplaceGroupId=${
-                  //       values?.workplaceGroup?.value
-                  //     }&WorkplaceId=${
-                  //       values?.workplace?.value
-                  //     }&AccountId=${orgId}&PageNo=1&PageSize=1000&IsPaginated=false`
-                  //   );
-                  //   if (res?.data) {
-                  //     setExcelLoading(true);
-                  //     if (res?.data < 1) {
-                  //       return toast.error("No Attendance Data Found");
-                  //     }
-
-                  const newData = landingApi?.data?.Data?.map(
-                    (item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                        EndDate: dateFormatter(item?.EndDate),
-                        StartDate: dateFormatter(item?.StartDate),
-                        ApplicationDate: dateFormatter(item?.ApplicationDate),
-                      };
+                  const res = await axios.post(
+                    "/LeaveMovement/MonthlyleaveReport",
+                    {
+                      accountId: orgId,
+                      businessUnitId: buId,
+                      workPlaceGroupId: values?.workplaceGroup?.value,
+                      workPlaceId: values?.workplace?.value,
+                      employeeId: 0,
+                      fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+                      toDate: moment(values?.toDate).format("YYYY-MM-DD"),
+                      pageNo: 1,
+                      pageSize: 500,
+                      isPaginated: false,
+                      departmentIdList: dept?.length > 0 ? dept : null,
                     }
                   );
-                  createCommonExcelFile({
-                    titleWithDate: `Monthly Leave Report - ${dateFormatter(
-                      moment(values?.fromDate).format("YYYY-MM-DD")
-                    )} to ${dateFormatter(
-                      moment(values?.toDate).format("YYYY-MM-DD")
-                    )}`,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column,
-                    getTableData: () =>
-                      getTableDataMonthlyAttendance(
-                        newData,
-                        Object.keys(column)
-                      ),
+                  if (res?.data?.Data) {
+                    setExcelLoading(true);
+                    if (res?.data?.Data?.length < 1) {
+                      return toast.error("No Attendance Data Found");
+                    }
+                    const newData = res?.data?.Data?.map(
+                      (item: any, index: any) => {
+                        return {
+                          ...item,
+                          sl: index + 1,
+                          EndDate: dateFormatter(item?.EndDate),
+                          StartDate: dateFormatter(item?.StartDate),
+                          ApplicationDate: dateFormatter(item?.ApplicationDate),
+                        };
+                      }
+                    );
+                    createCommonExcelFile({
+                      titleWithDate: `Monthly Leave Report - ${dateFormatter(
+                        moment(values?.fromDate).format("YYYY-MM-DD")
+                      )} to ${dateFormatter(
+                        moment(values?.toDate).format("YYYY-MM-DD")
+                      )}`,
+                      fromDate: "",
+                      toDate: "",
+                      buAddress: (buDetails as any)?.strAddress,
+                      businessUnit: values?.workplaceGroup?.value
+                        ? (buDetails as any)?.strWorkplace
+                        : buName,
+                      tableHeader: column,
+                      getTableData: () =>
+                        getTableDataMonthlyAttendance(
+                          newData,
+                          Object.keys(column)
+                        ),
 
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      C: 30,
-                      B: 30,
-                      D: 30,
-                      E: 25,
-                      F: 20,
-                      G: 25,
-                      H: 15,
-                      I: 15,
-                      J: 20,
-                      K: 20,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
-                  setExcelLoading(false);
-                  //   }
+                      // eslint-disable-next-line @typescript-eslint/no-empty-function
+                      getSubTableData: () => {},
+                      subHeaderInfoArr: [],
+                      subHeaderColumn: [],
+                      tableFooter: [],
+                      extraInfo: {},
+                      tableHeadFontSize: 10,
+                      widthList: {
+                        C: 30,
+                        B: 30,
+                        D: 30,
+                        E: 25,
+                        F: 20,
+                        G: 25,
+                        H: 15,
+                        I: 15,
+                        J: 20,
+                        K: 20,
+                      },
+                      commonCellRange: "A1:J1",
+                      CellAlignment: "left",
+                    });
+                    setExcelLoading(false);
+                  }
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
