@@ -125,6 +125,8 @@ const CreateLoanApplicationModal = ({
     );
   }, [employeeId, wgId]);
 
+  console.log("singleData",singleData)
+
   const saveHandler = (values, cb) => {
     // approveLoanAmount approveInstallmentNumber approveAmountPerInstallment
     if (!singleData?.loanApplicationId) {
@@ -640,7 +642,7 @@ const CreateLoanApplicationModal = ({
                       touched={touched}
                     />
                   </div>
-                  <div className="col-6">
+                  <div className="col-4">
                     <label>
                       Description <Required />
                     </label>
@@ -653,6 +655,25 @@ const CreateLoanApplicationModal = ({
                       placeholder=""
                       onChange={(e) => {
                         setFieldValue("description", e.target.value);
+                      }}
+                      errors={errors}
+                      touched={touched}
+                      style={{ height: "60px" }}
+                    />
+                  </div>
+                  <div className="col-4">
+                    <label>
+                      Family Guarantor
+                    </label>
+                    <FormikTextArea
+                      classes="textarea-with-label"
+                      value={values?.familyGuarantor}
+                      name="familyGuarantor"
+                      type="text"
+                      className="form-control"
+                      placeholder=""
+                      onChange={(e) => {
+                        setFieldValue("familyGuarantor", e.target.value);
                       }}
                       errors={errors}
                       touched={touched}

@@ -416,6 +416,7 @@ export const setSingleLoanApplication = (data, setSingleData, setFileId) => {
     approveLoanAmount: data?.approveLoanAmount || data?.loanAmount,
     approveInstallmentNumber:
       data?.approveNumberOfInstallment || data?.numberOfInstallment,
+    familyGuarantor: data?.GuarantorRelative || "",
     approveAmountPerInstallment:
       data?.approveNumberOfInstallmentAmount || data?.numberOfInstallmentAmount,
     intCreatedBy: data?.intCreatedBy,
@@ -494,6 +495,7 @@ export const loanCrudAction = async (
         ? "ManagerLoanUpdate"
         : "LoanCreate",
       intAccountId: orgId,
+      guarantorRelative: values?.familyGuarantor || "",
       loanApplicationId: values?.loanApplicationId || 0,
       employeeId: values?.employee?.value || values?.employeeId,
       loanTypeId: values?.loanType?.value || 0,

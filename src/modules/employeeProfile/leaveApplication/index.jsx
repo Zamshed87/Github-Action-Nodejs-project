@@ -68,9 +68,6 @@ function EmLeaveApplication(props) {
     wgId,
     permission,
     isOfficeAdmin,
-    showTooltip,
-    setShowTooltip,
-    handleIconHover,
     // demoPopupForDeleteAdmin,
   } = props?.propjObj;
 
@@ -81,14 +78,6 @@ function EmLeaveApplication(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     document.title = "Leave Application";
   }, []);
-
-  const formikRef = useRef();
-  useEffect(() => {
-    if (formikRef?.current) {
-      setEmployeeInfo([]);
-      formikRef?.current?.setFieldValue("employee", "");
-    }
-  }, [wgId, buId]);
 
   return (
     <>
@@ -111,7 +100,6 @@ function EmLeaveApplication(props) {
             resetForm(initDataForLeaveApplication);
           });
         }}
-        innerRef={formikRef}
       >
         {({
           handleSubmit,
@@ -292,7 +280,7 @@ function EmLeaveApplication(props) {
 
                   <div className="row justify-content-center">
                     <div className="col-lg-6 col-md-10 leave-movement-FormCard">
-                      <LeaveApplicationForm
+                      {/* <LeaveApplicationForm
                         propsObj={{
                           singleData,
                           handleSubmit,
@@ -316,13 +304,10 @@ function EmLeaveApplication(props) {
                           loading,
                           editPermission: permission?.isEdit,
                         }}
-                      />
+                      /> */}
                     </div>
                     <div className="col-lg-6 col-md-10 leave-movement-FormCard">
-                      <LeaveBalanceTable
-                        leaveBalanceData={leaveBalanceData}
-                        values={values}
-                      />
+                      <LeaveBalanceTable leaveBalanceData={leaveBalanceData} />
                     </div>
                   </div>
                   <div className="row">
@@ -370,12 +355,8 @@ function EmLeaveApplication(props) {
                                 setSingleData,
                                 setImageFile,
                                 demoPopupForDelete,
-                                isOfficeAdmin,
-                                showTooltip,
-                                setShowTooltip,
-                                handleIconHover,
-                                loading,
-                                setLoading
+                                isOfficeAdmin
+                                // demoPopupForDeleteAdmin
                               )}
                               onRowClick={(item) => {
                                 setSingleData(item);

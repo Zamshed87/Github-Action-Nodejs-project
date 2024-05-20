@@ -1,0 +1,18 @@
+export const column = {
+  sl: "SL",
+  strWorkPlaceGroupName: "Workplace Group",
+  strWorkPlaceName: "Workplace",
+  strDepartmentName: "Department",
+  StrSectionName: "Section",
+  StrEmployeeCode: "Employee Id",
+  strEmployeeName: "Employee Name",
+  StrDesignation: "Designation",
+  strLeaveTypeName: "Leave Type",
+  StrAddressDuetoLeave: "Location",
+  StartDate: "From Date",
+  Start_End_Time: "Duration",
+  EndDate: "To Date",
+  HalfDayHours: "Half Day Hours",
+  TotalDays: "Days",
+  ApplicationDate: "Application Date",
+};

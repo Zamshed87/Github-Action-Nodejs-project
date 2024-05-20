@@ -340,7 +340,6 @@ const SeparationReport = () => {
         <PCard>
           {excelLoading && <Loading />}
           <PCardHeader
-            backButton
             exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             onSearch={(e) => {

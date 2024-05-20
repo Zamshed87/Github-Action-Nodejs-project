@@ -195,3 +195,17 @@ export const empOverTimeDtoCol = (page, paginationSize) => {
     },
   ];
 };
+export const column = {
+  sl: "SL",
+  workplace: "Workplace",
+  employeeCode: "Employee Id",
+  employee: "Employee Name",
+  designation: "Designation",
+  department: "Department",
+  employementType: "Employement Type",
+  basicSalary: "Basic Salary",
+  salary: "Salary",
+  hours: "Hour",
+  perHourRate: "Hour Amount Rate",
+  payAmount: "Total Amount",
+};

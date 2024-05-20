@@ -1,17 +1,14 @@
-import { Attachment, EditOutlined } from "@mui/icons-material";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { Tooltip } from "@mui/material";
-import { LightTooltip } from "common/LightTooltip";
+import { Attachment } from "@mui/icons-material";
+import { TableButton } from "Components";
+import PBadge from "Components/Badge";
 import moment from "moment";
-import { todayDate } from "utility/todayDate";
+import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
 import * as Yup from "yup";
 import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
 import {
   dateFormatter,
   dateFormatterForInput,
 } from "../../utility/dateFormatter";
-import Chips from "../Chips";
 
 export const initDataForLeaveApplication = {
   search: "",
@@ -19,8 +16,8 @@ export const initDataForLeaveApplication = {
   employee: "",
   location: "",
   reason: "",
-  fromDate: todayDate(),
-  toDate: todayDate(),
+  fromDate: "",
+  toDate: "",
   halfTime: "",
   isHalfDay: "",
   isSelfService: false,
@@ -40,57 +37,28 @@ export const validationSchemaForLeaveApplication = Yup.object().shape({
     .typeError("Leave type is required"),
 });
 
-export const empMgmtLeaveApplicationDtoColumn = (
-  setValues,
-  values,
+export const empMgmtLeaveApplicationDto = (
   dispatch,
   setIsEdit,
-  scrollRef,
   setSingleData,
   setImageFile,
   demoPopupForDelete,
-  isOfficeAdmin,
-  showTooltip,
-  setShowTooltip,
-  handleIconHover,
-  loading,
-  setLoading
-  // demoPopupForDeleteAdmin
+  values,
+  isOfficeAdmin
 ) => {
   return [
     {
       title: "SL",
-      render: (text, record, index) => index + 1,
-      sorter: false,
-      filter: false,
-      className: "text-center",
+      render: (value, row, index) => index + 1,
+      align: "center",
+      width: 30,
+      fixed: "left",
     },
     {
       title: "Leave Type",
       dataIndex: "LeaveType",
       render: (_, record) => (
         <div className="d-flex align-items-center ">
-          {/* <LightTooltip
-            title={
-              <div className="movement-tooltip p-2">
-                <div className="border-bottom">
-                  <p className="tooltip-title">Reason</p>
-                  <p className="tooltip-subTitle">{record?.Reason}</p>
-                </div>
-                <div>
-                  <p className="tooltip-title mt-2">Location</p>
-                  <p className="tooltip-subTitle mb-0">
-                    {record?.AddressDuetoLeave}
-                  </p>
-                </div>
-              </div>
-            }
-            arrow
-          >
-            <InfoOutlinedIcon
-              sx={{ marginRight: "12px", color: "rgba(0, 0, 0, 0.6)" }}
-            />
-          </LightTooltip> */}
           <div className="d-flex align-items-center">
             <div>{record?.LeaveType}</div>
             <div className="leave-application-document ml-1">
@@ -108,30 +76,27 @@ export const empMgmtLeaveApplicationDtoColumn = (
           </div>
         </div>
       ),
-      sorter: false,
-      filter: true,
     },
 
     {
       title: "From Date",
       dataIndex: "AppliedFromDate",
       render: (date) => dateFormatter(date),
-      sorter: false,
-      filter: false,
     },
     {
       title: "To Date",
       dataIndex: "AppliedToDate",
       render: (date) => dateFormatter(date),
-      sorter: false,
-      filter: false,
     },
     {
       title: "Application Date",
       dataIndex: "ApplicationDate",
       render: (date) => dateFormatter(date),
-      sorter: false,
-      filter: false,
+    },
+    {
+      title: "Application Date",
+      dataIndex: "ApplicationDate",
+      render: (date) => dateFormatter(date),
     },
     {
       title: "Half Day",
@@ -140,185 +105,107 @@ export const empMgmtLeaveApplicationDtoColumn = (
     {
       title: "Location",
       dataIndex: "AddressDuetoLeave",
-      // sorter: true,
-      // filter: true,
-      // isNumber: true,
     },
     {
       title: "Reason",
       dataIndex: "Reason",
-      // sorter: true,
-      // filter: true,
-      // isNumber: true,
+    },
+    {
+      title: "Total",
+      dataIndex: "",
+      render: (_, record) => {
+        return record?.HalfDay ? (
+          "0.5"
+        ) : (
+          <span>
+            {`${
+              +fromDateToDateDiff(
+                dateFormatterForInput(record?.AppliedFromDate),
+                dateFormatterForInput(record?.AppliedToDate)
+              )?.split(" ")[0] + 1
+            } Days`}{" "}
+          </span>
+        );
+      },
     },
     {
       title: "Status",
       dataIndex: "ApprovalStatus",
-      render: (data, record) => (
-        <div className="d-flex">
-          <div className="d-flex align-items-center">
-            <LightTooltip
-              onMouseEnter={() =>
-                handleIconHover(record, values, setShowTooltip)
-              }
-              title={
-                <div>
-                  {showTooltip?.data?.length ? (
-                    showTooltip.data?.map((tooltipItem, index) => (
-                      <div key={index} className="movement-tooltip p-1">
-                        <div className="border-bottom">
-                          <p className="tooltip-title">
-                            {tooltipItem?.strApproverName}
-                          </p>
-                          <p className="tooltip-subTitle">
-                            {tooltipItem?.strComments}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="movement-tooltip p-1">
-                      <p className="tooltip-title">No Remarks</p>
-                    </div>
-                  )}
-                </div>
-              }
-              arrow
-            >
-              <InfoOutlinedIcon
-                sx={{ marginRight: "12px", color: "rgba(0, 0, 0, 0.6)" }}
-              />
-            </LightTooltip>
-          </div>
-          <div>
-            {data === "Approved" && <Chips label={data} classess="success" />}
-            {data === "Pending" && <Chips label={data} classess="warning" />}
-            {data === "Rejected" && <Chips label={data} classess="danger" />}
-            {data === "Process" && <Chips label={data} classess="primary" />}
-          </div>
+      render: (data) => (
+        <div>
+          {data === "Approved" && <PBadge text={data} type="success" />}
+          {data === "Pending" && <PBadge text={data} type="warning" />}
+          {data === "Rejected" && <PBadge text={data} type="danger" />}
+          {data === "Process" && <PBadge text={data} type="warning" />}
         </div>
       ),
-      sorter: true,
-      filter: true,
     },
+
     {
-      className: "text-center",
-      render: (data, record) => (
-        <div className="d-flex justify-content-center">
-          {record?.ApprovalStatus === "Pending" && (
-            <Tooltip title="Edit" arrow>
-              {record?.LeaveTypeId !== 5 ? (
-                <button className="iconButton" type="button">
-                  <EditOutlined
-                    onClick={(e) => {
-                      setIsEdit(true);
-                      e.stopPropagation();
-                      scrollRef.current.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                      setSingleData(record);
-                      setValues({
-                        ...values,
-                        leaveType: {
-                          value: record?.LeaveTypeId,
-                          label: record?.LeaveType,
-                        },
-                        fromDate: dateFormatterForInput(
-                          record?.AppliedFromDate
-                        ),
-                        toDate: dateFormatterForInput(record?.AppliedToDate),
-                        location: record?.AddressDuetoLeave,
-                        reason: record?.Reason,
-                      });
+      width: 50,
+      align: "center",
+      render: (data, rec) => (
+        <>
+          <TableButton
+            buttonsList={[
+              rec?.ApprovalStatus === "Pending" &&
+                rec?.LeaveTypeId !== 5 && {
+                  type: "edit",
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setIsEdit(true);
+                    e.stopPropagation();
+                    // scrollRef.current.scrollIntoView({
+                    //   behavior: "smooth",
+                    // });
+                    setSingleData(rec);
 
-                      setImageFile({
-                        globalFileUrlId: record?.DocumentFileUrl,
-                      });
-                    }}
-                  />
-                </button>
-              ) : null}
-            </Tooltip>
-          )}
-          {record?.ApprovalStatus === "Pending" && (
-            <Tooltip title="Delete" arrow>
-              {record?.LeaveTypeId !== 5 ? (
-                <button type="button" className="iconButton">
-                  <DeleteOutlineOutlinedIcon
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSingleData("");
-                      demoPopupForDelete(data, values);
-                    }}
-                  />
-                </button>
-              ) : null}
-            </Tooltip>
-          )}
+                    setImageFile({
+                      globalFileUrlId: rec?.DocumentFileUrl,
+                    });
+                  },
+                },
+              isOfficeAdmin &&
+                rec?.ApprovalStatus === "Approved" &&
+                rec?.LeaveTypeId !== 5 && {
+                  type: "edit",
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setIsEdit(true);
+                    e.stopPropagation();
+                    // scrollRef.current.scrollIntoView({
+                    //   behavior: "smooth",
+                    // });
+                    setSingleData(rec);
 
-          {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
-            <Tooltip title="Delete" arrow>
-              {record?.LeaveTypeId !== 5 ? (
-                <button type="button" className="iconButton">
-                  <DeleteOutlineOutlinedIcon
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSingleData("");
-                      demoPopupForDelete(data, values);
-                    }}
-                  />
-                </button>
-              ) : null}
-            </Tooltip>
-          )}
-          {record?.ApprovalStatus === "Approved" && isOfficeAdmin && (
-            <Tooltip title="Edit" arrow>
-              {record?.LeaveTypeId !== 5 ? (
-                <button className="iconButton" type="button">
-                  <EditOutlined
-                    onClick={(e) => {
-                      setIsEdit(true);
-                      e.stopPropagation();
-                      scrollRef.current.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                      setSingleData(record);
-                      setValues({
-                        ...values,
-                        leaveType: {
-                          value: record?.LeaveTypeId,
-                          label: record?.LeaveType,
-                          isHalfDayLeave: record?.HalfDay,
-                        },
-                        fromDate: dateFormatterForInput(
-                          record?.AppliedFromDate
-                        ),
-                        toDate: dateFormatterForInput(record?.AppliedToDate),
-                        location: record?.AddressDuetoLeave,
-                        reason: record?.Reason,
-                        isHalfDay: record?.HalfDay
-                          ? { value: 1, label: "Half Day" }
-                          : "",
-                        halfTime: record?.HalfDay
-                          ? {
-                              value: record?.HalfDayRange?.includes("8")
-                                ? 0
-                                : 1,
-                              label: record?.HalfDayRange,
-                            }
-                          : "",
-                      });
+                    setImageFile({
+                      globalFileUrlId: rec?.DocumentFileUrl,
+                    });
+                  },
+                },
 
-                      setImageFile({
-                        globalFileUrlId: record?.DocumentFileUrl,
-                      });
-                    }}
-                  />
-                </button>
-              ) : null}
-            </Tooltip>
-          )}
-        </div>
+              rec?.ApprovalStatus === "Pending" &&
+                rec?.LeaveTypeId !== 5 && {
+                  type: "delete",
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setSingleData("");
+                    demoPopupForDelete(data, values);
+                  },
+                },
+              isOfficeAdmin &&
+                rec?.ApprovalStatus === "Approved" &&
+                rec?.LeaveTypeId !== 5 && {
+                  type: "delete",
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setSingleData("");
+                    demoPopupForDelete(data, values);
+                  },
+                },
+            ]}
+          />
+        </>
       ),
     },
   ];

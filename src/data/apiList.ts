@@ -117,6 +117,14 @@ export const apiList = {
   EmployeeReportWithFilter: "/Employee/EmployeeReportWithFilter",
   GetEmpAttendanceReport: "/TimeSheetReport/GetEmpAttendanceReport",
   EmployeeSeparationListFilter: "/Employee/EmployeeSeparationListFilter",
+  OvertimeReport: "/Employee/OvertimeReportLanding",
+  MonthlyleaveReport: "/LeaveMovement/MonthlyleaveReport",
+  EmployeeMovementReportAll: "/Employee/EmployeeMovementReportAll",
+  GetAbsentReport: "/TimeSheetReport/GetAbsentReport",
+  LeaveBalanceHistoryForAllEmployee:
+    "/Employee/LeaveBalanceHistoryForAllEmployee",
+  GetLoanApplicationByAdvanceFilter:
+    "/Employee/GetLoanApplicationByAdvanceFilter",
   ContractualClosing: "/Employee/ContractualClosing",
   EmployeeDDLWithCode:
     "/Employee/EmployeeListBySupervisorORLineManagerNOfficeadmin",
