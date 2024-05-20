@@ -1,17 +1,15 @@
+import { DataTable, PCardBody } from "Components";
 import { InfoOutlined } from "@mui/icons-material";
-import { LightTooltip } from "common/LightTooltip";
-import ViewModal from "common/ViewModal";
-import Loading from "common/loading/Loading";
-import moment from "moment";
-import { useEffect, useState } from "react";
-import { gray900 } from "utility/customColor";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
 
-const LeaveBalanceTable = ({
-  leaveBalanceData = [],
-  show = false,
-  values = {},
-}) => {
+import { useApiRequest } from "Hooks";
+import { LightTooltip } from "common/LightTooltip";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { gray900 } from "utility/customColor";
+import ViewModal from "common/ViewModal";
+
+const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
   let leaves = leaveBalanceData;
   if (show) {
     leaves = leaveBalanceData?.filter(
@@ -19,105 +17,104 @@ const LeaveBalanceTable = ({
     );
   }
   const [isView, setIsView] = useState(false);
+
   const [singleObjList, getSingleObjDataAPI, loading, setSingleObjList] =
     useAxiosGet({});
   useEffect(() => {
     setSingleObjList({});
   }, [values?.year?.value, values?.employee?.value]);
+  const header = [
+    {
+      title: "Leave Type",
+      render: (_, record) => (
+        <>
+          <p>
+            {record?.strLeaveType}
+            {record?.strLeaveType === "Compensatory Leave" &&
+            record?.intAllocatedLveInDay > 0 ? (
+              <span>
+                <LightTooltip
+                  title={"Leave History"}
+                  arrow
+                  onClick={() => {
+                    // setSingleObjList({});
+                    if (singleObjList?.compensatoryLeaveHistory?.length > 0) {
+                      setIsView(true);
+                    } else {
+                      getSingleObjDataAPI(
+                        `/LeaveMovement/CompensatoryLeaveHistory?yearId=${
+                          values?.year || values?.year?.value
+                        }&empId=${values?.employee?.value || 0}`,
+                        (res) => {
+                          setIsView(true);
+                          setSingleObjList(res);
+                        }
+                      );
+                    }
+                  }}
+                >
+                  {" "}
+                  <InfoOutlined
+                    sx={{
+                      color: gray900,
+                      width: 16,
+                      cursor: "pointer",
+                    }}
+                  />
+                </LightTooltip>
+              </span>
+            ) : (
+              ""
+            )}
+          </p>
+        </>
+      ),
+      width: 80,
+    },
+    {
+      title: "Balance",
+      dataIndex: "intBalanceLveInDay",
+      width: 45,
+    },
+    {
+      title: "Taken",
+      dataIndex: "intTakenLveInDay",
+      width: 40,
+    },
+    {
+      title: "Total",
+      dataIndex: "intAllocatedLveInDay",
+      width: 40,
+    },
+    {
+      title: "Carry Balance",
+      dataIndex: "intCarryBalanceLveInDay",
+    },
+    {
+      title: "Carry Taken",
+      dataIndex: "inyCarryTakenLveInDay",
+    },
+    {
+      title: "Carry Allocated",
+      dataIndex: "intCarryAllocatedLveInDay",
+    },
+    {
+      title: "Carry Expire",
+
+      render: (data) =>
+        data?.intExpireyDate ? moment(data?.intExpireyDate).format("l") : "N/A",
+    },
+  ];
+
   return (
-    <>
-      <div className="card-style" style={{ minHeight: "213px" }}>
-        {loading && <Loading />}
-        <div className="table-card-styled tableOne">
-          <table className="table">
-            <thead>
-              <tr
-                style={{
-                  borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-                }}
-              >
-                <th>Leave Type</th>
-                <th className="text-center">Balance</th>
-                <th className="text-center">Taken</th>
-                <th className="text-center">Total</th>
-                <th className="text-center">Carry Balance</th>
-                <th className="text-center">Carry Taken</th>
-                <th className="text-center">Carry Allocated</th>
-                <th className="text-center">Carry Expire</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leaves?.length > 0 &&
-                leaves.map((item) => (
-                  <tr key={item?.strLeaveType}>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <p>{item?.strLeaveType} &nbsp; </p>
-                        {item?.strLeaveType === "Compensatory Leave" &&
-                        item?.intAllocatedLveInDay > 0 ? (
-                          <div>
-                            <LightTooltip
-                              title={"Leave History"}
-                              arrow
-                              onClick={() => {
-                                // setSingleObjList({});
-                                if (
-                                  singleObjList?.compensatoryLeaveHistory
-                                    ?.length > 0
-                                ) {
-                                  setIsView(true);
-                                } else {
-                                  getSingleObjDataAPI(
-                                    `/LeaveMovement/CompensatoryLeaveHistory?yearId=${
-                                      values?.year?.value
-                                    }&empId=${values?.employee?.value || 0}`,
-                                    (res) => {
-                                      setIsView(true);
-                                      setSingleObjList(res);
-                                    }
-                                  );
-                                }
-                              }}
-                            >
-                              {" "}
-                              <InfoOutlined
-                                sx={{
-                                  color: gray900,
-                                  cursor: "pointer",
-                                }}
-                              />
-                            </LightTooltip>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </td>
-                    <td className="text-center">{item?.intBalanceLveInDay}</td>
-                    <td className="text-center">{item?.intTakenLveInDay}</td>
-                    <td className="text-center">
-                      {item?.intAllocatedLveInDay}
-                    </td>
-                    <td className="text-center">
-                      {item?.intCarryBalanceLveInDay}
-                    </td>
-                    <td className="text-center">
-                      {item?.inyCarryTakenLveInDay}
-                    </td>
-                    <td className="text-center">
-                      {item?.intCarryAllocatedLveInDay}
-                    </td>
-                    <td className="text-center">
-                      {item?.intExpireyDate
-                        ? moment(item?.intExpireyDate).format("DD MMM, YYYY")
-                        : "N/A"}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div>
+      <PCardBody>
+        <DataTable
+          header={header}
+          // bordered
+          data={leaves?.length > 0 ? leaves : []}
+        />
+      </PCardBody>
       <ViewModal
         size="lg"
         title="Compensatory Leave History"
@@ -171,7 +168,8 @@ const LeaveBalanceTable = ({
           </div>
         </div>
       </ViewModal>
-    </>
+      {/* </div> */}
+    </div>
   );
 };
 
