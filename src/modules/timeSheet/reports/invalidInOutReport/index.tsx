@@ -240,7 +240,6 @@ const MgmtInOutReport = () => {
       >
         <PCard>
           <PCardHeader
-            backButton
             // exportIcon={true}
             title={`Invalid In/Out Report`}
             onSearch={(e) => {

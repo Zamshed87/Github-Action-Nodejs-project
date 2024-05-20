@@ -25,11 +25,7 @@ import {
   setFirstLevelNameAction,
 } from "../../../commonRedux/reduxForLocalStorage/actions";
 import { gray500, gray600, success500 } from "../../../utility/customColor";
-import {
-  dateFormatter,
-  monthFirstDate,
-  monthLastDate,
-} from "../../../utility/dateFormatter";
+import { dateFormatter, getDateOfYear } from "../../../utility/dateFormatter";
 import { getMonthName } from "../../../utility/monthUtility";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
 import { customStyles } from "../../../utility/selectCustomStyle";
@@ -56,9 +52,9 @@ const initialValues = {
   fromDate: "",
   toDate: "",
   search: "",
-  filterFromDate: monthFirstDate(),
-  filterToDate: monthLastDate(),
-  salaryCode: ""
+  filterFromDate: getDateOfYear("first"),
+  filterToDate: getDateOfYear("last"),
+  salaryCode: "",
 };
 
 const validationSchema = Yup.object().shape({
@@ -146,7 +142,7 @@ const SalaryGenerateLanding = () => {
   };
 
   useEffect(() => {
-    getLandingData(values)
+    getLandingData(values);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, employeeId, wgId]);
 
@@ -195,10 +191,11 @@ const SalaryGenerateLanding = () => {
     validationSchema,
     initialValues: {
       ...initialValues,
-      filterFromDate:
-        compensationBenefits?.salaryGenerate?.fromDate || monthFirstDate(),
-      filterToDate:
-        compensationBenefits?.salaryGenerate?.toDate || monthLastDate(),
+      // filterFromDate:
+      //   compensationBenefits?.salaryGenerate?.fromDate ||
+      //   getDateOfYear("first"),
+      // filterToDate:
+      //   compensationBenefits?.salaryGenerate?.toDate || getDateOfYear("last"),
     },
     onSubmit: (values) => saveHandler(values),
   });
@@ -768,7 +765,7 @@ const SalaryGenerateLanding = () => {
                     disabled={!values?.filterFromDate || !values?.filterToDate}
                     onClick={(e) => {
                       e.stopPropagation();
-                      getLandingData(values)
+                      getLandingData(values);
                     }}
                   >
                     View
