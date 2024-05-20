@@ -1,5 +1,7 @@
 import axios from "axios";
+import FormikCheckBox from "common/FormikCheckbox";
 import { toast } from "react-toastify";
+import { gray900, greenColor } from "utility/customColor";
 import AvatarComponent from "../../../common/AvatarComponent";
 import { dateFormatter } from "../../../utility/dateFormatter";
 import { numberWithCommas } from "../../../utility/numberWithCommas";
@@ -40,17 +42,38 @@ export const updateOvertimeHour = async (payload, setLoading, cb) => {
   }
 };
 
-export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
+export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
   return [
     {
       title: "SL",
       dataIndex: "sl",
-      // render: (text, record, index) => index + 1,
-      sorter: false,
-      filter: false,
-      className: "text-center",
+      render: (data, record, index) => (
+        <div style={{ minWidth: "80px" }}>
+          <FormikCheckBox
+            styleObj={{
+              margin: "0 auto!important",
+              color: gray900,
+              checkedColor: greenColor,
+              padding: "0px",
+            }}
+            name="selectCheckbox"
+            color={greenColor}
+            checked={record?.isChecked}
+            onChange={(e) => {
+              const data = rowDto?.map((item) =>
+                item?.intEmployeeId === record?.intEmployeeId
+                  ? { ...item, isChecked: !item?.isChecked }
+                  : item
+              );
+              setRowDto(data);
+            }}
+          />
+
+          <span style={{ marginLeft: "5px" }}>{data}</span>
+        </div>
+      ),
       key: "sl",
-      width: "50px",
+      width: "70px",
       fixed: "left",
     },
     {
@@ -97,7 +120,6 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
       filter: true,
       key: "strDesignation",
       width: "120px",
-      fixed: "left",
     },
     {
       title: "Department",
@@ -206,6 +228,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler) => {
               value={item?.numMinutes}
               name={item?.numMinutes}
               type="number"
+              disabled={!item?.isChecked}
               onChange={(e) => {
                 // console.log({ e })
                 if (e.target.value) {
