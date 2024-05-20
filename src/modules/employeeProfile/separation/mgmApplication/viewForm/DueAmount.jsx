@@ -103,7 +103,7 @@ const DueAmount = ({
                 </span>
               </p>
             </div>
-            {type !== "view" ? (
+            {type !== "dueView" ? (
               <div className="d-flex justify-content-end my-3">
                 <PrimaryButton
                   type="button"

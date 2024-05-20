@@ -457,7 +457,7 @@ const AssetReport = () => {
         onCancel={() => {
           setIsProfileView(false);
         }}
-        components={<ProfileView />}
+        components={<ProfileView assetId={itemId} />}
         width={1000}
       />
     </>

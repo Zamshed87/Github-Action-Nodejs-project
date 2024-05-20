@@ -123,7 +123,7 @@ const approvalListHeader = ({
           </div>
         );
       },
-      isHidden: type === "view" || type === "dueAmount",
+      isHidden: type === "view" || type === "dueAmount" || type === "dueView",
     },
   ].filter((item) => !item.isHidden);
 

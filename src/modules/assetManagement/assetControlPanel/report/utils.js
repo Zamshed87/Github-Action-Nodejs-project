@@ -245,6 +245,7 @@ const assetReportColumn = (
               <VisibilityOutlined
                 onClick={(e) => {
                   e.stopPropagation();
+                  setItemId(record?.assetId);
                   setIsProfileView(true);
                 }}
               />
@@ -561,24 +562,18 @@ const depreciationColumn = () => {
       dataIndex: "date",
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.date),
-    },
-    {
-      title: "Depreciation Code",
-      dataIndex: "depreciationCode",
-      sort: false,
-      filter: false,
+      render: (record) => dateFormatter(record?.DepreciationDate) || "N/A",
     },
     {
       title: "Amount",
-      dataIndex: "Cost",
+      dataIndex: "Amount",
       sort: false,
       filter: false,
-      render: (record) => formatMoney(record?.Cost),
+      render: (record) => formatMoney(record?.Amount),
     },
     {
       title: "Depreciation Run By",
-      dataIndex: "depreciationRunBy",
+      dataIndex: "ActionByName",
       sort: false,
       filter: false,
     },
@@ -599,7 +594,7 @@ const maintenanceColumn = () => {
       dataIndex: "date",
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.date),
+      render: (record) => dateFormatter(record?.maintenanceDate) || "N/A",
     },
     {
       title: "Maintenance Type",
@@ -609,20 +604,20 @@ const maintenanceColumn = () => {
     },
     {
       title: "Description",
-      dataIndex: "description",
+      dataIndex: "Description",
       sort: false,
       filter: false,
     },
     {
       title: "Maintenance Cost",
-      dataIndex: "Cost",
+      dataIndex: "MaintenanceCost",
       sort: false,
       filter: false,
-      render: (record) => formatMoney(record?.Cost),
+      render: (record) => formatMoney(record?.MaintenanceCost),
     },
     {
       title: "Technician",
-      dataIndex: "depreciationRunBy",
+      dataIndex: "HandedOverTO",
       sort: false,
       filter: false,
     },
@@ -640,21 +635,21 @@ const usesHistoryColumn = () => {
     },
     {
       title: "From Date",
-      dataIndex: "date",
+      dataIndex: "fromDate",
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.date),
+      render: (record) => dateFormatter(record?.fromDate),
     },
     {
       title: "To Date",
-      dataIndex: "date",
+      dataIndex: "toDate",
       sort: false,
       filter: false,
-      render: (record) => dateFormatter(record?.date),
+      render: (record) => record?.toDate ? dateFormatter(record?.toDate) : "N/A",
     },
     {
       title: "Employee/Department",
-      dataIndex: "depreciationRunBy",
+      dataIndex: "DepartmentOrEmployeeName",
       sort: false,
       filter: false,
     },
@@ -669,10 +664,11 @@ const documentsColumn = (dispatch) => {
       sort: false,
       filter: false,
       className: "text-center",
+      width: 50,
     },
     {
       title: "Document Name",
-      dataIndex: "documentName",
+      dataIndex: "DocumentName",
       sort: false,
       filter: false,
     },
@@ -681,17 +677,17 @@ const documentsColumn = (dispatch) => {
       dataIndex: "action",
       sort: false,
       filter: false,
-      width: 100,
+      width: 80,
       className: "text-center",
       render: (record) => (
         <div className="d-flex justify-content-center">
-          <Tooltip title="View" arrow>
+          <Tooltip title="Attachment View" arrow>
             <button type="button" className="iconButton">
               <VisibilityOutlined
                 onClick={(e) => {
                   e.stopPropagation();
                   dispatch(
-                    getDownlloadFileView_Action(record?.globalImageUrlID)
+                    getDownlloadFileView_Action(record?.GlobalImageUrlID)
                   );
                 }}
               />
