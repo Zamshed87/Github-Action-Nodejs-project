@@ -114,7 +114,9 @@ export const empMgmtLeaveApplicationDto = (
       title: "Total",
       dataIndex: "",
       render: (_, record) => {
-        return (
+        return record?.HalfDay ? (
+          "0.5"
+        ) : (
           <span>
             {`${
               +fromDateToDateDiff(

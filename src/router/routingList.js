@@ -62,7 +62,7 @@ const EarlyReport = lazy(() =>
   import("modules/timeSheet/reports/earlyInoutReport")
 );
 const AbsentReport = lazy(() =>
-  import("modules/timeSheet/reports/absentReport")
+  import("modules/timeSheet/reports/absentReport/index.tsx")
 );
 const CreateEditLeavePolicy = lazy(() =>
   import(

@@ -75,13 +75,14 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         toDate: moment(singleData?.AppliedToDate),
         location: singleData?.AddressDuetoLeave,
         reason: singleData?.Reason,
-        leaveDays:
-          `${
-            +fromDateToDateDiff(
-              dateFormatterForInput(singleData?.AppliedFromDate),
-              dateFormatterForInput(singleData?.AppliedToDate)
-            )?.split(" ")[0] + 1
-          } Days` || "",
+        leaveDays: singleData?.HalfDay
+          ? "0.5 Days"
+          : `${
+              +fromDateToDateDiff(
+                dateFormatterForInput(singleData?.AppliedFromDate),
+                dateFormatterForInput(singleData?.AppliedToDate)
+              )?.split(" ")[0] + 1
+            } Days` || "",
       });
     }
   }, [singleData]);
