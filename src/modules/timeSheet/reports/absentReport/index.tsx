@@ -396,11 +396,9 @@ const AbsentReport = () => {
                     });
                     getWorkplace();
                   }}
-                  rules={
-                    [
-                      //   { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
+                  rules={[
+                    { required: true, message: "Workplace Group is required" },
+                  ]}
                 />
               </Col>
               <Col md={5} sm={12} xs={24}>
@@ -415,7 +413,7 @@ const AbsentReport = () => {
                     });
                     getWorkplaceDetails(value, setBuDetails);
                   }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
+                  rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
 
