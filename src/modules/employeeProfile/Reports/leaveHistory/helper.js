@@ -177,3 +177,18 @@ export const leaveHistoryCol = (page, paginationSize) => {
     },
   ];
 };
+export const column = {
+  sl: "SL",
+  workplaceGroup: "Workplace Group",
+  workplace: "Workplace",
+  employeeCode: "Employee Id",
+  employee: "Employee Name",
+  designation: "Designation",
+  department: "Department",
+  section: "Section",
+  clTaken: "CL",
+  slTaken: "SL",
+  elTaken: "EL",
+  LWP: "lwpTaken",
+  ML: "mlTaken",
+};

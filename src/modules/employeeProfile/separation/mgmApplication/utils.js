@@ -244,8 +244,8 @@ const calculateTotalAmounts = (deductionDataset, duesDataset) => {
 
   combinedDataset.forEach((item) => {
     item?.isAddition === 0
-      ? (totalDeductionAmount += +item?.numAmount)
-      : (totalDuesAmount += +item?.numAmount);
+      ? (totalDeductionAmount += +item?.numAmount || 0)
+      : (totalDuesAmount += +item?.numAmount || 0);
   });
 
   return { totalDuesAmount, totalDeductionAmount };

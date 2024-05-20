@@ -58,8 +58,8 @@ const DueAmount = ({
               title="Deductions"
               rowDto={deductionRowDto}
               setRowDto={setDeductionRowDto}
-              showHeader={false}
-              isDisabled={false}
+              showHeader={true}
+              isDisabled={true}
               type={type}
             />
           </div>

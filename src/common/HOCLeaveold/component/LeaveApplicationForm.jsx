@@ -270,6 +270,7 @@ const LeaveApplicationForm = ({ propsObj }) => {
           <div style={{ fontSize: "14px" }}>
             <FileUpload sx={{ marginRight: "5px", fontSize: "18px" }} /> Click
             to upload
+            <sub className="text-danger"> (Max file size: 1MB)</sub>
           </div>
         </div>
         {imageFile?.globalFileUrlId ? (

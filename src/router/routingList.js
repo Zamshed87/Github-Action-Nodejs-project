@@ -40,6 +40,9 @@ import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import EmployeeList from "modules/timeSheet/reports/employeeList/index.tsx";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
+import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
+import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
+
 import { lazy } from "react";
 
 const CreateAndEditEmploye = lazy(() =>
@@ -709,9 +712,9 @@ const ActiveInactiveEmployeeReport = lazy(() =>
 const JobConfirmationReport = lazy(() =>
   import("../modules/employeeProfile/jobConfirmation/index.tsx")
 );
-const EmLeaveApplication = lazy(() =>
-  import("../modules/employeeProfile/leaveApplication/index.jsx")
-);
+// const EmLeaveApplicationT = lazy(() =>
+//   import("../modules/employeeProfile/leaveApplication/index.jsx")
+// );
 const EmLoanApplication = lazy(() =>
   import("../modules/employeeProfile/LoanApplication/index.jsx")
 );
@@ -746,19 +749,19 @@ const PfFundReport = lazy(() =>
   import("../modules/employeeProfile/Reports/pfFundReport/index.tsx")
 );
 const EmLeaveHistory = lazy(() =>
-  import("../modules/employeeProfile/Reports/leaveHistory/index.js")
+  import("../modules/employeeProfile/Reports/leaveHistory/index.tsx")
 );
 const EmLeaveReportPrint = lazy(() =>
   import("../modules/employeeProfile/Reports/leaveHistory/LeaveReportPrint.jsx")
 );
 const EmLoanHistory = lazy(() =>
-  import("../modules/employeeProfile/Reports/LoanHistory/index.jsx")
+  import("../modules/employeeProfile/Reports/LoanHistory/index.tsx")
 );
 const EmLoanReportPrint = lazy(() =>
   import("../modules/employeeProfile/Reports/LoanHistory/LoanReportPrint.jsx")
 );
 const EmMovementHistory = lazy(() =>
-  import("../modules/employeeProfile/Reports/movementHistory/index.js")
+  import("../modules/employeeProfile/Reports/movementHistory/index.tsx")
 );
 const EmMovementReportPrint = lazy(() =>
   import(
@@ -766,7 +769,7 @@ const EmMovementReportPrint = lazy(() =>
   )
 );
 const EmOverTimeReport = lazy(() =>
-  import("../modules/employeeProfile/Reports/overTimeReport")
+  import("../modules/employeeProfile/Reports/overTimeReport/index.tsx")
 );
 const EmOverTimeDailyReport = lazy(() =>
   import("../modules/employeeProfile/Reports/overTimeDailyReport")
@@ -1561,7 +1564,7 @@ export const routingList = [
   //   path: "/profile/traininganddevelopment/calendarbooking",
   //   component: CalenderBooking,
   // },
-  { path: "/profile/leaveApplication", component: EmLeaveApplication },
+  { path: "/profile/leaveApplication", component: EmLeaveApplicationT },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
 
@@ -2061,7 +2064,7 @@ export const routingList = [
   },
   {
     path: "/SelfService/leaveAndMovement/leaveApplication",
-    component: LeaveApplication,
+    component: TLeaveApplication,
   },
   {
     path: "/SelfService/leaveAndMovement/leaveEncashment",
@@ -3061,8 +3064,6 @@ export const routingList = [
 
   { path: "/components/test", component: Test },
 ];
-
-
 
 // Those hidden menu just use for develper
 //http://localhost:3013/profile/timeManagement/attendanceRawDataProcess
