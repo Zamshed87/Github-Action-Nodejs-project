@@ -365,24 +365,26 @@ export const empMgmtLeaveApplicationDto = (
         <>
           <TableButton
             buttonsList={[
-              rec?.ApprovalStatus === "Pending" && {
-                type: "edit",
-                onClick: (e) => {
-                  e.stopPropagation();
-                  setIsEdit(true);
-                  e.stopPropagation();
-                  // scrollRef.current.scrollIntoView({
-                  //   behavior: "smooth",
-                  // });
-                  setSingleData(rec);
+              rec?.ApprovalStatus === "Pending" &&
+                rec?.LeaveTypeId !== 5 && {
+                  type: "edit",
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setIsEdit(true);
+                    e.stopPropagation();
+                    // scrollRef.current.scrollIntoView({
+                    //   behavior: "smooth",
+                    // });
+                    setSingleData(rec);
 
-                  setImageFile({
-                    globalFileUrlId: rec?.DocumentFileUrl,
-                  });
+                    setImageFile({
+                      globalFileUrlId: rec?.DocumentFileUrl,
+                    });
+                  },
                 },
-              },
               isOfficeAdmin &&
-                rec?.ApprovalStatus === "Approved" && {
+                rec?.ApprovalStatus === "Approved" &&
+                rec?.LeaveTypeId !== 5 && {
                   type: "edit",
                   onClick: (e) => {
                     e.stopPropagation();
@@ -399,16 +401,18 @@ export const empMgmtLeaveApplicationDto = (
                   },
                 },
 
-              rec?.ApprovalStatus === "Pending" && {
-                type: "delete",
-                onClick: (e) => {
-                  e.stopPropagation();
-                  setSingleData("");
-                  demoPopupForDelete(data, values);
+              rec?.ApprovalStatus === "Pending" &&
+                rec?.LeaveTypeId !== 5 && {
+                  type: "delete",
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setSingleData("");
+                    demoPopupForDelete(data, values);
+                  },
                 },
-              },
               isOfficeAdmin &&
-                rec?.ApprovalStatus === "Approved" && {
+                rec?.ApprovalStatus === "Approved" &&
+                rec?.LeaveTypeId !== 5 && {
                   type: "delete",
                   onClick: (e) => {
                     e.stopPropagation();
