@@ -22,6 +22,7 @@ import TLeaveApplicationForm from "common/HOCLeave/component/TLeaveApplicationFo
 import LeaveBalanceTable from "common/HOCLeave/component/LeaveBalanceTable";
 import NoResult from "common/NoResult";
 import { gray500 } from "utility/customColor";
+import Loading from "common/loading/Loading";
 
 type TSelfLeaveApplication = any;
 const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
@@ -76,27 +77,6 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
     // empSearchType && date && employee();
   }, [buId, wgId]);
 
-  //   const getEmployee = (value: any) => {
-  //     if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
-  //     CommonEmployeeDDL?.action({
-  //       urlKey: "CommonEmployeeDDL",
-  //       method: "GET",
-  //       params: {
-  //         businessUnitId: buId,
-  //         workplaceGroupId: wgId,
-  //         // workplaceId: wId,
-  //         searchText: value,
-  //       },
-  //       onSuccess: (res) => {
-  //         res.forEach((item: any, i: number) => {
-  //           res[i].label = item?.employeeName;
-  //           res[i].value = item?.employeeId;
-  //         });
-  //       },
-  //     });
-  //   };
-
   return (
     <PForm
       form={form}
@@ -109,6 +89,8 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
         isSelfService: true,
       }}
     >
+      {loading && <Loading />}
+
       <PCard>
         <PCardHeader>
           <Form.Item shouldUpdate noStyle>

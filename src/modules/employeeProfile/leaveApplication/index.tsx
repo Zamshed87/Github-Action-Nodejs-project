@@ -22,6 +22,7 @@ import TLeaveApplicationForm from "common/HOCLeave/component/TLeaveApplicationFo
 import LeaveBalanceTable from "common/HOCLeave/component/LeaveBalanceTable";
 import NoResult from "common/NoResult";
 import { gray500 } from "utility/customColor";
+import Loading from "common/loading/Loading";
 
 type TEmLeaveApplication = any;
 const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
@@ -131,6 +132,8 @@ const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {
         year: moment().format("YYYY"),
       }}
     >
+      {loading && <Loading />}
+
       <PCard>
         <PCardHeader>
           <Form.Item shouldUpdate noStyle>

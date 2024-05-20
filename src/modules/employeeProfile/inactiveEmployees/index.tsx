@@ -510,7 +510,7 @@ const ActiveInactiveEmployeeReport = () => {
                 pagination,
               });
             }}
-            scroll={{ x: 2000 }}
+            // scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>

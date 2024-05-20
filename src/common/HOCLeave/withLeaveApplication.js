@@ -11,7 +11,6 @@ import {
 } from "./helperAPI";
 import {
   empMgmtLeaveApplicationDto,
-  empMgmtLeaveApplicationDtoColumn,
   initDataForLeaveApplication,
   validationSchemaForLeaveApplication,
 } from "./utils";
@@ -104,23 +103,6 @@ const withLeaveApplication = (WrappedComponent) => {
 
       createLeaveApplication(payload, setLoading, callback);
     };
-    // const demoPopupForDeleteAdmin = (item, values) => {
-    //   const callback = () => {
-    //     getData(values?.employee?.value, values?.year?.value);
-    //   };
-
-    //   const confirmObject = {
-    //     closeOnClickOutside: false,
-    //     message: "Are you want to sure you delete this leave?",
-    //     yesAlertFunc: () => {
-    //       deleteLeaveApplication(values, item, setLoading, callback);
-    //     },
-    //     noAlertFunc: () => {
-    //       //   history.push("/components/dialogs")
-    //     },
-    //   };
-    //   IConfirmModal(confirmObject);
-    // };
 
     const demoPopup = (action, values, cb) => {
       let payload = {};
@@ -149,7 +131,6 @@ const withLeaveApplication = (WrappedComponent) => {
         toast.error("Please Select half Time");
         return;
       }
-      console.log({ values });
       payload = {
         isActive: true,
         yearId: values?.year?.value,
@@ -300,7 +281,6 @@ const withLeaveApplication = (WrappedComponent) => {
           setLeaveHistoryData,
           userName,
           intProfileImageUrl,
-          empMgmtLeaveApplicationDtoColumn,
           initDataForLeaveApplication,
           validationSchemaForLeaveApplication,
           employeeId,
