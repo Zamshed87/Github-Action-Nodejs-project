@@ -508,7 +508,6 @@ const MgmtDailyAttendance = () => {
       >
         <PCard>
           <PCardHeader
-            backButton
             title="Daily Attendance Report"
             onSearch={(e) => {
               searchFunc(e?.target?.value);

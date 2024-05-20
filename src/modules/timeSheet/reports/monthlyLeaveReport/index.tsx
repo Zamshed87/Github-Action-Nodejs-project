@@ -21,7 +21,6 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   dateFormatter,
@@ -30,15 +29,12 @@ import {
 } from "utility/dateFormatter";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
-import { fromToDateList } from "../helper";
-import { gray600 } from "utility/customColor";
-import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
-import axios from "axios";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { column } from "./helper";
+import axios from "axios";
 import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
+import { column } from "./helper";
 
-const RosterReport = () => {
+const MonthlyLeaveReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
@@ -46,24 +42,23 @@ const RosterReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30340),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30420),
     []
   );
   // menu permission
   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
+  const empDepartmentDDL = useApiRequest({});
   //   const debounce = useDebounce();
-
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
-  const [pages, setPages] = useState({
+  const [pages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
   });
-  const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
   //   api states
@@ -72,7 +67,7 @@ const RosterReport = () => {
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Roster Report";
+    document.title = "Monthly Leave report";
     () => {
       document.title = "PeopleDesk";
     };
@@ -119,6 +114,30 @@ const RosterReport = () => {
       },
     });
   };
+
+  // workplace wise
+  const getEmployeDepartment = () => {
+    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+
+    empDepartmentDDL?.action({
+      urlKey: "PeopleDeskAllDDL",
+      method: "GET",
+      params: {
+        DDLType: "EmpDepartment",
+        BusinessUnitId: buId,
+        WorkplaceGroupId: workplaceGroup?.value,
+        IntWorkplaceId: workplace?.value,
+        intId: 0,
+      },
+      onSuccess: (res) => {
+        res?.forEach((item: any, i: any) => {
+          res[i].label = item?.DepartmentName;
+          res[i].value = item?.DepartmentId;
+        });
+      },
+    });
+  };
+
   // data call
   type TLandingApi = {
     pagination?: {
@@ -136,24 +155,23 @@ const RosterReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-
+    const dept = values?.department?.map((item: any) => item?.value);
     landingApi.action({
-      urlKey: "TimeManagementDynamicPIVOTReport",
-      method: "GET",
-      params: {
-        ReportType: "monthly_roster_report_for_all_employee",
-        AccountId: orgId,
-        BusinessUnitId: buId,
-        WorkplaceGroupId: values?.workplaceGroup?.value,
-        WorkplaceId: values?.workplace?.value,
-        PageNo: pagination.current || pages?.current,
-        PageSize:
-          pagination.pageSize === 1 ? pages?.pageSize : pagination.pageSize,
-        EmployeeId: 0,
-        IsPaginated: true,
-        DteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        DteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        SearchTxt: searchText,
+      urlKey: "MonthlyleaveReport",
+      method: "POST",
+      payload: {
+        accountId: orgId,
+        businessUnitId: buId,
+        workPlaceGroupId: values?.workplaceGroup?.value,
+        workPlaceId: values?.workplace?.value,
+        employeeId: 0,
+        fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        toDate: moment(values?.toDate).format("YYYY-MM-DD"),
+        pageNo: pagination?.current || 1,
+        pageSize: pagination?.pageSize || 500,
+        isPaginated: true,
+        SearchText: searchText,
+        departmentIdList: dept?.length > 0 ? dept : null,
       },
     });
   };
@@ -164,26 +182,6 @@ const RosterReport = () => {
   }, []);
   //   table column
   const header: any = () => {
-    const values = form.getFieldsValue(true);
-    const dateList = fromToDateList(
-      moment(values?.fromDate).format("YYYY-MM-DD"),
-      moment(values?.toDate).format("YYYY-MM-DD")
-    );
-    const d =
-      dateList?.length > 0 &&
-      dateList.map((item: any) => ({
-        title: () => <span style={{ color: gray600 }}>{item?.level}</span>,
-        render: (_: any, record: any) =>
-          record?.[item?.date] ? (
-            <span style={getChipStyle(record?.[item?.date])}>
-              {record?.[item?.date]}
-            </span>
-          ) : (
-            "-"
-          ),
-        width: 150,
-      }));
-
     return [
       {
         title: "SL",
@@ -196,19 +194,34 @@ const RosterReport = () => {
 
       {
         title: "Work. Group/Location",
-        dataIndex: "strWorkplaceGroup",
+        dataIndex: "strWorkPlaceGroupName",
         width: 120,
         fixed: "left",
       },
       {
         title: "Workplace/Concern",
-        dataIndex: "strWorkplace",
-        width: 130,
+        dataIndex: "strWorkPlaceName",
+        width: 120,
         fixed: "left",
       },
       {
+        title: "Department",
+        dataIndex: "strDepartmentName",
+        fixed: "left",
+
+        width: 70,
+      },
+      {
+        title: "Section",
+        dataIndex: "StrSectionName",
+        fixed: "left",
+
+        width: 70,
+      },
+
+      {
         title: "Employee Id",
-        dataIndex: "EmployeeCode",
+        dataIndex: "StrEmployeeCode",
         width: 80,
         fixed: "left",
       },
@@ -230,23 +243,63 @@ const RosterReport = () => {
 
       {
         title: "Designation",
-        dataIndex: "strDesignation",
+        dataIndex: "StrDesignation",
 
         width: 100,
       },
       {
-        title: "Section",
-        dataIndex: "strSectionName",
+        title: "Leave Type",
+        dataIndex: "strLeaveTypeName",
 
         width: 100,
       },
       {
-        title: "Department",
-        dataIndex: "strDepartment",
+        title: "Location",
+        dataIndex: "StrAddressDuetoLeave",
 
         width: 100,
       },
-      ...(d as any),
+      {
+        title: "From Date",
+        dataIndex: "StartDate",
+        render: (_: any, item: any) => dateFormatter(item?.StartDate),
+        width: 100,
+      },
+      {
+        title: "Duration",
+        dataIndex: "Start_End_Time",
+
+        width: 100,
+      },
+      {
+        title: "To Date",
+        dataIndex: "EndDate",
+        render: (_: any, item: any) => dateFormatter(item?.EndDate),
+
+        width: 100,
+      },
+
+      {
+        title: "Half Day (Hours)",
+        dataIndex: "HalfDayHours",
+
+        width: 100,
+      },
+      {
+        title: "Days",
+        dataIndex: "TotalDays",
+
+        width: 100,
+      },
+      {
+        title: "Application Date",
+        dataIndex: "ApplicationDate",
+        render: (_: any, item: any) => dateFormatter(item?.ApplicationDate),
+
+        width: 100,
+      },
+
+      //   ...(d as any),
     ];
   };
   const searchFunc = debounce((value) => {
@@ -272,7 +325,7 @@ const RosterReport = () => {
           landingApiCall({
             pagination: {
               current: pages?.current,
-              pageSize: landingApi?.data[0]?.totalCount,
+              pageSize: landingApi?.data?.TotalCount,
             },
           });
         }}
@@ -281,7 +334,7 @@ const RosterReport = () => {
           {excelLoading && <Loading />}
           <PCardHeader
             exportIcon={true}
-            title={`Total ${landingApi?.data[0]?.totalCount || 0} employees`}
+            title={`Total ${landingApi?.data?.TotalCount || 0} employees`}
             onSearch={(e) => {
               searchFunc(e?.target?.value);
               form.setFieldsValue({
@@ -293,34 +346,44 @@ const RosterReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-
-                  const res = await axios.get(
-                    `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_roster_report_for_all_employee&AccountId=${orgId}&DteFromDate=${moment(
-                      values?.fromDate
-                    ).format("YYYY-MM-DD")}&DteToDate=${moment(
-                      values?.toDate
-                    ).format("YYYY-MM-DD")}&EmployeeId=0&WorkplaceGroupId=${
-                      values?.workplaceGroup?.value || 0
-                    }&WorkplaceId=${
-                      values?.workplace?.value || 0
-                    }&PageNo=1&SearchTxt=${
-                      values?.search || ""
-                    }&PageSize=1000&IsPaginated=false`
+                  const dept = values?.department?.map(
+                    (item: any) => item?.value
                   );
-                  if (res?.data) {
+
+                  const res = await axios.post(
+                    "/LeaveMovement/MonthlyleaveReport",
+                    {
+                      accountId: orgId,
+                      businessUnitId: buId,
+                      workPlaceGroupId: values?.workplaceGroup?.value,
+                      workPlaceId: values?.workplace?.value,
+                      employeeId: 0,
+                      fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+                      toDate: moment(values?.toDate).format("YYYY-MM-DD"),
+                      pageNo: 1,
+                      pageSize: 500,
+                      isPaginated: false,
+                      departmentIdList: dept?.length > 0 ? dept : null,
+                    }
+                  );
+                  if (res?.data?.Data) {
                     setExcelLoading(true);
-                    if (res?.data < 1) {
+                    if (res?.data?.Data?.length < 1) {
                       return toast.error("No Attendance Data Found");
                     }
-
-                    const newData = res?.data?.map((item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                      };
-                    });
+                    const newData = res?.data?.Data?.map(
+                      (item: any, index: any) => {
+                        return {
+                          ...item,
+                          sl: index + 1,
+                          EndDate: dateFormatter(item?.EndDate),
+                          StartDate: dateFormatter(item?.StartDate),
+                          ApplicationDate: dateFormatter(item?.ApplicationDate),
+                        };
+                      }
+                    );
                     createCommonExcelFile({
-                      titleWithDate: `Roster Report - ${dateFormatter(
+                      titleWithDate: `Monthly Leave Report - ${dateFormatter(
                         moment(values?.fromDate).format("YYYY-MM-DD")
                       )} to ${dateFormatter(
                         moment(values?.toDate).format("YYYY-MM-DD")
@@ -331,19 +394,11 @@ const RosterReport = () => {
                       businessUnit: values?.workplaceGroup?.value
                         ? (buDetails as any)?.strWorkplace
                         : buName,
-                      tableHeader: column(
-                        moment(values?.fromDate).format("YYYY-MM-DD"),
-                        moment(values?.toDate).format("YYYY-MM-DD")
-                      ),
+                      tableHeader: column,
                       getTableData: () =>
                         getTableDataMonthlyAttendance(
                           newData,
-                          Object.keys(
-                            column(
-                              moment(values?.fromDate).format("YYYY-MM-DD"),
-                              moment(values?.toDate).format("YYYY-MM-DD")
-                            )
-                          )
+                          Object.keys(column)
                         ),
 
                       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -381,7 +436,7 @@ const RosterReport = () => {
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
-              <Col md={5} sm={12} xs={24}>
+              <Col md={3} sm={12} xs={24}>
                 <PInput
                   type="date"
                   name="fromDate"
@@ -394,7 +449,7 @@ const RosterReport = () => {
                   }}
                 />
               </Col>
-              <Col md={5} sm={12} xs={24}>
+              <Col md={3} sm={12} xs={24}>
                 <PInput
                   type="date"
                   name="toDate"
@@ -409,39 +464,58 @@ const RosterReport = () => {
                 />
               </Col>
 
-              <Col md={5} sm={12} xs={24}>
+              <Col md={4} sm={12} xs={24}>
                 <PSelect
                   options={workplaceGroup?.data || []}
                   name="workplaceGroup"
                   label="Workplace Group"
                   placeholder="Workplace Group"
-                  disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplaceGroup: op,
                       workplace: undefined,
+                      department: undefined,
                     });
                     getWorkplace();
                   }}
-                  rules={
-                    [
-                      //   { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
+                  rules={[
+                    { required: true, message: "Workplace Group is required" },
+                  ]}
                 />
               </Col>
-              <Col md={5} sm={12} xs={24}>
+              <Col md={4} sm={12} xs={24}>
                 <PSelect
                   options={workplace?.data || []}
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
-                  disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplace: op,
+                      department: undefined,
                     });
                     getWorkplaceDetails(value, setBuDetails);
+                    getEmployeDepartment();
+                  }}
+                  rules={[{ required: true, message: "Workplace is required" }]}
+                />
+              </Col>
+              <Col md={7} sm={12} xs={24}>
+                <PSelect
+                  mode="multiple"
+                  allowClear
+                  options={
+                    empDepartmentDDL?.data?.length > 0
+                      ? empDepartmentDDL?.data
+                      : []
+                  }
+                  name="department"
+                  label="Department"
+                  placeholder="Department"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      department: op,
+                    });
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />
@@ -459,22 +533,20 @@ const RosterReport = () => {
 
           <DataTable
             bordered
-            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
+            data={
+              landingApi?.data?.Data?.length > 0 ? landingApi?.data?.Data : []
+            }
             loading={landingApi?.loading}
             header={header()}
             pagination={{
-              pageSize: pages?.pageSize,
-              total: landingApi?.data[0]?.totalCount,
+              pageSize: landingApi?.data?.PageSize,
+              total: landingApi?.data?.TotalCount,
             }}
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
               if (extra.action === "sort") return;
               setFilterList(filters);
-              setPages({
-                current: pagination.current,
-                pageSize: pagination.pageSize,
-                total: pagination.total,
-              });
+
               landingApiCall({
                 pagination,
               });
@@ -489,4 +561,4 @@ const RosterReport = () => {
   );
 };
 
-export default RosterReport;
+export default MonthlyLeaveReport;

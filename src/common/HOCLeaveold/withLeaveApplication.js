@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { dateFormatterForInput } from "utility/dateFormatter";
 import IConfirmModal from "../IConfirmModal";
 import { PeopleDeskSaasDDL, getPeopleDeskAllLanding } from "../api";
 import {
@@ -10,7 +10,7 @@ import {
   getEmployeeLeaveBalanceAndHistory,
 } from "./helperAPI";
 import {
-  empMgmtLeaveApplicationDto,
+  empMgmtLeaveApplicationDtoColumn,
   initDataForLeaveApplication,
   validationSchemaForLeaveApplication,
 } from "./utils";
@@ -45,6 +45,7 @@ const withLeaveApplication = (WrappedComponent) => {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [loadingForInfo, setLoadingForInfo] = useState(false);
+    const [showTooltip, setShowTooltip] = useState([]);
 
     const open = Boolean(anchorEl);
     const id = open ? "simple-popover" : undefined;
@@ -70,6 +71,24 @@ const withLeaveApplication = (WrappedComponent) => {
         null,
         wgId
       );
+    };
+
+    const handleIconHover = async (data, values, setShowTooltip) => {
+      try {
+        setLoading(true);
+        const res = await axios.get(
+          `/ApprovalHistoryLog/GetApprovalLogHistoriesById?BusinessUnitId=${buId}&applicationId=${
+            data?.intApplicationId
+          }&employeeId=${
+            values?.employee?.value || employeeId
+          }&applicationType=leave`
+        );
+        setShowTooltip(res);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
     };
 
     const demoPopupForDelete = (item, values) => {
@@ -101,8 +120,35 @@ const withLeaveApplication = (WrappedComponent) => {
         getData(values?.employee?.value, values?.year?.value);
       };
 
-      createLeaveApplication(payload, setLoading, callback);
+      const confirmObject = {
+        closeOnClickOutside: false,
+        message: "Are you want to sure you delete your leave?",
+        yesAlertFunc: () => {
+          createLeaveApplication(payload, setLoading, callback);
+        },
+        noAlertFunc: () => {
+          //   history.push("/components/dialogs")
+        },
+      };
+      IConfirmModal(confirmObject);
     };
+    // const demoPopupForDeleteAdmin = (item, values) => {
+    //   const callback = () => {
+    //     getData(values?.employee?.value, values?.year?.value);
+    //   };
+
+    //   const confirmObject = {
+    //     closeOnClickOutside: false,
+    //     message: "Are you want to sure you delete this leave?",
+    //     yesAlertFunc: () => {
+    //       deleteLeaveApplication(values, item, setLoading, callback);
+    //     },
+    //     noAlertFunc: () => {
+    //       //   history.push("/components/dialogs")
+    //     },
+    //   };
+    //   IConfirmModal(confirmObject);
+    // };
 
     const demoPopup = (action, values, cb) => {
       let payload = {};
@@ -131,6 +177,7 @@ const withLeaveApplication = (WrappedComponent) => {
         toast.error("Please Select half Time");
         return;
       }
+
       payload = {
         isActive: true,
         yearId: values?.year?.value,
@@ -138,22 +185,20 @@ const withLeaveApplication = (WrappedComponent) => {
         leaveTypeId: values?.leaveType?.value,
         employeeId: values?.employee ? values?.employee?.value : employeeId,
         businessUnitId: buId,
-        appliedFromDate: dateFormatterForInput(values?.fromDate),
-        appliedToDate: dateFormatterForInput(values?.toDate),
-        documentFile: values?.imageFile?.globalFileUrlId
-          ? values?.imageFile?.globalFileUrlId
-          : 0,
+        appliedFromDate: values?.fromDate,
+        appliedToDate: values?.toDate,
+        documentFile: imageFile ? imageFile?.globalFileUrlId : 0,
         leaveReason: values?.reason,
         addressDuetoLeave: values?.location,
-        isHalfDay: values?.isHalfDay ? true : false,
-        strHalDayRange: values?.isHalfDay ? values?.halfTime : " ",
+        isHalfDay: values?.isHalfDay?.label === "Half Day" ? true : false,
+        strHalDayRange: values?.halfTime?.label ? values?.halfTime?.label : " ",
         workplaceGroupId: singleData?.intWorkplaceGroupId || wgId,
         isSelfService: values?.isSelfService,
       };
 
       const confirmObject = {
         closeOnClickOutside: false,
-        message: `Ready to submit a leave application?`,
+        message: `Do you want to ${action} ?`,
         yesAlertFunc: () => {
           if (values?.employee) {
             createLeaveApplication(payload, setLoading, callback);
@@ -281,6 +326,7 @@ const withLeaveApplication = (WrappedComponent) => {
           setLeaveHistoryData,
           userName,
           intProfileImageUrl,
+          empMgmtLeaveApplicationDtoColumn,
           initDataForLeaveApplication,
           validationSchemaForLeaveApplication,
           employeeId,
@@ -291,8 +337,10 @@ const withLeaveApplication = (WrappedComponent) => {
           wgId,
           permission,
           isOfficeAdmin,
+          handleIconHover,
+          showTooltip,
+          setShowTooltip,
           // demoPopupForDeleteAdmin,
-          empMgmtLeaveApplicationDto,
         }}
       />
     );

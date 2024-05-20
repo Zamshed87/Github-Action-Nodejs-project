@@ -23,13 +23,12 @@ import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
+import { getDateOfYear } from "utility/dateFormatter";
 import { MdOutlineGroupAdd } from "react-icons/md";
 
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { todayDate } from "utility/todayDate";
 import {
   column,
   getTableDataInactiveEmployees,
@@ -335,7 +334,6 @@ const ActiveInactiveEmployeeReport = () => {
         <PCard>
           {excelLoading && <Loading />}
           <PCardHeader
-            backButton
             exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
             onSearch={(e) => {
@@ -510,7 +508,7 @@ const ActiveInactiveEmployeeReport = () => {
                 pagination,
               });
             }}
-            scroll={{ x: 2000 }}
+            // scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>

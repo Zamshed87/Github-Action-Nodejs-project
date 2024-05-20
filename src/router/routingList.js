@@ -40,6 +40,10 @@ import EmpCheckList from "modules/timeSheet/reports/empCheckList";
 import EmployeeList from "modules/timeSheet/reports/employeeList/index.tsx";
 import JoiningReport from "modules/timeSheet/reports/joiningReport";
 import LateReport from "modules/timeSheet/reports/lateReport";
+import EmLeaveApplicationT from "../modules/employeeProfile/leaveApplication";
+import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx";
+
+import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 
 const CreateAndEditEmploye = lazy(() =>
@@ -58,7 +62,7 @@ const EarlyReport = lazy(() =>
   import("modules/timeSheet/reports/earlyInoutReport")
 );
 const AbsentReport = lazy(() =>
-  import("modules/timeSheet/reports/absentReport")
+  import("modules/timeSheet/reports/absentReport/index.tsx")
 );
 const CreateEditLeavePolicy = lazy(() =>
   import(
@@ -709,9 +713,9 @@ const ActiveInactiveEmployeeReport = lazy(() =>
 const JobConfirmationReport = lazy(() =>
   import("../modules/employeeProfile/jobConfirmation/index.tsx")
 );
-const EmLeaveApplication = lazy(() =>
-  import("../modules/employeeProfile/leaveApplication/index.jsx")
-);
+// const EmLeaveApplicationT = lazy(() =>
+//   import("../modules/employeeProfile/leaveApplication/index.jsx")
+// );
 const EmLoanApplication = lazy(() =>
   import("../modules/employeeProfile/LoanApplication/index.jsx")
 );
@@ -969,9 +973,9 @@ const AppPipeline = lazy(() =>
 const YearlyLeavePolicy = lazy(() =>
   import("../modules/leaveMovement/configuration/YearlyLeavePolicy/index.jsx")
 );
-const LeaveApplication = lazy(() =>
-  import("../modules/leaveMovement/leave/application/index.jsx")
-);
+// const LeaveApplication = lazy(() =>
+//   import("../modules/leaveMovement/leave/application/index.jsx")
+// );
 const LeaveApproval = lazy(() =>
   import("../modules/leaveMovement/leave/approval/index.jsx")
 );
@@ -1561,7 +1565,7 @@ export const routingList = [
   //   path: "/profile/traininganddevelopment/calendarbooking",
   //   component: CalenderBooking,
   // },
-  { path: "/profile/leaveApplication", component: EmLeaveApplication },
+  { path: "/profile/leaveApplication", component: EmLeaveApplicationT },
   { path: "/profile/movementApplication", component: EmMovementApplication },
   { path: "/profile/loanRequest", component: EmLoanApplication },
 
@@ -2061,7 +2065,7 @@ export const routingList = [
   },
   {
     path: "/SelfService/leaveAndMovement/leaveApplication",
-    component: LeaveApplication,
+    component: TLeaveApplication,
   },
   {
     path: "/SelfService/leaveAndMovement/leaveEncashment",
@@ -2862,6 +2866,10 @@ export const routingList = [
   {
     path: "/assetManagement/assetControlPanel/itemProfile/create",
     component: AssetCreateItemProfile,
+  },
+  {
+    path: "/profile/reports/monthlyLeaveReport",
+    component: MonthlyLeaveReport,
   },
   {
     path: "/assetManagement/assetControlPanel/itemProfile/edit/:id",
