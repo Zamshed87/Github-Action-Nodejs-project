@@ -31,7 +31,6 @@ import { Tooltip } from "@mui/material";
 import axios from "axios";
 import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
 import { getWorkplaceDetails } from "common/api";
-import { todayDate } from "utility/todayDate";
 
 const date = new Date();
 const initYear = date.getFullYear(); // 2022
@@ -257,7 +256,7 @@ function SalaryAssignAndDeduction() {
                             });
 
                             createCommonExcelFile({
-                              titleWithDate: `Allowance & Deduction Report - ${todayDate()}`,
+                              titleWithDate: `Allowance & Deduction Report - ${values?.fromMonth}`,
                               fromDate: "",
                               toDate: "",
                               buAddress: buDetails?.strAddress,
