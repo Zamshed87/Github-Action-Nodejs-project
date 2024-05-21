@@ -177,6 +177,9 @@ const assetReportColumn = (
       render: (item) => {
         return (
           <div>
+            {item?.status === "Unavailable" && (
+              <Chips label="Unavailable" classess="hold" />
+            )}
             {item?.status === "Available" && (
               <Chips label="Available" classess="success" />
             )}
@@ -251,57 +254,61 @@ const assetReportColumn = (
               />
             </button>
           </Tooltip>
-          <Tooltip title="Attachment Upload" arrow>
-            <button className="iconButton" type="button">
-              <AttachFile
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setItemId(record?.assetId);
-                  setIsAttachmentShow(true);
-                }}
-              />
-            </button>
-          </Tooltip>
-          <Tooltip title="Edit Registration" arrow>
-            <button className="iconButton" type="button">
-              <EditOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  history.push(
-                    `/assetManagement/assetControlPanel/registration/edit/${record?.assetRegId}`
-                  );
-                }}
-              />
-            </button>
-          </Tooltip>
-          {!record?.isAssign && (
-            <Tooltip title="Assign" arrow>
-              <button className="iconButton" type="button">
-                <AddOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    history.push(
-                      `/assetManagement/assetControlPanel/assign/create`,
-                      {
-                        data: record,
-                      }
-                    );
-                  }}
-                />
-              </button>
-            </Tooltip>
-          )}
-          {record?.isAssign && !record?.isOnMaintaince && (
-            <Tooltip title="Unassign" arrow>
-              <button type="button" className="iconButton">
-                <ReplayOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    assetUnassign(record?.assetId, setUnassignLoading, cb);
-                  }}
-                />
-              </button>
-            </Tooltip>
+          {record?.status !== "Unavailable" && (
+            <>
+              <Tooltip title="Attachment Upload" arrow>
+                <button className="iconButton" type="button">
+                  <AttachFile
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setItemId(record?.assetId);
+                      setIsAttachmentShow(true);
+                    }}
+                  />
+                </button>
+              </Tooltip>
+              <Tooltip title="Edit Registration" arrow>
+                <button className="iconButton" type="button">
+                  <EditOutlined
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      history.push(
+                        `/assetManagement/assetControlPanel/registration/edit/${record?.assetRegId}`
+                      );
+                    }}
+                  />
+                </button>
+              </Tooltip>
+              {!record?.isAssign && (
+                <Tooltip title="Assign" arrow>
+                  <button className="iconButton" type="button">
+                    <AddOutlined
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        history.push(
+                          `/assetManagement/assetControlPanel/assign/create`,
+                          {
+                            data: record,
+                          }
+                        );
+                      }}
+                    />
+                  </button>
+                </Tooltip>
+              )}
+              {record?.isAssign && !record?.isOnMaintaince && (
+                <Tooltip title="Unassign" arrow>
+                  <button type="button" className="iconButton">
+                    <ReplayOutlined
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        assetUnassign(record?.assetId, setUnassignLoading, cb);
+                      }}
+                    />
+                  </button>
+                </Tooltip>
+              )}
+            </>
           )}
         </div>
       ),
