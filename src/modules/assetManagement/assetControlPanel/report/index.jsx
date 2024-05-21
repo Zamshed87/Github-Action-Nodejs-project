@@ -313,6 +313,7 @@ const AssetReport = () => {
                           { value: 1, label: "Available" },
                           { value: 2, label: "Maintenance" },
                           { value: 3, label: "Assign" },
+                          { value: 4, label: "Unavailable" },
                         ]}
                         value={values?.status}
                         onChange={(valueOption) => {
