@@ -1,9 +1,7 @@
-import { useFormik } from "formik";
 import React, { useEffect, useState, useRef } from "react";
+import { useFormik } from "formik";
 import ReactQuill from "react-quill";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import * as Yup from "yup";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import BackButton from "../../../../../common/BackButton";
 import Loading from "../../../../../common/loading/Loading";
@@ -24,6 +22,8 @@ import { IconButton } from "@mui/material";
 import { deleteSeparationAttachment, separationCrud } from "../../helper";
 import { dateFormatterForInput } from "../../../../../utility/dateFormatter";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import * as Yup from "yup";
+import axios from "axios";
 
 const initData = {
   separationType: "",
@@ -63,6 +63,7 @@ export default function SelfApplicationSeparationForm() {
   const [loading, setLoading] = useState(false);
   const [separationTypeDDL, setSeparationTypeDDL] = useState([]);
   const [singleData, setSingleData] = useState([]);
+  const [, getEmp, ,] = useAxiosGet();
   const [, getSeparationDataApi, loadingSeparationData, ,] = useAxiosGet();
   const [lastWorkingDay, getLastWorkingDay, , setLastWorkingDay] =
     useAxiosGet();
@@ -85,6 +86,26 @@ export default function SelfApplicationSeparationForm() {
       "SeparationTypeId",
       "SeparationType",
       setSeparationTypeDDL
+    );
+    getEmp(
+      `/Employee/CommonEmployeeDDL?businessUnitId=${buId}&workplaceGroupId=${wgId}`, (res) => {
+        const singleDataCopy = [...res];
+        const singleUserInfo = singleDataCopy.find(
+          (data) => data?.employeeId === employeeId
+        );
+        getLastWorkingDay(
+          `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${intDepartmentId}&employmentType=${
+            singleUserInfo?.employmentTypeId || 0
+          }&designationId=${intDesignationId}`,
+          (data) => {
+            const formattedLastWorkingDay = new Date(data);
+            const formattedMinDate = formattedLastWorkingDay
+              .toISOString()
+              .split("T")[0];
+            setLastWorkingDay(formattedMinDate);
+          }
+        );
+      }
     );
   }, [wgId, buId, wId]);
 
@@ -143,17 +164,6 @@ export default function SelfApplicationSeparationForm() {
   useEffect(() => {
     if (+params?.id) {
       getEmpSeparationDataHandlerById();
-    } else {
-      getLastWorkingDay(
-        `/SaasMasterData/GetLastWorkingDateOfSeparation?accountId=${orgId}&businessUnitId=${buId}&workPlaceGroup=${wgId}&workplaceId=${wId}&departmentId=${intDepartmentId}&employmentType=${0}&designationId=${intDesignationId}`,
-        (data) => {
-          const formattedLastWorkingDay = new Date(data);
-          const formattedMinDate = formattedLastWorkingDay
-            .toISOString()
-            .split("T")[0];
-          setLastWorkingDay(formattedMinDate);
-        }
-      );
     }
   }, [orgId, buId, employeeId, params?.id, wgId]);
 
