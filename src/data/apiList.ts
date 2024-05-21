@@ -121,6 +121,8 @@ export const apiList = {
   MonthlyleaveReport: "/LeaveMovement/MonthlyleaveReport",
   EmployeeMovementReportAll: "/Employee/EmployeeMovementReportAll",
   GetAbsentReport: "/TimeSheetReport/GetAbsentReport",
+  GetEmployeeSalaryReportByJoining:
+    "/Employee/GetEmployeeSalaryReportByJoining",
   LeaveBalanceHistoryForAllEmployee:
     "/Employee/LeaveBalanceHistoryForAllEmployee",
   GetLoanApplicationByAdvanceFilter:
