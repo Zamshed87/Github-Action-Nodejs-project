@@ -163,12 +163,12 @@ const MonthlyLeaveReport = () => {
         accountId: orgId,
         businessUnitId: buId,
         workPlaceGroupId: values?.workplaceGroup?.value,
-        workPlaceId: values?.workplace?.value,
+        workPlaceId: values?.workplace?.value || 0,
         employeeId: 0,
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
         pageNo: pagination?.current || 1,
-        pageSize: pagination?.pageSize || 500,
+        pageSize: pagination.pageSize! > 1 ? pagination?.pageSize : 500,
         isPaginated: true,
         SearchText: searchText,
         departmentIdList: dept?.length > 0 ? dept : null,
@@ -466,6 +466,7 @@ const MonthlyLeaveReport = () => {
 
               <Col md={4} sm={12} xs={24}>
                 <PSelect
+                  allowClear
                   options={workplaceGroup?.data || []}
                   name="workplaceGroup"
                   label="Workplace Group"
@@ -485,6 +486,7 @@ const MonthlyLeaveReport = () => {
               </Col>
               <Col md={4} sm={12} xs={24}>
                 <PSelect
+                  allowClear
                   options={workplace?.data || []}
                   name="workplace"
                   label="Workplace"
@@ -497,7 +499,7 @@ const MonthlyLeaveReport = () => {
                     getWorkplaceDetails(value, setBuDetails);
                     getEmployeDepartment();
                   }}
-                  rules={[{ required: true, message: "Workplace is required" }]}
+                  // rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
               <Col md={7} sm={12} xs={24}>
