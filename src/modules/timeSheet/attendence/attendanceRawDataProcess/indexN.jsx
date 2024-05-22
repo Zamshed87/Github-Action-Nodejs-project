@@ -74,7 +74,7 @@ function AttendanceRawDataProcess() {
 
   const saveHandler = (values) => {
     const payload = {
-      intAccountId: employeeId,
+      intAccountId: orgId,
       intWorkplaceId: wId,
       dteFromDate: values?.fromDate,
       dteToDate: values?.toDate,

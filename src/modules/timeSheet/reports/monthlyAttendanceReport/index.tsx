@@ -304,7 +304,7 @@ const MonthlyAttendanceReport = () => {
                     }&AccountId=${orgId}&PageNo=1&PageSize=1000&IsPaginated=false`
                   );
                   if (res?.data) {
-                    setExcelLoading(true);
+                    setExcelLoading(false);
                     if (res?.data < 1) {
                       return toast.error("No Attendance Data Found");
                     }
