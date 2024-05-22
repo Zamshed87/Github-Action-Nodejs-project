@@ -458,9 +458,9 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                       type="primary"
                       content={
                         isEdit
-                          ? `Update  ${leaveDays == 0.5 ? "Half" : leaveDays} ${
-                              leaveDays < 2 ? "Day" : "Days"
-                            } Leave`
+                          ? `Update  to ${
+                              leaveDays == 0.5 ? "Half" : leaveDays
+                            } ${leaveDays < 2 ? "Day" : "Days"} Leave`
                           : `Apply ${leaveDays == 0.5 ? "Half" : leaveDays} ${
                               leaveDays < 2 ? "Day" : "Days"
                             } Leave`
