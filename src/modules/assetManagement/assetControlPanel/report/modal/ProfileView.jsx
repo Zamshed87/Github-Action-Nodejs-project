@@ -403,6 +403,8 @@ const ProfileView = ({ assetId }) => {
                     <Chips label={"Maintenance"} classess="danger" />
                   ) : singleData?.Status === "Assign" ? (
                     <Chips label={"Assign"} classess="warning" />
+                  ) : singleData?.Status === "Unavailable" ? (
+                    <Chips label="Unavailable" classess="hold" />
                   ) : null}
                 </p>
               </div>
