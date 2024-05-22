@@ -108,9 +108,10 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
 
   return (
     <div>
-      <PCardBody>
+      <PCardBody styles={{ height: "240px" }}>
         <DataTable
           header={header}
+          nodataStyle={{ marginTop: "-35px", height: "175px" }}
           // bordered
           data={leaves?.length > 0 ? leaves : []}
         />

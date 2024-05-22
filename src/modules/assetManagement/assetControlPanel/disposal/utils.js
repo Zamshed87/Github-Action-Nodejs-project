@@ -463,7 +463,7 @@ const getData = (
   search
 ) => {
   getLandingData(
-    `/AssetManagement/GetAssetDisposalLandingPagination?accountId=${orgId}&branchId=${buId}&tyepId=${typeId}&viewOrder=desc&workplaceId=${wId}&workplaceGroupId=${wgId}&PageSize=${pages?.pageSize}&PageNo=${pages?.current}&SearchItem=${search}`,
+    `/AssetManagement/GetAssetDisposalLandingPagination?accountId=${orgId}&branchId=${buId}&typeId=${typeId}&viewOrder=desc&workplaceId=${wId}&workplaceGroupId=${wgId}&PageSize=${pages?.pageSize}&PageNo=${pages?.current}&SearchItem=${search}`,
     (res) => {
       typeId === 1 ? setSalesData(res?.data) : setDestroyData(res?.data);
       setPages?.({
