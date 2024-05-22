@@ -42,6 +42,7 @@ export const getBonusGenerateRequestReport = async (
       payload
     );
     if (res?.data?.listData) {
+      console.log("res",res?.data)
       setAllData && setAllData(res?.data?.listData);
       cb && cb(res?.data?.listData);
       setter(res?.data?.listData);
@@ -74,6 +75,7 @@ export const bonusApprovalTableColumn = ({
   setRowData,
   demoPopupForTable,
 }) => {
+  console.log("rowData",rowData)
   return [
     {
       title: "SL",

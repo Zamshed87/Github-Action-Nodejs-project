@@ -76,13 +76,13 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
         location: singleData?.AddressDuetoLeave,
         reason: singleData?.Reason,
         leaveDays: singleData?.HalfDay
-          ? "0.5 Days"
+          ? "0.5 "
           : `${
               +fromDateToDateDiff(
                 dateFormatterForInput(singleData?.AppliedFromDate),
                 dateFormatterForInput(singleData?.AppliedToDate)
               )?.split(" ")[0] + 1
-            } Days` || "",
+            } ` || "",
       });
     }
   }, [singleData]);
@@ -202,7 +202,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                                 moment(date).format("YYYY-MM-DD"),
                                 moment(date).format("YYYY-MM-DD")
                               )?.split(" ")[0] + 1
-                            } Days`;
+                            } `;
                             form.setFieldsValue({
                               leaveDays: totalLeaves,
                             });
@@ -233,7 +233,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                                 moment(fromDate).format("YYYY-MM-DD"),
                                 moment(date).format("YYYY-MM-DD")
                               )?.split(" ")[0] + 1
-                            } Days`;
+                            } `;
                             form.setFieldsValue({
                               leaveDays: totalLeaves,
                             });
@@ -337,7 +337,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 );
               }}
             </Form.Item>
-            <Col md={4} sm={24}>
+            {/* <Col md={4} sm={24}>
               <PInput
                 type="text"
                 name="leaveDays"
@@ -345,8 +345,8 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 label="Leave Days"
                 disabled={true}
               />
-            </Col>
-            <Col md={7} sm={24}>
+            </Col> */}
+            <Col md={8} sm={24}>
               <PInput
                 type="text"
                 name="location"
@@ -355,7 +355,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 rules={[{ required: true, message: "Location Is Required" }]}
               />
             </Col>
-            <Col md={13} sm={24}>
+            <Col md={16} sm={24}>
               <PInput
                 type="textarea"
                 name="reason"
@@ -444,18 +444,34 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                 </div>
               </div>
             </Col>
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const { leaveDays } = form.getFieldsValue(true);
 
-            <Col
-              style={{
-                marginTop: "23px",
+                return (
+                  <Col
+                    style={{
+                      marginTop: "23px",
+                    }}
+                  >
+                    <PButton
+                      type="primary"
+                      content={
+                        isEdit
+                          ? `Update  to ${
+                              leaveDays == 0.5 ? "Half" : leaveDays
+                            } ${leaveDays < 2 ? "Day" : "Days"} Leave`
+                          : `Apply ${leaveDays == 0.5 ? "Half" : leaveDays} ${
+                              leaveDays < 2 ? "Day" : "Days"
+                            } Leave`
+                      }
+                      onClick={viewHandler}
+                    />
+                  </Col>
+                );
               }}
-            >
-              <PButton
-                type="primary"
-                content={isEdit ? "Update" : "Apply"}
-                onClick={viewHandler}
-              />
-            </Col>
+            </Form.Item>
+
             {isEdit ? (
               <Col
                 style={{

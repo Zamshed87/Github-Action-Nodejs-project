@@ -5,6 +5,7 @@ import React from "react";
 export type TDataTableProps = {
   customPaginationSize?: number;
   wrapperClassName?: string;
+  nodataStyle?: any;
   customScrollBar?: "thin";
   title?: string | React.ReactElement;
   headerTitle?: (pageData: any) => React.ReactElement | string;
