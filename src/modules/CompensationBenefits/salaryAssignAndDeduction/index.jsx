@@ -1,4 +1,4 @@
-import { AddCircle, AddOutlined } from "@mui/icons-material";
+import { AddCircle, AddOutlined, SaveAlt } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import useDebounce from "../../../utility/customHooks/useDebounce";
 import FilterModal from "./components/FilterModal";
 import {
   allowanceAndDeductionColumn,
+  column,
   getSalaryAdditionAndDeductionLanding,
 } from "./helper";
 import "./styles.css";
@@ -24,6 +25,12 @@ import DefaultInput from "../../../common/DefaultInput";
 import PeopleDeskTable from "../../../common/peopleDeskTable";
 import BtnActionMenu from "common/BtnActionMenu";
 import { gray500 } from "utility/customColor";
+import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
+import { dateFormatter } from "utility/dateFormatter";
+import { Tooltip } from "@mui/material";
+import axios from "axios";
+import { getTableDataMonthlyAttendance } from "modules/timeSheet/reports/joineeAttendanceReport/helper";
+import { getWorkplaceDetails } from "common/api";
 
 const date = new Date();
 const initYear = date.getFullYear(); // 2022
@@ -64,7 +71,7 @@ function SalaryAssignAndDeduction() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const { orgId, buId, wgId, wId } = useSelector(
+  const { orgId, buId, wgId, wId, buName } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -115,6 +122,7 @@ function SalaryAssignAndDeduction() {
     },
     onSubmit: () => resetForm(initData),
   });
+  const [buDetails, setBuDetails] = useState({});
 
   const getData = () => {
     getSalaryAdditionAndDeductionLanding(
@@ -142,6 +150,7 @@ function SalaryAssignAndDeduction() {
       setPages,
       wgId
     );
+    getWorkplaceDetails(wId, setBuDetails);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, buId, wgId, wId]);
 
@@ -214,6 +223,88 @@ function SalaryAssignAndDeduction() {
               {/* header-employee-profile  */}
               <div className="table-card-heading">
                 <div className="d-flex justify-content-center align-items-center">
+                  <Tooltip title="Export CSV" arrow>
+                    <button
+                      className="btn-save "
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setLoading(true);
+                        const excelLanding = async () => {
+                          const intMonth = values?.fromMonth
+                            ? +values?.fromMonth.split("-")[1]
+                            : +modifyMonthResult;
+                          const intYear = values?.fromMonth
+                            ? +values?.fromMonth?.split("-")[0]
+                            : initYear;
+                          try {
+                            const res = await axios.get(
+                              `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&PageSize=10000000`
+                            );
+
+                            if (res?.data?.data?.length < 1) {
+                              setLoading(false);
+                              return toast.error("No Attendance Data Found");
+                            }
+
+                            const newData = res?.data?.data?.map(
+                              (item, index) => {
+                                return {
+                                  ...item,
+                                  sl: index + 1,
+                                };
+                              }
+                            );
+
+                            createCommonExcelFile({
+                              titleWithDate: `Allowance & Deduction Report - ${values?.fromMonth}`,
+                              fromDate: "",
+                              toDate: "",
+                              buAddress: buDetails?.strAddress,
+                              businessUnit: wgId
+                                ? buDetails?.strWorkplace
+                                : buName,
+                              tableHeader: column,
+                              getTableData: () =>
+                                getTableDataMonthlyAttendance(
+                                  newData,
+                                  Object.keys(column)
+                                ),
+
+                              // eslint-disable-next-line @typescript-eslint/no-empty-function
+                              getSubTableData: () => {},
+                              subHeaderInfoArr: [],
+                              subHeaderColumn: [],
+                              tableFooter: [],
+                              extraInfo: {},
+                              tableHeadFontSize: 10,
+                              widthList: {
+                                C: 30,
+                                B: 30,
+                                D: 30,
+                                E: 25,
+                                F: 20,
+                                G: 25,
+                                H: 15,
+                                I: 15,
+                                J: 20,
+                                K: 20,
+                              },
+                              commonCellRange: "A1:J1",
+                              CellAlignment: "left",
+                            });
+
+                            setLoading(false);
+                          } catch (error) {
+                            setLoading(false);
+                            toast.error(error?.response?.data?.message);
+                          }
+                        };
+                        excelLanding();
+                      }}
+                    >
+                      <SaveAlt sx={{ color: "#637381", fontSize: "16px" }} />
+                    </button>
+                  </Tooltip>
                   <div>
                     <div className="input-field-main">
                       {/* <label>From Month</label> */}

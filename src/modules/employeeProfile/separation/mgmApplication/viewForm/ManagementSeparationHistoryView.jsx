@@ -52,7 +52,6 @@ const ManagementSeparationHistoryView = ({
   const [totalDeductionAmount, setTotalDeductionAmount] = useState(0);
   const [, getById, getSingleDataLoading] = useAxiosGet({});
 
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -158,7 +157,7 @@ const ManagementSeparationHistoryView = ({
           className="historyPrintView text-center mb-3"
           style={{ display: "none", fontSize: "30px" }}
         >
-          {type === "dueAmount" ? "Full & Final Settlement" : "Separation"}
+          {type === "dueAmount" || type === "dueView" ? "Full & Final Settlement" : "Separation"}
         </h2>
         <EmpBasicInfo empBasic={empBasic} />
         <div className="tab-panel">
@@ -180,9 +179,9 @@ const ManagementSeparationHistoryView = ({
                 <Tab label="Approval History" {...a11yProps(0)} />
                 <Tab label="Employment History" {...a11yProps(1)} />
                 <Tab label="Asset History" {...a11yProps(2)} />
-                {type === "dueAmount" && (
+                {type === "dueAmount" || type === "dueView" ? (
                   <Tab label="Due Amount" {...a11yProps(3)} />
-                )}
+                ) : null}
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -206,12 +205,10 @@ const ManagementSeparationHistoryView = ({
             <TabPanel value={value} index={2}>
               <AssetHistory assetHistory={assetHistory} loading={loading} />
             </TabPanel>
-            {type === "dueAmount" && (
+            {type === "dueAmount" || type === "dueView" ? (
               <TabPanel value={value} index={3}>
                 <DueAmount
-                  type={
-                    empBasicInfo?.intFinalSettlementId ? "view" : "dueAmount"
-                  }
+                  type={type}
                   finalSettlementLoading={finalSettlementLoading}
                   duesRowDto={duesRowDto}
                   deductionRowDto={deductionRowDto}
@@ -230,7 +227,7 @@ const ManagementSeparationHistoryView = ({
                   getSingleDataLoading={getSingleDataLoading}
                 />
               </TabPanel>
-            )}
+            ) : null}
           </Box>
         </div>
         <div className="historyPrintView" style={{ display: "none" }}>

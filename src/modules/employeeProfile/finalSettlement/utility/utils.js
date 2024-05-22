@@ -373,7 +373,7 @@ const finalSettlementColumns = (
                 setEmpId(record?.intEmployeeId);
                 setEmpBasicInfo(record);
                 setOpenModal(true);
-                setType("dueAmount");
+                setType("dueView");
               }}
             >
               <VisibilityOutlined />

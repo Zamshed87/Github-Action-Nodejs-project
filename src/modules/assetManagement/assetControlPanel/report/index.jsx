@@ -313,6 +313,7 @@ const AssetReport = () => {
                           { value: 1, label: "Available" },
                           { value: 2, label: "Maintenance" },
                           { value: 3, label: "Assign" },
+                          { value: 4, label: "Unavailable" },
                         ]}
                         value={values?.status}
                         onChange={(valueOption) => {
@@ -457,7 +458,7 @@ const AssetReport = () => {
         onCancel={() => {
           setIsProfileView(false);
         }}
-        components={<ProfileView />}
+        components={<ProfileView assetId={itemId} />}
         width={1000}
       />
     </>

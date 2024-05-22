@@ -438,3 +438,12 @@ export const getAttendanceAdjustmentFilter = async (
     setter("");
   }
 };
+export const column = {
+  sl: "SL",
+  strWorkplace: "Workplace",
+  strEmployeeName: "Employee Name",
+  strDesignation: "Designation",
+  strDepartment: "Department",
+  totalAllowance: "Total Allowance",
+  totalDeduction: "Total Deduction",
+};

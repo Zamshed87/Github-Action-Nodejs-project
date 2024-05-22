@@ -345,6 +345,7 @@ export default function AddEditForm({
         </Col>
         <Col md={12} sm={24}>
           <PSelect
+            allowClear
             options={getWDDL?.data?.length > 0 ? getWDDL?.data : []}
             name="workplace"
             label="Workplace"
@@ -502,10 +503,12 @@ export default function AddEditForm({
                 <Col span={2} className="mt-1">
                   <button
                     type="button"
-                    className="mt-4  btn add-ddl-btn "
+                    className="mt-3  btn btn-green  "
                     style={{
-                      margin: "0.4em 0 0 0.7em",
-                      padding: "0.2em",
+                      width: "auto",
+                      height: "auto",
+                      // margin: "0.4em 0 0 0.7em",
+                      // padding: " 0 2rem",
                     }}
                     onClick={() => {
                       if (sequence === undefined || approver === undefined) {
@@ -565,7 +568,7 @@ export default function AddEditForm({
                       });
                     }}
                   >
-                    <IoMdAddCircleOutline sx={{ fontSize: "16px" }} />
+                    Add
                   </button>
                 </Col>
               </>

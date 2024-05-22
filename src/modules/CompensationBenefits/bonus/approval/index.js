@@ -3,7 +3,7 @@
 import {
   Cancel,
   CheckCircle,
-  SettingsBackupRestoreOutlined
+  SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import AntTable from "common/AntTable";
 import ApproveRejectComp from "common/ApproveRejectComp";
@@ -41,7 +41,7 @@ const BonusApproval = () => {
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
   const [applicationData, setApplicationData] = useState([]);
-  
+
   // rowDto
   const [rowDto, setRowDto] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -58,7 +58,6 @@ const BonusApproval = () => {
   const getData = () => {
     const payload = {
       approverId: employeeId,
-      movementTypeId: 0,
       workplaceGroupId: wgId,
       businessUnitId: buId,
       departmentId: 0,
@@ -71,6 +70,10 @@ const BonusApproval = () => {
       isSupOrLineManager: 0,
       accountId: orgId,
       workplaceId: wId,
+      isSupervisor: true,
+      isLineManager: true,
+      isUserGroup: true,
+      intId: 0,
     };
     getBonusGenerateRequestReport(
       payload,
@@ -201,7 +204,6 @@ const BonusApproval = () => {
         title: () => (
           <div className="d-flex align-items-center">
             <div className="mr-2">
-              
               <FormikCheckBox
                 styleObj={{
                   margin: "0 auto!important",
@@ -251,7 +253,7 @@ const BonusApproval = () => {
                 onChange={(e) => {
                   e.stopPropagation();
                   const BonusData = filterData?.listData?.map((item) => {
-                    console.log("record",record)
+                    console.log("record", record);
                     if (
                       item?.application?.intBonusId ===
                       record?.application?.intBonusId
@@ -292,9 +294,7 @@ const BonusApproval = () => {
         dataIndex: "dteEffectedDateTime",
         render: (_, record) => (
           <div className="d-flex align-items-center">
-            <div>
-              {dateFormatter(record?.application?.dteEffectedDateTime)}
-            </div>
+            <div>{dateFormatter(record?.application?.dteEffectedDateTime)}</div>
           </div>
         ),
         sorter: false,
@@ -305,15 +305,12 @@ const BonusApproval = () => {
         dataIndex: "numBonusAmount",
         render: (_, record) => (
           <div className="d-flex align-items-center">
-            <div>
-              {formatMoney(record?.application?.numBonusAmount)}
-            </div>
+            <div>{formatMoney(record?.application?.numBonusAmount)}</div>
           </div>
         ),
         sorter: false,
         filter: false,
       },
-
 
       {
         title: "Status",

@@ -18,7 +18,7 @@ const HistoryPrintView = ({
 }) => {
   return (
     <>
-      {type === "dueAmount" && (
+      {type === "dueAmount" || type === "dueView" ? (
         <>
           <h6 className="mb-3" style={{ fontSize: "18px" }}>
             Due Amount
@@ -30,16 +30,16 @@ const HistoryPrintView = ({
                 rowDto={duesRowDto}
                 showHeader={true}
                 isDisabled={true}
-                type={"view"}
+                type={"dueView"}
               />
             </div>
             <div style={{ width: "48%" }}>
               <SalaryElementTable
                 title="Deductions"
                 rowDto={deductionRowDto}
-                showHeader={false}
-                isDisabled={false}
-                type={"view"}
+                showHeader={true}
+                isDisabled={true}
+                type={"dueView"}
               />
             </div>
           </div>
@@ -83,7 +83,7 @@ const HistoryPrintView = ({
             </div>
           </div>
         </>
-      )}
+      ) : null}
       <h6 className="mb-3 pt-2" style={{ fontSize: "18px" }}>
         Approval History
       </h6>

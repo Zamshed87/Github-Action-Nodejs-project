@@ -21,6 +21,7 @@ import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/action
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   dateFormatter,
@@ -30,11 +31,14 @@ import {
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import axios from "axios";
-import { getTableDataMonthlyAttendance } from "../monthlyAttendanceReport/helper";
 import { column } from "./helper";
+import { fromToDateList } from "../helper";
+import { gray600 } from "utility/customColor";
+import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
+import axios from "axios";
+import { getTableDataMonthlyAttendance } from "../joineeAttendanceReport/helper";
 
-const MonthlyLeaveReport = () => {
+const JoiningReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
@@ -42,23 +46,24 @@ const MonthlyLeaveReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30420),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30382),
     []
   );
   // menu permission
   const employeeFeature: any = permission;
 
   const landingApi = useApiRequest({});
-  const empDepartmentDDL = useApiRequest({});
   //   const debounce = useDebounce();
+
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
-  const [pages] = useState({
+  const [pages, setPages] = useState({
     current: 1,
     pageSize: paginationSize,
     total: 0,
   });
+  const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
   //   api states
@@ -67,7 +72,7 @@ const MonthlyLeaveReport = () => {
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Monthly Leave report";
+    document.title = "Joining Report";
     () => {
       document.title = "PeopleDesk";
     };
@@ -114,30 +119,6 @@ const MonthlyLeaveReport = () => {
       },
     });
   };
-
-  // workplace wise
-  const getEmployeDepartment = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
-
-    empDepartmentDDL?.action({
-      urlKey: "PeopleDeskAllDDL",
-      method: "GET",
-      params: {
-        DDLType: "EmpDepartment",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        IntWorkplaceId: workplace?.value,
-        intId: 0,
-      },
-      onSuccess: (res) => {
-        res?.forEach((item: any, i: any) => {
-          res[i].label = item?.DepartmentName;
-          res[i].value = item?.DepartmentId;
-        });
-      },
-    });
-  };
-
   // data call
   type TLandingApi = {
     pagination?: {
@@ -155,23 +136,22 @@ const MonthlyLeaveReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
-    const dept = values?.department?.map((item: any) => item?.value);
+
     landingApi.action({
-      urlKey: "MonthlyleaveReport",
-      method: "POST",
-      payload: {
-        accountId: orgId,
-        businessUnitId: buId,
-        workPlaceGroupId: values?.workplaceGroup?.value,
-        workPlaceId: values?.workplace?.value || 0,
-        employeeId: 0,
-        fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        toDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        pageNo: pagination?.current || 1,
-        pageSize: pagination.pageSize! > 1 ? pagination?.pageSize : 500,
-        isPaginated: true,
-        SearchText: searchText,
-        departmentIdList: dept?.length > 0 ? dept : null,
+      urlKey: "GetEmployeeSalaryReportByJoining",
+      method: "GET",
+      params: {
+        IntAccountId: orgId,
+        IntBusinessUnitId: buId,
+        IntWorkplaceGroupId: values?.workplaceGroup?.value,
+        IntWorkplaceId: values?.workplace?.value,
+        PageNo: pagination.current || pages?.current,
+        PageSize: pagination.pageSize || pages?.pageSize,
+        EmployeeId: 0,
+        // IsPaginated: true,
+        DteFromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
+        DteToDate: moment(values?.toDate).format("YYYY-MM-DD"),
+        SearchTxt: searchText,
       },
     });
   };
@@ -194,34 +174,19 @@ const MonthlyLeaveReport = () => {
 
       {
         title: "Work. Group/Location",
-        dataIndex: "strWorkPlaceGroupName",
+        dataIndex: "strWorkPlaceGroup",
         width: 120,
         fixed: "left",
       },
       {
         title: "Workplace/Concern",
-        dataIndex: "strWorkPlaceName",
-        width: 120,
+        dataIndex: "strWorkPlace",
+        width: 130,
         fixed: "left",
       },
-      {
-        title: "Department",
-        dataIndex: "strDepartmentName",
-        fixed: "left",
-
-        width: 70,
-      },
-      {
-        title: "Section",
-        dataIndex: "StrSectionName",
-        fixed: "left",
-
-        width: 70,
-      },
-
       {
         title: "Employee Id",
-        dataIndex: "StrEmployeeCode",
+        dataIndex: "strEmployeeCode",
         width: 80,
         fixed: "left",
       },
@@ -243,63 +208,86 @@ const MonthlyLeaveReport = () => {
 
       {
         title: "Designation",
-        dataIndex: "StrDesignation",
+        dataIndex: "strDesignation",
 
-        width: 100,
+        width: 75,
       },
       {
-        title: "Leave Type",
-        dataIndex: "strLeaveTypeName",
+        title: "Section",
+        dataIndex: "strSection",
 
-        width: 100,
+        width: 70,
       },
       {
-        title: "Location",
-        dataIndex: "StrAddressDuetoLeave",
+        title: "Department",
+        dataIndex: "strDepartment",
 
-        width: 100,
+        width: 75,
       },
       {
-        title: "From Date",
-        dataIndex: "StartDate",
-        render: (_: any, item: any) => dateFormatter(item?.StartDate),
-        width: 100,
+        title: "Payroll Group",
+        dataIndex: "strPayrollGroup",
+        width: 80,
       },
       {
-        title: "Duration",
-        dataIndex: "Start_End_Time",
-
-        width: 100,
-      },
-      {
-        title: "To Date",
-        dataIndex: "EndDate",
-        render: (_: any, item: any) => dateFormatter(item?.EndDate),
-
-        width: 100,
+        title: "Basic",
+        dataIndex: "Basic",
+        width: 80,
       },
 
       {
-        title: "Half Day (Hours)",
-        dataIndex: "HalfDayHours",
-
-        width: 100,
+        title: "House Rent",
+        dataIndex: "House",
+        width: 80,
       },
       {
-        title: "Days",
-        dataIndex: "TotalDays",
-
-        width: 100,
+        title: "Medical",
+        dataIndex: "Medical",
+        width: 80,
       },
       {
-        title: "Application Date",
-        dataIndex: "ApplicationDate",
-        render: (_: any, item: any) => dateFormatter(item?.ApplicationDate),
-
-        width: 100,
+        title: "Conveyance",
+        dataIndex: "Conveyance",
+        width: 80,
       },
+      {
+        title: "Gross Salary",
+        dataIndex: "numGrossSalary",
+        width: 80,
+      },
+      {
+        title: "Overtime Category",
+        dataIndex: "OTCategory",
 
-      //   ...(d as any),
+        width: 80,
+      },
+      {
+        title: "Tiffin to Salary",
+        dataIndex: "TiffintoSalary",
+        width: 80,
+      },
+      {
+        title: "Salary Category",
+        dataIndex: "SalaryCategory",
+        width: 80,
+      },
+      {
+        title: "Payment Mode",
+        dataIndex: "PaymentMode",
+        width: 80,
+      },
+      {
+        title: "Join Date",
+        render: (_: any, record: any) =>
+          dateFormatter(record?.dteJoiningDate) || "N/A",
+
+        width: 80,
+      },
+      {
+        title: "Job Duration",
+        dataIndex: "strServiceLength",
+        width: 80,
+      },
     ];
   };
   const searchFunc = debounce((value) => {
@@ -325,7 +313,7 @@ const MonthlyLeaveReport = () => {
           landingApiCall({
             pagination: {
               current: pages?.current,
-              pageSize: landingApi?.data?.TotalCount,
+              pageSize: landingApi?.data[0]?.totalCount,
             },
           });
         }}
@@ -334,56 +322,47 @@ const MonthlyLeaveReport = () => {
           {excelLoading && <Loading />}
           <PCardHeader
             exportIcon={true}
-            title={`Total ${landingApi?.data?.TotalCount || 0} employees`}
-            onSearch={(e) => {
-              searchFunc(e?.target?.value);
-              form.setFieldsValue({
-                search: e?.target?.value,
-              });
-            }}
+            title={`Total ${
+              landingApi?.data[0]?.totalCount || landingApi?.data?.length || 0
+            } employees`}
+            // onSearch={(e) => {
+            //   searchFunc(e?.target?.value);
+            //   form.setFieldsValue({
+            //     search: e?.target?.value,
+            //   });
+            // }}
             onExport={() => {
               const excelLanding = async () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-                  const dept = values?.department?.map(
-                    (item: any) => item?.value
-                  );
 
-                  const res = await axios.post(
-                    "/LeaveMovement/MonthlyleaveReport",
-                    {
-                      accountId: orgId,
-                      businessUnitId: buId,
-                      workPlaceGroupId: values?.workplaceGroup?.value,
-                      workPlaceId: values?.workplace?.value,
-                      employeeId: 0,
-                      fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-                      toDate: moment(values?.toDate).format("YYYY-MM-DD"),
-                      pageNo: 1,
-                      pageSize: 500,
-                      isPaginated: false,
-                      departmentIdList: dept?.length > 0 ? dept : null,
-                    }
+                  const res = await axios.get(
+                    `/Employee/GetEmployeeSalaryReportByJoining?IntAccountId=${orgId}&IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+                      values?.workplaceGroup?.value
+                    }&IntWorkplaceId=${
+                      values?.workplace?.value
+                    }&PageNo=1&PageSize=100000000&DteFromDate=${moment(
+                      values?.fromDate
+                    ).format("YYYY-MM-DD")}&DteToDate=${moment(
+                      values?.toDate
+                    ).format("YYYY-MM-DD")}`
                   );
-                  if (res?.data?.Data) {
+                  if (res?.data) {
                     setExcelLoading(true);
-                    if (res?.data?.Data?.length < 1) {
-                      return toast.error("No Attendance Data Found");
+                    if (res?.data < 1) {
+                      return toast.error("No  Data Found");
                     }
-                    const newData = res?.data?.Data?.map(
-                      (item: any, index: any) => {
-                        return {
-                          ...item,
-                          sl: index + 1,
-                          EndDate: dateFormatter(item?.EndDate),
-                          StartDate: dateFormatter(item?.StartDate),
-                          ApplicationDate: dateFormatter(item?.ApplicationDate),
-                        };
-                      }
-                    );
+
+                    const newData = res?.data?.map((item: any, index: any) => {
+                      return {
+                        ...item,
+                        sl: index + 1,
+                        dteJoiningDate: dateFormatter(item?.dteJoiningDate),
+                      };
+                    });
                     createCommonExcelFile({
-                      titleWithDate: `Monthly Leave Report - ${dateFormatter(
+                      titleWithDate: `Joining Report - ${dateFormatter(
                         moment(values?.fromDate).format("YYYY-MM-DD")
                       )} to ${dateFormatter(
                         moment(values?.toDate).format("YYYY-MM-DD")
@@ -436,7 +415,7 @@ const MonthlyLeaveReport = () => {
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
-              <Col md={3} sm={12} xs={24}>
+              <Col md={5} sm={12} xs={24}>
                 <PInput
                   type="date"
                   name="fromDate"
@@ -449,7 +428,7 @@ const MonthlyLeaveReport = () => {
                   }}
                 />
               </Col>
-              <Col md={3} sm={12} xs={24}>
+              <Col md={5} sm={12} xs={24}>
                 <PInput
                   type="date"
                   name="toDate"
@@ -464,18 +443,17 @@ const MonthlyLeaveReport = () => {
                 />
               </Col>
 
-              <Col md={4} sm={12} xs={24}>
+              <Col md={5} sm={12} xs={24}>
                 <PSelect
-                  allowClear
                   options={workplaceGroup?.data || []}
                   name="workplaceGroup"
                   label="Workplace Group"
                   placeholder="Workplace Group"
+                  disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplaceGroup: op,
                       workplace: undefined,
-                      department: undefined,
                     });
                     getWorkplace();
                   }}
@@ -484,42 +462,20 @@ const MonthlyLeaveReport = () => {
                   ]}
                 />
               </Col>
-              <Col md={4} sm={12} xs={24}>
+              <Col md={5} sm={12} xs={24}>
                 <PSelect
-                  allowClear
                   options={workplace?.data || []}
                   name="workplace"
                   label="Workplace"
                   placeholder="Workplace"
+                  disabled={+id ? true : false}
                   onChange={(value, op) => {
                     form.setFieldsValue({
                       workplace: op,
-                      department: undefined,
                     });
                     getWorkplaceDetails(value, setBuDetails);
-                    getEmployeDepartment();
                   }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
-                />
-              </Col>
-              <Col md={7} sm={12} xs={24}>
-                <PSelect
-                  mode="multiple"
-                  allowClear
-                  options={
-                    empDepartmentDDL?.data?.length > 0
-                      ? empDepartmentDDL?.data
-                      : []
-                  }
-                  name="department"
-                  label="Department"
-                  placeholder="Department"
-                  onChange={(value, op) => {
-                    form.setFieldsValue({
-                      department: op,
-                    });
-                  }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
+                  rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
 
@@ -535,20 +491,22 @@ const MonthlyLeaveReport = () => {
 
           <DataTable
             bordered
-            data={
-              landingApi?.data?.Data?.length > 0 ? landingApi?.data?.Data : []
-            }
+            data={landingApi?.data?.length > 0 ? landingApi?.data : []}
             loading={landingApi?.loading}
             header={header()}
             pagination={{
-              pageSize: landingApi?.data?.PageSize,
-              total: landingApi?.data?.TotalCount,
+              pageSize: pages?.pageSize,
+              total: landingApi?.data[0]?.totalCount,
             }}
             onChange={(pagination, filters, sorter, extra) => {
               // Return if sort function is called
               if (extra.action === "sort") return;
               setFilterList(filters);
-
+              setPages({
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                total: pagination.total,
+              });
               landingApiCall({
                 pagination,
               });
@@ -563,4 +521,4 @@ const MonthlyLeaveReport = () => {
   );
 };
 
-export default MonthlyLeaveReport;
+export default JoiningReport;
