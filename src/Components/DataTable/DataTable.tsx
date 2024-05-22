@@ -35,6 +35,7 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
     expandable,
     footer,
     checkBoxColWidth = 15,
+    nodataStyle,
   } = property;
   // Pagination Default Value
   const pageSize = paginationSize || 25;
@@ -104,7 +105,12 @@ export const DataTable: React.FC<TDataTableProps> = (property) => {
         {title ? <h6 className="table_title">{title}</h6> : ""}
         <ConfigProvider
           renderEmpty={(cmp) => {
-            return <NoResult title={"No Data Found"} para={""} />;
+            return (
+              <div style={nodataStyle}>
+                {" "}
+                <NoResult title={"No Data Found"} para={""} />
+              </div>
+            );
           }}
         >
           <Table

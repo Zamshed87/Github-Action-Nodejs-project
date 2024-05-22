@@ -253,7 +253,6 @@ const BonusApproval = () => {
                 onChange={(e) => {
                   e.stopPropagation();
                   const BonusData = filterData?.listData?.map((item) => {
-                    console.log("record", record);
                     if (
                       item?.application?.intBonusId ===
                       record?.application?.intBonusId
@@ -442,7 +441,7 @@ const BonusApproval = () => {
                         {permission?.isCreate ? (
                           <div className="table-card-body">
                             <div className="table-card-styled tableOne">
-                              {rowDto?.listData?.length > 0 ? (
+                              {rowDto?.length > 0 ? (
                                 <>
                                   <AntTable
                                     data={rowDto || []}

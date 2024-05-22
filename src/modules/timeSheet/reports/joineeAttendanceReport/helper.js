@@ -145,7 +145,11 @@ export const joineeAttendanceReportColumns = (
 export const getTableDataMonthlyAttendance = (row, keys, totalKey) => {
   const data = row?.map((item, index) => {
     return keys?.map((key) => {
-      return new Cell(item[key] ? item[key] : "-", "center", "text").getCell();
+      return new Cell(
+        item[key] || item[key] == 0 ? item[key] : "-",
+        "center",
+        "text"
+      ).getCell();
     });
   });
   return data;
