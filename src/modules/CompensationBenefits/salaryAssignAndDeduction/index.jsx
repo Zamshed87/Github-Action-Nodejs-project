@@ -230,37 +230,37 @@ function SalaryAssignAndDeduction() {
                         e.preventDefault();
                         setLoading(true);
                         const excelLanding = async () => {
+                          const intMonth = values?.fromMonth
+                            ? +values?.fromMonth.split("-")[1]
+                            : +modifyMonthResult;
+                          const intYear = values?.fromMonth
+                            ? +values?.fromMonth?.split("-")[0]
+                            : initYear;
                           try {
-                            // const res = await axios.get(
-                            //   `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_in_out_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${
-                            //     values?.fromDate
-                            //   }&DteToDate=${
-                            //     values?.toDate
-                            //   }&EmployeeId=0&WorkplaceGroupId=${
-                            //     values?.workplaceGroup?.value || wgId || 0
-                            //   }&WorkplaceId=${
-                            //     values?.workplace?.value || wId || 0
-                            //   }&PageNo=1&PageSize=100000&IsPaginated=false`
-                            // );
+                            const res = await axios.get(
+                              `/Employee/SalaryAdditionDeductionLanding?IntMonth=${intMonth}&IntYear=${intYear}&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=1&PageSize=10000000`
+                            );
 
-                            if (rowDto?.length < 1) {
+                            if (res?.data?.data?.length < 1) {
                               setLoading(false);
                               return toast.error("No Attendance Data Found");
                             }
 
-                            const newData = rowDto?.map((item, index) => {
-                              return {
-                                ...item,
-                                sl: index + 1,
-                              };
-                            });
+                            const newData = res?.data?.data?.map(
+                              (item, index) => {
+                                return {
+                                  ...item,
+                                  sl: index + 1,
+                                };
+                              }
+                            );
 
                             createCommonExcelFile({
                               titleWithDate: `Allowance & Deduction Report - ${values?.fromMonth}`,
                               fromDate: "",
                               toDate: "",
                               buAddress: buDetails?.strAddress,
-                              businessUnit: values?.workplaceGroup?.value
+                              businessUnit: wgId
                                 ? buDetails?.strWorkplace
                                 : buName,
                               tableHeader: column,
