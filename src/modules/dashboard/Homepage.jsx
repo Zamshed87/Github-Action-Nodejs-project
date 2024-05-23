@@ -144,7 +144,7 @@ const Homepage = () => {
       to = "/trainingAndDevelopment/training/schedule";
       image = training;
     } else if (label === "Asset Management") {
-      to = "/assetManagement/registration/items";
+      to = "/assetManagement/assetControlPanel/itemProfile";
       image = assetManagement;
     }
     return { to, image };
