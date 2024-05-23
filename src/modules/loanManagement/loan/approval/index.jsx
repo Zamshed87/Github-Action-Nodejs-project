@@ -42,6 +42,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { getDownlloadFileView_Action } from "../../../../commonRedux/auth/actions";
 import AntTable from "../../../../common/AntTable";
 import ApproveRejectComp from "common/ApproveRejectComp";
+import { todayDate } from "utility/todayDate";
 
 const initData = {
   searchString: "",
@@ -112,8 +113,8 @@ export default function LoanApproval() {
       if (data?.selectCheckbox) {
         array.push({
           applicationId: data?.intLoanApplicationId,
-          fromDate: data?.application?.dteFromDate || "",
-          toDate: data?.application?.dteToDate || "",
+          fromDate: data?.application?.dteFromDate || todayDate(),
+          toDate: data?.application?.dteToDate || todayDate(),
           approverEmployeeId: employeeId,
           accountId: orgId,
           isAdmin: isOfficeAdmin,
@@ -271,8 +272,8 @@ export default function LoanApproval() {
     const payload = [
       {
         applicationId: item?.intLoanApplicationId,
-        fromDate: item?.application?.dteEffectiveDate || null,
-        toDate: item?.application?.dteToDate || null,
+        fromDate: item?.application?.dteEffectiveDate || todayDate(),
+        toDate: item?.application?.dteToDate || todayDate(),
         approverEmployeeId: employeeId,
         isReject: text === "Approve" ? false : true,
         accountId: orgId,

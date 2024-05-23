@@ -299,16 +299,6 @@ const salesLandingColumn = (page, paginationSize, setRowId, setIsModalOpen) => {
     },
     {
       title: "Rece. Amount",
-      dataIndex: "receiveAmount",
-      sort: true,
-      filter: false,
-      className: "text-right",
-      render: (record) => {
-        return formatMoney(record?.receiveAmount);
-      },
-    },
-    {
-      title: "Pending Amount",
       dataIndex: "pendingAmount",
       sort: false,
       filter: false,
