@@ -88,7 +88,7 @@ const NotiBodyContent = ({ content, orgId, buId, handleClose, setLoading }) => {
                 <h6>
                   {timeDifference === "now"
                     ? timeDifference
-                    : `${timeDifference} ago`}
+                    : `${timeDifference}`}
                 </h6>
               </div>
               <div>
