@@ -77,6 +77,7 @@ const AssetAssignForm = () => {
             "(" +
             location?.state?.data?.value +
             ")",
+          accDepreciation: "",
         },
       }}
       onSubmit={(values, { setSubmitting, resetForm }) => {
