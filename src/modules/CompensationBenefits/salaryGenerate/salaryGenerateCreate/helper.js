@@ -207,8 +207,6 @@ export const salaryGenerateCreateEditTableColumn = (
     title: "SL",
     render: (_, record, index) =>
       (pages?.current - 1) * pages?.pageSize + index + 1,
-    sorter: false,
-    filter: false,
   },
   {
     title: () => (
@@ -296,62 +294,42 @@ export const salaryGenerateCreateEditTableColumn = (
         </div>
       </div>
     ),
-    sorter: true,
-    filter: true,
   },
   {
     title: "Code",
     dataIndex: "strEmployeeCode",
-    sorter: true,
-    filter: true,
   },
   {
     title: "Type",
     dataIndex: "strEmploymentType",
-    sorter: true,
-    filter: true,
   },
   {
     title: "Designation",
     dataIndex: "strDesignation",
-    sorter: true,
-    filter: true,
   },
   {
     title: "HR Position",
     dataIndex: "strHRPostionName",
-    sorter: true,
-    filter: true,
   },
   {
     title: "Department",
     dataIndex: "strDepartment",
-    sorter: true,
-    filter: true,
   },
   {
     title: "Department Section",
     dataIndex: "strDepartmentSection",
-    sorter: true,
-    filter: true,
   },
   {
     title: "Workplace",
     dataIndex: "strWorkplace",
-    sorter: true,
-    filter: true,
   },
   {
     title: "Bank Pay",
     dataIndex: "numBankPayInAmount",
-    sorter: true,
-    isNumber: true,
   },
   {
     title: "Cash Pay",
     dataIndex: "numCashPayInAmount",
-    sorter: true,
-    isNumber: true,
   },
   // {
   //   title: "Workplace Group",
@@ -362,7 +340,5 @@ export const salaryGenerateCreateEditTableColumn = (
   {
     title: "Payroll Group",
     dataIndex: "strPayrollGroup",
-    sorter: true,
-    filter: true,
   },
 ];
