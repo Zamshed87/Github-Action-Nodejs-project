@@ -1,7 +1,7 @@
-import React from 'react';
-import ScrollableTable from '../../../../../common/ScrollableTable';
-import { numberWithCommas } from '../../../../../utility/numberWithCommas';
-import { total } from '../helper';
+import React from "react";
+import ScrollableTable from "../../../../../common/ScrollableTable";
+import { numberWithCommas } from "../../../../../utility/numberWithCommas";
+import { total } from "../helper";
 
 export default function BankSalaryReport({ rowDto, index, tabIndex }) {
   return (
@@ -13,7 +13,9 @@ export default function BankSalaryReport({ rowDto, index, tabIndex }) {
         >
           <thead>
             <tr>
-              <th rowSpan="2" style={{ width: "30px" }}>SL</th>
+              <th rowSpan="2" style={{ width: "30px" }}>
+                SL
+              </th>
               <th rowSpan="2">Account Name</th>
               <th rowSpan="2">Employee Id</th>
               <th rowSpan="2">Bank Name</th>
@@ -25,10 +27,7 @@ export default function BankSalaryReport({ rowDto, index, tabIndex }) {
                 <table className="table table-bordered table-hover m-0 th-table">
                   <thead>
                     <tr>
-                      <th
-                        className="green"
-                        style={{ textAlign: "right" }}
-                      >
+                      <th className="green" style={{ textAlign: "right" }}>
                         {numberWithCommas(total(rowDto, "NetPay").toFixed(2))}
                       </th>
                     </tr>
@@ -40,10 +39,7 @@ export default function BankSalaryReport({ rowDto, index, tabIndex }) {
                 <table className="table table-bordered table-hover m-0 th-table">
                   <thead>
                     <tr>
-                      <th
-                        className="green"
-                        style={{ textAlign: "right" }}
-                      >
+                      <th className="green" style={{ textAlign: "right" }}>
                         {numberWithCommas(total(rowDto, "BankPay").toFixed(2))}
                       </th>
                     </tr>
@@ -55,10 +51,7 @@ export default function BankSalaryReport({ rowDto, index, tabIndex }) {
                 <table className="table table-bordered table-hover m-0 th-table">
                   <thead>
                     <tr>
-                      <th
-                        className="green"
-                        style={{ textAlign: "right" }}
-                      >
+                      <th className="green" style={{ textAlign: "right" }}>
                         {numberWithCommas(total(rowDto, "CashPay").toFixed(2))}
                       </th>
                     </tr>
@@ -72,42 +65,43 @@ export default function BankSalaryReport({ rowDto, index, tabIndex }) {
           </thead>
           <tbody>
             {rowDto?.map((item, index) => (
-              <tr key={index} colSpan={item?.SalaryGenerateHeaderId === null ? 16 : 1}>
-                <td style={{minWidth: "200px"}}>
+              <tr
+                key={index}
+                colSpan={item?.SalaryGenerateHeaderId === null ? 16 : 1}
+              >
+                <td style={{ minWidth: "200px" }}>
                   <div>{item?.SL}</div>
                 </td>
-                {
-                 item?.SalaryGenerateHeaderId !== null && (
-                    <>
+                {item?.SalaryGenerateHeaderId !== null && (
+                  <>
                     <td>
-                  <div className="d-flex align-items-center">
-                    <div className="">
-                      <span className="tableBody-title">
-                        {item?.AccountName}
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                <td>{item?.EmployeeId}</td>
-                <td>{item?.FinancialInstitution}</td>
-                <td>{item?.BankBranchName}</td>
-                <td>{item?.AccountNo}</td>
-                <td>{item?.RoutingNumber}</td>
-                <td style={{ textAlign: "right" }}>
-                  {numberWithCommas(item?.NetPay) || "-"}
-                </td>
-                <td style={{ textAlign: "right" }}>
-                  {numberWithCommas(item?.BankPay) || "-"}
-                </td>
-                <td style={{ textAlign: "right" }}>
-                  {numberWithCommas(item?.CashPay) || "-"}
-                </td>
-                <td>{item?.WorkplaceName}</td>
-                <td>{item?.WorkplaceGroupName}</td>
-                <td>{item?.PayrollGroupName}</td>
-                    </>
-                  )
-                }
+                      <div className="d-flex align-items-center">
+                        <div className="">
+                          <span className="tableBody-title">
+                            {item?.AccountName}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{item?.EmployeeCode}</td>
+                    <td>{item?.FinancialInstitution}</td>
+                    <td>{item?.BankBranchName}</td>
+                    <td>{item?.AccountNo}</td>
+                    <td>{item?.RoutingNumber}</td>
+                    <td style={{ textAlign: "right" }}>
+                      {numberWithCommas(item?.NetPay) || "-"}
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      {numberWithCommas(item?.BankPay) || "-"}
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      {numberWithCommas(item?.CashPay) || "-"}
+                    </td>
+                    <td>{item?.WorkplaceName}</td>
+                    <td>{item?.WorkplaceGroupName}</td>
+                    <td>{item?.PayrollGroupName}</td>
+                  </>
+                )}
               </tr>
             ))}
           </tbody>
