@@ -977,7 +977,7 @@ const CreateAndEditEmploye = () => {
                                 type="date"
                                 name="contractualFromDate"
                                 label={`Contract From Date`}
-                                disabled={true}
+                                // disabled={true}
                               />
                             </Col>
                             <Col md={6} sm={24}>
