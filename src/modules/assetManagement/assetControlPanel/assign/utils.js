@@ -97,7 +97,7 @@ const addAssignHandler = (
     workplaceId: wId,
     employeeId: values?.employeeName?.value,
     employeeName: values?.employeeName?.label,
-    assetDescription: values?.assetName?.accDepreciation || "",
+    assetDescription: values?.assetName?.accDepreciation.toString() || "",
     assetCode: values?.assetName?.code,
     assetId: values?.assetName?.value,
     assetName: values?.assetName?.label,

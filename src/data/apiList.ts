@@ -121,6 +121,7 @@ export const apiList = {
   MonthlyleaveReport: "/LeaveMovement/MonthlyleaveReport",
   EmployeeMovementReportAll: "/Employee/EmployeeMovementReportAll",
   GetAbsentReport: "/TimeSheetReport/GetAbsentReport",
+  GetDailyOvertimeEmployeeList: "/Payroll/GetDailyOvertimeEmployeeList",
   GetEmployeeSalaryReportByJoining:
     "/Employee/GetEmployeeSalaryReportByJoining",
   LeaveBalanceHistoryForAllEmployee:

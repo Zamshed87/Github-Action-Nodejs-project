@@ -61,7 +61,7 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
             checked={record?.isChecked}
             onChange={(e) => {
               const data = rowDto?.map((item) =>
-                item?.intEmployeeId === record?.intEmployeeId
+                item?.intAutoId === record?.intAutoId
                   ? { ...item, isChecked: !item?.isChecked }
                   : item
               );

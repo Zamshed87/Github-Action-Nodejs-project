@@ -366,6 +366,9 @@ const assetRegistrationColumn = (
       render: (item) => {
         return (
           <div>
+            {item?.status === "Unavailable" && (
+              <Chips label="Unavailable" classess="hold" />
+            )}
             {item?.status === "Available" && (
               <Chips label="Available" classess="success" />
             )}
@@ -439,36 +442,20 @@ const assetRegistrationColumn = (
               />
             </>
           ) : (
-            // <PrimaryButton
-            //   type="button"
-            //   className="btn btn-default"
-            //   label="Edit"
-            //   customStyle={{ padding: "2px 10px", fontSize: "12px" }}
-            //   onClick={(e) => {
-            //     e.stopPropagation();
-            //     inputHandler(
-            //       "isEdit",
-            //       true,
-            //       index,
-            //       rowDto,
-            //       setRowDto,
-            //       setPages,
-            //       pages
-            //     );
-            //   }}
-            // />
-            <Tooltip title="Edit" arrow>
-              <button className="iconButton" type="button">
-                <EditOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    history.push(
-                      `/assetManagement/assetControlPanel/registration/edit/${record?.assetRegisterId}`
-                    );
-                  }}
-                />
-              </button>
-            </Tooltip>
+            record?.status !== "Unavailable" && (
+              <Tooltip title="Edit" arrow>
+                <button className="iconButton" type="button">
+                  <EditOutlined
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      history.push(
+                        `/assetManagement/assetControlPanel/registration/edit/${record?.assetRegisterId}`
+                      );
+                    }}
+                  />
+                </button>
+              </Tooltip>
+            )
           )}
         </div>
       ),

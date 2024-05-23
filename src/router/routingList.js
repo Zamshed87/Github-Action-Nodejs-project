@@ -773,7 +773,7 @@ const EmOverTimeReport = lazy(() =>
   import("../modules/employeeProfile/Reports/overTimeReport/index.tsx")
 );
 const EmOverTimeDailyReport = lazy(() =>
-  import("../modules/employeeProfile/Reports/overTimeDailyReport")
+  import("../modules/employeeProfile/Reports/overTimeDailyReport/index.tsx")
 );
 const RewardsAndPunishmentAdd = lazy(() =>
   import(

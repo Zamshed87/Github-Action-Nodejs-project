@@ -58,7 +58,7 @@ export const empReportListColumns = (
   wgId,
   headerList
 ) => {
-  console.log({page, paginationSize})
+  console.log({ page, paginationSize });
   return [
     {
       title: "SL",
@@ -145,7 +145,7 @@ export const empReportListColumns = (
       sort: false,
       filter: false,
     },
-    
+
     {
       title: "Log Out",
       dataIndex: "EmpOutTime",
@@ -210,4 +210,24 @@ export const empReportListColumns = (
     //   },
     // },
   ].filter((item) => !item.hidden);
+};
+export const column = {
+  sl: "SL",
+  strWorkplaceGroup: "Workplace Group",
+  strWorkplace: "Workplace",
+  strEmployeeCode: "Employee Id",
+  strEmployeeName: "Employee Name",
+  strDesignation: "Designation",
+  strDepartment: "Department",
+  strSectionName: "Section",
+  intBasicSalary: "Basic Salary",
+  strHRPostionName: "HR Position",
+  EmployementType: "Employement Type",
+  strCalendarName: "Calender Name",
+  EmpInTime: "Log In",
+  EmpOutTime: "Log Out",
+  intOTLate: "Late",
+  intOtbenefitsHour: "OT Hour",
+  numPerMinunitRate: "OT Rate",
+  numTotalAmount: "Net Payable",
 };
