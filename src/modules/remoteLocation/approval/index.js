@@ -306,10 +306,10 @@ const MasterLocationRegistration = () => {
         dataIndex: "status",
         render: (_, record) => (
           <div className="text-center action-chip" style={{ width: "70px" }}>
-            {record?.application?.status === "approved" && (
+            {record?.application?.strStatus === "approved" && (
               <Chips label="Approved" classess="success" />
             )}
-            {record?.application?.status === "pending" && (
+            {record?.application?.strStatus === "pending" && (
               <>
                 <div className="actionChip">
                   <Chips label="Pending" classess=" warning" />
