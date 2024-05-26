@@ -59,10 +59,13 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
             name="selectCheckbox"
             color={greenColor}
             checked={record?.isChecked}
-            onChange={(e) => {
+            onChange={() => {
               const data = rowDto?.map((item) =>
-                item?.intEmployeeId === record?.intEmployeeId
-                  ? { ...item, isChecked: !item?.isChecked }
+                item?.intAutoId === record?.intAutoId
+                  ? {
+                      ...item,
+                      isChecked: !item?.isChecked,
+                    }
                   : item
               );
               setRowDto(data);
@@ -232,9 +235,21 @@ export const overTimeGeneratedDtoCol = (rowDtoHandler, rowDto, setRowDto) => {
               onChange={(e) => {
                 // console.log({ e })
                 if (e.target.value) {
-                  rowDtoHandler("numMinutes", index, e.target.value);
+                  rowDtoHandler(
+                    "numMinutes",
+                    index,
+                    e.target.value,
+                    item?.numMinutes,
+                    item?.intMaxOverTimeDaily
+                  );
                 } else {
-                  rowDtoHandler("numMinutes", index, "");
+                  rowDtoHandler(
+                    "numMinutes",
+                    index,
+                    "",
+                    item?.numMinutes,
+                    item?.intMaxOverTimeDaily
+                  );
                 }
                 // if(e.target.value){
                 // rowDtoHandler("numMinutes", index, e.target.value);

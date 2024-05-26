@@ -1,10 +1,14 @@
-import React from 'react';
-import AvatarComponent from '../../../../../common/AvatarComponent';
-import ScrollableTable from '../../../../../common/ScrollableTable';
-import { numberWithCommas } from '../../../../../utility/numberWithCommas';
-import { total } from '../helper';
+import React from "react";
+import AvatarComponent from "../../../../../common/AvatarComponent";
+import ScrollableTable from "../../../../../common/ScrollableTable";
+import { numberWithCommas } from "../../../../../utility/numberWithCommas";
+import { total } from "../helper";
 
-export default function DigitalBankingSalaryReport({ rowDto, index, tabIndex }) {
+export default function DigitalBankingSalaryReport({
+  rowDto,
+  index,
+  tabIndex,
+}) {
   return (
     index === tabIndex && (
       <>
@@ -14,7 +18,9 @@ export default function DigitalBankingSalaryReport({ rowDto, index, tabIndex }) 
         >
           <thead>
             <tr>
-              <th rowSpan="2" style={{ width: "30px" }}>SL</th>
+              <th rowSpan="2" style={{ width: "30px" }}>
+                SL
+              </th>
               <th rowSpan="2">Employee Name</th>
               <th rowSpan="2">Gateway</th>
               <th rowSpan="2">Mobile No</th>
@@ -23,11 +29,10 @@ export default function DigitalBankingSalaryReport({ rowDto, index, tabIndex }) 
                 <table className="table table-bordered table-hover m-0 th-table">
                   <thead>
                     <tr>
-                      <th
-                        className="green"
-                        style={{ textAlign: "right" }}
-                      >
-                        {numberWithCommas(total(rowDto, "degitalBankPay").toFixed(2))}
+                      <th className="green" style={{ textAlign: "right" }}>
+                        {numberWithCommas(
+                          total(rowDto, "degitalBankPay").toFixed(2)
+                        )}
                       </th>
                     </tr>
                   </thead>
@@ -40,7 +45,7 @@ export default function DigitalBankingSalaryReport({ rowDto, index, tabIndex }) 
           </thead>
           <tbody>
             {rowDto?.map((item, index) => (
-              <tr key={index} >
+              <tr key={index}>
                 <td>
                   <div>{index + 1}</div>
                 </td>
@@ -55,7 +60,7 @@ export default function DigitalBankingSalaryReport({ rowDto, index, tabIndex }) 
                     </div>
                     <div className="ml-2">
                       <span className="tableBody-title">
-                        {item?.EmployeeName}[{item?.EmployeeId}]
+                        {item?.EmployeeName}[{item?.EmployeeCode}]
                       </span>
                     </div>
                   </div>

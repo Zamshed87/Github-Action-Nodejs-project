@@ -1226,6 +1226,9 @@ const AttendanceReport = lazy(() =>
 const AttendanceRawDataProcess = lazy(() =>
   import("../modules/timeSheet/attendence/attendanceRawDataProcess/indexN.jsx")
 );
+const Bridgeabsentprocess = lazy(() =>
+  import("../modules/timeSheet/attendence/bridgeabsentprocess/indexN.jsx")
+);
 // const EmployeeList = lazy(() =>
 //   import("../modules/timeSheet/reports/employeeList/index.jsx")
 // );
@@ -1389,6 +1392,10 @@ export const routingList = [
   {
     path: "/profile/timeManagement/attendanceRawDataProcess",
     component: AttendanceRawDataProcess,
+  },
+  {
+    path: "/profile/timeManagement/bridgeabsentprocess",
+    component: Bridgeabsentprocess,
   },
   {
     path: "/profile/reports/inactiveEmployees",
