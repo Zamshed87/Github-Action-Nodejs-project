@@ -110,6 +110,10 @@ export const apiList = {
   CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
   EditCafeteriaConfig: "/Cafeteria/EditCafeteriaConfig",
   GetDateWiseAttendanceReport: "/Employee/GetDateWiseAttendanceReport",
+
+  GetEarlyOutReport: "/TimeSheetReport/GetEarlyOutReport",
+  GetLateReport: "/TimeSheetReport/GetLateReport",
+
   TimeManagementDynamicPIVOTReport:
     "/TimeSheetReport/TimeManagementDynamicPIVOTReport",
   PeopleDeskAllLanding: "/Employee/PeopleDeskAllLanding",
