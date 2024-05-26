@@ -43,7 +43,10 @@ const SalaryGenerateCreate = () => {
   const { orgId, buId, employeeId, wgId, buName, wgName, wId, wName } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
 
-  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
+  const { permissionList, workplaceDDL: allWorkplace } = useSelector(
+    (state) => state?.auth,
+    shallowEqual
+  );
 
   let permission = null;
   permissionList.forEach((item) => {
@@ -81,7 +84,6 @@ const SalaryGenerateCreate = () => {
   const handleClose = () => {
     setOpen(false);
   };
-
   // DDl section
   const [businessUnitDDL, setBusinessUnitDDL] = useState([]);
 
@@ -526,6 +528,8 @@ const SalaryGenerateCreate = () => {
     onSubmit: (values) => saveHandler(values),
   });
 
+  console.log(hrPositionDDL);
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -680,7 +684,66 @@ const SalaryGenerateCreate = () => {
                       </div>
                     </>
                   )}
-
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>Payment Method</label>
+                      {/* 
+                          (@intBankOrWalletType, 0) = 0 OR 
+                          (@intBankOrWalletType = 1 AND sah.numBankPayInAmount > 0) 
+                          (@intBankOrWalletType = 2 AND sah.numDigitalPayInAmount > 0))
+                          (@intBankOrWalletType = 3 AND sah.numCashPayInAmount > 0)
+                      
+                      */}
+                      <FormikSelect
+                        name="walletType"
+                        options={
+                          [
+                            {
+                              value: 1,
+                              label: "Bank Pay",
+                            },
+                            {
+                              value: 2,
+                              label: "Digital Pay",
+                            },
+                            {
+                              value: 3,
+                              label: "Cash Pay",
+                            },
+                          ] || []
+                        }
+                        value={values?.walletType}
+                        onChange={(valueOption) => {
+                          setValues((prev) => ({
+                            ...prev,
+                            walletType: valueOption,
+                          }));
+                        }}
+                        placeholder=""
+                        styles={customStyles}
+                        errors={errors}
+                        touched={touched}
+                        // isDisabled={singleData}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>Description</label>
+                      <DefaultInput
+                        classes="input-sm "
+                        placeholder=" "
+                        value={values?.description}
+                        name="description"
+                        type="text"
+                        onChange={(e) => {
+                          setFieldValue("description", e.target.value);
+                        }}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
+                  </div>
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Workplace</label>
@@ -743,10 +806,50 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
+                  {/* <div className="col-md-3">
+                    <div className="input-field-main">
+                      <label>Workplace</label>
+                      <MultiCheckedSelect
+                        name="workplace"
+                        options={workplaceDDL || []}
+                        value={values?.workplace}
+                        onChange={(valueOption) => {
+                          setFieldValue("workplace", valueOption);
+                          const values = valueOption.map((item) => item?.value);
+                          const valuesStr = values.join(",");
+
+                          getPeopleDeskAllDDL(
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=AllPosition&WorkplaceGroupId=${wgId}&strWorkplaceIdList=${valuesStr}&BusinessUnitId=${buId}&intId=0`,
+                            "PositionId",
+                            "PositionName",
+                            setHrPositionDDL
+                          );
+                        }}
+                        isShowAllSelectedItem={false}
+                        errors={errors}
+                        placeholder="Workplace"
+                        touched={touched}
+                        setFieldValue={setFieldValue}
+                      />
+                    </div>
+                  </div> */}
 
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>HR Position</label>
+                      {/* <MultiCheckedSelect
+                        name="hrPosition"
+                        options={hrPositionDDL || []}
+                        value={values?.hrPosition}
+                        onChange={(valueOption) => {
+                          setFieldValue("hrPosition", valueOption);
+                        }}
+                        isShowAllSelectedItem={false}
+                        errors={errors}
+                        placeholder="HR Position"
+                        touched={touched}
+                        setFieldValue={setFieldValue}
+                      /> */}
                       <FormikSelect
                         name="hrPosition"
                         isClearable={false}
@@ -797,67 +900,8 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
-                    <div className="input-field-main">
-                      <label>Payment Method</label>
-                      {/* 
-                          (@intBankOrWalletType, 0) = 0 OR 
-                          (@intBankOrWalletType = 1 AND sah.numBankPayInAmount > 0) 
-                          (@intBankOrWalletType = 2 AND sah.numDigitalPayInAmount > 0))
-                          (@intBankOrWalletType = 3 AND sah.numCashPayInAmount > 0)
-                      
-                      */}
-                      <FormikSelect
-                        name="walletType"
-                        options={
-                          [
-                            {
-                              value: 1,
-                              label: "Bank Pay",
-                            },
-                            {
-                              value: 2,
-                              label: "Digital Pay",
-                            },
-                            {
-                              value: 3,
-                              label: "Cash Pay",
-                            },
-                          ] || []
-                        }
-                        value={values?.walletType}
-                        onChange={(valueOption) => {
-                          setValues((prev) => ({
-                            ...prev,
-                            walletType: valueOption,
-                          }));
-                        }}
-                        placeholder=""
-                        styles={customStyles}
-                        errors={errors}
-                        touched={touched}
-                        // isDisabled={singleData}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="input-field-main">
-                      <label>Description</label>
-                      <DefaultInput
-                        classes="input-sm "
-                        placeholder=" "
-                        value={values?.description}
-                        name="description"
-                        type="text"
-                        onChange={(e) => {
-                          setFieldValue("description", e.target.value);
-                        }}
-                        errors={errors}
-                        touched={touched}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-9 d-flex mt-4">
+
+                  <div className="col-md-3 d-flex mt-4">
                     {values?.salaryTpe?.value === "PartialSalary" ? (
                       <button
                         style={{

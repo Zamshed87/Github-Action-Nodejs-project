@@ -61,7 +61,7 @@ export default function SalaryDrawer(props) {
   );
   const [totalAmount, setTotalAmount] = useState(0);
   const [finalTotalAmount, setFinalTotalAmount] = useState(0);
-  const [bankId, setBankId] = useState(0)
+  const [bankId, setBankId] = useState(0);
 
   const [
     existingBankData,
@@ -75,7 +75,7 @@ export default function SalaryDrawer(props) {
       (res) => {
         if (res) {
           const empBasic = res?.empEmployeeBankDetail || {};
-          setBankId(empBasic?.intBankWalletId)
+          setBankId(empBasic?.intBankWalletId);
           setValues((prev) => {
             return {
               ...prev,
@@ -152,7 +152,7 @@ export default function SalaryDrawer(props) {
       employee: "",
 
       isPerdaySalary: singleData[0]?.isPerdaySalary || false,
-
+      IntOthersAdditionalAmountTransferInto: { label: "Cash", value: 3 },
       payrollElement: singleData[0]?.intSalaryBreakdownHeaderId
         ? {
             intSalaryBreakdownHeaderId:
@@ -413,6 +413,8 @@ export default function SalaryDrawer(props) {
         numCashPayInAmount: +values?.netPay,
         numBankPayInAmount: +values?.bankPay,
         numDigitalPayInAmount: +values?.digitalPay,
+        IntOthersAdditionalAmountTransferInto:
+          values?.IntOthersAdditionalAmountTransferInto?.value || 3,
       };
       createEmployeeSalaryAssign(payload, setLoading, callback);
     } else {
@@ -433,7 +435,7 @@ export default function SalaryDrawer(props) {
       }
 
       const modifyBreakdownList = breakDownList?.map((itm) => {
-        let name = itm?.levelVariable;
+        const name = itm?.levelVariable;
         return {
           intSalaryBreakdownRowId: itm?.intSalaryBreakdownRowId,
           intPayrollElementTypeId: itm?.intPayrollElementTypeId,
@@ -472,6 +474,8 @@ export default function SalaryDrawer(props) {
           numCashPayInAmount: +values?.netPay,
           numBankPayInAmount: +values?.bankPay,
           numDigitalPayInAmount: +values?.digitalPay,
+          IntOthersAdditionalAmountTransferInto:
+            values?.IntOthersAdditionalAmountTransferInto?.value || 3,
         };
         // const roundValue = roundAndAdjustPercentages({
         //   numCashPayInPercent: +(
@@ -516,6 +520,8 @@ export default function SalaryDrawer(props) {
           numCashPayInAmount: +values?.netPay,
           numBankPayInAmount: +values?.bankPay,
           numDigitalPayInAmount: +values?.digitalPay,
+          IntOthersAdditionalAmountTransferInto:
+            values?.IntOthersAdditionalAmountTransferInto?.value || 3,
         };
         // const roundValue = roundAndAdjustPercentages({
         //   numCashPayInPercent: +(
