@@ -93,9 +93,6 @@ const MultiCheckedSelect = ({
     e.stopPropagation();
   };
 
-  console.log(value);
-  console.log(filteredData);
-
   return (
     <>
       <FormControl
@@ -264,7 +261,7 @@ const MultiCheckedSelect = ({
                 <Checkbox
                   color="success"
                   sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }}
-                  checked={value.indexOf(option) > -1}
+                  checked={value.some((item) => item.value === option.value)}
                 />
                 <ListItemText
                   primaryTypographyProps={{ fontSize: "12px" }}
