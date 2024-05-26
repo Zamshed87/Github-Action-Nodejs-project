@@ -59,6 +59,7 @@ const SalaryGenerateView = () => {
 
   // state
   const [loading, setLoading] = useState(false);
+  const [loadingForSum, setLoadingForSum] = useState(false)
   const [rowDto, setRowDto] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [, setAllData] = useState([]);
@@ -174,7 +175,7 @@ const SalaryGenerateView = () => {
       intSalaryGenerateRequestId,
       setRowDto,
       setAllData,
-      setLoading,
+      setLoadingForSum,
       wgId
     );
   };
@@ -308,7 +309,7 @@ const SalaryGenerateView = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {(loading || detailsReportLoading) && <Loading />}
+      {(loadingForSum || detailsReportLoading) && <Loading />}
       <div className="table-card">
         <div className="table-card-heading" style={{ marginBottom: "12px" }}>
           <BackButton title={"Salary Generate View"} />
@@ -481,7 +482,6 @@ const SalaryGenerateView = () => {
                         }}
                         placeholder=""
                         styles={customStyles}
-                        // isDisabled={singleData}
                       />
                     </div>
                   </div>
@@ -536,7 +536,6 @@ const SalaryGenerateView = () => {
                         />
                       </div>
                     </div>
-                    {/* {(state?.ApprovalStatus !== "Send for Approval") && ( */}
                     <div className="col-md-3 ml-4">
                       <div className="input-field-main">
                         <FormikRadio
@@ -556,7 +555,7 @@ const SalaryGenerateView = () => {
                         />
                       </div>
                     </div>
-                    {/* )} */}
+                  
                   </div>
                 </div>
               </div>
@@ -617,28 +616,7 @@ const SalaryGenerateView = () => {
                             if (detailsData?.length <= 0) {
                               return toast.warn("No Data Found");
                             }
-                            /*    createSalaryDetailsReportExcelHandeler({
-                              monthYear: moment(values?.monthYear).format(
-                                "MMMM-YYYY"
-                              ),
-                              buAddress: buDetails?.strBusinessUnitAddress,
-                              businessUnit: !state?.data
-                                ? state?.strBusinessUnit
-                                : state?.data?.strBusinessUnit,
-                              data: resDetailsReport,
-                              tableColumn,
-                              tableAllowanceHead,
-                              tableDeductionHead,
-                            }); 
-                            
-                            &strHrPositionList=${
-                              valueArrayHRPosition || 0
-                            }&intPaymentMethod=${valueOption?.value || 0}`,
-                            const valueArrayHRPosition = (
-                              values?.hrPosition || []
-                            )?.map((obj) => obj.value);
-                            
-                            */
+                           
                             const valueArrayHRPosition = (
                               values?.hrPosition || []
                             )?.map((obj) => obj.value);
@@ -692,22 +670,7 @@ const SalaryGenerateView = () => {
                         className="btn-save"
                         type="button"
                         onClick={() => {
-                          /*      getPDFAction(
-                            `/PdfAndExcelReport/SalaryDetailsReport?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
-                              !state?.data
-                                ? state?.intMonth
-                                : state?.data?.intMonth
-                            }&intYearId=${
-                              !state?.data
-                                ? state?.intYear
-                                : state?.data?.intYear
-                            }&strSalaryCode=${
-                              !state?.data
-                                ? state?.strSalaryCode
-                                : state?.data?.strSalaryCode
-                            }&isDownload=false`,
-                            setLoading
-                          ); */
+                        
 
                           if (detailsData?.length <= 0) {
                             return toast.warn("No Data Found");
@@ -736,7 +699,6 @@ const SalaryGenerateView = () => {
                             getPDFAction(url, setLoading);
                           }
                         }}
-                        // disabled={resDetailsReport?.length <= 0}
                         style={{
                           border: "transparent",
                           width: "30px",
@@ -760,6 +722,8 @@ const SalaryGenerateView = () => {
           </div>
           <div>
             {values?.summary === "1" && (
+              <>
+              {loading && <Loading/>}
               <ScrollableTable
                 classes="salary-process-table"
                 secondClasses="table-card-styled tableOne scroll-table-height"
@@ -856,8 +820,9 @@ const SalaryGenerateView = () => {
                 </thead>
                 <tbody>
                   {rowDto?.map((item, index) => (
+                    <>
+                    {loading && <Loading/>}
                     <tr key={index} colSpan={!item?.DeptName?.trim() ? 16 : 1}>
-                      {/* <td>{item?.SL}</td> */}
                       <td>
                         {item?.DeptName?.trim() ? (
                           <b>Depertment: {item?.DeptName}</b>
@@ -914,18 +879,17 @@ const SalaryGenerateView = () => {
                         </>
                       )}
                     </tr>
+                    </>
+                  
                   ))}
                 </tbody>
               </ScrollableTable>
+              </>
+             
             )}
             {values?.summary === "2" && (
               <>
-                {/* <SalaryDetailsReportTable
-                  rowDto={resDetailsReport}
-                  tableColumn={tableColumn}
-                  tableAllowanceHead={tableAllowanceHead}
-                  tableDeductionHead={tableDeductionHead}
-                /> */}
+              {loading && <Loading/>}
                 <div className="sme-scrollable-table">
                   <div
                     className="scroll-table scroll-table-height"
