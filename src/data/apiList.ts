@@ -113,6 +113,8 @@ export const apiList = {
 
   GetEarlyOutReport: "/TimeSheetReport/GetEarlyOutReport",
   GetLateReport: "/TimeSheetReport/GetLateReport",
+  GetAssignedSalaryDetailsReport_Matador:
+    "/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador",
 
   TimeManagementDynamicPIVOTReport:
     "/TimeSheetReport/TimeManagementDynamicPIVOTReport",
