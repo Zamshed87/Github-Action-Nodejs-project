@@ -42,6 +42,7 @@ const MultiCheckedSelect = ({
   setFieldValue,
   isAvatar = false,
   searchFieldPlaceholder = "Search",
+  isShowAllSelectedItem = true,
 }) => {
   const [allChecked, setAllChecked] = useState(false);
   const [searchString, setSearchString] = useState("");
@@ -76,7 +77,12 @@ const MultiCheckedSelect = ({
   };
 
   useEffect(() => {
-    if (value?.length === options?.length) setAllChecked(true);
+    if (
+      value?.length > 0 &&
+      options?.length > 0 &&
+      value?.length === options?.length
+    )
+      setAllChecked(true);
   }, [value?.length, options?.length]);
 
   const filteredData = options?.filter((item) =>
@@ -86,6 +92,9 @@ const MultiCheckedSelect = ({
   const stopPropagation = (e) => {
     e.stopPropagation();
   };
+
+  console.log(value);
+  console.log(filteredData);
 
   return (
     <>
@@ -124,8 +133,11 @@ const MultiCheckedSelect = ({
           onChange={onChangeHandler}
           input={<OutlinedInput />}
           renderValue={(selected) =>
-            options.length === value.length ? (
-              <p>{options?.length} items Selected</p>
+            (value.length > 0 &&
+              options.length > 0 &&
+              options.length === value.length) ||
+            !isShowAllSelectedItem ? (
+              <p>{value.length} items Selected</p>
             ) : (
               <div style={{ display: "flex", flexWrap: "wrap" }}>
                 {selected?.map((item, index) => (
@@ -179,6 +191,12 @@ const MultiCheckedSelect = ({
               "&.Mui-focusVisible": {
                 backgroundColor: "white",
               },
+              "&:focus": {
+                backgroundColor: "white",
+              },
+              "&:hover": {
+                backgroundColor: "white",
+              },
             }}
           >
             <OutlinedInput
@@ -203,6 +221,7 @@ const MultiCheckedSelect = ({
               onClick={(e) => stopPropagation(e)}
               onKeyDown={(e) => stopPropagation(e)}
               onChange={(e) => {
+                stopPropagation(e);
                 setSearchString(e.target.value);
               }}
               size="small"
@@ -224,9 +243,11 @@ const MultiCheckedSelect = ({
               style={{
                 display: "flex",
                 alignItems: "center",
-                padding: "0px 16px",
+                padding: "0px",
                 cursor: "pointer",
+                width: "100%",
               }}
+              onClick={(e) => handleSelectAllClick(e)}
             >
               <Checkbox
                 onClick={(e) => handleSelectAllClick(e)}
@@ -239,11 +260,7 @@ const MultiCheckedSelect = ({
           )}
           {filteredData?.length ? (
             filteredData.map((option, index) => (
-              <MenuItem
-                sx={{ paddingTop: 0, paddingBottom: 0 }}
-                key={option?.value}
-                value={option}
-              >
+              <MenuItem sx={{ padding: 0 }} key={option?.value} value={option}>
                 <Checkbox
                   color="success"
                   sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }}
