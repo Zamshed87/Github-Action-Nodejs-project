@@ -168,6 +168,7 @@ const MonthlyLeaveReport = () => {
         fromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
         toDate: moment(values?.toDate).format("YYYY-MM-DD"),
         pageNo: pagination?.current || 1,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         pageSize: pagination.pageSize! > 1 ? pagination?.pageSize : 500,
         isPaginated: true,
         SearchText: searchText,

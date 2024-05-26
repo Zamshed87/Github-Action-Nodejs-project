@@ -9,7 +9,6 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row, Typography } from "antd";
@@ -27,11 +26,9 @@ import { getDateOfYear } from "utility/dateFormatter";
 import {} from "react-icons/md";
 
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { debounce } from "lodash";
+// import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 
-import { getCurrentMonthName } from "utility/monthIdToMonthName";
-import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import { column, getTableDataDailyAttendance } from "./helper";
 import { timeFormatter } from "utility/timeFormatter";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
@@ -268,7 +265,7 @@ const AttendanceReport = () => {
         }}
       >
         <PCard>
-          {(excelLoading || apiLoading) && <Loading />}
+          {(excelLoading || apiLoading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
@@ -319,6 +316,7 @@ const AttendanceReport = () => {
                             Object.keys(column),
                             res?.data
                           ),
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
                         getSubTableData: () => {},
                         subHeaderInfoArr: [],
                         subHeaderColumn: [],
