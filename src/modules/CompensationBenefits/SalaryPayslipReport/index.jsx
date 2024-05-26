@@ -582,6 +582,33 @@ const SalaryPayslipReport = () => {
                             </th>
                           </tr>
                           <tr>
+                            <td style={{ textAlign: "left" }}>
+                              <p>Bank Pay Amount</p>
+                            </td>
+                            <td style={{ textAlign: "right" }} colSpan="3">
+                              <p>
+                                {salaryHeaderData[0]?.numBankPayAmount || 0}
+                              </p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style={{ textAlign: "left" }}>
+                              <p>Cash Pay Amount</p>
+                            </td>
+                            <td style={{ textAlign: "right" }} colSpan="3">
+                              <p>{salaryHeaderData[0]?.numCashPayAmount || 0}</p>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td style={{ textAlign: "left" }}>
+                              <p>Digita Pay Amount</p>
+                            </td>
+                            <td style={{ textAlign: "right" }} colSpan="3">
+                              <p>{salaryHeaderData[0]?.numDigitalPayAmount || 0}</p>
+                            </td>
+                          </tr>
+                          <tr>
                             <th>
                               <p style={thStyles} className="pl-1">
                                 Net Take Home (A-B)

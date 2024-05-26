@@ -58,7 +58,9 @@ export const getSalaryGenerateRequestLanding = async (
   // Joining the values into a string separated by commas
   const workplaceListFromValues = valueArray.join(",");
   const valueArrayHRPosition = values?.hrPosition?.map((obj) => obj.value);
-  const intBankOrWalletType = `&intBankOrWalletType=${values?.walletType?.value || 0}`;
+  const intBankOrWalletType = `&intBankOrWalletType=${
+    values?.walletType?.value || 0
+  }`;
   // const workplaceListFromValues ='"' + valueArray.join(',') + '"';
 
   const fromDateParams = fromDate ? `&GenerateFromDate=${fromDate}` : "";
@@ -121,10 +123,10 @@ export const getSalaryGenerateRequestById = async (
   intSalaryGenerateRequestId,
   setter,
   setAllData,
-  setLoading,
+  setLoadingForSum,
   wgId
 ) => {
-  setLoading && setLoading(true);
+  setLoadingForSum && setLoadingForSum(true);
   try {
     const res = await axios.get(
       `/Payroll/SalarySelectQueryAll?partName=GeneratedSalaryReportHeaderLandingGroupByDepartment&intAccountId=${intAccountId}&intBusinessUnitId=${intBusinessUnitId}&intMonthId=${intMonth}&intYearId=${intYear}&intSalaryGenerateRequestId=${intSalaryGenerateRequestId}&intBankOrWalletType=0&intWorkplaceGroupId=${wgId}`
@@ -132,10 +134,10 @@ export const getSalaryGenerateRequestById = async (
     if (res?.data) {
       setAllData && setAllData(res?.data);
       setter(res?.data);
-      setLoading && setLoading(false);
     }
+    setLoadingForSum && setLoadingForSum(false);
   } catch (error) {
-    setLoading && setLoading(false);
+    setLoadingForSum && setLoadingForSum(false);
   }
 };
 
