@@ -56,14 +56,14 @@ const DrawerBody = ({
   touched,
   setOpenBank,
   bankDataHandler,
-  bankId
+  bankId,
 }) => {
   const [isHoldSalary, setIsHoldSalary] = useState(false);
 
-  let modifyIsHold = singleData[0]?.IsHold === 1 ? true : false;
+  const modifyIsHold = singleData[0]?.IsHold === 1 ? true : false;
 
   useEffect(() => {
-    let obj = {
+    const obj = {
       partType: "EmployeeSalaryInfoByEmployeeId",
       businessUnitId: buId,
       workplaceGroupId: wgId || 0,
@@ -86,7 +86,7 @@ const DrawerBody = ({
   }, [salaryInfoId, buId]);
 
   const holdSalaryHandler = (e) => {
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: `Are your sure?`,
       yesAlertFunc: () => {
@@ -257,7 +257,6 @@ const DrawerBody = ({
                     </span>
                   </p>
                 </div>
-               
               </div>
             </div>
             <DefaultSalary
@@ -298,7 +297,7 @@ const DrawerBody = ({
                 setIsOpen,
                 setOpenBank,
                 bankDataHandler,
-                bankId
+                bankId,
               }}
             />
           </div>
@@ -369,7 +368,7 @@ const DrawerBody = ({
                 errors,
                 touched,
                 bankDataHandler,
-                bankId
+                bankId,
               }}
             />
           </div>
