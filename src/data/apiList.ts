@@ -112,6 +112,7 @@ export const apiList = {
   GetDateWiseAttendanceReport: "/Employee/GetDateWiseAttendanceReport",
 
   GetEarlyOutReport: "/TimeSheetReport/GetEarlyOutReport",
+  GetLateReport: "/TimeSheetReport/GetLateReport",
 
   TimeManagementDynamicPIVOTReport:
     "/TimeSheetReport/TimeManagementDynamicPIVOTReport",

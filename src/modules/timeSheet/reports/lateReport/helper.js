@@ -146,11 +146,12 @@ export const lateDtoCol = (page, paginationSize) => {
 // excel columns
 export const column = {
   sl: "SL",
-  department: "Department",
-  section: "Section",
   employeeCode: "Employee Id",
   employeeName: "Employee Name",
   designation: "Designation",
+  department: "Department",
+  section: "Section",
+
   calenderName: "Calender Name",
   intime: "In Time",
   late: "Late (mins)",
