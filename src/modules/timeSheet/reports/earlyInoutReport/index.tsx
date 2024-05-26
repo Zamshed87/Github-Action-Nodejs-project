@@ -32,8 +32,10 @@ import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 
 import { getCurrentMonthName } from "utility/monthIdToMonthName";
 import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
-import { column } from "./helper";
-import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
+import { column, getTableDataDailyAttendance } from "./helper";
+import { timeFormatter } from "utility/timeFormatter";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { getPDFAction } from "utility/downloadFile";
 
 const AttendanceReport = () => {
   const dispatch = useDispatch();
@@ -43,7 +45,7 @@ const AttendanceReport = () => {
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
-    () => permissionList?.find((item: any) => item?.menuReferenceId === 30315),
+    () => permissionList?.find((item: any) => item?.menuReferenceId === 30380),
     []
   );
   // menu permission
@@ -55,6 +57,7 @@ const AttendanceReport = () => {
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [pages] = useState({
     current: 1,
     pageSize: paginationSize,
@@ -70,7 +73,7 @@ const AttendanceReport = () => {
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
-    document.title = "Attendance Report";
+    document.title = "Early Out Report";
     () => {
       document.title = "PeopleDesk";
     };
@@ -117,6 +120,7 @@ const AttendanceReport = () => {
       },
     });
   };
+  const [, getExcelData, apiLoading] = useAxiosGet();
 
   type TLandingApi = {
     pagination?: {
@@ -131,26 +135,22 @@ const AttendanceReport = () => {
   };
   const landingApiCall = ({
     pagination = { current: 1, pageSize: paginationSize },
-    searchText = "",
-  }: TLandingApi = {}) => {
+  }: // searchText = "",
+  TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
 
     landingApi.action({
-      urlKey: "GetEmpAttendanceReport",
+      urlKey: "GetEarlyOutReport",
       method: "GET",
       params: {
-        AccountId: orgId,
         IntBusinessUnitId: buId,
         IsXls: false,
-        IsPaginated: true,
-
         IntWorkplaceGroupId: values?.workplaceGroup?.value,
         IntWorkplaceId: values?.workplace?.value,
         PageNo: pagination.current || 1,
         PageSize: pagination.pageSize || 25,
-        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        ToDate: moment(values?.todate).format("YYYY-MM-DD"),
-        SearchTxt: searchText,
+        Date: moment(values?.fromDate).format("YYYY-MM-DD"),
+        // SearchTxt: searchText,
       },
     });
   };
@@ -170,18 +170,18 @@ const AttendanceReport = () => {
       align: "center",
     },
 
-    {
-      title: "Work. Group/Location",
-      dataIndex: "workplaceGroup",
-      width: 120,
-      fixed: "left",
-    },
-    {
-      title: "Workplace/Concern",
-      dataIndex: "workplace",
-      width: 120,
-      fixed: "left",
-    },
+    // {
+    //   title: "Work. Group/Location",
+    //   dataIndex: "workplaceGroup",
+    //   width: 120,
+    //   fixed: "left",
+    // },
+    // {
+    //   title: "Workplace/Concern",
+    //   dataIndex: "workplace",
+    //   width: 120,
+    //   fixed: "left",
+    // },
     {
       title: "Employee Id",
       dataIndex: "employeeCode",
@@ -190,7 +190,7 @@ const AttendanceReport = () => {
     },
 
     {
-      title: "Employee Name",
+      title: "Employee",
       dataIndex: "employeeName",
       render: (_: any, rec: any) => {
         return (
@@ -224,94 +224,32 @@ const AttendanceReport = () => {
       width: 100,
     },
     {
-      title: "Hr Position",
-      dataIndex: "hrPosition",
+      title: "Calender Name",
+      dataIndex: "calenderName",
 
       width: 100,
     },
     {
-      title: "Employment Type",
-      dataIndex: "employmentType",
+      title: "Out Time",
+      dataIndex: "outTime",
+      render: (_: any, record: any) => timeFormatter(record?.outTime) || "N/A",
 
       width: 100,
     },
     {
-      title: "Working Days",
-      dataIndex: "workingDays",
+      title: "Early Out (min)",
+      dataIndex: "earlyOut",
+      render: (_: any, record: any) => timeFormatter(record?.earlyOut) || "N/A",
 
       width: 100,
-    },
-    {
-      title: "Present",
-      dataIndex: "present",
-
-      width: 100,
-    },
-    {
-      title: "Absent",
-      dataIndex: "absent",
-
-      width: 100,
-    },
-
-    {
-      title: "Late",
-      dataIndex: "late",
-      width: 80,
-    },
-    {
-      title: "Movement",
-      dataIndex: "movement",
-
-      width: 100,
-    },
-    {
-      title: "Casual Leave",
-      dataIndex: "casualLeave",
-      width: 80,
-    },
-    {
-      title: "Sick Leave",
-      dataIndex: "casualLeave",
-      width: 80,
-    },
-    {
-      title: "Earn Leave",
-      dataIndex: "casualLeave",
-      width: 80,
-    },
-    {
-      title: "Medical Leave",
-      dataIndex: "medicalLeave",
-      width: 80,
-    },
-    {
-      title: "Special Leave",
-      dataIndex: "medicalLeave",
-      width: 80,
-    },
-    {
-      title: "Off Day",
-      dataIndex: "weekend",
-      width: 80,
-    },
-    {
-      title: "Holiday",
-      dataIndex: "holiday",
-      width: 80,
     },
   ];
-  const searchFunc = debounce((value) => {
-    landingApiCall({
-      searchText: value,
-    });
-  }, 500);
-  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
-    const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-    // Disable dates before fromDate and after next3daysForEmp
-    return current && current < fromDateMoment.startOf("day");
-  };
+  //   const searchFunc = debounce((value) => {
+  //     landingApiCall({
+  //       searchText: value,
+  //     });
+  //   }, 500);
+
   return employeeFeature?.isView ? (
     <>
       <PForm
@@ -330,64 +268,78 @@ const AttendanceReport = () => {
         }}
       >
         <PCard>
-          {excelLoading && <Loading />}
+          {(excelLoading || apiLoading) && <Loading />}
           <PCardHeader
             exportIcon={true}
             title={`Total ${landingApi?.data?.totalCount || 0} employees`}
-            onSearch={(e) => {
-              searchFunc(e?.target?.value);
-              form.setFieldsValue({
-                search: e?.target?.value,
-              });
-            }}
+            // onSearch={(e) => {
+            //   searchFunc(e?.target?.value);
+            //   form.setFieldsValue({
+            //     search: e?.target?.value,
+            //   });
+            // }}
             onExport={() => {
               const excelLanding = async () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-
-                  const newData = landingApi?.data?.data?.map(
-                    (item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                      };
+                  getExcelData(
+                    `/TimeSheetReport/GetEarlyOutReport?IntBusinessUnitId=${buId}&IntWorkplaceGroupId=${
+                      values?.workplaceGroup?.value
+                    }&IntWorkplaceId=${values?.workplace?.value}&Date=${moment(
+                      values?.fromDate
+                    ).format("YYYY-MM-DD")}&IsXls=true&PageNo=1&PageSize=10000`,
+                    (res: any) => {
+                      const newData = res?.data?.map(
+                        (item: any, index: any) => {
+                          return {
+                            ...item,
+                            sl: index + 1,
+                            outTime: timeFormatter(item?.outTime),
+                            calenderTime: `${item?.startTime || ""}-${
+                              item?.endTime || ""
+                            }`,
+                          };
+                        }
+                      );
+                      createCommonExcelFile({
+                        titleWithDate: `Daily Early Out Report for ${moment(
+                          values?.fromDate
+                        ).format("YYYY-MM-DD")} }`,
+                        fromDate: "",
+                        toDate: "",
+                        buAddress: (buDetails as any)?.strAddress,
+                        businessUnit: values?.workplaceGroup?.value
+                          ? (buDetails as any)?.strWorkplace
+                          : buName,
+                        tableHeader: column,
+                        getTableData: () =>
+                          getTableDataDailyAttendance(
+                            newData,
+                            Object.keys(column),
+                            res?.data
+                          ),
+                        getSubTableData: () => {},
+                        subHeaderInfoArr: [],
+                        subHeaderColumn: [],
+                        tableFooter: [],
+                        extraInfo: {},
+                        tableHeadFontSize: 10,
+                        widthList: {
+                          C: 30,
+                          D: 30,
+                          E: 25,
+                          F: 20,
+                          G: 25,
+                          H: 25,
+                          I: 25,
+                          K: 20,
+                        },
+                        commonCellRange: "A1:J1",
+                        CellAlignment: "left",
+                      });
                     }
                   );
-                  createCommonExcelFile({
-                    titleWithDate: `Employees Attendance Report ${getCurrentMonthName()}-${currentYear()}`,
-                    fromDate: "",
-                    toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column,
-                    getTableData: () =>
-                      getTableDataInactiveEmployees(
-                        newData,
-                        Object.keys(column)
-                      ),
-                    getSubTableData: () => {},
-                    subHeaderInfoArr: [],
-                    subHeaderColumn: [],
-                    tableFooter: [],
-                    extraInfo: {},
-                    tableHeadFontSize: 10,
-                    widthList: {
-                      C: 30,
-                      D: 30,
-                      E: 25,
-                      F: 20,
-                      G: 25,
-                      H: 25,
-                      I: 25,
-                      K: 20,
-                    },
-                    commonCellRange: "A1:J1",
-                    CellAlignment: "left",
-                  });
-
                   setExcelLoading(false);
                 } catch (error: any) {
                   toast.error("Failed to download excel");
@@ -397,6 +349,34 @@ const AttendanceReport = () => {
               };
               excelLanding();
             }}
+            printIcon={true}
+            pdfExport={() => {
+              const values = form.getFieldsValue(true);
+              const list = landingApi?.data?.data?.map(
+                (item: any) => item?.employeeId
+              );
+              getPDFAction(
+                `/PdfAndExcelReport/DailyAttendanceReportPDF?IntAccountId=${orgId}&AttendanceDate=${moment(
+                  values?.fromDate
+                ).format("YYYY-MM-DD")}${
+                  buId ? `&IntBusinessUnitId=${buId}` : ""
+                }${
+                  values?.workplaceGroup?.value
+                    ? `&IntWorkplaceGroupId=${values?.workplaceGroup?.value}`
+                    : ""
+                }${
+                  landingApi?.data?.data?.length !==
+                  landingApi?.data?.totalCount
+                    ? `&EmployeeIdList=${list}`
+                    : ""
+                }${
+                  values?.workplace?.value
+                    ? `&IntWorkplaceId=${values?.workplace?.value}`
+                    : ""
+                }`,
+                setLoading
+              );
+            }}
           />
           <PCardBody className="mb-3">
             <Row gutter={[10, 2]}>
@@ -404,25 +384,11 @@ const AttendanceReport = () => {
                 <PInput
                   type="date"
                   name="fromDate"
-                  label="From Date"
-                  placeholder="From Date"
+                  label="Date"
+                  placeholder="Date"
                   onChange={(value) => {
                     form.setFieldsValue({
                       fromDate: value,
-                    });
-                  }}
-                />
-              </Col>
-              <Col md={5} sm={12} xs={24}>
-                <PInput
-                  type="date"
-                  name="toDate"
-                  label="To Date"
-                  placeholder="To Date"
-                  disabledDate={disabledDate}
-                  onChange={(value) => {
-                    form.setFieldsValue({
-                      toDate: value,
                     });
                   }}
                 />
@@ -485,7 +451,7 @@ const AttendanceReport = () => {
                 style={{ marginLeft: "10px", fontSize: "12px" }}
               >
                 {" "}
-                Present:
+                Total:
               </Typography.Title>
               <Typography.Title
                 level={5}
@@ -495,45 +461,7 @@ const AttendanceReport = () => {
                   fontSize: "12px",
                 }}
               >
-                {landingApi?.data?.presentCount || 0}
-              </Typography.Title>
-            </div>
-            <div className="d-flex align-items-center">
-              <Typography.Title
-                level={5}
-                style={{ marginLeft: "32px", fontSize: "12px" }}
-              >
-                {" "}
-                Absent:
-              </Typography.Title>
-              <Typography.Title
-                level={5}
-                style={{
-                  marginLeft: "5px",
-                  marginTop: "-.5px",
-                  fontSize: "12px",
-                }}
-              >
-                {landingApi?.data?.absentCount || 0}
-              </Typography.Title>
-            </div>
-            <div className="d-flex align-items-center ">
-              <Typography.Title
-                level={5}
-                style={{ marginLeft: "32px", fontSize: "12px" }}
-              >
-                {" "}
-                Late:
-              </Typography.Title>
-              <Typography.Title
-                level={5}
-                style={{
-                  marginLeft: "5px",
-                  marginTop: "-.5px",
-                  fontSize: "12px",
-                }}
-              >
-                {landingApi?.data?.lateCount || 0}
+                {landingApi?.data?.totalEarlyOut || 0}
               </Typography.Title>
             </div>
           </div>
@@ -555,7 +483,6 @@ const AttendanceReport = () => {
                 pagination,
               });
             }}
-            scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>
