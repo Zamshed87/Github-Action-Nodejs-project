@@ -6,16 +6,10 @@ import AsyncFormikSelect from "../../../../../common/AsyncFormikSelect";
 import DefaultInput from "../../../../../common/DefaultInput";
 import FormikSelect from "../../../../../common/FormikSelect";
 import Loading from "../../../../../common/loading/Loading";
-import {
-  gray200,
-  gray400,
-  gray700,
-  gray900,
-} from "../../../../../utility/customColor";
+import { gray200, gray400, gray700 } from "../../../../../utility/customColor";
 import { customStyles } from "../../../../../utility/selectCustomStyle";
 import { getBreakdownListDDL, getByIdBreakdownListDDL } from "../helper";
 import { adjustPaymentFiledFun } from "./utils";
-import BankForm from "modules/employeeProfile/aboutMe/bankDetails/component/BankForm";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { getPeopleDeskAllDDL } from "common/api";
@@ -68,7 +62,7 @@ const DefaultSalary = ({ propsObj }) => {
     setIsOpen,
     setOpenBank,
     bankDataHandler,
-    bankId
+    bankId,
   } = propsObj;
 
   const payrollGroupDDL = (positionId) => {
@@ -94,15 +88,10 @@ const DefaultSalary = ({ propsObj }) => {
       setBankDDL
     );
   }, []);
-console.log("bankId",bankId)
-  useEffect(() =>{
-    getBankBranchDDL(
-      bankId || 0,
-      orgId,
-      0,
-      setBankBranchDDL
-    );
-  },[bankId])
+  console.log("bankId", bankId);
+  useEffect(() => {
+    getBankBranchDDL(bankId || 0, orgId, 0, setBankBranchDDL);
+  }, [bankId]);
 
   const loadEmployeeList = (v) => {
     if (v?.length < 2) return [];
@@ -969,6 +958,66 @@ console.log("bankId",bankId)
                       </div>
                     </div>
                     <div
+                      className="row mb-less"
+                      style={{ alignItems: "center", marginBottom: "12px" }}
+                    >
+                      <div className="col-12"></div>
+                      <div className="col-lg-7">
+                        <div
+                          className="d-flex align-items-center"
+                          style={{
+                            width: "100% !important",
+                            fontSize: "12px !important",
+                          }}
+                        >
+                          <h2
+                            style={{
+                              fontWeight: "500",
+                              fontSize: "14px",
+                              lineHeight: "20px",
+                              color: gray700,
+                              position: "relative",
+                              top: "-1px",
+                              marginRight: "10px",
+                            }}
+                          >
+                            Others/Additional Amount Transfer Into
+                          </h2>
+                        </div>
+                      </div>
+                      <div className="col-lg-5">
+                        <FormikSelect
+                          name="IntOthersAdditionalAmountTransferInto"
+                          options={[
+                            {
+                              label: "Bank",
+                              value: 1,
+                            },
+                            {
+                              label: "Digital/MFS",
+                              value: 2,
+                            },
+                            {
+                              label: "Cash",
+                              value: 3,
+                            },
+                          ]}
+                          value={values?.IntOthersAdditionalAmountTransferInto}
+                          onChange={(valueOption) => {
+                            setFieldValue(
+                              "IntOthersAdditionalAmountTransferInto",
+                              valueOption
+                            );
+                          }}
+                          placeholder=" "
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                          isClearable={false}
+                        />
+                      </div>
+                    </div>
+                    <div
                       className="row"
                       style={{ alignItems: "center", marginBottom: "8px" }}
                     >
@@ -1386,7 +1435,8 @@ console.log("bankId",bankId)
                       onClick={() => {
                         const payload = {
                           partId: 0,
-                          intEmployeeBankDetailsId: values?.intEmployeeBankDetailsId || 0,
+                          intEmployeeBankDetailsId:
+                            values?.intEmployeeBankDetailsId || 0,
                           intEmployeeBasicInfoId:
                             +singleData?.[0]?.EmployeeId || 0,
                           isPrimarySalaryAccount: true,
@@ -1399,7 +1449,7 @@ console.log("bankId",bankId)
                           dteUpdatedAt: todayDate(),
                           intUpdatedBy: employeeId,
                           intBankOrWalletType: 1,
-                          intBankWalletId:  values?.bankName?.value || 0,
+                          intBankWalletId: values?.bankName?.value || 0,
                           strBankWalletName: values?.bankName?.label || "",
                           strDistrict: "",
                           intBankBranchId: values?.branchName?.value || 0,
@@ -1483,7 +1533,8 @@ console.log("bankId",bankId)
                       onClick={() => {
                         const payload = {
                           partId: 0,
-                          intEmployeeBankDetailsId: values?.intEmployeeBankDetailsId || 0,
+                          intEmployeeBankDetailsId:
+                            values?.intEmployeeBankDetailsId || 0,
                           intEmployeeBasicInfoId:
                             +singleData?.[0]?.EmployeeId || 0,
                           isPrimarySalaryAccount: true,
@@ -1496,7 +1547,7 @@ console.log("bankId",bankId)
                           dteUpdatedAt: todayDate(),
                           intUpdatedBy: employeeId,
                           intBankOrWalletType: 1,
-                          intBankWalletId:  values?.bankName?.value || 0,
+                          intBankWalletId: values?.bankName?.value || 0,
                           strBankWalletName: values?.bankName?.label || "",
                           strDistrict: "",
                           intBankBranchId: values?.branchName?.value || 0,
