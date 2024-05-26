@@ -1,19 +1,18 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import React, { useEffect } from "react";
 // import { shallowEqual, useSelector } from "react-redux";
-import demoUserIcon from "../../../assets/images/userIcon.svg";
-import Chips from "../../../common/Chips";
 import Loading from "../../../common/loading/Loading";
 import NoResult from "../../../common/NoResult";
 import useAxiosGet from "../../../utility/customHooks/useAxiosGet";
 import { useState } from "react";
-import { attendanceDetailsReport } from "./helper";
+import { attendanceDetailsReport, supervisorLandingColumn } from "./helper";
 import moment from "moment";
-import { InfoOutlined } from "@mui/icons-material";
 import EmpInOutModal from "./EmpInOutModal";
 import ViewModal from "../../../common/ViewModal";
 import { useHistory } from "react-router-dom";
 import { shallowEqual, useSelector } from "react-redux";
+import { paginationSize } from "common/AntTable";
+import { DataTable } from "Components";
 
 const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   // const { employeeId, orgId } = useSelector(
@@ -24,6 +23,12 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [value, setValue] = useState(moment());
   const [modalLoading, setModalLoading] = useState(false);
+  // pages
+  const [pages, setPages] = useState({
+    current: 1,
+    pageSize: paginationSize,
+    total: 0,
+  });
   const history = useHistory();
 
   // redux
@@ -333,138 +338,51 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
               overflow: "auto",
               maxHeight: "320px",
             }}
-            className="table-card-styled tableOne"
+            className="table-card-styled"
           >
             {midLevelDashboardViewModel?.employeeAttandanceListViewModels
               ?.length ? (
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th style={{ width: "30px" }}>
-                      <div>SL</div>
-                    </th>
-                    <th>
-                      <div>Employee</div>
-                    </th>
-                    <th>
-                      <div>Designation</div>
-                    </th>
-                    <th>
-                      <div>Department</div>
-                    </th>
-                    <th>
-                      <div>In-time</div>
-                    </th>
-                    <th>
-                      <div>Out-time</div>
-                    </th>
-                    <th>
-                      <div className="d-flex justify-content-center">
-                        <div className="sortable">
-                          <span>Status</span>
-                        </div>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                {midLevelDashboardViewModel?.employeeAttandanceListViewModels?.map(
-                  (item, i) => (
-                    <tbody key={i}>
-                      <tr>
-                        <td>{i + 1}</td>
-                        <td
-                          onClick={() =>
-                            history.push({
-                              pathname: `/profile/employee/${item?.employeeId}`,
-                              state: { buId, wgId },
-                            })
-                          }
-                        >
-                          <div
-                            className="d-flex justify-content-left align-items-center"
-                            style={{ cursor: "pointer" }}
-                          >
-                            <div>
-                              <img src={demoUserIcon} alt="" />
-                            </div>
-                            <div className="ml-2">
-                              <h4
-                                style={{
-                                  fontWeight: 400,
-                                  fontSize: "14px",
-                                  color: "#344054",
-                                  lineHeight: "18px",
-                                }}
-                              >
-                                {item?.employeeName}{" "}
-                                <span style={{ color: "#667085" }}>
-                                  [{item?.employeeId}]
-                                </span>
-                                <InfoOutlined
-                                  style={{ cursor: "pointer" }}
-                                  className="ml-2"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setEmpData(null);
-                                    getAttendanceData(
-                                      item?.employeeId,
-                                      setLoading,
-                                      `${currYear()}-${currMonth()}`
-                                    );
-                                    setEmpDetails(item);
-                                    !empData && setAnchorEl(true);
-                                  }}
-                                />
-                              </h4>
-                            </div>
-                          </div>
-                        </td>
-                        <td>{item?.designation}</td>
-                        <td>{item?.departmant}</td>
-                        <td>{item?.inTime ? item?.inTime : "N/A"}</td>
-                        <td>{item?.outTime ? item?.outTime : "N/A"}</td>
-                        <td className="text-center">
-                          {item?.status === "Present" && (
-                            <Chips label={item?.status} classess="success" />
-                          )}
-                          {item?.status === "Late" && (
-                            <Chips label={item?.status} classess="warning" />
-                          )}
-                          {item?.status === "Absent" && (
-                            <Chips label={item?.status} classess="danger" />
-                          )}
-                          {item?.status === "Movement" && (
-                            <span
-                              style={{
-                                color: "#9F1AB1",
-                                background: "#FBE8FF",
-                                borderRadius: "99px",
-                                padding: "1px 8px",
-                                fontWeight: 600,
-                              }}
-                            >
-                              Movement
-                            </span>
-                          )}
-                          {item?.status === "Leave" && (
-                            <span
-                              style={{
-                                color: "#6927DA",
-                                background: "#ECE9FE",
-                                borderRadius: "99px",
-                                padding: "1px 8px",
-                                fontWeight: 600,
-                              }}
-                            >
-                              Leave
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    </tbody>
-                  )
+              <DataTable
+                scroll={{ y: "200px" }}
+                bordered
+                data={
+                  midLevelDashboardViewModel?.employeeAttandanceListViewModels ||
+                  []
+                }
+                loading={loading}
+                header={supervisorLandingColumn(
+                  pages,
+                  setEmpData,
+                  getAttendanceData,
+                  setLoading,
+                  currYear,
+                  currMonth,
+                  setEmpDetails,
+                  empData,
+                  setAnchorEl
                 )}
-              </table>
+                pagination={{
+                  current: pages?.current,
+                  pageSize: pages?.pageSize,
+                  total: pages?.total,
+                }}
+                onChange={(pagination) => {
+                  setPages({
+                    current: pagination?.current,
+                    pageSize: pagination?.pageSize,
+                    total: pagination?.total,
+                  });
+                }}
+                onRow={(record) => ({
+                  onClick: () => {
+                    history.push({
+                      pathname: `/profile/employee/${record?.employeeId}`,
+                      state: { buId, wgId },
+                    });
+                  },
+                  className: "pointer",
+                })}
+              />
             ) : (
               <NoResult />
             )}

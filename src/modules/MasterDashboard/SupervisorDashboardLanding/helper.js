@@ -1,5 +1,8 @@
+import { InfoOutlined } from "@mui/icons-material";
+import { getSerial } from "Utils";
 import axios from "axios";
 import { toast } from "react-toastify";
+import demoUserIcon from "../../../assets/images/userIcon.svg";
 import Chips from "../../../common/Chips";
 
 export const attendanceDetailsReport = async (
@@ -133,6 +136,153 @@ export const empAttenColumns = () => {
         </>
       ),
       dataIndex: "AttStatus",
+    },
+  ];
+};
+
+export const supervisorLandingColumn = (
+  pages,
+  setEmpData,
+  getAttendanceData,
+  setLoading,
+  currYear,
+  currMonth,
+  setEmpDetails,
+  empData,
+  setAnchorEl
+) => {
+  return [
+    {
+      title: "SL",
+      render: (_, rec, index) =>
+        getSerial({
+          currentPage: pages?.current,
+          pageSize: pages?.pageSize,
+          index,
+        }),
+      width: 15,
+      align: "center",
+    },
+    {
+      title: "Employee Name",
+      dataIndex: "employeeName",
+      render: (_, rec) => {
+        return (
+          <div
+            className="d-flex justify-content-left align-items-center"
+            style={{ cursor: "pointer" }}
+          >
+            <div>
+              <img src={demoUserIcon} alt="" />
+            </div>
+            <div className="ml-2">
+              <h4
+                style={{
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  color: "#344054",
+                  lineHeight: "18px",
+                }}
+              >
+                {rec?.employeeName}{" "}
+                <span style={{ color: "#667085" }}>[{rec?.employeeId}]</span>
+                <InfoOutlined
+                  style={{ cursor: "pointer" }}
+                  className="ml-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEmpData(null);
+                    getAttendanceData(
+                      rec?.employeeId,
+                      setLoading,
+                      `${currYear()}-${currMonth()}`
+                    );
+                    setEmpDetails(rec);
+                    !empData && setAnchorEl(true);
+                  }}
+                />
+              </h4>
+            </div>
+          </div>
+        );
+      },
+      fieldType: "string",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Designation",
+      dataIndex: "designation",
+      // filterDropDownList: headerList[`strDepartmentList`],
+      fieldType: "string",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Department",
+      dataIndex: "departmant",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "Section",
+      dataIndex: "sectionName",
+      sorter: true,
+      filter: true,
+    },
+    {
+      title: "In Time",
+      dataIndex: "inTime",
+    },
+    {
+      title: "Out Time",
+      dataIndex: "outTime",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (_, item) => {
+        return (
+          <>
+            {item?.status === "Present" && (
+              <Chips label={item?.status} classess="success" />
+            )}
+            {item?.status === "Late" && (
+              <Chips label={item?.status} classess="warning" />
+            )}
+            {item?.status === "Absent" && (
+              <Chips label={item?.status} classess="danger" />
+            )}
+            {item?.status === "Movement" && (
+              <span
+                style={{
+                  color: "#9F1AB1",
+                  background: "#FBE8FF",
+                  borderRadius: "99px",
+                  padding: "1px 8px",
+                  fontWeight: 600,
+                }}
+              >
+                Movement
+              </span>
+            )}
+            {item?.status === "Leave" && (
+              <span
+                style={{
+                  color: "#6927DA",
+                  background: "#ECE9FE",
+                  borderRadius: "99px",
+                  padding: "1px 8px",
+                  fontWeight: 600,
+                }}
+              >
+                Leave
+              </span>
+            )}
+          </>
+        );
+      },
+      filter: true,
     },
   ];
 };
