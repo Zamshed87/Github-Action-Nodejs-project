@@ -173,21 +173,23 @@ export const supervisorLandingColumn = (
             style={{ cursor: "pointer" }}
           >
             <div>
-              <img src={demoUserIcon} alt="" />
+              <img src={demoUserIcon} alt="" width="24px" />
             </div>
             <div className="ml-2">
               <h4
                 style={{
                   fontWeight: 400,
-                  fontSize: "14px",
+                  fontSize: "12px",
                   color: "#344054",
                   lineHeight: "18px",
                 }}
               >
                 {rec?.employeeName}{" "}
-                <span style={{ color: "#667085" }}>[{rec?.employeeId}]</span>
+                <span style={{ color: "#667085", fontSize: "12px" }}>
+                  [{rec?.employeeId}]
+                </span>
                 <InfoOutlined
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", width: "18px" }}
                   className="ml-2"
                   onClick={(e) => {
                     e.stopPropagation();

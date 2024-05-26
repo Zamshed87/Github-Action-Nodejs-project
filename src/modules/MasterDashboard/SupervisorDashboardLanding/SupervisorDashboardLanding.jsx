@@ -338,7 +338,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
               overflow: "auto",
               maxHeight: "320px",
             }}
-            className="table-card-styled"
           >
             {midLevelDashboardViewModel?.employeeAttandanceListViewModels
               ?.length ? (
