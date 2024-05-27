@@ -193,13 +193,9 @@ const assetHeader = [
     width: 20,
   },
   {
-    title: "Item Name",
+    title: "Asset Name",
     dataIndex: "itemName",
     sorter: true,
-  },
-  {
-    title: "Item Qty",
-    dataIndex: "itemQuantity",
   },
   {
     title: "UOM",
@@ -209,6 +205,11 @@ const assetHeader = [
     title: "Assign Date",
     dataIndex: "assignDate",
     render: (data, record) => moment(record?.assignDate).format("DD-MM-YYYY"),
+  },
+  {
+    title: "Unassign Date",
+    dataIndex: "unassignDate",
+    render: (data, record) => moment(record?.unassignDate).format("DD-MM-YYYY"),
   },
   {
     title: "Status",
