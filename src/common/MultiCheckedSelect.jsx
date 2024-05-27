@@ -49,11 +49,12 @@ const MultiCheckedSelect = ({
 
   const onChangeHandler = (e) => {
     const {
-      target: { value },
+      target: { value: targetedValue },
     } = e;
 
-    onChange(value ? value : []);
-    if (value?.length !== options?.length) {
+    // value.some((item) => item.value === option.value
+    onChange(targetedValue ? targetedValue : []);
+    if (targetedValue?.length !== options?.length) {
       setAllChecked(false);
     }
   };
@@ -257,7 +258,7 @@ const MultiCheckedSelect = ({
           )}
           {filteredData?.length ? (
             filteredData.map((option, index) => (
-              <MenuItem sx={{ padding: 0 }} key={option?.value} value={option}>
+              <MenuItem sx={{ padding: 0 }} key={index} value={option}>
                 <Checkbox
                   color="success"
                   sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }}
