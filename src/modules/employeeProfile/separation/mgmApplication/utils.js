@@ -2,6 +2,7 @@ import PBadge from "Components/Badge";
 import { Tag } from "antd";
 import FormikInput from "common/FormikInput";
 import moment from "moment";
+import { formatMoney } from "utility/formatMoney";
 import { todayDate } from "utility/todayDate";
 
 const approvalListHeader = ({
@@ -142,6 +143,11 @@ const employmentHeader = [
     width: 20,
   },
   {
+    title: "Promotion Type",
+    dataIndex: "promotionTypeName",
+    width: 50,
+  },
+  {
     title: "Workplace",
     dataIndex: "workPlace",
   },
@@ -170,6 +176,7 @@ const employmentHeader = [
   {
     title: "Employment Type",
     dataIndex: "employmentType",
+    width: 55,
   },
   {
     title: "Effective Date",
@@ -182,6 +189,8 @@ const employmentHeader = [
   {
     title: "Salary",
     dataIndex: "salaryAmount",
+    width: 50,
+    render: (data, record) => formatMoney(record?.salaryAmount),
   },
 ];
 
