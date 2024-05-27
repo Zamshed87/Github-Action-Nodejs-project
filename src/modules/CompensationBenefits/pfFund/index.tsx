@@ -26,7 +26,7 @@ type TPfFundLanding = {};
 const PfFundLanding: React.FC<TPfFundLanding> = () => {
   const dispatch = useDispatch();
   // Data From Store
-  const { buId, wgId, wId, orgId, intEmployeeId } = useSelector(
+  const { wgId, wId, orgId, intEmployeeId } = useSelector(
     (state: any) => state?.auth?.profileData,
     shallowEqual
   );
@@ -37,7 +37,6 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
 
   // Api Actions
   const pfLandingApi = useApiRequest({});
-  const typeDDLApi = useApiRequest([]);
 
   const [form] = Form.useForm();
 
@@ -87,6 +86,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
             IntBusinessUnitId: values?.businessUnit,
             IntWorkPlaceGroupId: wgId,
             IntWorkPlaceId: wId,
+            TypeId: values?.type || 0,
             IntEmployeeId: intEmployeeId,
             FromDate: moment().format("YYYY-MM-DD"),
             ToDate: moment().format("YYYY-MM-DD"),
@@ -98,26 +98,10 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
       .catch((err) => {});
   };
 
-  const typeDDL = () => {
-    typeDDLApi.action({
-      method: "get",
-      urlKey: "PFRegisterTypeDDL",
-      params: {
-        accountId: orgId,
-        workplaceId: wId,
-        workPlaceGroupId: wgId,
-      },
-    });
-  };
-
   // Life Cycle Hooks
-  useEffect(() => {
-    typeDDL();
-    document.title = "PF Fund";
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buId, wgId, wId]);
 
   useEffect(() => {
+    document.title = "PF Fund";
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -266,7 +250,13 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
                 allowClear={true}
                 showSearch={true}
                 // rules={[{ required: true, message: "Type Is Required" }]}
-                options={typeDDLApi?.data}
+                options={[
+                  { label: "All", value: 0 },
+                  { label: "Fund", value: 3 },
+                  { label: "Investment", value: 1 },
+                  { label: "Refund", value: 4 },
+                  { label: "Earning", value: 5 },
+                ]}
                 label="Type"
               />
             </Col>
@@ -291,8 +281,7 @@ const PfFundLanding: React.FC<TPfFundLanding> = () => {
               },
               getCheckboxProps: (record) => ({
                 disabled:
-                  record?.isComplete ||
-                  record?.strType === "Investment"
+                  record?.isComplete || record?.strType === "Investment",
               }),
             }}
             bordered
