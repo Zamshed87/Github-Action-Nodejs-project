@@ -190,7 +190,8 @@ const employmentHeader = [
     title: "Salary",
     dataIndex: "salaryAmount",
     width: 50,
-    render: (data, record) => formatMoney(record?.salaryAmount),
+    render: (data, record) =>
+      record?.salaryAmount && formatMoney(record?.salaryAmount),
   },
 ];
 
@@ -213,12 +214,14 @@ const assetHeader = [
   {
     title: "Assign Date",
     dataIndex: "assignDate",
-    render: (data, record) => moment(record?.assignDate).format("DD-MM-YYYY"),
+    render: (data, record) =>
+      record?.assignDate && moment(record?.assignDate).format("DD-MM-YYYY"),
   },
   {
     title: "Unassign Date",
     dataIndex: "unassignDate",
-    render: (data, record) => moment(record?.unassignDate).format("DD-MM-YYYY"),
+    render: (data, record) =>
+      record?.unassignDate && moment(record?.unassignDate).format("DD-MM-YYYY"),
   },
   {
     title: "Status",

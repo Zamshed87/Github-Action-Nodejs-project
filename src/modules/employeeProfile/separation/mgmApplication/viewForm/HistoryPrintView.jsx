@@ -171,7 +171,7 @@ const HistoryPrintView = ({
                       ? moment(item?.effectiveDate).format("DD-MM-YYYY")
                       : "N/A"}
                   </td>
-                  <td>{formatMoney(item?.salaryAmount)}</td>
+                  <td>{item?.salaryAmount && formatMoney(item?.salaryAmount)}</td>
                 </tr>
               ))}
             </tbody>
@@ -209,13 +209,13 @@ const HistoryPrintView = ({
                   <td>{item?.itemName}</td>
                   <td>{item?.itemUom}</td>
                   <td>
-                    {item?.unassignDate
-                      ? moment(item?.unassignDate).format("DD-MM-YYYY")
+                    {item?.assignDate
+                      ? moment(item?.assignDate).format("DD-MM-YYYY")
                       : "N/A"}
                   </td>
                   <td>
-                    {item?.assignDate
-                      ? moment(item?.assignDate).format("DD-MM-YYYY")
+                    {item?.unassignDate
+                      ? moment(item?.unassignDate).format("DD-MM-YYYY")
                       : "N/A"}
                   </td>
                   <td className="text-center">
