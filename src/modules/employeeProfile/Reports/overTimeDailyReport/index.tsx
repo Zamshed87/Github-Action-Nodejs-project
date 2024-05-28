@@ -9,10 +9,8 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { getSerial } from "Utils";
 import { Col, Form, Row, Tag } from "antd";
 import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
@@ -96,14 +94,14 @@ const EmOverTimeDailyReport = () => {
   };
 
   const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
+    // const { workplaceGroup } = form.getFieldsValue(true);
     workplace?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "Workplace",
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
+        WorkplaceGroupId: wgId,
         intId: employeeId,
       },
       onSuccess: (res: any) => {
@@ -114,15 +112,20 @@ const EmOverTimeDailyReport = () => {
       },
     });
   };
+
+  useEffect(() => {
+    getWorkplace();
+  }, [wgId]);
+
   const getDepartmentDDL = () => {
-    const { workplaceGroup, workplace } = form.getFieldsValue(true);
+    const { workplace } = form.getFieldsValue(true);
     departmentDDL?.action({
       urlKey: "PeopleDeskAllDDL",
       method: "GET",
       params: {
         DDLType: "EmpDepartment",
         BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
+        WorkplaceGroupId: wgId,
         IntWorkplaceId: workplace?.value,
         intId: 0,
       },
@@ -171,14 +174,20 @@ const EmOverTimeDailyReport = () => {
     searchText = "",
   }: TLandingApi = {}) => {
     const values = form.getFieldsValue(true);
+
+    const sectionMerge = values?.section?.map((item: any) => {
+      return item?.value;
+    });
+    const sectionList = sectionMerge?.join(",") || "";
+
     const payload = {
       accountId: orgId,
-      departmentId: values?.department?.value || 0,
-      sectionId: values?.section?.value || 0,
+      strSectionIdList: sectionList || "",
       searchText: searchText || "",
-      intOTtype: 3,
-      workplaceGroupId: values?.workplaceGroup?.value || 0,
-      workplaceId: values?.workplace?.value || 0,
+      intOTtype: values?.intOtType || 3,
+      workplaceGroupId: values?.workplaceGroup?.value || wgId,
+      strWorkplaceIdList: String(values?.workplace?.value || ""),
+      strDepartmentIdList: String(values?.department?.value || ""),
       pageNumber: pagination?.current || 1,
       pageSize: pagination?.pageSize || 500,
       isPaginated: true,
@@ -228,12 +237,12 @@ const EmOverTimeDailyReport = () => {
       align: "center",
     },
 
-    {
-      title: "Work. Group/Location",
-      dataIndex: "strWorkplaceGroup",
-      width: 150,
-      fixed: "left",
-    },
+    // {
+    //   title: "Work. Group/Location",
+    //   dataIndex: "strWorkplaceGroup",
+    //   width: 150,
+    //   fixed: "left",
+    // },
     {
       title: "Workplace/Concern",
       dataIndex: "strWorkplace",
@@ -241,14 +250,26 @@ const EmOverTimeDailyReport = () => {
       fixed: "left",
     },
     {
-      title: "Employee Id",
+      title: "Department",
+      fixed: "left",
+      dataIndex: "strDepartment",
+      width: 100,
+    },
+    {
+      title: "Section",
+      dataIndex: "strSectionName",
+      fixed: "left",
+      width: 100,
+    },
+    {
+      title: "ID NO",
       dataIndex: "strEmployeeCode",
-      width: 150,
+      width: 100,
       fixed: "left",
     },
 
     {
-      title: "Employee Name",
+      title: "Name",
       dataIndex: "strEmployeeName",
       render: (_: any, rec: any) => {
         return (
@@ -259,73 +280,68 @@ const EmOverTimeDailyReport = () => {
         );
       },
       sorter: true,
-      fixed: "left",
+      // fixed: "left",
       width: 150,
     },
 
     {
       title: "Designation",
       dataIndex: "strDesignation",
-      width: 150,
+      width: 120,
     },
 
-    {
-      title: "Department",
-      dataIndex: "strDepartment",
-      width: 150,
-    },
-    {
-      title: "Section",
-      dataIndex: "strSectionName",
-
-      width: 150,
-    },
     {
       title: "Basic Salary",
-      dataIndex: "intBasicSalary",
+      dataIndex: "numBasicORGross",
       width: 80,
     },
-
     {
-      title: "HR Position",
-      dataIndex: "strHRPostionName",
-
-      width: 150,
-    },
-    {
-      title: "Employment Type",
-      dataIndex: "EmployementType",
-
-      width: 150,
+      title: "Gross Salary",
+      dataIndex: "numGrossSalary",
+      width: 80,
     },
     {
       title: "Calender Name",
-      dataIndex: "strCalendarName",
-      width: 80,
+      dataIndex: "strCalenderName",
+      width: 150,
     },
+
+    // {
+    //   title: "HR Position",
+    //   dataIndex: "strHRPostionName",
+
+    //   width: 150,
+    // },
+    // {
+    //   title: "Employment Type",
+    //   dataIndex: "EmployementType",
+
+    //   width: 150,
+    // },
+
     {
       title: "Log In",
-      dataIndex: "EmpInTime",
+      dataIndex: "tmeInTime",
       width: 80,
     },
     {
       title: "Log Out",
-      dataIndex: "EmpOutTime",
+      dataIndex: "tmeLastOutTime",
       width: 80,
     },
     {
       title: "Late",
-      dataIndex: "intOTLate",
+      dataIndex: "lateHour",
       width: 80,
     },
     {
       title: "OT Hour",
-      dataIndex: "intOtbenefitsHour",
+      dataIndex: "numHours",
       width: 80,
     },
     {
       title: "OT Rate",
-      dataIndex: "numPerMinunitRate",
+      dataIndex: "numPerHourRate",
       width: 80,
     },
     {
@@ -349,6 +365,8 @@ const EmOverTimeDailyReport = () => {
           fromDate: moment(todayDate()),
         }}
         onFinish={() => {
+          const values = form.getFieldsValue(true);
+          console.log("values", values);
           landingApiCall({
             pagination: {
               current: landingApi?.data?.page,
@@ -373,17 +391,26 @@ const EmOverTimeDailyReport = () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
+
+                  const sectionMerge = values?.section?.map((item: any) => {
+                    return item?.value;
+                  });
+                  const sectionList = sectionMerge?.join(",") || "";
+
                   const payload = {
                     accountId: orgId,
-                    departmentId: values?.department?.value || 0,
-                    sectionId: values?.section?.value || 0,
-                    intOTtype: 3,
-                    workplaceGroupId: values?.workplaceGroup?.value || 0,
-                    workplaceId: values?.workplace?.value || 0,
+                    strSectionIdList: sectionList || "",
+                    searchText: "",
+                    intOTtype: values?.intOtType || 3,
+                    workplaceGroupId: values?.workplaceGroup?.value || wgId,
+                    strWorkplaceIdList: String(values?.workplace?.value || ""),
+                    strDepartmentIdList: String(
+                      values?.department?.value || ""
+                    ),
                     pageNumber: 1,
                     pageSize: 100000,
-                    isPaginated: true,
-                    //   isHeaderNeed: true,
+                    isPaginated: false,
+
                     attendanceDate: values?.fromDate
                       ? moment(values?.fromDate).format("YYYY-MM-DD")
                       : null,
@@ -415,6 +442,7 @@ const EmOverTimeDailyReport = () => {
                     // areaNameList: [],
                     // territoryNameList: [],
                   };
+
                   const res = await axios.post(
                     `/Payroll/GetDailyOvertimeEmployeeList`,
                     payload
@@ -500,7 +528,7 @@ const EmOverTimeDailyReport = () => {
                 />
               </Col>
 
-              <Col md={4} sm={12} xs={24}>
+              {/* <Col md={4} sm={12} xs={24}>
                 <PSelect
                   options={workplaceGroup?.data || []}
                   name="workplaceGroup"
@@ -514,13 +542,35 @@ const EmOverTimeDailyReport = () => {
                     });
                     getWorkplace();
                   }}
-                  rules={
-                    [
-                      //   { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
+                />
+              </Col> */}
+
+              <Col md={4} sm={12} xs={24}>
+                <PSelect
+                  options={[
+                    {
+                      value: 1,
+                      label: "Not Applicable",
+                    },
+                    { value: 2, label: "With Salary" },
+                    {
+                      value: 3,
+                      label: "Without Salary/Additional OT",
+                    },
+                  ]}
+                  name="intOTtype"
+                  label="OT type"
+                  placeholder="OT Type"
+                  onChange={(value, op) => {
+                    form.setFieldsValue({
+                      intOTtype: op,
+                      workplace: undefined,
+                      department: undefined,
+                    });
+                  }}
                 />
               </Col>
+
               <Col md={4} sm={12} xs={24}>
                 <PSelect
                   options={workplace?.data || []}
@@ -558,6 +608,8 @@ const EmOverTimeDailyReport = () => {
               </Col>
               <Col md={4} sm={12} xs={24}>
                 <PSelect
+                  // rules={[{ required: true, message: "Workplace is required" }]}
+                  mode="multiple"
                   options={sectionDDL?.data || []}
                   name="section"
                   label="Section"
@@ -567,8 +619,22 @@ const EmOverTimeDailyReport = () => {
                       section: op,
                     });
                     getWorkplaceDetails(value, setBuDetails);
+
+                    // form.setFieldsValue({
+                    //   intEmploymentTypeList: op,
+                    // });
+                    // const temp = form.getFieldsValue();
+
+                    // isPolicyExist(
+                    //   {
+                    //     ...temp,
+                    //     intEmploymentTypeList: op,
+                    //   },
+                    //   allPolicies,
+                    //   setExistingPolicies
+                    // );
+                    // value && getWorkplace();
                   }}
-                  // rules={[{ required: true, message: "Workplace is required" }]}
                 />
               </Col>
 
