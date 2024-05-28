@@ -64,6 +64,7 @@ export default function ManagementSeparation() {
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [id, setId] = useState(null);
+  const [empId, setEmpId] = useState(null);
 
   // landing
   const [rowDto, setRowDto] = useState([]);
@@ -361,7 +362,8 @@ export default function ManagementSeparation() {
                     dispatch,
                     setOpenModal,
                     permission,
-                    setId
+                    setId,
+                    setEmpId
                   )}
                   pages={pages}
                   rowDto={rowDto}
@@ -388,7 +390,11 @@ export default function ManagementSeparation() {
                     setOpenModal(false);
                   }}
                   components={
-                    <ManagementSeparationHistoryView id={id} type="view" />
+                    <ManagementSeparationHistoryView
+                      id={id}
+                      type="view"
+                      empId={empId}
+                    />
                   }
                   width={1000}
                 />

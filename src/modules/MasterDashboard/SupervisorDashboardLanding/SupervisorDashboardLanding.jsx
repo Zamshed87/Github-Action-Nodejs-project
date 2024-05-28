@@ -320,16 +320,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
               </p>
             </div>
             <div>
-              {/* <MasterFilter
-                styles={{ marginRight: "0px" }}
-                inputWidth="250px"
-                width="250px"
-                isHiddenFilter
-                value={""}
-                setValue={(value) => {}}
-                cancelHandler={() => {}}
-                handleClick={(e) => {}}
-              /> */}
             </div>
           </div>
           {/* <div className="table-card-body mb-5"> */}

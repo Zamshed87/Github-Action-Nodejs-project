@@ -186,7 +186,7 @@ export const supervisorLandingColumn = (
               >
                 {rec?.employeeName}{" "}
                 <span style={{ color: "#667085", fontSize: "12px" }}>
-                  [{rec?.employeeId}]
+                  [{rec?.employeeCode}]
                 </span>
                 <InfoOutlined
                   style={{ cursor: "pointer", width: "18px" }}
@@ -211,6 +211,7 @@ export const supervisorLandingColumn = (
       fieldType: "string",
       sorter: true,
       filter: true,
+      width:"200px"
     },
     {
       title: "Designation",
