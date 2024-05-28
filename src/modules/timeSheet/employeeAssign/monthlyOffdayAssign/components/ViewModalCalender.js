@@ -1,10 +1,9 @@
 import { Avatar } from "@mui/material";
-import React from "react";
+import moment from "moment";
 import { shallowEqual, useSelector } from "react-redux";
 import { APIUrl } from "../../../../../App";
 import CommonEmpInfo from "../../../../../common/CommonEmpInfo";
 import CalenderCommon from "../calenderCommon";
-import moment from "moment";
 
 const ViewModalCalender = ({ propsObj }) => {
   const { orgId } = useSelector(
@@ -61,15 +60,10 @@ const ViewModalCalender = ({ propsObj }) => {
                     />
                   </div>
                 ) : (
-                  checkedList?.map((data) => (
-                    <ol className="mb-2">
+                  checkedList?.map((data, index) => (
+                    <ol className="mb-2" key={index}>
                       <li>
-                        {/* <img
-                              className="ml-3 mb-1"
-                              src={profileImg}
-                              alt=""
-                              style={{ maxHeight: "48px", minWidth: "48px" }}
-                            /> */}
+
                         <div>
                           <Avatar
                             className="ml-4 mb-1"
