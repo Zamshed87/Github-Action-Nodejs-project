@@ -2,6 +2,7 @@ import PBadge from "Components/Badge";
 import { Tag } from "antd";
 import FormikInput from "common/FormikInput";
 import moment from "moment";
+import { formatMoney } from "utility/formatMoney";
 import { todayDate } from "utility/todayDate";
 
 const approvalListHeader = ({
@@ -142,6 +143,11 @@ const employmentHeader = [
     width: 20,
   },
   {
+    title: "Promotion Type",
+    dataIndex: "promotionTypeName",
+    width: 50,
+  },
+  {
     title: "Workplace",
     dataIndex: "workPlace",
   },
@@ -170,6 +176,7 @@ const employmentHeader = [
   {
     title: "Employment Type",
     dataIndex: "employmentType",
+    width: 55,
   },
   {
     title: "Effective Date",
@@ -182,6 +189,9 @@ const employmentHeader = [
   {
     title: "Salary",
     dataIndex: "salaryAmount",
+    width: 50,
+    render: (data, record) =>
+      record?.salaryAmount && formatMoney(record?.salaryAmount),
   },
 ];
 
@@ -193,13 +203,9 @@ const assetHeader = [
     width: 20,
   },
   {
-    title: "Item Name",
+    title: "Asset Name",
     dataIndex: "itemName",
     sorter: true,
-  },
-  {
-    title: "Item Qty",
-    dataIndex: "itemQuantity",
   },
   {
     title: "UOM",
@@ -208,7 +214,14 @@ const assetHeader = [
   {
     title: "Assign Date",
     dataIndex: "assignDate",
-    render: (data, record) => moment(record?.assignDate).format("DD-MM-YYYY"),
+    render: (data, record) =>
+      record?.assignDate && moment(record?.assignDate).format("DD-MM-YYYY"),
+  },
+  {
+    title: "Unassign Date",
+    dataIndex: "unassignDate",
+    render: (data, record) =>
+      record?.unassignDate && moment(record?.unassignDate).format("DD-MM-YYYY"),
   },
   {
     title: "Status",
