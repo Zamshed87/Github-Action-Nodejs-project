@@ -53,11 +53,11 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
           label: data?.strWorkplaceName,
           value: data?.intWorkplaceId,
         },
-        department: data?.intDepartmentId && {
+        department: {
           label: data?.strDepartmentName,
           value: data?.intDepartmentId,
         },
-        designation: data?.intDesignationId && {
+        designation: {
           label: data?.strDesignationName,
           value: data?.intDesignationId,
         },
@@ -96,8 +96,8 @@ const CreateEditForm: React.FC<TCreateEditForm> = ({
             intSeparationPolicyTypeId: data?.intSeparationPolicyTypeId || 0,
             intAccountId: intAccountId,
             intWorkplaceId: values?.workplace?.value,
-            intDesignationId: values?.designation?.value,
-            intDepartmentId: values?.department?.value,
+            intDesignationId: values?.designation?.value || 0,
+            intDepartmentId: values?.department?.value || 0,
             intNoticePeriodDayId: values?.days,
             isActive: true,
             intCreatedBy: employeeId,
