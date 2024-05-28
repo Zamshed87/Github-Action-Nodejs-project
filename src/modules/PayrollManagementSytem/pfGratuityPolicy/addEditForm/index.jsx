@@ -1,26 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { useFormik } from 'formik';
+import React, { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useParams } from 'react-router-dom';
-import Loading from '../../../../common/loading/Loading';
-import NotPermittedPage from '../../../../common/notPermitted/NotPermittedPage';
-import { setFirstLevelNameAction } from '../../../../commonRedux/reduxForLocalStorage/actions';
-import BackButton from '../../../../common/BackButton';
-import FormikRadio from '../../../../common/FormikRadio';
-import { gray600, greenColor, success500 } from '../../../../utility/customColor';
-import DefaultInput from '../../../../common/DefaultInput';
-import { createPfGratuityConfig } from '../helper';
-import { useHistory } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-import FormikSelect from 'common/FormikSelect';
-import { customStyles } from 'utility/selectCustomStyle';
-import useAxiosGet from 'utility/customHooks/useAxiosGet';
-import PrimaryButton from 'common/PrimaryButton';
-import { DataTable } from 'Components';
-import { addHandler, header, isMultiHandler } from '../utils';
-import { getPeopleDeskAllDDL } from 'common/api';
-import { toast } from 'react-toastify';
+import { useParams } from "react-router-dom";
+import Loading from "../../../../common/loading/Loading";
+import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
+import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
+import BackButton from "../../../../common/BackButton";
+import FormikRadio from "../../../../common/FormikRadio";
+import {
+  gray600,
+  greenColor,
+  success500,
+} from "../../../../utility/customColor";
+import DefaultInput from "../../../../common/DefaultInput";
+import { createPfGratuityConfig } from "../helper";
+import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import FormikSelect from "common/FormikSelect";
+import { customStyles } from "utility/selectCustomStyle";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
+import PrimaryButton from "common/PrimaryButton";
+import { DataTable } from "Components";
+import { addHandler, header, isMultiHandler } from "../utils";
+import { getPeopleDeskAllDDL } from "common/api";
+import { toast } from "react-toastify";
 
 const initData = {
   workplace: [],
@@ -44,9 +48,7 @@ const initData = {
 };
 
 const validationSchema = Yup.object().shape({
-  workplace: Yup.array()
-    .required("Workplace is required!!!")
-    .min(1),
+  workplace: Yup.array().required("Workplace is required!!!").min(1),
   providePF: Yup.string().required("Provide PF is required!!!"),
   companyBenefits: Yup.number()
     .min(1, "Must be greater than zero!!!")
@@ -80,7 +82,8 @@ export default function PfGratuityPolicyForm() {
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
-  const [employmentTypeDDL, getEmploymentTypeDDL, , setEmploymentTypeDDL] = useAxiosGet([]);
+  const [employmentTypeDDL, getEmploymentTypeDDL, , setEmploymentTypeDDL] =
+    useAxiosGet([]);
   const [loading, setLoading] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
@@ -98,14 +101,18 @@ export default function PfGratuityPolicyForm() {
 
   useEffect(() => {
     getEmploymentTypeDDL(
-      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`, (res) => {
+      `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=EmploymentType&BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&IntWorkplaceId=${wId}&intId=0`,
+      (res) => {
         const modifiedData = res?.map((item) => {
           return {
             value: item?.Id,
             label: item?.EmploymentType,
           };
         });
-        setEmploymentTypeDDL(modifiedData);
+        const permanentData = modifiedData?.filter(
+          (item) => item?.label?.toLowerCase() === "permanent".toLowerCase()
+        );
+        setEmploymentTypeDDL(permanentData);
       }
     );
     getPeopleDeskAllDDL(
@@ -114,11 +121,10 @@ export default function PfGratuityPolicyForm() {
       "strWorkplace",
       setWorkplaceDDL
     );
-    if(state?.intPfngratuityId){
+    if (state?.intPfngratuityId) {
       setRowDto(state?.gratuityList);
     }
-  },[buId, wgId, wId]);
-
+  }, [buId, wgId, wId]);
 
   const saveHandler = (values, cb) => {
     if (!rowDto?.length && values?.provideGratuity === "yes")
@@ -128,7 +134,7 @@ export default function PfGratuityPolicyForm() {
     const callback = () => {
       cb();
       if (!+params?.id) {
-        history.push("/administration/payrollConfiguration/PFAndGratuity")
+        history.push("/administration/payrollConfiguration/PFAndGratuity");
       }
     };
 
@@ -154,13 +160,12 @@ export default function PfGratuityPolicyForm() {
       payload = {
         ...payload,
         intPfngratuityId: state?.intPfngratuityId,
-
-      }
+      };
     } else {
       payload = {
         ...payload,
         intPfngratuityId: 0,
-      }
+      };
     }
     createPfGratuityConfig(payload, setLoading, callback);
   };
@@ -169,29 +174,31 @@ export default function PfGratuityPolicyForm() {
     useFormik({
       enableReinitialize: true,
       validationSchema: validationSchema,
-      initialValues: +params?.id ? {
-        ...initData,
-        workplace: state?.workplaceList.map(item => ({
-          value: item?.intPfworkplace,
-          label: item.strPfworkPlaceName
-        })),
-        // provident fund
-        providePF: state?.isHasPfpolicy ? "yes" : "no",
-        companyBenefits: state?.intNumOfEligibleYearForBenifit,
-        employeeContributionOfBasic: state?.numEmployeeContributionOfBasic,
-        employerContributionOfBasic: state?.numEmployerContributionOfBasic,
-        numberOfEligibilityOfMonth: state?.intNumOfEligibleMonthForPfinvestment,
+      initialValues: +params?.id
+        ? {
+            ...initData,
+            workplace: state?.workplaceList.map((item) => ({
+              value: item?.intPfworkplace,
+              label: item.strPfworkPlaceName,
+            })),
+            // provident fund
+            providePF: state?.isHasPfpolicy ? "yes" : "no",
+            companyBenefits: state?.intNumOfEligibleYearForBenifit,
+            employeeContributionOfBasic: state?.numEmployeeContributionOfBasic,
+            employerContributionOfBasic: state?.numEmployerContributionOfBasic,
+            numberOfEligibilityOfMonth:
+              state?.intNumOfEligibleMonthForPfinvestment,
 
-        // gratuity
-        provideGratuity: state?.isHasGratuityPolicy ? "yes" : "no",
-        companyGratuity: state?.intNumOfEligibleYearForGratuity || 0,
-      } : {
-        ...initData
-      },
+            // gratuity
+            provideGratuity: state?.isHasGratuityPolicy ? "yes" : "no",
+            companyGratuity: state?.intNumOfEligibleYearForGratuity || 0,
+          }
+        : {
+            ...initData,
+          },
       onSubmit: (values, { setSubmitting, resetForm }) => {
         saveHandler(values, () => {
           if (params?.id) {
-
           } else {
             resetForm(initData);
           }
@@ -241,10 +248,18 @@ export default function PfGratuityPolicyForm() {
                         <FormikSelect
                           name="workplace"
                           isClearable={true}
-                          options={[{ value: 0, label: "All"}, ...workplaceDDL]}
+                          options={[
+                            { value: 0, label: "All" },
+                            ...workplaceDDL,
+                          ]}
                           value={values?.workplace}
                           onChange={(valueOption) => {
-                            isMultiHandler({valueOption, name: "workplace", setFieldValue, workplaceDDL});
+                            isMultiHandler({
+                              valueOption,
+                              name: "workplace",
+                              setFieldValue,
+                              workplaceDDL,
+                            });
                           }}
                           styles={{
                             ...customStyles,
