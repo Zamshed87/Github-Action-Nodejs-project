@@ -26,6 +26,10 @@ const ViewModalCalender = ({ propsObj }) => {
     handleSave,
     isAssignAll,
     setValue,
+    // currMonthName,
+    // currYear,
+    // prevMonth,
+    // nextMonth,
   } = propsObj;
   const [monthYear, setMonthYear] = useState(moment().format("YYYY-MM"));
   const prevMonth = () => {
@@ -49,6 +53,7 @@ const ViewModalCalender = ({ propsObj }) => {
             {checkedList?.length > 0 && !isAssignAll && (
               <p className="ml-3 mb-2">
                 Total Selected {checkedList?.length}
+                {/* {resLanding?.filter((data) => data?.selectCheckbox)?.length}{" "} */}
               </p>
             )}
             {isAssignAll && (

@@ -23,6 +23,7 @@ const CalenderCommon = ({
     });
   }, [monthYear]);
 
+  // Generate the dates for the calendar whenever date state changes
   useEffect(() => {
     let days = moment(`${date.month}/01/${date.year}`).daysInMonth();
     const demoDate = [];
@@ -36,28 +37,31 @@ const CalenderCommon = ({
     setDates(demoDate.reverse());
   }, [date]);
 
-  // if (calendarData.length === 0) {
-  //   const demoData = [];
-  //   dates?.forEach((item) => {
-  //     demoData.push({
-  //       date: "",
-  //       dayId: item?.day,
-  //       dayName: item?.dayName,
-  //       isOffday: false,
-  //     });
-  //   });
-  //   setCalendarData(demoData);
-  // }
+  // Initialize or update the calendar data whenever dates are updated
+  useEffect(() => {
+    if (
+      calendarData.length === 0 ||
+      calendarData[0]?.date.split("-")[1] !== date.month
+    ) {
+      const demoData = dates.map((item) => ({
+        date: `${date.year}-${date.month.padStart(2, "0")}-${item.day.padStart(
+          2,
+          "0"
+        )}`,
+        dayId: item.day,
+        dayName: item.dayName,
+        isOffday: false,
+      }));
+      setCalendarData(demoData);
+    }
+  }, [dates, date, calendarData, setCalendarData]);
 
   return (
     <div className="employee-attendance-calendar-wrapper h-100">
-      <div className="mx-0 " style={{ height: "80%" }}>
+      <div className="mx-0" style={{ height: "80%" }}>
         <div
           className="h-100"
-          style={{
-            padding: "12px",
-            borderRight: `1px solid ${gray200}`,
-          }}
+          style={{ padding: "12px", borderRight: `1px solid ${gray200}` }}
         >
           <div className="calendar p-0 rounded-0">
             <div className="calendar-heading">
@@ -84,23 +88,23 @@ const CalenderCommon = ({
               </div>
             </div>
             <div className="calendar-body">
-              {dates?.map((item, i) => (
+              {dates.map((item, i) => (
                 <div
                   className="calendar-date-cell"
                   key={i}
                   style={{
                     gridColumn: `${
-                      item?.dayName === "Monday"
+                      item.dayName === "Monday"
                         ? "2/3"
-                        : item?.dayName === "Tuesday"
+                        : item.dayName === "Tuesday"
                         ? "3/4"
-                        : item?.dayName === "Wednesday"
+                        : item.dayName === "Wednesday"
                         ? "4/5"
-                        : item?.dayName === "Thursday"
+                        : item.dayName === "Thursday"
                         ? "5/6"
-                        : item?.dayName === "Friday"
+                        : item.dayName === "Friday"
                         ? "6/7"
-                        : item?.dayName === "Saturday"
+                        : item.dayName === "Saturday"
                         ? "7/8"
                         : "1/2"
                     }`,
@@ -127,7 +131,7 @@ const CalenderCommon = ({
                       isClickable && setCalendarData([...calendarData]);
                     }}
                   >
-                    {item?.day}
+                    {item.day}
                   </div>
                 </div>
               ))}
