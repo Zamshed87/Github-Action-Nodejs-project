@@ -266,15 +266,6 @@ function MonthlyOffdayAssignLanding() {
   }
 
   const handleSave = () => {
-    // const offdays = calendarData?.map((data) => {
-    //   return {
-    //     date: moment().format(
-    //       `YYYY-MM-${data?.dayId < 10 ? "0" : ""}${data?.dayId}`
-    //     ),
-    //     isOffDay: data?.isOffday,
-    //     isActive: true,
-    //   };
-    // });
     const offdays = calendarData.map((data) => ({
       date: data.date,
       isOffDay: data.isOffday,
@@ -285,17 +276,17 @@ function MonthlyOffdayAssignLanding() {
     const intEmployeeId = singleAssign
       ? [selectedSingleEmployee[0]?.employeeId]
       : checkedList?.map((data) => empArr.push(data?.employeeId));
+    console.log("singleAssign", singleAssign);
     const payload = {
       intEmployeeId: singleAssign
         ? intEmployeeId
         : isAssignAll
         ? empIDString?.split(",")
         : empArr,
-      offdays: singleAssign
-        ? offdays
-        : offdays?.filter((data) => data?.isOffDay === true),
+      offdays: offdays?.filter((data) => data?.isOffDay === true),
       intActionBy: employeeId,
     };
+
     const callback = () => {
       setCalendarData([]);
       setCheckedList([]);
@@ -593,7 +584,7 @@ function MonthlyOffdayAssignLanding() {
               currMonthName,
               currYear,
               prevMonth,
-              nextMonth
+              nextMonth,
             }}
           />
         </ViewModal>
