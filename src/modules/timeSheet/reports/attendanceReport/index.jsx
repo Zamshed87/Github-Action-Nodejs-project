@@ -5,16 +5,12 @@ import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import FormikInput from "../../../../common/FormikInput";
-import PrimaryButton from "../../../../common/PrimaryButton";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { gray600 } from "../../../../utility/customColor";
 import { dateFormatterForInput } from "../../../../utility/dateFormatter";
 import { getPDFAction } from "../../../../utility/downloadFile";
-
-import { getBuDetails } from "../helper";
-
 import { toast } from "react-toastify";
 import PeopleDeskTable, {
   paginationSize,
@@ -47,15 +43,10 @@ export default function AttendanceReport() {
 
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
-  const { buName } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
   // hooks
   const [rowDto, setRowDto] = useState([]);
   const [workplaceGroupDDL, setWorkplaceGroupDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
-  const [tempLoading, setTempLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [buDetails, setBuDetails] = useState({});
@@ -185,24 +176,16 @@ export default function AttendanceReport() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { resetForm }) => {
           saveHandler(values, () => {
             resetForm(initData);
           });
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
-              {(loading || tempLoading) && <Loading />}
+              {loading && <Loading />}
               <div>
                 {permission?.isView ? (
                   <div className="table-card">
