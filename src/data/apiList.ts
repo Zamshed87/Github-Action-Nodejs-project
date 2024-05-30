@@ -107,6 +107,7 @@ export const apiList = {
   CafeteriaConfigLanding: "/Cafeteria/CafeteriaConfigLanding",
 
   CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
+  GetAttendanceDetailsReport: "/Employee/GetAttendanceDetailsReport",
   EditCafeteriaConfig: "/Cafeteria/EditCafeteriaConfig",
   GetDateWiseAttendanceReport: "/Employee/GetDateWiseAttendanceReport",
 

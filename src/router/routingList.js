@@ -744,7 +744,7 @@ const CustomReport = lazy(() =>
   import("../modules/employeeProfile/Reports/customReport/index.jsx")
 );
 const EmployeeJobCard = lazy(() =>
-  import("../modules/employeeProfile/Reports/employeeJobCard/index.jsx")
+  import("../modules/employeeProfile/Reports/employeeJobCard/index.tsx")
 );
 const PfFundReport = lazy(() =>
   import("../modules/employeeProfile/Reports/pfFundReport/index.tsx")
