@@ -174,13 +174,13 @@ export const offDayAssignDtoCol = (
             sx={{ cursor: "pointer" }}
             onClick={(e) => {
               e.stopPropagation();
-              getSingleCalendar(
-                moment().format("MM"),
-                moment().format("YYYY"),
-                record?.employeeId,
-                setCalendarData,
-                setLoading
-              );
+              // getSingleCalendar(
+              //   moment().format("MM"),
+              //   moment().format("YYYY"),
+              //   record?.employeeId,
+              //   setCalendarData,
+              //   setLoading
+              // );
               !loading && setAnchorEl(e.currentTarget);
               setSelectedSingleEmployee([record]);
             }}
