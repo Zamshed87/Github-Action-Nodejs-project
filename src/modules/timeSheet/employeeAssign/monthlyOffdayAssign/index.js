@@ -289,7 +289,7 @@ function MonthlyOffdayAssignLanding() {
       intEmployeeId: singleAssign
         ? intEmployeeId
         : isAssignAll
-        ? empIDString.split(",")
+        ? empIDString?.split(",")
         : empArr,
       offdays: singleAssign
         ? offdays
