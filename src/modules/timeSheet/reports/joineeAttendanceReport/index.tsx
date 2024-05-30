@@ -296,7 +296,7 @@ const JoineeAttendanceReport = () => {
                     `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=new_joinee_in_out_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${moment(
                       values?.fromdate
                     ).format("YYYY-MM-DD")}&DteToDate=${moment(
-                      values?.todate
+                      values?.toDate
                     ).format("YYYY-MM-DD")}&EmployeeId=0&WorkplaceGroupId=${
                       values?.workplaceGroup?.value
                     }&WorkplaceId=${
