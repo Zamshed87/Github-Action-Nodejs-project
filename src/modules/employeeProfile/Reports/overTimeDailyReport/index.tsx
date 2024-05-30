@@ -180,11 +180,13 @@ const EmOverTimeDailyReport = () => {
     });
     const sectionList = sectionMerge?.join(",") || "";
 
+    console.log("values",values)
+
     const payload = {
       accountId: orgId,
       strSectionIdList: sectionList || "",
       searchText: searchText || "",
-      intOTtype: values?.intOtType || 3,
+      intOTtype: values?.intOTtype?.value || 3,
       workplaceGroupId: values?.workplaceGroup?.value || wgId,
       strWorkplaceIdList: String(values?.workplace?.value || ""),
       strDepartmentIdList: String(values?.department?.value || ""),
@@ -320,12 +322,12 @@ const EmOverTimeDailyReport = () => {
     // },
 
     {
-      title: "Log In",
+      title: "In Time",
       dataIndex: "tmeInTime",
       width: 80,
     },
     {
-      title: "Log Out",
+      title: "Out Time",
       dataIndex: "tmeLastOutTime",
       width: 80,
     },
@@ -401,7 +403,7 @@ const EmOverTimeDailyReport = () => {
                     accountId: orgId,
                     strSectionIdList: sectionList || "",
                     searchText: "",
-                    intOTtype: values?.intOtType || 3,
+                    intOTtype: values?.intOTtype?.value || 3,
                     workplaceGroupId: values?.workplaceGroup?.value || wgId,
                     strWorkplaceIdList: String(values?.workplace?.value || ""),
                     strDepartmentIdList: String(
@@ -447,6 +449,7 @@ const EmOverTimeDailyReport = () => {
                     `/Payroll/GetDailyOvertimeEmployeeList`,
                     payload
                   );
+                  const totalAmount = res?.data.reduce((sum:any, employee:any) => sum + employee.numTotalAmount, 0);
                   if (res?.data?.length < 1) {
                     setExcelLoading(false);
                     return toast.error("No data found");
@@ -478,9 +481,27 @@ const EmOverTimeDailyReport = () => {
                     getSubTableData: () => {},
                     subHeaderInfoArr: [],
                     subHeaderColumn: [],
-                    tableFooter: [],
                     extraInfo: {},
                     tableHeadFontSize: 10,
+                    tableFooter: [
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "Total:",
+                      "",
+                      totalAmount,
+                      "",
+                    ],
                     widthList: {
                       C: 30,
                       B: 30,
@@ -514,12 +535,6 @@ const EmOverTimeDailyReport = () => {
                   name="fromDate"
                   label="Attendance Date"
                   placeholder="Attendance Date"
-                  //   rules={[
-                  //     {
-                  //       required: true,
-                  //       message: "from Date is required",
-                  //     },
-                  //   ]}
                   onChange={(value) => {
                     form.setFieldsValue({
                       fromDate: value,

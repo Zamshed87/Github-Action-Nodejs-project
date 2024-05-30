@@ -226,11 +226,11 @@ export const column = {
   // strHRPostionName: "HR Position",
   // EmployementType: "Employement Type",
 
-  tmeInTime: "Log In",
-  tmeLastOutTime: "Log Out",
+  tmeInTime: "In Time",
+  tmeLastOutTime: "Out Time",
   lateHour: "Late",
   numHours: "OT Hour",
   numPerHourRate: "OT Rate",
   numTotalAmount: "Net Payable",
-  signature: "",
+  strSignature: "Signature",
 };
