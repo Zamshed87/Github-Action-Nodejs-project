@@ -14,6 +14,8 @@ const ViewModalCalender = ({ propsObj }) => {
     shallowEqual
   );
 
+
+
   const {
     singleAssign,
     checkedList,
@@ -25,7 +27,6 @@ const ViewModalCalender = ({ propsObj }) => {
     setSingleAssign,
     handleSave,
     isAssignAll,
-    setValue,
   } = propsObj;
   const [monthYear, setMonthYear] = useState(moment().format("YYYY-MM"));
   const prevMonth = () => {
