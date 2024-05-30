@@ -1,7 +1,6 @@
 import axios from "axios";
 import IConfirmModal from "../../../../common/IConfirmModal";
 
-import MultiCheckedSelect from "common/MultiCheckedSelect";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -809,7 +808,7 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  {/* <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Workplace</label>
                       <MultiCheckedSelect
@@ -835,7 +834,7 @@ const SalaryGenerateCreate = () => {
                         setFieldValue={setFieldValue}
                       />
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="col-md-3">
                     <div className="input-field-main">
