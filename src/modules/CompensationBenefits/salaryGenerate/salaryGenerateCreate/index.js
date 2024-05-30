@@ -17,7 +17,7 @@ import { getPeopleDeskAllDDL } from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500 } from "../../../../utility/customColor";
+import { gray500, gray600, success500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import TaxAssignCheckerModal from "../components/taxAssignChekerModal";
 import {
@@ -747,7 +747,7 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
-                  {/* <div className="col-md-3">
+                  <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Workplace</label>
                       <FormikSelect
@@ -808,7 +808,7 @@ const SalaryGenerateCreate = () => {
                         touched={touched}
                       />
                     </div>
-                  </div> */}
+                  </div>
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Workplace</label>
@@ -840,7 +840,7 @@ const SalaryGenerateCreate = () => {
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>HR Position</label>
-                      <MultiCheckedSelect
+                      {/* <MultiCheckedSelect
                         name="hrPosition"
                         options={hrPositionDDL || []}
                         value={values?.hrPosition}
@@ -852,8 +852,8 @@ const SalaryGenerateCreate = () => {
                         placeholder="HR Position"
                         touched={touched}
                         setFieldValue={setFieldValue}
-                      />
-                      {/* <FormikSelect
+                      /> */}
+                      <FormikSelect
                         name="hrPosition"
                         isClearable={false}
                         options={hrPositionDDL || []}
@@ -900,7 +900,7 @@ const SalaryGenerateCreate = () => {
                         errors={errors}
                         placeholder="HR Position"
                         touched={touched}
-                      /> */}
+                      />
                     </div>
                   </div>
 
