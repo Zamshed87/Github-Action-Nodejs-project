@@ -279,9 +279,16 @@ export default function EmployeeJobCard() {
                                 onClick={() => {
                                   custom26to25LandingDataHandler(
                                     (previousMonthDate, currentMonthDate) => {
-                                      setFieldValue("fromDate", previousMonthDate);
+                                      setFieldValue(
+                                        "fromDate",
+                                        previousMonthDate
+                                      );
                                       setFieldValue("toDate", currentMonthDate);
-                                      saveHandler({...values, fromDate: previousMonthDate, toDate: currentMonthDate})
+                                      saveHandler({
+                                        ...values,
+                                        fromDate: previousMonthDate,
+                                        toDate: currentMonthDate,
+                                      });
                                     }
                                   );
                                 }}
@@ -336,7 +343,7 @@ export default function EmployeeJobCard() {
                             borderRight: "1px solid rgba(0, 0, 0, 0.12)",
                           }}
                         >
-                          {console.log("empInfo",empInfo)}
+                          {console.log("empInfo", empInfo)}
                           <p>
                             HR Position:{" "}
                             <strong>{empInfo?.[0]?.PositionName}</strong>
@@ -346,8 +353,10 @@ export default function EmployeeJobCard() {
                             <strong>{empInfo?.[0]?.BusinessUnitName}</strong>
                           </p> */}
                           <p>
-                           Joining Date:{" "}
-                            <strong>{dateFormatter(empInfo?.[0]?.JoiningDate)}</strong>
+                            Joining Date:{" "}
+                            <strong>
+                              {dateFormatter(empInfo?.[0]?.JoiningDate)}
+                            </strong>
                           </p>
                         </div>
                       </div>
