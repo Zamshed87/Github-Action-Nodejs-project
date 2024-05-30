@@ -67,6 +67,7 @@ export default function CalendarSetup() {
     setViewModal(false);
     setOpen(false);
     setId("");
+    setSingleData("");
   };
 
   // for view Modal
