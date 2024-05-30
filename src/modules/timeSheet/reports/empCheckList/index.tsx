@@ -45,7 +45,7 @@ const EmpCheckList = () => {
   const landingApi = useApiRequest({});
   //   const debounce = useDebounce();
 
-  const [setBuDetails] = useState({});
+  const [, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -104,7 +104,6 @@ const EmpCheckList = () => {
       },
     });
   };
-  const [, apiLoading] = useAxiosGet();
 
   type TLandingApi = {
     pagination?: {
@@ -164,7 +163,7 @@ const EmpCheckList = () => {
         }}
       >
         <PCard>
-          {(excelLoading || apiLoading || loading) && <Loading />}
+          {(excelLoading || landingApi?.loading || loading) && <Loading />}
           <PCardHeader
             exportIcon={true}
             title={`Employee Data CheckList `}
@@ -269,7 +268,7 @@ const EmpCheckList = () => {
                     form.setFieldsValue({
                       workplace: op,
                     });
-                    getWorkplaceDetails(value, setBuDetails);
+                    getWorkplaceDetails(value, setBuDetails, setLoading);
                   }}
                   // rules={[{ required: true, message: "Workplace is required" }]}
                 />
@@ -285,18 +284,20 @@ const EmpCheckList = () => {
             </Row>
           </PCardBody>
         </PCard>
-        <div className="table-card-body mt-3" style={{ overflow: "hidden" }}>
-          <div>
-            <>
-              <div className="sme-scrollable-table">
-                <div
-                  className="scroll-table scroll-table-height"
-                  dangerouslySetInnerHTML={{ __html: landingApi?.data }}
-                ></div>
-              </div>
-            </>
+        {landingApi?.data?.length > 0 ? (
+          <div className="table-card-body mt-3" style={{ overflow: "hidden" }}>
+            <div>
+              <>
+                <div className="sme-scrollable-table">
+                  <div
+                    className="scroll-table scroll-table-height"
+                    dangerouslySetInnerHTML={{ __html: landingApi?.data }}
+                  ></div>
+                </div>
+              </>
+            </div>
           </div>
-        </div>
+        ) : null}
       </PForm>
     </>
   ) : (
