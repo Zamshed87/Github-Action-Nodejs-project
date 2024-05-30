@@ -56,7 +56,7 @@ const MultiCalendarAssign = lazy(() =>
   import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
 );
 const JoineeAttendanceReport = lazy(() =>
-  import("modules/timeSheet/reports/joineeAttendanceReport")
+  import("modules/timeSheet/reports/joineeAttendanceReport/index.tsx")
 );
 const EarlyReport = lazy(() =>
   import("modules/timeSheet/reports/earlyInoutReport")
