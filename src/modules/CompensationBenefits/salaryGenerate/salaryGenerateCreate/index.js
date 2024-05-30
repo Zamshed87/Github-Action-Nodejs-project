@@ -1,6 +1,7 @@
 import axios from "axios";
 import IConfirmModal from "../../../../common/IConfirmModal";
 
+import MultiCheckedSelect from "common/MultiCheckedSelect";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -16,7 +17,7 @@ import { getPeopleDeskAllDDL } from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500, gray600, success500 } from "../../../../utility/customColor";
+import { gray500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import TaxAssignCheckerModal from "../components/taxAssignChekerModal";
 import {
@@ -529,6 +530,8 @@ const SalaryGenerateCreate = () => {
   });
 
   console.log(hrPositionDDL);
+  console.log(workplaceDDL);
+  console.log(values);
 
   return (
     <>
@@ -744,7 +747,7 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  {/* <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Workplace</label>
                       <FormikSelect
@@ -805,8 +808,8 @@ const SalaryGenerateCreate = () => {
                         touched={touched}
                       />
                     </div>
-                  </div>
-                  {/* <div className="col-md-3">
+                  </div> */}
+                  <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Workplace</label>
                       <MultiCheckedSelect
@@ -825,19 +828,19 @@ const SalaryGenerateCreate = () => {
                             setHrPositionDDL
                           );
                         }}
-                        isShowAllSelectedItem={false}
+                        // isShowAllSelectedItem={false}
                         errors={errors}
                         placeholder="Workplace"
                         touched={touched}
                         setFieldValue={setFieldValue}
                       />
                     </div>
-                  </div> */}
+                  </div>
 
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>HR Position</label>
-                      {/* <MultiCheckedSelect
+                      <MultiCheckedSelect
                         name="hrPosition"
                         options={hrPositionDDL || []}
                         value={values?.hrPosition}
@@ -849,8 +852,8 @@ const SalaryGenerateCreate = () => {
                         placeholder="HR Position"
                         touched={touched}
                         setFieldValue={setFieldValue}
-                      /> */}
-                      <FormikSelect
+                      />
+                      {/* <FormikSelect
                         name="hrPosition"
                         isClearable={false}
                         options={hrPositionDDL || []}
@@ -897,7 +900,7 @@ const SalaryGenerateCreate = () => {
                         errors={errors}
                         placeholder="HR Position"
                         touched={touched}
-                      />
+                      /> */}
                     </div>
                   </div>
 

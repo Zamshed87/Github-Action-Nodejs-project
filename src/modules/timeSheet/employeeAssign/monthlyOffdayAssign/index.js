@@ -1,19 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SettingsBackupRestoreOutlined } from "@mui/icons-material";
+import { Popover } from "@mui/material";
+import axios from "axios";
 import { useFormik } from "formik";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import Loading from "../../../../common/loading/Loading";
-// import MasterFilter from "../../../../common/MasterFilter";
-import { Popover } from "@mui/material";
-import axios from "axios";
-import moment from "moment";
 import profileImg from "../../../../assets/images/profile.jpg";
 import MasterFilter from "../../../../common/MasterFilter";
 import NoResult from "../../../../common/NoResult";
 import ResetButton from "../../../../common/ResetButton";
 import ViewModal from "../../../../common/ViewModal";
+import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PeopleDeskTable, {
   paginationSize,
@@ -24,8 +23,9 @@ import {
 } from "../../../../common/peopleDeskTable/helper";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import { printDays } from "../offDay/helper";
-import PopoverCalender from "./components/PopoverCalender";
+// import PopoverCalender from "./components/PopoverCalender";
 import ViewModalCalender from "./components/ViewModalCalender";
+import PopoverCalender from "./componentsCustom/PopoverCalender";
 import { createMonthlyOffdayAssign, offDayAssignDtoCol } from "./helper";
 import "./monthlyOffday.css";
 
@@ -77,6 +77,7 @@ function MonthlyOffdayAssignLanding() {
   const [filterOrderList, setFilterOrderList] = useState([]);
   const [initialHeaderListData, setInitialHeaderListData] = useState({});
   const [headerList, setHeaderList] = useState({});
+  const [value, setValue] = useState(moment());
   const [checkedHeaderList, setCheckedHeaderList] = useState({
     ...initHeaderList,
   });
@@ -244,16 +245,42 @@ function MonthlyOffdayAssignLanding() {
     initialValues: initData,
   });
 
+  function currMonthName() {
+    return value.format("MMM");
+  }
+
+  function currMonth() {
+    return value.format("MM");
+  }
+
+  function currYear() {
+    return value.format("YYYY");
+  }
+
+  function prevMonth() {
+    return value.clone().subtract(1, "month");
+  }
+
+  function nextMonth() {
+    return value.clone().add(1, "month");
+  }
+
   const handleSave = () => {
-    const offdays = calendarData?.map((data) => {
-      return {
-        date: moment().format(
-          `YYYY-MM-${data?.dayId < 10 ? "0" : ""}${data?.dayId}`
-        ),
-        isOffDay: data?.isOffday,
-        isActive: true,
-      };
-    });
+    // const offdays = calendarData?.map((data) => {
+    //   return {
+    //     date: moment().format(
+    //       `YYYY-MM-${data?.dayId < 10 ? "0" : ""}${data?.dayId}`
+    //     ),
+    //     isOffDay: data?.isOffday,
+    //     isActive: true,
+    //   };
+    // });
+    const offdays = calendarData.map((data) => ({
+      date: data.date,
+      isOffDay: data.isOffday,
+      isActive: true,
+    }));
+
     const empArr = [];
     const intEmployeeId = singleAssign
       ? [selectedSingleEmployee[0]?.employeeId]
@@ -539,9 +566,10 @@ function MonthlyOffdayAssignLanding() {
         {/* View Form Modal */}
         <ViewModal
           show={!loading && showModal}
-          title={`Assign Monthly Calendar (${moment().format("MMM, YYYY")})`}
+          title={`Assign Monthly Calendar`}
           onHide={() => {
             setShowModal(false);
+            setValue(moment());
             setSingleAssign(false);
             setCalendarData([]);
           }}
@@ -561,6 +589,11 @@ function MonthlyOffdayAssignLanding() {
               setSingleAssign,
               handleSave,
               isAssignAll,
+              setValue,
+              currMonthName,
+              currYear,
+              prevMonth,
+              nextMonth
             }}
           />
         </ViewModal>

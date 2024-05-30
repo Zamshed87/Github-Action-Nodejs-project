@@ -102,18 +102,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
             <div className="inner">
               <div className="card-head">
                 <h4>Today Attendance</h4>
-                {/* <span>
-                  <ActionMenu
-                    color={"rgba(0, 0, 0, 0.6)"}
-                    fontSize={"18px"}
-                    options={[
-                      {
-                        value: 1,
-                        label: "Remove",
-                      },
-                    ]}
-                  />
-                </span> */}
               </div>
               <div className="card-context">
                 <div>
@@ -130,19 +118,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
                 </div>
               </div>
             </div>
-            {/* <p
-              className="viewBtn"
-              onClick={() => window.open("/", "_blank").focus()}
-            >
-              View Details{" "}
-              <span className="ml-2">
-                <ArrowForwardIcon
-                  sx={{
-                    fontSize: "16px",
-                  }}
-                />
-              </span>
-            </p> */}
           </div>
           {/*  */}
           <div
@@ -152,18 +127,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
             <div className="inner">
               <div className="card-head">
                 <h4>Movement</h4>
-                {/* <span>
-                  <ActionMenu
-                    color={"rgba(0, 0, 0, 0.6)"}
-                    fontSize={"18px"}
-                    options={[
-                      {
-                        value: 1,
-                        label: "Remove",
-                      },
-                    ]}
-                  />
-                </span> */}
+
               </div>
               <div className="card-context">
                 <div>
@@ -204,18 +168,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
             <div className="inner">
               <div className="card-head">
                 <h4>Leave</h4>
-                {/* <span>
-                  <ActionMenu
-                    color={"rgba(0, 0, 0, 0.6)"}
-                    fontSize={"18px"}
-                    options={[
-                      {
-                        value: 1,
-                        label: "Remove",
-                      },
-                    ]}
-                  />
-                </span> */}
+
               </div>
               <div className="card-context">
                 <div>
@@ -257,18 +210,7 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
             <div className="inner">
               <div className="card-head">
                 <h4>Approval</h4>
-                {/* <span>
-                  <ActionMenu
-                    color={"rgba(0, 0, 0, 0.6)"}
-                    fontSize={"18px"}
-                    options={[
-                      {
-                        value: 1,
-                        label: "Remove",
-                      },
-                    ]}
-                  />
-                </span> */}
+
               </div>
               <div className="card-context">
                 <div>
@@ -320,16 +262,6 @@ const SupervisorDashboardLanding = ({ loading, setLoading }) => {
               </p>
             </div>
             <div>
-              {/* <MasterFilter
-                styles={{ marginRight: "0px" }}
-                inputWidth="250px"
-                width="250px"
-                isHiddenFilter
-                value={""}
-                setValue={(value) => {}}
-                cancelHandler={() => {}}
-                handleClick={(e) => {}}
-              /> */}
             </div>
           </div>
           {/* <div className="table-card-body mb-5"> */}

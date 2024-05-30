@@ -197,112 +197,110 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
   ].filter((item) => !item?.isHidden);
 
   return pfFundReportFeature?.isView ? (
-    <>
-      <PForm form={form}>
-        <PCard>
-          <PCardHeader title="PF Fund Report" />
-          <PCardBody className="my-3">
-            <Row gutter={[10, 2]} className="pb-2">
-              <Col md={6} sm={24}>
-                <PSelect
-                  name="employeeName"
-                  placeholder="Employee Name"
-                  allowClear={true}
-                  showSearch={true}
-                  rules={[
-                    { required: true, message: "Employee Name Is Required" },
-                  ]}
-                  onChange={(value: any, option: any) => {
-                    form.setFieldsValue({
-                      employeeName: option,
-                    });
-                    pfFundReportApi.reset();
-                  }}
-                  options={employeeDDLApi?.data || []}
-                  label="Employee Name"
-                />
-              </Col>
-              <Col md={6} sm={24}>
-                <PSelect
-                  name="status"
-                  placeholder="Status"
-                  allowClear={true}
-                  showSearch={true}
-                  rules={[{ required: true, message: "Status Is Required" }]}
-                  options={[
-                    { label: "All", value: 0 },
-                    { label: "Active", value: 1 },
-                    { label: "Inactive", value: 2 },
-                  ]}
-                  onChange={(value: any, option: any) => {
-                    form.setFieldsValue({
-                      status: option,
-                    });
-                    pfFundReportApi.reset();
-                  }}
-                  label="Status"
-                />
-              </Col>
-              <Col className="mt-3 pt-1">
-                <PRadio
-                  name="elementType"
-                  type="group"
-                  rules={[
-                    { required: true, message: "Please Select Element Type" },
-                  ]}
-                  options={[
-                    {
-                      label: "Current Total Fund",
-                      value: "currentTotalFund",
-                    },
-                    {
-                      label: "Fund Details",
-                      value: "fundDetails",
-                    },
-                  ]}
-                  onChange={(e: any) => {
-                    const value = e.target.value;
-                    setElementType(value);
-                    form.setFieldsValue({
-                      elementType: value,
-                    });
-                    pfFundReportApi.reset();
-                  }}
-                />
-              </Col>
-              <Col style={{ marginTop: "23px" }}>
-                <PButton
-                  type="primary"
-                  content="View"
-                  onClick={() => {
-                    landingApi();
-                  }}
-                ></PButton>
-              </Col>
-            </Row>
-          </PCardBody>
-          <DataTable
-            header={header}
-            bordered
-            data={pfFundReportApi?.data?.data || []}
-            pagination={{
-              current: pfFundReportApi?.data?.currentPage, // Current Page From Api Response
-              pageSize: pfFundReportApi?.data?.pageSize, // Page Size From Api Response
-              total: pfFundReportApi?.data?.totalCount, // Total Count From Api Response
-            }}
-            loading={pfFundReportApi?.loading}
-            scroll={{ x: 1000 }}
-            onChange={(pagination, filters, sorter, extra) => {
-              if (extra.action === "sort") return;
-              landingApi({
-                pagination,
-                filerList: filters,
-              });
-            }}
-          />
-        </PCard>
-      </PForm>
-    </>
+    <PForm form={form}>
+      <PCard>
+        <PCardHeader title="PF Fund Report" />
+        <PCardBody className="my-3">
+          <Row gutter={[10, 2]} className="pb-2">
+            <Col md={6} sm={24}>
+              <PSelect
+                name="employeeName"
+                placeholder="Employee Name"
+                allowClear={true}
+                showSearch={true}
+                rules={[
+                  { required: true, message: "Employee Name Is Required" },
+                ]}
+                onChange={(value: any, option: any) => {
+                  form.setFieldsValue({
+                    employeeName: option,
+                  });
+                  pfFundReportApi.reset();
+                }}
+                options={employeeDDLApi?.data || []}
+                label="Employee Name"
+              />
+            </Col>
+            <Col md={6} sm={24}>
+              <PSelect
+                name="status"
+                placeholder="Status"
+                allowClear={true}
+                showSearch={true}
+                rules={[{ required: true, message: "Status Is Required" }]}
+                options={[
+                  { label: "All", value: 0 },
+                  { label: "Active", value: 1 },
+                  { label: "Inactive", value: 2 },
+                ]}
+                onChange={(value: any, option: any) => {
+                  form.setFieldsValue({
+                    status: option,
+                  });
+                  pfFundReportApi.reset();
+                }}
+                label="Status"
+              />
+            </Col>
+            <Col className="mt-3 pt-1">
+              <PRadio
+                name="elementType"
+                type="group"
+                rules={[
+                  { required: true, message: "Please Select Element Type" },
+                ]}
+                options={[
+                  {
+                    label: "Current Total Fund",
+                    value: "currentTotalFund",
+                  },
+                  {
+                    label: "Fund Details",
+                    value: "fundDetails",
+                  },
+                ]}
+                onChange={(e: any) => {
+                  const value = e.target.value;
+                  setElementType(value);
+                  form.setFieldsValue({
+                    elementType: value,
+                  });
+                  pfFundReportApi.reset();
+                }}
+              />
+            </Col>
+            <Col style={{ marginTop: "23px" }}>
+              <PButton
+                type="primary"
+                content="View"
+                onClick={() => {
+                  landingApi();
+                }}
+              ></PButton>
+            </Col>
+          </Row>
+        </PCardBody>
+        <DataTable
+          header={header}
+          bordered
+          data={pfFundReportApi?.data?.data || []}
+          pagination={{
+            current: pfFundReportApi?.data?.currentPage, // Current Page From Api Response
+            pageSize: pfFundReportApi?.data?.pageSize, // Page Size From Api Response
+            total: pfFundReportApi?.data?.totalCount, // Total Count From Api Response
+          }}
+          loading={pfFundReportApi?.loading}
+          scroll={{ x: 1000 }}
+          onChange={(pagination, filters, sorter, extra) => {
+            if (extra.action === "sort") return;
+            landingApi({
+              pagination,
+              filerList: filters,
+            });
+          }}
+        />
+      </PCard>
+    </PForm>
   ) : (
     <NotPermittedPage />
   );

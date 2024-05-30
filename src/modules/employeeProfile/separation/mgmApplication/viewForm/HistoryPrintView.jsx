@@ -142,6 +142,7 @@ const HistoryPrintView = ({
             <thead>
               <tr>
                 <th style={{ width: "30px", textAlign: "center" }}>SL</th>
+                <th>Promotion Type</th>
                 <th>Workplace</th>
                 <th>Employee Name</th>
                 <th>Code</th>
@@ -157,6 +158,7 @@ const HistoryPrintView = ({
               {employmentHistory?.map((item, index) => (
                 <tr key={index}>
                   <td style={{ textAlign: "center" }}>{index + 1}</td>
+                  <td>{item?.promotionTypeName}</td>
                   <td>{item?.workPlace}</td>
                   <td>{item?.name}</td>
                   <td>{item?.code}</td>
@@ -169,7 +171,7 @@ const HistoryPrintView = ({
                       ? moment(item?.effectiveDate).format("DD-MM-YYYY")
                       : "N/A"}
                   </td>
-                  <td>{item?.salaryAmount}</td>
+                  <td>{item?.salaryAmount && formatMoney(item?.salaryAmount)}</td>
                 </tr>
               ))}
             </tbody>
@@ -187,12 +189,12 @@ const HistoryPrintView = ({
                 <th style={{ width: "30px", textAlign: "center" }}>SL</th>
                 <th>
                   <div className="sortable">
-                    <span>Item Name</span>
+                    <span>Asset Name</span>
                   </div>
                 </th>
-                <th>Item Qty</th>
                 <th>UOM</th>
                 <th>Assign Date</th>
+                <th>Unassign Date</th>
                 <th style={{ width: "80px" }}>
                   <div className="sortable justify-content-center">
                     <span>Status</span>
@@ -205,11 +207,15 @@ const HistoryPrintView = ({
                 <tr key={index}>
                   <td style={{ textAlign: "center" }}>{index + 1}</td>
                   <td>{item?.itemName}</td>
-                  <td>{item?.itemQuantity}</td>
                   <td>{item?.itemUom}</td>
                   <td>
                     {item?.assignDate
                       ? moment(item?.assignDate).format("DD-MM-YYYY")
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {item?.unassignDate
+                      ? moment(item?.unassignDate).format("DD-MM-YYYY")
                       : "N/A"}
                   </td>
                   <td className="text-center">

@@ -171,7 +171,7 @@ export const column = (fromDate, toDate) => {
     EmployeeCode: "Code",
     strEmployeeName: "Employee Name",
     strDesignation: "Designation",
-    strWorkplaceGroup: "Workplace Group",
+    strWorkplaceGroup: "Workplace Group111",
     strWorkplace: "Workplace",
     strDepartment: "Department",
     strSectionName: "Section",

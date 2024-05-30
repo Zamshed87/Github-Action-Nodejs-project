@@ -565,6 +565,14 @@ const SalaryPayslipReport = () => {
                             </td>
                           </tr>
                           <tr>
+                            <td style={{ textAlign: "left" }}>
+                              <p>Others</p>
+                            </td>
+                            <td style={{ textAlign: "right" }} colSpan="3">
+                              <p>{salaryHeaderData[0]?.numOthersDeduction || 0}</p>
+                            </td>
+                          </tr>
+                          <tr>
                             <th>
                               <p style={thStyles} className="pl-1">
                                 Total deductions
@@ -616,7 +624,8 @@ const SalaryPayslipReport = () => {
                             </th>
                             <th colSpan="3" style={{ textAlign: "right" }}>
                               <p style={thStyles}>
-                                {numberWithCommas(
+                                {salaryHeaderData[0]?.numNetPayableSalary}
+                                {/* {numberWithCommas(
                                   (numTotal(viewPaySlipData, "numTotal", 1) +
                                     salaryHeaderData[0]?.numOverTimeAmount ||
                                     0) -
@@ -625,7 +634,7 @@ const SalaryPayslipReport = () => {
                                       (salaryHeaderData[0]?.numLoanAmount ||
                                         0) +
                                       (salaryHeaderData[0]?.numPFAmount || 0))
-                                )}
+                                )} */}
                               </p>
                             </th>
                           </tr>
