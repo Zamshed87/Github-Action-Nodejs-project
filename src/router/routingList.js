@@ -56,7 +56,7 @@ const MultiCalendarAssign = lazy(() =>
   import("modules/TimeManagement/MultiCalendarAssign/MultiCalendarAssign")
 );
 const JoineeAttendanceReport = lazy(() =>
-  import("modules/timeSheet/reports/joineeAttendanceReport")
+  import("modules/timeSheet/reports/joineeAttendanceReport/index.tsx")
 );
 const EarlyReport = lazy(() =>
   import("modules/timeSheet/reports/earlyInoutReport")
@@ -744,7 +744,7 @@ const CustomReport = lazy(() =>
   import("../modules/employeeProfile/Reports/customReport/index.jsx")
 );
 const EmployeeJobCard = lazy(() =>
-  import("../modules/employeeProfile/Reports/employeeJobCard/index.jsx")
+  import("../modules/employeeProfile/Reports/employeeJobCard/index.tsx")
 );
 const PfFundReport = lazy(() =>
   import("../modules/employeeProfile/Reports/pfFundReport/index.tsx")

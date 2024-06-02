@@ -1,11 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Attachment,
-  Cancel,
-  CheckCircle,
-  SettingsBackupRestoreOutlined,
-} from "@mui/icons-material";
+import { Attachment, Cancel, CheckCircle } from "@mui/icons-material";
 import { Tooltip, tooltipClasses } from "@mui/material";
 import { styled } from "@mui/styles";
 import { Form, Formik } from "formik";
@@ -22,7 +17,6 @@ import MuiIcon from "../../../../common/MuiIcon";
 import NoResult from "../../../../common/NoResult";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import PopOverMasterFilter from "../../../../common/PopoverMasterFilter";
-import ResetButton from "../../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 import {
   failColor,
@@ -79,7 +73,7 @@ export default function LoanApproval() {
   );
 
   // Don't delete this state if you delete you should changes every place in leave folder
-  const [appliedStatus, setAppliedStatus] = useState({
+  const [appliedStatus] = useState({
     value: 1,
     label: "Pending",
   });
@@ -94,7 +88,6 @@ export default function LoanApproval() {
   const [imageFile] = useState("");
   const [createModal, setCreateModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isFilter, setIsFilter] = useState(false);
   const [, setAllData] = useState();
   const [filterData, setFilterData] = useState([]);
 

@@ -41,7 +41,7 @@ const CalenderCommon = ({
   useEffect(() => {
     if (
       calendarData.length === 0 ||
-      calendarData[0]?.date.split("-")[1] !== date.month
+      calendarData[0]?.date?.split("-")[1] !== date.month
     ) {
       const demoData = dates.map((item) => ({
         date: `${date.year}-${date.month.padStart(2, "0")}-${item.day.padStart(

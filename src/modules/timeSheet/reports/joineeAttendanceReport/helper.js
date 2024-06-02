@@ -168,11 +168,12 @@ export const column = (fromDate, toDate) => {
     });
   return {
     sl: "SL",
+    strWorkplaceGroup: "Workplace Group",
+    strWorkplace: "Workplace",
     EmployeeCode: "Code",
     strEmployeeName: "Employee Name",
     strDesignation: "Designation",
-    strWorkplaceGroup: "Workplace Group111",
-    strWorkplace: "Workplace",
+
     strDepartment: "Department",
     strSectionName: "Section",
     ...tempObj,

@@ -107,11 +107,14 @@ export const apiList = {
   CafeteriaConfigLanding: "/Cafeteria/CafeteriaConfigLanding",
 
   CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
+  GetAttendanceDetailsReport: "/Employee/GetAttendanceDetailsReport",
   EditCafeteriaConfig: "/Cafeteria/EditCafeteriaConfig",
   GetDateWiseAttendanceReport: "/Employee/GetDateWiseAttendanceReport",
 
   GetEarlyOutReport: "/TimeSheetReport/GetEarlyOutReport",
   GetLateReport: "/TimeSheetReport/GetLateReport",
+  GetAssignedSalaryDetailsReport_Matador:
+    "/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador",
 
   TimeManagementDynamicPIVOTReport:
     "/TimeSheetReport/TimeManagementDynamicPIVOTReport",
