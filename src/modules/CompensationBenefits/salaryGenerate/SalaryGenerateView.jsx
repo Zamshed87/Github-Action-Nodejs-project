@@ -341,9 +341,9 @@ const SalaryGenerateView = () => {
               setLoading={setLoading}
             />
             {values?.summary === "2" && (
-              <div className="card-style" style={{ margin: "10px 5px" }}>
+              <div className="card-style" style={{ margin: "10px 5px 15px 5px" }}>
                 <div className="row">
-                  <div className="col-md-3">
+                  <div className="col-md-6">
                     <div className="input-field-main">
                       <label>HR Position</label>
                       <FormikSelect
