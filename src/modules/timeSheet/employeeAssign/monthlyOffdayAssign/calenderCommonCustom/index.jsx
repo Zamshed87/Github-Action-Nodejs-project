@@ -40,7 +40,7 @@ const CalenderCommon = ({
   // Initialize or update the calendar data whenever dates are updated
   useEffect(() => {
     if (
-      calendarData.length === 0 ||
+      calendarData.length !== dates.length || // Check if lengths don't match
       calendarData[0]?.date?.split("-")[1] !== date.month
     ) {
       const demoData = dates.map((item) => ({

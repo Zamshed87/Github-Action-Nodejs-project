@@ -124,3 +124,11 @@ export const employeesShiftInformationTableColumn = (page, paginationSize) => {
     },
   ];
 };
+export const column = {
+  sl: "SL",
+  dteAttendanceDate: "Attendance Date",
+  strCalendarName: "Calendar Name",
+  dteStartTime: "Start Time",
+  dteLastStartTime: "Extended Start Time",
+  dteEndTime: "End Time",
+};

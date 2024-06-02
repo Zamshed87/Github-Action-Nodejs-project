@@ -38,6 +38,7 @@ import IConfirmModal from "common/IConfirmModal";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { getCurrentMonthName } from "utility/monthIdToMonthName";
 import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
+import { getSerial } from "Utils";
 
 const ActiveInactiveEmployeeReport = () => {
   const dispatch = useDispatch();
@@ -187,7 +188,11 @@ const ActiveInactiveEmployeeReport = () => {
     {
       title: "SL",
       render: (_: any, rec: any, index: number) =>
-        (pages?.current - 1) * pages?.pageSize + index + 1,
+        getSerial({
+          currentPage: landingApi?.data?.currentPage,
+          pageSize: landingApi?.data?.pageSize,
+          index,
+        }),
       fixed: "left",
       width: 35,
       align: "center",
