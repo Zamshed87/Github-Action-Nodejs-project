@@ -1,4 +1,11 @@
-import { PCard, PCardHeader, PForm, PInput, PSelect } from "Components";
+import {
+  DataTable,
+  PCard,
+  PCardHeader,
+  PForm,
+  PInput,
+  PSelect,
+} from "Components";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import React, { useEffect, useState } from "react";
@@ -14,6 +21,9 @@ import { PModal } from "Components/Modal";
 import AddEditForm from "./Bonus/CreateBouns";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useLocation, useHistory } from "react-router-dom";
+import NoResult from "common/NoResult";
+import { rowColumns, rowGenerateFunction } from "../helper";
+// import { rowGenerateFunction } from "../helper";
 type TCreateBonusSetup = unknown;
 const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   // Data From Store
@@ -25,7 +35,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const [form] = Form.useForm();
   const history = useHistory();
   const { state }: any = useLocation();
-
 
   const dispatch = useDispatch();
 
@@ -88,8 +97,12 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const EmploymentTypeDDL = useApiRequest([]);
   const BonusAllLanding = useApiRequest([]);
   const CheckBounsExist = useApiRequest({});
-  const CRUDBonusSetup = useApiRequest({});
+  const CreateUpdateBounsSetup = useApiRequest({});
   const positionDDL = useApiRequest([]);
+
+  // state
+  const [loading, setLoading] = useState(false);
+  const [rowGenerate, setRowGenerate] = useState([]);
 
   // Life Cycle Hooks
   useEffect(() => {
@@ -205,27 +218,31 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   };
 
   const submitHandler = () => {
+    console.log("from submitHandler", rowGenerate);
     const values = form.getFieldsValue(true);
-    const payload = payloadGenerate(
-      values,
-      wgId,
-      wgName,
-      state?.intBonusSetupId || 0
-    );
-    const commonData = {
-      intAccountId: orgId,
-      intBusinessUnitId: buId,
-      intCreatedBy: employeeId,
-      isActive: true,
-    };
+    // const payload = payloadGenerate(
+    //   values,
+    //   wgId,
+    //   wgName,
+    //   state?.intBonusSetupId || 0
+    // );
 
-    CRUDBonusSetup?.action({
+    // const mergeData1 = rowGenerate.map((item) => ({
+    //   ...item,
+    //   test: values?.bonusName?.label || "test",
+    // }));
+
+    // const mergeData = {
+    //   ...rowGenerate,
+    //   test: values?.bonusName?.label || "test",
+    // };
+
+    CreateUpdateBounsSetup?.action({
       method: "post",
-      urlKey: "CRUDBonusSetup",
-      payload: {
-        ...commonData,
-        ...payload,
-      },
+      urlKey: "CreateUpdateBounsSetup",
+      // payload: {
+      //   ...mergeData,
+      // },
       onSuccess: () => {
         history.push("/administration/payrollConfiguration/bonusSetup");
       },
@@ -334,57 +351,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 ]}
               />
             </Col>
-            <Col md={6} sm={24}>
-              <PSelect
-                options={positionDDL?.data || []}
-                name="hrPosition"
-                showSearch
-                filterOption={true}
-                label="HR Position"
-                placeholder="HR Position"
-                disabled={state}
-                mode="multiple"
-                maxTagCount={"responsive"}
-                onChange={(value: number, op: any) => {
-                  form.setFieldsValue({ hrPosition: op });
-                }}
-                rules={[{ required: true, message: "HR Position is required" }]}
-              />
-            </Col>
-            <Form.Item
-              noStyle
-              shouldUpdate={(prev, current) => prev !== current}
-            >
-              {({ getFieldsValue: getValues }) => {
-                const { workplace } = getValues();
-                return (
-                  <Col md={6} sm={12}>
-                    <PSelect
-                      name="employmentType"
-                      label="Employment Type"
-                      placeholder={`${
-                        workplace
-                          ? "Select Employment Type"
-                          : "Select Workplace First"
-                      }`}
-                      options={EmploymentTypeDDL?.data || []}
-                      disabled={!workplace || state}
-                      mode="multiple"
-                      maxTagCount={"responsive"}
-                      onChange={(value: number, op: any) => {
-                        form.setFieldsValue({ employmentType: op });
-                      }}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please Select Employment Type",
-                        },
-                      ]}
-                    />
-                  </Col>
-                );
-              }}
-            </Form.Item>
+
             <Col md={6} sm={12}>
               <PSelect
                 name="bounsDependOn"
@@ -415,29 +382,9 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 max={100}
               />
             </Col>
-            <Col md={6} sm={12}>
-              <PSelect
-                options={ReligionDDL?.data || []}
-                label="Religion"
-                name="religion"
-                placeholder="Select Religion"
-                disabled={state}
-                mode="multiple"
-                maxTagCount={"responsive"}
-                onChange={(value: number, op: any) => {
-                  form.setFieldsValue({ religion: op });
-                }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Please Select Religion",
-                  },
-                ]}
-              />
-            </Col>
 
             {/* Service Length */}
-            <Col md={6} sm={12}>
+            <Col md={6} sm={12} className="mt-2">
               <PSelect
                 name="serviceLengthType"
                 label="Service Length Type"
@@ -462,7 +409,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 const { serviceLengthType } = getValues();
                 return serviceLengthType?.value === 1 ? (
                   <>
-                    <Col md={6} sm={12}>
+                    <Col md={6} sm={12} className="mt-2">
                       <PInput
                         type="number"
                         name="minServiceLengthDay"
@@ -482,7 +429,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                         min={0}
                       />
                     </Col>
-                    <Col md={6} sm={12}>
+                    <Col md={6} sm={12} className="mt-2">
                       <PInput
                         type="number"
                         name="maxServiceLengthDay"
@@ -513,7 +460,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                   </>
                 ) : (
                   <>
-                    <Col md={6} sm={12}>
+                    <Col md={6} sm={12} className="mt-2">
                       <PInput
                         type="number"
                         name="minServiceLengthMonth"
@@ -534,7 +481,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                         min={0}
                       />
                     </Col>
-                    <Col md={6} sm={12}>
+                    <Col md={6} sm={12} className="mt-2">
                       <PInput
                         type="number"
                         name="maxServiceLengthMonth"
@@ -567,7 +514,7 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                 );
               }}
             </Form.Item>
-            <Col md={8} sm={24} style={{ marginTop: "20px" }}>
+            <Col md={6} sm={24} style={{ marginTop: "30px" }}>
               <PInput
                 label="Divided by Service Length?"
                 type="checkbox"
@@ -581,6 +528,127 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
               />
             </Col>
           </Row>
+          <br />
+          <br />
+          <Row gutter={[10, 2]}>
+            <Col md={6} sm={24}>
+              <PSelect
+                options={positionDDL?.data || []}
+                name="attValueOne"
+                showSearch
+                filterOption={true}
+                label="HR Position"
+                placeholder="HR Position"
+                disabled={state}
+                mode="multiple"
+                maxTagCount={"responsive"}
+                onChange={(value: number, op: any) => {
+                  form.setFieldsValue({ attValueOne: op });
+                }}
+                rules={[{ required: true, message: "Please Select Workplace" }]}
+              />
+            </Col>
+            <Form.Item
+              noStyle
+              shouldUpdate={(prev, current) => prev !== current}
+            >
+              {({ getFieldsValue: getValues }) => {
+                const { workplace } = getValues();
+                return (
+                  <Col md={6} sm={12}>
+                    <PSelect
+                      name="attValueTwo"
+                      label="Employment Type"
+                      placeholder={`${
+                        workplace
+                          ? "Select Employment Type"
+                          : "Select Workplace First"
+                      }`}
+                      options={EmploymentTypeDDL?.data || []}
+                      disabled={!workplace || state}
+                      mode="multiple"
+                      maxTagCount={"responsive"}
+                      onChange={(value: number, op: any) => {
+                        form.setFieldsValue({ attValueTwo: op });
+                      }}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Please Select Employment Type",
+                      //   },
+                      // ]}
+                    />
+                  </Col>
+                );
+              }}
+            </Form.Item>
+            <Col md={6} sm={12}>
+              <PSelect
+                options={ReligionDDL?.data || []}
+                label="Religion"
+                name="attValueThree"
+                placeholder="Select Religion"
+                disabled={state}
+                mode="multiple"
+                maxTagCount={"responsive"}
+                onChange={(value: number, op: any) => {
+                  form.setFieldsValue({ attValueThree: op });
+                }}
+                // rules={[
+                //   {
+                //     required: true,
+                //     message: "Please Select Religion",
+                //   },
+                // ]}
+              />
+            </Col>
+            <Col md={6} sm={12}>
+              <Form.Item
+                noStyle
+                shouldUpdate={(prev, current) => prev !== current}
+              >
+                {({ getFieldsValue: getValues }) => {
+                  const { attValueOne, attValueTwo, attValueThree } =
+                    getValues();
+                  const values = form.getFieldsValue(true);
+                  return (
+                    <button
+                      className="btn btn-green btn-green-disable mt-4"
+                      type="button"
+                      onClick={() => {
+                        rowGenerateFunction(
+                          attValueOne || [],
+                          attValueTwo || [],
+                          attValueThree || [],
+                          "",
+                          setRowGenerate,
+                          values,
+                          setLoading,
+                          wgId,
+                          buId,
+                          wgName,
+                          orgId,
+                          employeeId,
+                          state
+                        );
+                      }}
+                    >
+                      Add
+                    </button>
+                  );
+                }}
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <div className="mt-3">
+            <DataTable
+              bordered
+              data={rowGenerate || []}
+              loading={loading}
+              header={rowColumns(setRowGenerate, rowGenerate)}
+            />
+          </div>
         </PCard>
       </PForm>
       <PModal

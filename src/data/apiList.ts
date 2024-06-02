@@ -21,6 +21,7 @@ export const apiList = {
   SectionDDL: "/SaasMasterData/SectionDDL",
   BonusAllLanding: "/Employee/BonusAllLanding",
   CRUDBonusSetup: "/Employee/CRUDBonusSetup",
+  CreateUpdateBounsSetup: "/Employee/CreateUpdateBounsSetup",
   CheckBonusAlreadyExistInWorkPlace:
     "/Employee/CheckBonusAlreadyExistInWorkPlace",
   CommonEmployeeDDL: "/Employee/CommonEmployeeDDL",
