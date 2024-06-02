@@ -110,6 +110,8 @@ export const apiList = {
   GetAttendanceDetailsReport: "/Employee/GetAttendanceDetailsReport",
   EditCafeteriaConfig: "/Cafeteria/EditCafeteriaConfig",
   GetDateWiseAttendanceReport: "/Employee/GetDateWiseAttendanceReport",
+  MonthlyRosterReportForSingleEmployee:
+    "/TimeSheetReport/MonthlyRosterReportForSingleEmployee",
 
   GetEarlyOutReport: "/TimeSheetReport/GetEarlyOutReport",
   GetLateReport: "/TimeSheetReport/GetLateReport",
