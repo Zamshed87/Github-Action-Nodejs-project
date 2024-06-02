@@ -465,7 +465,6 @@ const JobConfirmationReport = () => {
                 pagination,
               });
             }}
-            scroll={{ x: 2000 }}
           />
         </PCard>
       </PForm>

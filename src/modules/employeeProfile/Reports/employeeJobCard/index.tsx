@@ -180,7 +180,7 @@ const EmployeeJobCard = () => {
       {
         title: "Attendance Date",
         dataIndex: "AttendanceDateWithName",
-        width: 130,
+        width: 120,
       },
       {
         title: "In-Time",
@@ -228,7 +228,7 @@ const EmployeeJobCard = () => {
         title: "Total Working Hours",
         dataIndex: "WorkingHours",
 
-        width: 70,
+        width: 120,
       },
       {
         title: "Over Time",
@@ -239,7 +239,7 @@ const EmployeeJobCard = () => {
       {
         title: "Calendar Name",
         dataIndex: "CalendarName",
-        width: 80,
+        width: 300,
       },
 
       {
@@ -290,7 +290,7 @@ const EmployeeJobCard = () => {
             {record?.AttStatus === "Not Found" && <p>-</p>}
           </>
         ),
-        width: 80,
+        width: 150,
       },
       {
         title: "Remarks",
@@ -351,7 +351,7 @@ const EmployeeJobCard = () => {
               );
             }}
           />
-          <PCardBody className="mb-3">
+          <PCardBody className="">
             <Row gutter={[10, 2]}>
               <Col md={5} sm={12} xs={24}>
                 <PSelect
@@ -487,7 +487,7 @@ const EmployeeJobCard = () => {
               const { employee } = form.getFieldsValue(true);
               return (
                 <Row
-                  className="mb-3"
+                  className="mb-1"
                   style={{
                     border: "1px solid rgba(0, 0, 0, 0.12)",
                     borderRadius: "6px",
@@ -604,7 +604,7 @@ const EmployeeJobCard = () => {
           </Form.Item>
           {landingApi?.data?.length > 0 ? (
             <Row
-              className="mb-3"
+              className="mb-1"
               style={{
                 border: "1px solid rgba(0, 0, 0, 0.12)",
                 borderRadius: "6px",
