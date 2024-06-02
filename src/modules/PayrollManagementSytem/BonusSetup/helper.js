@@ -93,12 +93,6 @@ export const rowGenerateFunction = (
   setRowGenerate,
   values,
   setLoading,
-  wgId,
-  buId,
-  wgName,
-  orgId,
-  employeeId,
-  state
 ) => {
   console.log("values", values);
 
@@ -110,32 +104,12 @@ export const rowGenerateFunction = (
     for (let j = 0; j < empType?.length; j++) {
       for (let k = 0; k < religion?.length; k++) {
         const permutation = {
-          intBonusSetupId: state?.intBonusSetupId || 0,
-          strBonusGroupCode: "",
-          intBonusId: values?.bonusName?.intBonusId || 0,
-          strBonusName: values?.bonusName?.label || "",
-          strBonusDescription: values?.bonusName?.strBonusDescription || "",
-          intAccountId: orgId || 0,
-          intBusinessUnitId: buId || 0,
-          intWorkplaceGroupId: wgId || 0,
-          strWorkplaceGroupName: wgName || "",
-          intWorkPlaceId: values?.workplace?.value || 0,
-          strWorkPlaceName: values?.workplace?.label || "",
           intReligion: religion[k]?.value || 0,
           strReligionName: religion[k]?.label || "",
           intEmploymentTypeId: empType[j]?.value || 0,
           strEmploymentType: empType[j]?.label || "",
           intHrPositionId: hrPosition[i]?.value || 0,
           strHrPositionName: hrPosition[i]?.label || "",
-          isServiceLengthInDays: values?.serviceLengthType?.value === 1,
-          intMinimumServiceLengthMonth: values?.minServiceLengthMonth || 0,
-          intMaximumServiceLengthMonth: values?.maxServiceLengthMonth || 0,
-          intMinimumServiceLengthDays: values?.minServiceLengthDay || 0,
-          intMaximumServiceLengthDays: values?.maxServiceLengthDay || 0,
-          strBonusPercentageOn: values?.bounsDependOn === 1 ? "Gross" : "Basic",
-          numBonusPercentage: values?.bonusPercentage || 0,
-          isDividedbyServiceLength: values?.isDividedByLength || false,
-          intCreatedBy: employeeId || 0,
         };
         result.push(permutation);
       }

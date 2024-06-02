@@ -220,33 +220,45 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const submitHandler = () => {
     console.log("from submitHandler", rowGenerate);
     const values = form.getFieldsValue(true);
-    // const payload = payloadGenerate(
-    //   values,
-    //   wgId,
-    //   wgName,
-    //   state?.intBonusSetupId || 0
-    // );
+    const payload = payloadGenerate(
+      values,
+      wgId,
+      wgName,
+      state?.intBonusSetupId || 0
+    );
 
-    // const mergeData1 = rowGenerate.map((item) => ({
-    //   ...item,
-    //   test: values?.bonusName?.label || "test",
-    // }));
+    const mergeData1 = rowGenerate.map((item: any) => ({
+      ...item,
+      intBonusSetupId: state?.intBonusSetupId || 0,
+      strBonusGroupCode: "",
+      intBonusId: values?.bonusName?.intBonusId || 0,
+      strBonusName: values?.bonusName?.label || "",
+      strBonusDescription: values?.bonusName?.strBonusDescription || "",
+      intAccountId: orgId || 0,
+      intBusinessUnitId: buId || 0,
+      intWorkplaceGroupId: wgId || 0,
+      strWorkplaceGroupName: wgName || "",
+      intWorkPlaceId: values?.workplace?.value || 0,
+      strWorkPlaceName: values?.workplace?.label || "",
+      isServiceLengthInDays: values?.serviceLengthType?.value === 1,
+      intMinimumServiceLengthMonth: values?.minServiceLengthMonth || 0,
+      intMaximumServiceLengthMonth: values?.maxServiceLengthMonth || 0,
+      intMinimumServiceLengthDays: values?.minServiceLengthDay || 0,
+      intMaximumServiceLengthDays: values?.maxServiceLengthDay || 0,
+      strBonusPercentageOn: values?.bounsDependOn === 1 ? "Gross" : "Basic",
+      numBonusPercentage: values?.bonusPercentage || 0,
+      isDividedbyServiceLength: values?.isDividedByLength || false,
+      intCreatedBy: employeeId || 0,
+    }));
 
-    // const mergeData = {
-    //   ...rowGenerate,
-    //   test: values?.bonusName?.label || "test",
-    // };
-
-    CreateUpdateBounsSetup?.action({
-      method: "post",
-      urlKey: "CreateUpdateBounsSetup",
-      // payload: {
-      //   ...mergeData,
-      // },
-      onSuccess: () => {
-        history.push("/administration/payrollConfiguration/bonusSetup");
-      },
-    });
+    // CreateUpdateBounsSetup?.action({
+    //   method: "post",
+    //   urlKey: "CreateUpdateBounsSetup",
+    //   payload: [...rowGenerate],
+    //   onSuccess: () => {
+    //     history.push("/administration/payrollConfiguration/bonusSetup");
+    //   },
+    // });
   };
   const [open, setOpen] = useState(false);
 
@@ -624,12 +636,6 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
                           setRowGenerate,
                           values,
                           setLoading,
-                          wgId,
-                          buId,
-                          wgName,
-                          orgId,
-                          employeeId,
-                          state
                         );
                       }}
                     >
