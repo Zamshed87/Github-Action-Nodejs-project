@@ -17,8 +17,6 @@ import Chips from "../../../common/Chips";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
-import { todayDate } from "../../../utility/todayDate";
-import AntTable from "../../../common/AntTable";
 import { createPayloadStructure } from "common/peopleDeskTable/helper";
 import PeopleDeskTable from "common/peopleDeskTable";
 

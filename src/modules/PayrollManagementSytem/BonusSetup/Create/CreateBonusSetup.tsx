@@ -21,7 +21,6 @@ import { PModal } from "Components/Modal";
 import AddEditForm from "./Bonus/CreateBouns";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import { useLocation, useHistory } from "react-router-dom";
-import NoResult from "common/NoResult";
 import { rowColumns, rowGenerateFunction } from "../helper";
 // import { rowGenerateFunction } from "../helper";
 type TCreateBonusSetup = unknown;
@@ -220,14 +219,14 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
   const submitHandler = () => {
     console.log("from submitHandler", rowGenerate);
     const values = form.getFieldsValue(true);
-    const payload = payloadGenerate(
-      values,
-      wgId,
-      wgName,
-      state?.intBonusSetupId || 0
-    );
+    // const payload = payloadGenerate(
+    //   values,
+    //   wgId,
+    //   wgName,
+    //   state?.intBonusSetupId || 0
+    // );
 
-    const mergeData1 = rowGenerate.map((item: any) => ({
+    const payload = rowGenerate.map((item: any) => ({
       ...item,
       intBonusSetupId: state?.intBonusSetupId || 0,
       strBonusGroupCode: "",
@@ -251,14 +250,14 @@ const CreateBonusSetup: React.FC<TCreateBonusSetup> = () => {
       intCreatedBy: employeeId || 0,
     }));
 
-    // CreateUpdateBounsSetup?.action({
-    //   method: "post",
-    //   urlKey: "CreateUpdateBounsSetup",
-    //   payload: [...rowGenerate],
-    //   onSuccess: () => {
-    //     history.push("/administration/payrollConfiguration/bonusSetup");
-    //   },
-    // });
+    CreateUpdateBounsSetup?.action({
+      method: "post",
+      urlKey: "CreateUpdateBounsSetup",
+      payload: [...payload],
+      onSuccess: () => {
+        history.push("/administration/payrollConfiguration/bonusSetup");
+      },
+    });
   };
   const [open, setOpen] = useState(false);
 
