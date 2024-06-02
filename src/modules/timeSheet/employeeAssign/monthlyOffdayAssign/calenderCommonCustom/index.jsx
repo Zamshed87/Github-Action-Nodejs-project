@@ -10,6 +10,7 @@ const CalenderCommon = ({
   isClickable = false,
 }) => {
   const [dates, setDates] = useState([]);
+  
   const [date, setDate] = useState({
     year: monthYear.split("-")[0],
     month: monthYear.split("-")[1],
