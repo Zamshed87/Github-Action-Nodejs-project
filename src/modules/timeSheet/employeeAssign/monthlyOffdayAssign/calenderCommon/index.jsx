@@ -24,6 +24,7 @@ const CalenderCommon = ({
   }, [monthYear]);
 
   useEffect(() => {
+    // Generate dates array
     let days = moment(`${date.month}/01/${date.year}`).daysInMonth();
     const demoDate = [];
     while (days) {
@@ -122,10 +123,10 @@ const CalenderCommon = ({
                         : "",
                       color: calendarData[i]?.isOffday ? "gray" : "",
                     }}
-                    onClick={() => {
-                      calendarData[i].isOffday = !calendarData[i].isOffday;
-                      isClickable && setCalendarData([...calendarData]);
-                    }}
+                    // onClick={() => {
+                    //   calendarData[i].isOffday = !calendarData[i].isOffday;
+                    //   isClickable && setCalendarData([...calendarData]);
+                    // }}
                   >
                     {item?.day}
                   </div>

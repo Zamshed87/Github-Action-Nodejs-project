@@ -554,7 +554,7 @@ const SalaryGenerateCreate = () => {
                             salaryTpe: valueOption,
                             businessUnit: "",
                             workplaceGroup: "",
-                            workplace: "",
+                            workplace: [],
                             payrollGroup: "",
                           }));
                         }}
@@ -578,7 +578,7 @@ const SalaryGenerateCreate = () => {
                             ...prev,
                             businessUnit: valueOption,
                             workplaceGroup: "",
-                            workplace: "",
+                            workplace: [],
                             payrollGroup: "",
                           }));
                         }}
@@ -748,7 +748,7 @@ const SalaryGenerateCreate = () => {
                         }}
                         styles={{
                           ...customStyles,
-                          control: (provided, state) => ({
+                          control: (provided) => ({
                             ...provided,
                             minHeight: "auto",
                             height:
@@ -762,7 +762,7 @@ const SalaryGenerateCreate = () => {
                               borderColor: `${gray600}!important`,
                             },
                           }),
-                          valueContainer: (provided, state) => ({
+                          valueContainer: (provided) => ({
                             ...provided,
                             height:
                               values?.workplace?.length > 1 ? "auto" : "auto",
@@ -888,10 +888,6 @@ const SalaryGenerateCreate = () => {
                       <button
                         style={{
                           padding: "0px 10px",
-                          marginTop:
-                            values?.salaryTpe?.value === "PartialSalary"
-                              ? "21px"
-                              : "0px",
                         }}
                         className="btn btn-default mr-2"
                         type="button"
@@ -1047,10 +1043,6 @@ const SalaryGenerateCreate = () => {
                         style={{
                           padding: "0px 10px",
                           minWidth: "180px",
-                          marginTop:
-                            values?.salaryTpe?.value === "PartialSalary"
-                              ? "21px"
-                              : "0px",
                         }}
                         className="btn btn-default"
                         type="submit"
@@ -1071,10 +1063,6 @@ const SalaryGenerateCreate = () => {
                         style={{
                           padding: "0px 10px",
                           minWidth: "180px",
-                          marginTop:
-                            values?.salaryTpe?.value === "PartialSalary"
-                              ? "21px"
-                              : "0px",
                         }}
                         className="btn btn-default ml-2"
                         type="button"

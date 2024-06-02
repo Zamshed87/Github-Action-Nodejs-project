@@ -28,6 +28,7 @@ const ViewModalCalender = ({ propsObj }) => {
     handleSave,
     isAssignAll,
   } = propsObj;
+  
   const [monthYear, setMonthYear] = useState(moment().format("YYYY-MM"));
   const prevMonth = () => {
     setMonthYear((prev) =>

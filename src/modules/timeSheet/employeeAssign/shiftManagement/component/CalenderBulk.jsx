@@ -10,93 +10,65 @@ const CalenderBulk = ({
   isClickable = false,
 }) => {
   const [dates, setDates] = useState([]);
-  const [date, setDate] = useState({
-    year: monthYear.split("-")[0],
-    month: monthYear.split("-")[1],
-  });
+
   useEffect(() => {
-    setDate({ year: monthYear.split("-")[0], month: monthYear.split("-")[1] });
+    const [year, month] = monthYear.split("-");
+    const daysInMonth = moment(`${year}-${month}-01`).daysInMonth();
+    const generatedDates = Array.from({ length: daysInMonth }, (_, index) => {
+      const day = index + 1;
+      return {
+        intDayId: `${day}`,
+        dayName: moment(`${year}-${month}-${day}`).format("dddd"),
+      };
+    });
+    setDates(generatedDates);
   }, [monthYear]);
 
   useEffect(() => {
-    let days = moment(`${date?.month}/01/${date?.year}`).daysInMonth();
-    const demoDate = [];
-    while (days) {
-      demoDate.push({
-        intDayId: `${days}`,
-        dayName: moment(`${date?.month}/${days}/${date?.year}`).format("dddd"),
-      });
-      days--;
+    if (calendarData.length !== dates.length) {
+      const newCalendarData = dates.map((item) => ({
+        date: "",
+        intDayId: item.intDayId,
+        dayName: item.dayName,
+        isActive: false,
+      }));
+      setCalendarData(newCalendarData);
     }
-    setDates(demoDate.reverse());
-  }, [date]);
-  useEffect(() => {
-    if (calendarData.length === 0) {
-      const demoData = [];
-      dates?.forEach((item) => {
-        demoData.push({
-          date: "",
-          intDayId: item?.intDayId,
-          dayName: item?.dayName,
-          isActive: false,
-        });
-      });
-      setCalendarData(demoData);
-    }
-  }, [calendarData]);
+  }, [dates, calendarData, setCalendarData]);
 
   return (
     <div className="employee-attendance-calendar-wrapper h-100">
-      <div className="mx-0 " style={{ height: "80%" }}>
+      <div className="mx-0" style={{ height: "80%" }}>
         <div
           className="h-100"
-          style={{
-            padding: "12px",
-            borderRight: `1px solid ${gray200}`,
-          }}
+          style={{ padding: "12px", borderRight: `1px solid ${gray200}` }}
         >
           <div className="calendar p-0 rounded-0">
             <div className="calendar-heading">
-              <div>
-                <p>Sunday</p>
-              </div>
-              <div>
-                <p>Monday</p>
-              </div>
-              <div>
-                <p>Tuesday</p>
-              </div>
-              <div>
-                <p>Wednesday</p>
-              </div>
-              <div>
-                <p>Thursday</p>
-              </div>
-              <div>
-                <p>Friday</p>
-              </div>
-              <div>
-                <p>Saturday</p>
-              </div>
+              {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
+                <div key={day}>
+                  <p>{day}</p>
+                </div>
+              ))}
             </div>
             <div className="calendar-body">
-              {dates?.map((item, i) => (
+              {dates.map((item, i) => (
                 <div
                   className="calendar-date-cell"
                   key={i}
                   style={{
                     gridColumn: `${
-                      item?.dayName === "Monday"
+                      item.dayName === "Monday"
                         ? "2/3"
-                        : item?.dayName === "Tuesday"
+                        : item.dayName === "Tuesday"
                         ? "3/4"
-                        : item?.dayName === "Wednesday"
+                        : item.dayName === "Wednesday"
                         ? "4/5"
-                        : item?.dayName === "Thursday"
+                        : item.dayName === "Thursday"
                         ? "5/6"
-                        : item?.dayName === "Friday"
+                        : item.dayName === "Friday"
                         ? "6/7"
-                        : item?.dayName === "Saturday"
+                        : item.dayName === "Saturday"
                         ? "7/8"
                         : "1/2"
                     }`,
@@ -119,11 +91,14 @@ const CalenderBulk = ({
                       color: calendarData[i]?.isActive ? "gray" : "",
                     }}
                     onClick={() => {
-                      calendarData[i].isActive = true;
-                      isClickable && setCalendarData([...calendarData]);
+                      if (calendarData[i]) {
+                        const updatedCalendarData = [...calendarData];
+                        updatedCalendarData[i].isActive = !updatedCalendarData[i].isActive;
+                        isClickable && setCalendarData(updatedCalendarData);
+                      }
                     }}
                   >
-                    {item?.intDayId}
+                    {item.intDayId}
                   </div>
                 </div>
               ))}
