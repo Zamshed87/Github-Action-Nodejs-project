@@ -186,8 +186,9 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
                     isEdit,
                     setIsEdit,
                     setSingleData,
-                    leaveTypeDDL:
-                      leaveBalanceData?.length > 0 ? leaveTypeDDL : [],
+                    leaveTypeDDL: leaveTypeDDL?.filter(
+                      (i: any) => i?.IsLveBalanceApplyForSelfService
+                    ),
                     setLoading,
                     loading,
                     editPermission: permission?.isEdit,
@@ -201,6 +202,7 @@ const TLeaveApplication: React.FC<TSelfLeaveApplication> = (props) => {
               >
                 <LeaveBalanceTable
                   leaveBalanceData={leaveBalanceData}
+                  show={true}
                   values={form.getFieldsValue(true)}
                 />
               </Col>

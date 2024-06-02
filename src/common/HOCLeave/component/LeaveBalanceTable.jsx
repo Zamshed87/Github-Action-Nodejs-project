@@ -108,7 +108,7 @@ const LeaveBalanceTable = ({ leaveBalanceData = [], show = false, values }) => {
 
   return (
     <div>
-      <PCardBody styles={{ height: "240px" }}>
+      <PCardBody styles={{ minHeight: "240px" }}>
         <DataTable
           header={header}
           nodataStyle={{ marginTop: "-35px", height: "175px" }}
