@@ -808,7 +808,7 @@ const SalaryGenerateCreate = () => {
                             setHrPositionDDL
                           );
                         }}
-                        // isShowAllSelectedItem={false}
+                        isShowAllSelectedItem={false}
                         errors={errors}
                         placeholder="Workplace"
                         touched={touched}
