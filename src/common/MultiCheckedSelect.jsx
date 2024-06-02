@@ -62,12 +62,13 @@ const MultiCheckedSelect = ({
   };
 
   const handleSelectAllClick = (e) => {
-    // e.stopPropagation();
-    onChange(options);
+    e.stopPropagation();
     if (allChecked) {
       setFieldValue(name, []);
+      onChange([]);
     } else {
       setFieldValue(name, options);
+      onChange(options);
     }
     setAllChecked(!allChecked);
     setSearchString("");
