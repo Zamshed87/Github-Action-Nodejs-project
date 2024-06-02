@@ -797,7 +797,6 @@ const SalaryGenerateCreate = () => {
                         options={workplaceDDL || []}
                         value={values?.workplace}
                         onChange={(valueOption) => {
-                          console.log(valueOption);
                           setFieldValue("workplace", valueOption);
                           const values = valueOption.map((item) => item?.value);
                           const valuesStr = values.join(",");
@@ -809,7 +808,7 @@ const SalaryGenerateCreate = () => {
                             setHrPositionDDL
                           );
                         }}
-                        isShowAllSelectedItem={false}
+                        // isShowAllSelectedItem={false}
                         errors={errors}
                         placeholder="Workplace"
                         touched={touched}
