@@ -2,6 +2,7 @@ import axios from "axios";
 import IConfirmModal from "../../../../common/IConfirmModal";
 
 import MasterFilter from "common/MasterFilter";
+import MultiCheckedSelect from "common/MultiCheckedSelect";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -17,7 +18,7 @@ import { getPeopleDeskAllDDL } from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
 import NotPermittedPage from "../../../../common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500, gray600, success500 } from "../../../../utility/customColor";
+import { gray500 } from "../../../../utility/customColor";
 import { customStyles } from "../../../../utility/selectCustomStyle";
 import TaxAssignCheckerModal from "../components/taxAssignChekerModal";
 import {
@@ -554,7 +555,7 @@ const SalaryGenerateCreate = () => {
                             salaryTpe: valueOption,
                             businessUnit: "",
                             workplaceGroup: "",
-                            workplace: "",
+                            workplace: [],
                             payrollGroup: "",
                           }));
                         }}
@@ -578,7 +579,7 @@ const SalaryGenerateCreate = () => {
                             ...prev,
                             businessUnit: valueOption,
                             workplaceGroup: "",
-                            workplace: "",
+                            workplace: [],
                             payrollGroup: "",
                           }));
                         }}
@@ -726,7 +727,7 @@ const SalaryGenerateCreate = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-md-3">
+                  {/* <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Workplace</label>
                       <FormikSelect
@@ -748,7 +749,7 @@ const SalaryGenerateCreate = () => {
                         }}
                         styles={{
                           ...customStyles,
-                          control: (provided, state) => ({
+                          control: (provided) => ({
                             ...provided,
                             minHeight: "auto",
                             height:
@@ -762,7 +763,7 @@ const SalaryGenerateCreate = () => {
                               borderColor: `${gray600}!important`,
                             },
                           }),
-                          valueContainer: (provided, state) => ({
+                          valueContainer: (provided) => ({
                             ...provided,
                             height:
                               values?.workplace?.length > 1 ? "auto" : "auto",
@@ -787,8 +788,8 @@ const SalaryGenerateCreate = () => {
                         touched={touched}
                       />
                     </div>
-                  </div>
-                  {/* <div className="col-md-3">
+                  </div> */}
+                  <div className="col-md-3">
                     <div className="input-field-main">
                       <label>Workplace</label>
                       <MultiCheckedSelect
@@ -796,6 +797,7 @@ const SalaryGenerateCreate = () => {
                         options={workplaceDDL || []}
                         value={values?.workplace}
                         onChange={(valueOption) => {
+                          console.log(valueOption);
                           setFieldValue("workplace", valueOption);
                           const values = valueOption.map((item) => item?.value);
                           const valuesStr = values.join(",");
@@ -814,12 +816,12 @@ const SalaryGenerateCreate = () => {
                         setFieldValue={setFieldValue}
                       />
                     </div>
-                  </div> */}
+                  </div>
 
                   <div className="col-md-3">
                     <div className="input-field-main">
                       <label>HR Position</label>
-                      {/* <MultiCheckedSelect
+                      <MultiCheckedSelect
                         name="hrPosition"
                         options={hrPositionDDL || []}
                         value={values?.hrPosition}
@@ -831,8 +833,8 @@ const SalaryGenerateCreate = () => {
                         placeholder="HR Position"
                         touched={touched}
                         setFieldValue={setFieldValue}
-                      /> */}
-                      <FormikSelect
+                      />
+                      {/* <FormikSelect
                         name="hrPosition"
                         isClearable={false}
                         options={hrPositionDDL || []}
@@ -879,7 +881,7 @@ const SalaryGenerateCreate = () => {
                         errors={errors}
                         placeholder="HR Position"
                         touched={touched}
-                      />
+                      /> */}
                     </div>
                   </div>
 
@@ -888,10 +890,6 @@ const SalaryGenerateCreate = () => {
                       <button
                         style={{
                           padding: "0px 10px",
-                          marginTop:
-                            values?.salaryTpe?.value === "PartialSalary"
-                              ? "21px"
-                              : "0px",
                         }}
                         className="btn btn-default mr-2"
                         type="button"
@@ -1047,10 +1045,6 @@ const SalaryGenerateCreate = () => {
                         style={{
                           padding: "0px 10px",
                           minWidth: "180px",
-                          marginTop:
-                            values?.salaryTpe?.value === "PartialSalary"
-                              ? "21px"
-                              : "0px",
                         }}
                         className="btn btn-default"
                         type="submit"
@@ -1071,10 +1065,6 @@ const SalaryGenerateCreate = () => {
                         style={{
                           padding: "0px 10px",
                           minWidth: "180px",
-                          marginTop:
-                            values?.salaryTpe?.value === "PartialSalary"
-                              ? "21px"
-                              : "0px",
                         }}
                         className="btn btn-default ml-2"
                         type="button"

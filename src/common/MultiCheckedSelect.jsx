@@ -47,27 +47,23 @@ const MultiCheckedSelect = ({
   const [allChecked, setAllChecked] = useState(false);
   const [searchString, setSearchString] = useState("");
 
-  const onChangeHandler = (e) => {
-    const {
-      target: { value: targetedValue },
-    } = e;
-
-    // value.some((item) => item.value === option.value
-    onChange(targetedValue ? targetedValue : []);
-    if (targetedValue?.length !== options?.length) {
-      setAllChecked(false);
-    }
-  };
-
-  const handleDelete = (e, option) => {
+  const handleDelete = (e, option, value) => {
     e.preventDefault();
     const filtered = value?.filter((item) => item.value !== option.value);
     setFieldValue(name, filtered);
+    onChange(filtered);
     setAllChecked(false);
+  };
+  const handleAdd = (e, option, value) => {
+    e.preventDefault();
+    const filtered = [...value, option];
+    onChange(filtered);
+    setFieldValue(name, filtered);
   };
 
   const handleSelectAllClick = (e) => {
     // e.stopPropagation();
+    onChange(options);
     if (allChecked) {
       setFieldValue(name, []);
     } else {
@@ -128,7 +124,7 @@ const MultiCheckedSelect = ({
           multiple
           value={value}
           onBlur={onBlur}
-          onChange={onChangeHandler}
+          onChange={onChange}
           input={<OutlinedInput />}
           renderValue={(selected) =>
             (value.length > 0 &&
@@ -258,17 +254,26 @@ const MultiCheckedSelect = ({
           )}
           {filteredData?.length ? (
             filteredData.map((option, index) => (
-              <MenuItem sx={{ padding: 0 }} key={index} value={option}>
+              <li key={index} className="d-flex align-items-center">
                 <Checkbox
                   color="success"
                   sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }}
-                  checked={value.some((item) => item.value === option.value)}
+                  checked={
+                    value.length > 0 &&
+                    value?.some((item) => item.value === option.value)
+                  }
+                  onClick={(e) => {
+                    value?.length > 0 &&
+                    value?.some((item) => item?.value === option?.value)
+                      ? handleDelete(e, option, value)
+                      : handleAdd(e, option, value);
+                  }}
                 />
                 <ListItemText
                   primaryTypographyProps={{ fontSize: "12px" }}
                   primary={option.label}
                 />
-              </MenuItem>
+              </li>
             ))
           ) : (
             <MenuItem sx={{ paddingTop: 0, paddingBottom: 0 }}>
