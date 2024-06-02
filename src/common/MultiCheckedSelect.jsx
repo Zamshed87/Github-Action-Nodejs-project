@@ -172,7 +172,7 @@ const MultiCheckedSelect = ({
                         onMouseDown={(event) => event.stopPropagation()}
                       />
                     }
-                    onDelete={(e) => handleDelete(e, item)}
+                    onDelete={(e) => handleDelete(e, item, value)}
                   />
                 ))}
               </div>
@@ -254,7 +254,7 @@ const MultiCheckedSelect = ({
             </li>
           )}
           {filteredData?.length ? (
-            filteredData.map((option, index) => (
+            filteredData?.map((option, index) => (
               <li key={index} className="d-flex align-items-center">
                 <Checkbox
                   color="success"
