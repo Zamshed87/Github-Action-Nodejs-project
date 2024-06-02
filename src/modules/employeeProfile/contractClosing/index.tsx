@@ -260,13 +260,13 @@ const ContactClosingReport = () => {
       title: "Contractual From Date",
       dataIndex: "dteContactFromDate",
       render: (_: any, rec: any) => dateFormatter(rec?.dteContactFromDate),
-      width: 80,
+      width: 120,
     },
     {
       title: "Contractual To Date",
       dataIndex: "dteContactToDate",
       render: (_: any, rec: any) => dateFormatter(rec?.dteContactToDate),
-      width: 80,
+      width: 120,
     },
 
     {
@@ -534,7 +534,6 @@ const ContactClosingReport = () => {
                 pagination,
               });
             }}
-            scroll={{ x: 2000 }}
           />
         </PCard>
         <Popover

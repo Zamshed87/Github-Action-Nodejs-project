@@ -1,6 +1,7 @@
 import axios from "axios";
 import IConfirmModal from "../../../../common/IConfirmModal";
 
+import MasterFilter from "common/MasterFilter";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -28,6 +29,7 @@ import {
 } from "../helper";
 import { lastDayOfMonth } from "./../../../../utility/dateFormatter";
 import {
+  filterData,
   salaryGenerateCreateEditTableColumn,
   salaryGenerateInitialValues,
   salaryGenerateValidationSchema,
@@ -43,10 +45,7 @@ const SalaryGenerateCreate = () => {
   const { orgId, buId, employeeId, wgId, buName, wgName, wId, wName } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
 
-  const { permissionList, workplaceDDL: allWorkplace } = useSelector(
-    (state) => state?.auth,
-    shallowEqual
-  );
+  const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
   permissionList.forEach((item) => {
@@ -66,11 +65,11 @@ const SalaryGenerateCreate = () => {
   const [hrPositionDDL, setHrPositionDDL] = useState([]);
   const [pages, setPages] = useState({
     current: 1,
-    pageSize: 500,
+    pageSize: 5000,
     total: 0,
   });
   const [allEmployeeString, setAllEmployeeString] = useState("");
-  const [isAllAssign, setAllAssign] = useState(false);
+  const [, setAllAssign] = useState(false);
   // DDL
   // const [wingDDL, setWingDDL] = useState([]);
   // const [soleDepoDDL, setSoleDepoDDL] = useState([]);
@@ -153,12 +152,7 @@ const SalaryGenerateCreate = () => {
     setRowDto([]);
   }, [wgId]);
 
-  const [
-    workplaceNhrPosition,
-    getWorkplaceNhrPosition,
-    ,
-    setWorkplaceNhrPosition,
-  ] = useAxiosGet([]);
+  const [, getWorkplaceNhrPosition] = useAxiosGet([]);
   // for edit
   useEffect(() => {
     if (+params?.id) {
@@ -214,8 +208,7 @@ const SalaryGenerateCreate = () => {
         setLoading,
         wgId,
         buId,
-        pages,
-        setPages
+        values?.searchTxt
       );
     }
     setFieldValue("workplace", []);
@@ -245,10 +238,10 @@ const SalaryGenerateCreate = () => {
     }
   };
   const salaryGeneratepayloadHandler = (values, allData, isAllAssign) => {
-    const valueArray =
-      (values?.workplace || [])?.map((obj) => obj?.intWorkplaceId) || [];
+    // const valueArray =
+    //   (values?.workplace || [])?.map((obj) => obj?.intWorkplaceId) || [];
     // Joining the values into a string separated by commas
-    const workplaceListFromValues = '"' + valueArray.join(",") + '"';
+    // const workplaceListFromValues = '"' + valueArray.join(",") + '"';
 
     const modifyRowDto = allData
       ?.filter((itm) => itm?.isSalaryGenerate === true)
@@ -327,7 +320,7 @@ const SalaryGenerateCreate = () => {
           wId,
           {
             current: pages?.current,
-            pageSize: 500,
+            pageSize: 5000,
           },
           setPages,
           setAllEmployeeString,
@@ -415,12 +408,7 @@ const SalaryGenerateCreate = () => {
           setLoading,
           wgId,
           buId,
-          // pagination,
-          {
-            current: pages?.pagination,
-            pageSize: 500,
-          },
-          setPages
+          srcText
         );
       } else {
         return getLandingData(pagination, srcText);
@@ -436,11 +424,7 @@ const SalaryGenerateCreate = () => {
           setLoading,
           wgId,
           buId,
-          {
-            current: pages?.pagination,
-            pageSize: 500,
-          },
-          setPages
+          srcText
         );
       } else {
         return getLandingData(pagination, srcText);
@@ -528,10 +512,6 @@ const SalaryGenerateCreate = () => {
     onSubmit: (values) => saveHandler(values),
   });
 
-  console.log(hrPositionDDL);
-  console.log(workplaceDDL);
-  console.log(values);
-
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -574,7 +554,7 @@ const SalaryGenerateCreate = () => {
                             salaryTpe: valueOption,
                             businessUnit: "",
                             workplaceGroup: "",
-                            workplace: "",
+                            workplace: [],
                             payrollGroup: "",
                           }));
                         }}
@@ -598,7 +578,7 @@ const SalaryGenerateCreate = () => {
                             ...prev,
                             businessUnit: valueOption,
                             workplaceGroup: "",
-                            workplace: "",
+                            workplace: [],
                             payrollGroup: "",
                           }));
                         }}
@@ -768,7 +748,7 @@ const SalaryGenerateCreate = () => {
                         }}
                         styles={{
                           ...customStyles,
-                          control: (provided, state) => ({
+                          control: (provided) => ({
                             ...provided,
                             minHeight: "auto",
                             height:
@@ -782,7 +762,7 @@ const SalaryGenerateCreate = () => {
                               borderColor: `${gray600}!important`,
                             },
                           }),
-                          valueContainer: (provided, state) => ({
+                          valueContainer: (provided) => ({
                             ...provided,
                             height:
                               values?.workplace?.length > 1 ? "auto" : "auto",
@@ -827,7 +807,7 @@ const SalaryGenerateCreate = () => {
                             setHrPositionDDL
                           );
                         }}
-                        // isShowAllSelectedItem={false}
+                        isShowAllSelectedItem={false}
                         errors={errors}
                         placeholder="Workplace"
                         touched={touched}
@@ -862,7 +842,7 @@ const SalaryGenerateCreate = () => {
                         }}
                         styles={{
                           ...customStyles,
-                          control: (provided, state) => ({
+                          control: (provided) => ({
                             ...provided,
                             minHeight: "auto",
                             height:
@@ -876,7 +856,7 @@ const SalaryGenerateCreate = () => {
                               borderColor: `${gray600}!important`,
                             },
                           }),
-                          valueContainer: (provided, state) => ({
+                          valueContainer: (provided) => ({
                             ...provided,
                             height:
                               values?.hrPosition?.length > 1 ? "auto" : "auto",
@@ -908,10 +888,6 @@ const SalaryGenerateCreate = () => {
                       <button
                         style={{
                           padding: "0px 10px",
-                          marginTop:
-                            values?.salaryTpe?.value === "PartialSalary"
-                              ? "21px"
-                              : "0px",
                         }}
                         className="btn btn-default mr-2"
                         type="button"
@@ -940,7 +916,7 @@ const SalaryGenerateCreate = () => {
                               wId,
                               {
                                 current: pages?.current,
-                                pageSize: 2000,
+                                pageSize: 5000,
                               },
                               setPages,
                               setAllEmployeeString,
@@ -1066,10 +1042,7 @@ const SalaryGenerateCreate = () => {
                       <button
                         style={{
                           padding: "0px 10px",
-                          marginTop:
-                            values?.salaryTpe?.value === "PartialSalary"
-                              ? "21px"
-                              : "0px",
+                          minWidth: "180px",
                         }}
                         className="btn btn-default"
                         type="submit"
@@ -1089,10 +1062,7 @@ const SalaryGenerateCreate = () => {
                       <button
                         style={{
                           padding: "0px 10px",
-                          marginTop:
-                            values?.salaryTpe?.value === "PartialSalary"
-                              ? "21px"
-                              : "0px",
+                          minWidth: "180px",
                         }}
                         className="btn btn-default ml-2"
                         type="button"
@@ -1121,6 +1091,21 @@ const SalaryGenerateCreate = () => {
               >
                 Employee Salary Generate List
               </h2>
+              <MasterFilter
+                isHiddenFilter
+                inputWidth="200px"
+                width="200px"
+                styles={{ marginRight: "4px" }}
+                value={values?.srcText}
+                setValue={(value) => {
+                  setFieldValue("srcText", value);
+                  filterData(value, allData, setRowDto);
+                }}
+                cancelHandler={() => {
+                  setFieldValue("srcText", "");
+                  filterData("", allData, setRowDto);
+                }}
+              />
             </div>
             <div>
               {rowDto?.length > 0 ? (
@@ -1144,11 +1129,10 @@ const SalaryGenerateCreate = () => {
                         handleTableChange(
                           pagination,
                           newRowDto,
-                          values?.search || ""
+                          values?.searchTxt || ""
                         )
                       }
-                      pages={pages?.pageSize}
-                      pagination={pages}
+                      removePagination={true}
                     />
                   </div>
                 </>

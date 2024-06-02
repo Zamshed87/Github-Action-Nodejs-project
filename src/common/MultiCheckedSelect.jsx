@@ -47,31 +47,28 @@ const MultiCheckedSelect = ({
   const [allChecked, setAllChecked] = useState(false);
   const [searchString, setSearchString] = useState("");
 
-  const onChangeHandler = (e) => {
-    const {
-      target: { value: targetedValue },
-    } = e;
-
-    // value.some((item) => item.value === option.value
-    onChange(targetedValue ? targetedValue : []);
-    if (targetedValue?.length !== options?.length) {
-      setAllChecked(false);
-    }
-  };
-
-  const handleDelete = (e, option) => {
+  const handleDelete = (e, option, value) => {
     e.preventDefault();
     const filtered = value?.filter((item) => item.value !== option.value);
     setFieldValue(name, filtered);
+    onChange(filtered);
     setAllChecked(false);
+  };
+  const handleAdd = (e, option, value) => {
+    e.preventDefault();
+    const filtered = [...value, option];
+    onChange(filtered);
+    setFieldValue(name, filtered);
   };
 
   const handleSelectAllClick = (e) => {
-    // e.stopPropagation();
+    e.stopPropagation();
     if (allChecked) {
       setFieldValue(name, []);
+      onChange([]);
     } else {
       setFieldValue(name, options);
+      onChange(options);
     }
     setAllChecked(!allChecked);
     setSearchString("");
@@ -128,7 +125,7 @@ const MultiCheckedSelect = ({
           multiple
           value={value}
           onBlur={onBlur}
-          onChange={onChangeHandler}
+          onChange={onChange}
           input={<OutlinedInput />}
           renderValue={(selected) =>
             (value.length > 0 &&
@@ -175,7 +172,7 @@ const MultiCheckedSelect = ({
                         onMouseDown={(event) => event.stopPropagation()}
                       />
                     }
-                    onDelete={(e) => handleDelete(e, item)}
+                    onDelete={(e) => handleDelete(e, item, value)}
                   />
                 ))}
               </div>
@@ -257,18 +254,27 @@ const MultiCheckedSelect = ({
             </li>
           )}
           {filteredData?.length ? (
-            filteredData.map((option, index) => (
-              <MenuItem sx={{ padding: 0 }} key={index} value={option}>
+            filteredData?.map((option, index) => (
+              <li key={index} className="d-flex align-items-center">
                 <Checkbox
                   color="success"
                   sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }}
-                  checked={value.some((item) => item.value === option.value)}
+                  checked={
+                    value.length > 0 &&
+                    value?.some((item) => item.value === option.value)
+                  }
+                  onClick={(e) => {
+                    value?.length > 0 &&
+                    value?.some((item) => item?.value === option?.value)
+                      ? handleDelete(e, option, value)
+                      : handleAdd(e, option, value);
+                  }}
                 />
                 <ListItemText
                   primaryTypographyProps={{ fontSize: "12px" }}
                   primary={option.label}
                 />
-              </MenuItem>
+              </li>
             ))
           ) : (
             <MenuItem sx={{ paddingTop: 0, paddingBottom: 0 }}>
