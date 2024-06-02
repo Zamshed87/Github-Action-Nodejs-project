@@ -205,8 +205,7 @@ export const salaryGenerateCreateEditTableColumn = (
 ) => [
   {
     title: "SL",
-    render: (_, record, index) =>
-      (pages?.current - 1) * pages?.pageSize + index + 1,
+    render: (_, record, index) => index + 1,
   },
   {
     title: () => (
@@ -342,3 +341,19 @@ export const salaryGenerateCreateEditTableColumn = (
     dataIndex: "strPayrollGroup",
   },
 ];
+
+export const filterData = (keywords, allData, setRowDto) => {
+  try {
+    const regex = new RegExp(keywords?.toLowerCase());
+    const newData = allData?.filter(
+      (item) =>
+        regex.test(item?.strEmployeeName?.toLowerCase()) ||
+        regex.test(item?.strEmployeeCode?.toLowerCase()) ||
+        regex.test(item?.strDesignation?.toLowerCase()) ||
+        regex.test(item?.strEmployeeName?.toLowerCase())
+    );
+    setRowDto(newData);
+  } catch {
+    setRowDto([]);
+  }
+};

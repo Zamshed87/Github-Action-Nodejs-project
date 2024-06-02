@@ -145,7 +145,7 @@ function AddEditForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let getAdditionAndDeductionById = () => {
+  const getAdditionAndDeductionById = () => {
     getSalaryAdditionAndDeductionById(
       empId,
       workplaceGroupId,
@@ -190,7 +190,7 @@ function AddEditForm() {
     if (!values?.isAutoRenew && !values?.toMonth) {
       return toast.warn("Auto Renew or to date must be selected!!");
     }
-    let additionAndDeductionExists = rowDto.filter(
+    const additionAndDeductionExists = rowDto.filter(
       (item) =>
         item?.intAdditionNDeductionTypeId ===
         values?.allowanceAndDeduction?.value
@@ -202,8 +202,9 @@ function AddEditForm() {
       strEntryType: "ENTRY",
       intSalaryAdditionAndDeductionId: 0,
       intAccountId: orgId,
-      intBusinessUnitId: buId,
-      intWorkplaceGroupId: wgId,
+      intBusinessUnitId: empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
+      intWorkplaceGroupId:  empBasic?.employeeProfileLandingView?.intWorkplaceGroupId  || wgId,
+      intWorkplaceId:  empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
       intEmployeeId: values?.employee?.value,
       isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
       intYear: +values?.fromMonth?.split("-")[0] || null,
@@ -221,7 +222,6 @@ function AddEditForm() {
       intToYear: +values?.toMonth?.split("-")[0] || null,
       intToMonth: +values?.toMonth?.split("-")[1] || null,
       strToMonth: months[+values?.toMonth?.split("-")[1] - 1] || null,
-      intWorkplaceId: wId,
     };
     data.push(obj);
     setRowDto(data);
@@ -246,8 +246,9 @@ function AddEditForm() {
         ? singleData?.intSalaryAdditionAndDeductionId
         : 0,
       intAccountId: orgId,
-      intBusinessUnitId: buId,
-      intWorkplaceGroupId: wgId,
+      intBusinessUnitId: empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
+      intWorkplaceGroupId: empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
+      intWorkplaceId: empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
       intEmployeeId: values?.employee?.value,
       isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
       intYear: +values?.fromMonth?.split("-")[0] || null,
@@ -270,7 +271,6 @@ function AddEditForm() {
       intAllowanceDuration: values?.intAllowanceDuration?.value,
       numMaxLimit: +values?.maxAmount,
       intAllowanceAttendenceStatus: values?.intAllowanceAttendenceStatus?.value,
-      intWorkplaceId: wId,
     };
     createEditAllowanceAndDeduction(obj, setLoading, cb);
   };
@@ -278,15 +278,16 @@ function AddEditForm() {
   const demoPopup = (values) => {
     const payload = {
       strEntryType:
-        isView && !isEdit && "DeleteEmpSalaryAdditionNDeductionById",
+        isView && !isEdit ? "DeleteEmpSalaryAdditionNDeductionById" : "",
       intSalaryAdditionAndDeductionId: values
         ? values?.intSalaryAdditionAndDeductionId
         : 0,
       intAccountId: orgId,
-      intBusinessUnitId: buId,
-      intWorkplaceGroupId: wgId,
+      intBusinessUnitId: empBasic?.employeeProfileLandingView?.intBusinessUnitId || buId,
+      intWorkplaceGroupId:  empBasic?.employeeProfileLandingView?.intWorkplaceGroupId || wgId,
+      intWorkplaceId: empBasic?.employeeProfileLandingView?.intWorkplaceId || wId,
       intEmployeeId: values?.intEmployeeId,
-      isAutoRenew: values?.isAutoRenew,
+      isAutoRenew: values?.isAutoRenew ? true : false,
       intYear: values?.intYear,
       intMonth: values?.intMonth,
       strMonth: values?.strMonth,
@@ -307,7 +308,7 @@ function AddEditForm() {
     const callback = () => {
       getAdditionAndDeductionById();
     };
-    let confirmObject = {
+    const confirmObject = {
       closeOnClickOutside: false,
       message: "Are you want to sure you delete allowance & deduction?",
       yesAlertFunc: () => {
