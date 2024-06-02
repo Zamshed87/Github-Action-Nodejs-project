@@ -157,46 +157,10 @@ export default function BonusSetupLanding() {
     );
   };
 
-  // const getData = () => {
-  //   getBonusSetupLanding(
-  //     {
-  //       strPartName: "BonusSetupList",
-  //       intBonusHeaderId: 0,
-  //       intAccountId: orgId,
-  //       intBusinessUnitId: buId,
-  //       intBonusId: 0,
-  //       intPayrollGroupId: 0,
-  //       intWorkplaceGroupId: wgId,
-  //       intWorkplaceId: wId,
-  //       intReligionId: 0,
-  //       dteEffectedDate: todayDate(),
-  //       intCreatedBy: employeeId,
-  //     },
-  //     setRowDto,
-  //     setLoading
-  //   );
-  // };
 
   useEffect(() => {
     setHeaderList({});
     getData(pages);
-    // getBonusSetupLanding(
-    //   {
-    //     strPartName: "BonusSetupList",
-    //     intBonusHeaderId: 0,
-    //     intAccountId: orgId,
-    //     intBusinessUnitId: buId,
-    //     intBonusId: 0,
-    //     intPayrollGroupId: 0,
-    //     intWorkplaceGroupId: wgId,
-    //     intWorkplaceId: wId,
-    //     intReligionId: 0,
-    //     dteEffectedDate: todayDate(),
-    //     intCreatedBy: employeeId,
-    //   },
-    //   setRowDto,
-    //   setLoading
-    // );
   }, [orgId, buId, employeeId, wId, wgId]);
 
   const { setFieldValue, handleSubmit, values } = useFormik({
