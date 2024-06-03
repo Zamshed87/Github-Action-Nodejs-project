@@ -35,6 +35,7 @@ import {
   getSalaryGenerateRequestLanding,
 } from "./helper";
 import "./salaryGenerate.css";
+import { LightTooltip } from "common/LightTooltip";
 
 const initialValues = {
   salaryTpe: {
@@ -314,13 +315,16 @@ const SalaryGenerateLanding = () => {
         filter: true,
         width: 120,
       },
-      // {
-      //   title: "Workplace Name",
-      //   dataIndex: "strWorkplace",
-      //   sorter: true,
-      //   filter: true,
-      //   width: 120,
-      // },
+      {
+        title: "Workplaces",
+        render: (text) => (
+          <LightTooltip title={<div>{text}</div>}>
+            {text.substring(0, 15) + "...."}
+          </LightTooltip>
+        ),
+        dataIndex: "strWorkplaceList",
+        width: 150,
+      },
       /*     {
         title: "Wing",
         dataIndex: "wingName",

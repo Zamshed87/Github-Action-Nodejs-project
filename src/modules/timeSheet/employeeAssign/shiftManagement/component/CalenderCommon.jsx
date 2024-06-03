@@ -130,6 +130,7 @@ const CalenderCommon = ({
                         : uniqueShiftColor[item?.strCalendarName],
                     }}
                     onClick={() => {
+                      console.log("isClickable",isClickable)
                       calendarData[i].isActive = true;
                       isClickable && setCalendarData([...calendarData]);
                     }}

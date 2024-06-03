@@ -42,7 +42,7 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
     imageFile,
     setImageFile,
     isEdit,
-    leaveTypeDDL,
+    leaveTypeDDL = [],
     homeReset,
   } = propsObj;
   // hook
