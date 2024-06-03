@@ -52,7 +52,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     getEmployeDepartment();
   }, [buId, wgId, wId]);
 
-  const getAttendanceFilterData = () => {
+  const getAttendanceFilterData = (isCustom = false) => {
     const {
       empSearchType,
       date,
@@ -87,7 +87,13 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       method: "post",
       payload:
         empSearchType === 1
-          ? payload
+          ? isCustom
+            ? {
+                ...payload,
+
+                attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
+              }
+            : payload
           : {
               ...payload,
 
@@ -144,11 +150,11 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     });
   };
 
-  const viewHandler = async () => {
+  const viewHandler = async (isCustom = false) => {
     await form
       .validateFields()
       .then(() => {
-        getAttendanceFilterData();
+        getAttendanceFilterData(isCustom);
       })
       .catch(() => {
         // console.error("Validate Failed:", info?.message);
@@ -697,7 +703,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                             tdate: moment(currentMonthDate),
                           });
 
-                          viewHandler();
+                          viewHandler(true);
                         }
                       );
                     }}
