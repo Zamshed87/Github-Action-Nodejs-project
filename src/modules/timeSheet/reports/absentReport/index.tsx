@@ -308,7 +308,7 @@ const AbsentReport = () => {
                   );
                   createCommonExcelFile({
                     titleWithDate: `Absent Report ${moment(
-                      values?.todate
+                      values?.toDate
                     ).format("YYYY-MM-DD")} `,
                     fromDate: "",
                     toDate: "",

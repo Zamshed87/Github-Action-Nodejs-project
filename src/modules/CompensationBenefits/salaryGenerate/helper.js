@@ -388,8 +388,7 @@ export const getSalaryGenerateRequestRowId = async (
   setLoading,
   wgId,
   buId,
-  pages,
-  setPages
+  searchTxt = ""
 ) => {
   setLoading && setLoading(true);
 
@@ -397,10 +396,10 @@ export const getSalaryGenerateRequestRowId = async (
 
   try {
     const res = await axios.get(
-      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${idParams}&IntPageSize=${2000}`
+      `/Payroll/SalarySelectQueryAll?partName=${partName}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}${idParams}&searchTxt=${searchTxt}`
     );
     if (res?.data) {
-      setPages({ ...pages, total: res?.data?.[0]?.totalCount });
+      // setPages({ ...pages, total: res?.data?.[0]?.totalCount });
       const modifyRowData = res?.data?.map((itm) => {
         return {
           ...itm,

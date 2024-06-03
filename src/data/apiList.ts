@@ -21,6 +21,7 @@ export const apiList = {
   SectionDDL: "/SaasMasterData/SectionDDL",
   BonusAllLanding: "/Employee/BonusAllLanding",
   CRUDBonusSetup: "/Employee/CRUDBonusSetup",
+  CreateUpdateBounsSetup: "/Employee/CreateUpdateBounsSetup",
   CheckBonusAlreadyExistInWorkPlace:
     "/Employee/CheckBonusAlreadyExistInWorkPlace",
   CommonEmployeeDDL: "/Employee/CommonEmployeeDDL",
@@ -107,11 +108,16 @@ export const apiList = {
   CafeteriaConfigLanding: "/Cafeteria/CafeteriaConfigLanding",
 
   CreateCafeteriaConfig: "/Cafeteria/CreateCafeteriaConfig",
+  GetAttendanceDetailsReport: "/Employee/GetAttendanceDetailsReport",
   EditCafeteriaConfig: "/Cafeteria/EditCafeteriaConfig",
   GetDateWiseAttendanceReport: "/Employee/GetDateWiseAttendanceReport",
+  MonthlyRosterReportForSingleEmployee:
+    "/TimeSheetReport/MonthlyRosterReportForSingleEmployee",
 
   GetEarlyOutReport: "/TimeSheetReport/GetEarlyOutReport",
   GetLateReport: "/TimeSheetReport/GetLateReport",
+  GetAssignedSalaryDetailsReport_Matador:
+    "/PdfAndExcelReport/GetAssignedSalaryDetailsReport_Matador",
 
   TimeManagementDynamicPIVOTReport:
     "/TimeSheetReport/TimeManagementDynamicPIVOTReport",
@@ -141,4 +147,5 @@ export const apiList = {
     "/PdfAndExcelReport/GetSalarySummaryCostCenterReport_Matador",
   holidayOffdayLanding: "/Employee/HolidayOffdaySwapEmployeeLanding",
   holidayOffdayAssignPost: "/Employee/HolidayOffdaySwapEmployeeAssign",
+  BonusSetupGetbyByBonusCode: "/Employee/BonusSetupGetbyByBonusCode"
 };

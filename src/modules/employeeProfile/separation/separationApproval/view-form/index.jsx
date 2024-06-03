@@ -32,7 +32,7 @@ export default function ViewFormComponent({ objProps }) {
     fullscreen = false,
     setLoading,
   } = objProps;
-  const { orgId, employeeId, isOfficeAdmin, wId, buId, strDisplayName } =
+  const { orgId, employeeId, isOfficeAdmin, wId, buId, strDisplayName, wgId } =
     useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   var LogoURL = "";
@@ -69,7 +69,7 @@ export default function ViewFormComponent({ objProps }) {
           isAdmin: isOfficeAdmin,
           approverId: employeeId,
           businessUnitId: buId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,

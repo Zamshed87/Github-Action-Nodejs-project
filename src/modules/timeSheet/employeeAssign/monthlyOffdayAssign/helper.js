@@ -1,6 +1,5 @@
 import { InfoOutlined } from "@mui/icons-material";
 import axios from "axios";
-import moment from "moment";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../../common/AvatarComponent";
 
@@ -250,15 +249,16 @@ export const offDayAssignDtoCol = (
                 if (!permission?.isCreate)
                   return toast.warn("You don't have permission");
                 !loading && setShowModal(true);
-                getSingleCalendar(
-                  moment().format("MM"),
-                  moment().format("YYYY"),
-                  record?.employeeId,
-                  setCalendarData,
-                  setLoading
-                );
+                // getSingleCalendar(
+                //   moment().format("MM"),
+                //   moment().format("YYYY"),
+                //   record?.employeeId,
+                //   setCalendarData,
+                //   setLoading
+                // );
                 setSelectedSingleEmployee([record]);
                 setSingleAssign(true);
+                // setShowModal(true);
                 setIsAssignAll(false);
               }}
             >
