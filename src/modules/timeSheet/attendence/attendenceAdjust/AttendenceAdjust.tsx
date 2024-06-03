@@ -12,7 +12,7 @@ import type { RangePickerProps } from "antd/es/date-picker";
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tooltip } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect } from "react";
@@ -681,22 +681,29 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 marginTop: "23px",
               }}
             >
-              <PButton
-                type="primary"
-                content="Custom [26 - 25]"
-                onClick={() => {
-                  custom26to25LandingDataHandler(
-                    (previousMonthDate: any, currentMonthDate: any) => {
-                      form.setFieldsValue({
-                        date: moment(previousMonthDate),
-                        tdate: moment(currentMonthDate),
-                      });
+              <Tooltip
+                title="Previous Month 26 to Current Month 25"
+                placement="bottom"
+              >
+                <>
+                  <PButton
+                    type="primary"
+                    content="Custom [26 - 25]"
+                    onClick={() => {
+                      custom26to25LandingDataHandler(
+                        (previousMonthDate: any, currentMonthDate: any) => {
+                          form.setFieldsValue({
+                            date: moment(previousMonthDate),
+                            tdate: moment(currentMonthDate),
+                          });
 
-                      viewHandler();
-                    }
-                  );
-                }}
-              />
+                          viewHandler();
+                        }
+                      );
+                    }}
+                  />
+                </>
+              </Tooltip>
             </Col>
           </Row>
         </div>
