@@ -41,6 +41,7 @@ export default function BonusSetupLanding() {
     strReligionNameList: [],
     strEmploymentTypeList: [],
     hrPositionNameList: [],
+    strBonusSetupGroupCodeList:[]
   };
 
   let permission = null;
@@ -186,6 +187,14 @@ export default function BonusSetupLanding() {
         sort: true,
         filter: true,
         filterDropDownList: headerList[`strBonusNameList`] || [],
+        width: 200,
+      },
+      {
+        title: "Bonus Group",
+        dataIndex: "strBonusSetupGroupCode",
+        sort: true,
+        filter: true,
+        filterDropDownList: headerList[`strBonusSetupGroupCodeList`] || [],
         width: 200,
       },
       {

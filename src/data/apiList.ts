@@ -145,4 +145,5 @@ export const apiList = {
     "/PdfAndExcelReport/GetSalarySummaryCostCenterReport_Matador",
   holidayOffdayLanding: "/Employee/HolidayOffdaySwapEmployeeLanding",
   holidayOffdayAssignPost: "/Employee/HolidayOffdaySwapEmployeeAssign",
+  BonusSetupGetbyByBonusCode: "/Employee/BonusSetupGetbyByBonusCode"
 };
