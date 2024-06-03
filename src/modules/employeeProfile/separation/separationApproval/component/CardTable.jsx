@@ -52,10 +52,8 @@ const CardTable = ({ propsObj }) => {
     loading,
   } = propsObj;
 
-  const { employeeId, isOfficeAdmin, orgId, strDisplayName, wId, buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
+  const { employeeId, isOfficeAdmin, orgId, strDisplayName, wId, buId, wgId } =
+    useSelector((state) => state?.auth?.profileData, shallowEqual);
 
   const [page, setPage] = useState(1);
   const [paginationSize, setPaginationSize] = useState(15);
@@ -85,7 +83,7 @@ const CardTable = ({ propsObj }) => {
           approverId: employeeId,
           workplaceId: wId,
           businessUnitId: buId,
-          workplaceGroupId: 0,
+          workplaceGroupId: wgId,
           departmentId: 0,
           designationId: 0,
           applicantId: 0,
