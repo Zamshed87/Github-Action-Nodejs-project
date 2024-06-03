@@ -18,11 +18,11 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { yearDDLAction } from "utility/yearDDL";
 import DemoImg from "../../../assets/images/demo.png";
 import { dateFormatter } from "utility/dateFormatter";
-import TLeaveApplicationForm from "common/HOCLeave/component/TLeaveApplicationForm";
 import LeaveBalanceTable from "common/HOCLeave/component/LeaveBalanceTable";
 import NoResult from "common/NoResult";
 import { gray500 } from "utility/customColor";
 import Loading from "common/loading/Loading";
+import TLeaveApplicationForm from "common/HOCLeave/component/TLeaveApplicationForm";
 
 type TEmLeaveApplication = any;
 const EmLeaveApplicationT: React.FC<TEmLeaveApplication> = (props) => {

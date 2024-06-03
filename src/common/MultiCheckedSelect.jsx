@@ -79,8 +79,11 @@ const MultiCheckedSelect = ({
       value?.length > 0 &&
       options?.length > 0 &&
       value?.length === options?.length
-    )
+    ) {
       setAllChecked(true);
+    } else {
+      setAllChecked(false);
+    }
   }, [value?.length, options?.length]);
 
   const filteredData = options?.filter((item) =>
