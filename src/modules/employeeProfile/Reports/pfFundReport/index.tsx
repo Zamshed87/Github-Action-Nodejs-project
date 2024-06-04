@@ -188,7 +188,7 @@ const PFFundReport: React.FC<TPFFundReport> = () => {
         record?.status ? (
           <PBadge type="success" text="Active" />
         ) : record?.status === false ? (
-          <PBadge type="warning" text="Inactive" />
+          <PBadge type="danger" text="Inactive" />
         ) : (
           "N/A"
         ),

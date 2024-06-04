@@ -12,7 +12,7 @@ import type { RangePickerProps } from "antd/es/date-picker";
 import PBadge from "Components/Badge";
 import { ModalFooter, PModal } from "Components/Modal";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tooltip } from "antd";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect } from "react";
@@ -21,6 +21,7 @@ import { convertTo12HourFormat } from "utility/timeFormatter";
 import ChangedInOutTimeEmpListModal from "./component/ChangedInOutTime";
 import { AttendanceType, EmpFilterType } from "./utils/utils";
 import { toast } from "react-toastify";
+import { custom26to25LandingDataHandler } from "modules/employeeProfile/Reports/employeeJobCard/utils";
 
 type TAttendenceAdjust = unknown;
 const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
@@ -51,7 +52,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     getEmployeDepartment();
   }, [buId, wgId, wId]);
 
-  const getAttendanceFilterData = () => {
+  const getAttendanceFilterData = (isCustom = false) => {
     const {
       empSearchType,
       date,
@@ -86,7 +87,13 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       method: "post",
       payload:
         empSearchType === 1
-          ? payload
+          ? isCustom
+            ? {
+                ...payload,
+
+                attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
+              }
+            : payload
           : {
               ...payload,
 
@@ -143,11 +150,11 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
     });
   };
 
-  const viewHandler = async () => {
+  const viewHandler = async (isCustom = false) => {
     await form
       .validateFields()
       .then(() => {
-        getAttendanceFilterData();
+        getAttendanceFilterData(isCustom);
       })
       .catch(() => {
         // console.error("Validate Failed:", info?.message);
@@ -161,13 +168,21 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         const values = form.getFieldsValue(true);
         let payload: any[] = [];
         if (values?.attendanceAdujust?.label === "Changed In/Out Time") {
-          const isEmpty = selectedPayloadState?.some(item => !item?.intimeUpdate || !item?.outtimeUpdate);
-          if(isEmpty){
-            return toast.warn("Please fill all time fields")
+          const isEmpty = selectedPayloadState?.some(
+            (item) => !item?.intimeUpdate || !item?.outtimeUpdate
+          );
+          if (isEmpty) {
+            return toast.warn("Please fill all time fields");
           }
           payload = selectedPayloadState.map((item) => {
-            const inTImeStr = item?.inDateUpdate + "T" + moment(item?.intimeUpdate).format("HH:mm:ss")
-            const outTimeStr = item?.outDateUpdate + "T" + moment(item?.outtimeUpdate).format("HH:mm:ss")
+            const inTImeStr =
+              item?.inDateUpdate +
+              "T" +
+              moment(item?.intimeUpdate).format("HH:mm:ss");
+            const outTimeStr =
+              item?.outDateUpdate +
+              "T" +
+              moment(item?.outtimeUpdate).format("HH:mm:ss");
             return {
               id: item?.ManualAttendanceId || 0,
               accountId: orgId,
@@ -485,7 +500,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
         </PCardHeader>
         <div className="card-style">
           <Row gutter={[10, 2]} className="mb-3">
-            <Col md={6} sm={12} xs={24}>
+            <Col md={5} sm={12} xs={24}>
               <PSelect
                 options={EmpFilterType}
                 name="empSearchType"
@@ -509,7 +524,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                 const { empSearchType } = form.getFieldsValue(true);
                 return empSearchType === 1 ? (
                   <>
-                    <Col md={6} sm={12} xs={24}>
+                    <Col md={5} sm={12} xs={24}>
                       <PInput
                         type="date"
                         picker="month"
@@ -529,7 +544,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                         format={"MMMM-YYYY"}
                       />
                     </Col>
-                    <Col md={6} sm={12} xs={24}>
+                    <Col md={5} sm={12} xs={24}>
                       <PSelect
                         name="employee"
                         label="Select a Employee"
@@ -553,7 +568,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   </>
                 ) : empSearchType === 2 ? (
                   <>
-                    <Col md={6} sm={24}>
+                    <Col md={5} sm={24}>
                       <PSelect
                         options={empDepartmentDDL?.data || []}
                         name="department"
@@ -572,7 +587,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                         ]}
                       />
                     </Col>
-                    <Col md={6} sm={12} xs={24}>
+                    <Col md={5} sm={12} xs={24}>
                       <PInput
                         type="date"
                         name="date"
@@ -590,7 +605,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                         ]}
                       />
                     </Col>
-                    <Col md={6} sm={12} xs={24}>
+                    <Col md={5} sm={12} xs={24}>
                       <PInput
                         type="date"
                         name="tdate"
@@ -610,7 +625,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                         disabledDate={disabledDate}
                       />
                     </Col>
-                    <Col md={6} sm={12} xs={24}>
+                    <Col md={5} sm={12} xs={24}>
                       <PSelect
                         name="attendanceStatus"
                         label="Select Attendance Status"
@@ -666,6 +681,35 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                   viewHandler();
                 }}
               />
+            </Col>
+            <Col
+              style={{
+                marginTop: "23px",
+              }}
+            >
+              <Tooltip
+                title="Previous Month 26 to Current Month 25"
+                placement="bottom"
+              >
+                <>
+                  <PButton
+                    type="primary"
+                    content="Custom [26 - 25]"
+                    onClick={() => {
+                      custom26to25LandingDataHandler(
+                        (previousMonthDate: any, currentMonthDate: any) => {
+                          form.setFieldsValue({
+                            date: moment(previousMonthDate),
+                            tdate: moment(currentMonthDate),
+                          });
+
+                          viewHandler(true);
+                        }
+                      );
+                    }}
+                  />
+                </>
+              </Tooltip>
             </Col>
           </Row>
         </div>
