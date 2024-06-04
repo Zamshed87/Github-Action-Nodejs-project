@@ -207,13 +207,13 @@ const ActiveInactiveEmployeeReport = () => {
     {
       title: "Workplace/Concern",
       dataIndex: "strWorkplace",
-      width: 120,
+      width: 150,
       fixed: "left",
     },
     {
       title: "Employee Id",
       dataIndex: "strEmployeeCode",
-      width: 70,
+      width: 80,
       fixed: "left",
     },
 
@@ -256,7 +256,7 @@ const ActiveInactiveEmployeeReport = () => {
       title: "Date of Joining",
       dataIndex: "dteJoiningDate",
       //   render: (_: any, rec: any) => dateFormatter(rec?.JoiningDate),
-      width: 80,
+      width: 120,
     },
     {
       title: "Inactive Date",
@@ -267,7 +267,7 @@ const ActiveInactiveEmployeeReport = () => {
     {
       title: "Last Present date      ",
       dataIndex: "dteLastPresentDate",
-      width: 80,
+      width: 120,
     },
     {
       title: "Reason      ",
@@ -277,7 +277,7 @@ const ActiveInactiveEmployeeReport = () => {
     {
       title: "Mobile Number            ",
       dataIndex: "strPersonalNumber",
-      width: 80,
+      width: 100,
     },
 
     {
