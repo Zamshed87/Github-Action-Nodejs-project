@@ -111,7 +111,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
       >
         <PCardBody>
           <Row gutter={[10, 2]}>
-            <Col md={4} sm={12} xs={24}>
+            <Col md={8} sm={12} xs={24}>
               <PSelect
                 options={
                   movementTypeDDL?.length > 0 ? [...movementTypeDDL] : []
@@ -134,7 +134,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
               {() => {
                 return (
                   <>
-                    <Col md={5} sm={12} xs={24}>
+                    <Col md={8} sm={12} xs={24}>
                       <PInput
                         type="date"
                         name="fromDate"
@@ -154,7 +154,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                         }}
                       />
                     </Col>
-                    <Col md={5} sm={12} xs={24}>
+                    <Col md={8} sm={12} xs={24}>
                       <PInput
                         type="date"
                         name="toDate"
@@ -178,7 +178,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                 );
               }}
             </Form.Item>
-            <Col md={5} sm={12} xs={24}>
+            <Col md={8} sm={12} xs={24}>
               <PInput
                 type="time"
                 name="startTime"
@@ -198,7 +198,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                 }}
               />
             </Col>
-            <Col md={5} sm={12} xs={24}>
+            <Col md={8} sm={12} xs={24}>
               <PInput
                 type="time"
                 name="endTime"
@@ -218,7 +218,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                 }}
               />
             </Col>
-            <Col md={12} sm={24}>
+            <Col md={8} sm={12} xs={24}>
               <PInput
                 type="text"
                 name="location"
@@ -227,7 +227,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                 rules={[{ required: true, message: "Location Is Required" }]}
               />
             </Col>
-            <Col md={12} sm={24}>
+            <Col md={8} sm={12} xs={24}>
               <PInput
                 type="textarea"
                 name="reason"
@@ -246,6 +246,9 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
 
                 return (
                   <Col
+                    md={4}
+                    sm={6}
+                    xs={24}
                     style={{
                       marginTop: "23px",
                     }}
@@ -262,6 +265,9 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
 
             {isEdit ? (
               <Col
+                md={4}
+                sm={6}
+                xs={24}
                 style={{
                   marginTop: "23px",
                 }}
