@@ -11,7 +11,7 @@ import {
   getMovementApplicationLanding,
 } from "./helper";
 
-const movementContainer = (WrappedComponent) => {
+const withMovementContainer = (WrappedComponent) => {
   const HOCMovement = () => {
     const {
       profileData: {
@@ -39,10 +39,15 @@ const movementContainer = (WrappedComponent) => {
 
     // save
     const saveHandler = (values, cb) => {
+      const employee = employeeInfo?.[0]
       const payload = {
         partId: singleData ? 2 : 1,
         movementId: singleData ? singleData?.MovementId : 0,
-        intEmployeeId: employeeInfo ? employeeInfo?.employeeId : employeeId,
+        intEmployeeId: employee
+          ? employee?.EmployeeId
+          : values?.employee
+          ? values?.employee?.value
+          : employeeId,
         movementTypeId: values?.movementType?.value,
         fromDate: values.fromDate
           ? moment(values?.fromDate).format("YYYY-MM-DD")
@@ -65,7 +70,10 @@ const movementContainer = (WrappedComponent) => {
         getData(values);
         cb();
       };
-      if (employeeInfo) {
+      console.log("employeeInfo", employee);
+      console.log("values", values);
+      console.log("payload", payload);
+      if (employee?.EmployeeId) {
         createMovementApplication(payload, setLoading, callback);
       } else {
         createMovementApplication(payload, setLoading, callback);
@@ -234,4 +242,4 @@ const movementContainer = (WrappedComponent) => {
   return HOCMovement;
 };
 
-export default movementContainer;
+export default withMovementContainer;

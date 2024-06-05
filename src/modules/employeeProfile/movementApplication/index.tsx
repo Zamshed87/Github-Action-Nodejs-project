@@ -2,6 +2,7 @@ import { CircularProgress } from "@mui/material";
 import { APIUrl } from "App";
 import {
   DataTable,
+  PButton,
   PCard,
   PCardHeader,
   PForm,
@@ -19,8 +20,10 @@ import { dateFormatter } from "utility/dateFormatter";
 import NoResult from "common/NoResult";
 import { gray500 } from "utility/customColor";
 import Loading from "common/loading/Loading";
-import movementContainer from "common/HOCMovement/movementContainer";
+import withMovementContainer from "common/HOCMovement/movementContainer";
 import MovementApplicationForm from "common/HOCMovement/component/MovementApplicationForm";
+import EmployeeHeaderInfo from "common/HOCMovement/component/EmployeeHeaderInfo";
+import { todayDate } from "utility/todayDate";
 
 type TEmMovementApplication = any;
 const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
@@ -123,205 +126,172 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
             : employeeInfo?.[0]?.EmployeeName || userName,
         },
         year: moment().format("YYYY"),
+        movementFromDate: moment(todayDate()),
+        movementToDate: moment(todayDate()),
       }}
     >
       {loading && <Loading />}
 
       <PCard>
-        <PCardHeader>
-          <div style={{ width: "500px" }}>
-            <PSelect
-              name="employee"
-              placeholder="Search Min 2 char"
-              options={CommonEmployeeDDL?.data || []}
-              loading={CommonEmployeeDDL?.loading}
-              onChange={(value, op) => {
-                form.setFieldsValue({
-                  employee: op,
-                });
-                getEmpInfoDetails(value);
-                getData(value);
-              }}
-              onSearch={(value) => {
-                getEmployee(value);
-              }}
-              showSearch
-              filterOption={false}
+        <PCardHeader
+          title={
+            <EmployeeHeaderInfo
+              employeeInfo={employeeInfo}
+              loadingForInfo={loadingForInfo}
+              progress={progress}
             />
-          </div>
-        </PCardHeader>
-        <Row gutter={[10, 2]} style={{ marginTop: "-5.7rem" }}>
-          <div className="table-card">
-            <div
-              //   ref={scrollRef}
-              className="table-card-heading pb-1 pr-0"
-            >
-              <div className="employeeInfo d-flex align-items-center  ml-lg-0 ml-md-4">
-                {loadingForInfo && (
-                  <CircularProgress
-                    variant="determinate"
-                    value={progress}
-                    sx={{ marginRight: "5px" }}
-                    color="success"
-                    size={25}
-                  />
-                )}
-                {!loadingForInfo && employeeInfo?.[0]?.strProfileImageUrl ? (
-                  <img
-                    src={
-                      employeeInfo?.[0]?.strProfileImageUrl
-                        ? `${APIUrl}/Document/DownloadFile?id=${employeeInfo?.[0]?.strProfileImageUrl}`
-                        : DemoImg
-                    }
-                    alt="Profile"
-                    style={{
-                      width: "35px",
-                      height: "35px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : (
-                  !loadingForInfo && (
-                    <img
-                      src={DemoImg}
-                      alt="Profile"
-                      style={{
-                        width: "35px",
-                        height: "35px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
+          }
+        >
+          <Form.Item shouldUpdate noStyle>
+            {() => {
+              return (
+                <Row gutter={[10, 2]} style={{ width: "500px" }}>
+                  <Col md={24} sm={12} xs={24}>
+                    <PSelect
+                      name="employee"
+                      placeholder="Search Min 2 char"
+                      options={CommonEmployeeDDL?.data || []}
+                      loading={CommonEmployeeDDL?.loading}
+                      onChange={(value, op) => {
+                        form.setFieldsValue({
+                          employee: op,
+                        });
+                        getEmpInfoDetails(value);
+                        getData(value);
                       }}
+                      onSearch={(value) => {
+                        getEmployee(value);
+                      }}
+                      showSearch
+                      filterOption={false}
                     />
-                  )
-                )}
-                <div className="employeeTitle ml-2 ">
-                  <p className="employeeName">
-                    {!loadingForInfo && employeeInfo?.[0]?.EmployeeName
-                      ? employeeInfo?.[0]?.EmployeeName
-                      : ""}
-                  </p>
-                  <p className="employeePosition">
-                    {!loadingForInfo && employeeInfo?.[0]?.DesignationName
-                      ? `${employeeInfo?.[0]?.DesignationName}, ${employeeInfo?.[0]?.EmployeeCode}`
-                      : ""}
-                    {!loadingForInfo && employeeInfo?.[0]?.DesignationName
-                      ? `, Joining Date:  ${dateFormatter(
-                          employeeInfo?.[0]?.JoiningDate
-                        )}`
-                      : ""}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <Row gutter={[10, 2]} className=" justify-content-center">
-              <Col
-                md={24}
-                className="leave-movement-FormCard"
-                style={{ marginTop: "-3.4rem" }}
-              >
-                <MovementApplicationForm
-                  propsObj={{
-                    saveHandler,
-                    singleData,
-                    values: form.getFieldsValue(true),
-                    homeReset: form.resetFields,
-
-                    setMoveHistoryData,
-                    isEdit,
-                    setIsEdit,
-                    setSingleData,
-                    movementTypeDDL,
-                    setLoading,
-                    loading,
-                    editPermission: permission?.isEdit,
-                  }}
-                />
-              </Col>
-            </Row>
-            <div className="row">
-              <div className="col-md-12 my-3">
-                <div className="table-card-body pl-lg-1 pl-md-3">
-                  <div>
-                    <div className="d-flex align-items-center justify-content-between">
-                      <h2 style={{ color: gray500, fontSize: "14px" }}>
-                        Leave List
-                      </h2>
-                      {/* <MasterFilter
-                                isHiddenFilter
-                                styles={{
-                                  marginRight: "0px",
-                                }}
-                                width="200px"
-                                inputWidth="200px"
-                                value={values?.search}
-                                setValue={(value) => {
-                                  searchData(
-                                    value,
-                                    allData,
-                                    setLeaveHistoryData
-                                  );
-                                  setFieldValue("search", value);
-                                }}
-                                cancelHandler={() => {
-                                  getData();
-                                  setFieldValue("search", "");
-                                }}
-                                handleClick={handleClick}
-                              /> */}
-                      <PInput
-                        // label="Reason"
-                        name={"search"}
-                        type="text"
-                        placeholder="search"
-                        onChange={(e: any) => {
-                          searchData(
-                            e.target.value,
-                            allData,
-                            setMoveHistoryData
-                          );
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div
-                    className=" table-responsive mt-2"
-                    style={{ height: "190px" }}
-                  >
-                    {moveHistoryData?.length > 0 ? (
-                      <DataTable
-                        header={empMgmtMoveApplicationDto(
-                          handleIconHover,
-                          setIsEdit,
-                          setSingleData,
-                          setLoading,
-                          demoPopupForDelete,
-                          form.getFieldsValue(true),
-                          setShowTooltip,
-                          showTooltip
-                        )}
-                        data={
-                          moveHistoryData?.length > 0 ? moveHistoryData : []
-                        }
-                      />
-                    ) : (
-                      <>
-                        {!loading && (
-                          <NoResult title="No Result Found" para="" />
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* </>
+                  </Col>
+                </Row>
               );
             }}
-          </Form.Item> */}
+          </Form.Item>
+        </PCardHeader>
+        {/* style={{ marginTop: "-5.7rem" }} */}
+        <Row gutter={[10, 2]}>
+          <Col md={24} sm={12} xs={24} className="leave-movement-FormCard">
+            <MovementApplicationForm
+              propsObj={{
+                saveHandler,
+                singleData,
+                values: form.getFieldsValue(true),
+                homeReset: form.resetFields,
+
+                setMoveHistoryData,
+                isEdit,
+                setIsEdit,
+                setSingleData,
+                movementTypeDDL,
+                setLoading,
+                loading,
+                editPermission: permission?.isEdit,
+              }}
+            />
+          </Col>
+
+          <Col
+            md={24}
+            sm={12}
+            xs={24}
+            style={{
+              marginTop: "23px",
+            }}
+          >
+            <div className="d-flex align-items-center justify-content-between">
+              <h2 style={{ color: gray500, fontSize: "14px" }}>
+                Movement List
+              </h2>
+
+              <PInput
+                // label="Reason"
+                name={"search"}
+                type="text"
+                placeholder="search"
+                onChange={(e: any) => {
+                  searchData(e.target.value, allData, setMoveHistoryData);
+                }}
+              />
+            </div>
+          </Col>
+          <Col
+            md={24}
+            sm={12}
+            xs={24}
+            style={{
+              marginTop: "10px",
+            }}
+          >
+            <div className="card-style py-3">
+              <Row gutter={[10, 2]}>
+                <Form.Item shouldUpdate noStyle>
+                  {() => {
+                    return (
+                      <>
+                        <Col md={8} sm={12} xs={24}>
+                          <PInput
+                            type="date"
+                            name="movementFromDate"
+                            label="Movement From Date"
+                            placeholder="From Date"
+                          />
+                        </Col>
+                        <Col md={8} sm={12} xs={24}>
+                          <PInput
+                            type="date"
+                            name="movementToDate"
+                            label="Movement To Date"
+                            placeholder="To Date"
+                          />
+                        </Col>
+                        <Col
+                          md={8}
+                          sm={12}
+                          xs={24}
+                          style={{
+                            marginTop: "23px",
+                          }}
+                        >
+                          <PButton
+                            type="primary"
+                            content={"View"}
+                            action="button"
+                            onClick={() => {
+                              // form.resetFields();
+                            }}
+                          />
+                        </Col>
+                      </>
+                    );
+                  }}
+                </Form.Item>
+              </Row>
+            </div>
+          </Col>
+          <Col md={24} sm={12} xs={24}>
+            <div className="table-responsive mt-2" style={{ height: "190px" }}>
+              {moveHistoryData?.length > 0 ? (
+                <DataTable
+                  header={empMgmtMoveApplicationDto(
+                    handleIconHover,
+                    setIsEdit,
+                    setSingleData,
+                    setLoading,
+                    demoPopupForDelete,
+                    form.getFieldsValue(true),
+                    setShowTooltip,
+                    showTooltip
+                  )}
+                  data={moveHistoryData?.length > 0 ? moveHistoryData : []}
+                />
+              ) : (
+                <>{!loading && <NoResult title="No Result Found" para="" />}</>
+              )}
+            </div>
+          </Col>
 
           <Col
             style={{
@@ -334,4 +304,4 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
   );
 };
 
-export default movementContainer(EmMovementApplication);
+export default withMovementContainer(EmMovementApplication);

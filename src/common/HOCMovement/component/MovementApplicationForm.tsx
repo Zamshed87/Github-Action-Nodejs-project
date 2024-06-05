@@ -109,30 +109,29 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
           toDate: moment(todayDate()),
         }}
       >
-        <PCardBody styles={{ marginTop: "51.5px" }}>
+        <PCardBody>
           <Row gutter={[10, 2]}>
             <Col md={4} sm={12} xs={24}>
               <PSelect
                 options={
                   movementTypeDDL?.length > 0 ? [...movementTypeDDL] : []
                 }
-                name="leaveType"
-                label="Leave Type"
-                placeholder="Leave Type"
+                name="movementType"
+                label="Movement Type"
+                placeholder="Movement Type"
                 onChange={(value, op) => {
-                  form.setFieldValue("leaveType", op);
+                  form.setFieldValue("movementType", op);
                 }}
                 rules={[
                   {
                     required: true,
-                    message: "Please Select Leave Type",
+                    message: "Please Select Movement Type",
                   },
                 ]}
               />
             </Col>
             <Form.Item shouldUpdate noStyle>
               {() => {
-                const { leaveType, fromDate, toDate } = form.getFieldsValue();
                 return (
                   <>
                     <Col md={5} sm={12} xs={24}>
