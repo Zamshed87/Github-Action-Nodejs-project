@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { useFormik } from "formik";
 import React, { useEffect, useState, useRef } from "react";
-import ReactQuill from "react-quill";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import * as Yup from "yup";
 import { useHistory, useParams } from "react-router-dom";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import ReactQuill from "react-quill";
 import BackButton from "../../../../../common/BackButton";
 import Loading from "../../../../../common/loading/Loading";
 import { setFirstLevelNameAction } from "../../../../../commonRedux/reduxForLocalStorage/actions";
@@ -16,7 +16,7 @@ import { customStyles } from "../../../../../utility/newSelectCustomStyle";
 import { AttachmentOutlined, Close, FileUpload } from "@mui/icons-material";
 import {
   getPeopleDeskAllDDL,
-  getSearchEmployeeList,
+  // getSearchEmployeeList,
   getSearchEmployeeListWithWarning,
   multiple_attachment_actions,
 } from "../../../../../common/api";
@@ -94,7 +94,8 @@ export default function ManagementApplicationSeparationForm() {
   const demoPopup = () => {
     const confirmObject = {
       closeOnClickOutside: false,
-      message: "This employee has already taken out a loan. Would you like to Separate with the loan?",
+      message:
+        "This employee has already taken out a loan. Would you like to Separate with the loan?",
       yesAlertFunc: () => {
         setIsLoanModal(true);
       },
@@ -256,7 +257,7 @@ export default function ManagementApplicationSeparationForm() {
       : {
           ...initData,
         },
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: (values, { resetForm }) => {
       saveHandler(values, () => {
         if (params?.id) {
           getEmpSeparationDataHandlerById();
@@ -370,7 +371,7 @@ export default function ManagementApplicationSeparationForm() {
                           classes="input-sm"
                           value={values?.applicationDate}
                           name="applicationDate"
-                          // min={params?.id ? dateFormatterForInput(singleData?.SeparationDate) : todayDate()}
+                          // min={params?.id ? dateFormatterForInput(singleData?.dteSeparationDate) : todayDate()}
                           type="date"
                           className="form-control"
                           onChange={(e) => {
@@ -388,7 +389,12 @@ export default function ManagementApplicationSeparationForm() {
                         <DefaultInput
                           classes="input-sm"
                           value={values?.lastWorkingDay}
-                          min={lastWorkingDay || values?.applicationDate}
+                          min={
+                            values?.separationType?.label?.toLowerCase() ===
+                            "termination"
+                              ? ""
+                              : lastWorkingDay || values?.applicationDate
+                          }
                           onChange={(e) => {
                             setFieldValue("lastWorkingDay", e.target.value);
                           }}
@@ -398,7 +404,9 @@ export default function ManagementApplicationSeparationForm() {
                           errors={errors}
                           touched={touched}
                           disabled={
-                            !values?.applicationDate || !values?.employeeName
+                            !values?.applicationDate ||
+                            !values?.employeeName ||
+                            !values?.separationType
                           }
                         />
                       </div>
