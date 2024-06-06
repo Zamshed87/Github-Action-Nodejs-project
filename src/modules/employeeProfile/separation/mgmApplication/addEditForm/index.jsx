@@ -344,6 +344,7 @@ export default function ManagementApplicationSeparationForm() {
                         loadOptions={(v) =>
                           getSearchEmployeeListWithWarning(buId, wgId, v)
                         }
+                        isDisabled={+params?.id}
                       />
                     </div>
                     <div className="col-12"></div>
