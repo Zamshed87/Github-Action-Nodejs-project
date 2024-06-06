@@ -1,51 +1,23 @@
-import { AddOutlined } from "@mui/icons-material";
 import type { RangePickerProps } from "antd/es/date-picker";
-import { ImAttachment } from "react-icons/im";
-
-import {
-  PButton,
-  PCard,
-  PCardBody,
-  PForm,
-  PInput,
-  PRadio,
-  PSelect,
-} from "Components";
+import { PButton, PCardBody, PForm, PInput, PSelect } from "Components";
 import { Col, Form, Row } from "antd";
-import React, { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
 
 // import "./styles.css";
 import moment from "moment";
-import {
-  calculateNextDateAntd,
-  dateFormatterForInput,
-  getDateOfYear,
-} from "utility/dateFormatter";
 import { todayDate } from "utility/todayDate";
-import FileUploadComponents from "utility/Upload/FileUploadComponents";
-import { getDownlloadFileView_Action } from "commonRedux/auth/actions";
-import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
 type MoveApplicationForm = any;
 
 const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
   propsObj,
 }) => {
-  const { orgId, buId, employeeId } = useSelector(
-    (state: any) => state?.auth?.profileData,
-    shallowEqual
-  );
   const {
     saveHandler,
     singleData,
     values,
     isEdit,
     movementTypeDDL = [],
-    homeReset,
   } = propsObj;
-  // hook
-  const dispatch = useDispatch();
-
   // Form Instance
   const [form] = Form.useForm();
   // init
@@ -93,7 +65,9 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
           form.resetFields();
         });
       })
-      .catch(() => {});
+      .catch(() => {
+        //
+      });
   };
 
   return (
@@ -144,7 +118,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                             message: "From Date is required",
                           },
                         ]}
-                        onChange={(date, dateString) => {
+                        onChange={(date) => {
                           form.setFieldsValue({
                             fromDate: date,
                             toDate: date,
@@ -164,7 +138,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                             message: "To Date is required",
                           },
                         ]}
-                        onChange={(date, dateString) => {
+                        onChange={(date) => {
                           form.setFieldsValue({
                             toDate: date,
                           });
@@ -271,25 +245,6 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                 );
               }}
             </Form.Item>
-
-            {/* {isEdit ? (
-              <Col
-                md={4}
-                sm={6}
-                xs={24}
-                style={{
-                  marginTop: "23px",
-                }}
-              >
-                <PButton
-                  type="primary"
-                  content={"Reset"}
-                  onClick={() => {
-                    form.resetFields();
-                  }}
-                />
-              </Col>
-            ) : undefined} */}
           </Row>
         </PCardBody>{" "}
       </PForm>

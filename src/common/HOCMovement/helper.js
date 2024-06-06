@@ -213,7 +213,7 @@ export const empMgmtMoveApplicationDto = (
                 onClick: (e) => {
                   e.stopPropagation();
                   setSingleData("");
-                  demoPopupForDelete(data, values);
+                  demoPopupForDelete(rec, values);
                 },
               },
             ]}

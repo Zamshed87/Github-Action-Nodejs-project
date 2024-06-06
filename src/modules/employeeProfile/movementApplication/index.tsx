@@ -79,7 +79,8 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
     showTooltip,
     setShowTooltip,
     handleIconHover,
-    getMovementHistortyForTable
+    getMovementHistortyForTable,
+    isSelfService
   } = props?.propjObj;
   // Form Instance
   const [form] = Form.useForm();
@@ -116,6 +117,8 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
 
   const values = form.getFieldsValue(true);
   console.log(values)
+  console.log({isSelfService})
+
   return (
     <PForm
       form={form}

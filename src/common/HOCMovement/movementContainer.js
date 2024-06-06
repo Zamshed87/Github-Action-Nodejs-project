@@ -36,11 +36,14 @@ const withMovementContainer = (WrappedComponent) => {
     const [allData, setAllData] = useState([]);
     const [movementTypeDDL, setMovementTypeDDL] = useState([]);
     const [showTooltip, setShowTooltip] = useState([]);
-
+    const [isSelfService, setIsSelfService] = useState(false);
+    useEffect(() => {
+      const origin = window.location.pathname;
+      setIsSelfService(origin.includes("/profile/movementApplication"));
+    }, []);
     // save
     const saveHandler = (values, cb) => {
       const employee = employeeInfo?.[0];
-      console.log(singleData)
       const payload = {
         partId: singleData ? 2 : 1,
         movementId: singleData ? singleData?.MovementId : 0,
@@ -69,11 +72,10 @@ const withMovementContainer = (WrappedComponent) => {
 
       const callback = () => {
         getData(payload?.intEmployeeId);
+        getMovementHistortyForTable(values);
         cb();
+        setIsEdit(false);
       };
-      console.log("employeeInfo", employee);
-      console.log("values", values);
-      console.log("payload", payload);
       if (employee?.EmployeeId) {
         createMovementApplication(payload, setLoading, callback);
       } else {
@@ -81,11 +83,7 @@ const withMovementContainer = (WrappedComponent) => {
       }
     };
     // delete
-    const demoPopupForDelete = (data, values) => {
-      const callback = () => {
-        getData(values);
-        setSingleData("");
-      };
+    const demoPopupForDelete = (data) => {
       const payload = {
         partId: 3,
         movementId: data?.MovementId,
@@ -93,8 +91,8 @@ const withMovementContainer = (WrappedComponent) => {
         movementTypeId: data?.MovementTypeId || 0,
         fromDate: data?.FromDate,
         toDate: data?.ToDate,
-        fromTime: moment(data?.FromTime, "HH:mm:ss").format("HH:mm"),
-        toTime: moment(data?.ToTime, "HH:mm:ss").format("HH:mm"),
+        fromTime: data?.FromTime,
+        toTime: data?.ToTime,
         reason: data?.Reason,
         location: data?.Location,
         accountId: orgId,
@@ -102,6 +100,17 @@ const withMovementContainer = (WrappedComponent) => {
         workplaceGroupId: wgId,
         isActive: true,
         insertBy: employeeId,
+      };
+      const callback = () => {
+        getData(payload?.intEmployeeId);
+        getMovementHistortyForTable({
+          ...data,
+          employee: {
+            value: data?.EmployeeId,
+            label: "",
+          },
+        });
+        setSingleData("");
       };
       createMovementApplication(payload, setLoading, callback);
       setSingleData(data);
@@ -242,6 +251,7 @@ const withMovementContainer = (WrappedComponent) => {
           showTooltip,
           setShowTooltip,
           getMovementHistortyForTable,
+          isSelfService,
         }}
       />
     );
