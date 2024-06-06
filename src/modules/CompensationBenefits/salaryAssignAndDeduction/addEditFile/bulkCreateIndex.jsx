@@ -264,7 +264,7 @@ function BulkAddEditForm() {
       intAccountId: orgId,
       intBusinessUnitId: buId,
       intEmployeeId: values?.employee?.value || null,
-      isAutoRenew: values?.isAutoRenew ? values?.isAutoRenew : false,
+      isAutoRenew: values?.isAutoRenew ? true : false,
       intYear: +values?.fromMonth?.split("-")[0] || null,
       intMonth: +values?.fromMonth?.split("-")[1] || null,
       strMonth: months[+values?.fromMonth?.split("-")[1] - 1] || null,
