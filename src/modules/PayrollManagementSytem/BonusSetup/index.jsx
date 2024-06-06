@@ -17,8 +17,6 @@ import Chips from "../../../common/Chips";
 import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import { toast } from "react-toastify";
-import { todayDate } from "../../../utility/todayDate";
-import AntTable from "../../../common/AntTable";
 import { createPayloadStructure } from "common/peopleDeskTable/helper";
 import PeopleDeskTable from "common/peopleDeskTable";
 
@@ -43,6 +41,7 @@ export default function BonusSetupLanding() {
     strReligionNameList: [],
     strEmploymentTypeList: [],
     hrPositionNameList: [],
+    strBonusSetupGroupCodeList:[]
   };
 
   let permission = null;
@@ -159,46 +158,10 @@ export default function BonusSetupLanding() {
     );
   };
 
-  // const getData = () => {
-  //   getBonusSetupLanding(
-  //     {
-  //       strPartName: "BonusSetupList",
-  //       intBonusHeaderId: 0,
-  //       intAccountId: orgId,
-  //       intBusinessUnitId: buId,
-  //       intBonusId: 0,
-  //       intPayrollGroupId: 0,
-  //       intWorkplaceGroupId: wgId,
-  //       intWorkplaceId: wId,
-  //       intReligionId: 0,
-  //       dteEffectedDate: todayDate(),
-  //       intCreatedBy: employeeId,
-  //     },
-  //     setRowDto,
-  //     setLoading
-  //   );
-  // };
 
   useEffect(() => {
     setHeaderList({});
     getData(pages);
-    // getBonusSetupLanding(
-    //   {
-    //     strPartName: "BonusSetupList",
-    //     intBonusHeaderId: 0,
-    //     intAccountId: orgId,
-    //     intBusinessUnitId: buId,
-    //     intBonusId: 0,
-    //     intPayrollGroupId: 0,
-    //     intWorkplaceGroupId: wgId,
-    //     intWorkplaceId: wId,
-    //     intReligionId: 0,
-    //     dteEffectedDate: todayDate(),
-    //     intCreatedBy: employeeId,
-    //   },
-    //   setRowDto,
-    //   setLoading
-    // );
   }, [orgId, buId, employeeId, wId, wgId]);
 
   const { setFieldValue, handleSubmit, values } = useFormik({
@@ -224,6 +187,14 @@ export default function BonusSetupLanding() {
         sort: true,
         filter: true,
         filterDropDownList: headerList[`strBonusNameList`] || [],
+        width: 200,
+      },
+      {
+        title: "Bonus Group",
+        dataIndex: "strBonusSetupGroupCode",
+        sort: true,
+        filter: true,
+        filterDropDownList: headerList[`strBonusSetupGroupCodeList`] || [],
         width: 200,
       },
       {

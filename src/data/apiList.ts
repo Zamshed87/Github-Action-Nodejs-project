@@ -21,6 +21,7 @@ export const apiList = {
   SectionDDL: "/SaasMasterData/SectionDDL",
   BonusAllLanding: "/Employee/BonusAllLanding",
   CRUDBonusSetup: "/Employee/CRUDBonusSetup",
+  CreateUpdateBounsSetup: "/Employee/CreateUpdateBounsSetup",
   CheckBonusAlreadyExistInWorkPlace:
     "/Employee/CheckBonusAlreadyExistInWorkPlace",
   CommonEmployeeDDL: "/Employee/CommonEmployeeDDL",
@@ -146,4 +147,5 @@ export const apiList = {
     "/PdfAndExcelReport/GetSalarySummaryCostCenterReport_Matador",
   holidayOffdayLanding: "/Employee/HolidayOffdaySwapEmployeeLanding",
   holidayOffdayAssignPost: "/Employee/HolidayOffdaySwapEmployeeAssign",
+  BonusSetupGetbyByBonusCode: "/Employee/BonusSetupGetbyByBonusCode"
 };

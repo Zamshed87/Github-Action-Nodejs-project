@@ -20,7 +20,6 @@ export const payloadGenerate = (
   wgName: string,
   bsId = 0
 ) => {
-  console.log("values", values);
   const data = {
     intBonusSetupId: bsId,
     strPartName: bsId === 0 ? "BonusSetupCreate" : "BonusSetupUpdate",

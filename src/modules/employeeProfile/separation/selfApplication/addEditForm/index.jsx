@@ -249,7 +249,7 @@ export default function SelfApplicationSeparationForm() {
       : {
           ...initData,
         },
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: (values, { resetForm }) => {
       saveHandler(values, () => {
         if (params?.id) {
           getEmpSeparationDataHandlerById();
@@ -367,7 +367,12 @@ export default function SelfApplicationSeparationForm() {
                       <DefaultInput
                         classes="input-sm"
                         value={values?.lastWorkingDay}
-                        min={lastWorkingDay || values?.applicationDate}
+                        min={
+                          values?.separationType?.label?.toLowerCase() ===
+                          "termination"
+                            ? ""
+                            : lastWorkingDay || values?.applicationDate
+                        }
                         onChange={(e) => {
                           setFieldValue("lastWorkingDay", e.target.value);
                         }}
@@ -376,7 +381,9 @@ export default function SelfApplicationSeparationForm() {
                         className="form-control"
                         errors={errors}
                         touched={touched}
-                        disabled={!values?.applicationDate}
+                        disabled={
+                          !values?.applicationDate || !values?.separationType
+                        }
                       />
                     </div>
                   </div>
