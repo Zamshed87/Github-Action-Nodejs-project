@@ -221,7 +221,7 @@ const FinalSettlement = () => {
                       setEmpId,
                       setEmpBasicInfo
                     )}
-                    rowKey={(record) => record?.intFinalSettlementId}
+                    rowKey={(record) => record?.intSeparationId}
                   />
                   <PModal
                     title={`Full & Final Settlement`}
