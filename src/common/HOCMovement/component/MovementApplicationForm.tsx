@@ -29,9 +29,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
   }, [movementTypeDDL]);
   //   edit
   useEffect(() => {
-    console.log(singleData);
     if (singleData?.MovementId) {
-      console.log(singleData);
       form.setFieldsValue({
         search: "",
         movementType: {
@@ -102,8 +100,6 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
             </Col>
             <Form.Item shouldUpdate noStyle>
               {() => {
-                const fromValue = form.getFieldsValue(true);
-                console.log({ fromValue });
                 return (
                   <>
                     <Col md={8} sm={12} xs={24}>
