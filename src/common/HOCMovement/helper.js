@@ -82,7 +82,7 @@ export const empMgmtMoveApplicationDto = (
       title: "SL",
       render: (value, row, index) => index + 1,
       align: "center",
-      width: 30,
+      width: 20,
       fixed: "left",
     },
     {
@@ -158,7 +158,11 @@ export const empMgmtMoveApplicationDto = (
               }
             >
               <InfoOutlinedIcon
-                sx={{ marginRight: "12px", color: "rgba(0, 0, 0, 0.6)" }}
+                sx={{
+                  marginRight: "12px",
+                  color: "rgba(0, 0, 0, 0.6)",
+                  fontSize: "20px",
+                }}
               />
             </LightTooltip>
           </div>

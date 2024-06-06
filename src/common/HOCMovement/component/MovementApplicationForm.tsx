@@ -70,21 +70,14 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
         toDate: moment(singleData?.AppliedToDate),
         location: singleData?.AddressDuetoLeave,
         reason: singleData?.Reason,
-        leaveDays: singleData?.HalfDay
-          ? "0.5 "
-          : `${
-              +fromDateToDateDiff(
-                dateFormatterForInput(singleData?.AppliedFromDate),
-                dateFormatterForInput(singleData?.AppliedToDate)
-              )?.split(" ")[0] + 1
-            } ` || "",
+        leaveDays: singleData?.HalfDay ? "0.5 " : `${+fromDateToDateDiff(dateFormatterForInput(singleData?.AppliedFromDate), dateFormatterForInput(singleData?.AppliedToDate))?.split(" ")[0] + 1 }` || "",
       });
     }
   }, [singleData]);
+
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
-
     return current && current < fromDateMoment.startOf("day");
   };
 
@@ -178,7 +171,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                 );
               }}
             </Form.Item>
-            <Col md={8} sm={12} xs={24}>
+            <Col md={4} sm={6} xs={24}>
               <PInput
                 type="time"
                 name="startTime"
@@ -198,7 +191,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                 }}
               />
             </Col>
-            <Col md={8} sm={12} xs={24}>
+            <Col md={4} sm={6} xs={24}>
               <PInput
                 type="time"
                 name="endTime"

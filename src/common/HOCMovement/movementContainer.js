@@ -39,7 +39,8 @@ const withMovementContainer = (WrappedComponent) => {
 
     // save
     const saveHandler = (values, cb) => {
-      const employee = employeeInfo?.[0]
+      const employee = employeeInfo?.[0];
+      console.log(singleData)
       const payload = {
         partId: singleData ? 2 : 1,
         movementId: singleData ? singleData?.MovementId : 0,
@@ -67,7 +68,7 @@ const withMovementContainer = (WrappedComponent) => {
       };
 
       const callback = () => {
-        getData(values);
+        getData(payload?.intEmployeeId);
         cb();
       };
       console.log("employeeInfo", employee);
@@ -144,22 +145,26 @@ const withMovementContainer = (WrappedComponent) => {
         empId ? empId : employeeId
       );
     };
+    const getMovementHistortyForTable = (values) => {
+      const employee = employeeInfo?.[0] || {};
 
-    const getMovementHistorty = (values) => {
       const payload = {
         movementTypeId: "",
         applicationDate: "",
-        // fromDate: values?.fromDate || "",
-        // toDate: values?.toDate || "",
-        fromDate: values?.fromDate
-          ? moment(values?.fromDate).format("YYYY-MM-DD")
+        fromDate: values?.movementFromDate
+          ? moment(values?.movementFromDate).format("YYYY-MM-DD")
           : monthFirstDate(),
-        toDate: values?.toDate
-          ? moment(values?.toDate).format("YYYY-MM-DD")
+        toDate: values?.movementToDate
+          ? moment(values?.movementToDate).format("YYYY-MM-DD")
           : monthLastDate(),
         statusId: "",
-        empId: employeeInfo || employeeInfo?.employeeId || employeeId,
+        empId: values?.employee
+          ? values?.employee?.value
+          : employee
+          ? employee?.EmployeeId
+          : employeeId,
       };
+      console.log({ values, employeeInfo });
       getMovementApplicationLanding(
         "MovementApplication",
         orgId,
@@ -173,6 +178,7 @@ const withMovementContainer = (WrappedComponent) => {
 
     useEffect(() => {
       getData();
+      getMovementHistortyForTable();
     }, [wgId]);
 
     useEffect(() => {
@@ -180,10 +186,12 @@ const withMovementContainer = (WrappedComponent) => {
     }, []);
 
     const handleIconHover = (data, setShowTooltip, setLoading) => {
+      const employee = employeeInfo?.[0] || {};
+
       getApprovalLogHistoriesById(
         data,
         buId,
-        employeeInfo ? employeeInfo?.employeeId : employeeId,
+        employee?.EmployeeId || employeeId,
         setShowTooltip,
         setLoading
       );
@@ -234,6 +242,7 @@ const withMovementContainer = (WrappedComponent) => {
           empMgmtMoveApplicationDto,
           showTooltip,
           setShowTooltip,
+          getMovementHistortyForTable,
         }}
       />
     );

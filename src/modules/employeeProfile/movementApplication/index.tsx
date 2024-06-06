@@ -16,7 +16,7 @@ import moment from "moment";
 import React, { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import DemoImg from "../../../assets/images/demo.png";
-import { dateFormatter } from "utility/dateFormatter";
+import { dateFormatter, monthFirstDate, monthLastDate } from "utility/dateFormatter";
 import NoResult from "common/NoResult";
 import { gray500 } from "utility/customColor";
 import Loading from "common/loading/Loading";
@@ -79,6 +79,7 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
     showTooltip,
     setShowTooltip,
     handleIconHover,
+    getMovementHistortyForTable
   } = props?.propjObj;
   // Form Instance
   const [form] = Form.useForm();
@@ -126,8 +127,8 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
             : employeeInfo?.[0]?.EmployeeName || userName,
         },
         year: moment().format("YYYY"),
-        movementFromDate: moment(todayDate()),
-        movementToDate: moment(todayDate()),
+        movementFromDate: moment(monthFirstDate()),
+        movementToDate: moment(monthLastDate()),
       }}
     >
       {loading && <Loading />}
@@ -144,6 +145,7 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
         >
           <Form.Item shouldUpdate noStyle>
             {() => {
+               const values = form.getFieldsValue(true);
               return (
                 <Row gutter={[10, 2]} style={{ width: "500px" }}>
                   <Col md={24} sm={12} xs={24}>
@@ -158,12 +160,17 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
                         });
                         getEmpInfoDetails(value);
                         getData(value);
+                        getMovementHistortyForTable({
+                          ...values,
+                          employee: op,
+                        });
                       }}
                       onSearch={(value) => {
                         getEmployee(value);
                       }}
                       showSearch
                       filterOption={false}
+                      allowClear
                     />
                   </Col>
                 </Row>
@@ -260,6 +267,8 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
                             content={"View"}
                             action="button"
                             onClick={() => {
+                              const values = form.getFieldsValue(true);
+                              getMovementHistortyForTable(values)
                               // form.resetFields();
                             }}
                           />
