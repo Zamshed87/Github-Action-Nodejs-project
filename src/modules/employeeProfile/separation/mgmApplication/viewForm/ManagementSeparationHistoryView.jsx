@@ -225,6 +225,8 @@ const ManagementSeparationHistoryView = ({
                   empBasicInfo={empBasicInfo}
                   intEmployeeId={intEmployeeId}
                   getSingleDataLoading={getSingleDataLoading}
+                  orgId={orgId}
+                  buId={buId}
                 />
               </TabPanel>
             ) : null}
