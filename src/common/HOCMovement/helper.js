@@ -136,9 +136,13 @@ export const empMgmtMoveApplicationDto = (
         <div className="d-flex">
           <div className="d-flex align-items-center">
             <LightTooltip
-              onMouseEnter={() =>
-                handleIconHover(rec, setShowTooltip, setLoading)
-              }
+              onMouseEnter={() => {
+                if (showTooltip?.data?.length > 0) {
+                  // Do nothing
+                } else {
+                  handleIconHover(rec, setShowTooltip, setLoading);
+                }
+              }}
               title={
                 <div>
                   {showTooltip?.data?.length ? (

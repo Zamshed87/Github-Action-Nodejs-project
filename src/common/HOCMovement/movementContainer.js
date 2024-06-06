@@ -164,7 +164,6 @@ const withMovementContainer = (WrappedComponent) => {
           ? employee?.EmployeeId
           : employeeId,
       };
-      console.log({ values, employeeInfo });
       getMovementApplicationLanding(
         "MovementApplication",
         orgId,

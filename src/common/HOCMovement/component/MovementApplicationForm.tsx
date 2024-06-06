@@ -51,26 +51,28 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
   // init
   useEffect(() => {
     form.setFieldsValue({
-      leaveType:
+      movementType:
         movementTypeDDL?.length > 0 ? { ...movementTypeDDL[0] } : undefined,
     });
   }, [movementTypeDDL]);
   //   edit
   useEffect(() => {
-    if (singleData?.intApplicationId) {
+    console.log(singleData);
+    if (singleData?.MovementId) {
+      console.log(singleData);
       form.setFieldsValue({
-        leaveType: {
-          value: singleData?.LeaveTypeId,
-          label: singleData?.LeaveType,
-          isHalfDayLeave: singleData?.HalfDay,
+        search: "",
+        movementType: {
+          value: singleData?.MovementTypeId,
+          label: singleData?.MovementType,
         },
-        isHalfDay: singleData?.HalfDay ? 1 : 0,
-        halfTime: singleData?.HalfDayRange,
-        fromDate: moment(singleData?.AppliedFromDate),
-        toDate: moment(singleData?.AppliedToDate),
-        location: singleData?.AddressDuetoLeave,
+        // MovementId: singleData?.MovementId,
+        fromDate: moment(singleData?.FromDate),
+        startTime: moment(singleData?.FromTime, "h:mma"),
+        toDate: moment(singleData?.ToDate),
+        endTime: moment(singleData?.ToTime, "h:mma"),
+        location: singleData?.Location,
         reason: singleData?.Reason,
-        leaveDays: singleData?.HalfDay ? "0.5 " : `${+fromDateToDateDiff(dateFormatterForInput(singleData?.AppliedFromDate), dateFormatterForInput(singleData?.AppliedToDate))?.split(" ")[0] + 1 }` || "",
       });
     }
   }, [singleData]);
@@ -93,6 +95,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
       })
       .catch(() => {});
   };
+
   return (
     <>
       <PForm
@@ -125,6 +128,8 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
             </Col>
             <Form.Item shouldUpdate noStyle>
               {() => {
+                const fromValue = form.getFieldsValue(true);
+                console.log({ fromValue });
                 return (
                   <>
                     <Col md={8} sm={12} xs={24}>
@@ -235,28 +240,39 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
 
             <Form.Item shouldUpdate noStyle>
               {() => {
-                const { leaveDays } = form.getFieldsValue(true);
-
+                const fromValue = form.getFieldsValue(true);
                 return (
                   <Col
-                    md={4}
-                    sm={6}
+                    md={8}
+                    sm={12}
                     xs={24}
                     style={{
                       marginTop: "23px",
                     }}
                   >
-                    <PButton
-                      type="primary"
-                      content={isEdit ? `Update` : `Apply`}
-                      onClick={viewHandler}
-                    />
+                    <div className="d-flex">
+                      <PButton
+                        type="primary"
+                        content={isEdit ? `Update` : `Apply`}
+                        onClick={viewHandler}
+                      />
+                      {isEdit && fromValue?.movementType ? (
+                        <PButton
+                          type="primary"
+                          content={"Reset"}
+                          onClick={() => {
+                            form.resetFields();
+                          }}
+                          parentClassName="ml-2"
+                        />
+                      ) : undefined}
+                    </div>
                   </Col>
                 );
               }}
             </Form.Item>
 
-            {isEdit ? (
+            {/* {isEdit ? (
               <Col
                 md={4}
                 sm={6}
@@ -273,7 +289,7 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                   }}
                 />
               </Col>
-            ) : undefined}
+            ) : undefined} */}
           </Row>
         </PCardBody>{" "}
       </PForm>

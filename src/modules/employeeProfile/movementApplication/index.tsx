@@ -114,6 +114,8 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
     });
   };
 
+  const values = form.getFieldsValue(true);
+  console.log(values)
   return (
     <PForm
       form={form}
