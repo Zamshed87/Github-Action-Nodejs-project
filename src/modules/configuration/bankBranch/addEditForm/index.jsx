@@ -80,7 +80,7 @@ export default function AddEditForm({
       setIsAddEditForm(false);
       getData();
     };
-    let payload = {
+    const payload = {
       intBankBranchId: singleData?.intBankBranchId
         ? singleData?.intBankBranchId
         : 0,
@@ -127,7 +127,7 @@ export default function AddEditForm({
           value: singleData?.intDistrictId,
           label: singleData?.strDistrict,
         },
-        strBankBranchCode: moment(singleData?.strBankBranchCode),
+        strBankBranchCode: singleData?.strBankBranchCode,
       });
     }
   }, [singleData]);
@@ -159,7 +159,7 @@ export default function AddEditForm({
           </Col>
           <Col md={12} sm={24}>
             <PInput
-              type="date"
+              type="text"
               name="strBankBranchCode"
               label="Branch Code"
               placeholder="Branch Code"
