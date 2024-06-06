@@ -93,6 +93,7 @@ export const empMgmtMoveApplicationDto = (
     {
       title: "From Date",
       dataIndex: "FromDate",
+      className: "text-center",
       render: (date) => dateFormatter(date),
     },
     {
@@ -103,6 +104,7 @@ export const empMgmtMoveApplicationDto = (
     {
       title: "To Date",
       dataIndex: "ToDate",
+      className: "text-center",
       render: (date) => dateFormatter(date),
     },
     {
@@ -113,6 +115,8 @@ export const empMgmtMoveApplicationDto = (
     {
       title: "Application Date",
       dataIndex: "ApplicationDate",
+      width: 60,
+      className: "text-center",
       render: (data) => <div>{data && dateFormatter(data)}</div>,
     },
     {
@@ -127,6 +131,7 @@ export const empMgmtMoveApplicationDto = (
     {
       title: "Status",
       dataIndex: "Status",
+      width: 60,
       render: (data, rec) => (
         <div className="d-flex">
           <div className="d-flex align-items-center">
@@ -178,8 +183,10 @@ export const empMgmtMoveApplicationDto = (
     },
 
     {
-      width: 50,
+      title: "",
+      width: 20,
       align: "center",
+      dataIndex: "Status",
       render: (data, rec) => (
         <>
           <TableButton
