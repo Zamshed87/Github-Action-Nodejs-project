@@ -41,7 +41,8 @@ export const formatCity = (
   bankAccountNo,
   total,
   totalInWords,
-  buAddress
+  buAddress,
+  values
 ) => {
   const excel = {
     name: `City Bank Report-${moment().format("ll")}`,
@@ -162,7 +163,7 @@ export const formatCity = (
           ],
           [
             {
-              text: `Subject : Salary Disbursement for the month of ${comapanyNameHeader} of "10MS Limited" employees.`,
+              text: `Subject : ${values?.bankAdviceFor?.value === 2 ? "Bonus" : "Salary"} Disbursement for the month of ${comapanyNameHeader} of "10MS Limited" employees.`,
               fontSize: 10,
               bold: true,
               underline: true,
@@ -184,7 +185,7 @@ export const formatCity = (
           ],
           [
             {
-              text: `With due respect, we are requesting you to transfer the salary for the month of ${comapanyNameHeader} of ‘10MS Limited’ employees. Please debit BDT  ${total}  from our company account no. ${bankAccountNo}  to disburse salaries as mentioned below. `,
+              text: `With due respect, we are requesting you to transfer the ${values?.bankAdviceFor?.value === 2 ? "bonus" : "salary"} for the month of ${comapanyNameHeader} of ‘10MS Limited’ employees. Please debit BDT  ${total}  from our company account no. ${bankAccountNo}  to disburse salaries as mentioned below. `,
               fontSize: 9,
               cellRange: "A2:H1",
               merge: true,
