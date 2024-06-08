@@ -317,11 +317,14 @@ const SalaryGenerateLanding = () => {
       },
       {
         title: "Workplaces",
-        render: (text) => (
-          <LightTooltip title={<div>{text}</div>}>
-            {text.substring(0, 15) + "...."}
-          </LightTooltip>
-        ),
+        render: (text) =>
+          text ? (
+            <LightTooltip title={<div>{text}</div>}>
+              {text.substring(0, 15) + "...."}
+            </LightTooltip>
+          ) : (
+            "-"
+          ),
         dataIndex: "strWorkplaceList",
         width: 150,
       },
