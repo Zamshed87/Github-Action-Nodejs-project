@@ -49,7 +49,8 @@ export const formatBEFTN = (
   bankAccountNo,
   total,
   totalInWords,
-  buAddress
+  buAddress,
+  values
 ) => {
   const excel = {
     name: "Bank Advice",
