@@ -20,6 +20,7 @@ import { todayDate } from "../../../../utility/todayDate";
 import { getOvertimeById, saveOvertime } from "../helper";
 import { getEmployeeProfileViewData } from "./../helper";
 import AsyncFormikSelect from "../../../../common/AsyncFormikSelect";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const initData = {
   employee: "",
@@ -60,6 +61,7 @@ export default function AddEditOverTime() {
   const [empBasic, setEmpBasic] = useState([]);
   const [singleData, setSingleData] = useState("");
   const history = useHistory();
+  const [, getOtRate] = useAxiosGet([]);
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
@@ -304,6 +306,14 @@ export default function AddEditOverTime() {
                         }
                         onClick={() => {
                           setFieldValue("employee", "");
+                          setFieldValue("otInfo", [
+                            {
+                              date: "",
+                              overTimeHour: "",
+                              overTimeRate: "",
+                              reason: "",
+                            },
+                          ]);
                         }}
                         styles={{ height: "auto", fontSize: "12px" }}
                       />
@@ -314,6 +324,14 @@ export default function AddEditOverTime() {
                     isSearchIcon={true}
                     handleChange={(valueOption) => {
                       setFieldValue("employee", valueOption);
+                      setFieldValue("otInfo", [
+                        {
+                          date: "",
+                          overTimeHour: "",
+                          overTimeRate: "",
+                          reason: "",
+                        },
+                      ]);
                     }}
                     placeholder="Search (min 3 letter)"
                     loadOptions={(v) => getSearchEmployeeList(buId, wgId, v)}
@@ -391,13 +409,28 @@ export default function AddEditOverTime() {
                                       `otInfo.${index}.date`,
                                       val.target.value
                                     );
+                                    getOtRate(
+                                      `/Employee/GetOverTimeRate?intAccountId=${orgId}&date=${
+                                        val.target.value + "-01"
+                                      }&empId=${values?.employee?.value}`,
+                                      (res) =>
+                                        setFieldValue(
+                                          `otInfo.${index}.overTimeRate`,
+                                          res[0]?.perHourRate
+                                            ? (res[0]?.perHourRate).toFixed(2)
+                                            : "0.00"
+                                        )
+                                    );
                                   }}
                                   name={`otInfo.${index}.date`}
                                   type="month"
                                   className="form-control"
                                   errors={errors}
                                   touched={touched}
-                                  disabled={params?.id && true}
+                                  disabled={
+                                    (!values?.employee?.value || params?.id) &&
+                                    true
+                                  }
                                 />
                               </div>
                             </div>
@@ -418,10 +451,22 @@ export default function AddEditOverTime() {
                                       `otInfo.${index}.date`,
                                       e.target.value
                                     );
+                                    getOtRate(
+                                      `/Employee/GetOverTimeRate?intAccountId=${orgId}&date=${e.target.value}&empId=${values?.employee?.value}`,
+                                      (res) =>
+                                        setFieldValue(
+                                          `otInfo.${index}.overTimeRate`,
+                                          (res[0]?.perHourRate).toFixed(2) ||
+                                            "0.00"
+                                        )
+                                    );
                                   }}
                                   errors={errors}
                                   touched={touched}
-                                  disabled={params?.id && true}
+                                  disabled={
+                                    !values?.employee?.value ||
+                                    (params?.id && true)
+                                  }
                                 />
                               </div>
                             </div>
@@ -485,6 +530,14 @@ export default function AddEditOverTime() {
                                 errors={errors}
                                 touched={touched}
                               />
+                              {values?.duration === "Monthly" &&
+                                values?.otInfo[index]?.date && (
+                                  <p>
+                                    This rate is for first day of the
+                                    month.There can be missmatch.Please, Check
+                                    it
+                                  </p>
+                                )}
                             </div>
                           </div>
                           <div className="col-lg-2">
