@@ -179,42 +179,87 @@ const BankAdviceReport = () => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
-    getBankAdviceRequestLanding(
-      orgId,
-      buId,
-      wgId,
-      {
-        current: newPage,
-        pageSize: pages?.pageSize,
-        total: pages?.total,
-      },
-      values,
-      setPages,
-      setRowDto,
-      setLoading,
-      searchText
-    );
+    if (values?.bankAdviceFor?.value === 2) {
+      if (!values?.bonusCode?.length > 0)
+        return toast.warning("Please select Bonus Code");
+      getBankAdviceBonusRequestLanding(
+        orgId,
+        buId,
+        wgId,
+        {
+          current: newPage,
+          pageSize: pages?.pageSize,
+          total: pages?.total,
+        },
+        values,
+        setPages,
+        setRowDto,
+        setLoading,
+        searchText
+      );
+    } else if (values?.bankAdviceFor?.value === 1) {
+      if (!values?.adviceName?.value)
+        return toast.warning("Please select Salary Code");
+      getBankAdviceRequestLanding(
+        orgId,
+        buId,
+        wgId,
+        {
+          current: newPage,
+          pageSize: pages?.pageSize,
+          total: pages?.total,
+        },
+        values,
+        setPages,
+        setRowDto,
+        setLoading,
+        searchText
+      );
+    }
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
     setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
-    getBankAdviceRequestLanding(
-      orgId,
-      buId,
-      wgId,
-      {
-        current: 1,
-        pageSize: +event.target.value,
-        total: pages?.total,
-      },
-      values,
-      setPages,
-      setRowDto,
-      setLoading,
-      searchText
-    );
+
+    if (values?.bankAdviceFor?.value === 2) {
+      if (!values?.bonusCode?.length > 0)
+        return toast.warning("Please select Bonus Code");
+      getBankAdviceBonusRequestLanding(
+        orgId,
+        buId,
+        wgId,
+        {
+          current: 1,
+          pageSize: +event.target.value,
+          total: pages?.total,
+        },
+        values,
+        setPages,
+        setRowDto,
+        setLoading,
+        searchText
+      );
+    } else if (values?.bankAdviceFor?.value === 1) {
+      if (!values?.adviceName?.value)
+        return toast.warning("Please select Salary Code");
+      getBankAdviceRequestLanding(
+        orgId,
+        buId,
+        wgId,
+        {
+          current: 1,
+          pageSize: +event.target.value,
+          total: pages?.total,
+        },
+        values,
+        setPages,
+        setRowDto,
+        setLoading,
+        searchText
+      );
+    }
   };
   const getBonusNameList = () => {
     getBonusNameDDLAPI(
@@ -593,7 +638,6 @@ const BankAdviceReport = () => {
                       options={[...bankDDL] || []}
                       value={values?.bank}
                       onChange={(valueOption) => {
-                        setWorkplaceDDL([]);
                         setFieldValue("bank", valueOption);
                         setFieldValue("account", "");
                         if (valueOption?.value) {
@@ -759,21 +803,43 @@ const BankAdviceReport = () => {
                         icon={<SettingsBackupRestoreOutlined />}
                         onClick={() => {
                           setFieldValue("search", "");
-                          getBankAdviceRequestLanding(
-                            orgId,
-                            buId,
-                            wgId,
-                            {
-                              current: 1,
-                              pageSize: pages?.pageSize,
-                              total: pages?.total,
-                            },
-                            values,
-                            setPages,
-                            setRowDto,
-                            setLoading,
-                            ""
-                          );
+                          if (values?.bankAdviceFor?.value === 2) {
+                            if (!values?.bonusCode?.length > 0)
+                              return toast.warning("Please select Bonus Code");
+                            getBankAdviceBonusRequestLanding(
+                              orgId,
+                              buId,
+                              wgId,
+                              {
+                                current: 1,
+                                pageSize: pages?.pageSize,
+                                total: pages?.total,
+                              },
+                              values,
+                              setPages,
+                              setRowDto,
+                              setLoading,
+                              ""
+                            );
+                          } else if (values?.bankAdviceFor?.value === 1) {
+                            if (!values?.adviceName?.value)
+                              return toast.warning("Please select Salary Code");
+                            getBankAdviceRequestLanding(
+                              orgId,
+                              buId,
+                              wgId,
+                              {
+                                current: 1,
+                                pageSize: pages?.pageSize,
+                                total: pages?.total,
+                              },
+                              values,
+                              setPages,
+                              setRowDto,
+                              setLoading,
+                              ""
+                            );
+                          }
                         }}
                       />
                     </li>
@@ -797,21 +863,43 @@ const BankAdviceReport = () => {
                       onChange={(e) => {
                         setFieldValue("search", e.target.value);
                         debounce(() => {
-                          getBankAdviceRequestLanding(
-                            orgId,
-                            buId,
-                            wgId,
-                            {
-                              current: 1,
-                              pageSize: pages?.pageSize,
-                              total: pages?.total,
-                            },
-                            values,
-                            setPages,
-                            setRowDto,
-                            setLoading,
-                            e.target.value
-                          );
+                          if (values?.bankAdviceFor?.value === 2) {
+                            if (!values?.bonusCode?.length > 0)
+                              return toast.warning("Please select Bonus Code");
+                            getBankAdviceBonusRequestLanding(
+                              orgId,
+                              buId,
+                              wgId,
+                              {
+                                current: 1,
+                                pageSize: pages?.pageSize,
+                                total: pages?.total,
+                              },
+                              values,
+                              setPages,
+                              setRowDto,
+                              setLoading,
+                              e.target.value
+                            );
+                          } else if (values?.bankAdviceFor?.value === 1) {
+                            if (!values?.adviceName?.value)
+                              return toast.warning("Please select Salary Code");
+                            getBankAdviceRequestLanding(
+                              orgId,
+                              buId,
+                              wgId,
+                              {
+                                current: 1,
+                                pageSize: pages?.pageSize,
+                                total: pages?.total,
+                              },
+                              values,
+                              setPages,
+                              setRowDto,
+                              setLoading,
+                              e.target.value
+                            );
+                          }
                         }, 500);
                       }}
                       errors={errors}
