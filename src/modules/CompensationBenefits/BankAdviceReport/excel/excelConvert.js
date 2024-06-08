@@ -33,7 +33,8 @@ const createExcelFile = (
         bankAccountNo,
         total,
         totalInWords,
-        buAddress
+        buAddress,
+        values
       );
       break;
     case 1:
@@ -49,7 +50,8 @@ const createExcelFile = (
         bankAccountNo,
         total,
         totalInWords,
-        buAddress
+        buAddress,
+        values
       );
       break;
     case 2:
@@ -65,7 +67,8 @@ const createExcelFile = (
         bankAccountNo,
         total,
         totalInWords,
-        buAddress
+        buAddress,
+        values
       );
       break;
     case "Dhaka Bank Limited ":
@@ -81,7 +84,8 @@ const createExcelFile = (
         bankAccountNo,
         total,
         totalInWords,
-        buAddress
+        buAddress,
+        values
       );
       break;
     case "Standard Chartered Bank":
@@ -97,7 +101,8 @@ const createExcelFile = (
         bankAccountNo,
         total,
         totalInWords,
-        buAddress
+        buAddress,
+        values
       );
       break;
     case 5:
@@ -129,7 +134,8 @@ const createExcelFile = (
         bankAccountNo,
         total,
         totalInWords,
-        buAddress
+        buAddress,
+        values
       );
       break;
     case "THE CITY BANK LTD":
@@ -145,7 +151,8 @@ const createExcelFile = (
         bankAccountNo,
         total,
         totalInWords,
-        buAddress
+        buAddress,
+        values
       );
       break;
     default:
@@ -161,7 +168,8 @@ const createExcelFile = (
         bankAccountNo,
         total,
         totalInWords,
-        buAddress
+        buAddress,
+        values
       );
   }
 };

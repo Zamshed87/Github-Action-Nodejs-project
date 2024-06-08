@@ -17,15 +17,20 @@ export const bankAdviceInitialValues = {
   search: "",
   bank: "",
   account: "",
+
+  // new 08-06-2024
+  bankAdviceFor: "",
+  bonusName: "",
+  bonusCode: [],
 };
 
 export const bankAdviceValidationSchema = Yup.object().shape({
-  adviceName: Yup.object()
-    .shape({
-      value: Yup.string().required("Salary Code is required"),
-      label: Yup.string().required("Salary Code is required"),
-    })
-    .typeError("Salary Code is required"),
+  // adviceName: Yup.object()
+  //   .shape({
+  //     value: Yup.string().required("Salary Code is required"),
+  //     label: Yup.string().required("Salary Code is required"),
+  //   })
+  //   .typeError("Salary Code is required"),
   workplaceGroup: Yup.object()
     .shape({
       value: Yup.string().required("Workplace Group is required"),
@@ -90,6 +95,61 @@ export const getBankAdviceRequestLanding = async (
     };
 
     const res = await axios.post(`/Payroll/BankAdvaiceReport`, payload);
+    if (res?.data?.data) {
+      const modifiedData = res.data.data.map((item, index) => ({
+        ...item,
+        initialSerialNumber: index + 1,
+      }));
+      setter && setter(modifiedData);
+      cb?.(modifiedData);
+      setPages?.({
+        current: res?.data?.currentPage,
+        pageSize: res?.data?.pageSize,
+        total: res?.data?.totalCount,
+      });
+
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
+export const getBankAdviceBonusRequestLanding = async (
+  orgId,
+  buId,
+  wgId,
+  pages,
+  values,
+  setPages,
+  setter,
+  setLoading,
+  searchTxt = "",
+  isForXl = false,
+  cb
+) => {
+  setLoading && setLoading(true);
+  try {
+    const concatBonusCode = values?.bonusCode?.map((item) => item?.value)
+    const payload = {
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      intMonthId: values?.monthId,
+      intYearId: values?.yearId,
+      intWorkplaceGroupId: values?.workplaceGroup?.value,
+      intWorkplaceId: values?.workplace?.value,
+      intBankId: values?.bank?.value,
+      intSalaryGenerateRequestId: values?.adviceName?.value || 0,
+      bankAccountNo: values?.account?.AccountNo,
+      intBankOrWalletType: 1,
+      strAdviceType: "",
+      isForXl: isForXl,
+      searchTxt: searchTxt,
+      pageNo: pages?.current,
+      pageSize: pages?.pageSize,
+      intBonunHeaderList: concatBonusCode || [],
+    };
+
+    const res = await axios.post(`/Payroll/BonusBankAdvaiceReport`, payload);
     if (res?.data?.data) {
       const modifiedData = res.data.data.map((item, index) => ({
         ...item,

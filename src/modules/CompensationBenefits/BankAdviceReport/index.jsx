@@ -17,7 +17,7 @@ import NoResult from "../../../common/NoResult";
 import NotPermittedPage from "../../../common/notPermitted/NotPermittedPage";
 import ResetButton from "../../../common/ResetButton";
 import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStorage/actions";
-import { gray500 } from "../../../utility/customColor";
+import { gray500, gray600, success500 } from "../../../utility/customColor";
 import { monthYearFormatter } from "../../../utility/dateFormatter";
 import { getPDFAction } from "../../../utility/downloadFile";
 import { withDecimal } from "../../../utility/numberToWord";
@@ -31,6 +31,7 @@ import {
   bankAdviceColumnData,
   bankAdviceInitialValues,
   bankAdviceValidationSchema,
+  getBankAdviceBonusRequestLanding,
   getBankAdviceRequestLanding,
 } from "./helper";
 import { paginationSize } from "../../../common/peopleDeskTable";
@@ -38,6 +39,9 @@ import PeopleDeskTable from "../../componentModule/peopledeskTable";
 import useDebounce from "../../../utility/customHooks/useDebounce";
 import { set } from "lodash";
 import { generateTopSheetAction } from "./excel/excelTopSheet";
+import useAxiosPost from "utility/customHooks/useAxiosPost";
+import { todayDate } from "utility/todayDate";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const BankAdviceReport = () => {
   const dispatch = useDispatch();
@@ -51,6 +55,10 @@ const BankAdviceReport = () => {
   const [accountDDL, setAccountDDL] = useState([]);
   const [workplaceDDL, setWorkplaceDDL] = useState([]);
   const [buDetails, setBuDetails] = useState(false);
+  const [bonusNameDDL, getBonusNameDDLAPI, , setBonusNameDDL] = useAxiosPost(
+    []
+  );
+  const [bonusCodeDDL, getBonusCODEDDLAPI, , setBonusCodeDDL] = useAxiosGet([]);
 
   // DDl section
   const [bankAccountDDL, setBankAccountDDL] = useState([]);
@@ -80,38 +88,75 @@ const BankAdviceReport = () => {
       enableReinitialize: true,
       validationSchema: bankAdviceValidationSchema,
       initialValues: bankAdviceInitialValues,
-      onSubmit: () => saveHandler(),
+      onSubmit: () => saveHandler(values),
     });
 
   // on form submit
-  const saveHandler = () => {
-    getBankAdviceRequestLanding(
-      orgId,
-      buId,
-      wgId,
-      pages,
-      values,
-      setPages,
-      setRowDto,
-      setLoading
-    );
+  const saveHandler = (values) => {
+    if (values?.bankAdviceFor?.value === 2) {
+      if (!values?.bonusCode?.length > 0)
+        return toast.warning("Please select Bonus Code");
+      getBankAdviceBonusRequestLanding(
+        orgId,
+        buId,
+        wgId,
+        pages,
+        values,
+        setPages,
+        setRowDto,
+        setLoading
+      );
+    } else if (values?.bankAdviceFor?.value === 1) {
+      if (!values?.adviceName?.value)
+        return toast.warning("Please select Salary Code");
+      getBankAdviceRequestLanding(
+        orgId,
+        buId,
+        wgId,
+        pages,
+        values,
+        setPages,
+        setRowDto,
+        setLoading
+      );
+    }
   };
 
-  const excelGenerate = (cb) => {
-    getBankAdviceRequestLanding(
-      orgId,
-      buId,
-      wgId,
-      pages,
-      values,
-      null,
-      null,
-      setLoading,
-      "",
-      true,
-      cb,
-      setTotal
-    );
+  const excelGenerate = (values, cb) => {
+    if (values?.bankAdviceFor?.value === 2) {
+      if (!values?.bonusCode?.length > 0)
+        return toast.warning("Please select Bonus Code");
+      getBankAdviceBonusRequestLanding(
+        orgId,
+        buId,
+        wgId,
+        pages,
+        values,
+        null,
+        null,
+        setLoading,
+        "",
+        true,
+        cb
+      );
+    } else if (values?.bankAdviceFor?.value === 1) {
+      if (!values?.adviceName?.value)
+        return toast.warning("Please select Salary Code");
+      getBankAdviceRequestLanding(
+        orgId,
+        buId,
+        wgId,
+        pages,
+        values,
+        null,
+        null,
+        setLoading,
+        "",
+        true,
+        cb,
+        setTotal
+      );
+    }
   };
 
   // excel column set up
@@ -152,7 +197,7 @@ const BankAdviceReport = () => {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getBankAdviceRequestLanding(
@@ -169,6 +214,51 @@ const BankAdviceReport = () => {
       setRowDto,
       setLoading,
       searchText
+    );
+  };
+  const getBonusNameList = () => {
+    getBonusNameDDLAPI(
+      `/Employee/BonusAllLanding`,
+      {
+        strPartName: "BonusNameList",
+        intBonusHeaderId: 0,
+        intAccountId: orgId,
+        intBusinessUnitId: buId,
+        intBonusId: 0,
+        intPayrollGroupId: 0,
+        intWorkplaceGroupId: 0,
+        intReligionId: 0,
+        dteEffectedDate: todayDate(),
+        intCreatedBy: employeeId,
+      },
+      (res) => {
+        console.log(res);
+        const response = res
+          ?.filter((b) => b?.label)
+          ?.map((item) => ({
+            ...item,
+            value: item?.intBonusId,
+            label: item?.strBonusName,
+          }));
+        setBonusNameDDL(response);
+      }
+    );
+  };
+  const getBonusCODEListHandler = (values) => {
+    const month = `${values?.yearId}-${values?.monthId}-01`;
+    getBonusCODEDDLAPI(
+      `/Employee/BonusGenerateQueryAll?StrPartName=GetBonusCodebyBonusId&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&IntBonusId=${values?.bonusName?.value}&DteEffectedDate=${month}`,
+      (res) => {
+        console.log(res);
+        const response = res
+          ?.filter((b) => b?.strBonusGenerateCode)
+          ?.map((item) => ({
+            ...item,
+            value: item?.intBonusHeaderId,
+            label: item?.strBonusGenerateCode,
+          }));
+        setBonusCodeDDL(response);
+      }
     );
   };
 
@@ -225,7 +315,10 @@ const BankAdviceReport = () => {
                           monthYear: e.target.value,
                           adviceName: "",
                         }));
-                        if (values?.workplaceGroup?.value) {
+                        if (
+                          values?.workplaceGroup?.value &&
+                          values?.bankAdviceFor?.value === 1
+                        ) {
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${
                               values?.workplaceGroup?.value
@@ -261,9 +354,62 @@ const BankAdviceReport = () => {
                         setFieldValue("workplaceGroup", valueOption);
                         setFieldValue("workplace", "");
                         setFieldValue("adviceName", "");
-                        if (valueOption?.value) {
+                        setFieldValue("bonusName", "");
+                        setFieldValue("bonusCode", []);
+                        // if (valueOption?.value) {
+                        //   getPeopleDeskAllDDL(
+                        //     `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
+                        //     "value",
+                        //     "label",
+                        //     setPayrollPeriodDDL
+                        //   );
+                        // }
+                      }}
+                      placeholder=""
+                      styles={customStyles}
+                      errors={errors}
+                      touched={touched}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-3">
+                  <div className="input-field-main">
+                    <label>Bank Advice For</label>
+                    <FormikSelect
+                      name="bankAdviceFor"
+                      options={[
+                        {
+                          value: 1,
+                          label: "Salary",
+                        },
+                        {
+                          value: 2,
+                          label: "Bonus",
+                        },
+                      ]}
+                      value={values?.bankAdviceFor}
+                      onChange={(valueOption) => {
+                        setWorkplaceDDL([]);
+                        setRowDto([]);
+                        setFieldValue("bankAdviceFor", valueOption);
+                        setFieldValue("adviceName", "");
+                        setFieldValue("bonusName", "");
+                        setFieldValue("bonusCode", []);
+                        setFieldValue("workplace", "");
+                        setFieldValue("bank", "");
+                        setFieldValue("account", "");
+                        setBankDDL([]);
+                        setBankAccountDDL([]);
+                        setWorkplaceDDL([]);
+                        if (valueOption?.value === 2) {
+                          getBonusNameList(values);
+                        }
+                        if (
+                          values?.workplaceGroup?.value &&
+                          valueOption?.value === 1
+                        ) {
                           getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${valueOption?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
+                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=salarycodebyWorkplaceGroup&WorkplaceGroupId=${values?.workplaceGroup?.value}&BusinessUnitId=${buId}&IntMonth=${values?.monthId}&IntYear=${values?.yearId}`,
                             "value",
                             "label",
                             setPayrollPeriodDDL
@@ -277,38 +423,138 @@ const BankAdviceReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3">
-                  <div className="input-field-main">
-                    <label>Salary Code</label>
-                    <FormikSelect
-                      name="adviceName"
-                      options={payrollPeriodDDL || []}
-                      value={values?.adviceName}
-                      onChange={(valueOption) => {
-                        if (valueOption?.value) {
-                          getPeopleDeskAllDDL(
-                            `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebySalaryGenerateRequestId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
-                            "value",
-                            "label",
-                            setWorkplaceDDL
-                          );
-                        }
-                        setValues((prev) => ({
-                          ...prev,
-                          workplace: "",
-                          bank: "",
-                          account: "",
-                          adviceName: valueOption,
-                        }));
-                        setRowDto([]);
-                      }}
-                      placeholder=""
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                    />
+                {values?.bankAdviceFor?.value === 1 ? (
+                  <div className="col-lg-3">
+                    <div className="input-field-main">
+                      <label>Salary Code</label>
+                      <FormikSelect
+                        name="adviceName"
+                        options={payrollPeriodDDL || []}
+                        value={values?.adviceName}
+                        onChange={(valueOption) => {
+                          if (valueOption?.value) {
+                            getPeopleDeskAllDDL(
+                              `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=WorkplacebySalaryGenerateRequestId&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intId=${valueOption?.value}`,
+                              "value",
+                              "label",
+                              setWorkplaceDDL
+                            );
+                          }
+                          setValues((prev) => ({
+                            ...prev,
+                            workplace: "",
+                            bank: "",
+                            account: "",
+                            adviceName: valueOption,
+                          }));
+                          setRowDto([]);
+                        }}
+                        placeholder=""
+                        styles={customStyles}
+                        errors={errors}
+                        touched={touched}
+                      />
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <></>
+                )}
+                {values?.bankAdviceFor?.value === 2 ? (
+                  <>
+                    <div className="col-lg-3">
+                      <div className="input-field-main">
+                        <label>Bonus Name</label>
+                        <FormikSelect
+                          name="bonusName"
+                          options={bonusNameDDL || []}
+                          value={values?.bonusName}
+                          onChange={(valueOption) => {
+                            setFieldValue("bonusName", valueOption);
+                            if (
+                              valueOption?.value &&
+                              values?.workplaceGroup?.value
+                            ) {
+                              getBonusCODEListHandler({
+                                ...values,
+                                bonusName: valueOption,
+                              });
+                            }
+                          }}
+                          placeholder=""
+                          styles={customStyles}
+                          errors={errors}
+                          touched={touched}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-6">
+                      <div className="input-field-main">
+                        <label>Bonus Code</label>
+                        <FormikSelect
+                          name="bonusCode"
+                          isClearable={false}
+                          options={bonusCodeDDL || []}
+                          value={values?.bonusCode}
+                          onChange={(valueOption) => {
+                            setWorkplaceDDL([]);
+                            setFieldValue("bonusCode", valueOption);
+                            if (valueOption?.length > 0) {
+                              const concatBonusCode = valueOption
+                                ?.map((item) => item?.value)
+                                .join(",");
+                              const api = `/Employee/BonusGenerateQueryAll?StrPartName=GetWorkplaceListbyBonusHeaderId&searchText=${concatBonusCode}`;
+                              getPeopleDeskAllDDL(
+                                api,
+                                "intWorkPlaceId",
+                                "strWorkplace",
+                                setWorkplaceDDL
+                              );
+                            }
+                          }}
+                          styles={{
+                            ...customStyles,
+                            control: (provided) => ({
+                              ...provided,
+                              minHeight: "auto",
+                              height:
+                                values?.bonusCode?.length > 1 ? "auto" : "auto",
+                              borderRadius: "4px",
+                              boxShadow: `${success500}!important`,
+                              ":hover": {
+                                borderColor: `${gray600}!important`,
+                              },
+                              ":focus": {
+                                borderColor: `${gray600}!important`,
+                              },
+                            }),
+                            valueContainer: (provided) => ({
+                              ...provided,
+                              height:
+                                values?.bonusCode?.length > 1 ? "auto" : "auto",
+                              padding: "0 6px",
+                            }),
+                            multiValue: (styles) => {
+                              return {
+                                ...styles,
+                                position: "relative",
+                                top: "-1px",
+                              };
+                            },
+                            multiValueLabel: (styles) => ({
+                              ...styles,
+                              padding: "0",
+                            }),
+                          }}
+                          isMulti
+                          placeholder="Bonus Code"
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
+
                 <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>Workplace</label>
@@ -317,6 +563,7 @@ const BankAdviceReport = () => {
                       options={[...workplaceDDL] || []}
                       value={values?.workplace}
                       onChange={(valueOption) => {
+                        setBankDDL([]);
                         if (valueOption?.value) {
                           getPeopleDeskAllDDL(
                             `/PeopleDeskDDL/PeopleDeskAllDDL?DDLType=BankListofBankAdvicebyWorkplaceId&AccountId=${orgId}&BusinessUnitId=${buId}&WorkplaceGroupId=${values?.workplaceGroup?.value}&intWorkplaceId=${valueOption?.value}`,
@@ -324,11 +571,11 @@ const BankAdviceReport = () => {
                             "label",
                             setBankDDL
                           );
+                          getWorkplaceDetails(valueOption?.value, setBuDetails);
                         }
                         setFieldValue("workplace", valueOption);
                         setFieldValue("bank", "");
                         setFieldValue("account", "");
-                        getWorkplaceDetails(valueOption?.value, setBuDetails);
                       }}
                       placeholder=""
                       styles={customStyles}
@@ -338,52 +585,6 @@ const BankAdviceReport = () => {
                   </div>
                 </div>
 
-                {/* <div className="col-lg-3">
-                  <div className="input-field-main">
-                    <label>Advice Type</label>
-                    <FormikSelect
-                      name="adviceTo"
-                      options={[
-                        { label: "IBBL", value: "IBBL", type: 0 },
-                        { label: "IBBL-BFTN", value: "IBBL-BFTN", type: 1 },
-                        { label: "BEFTN", value: "BEFTN", type: 2 },
-                      ]}
-                      value={values?.adviceTo}
-                      onChange={(valueOption) => {
-                        setValues((prev) => ({
-                          ...prev,
-                          adviceTo: valueOption,
-                        }));
-                        setRowDto([]);
-                      }}
-                      placeholder=""
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-                </div> */}
-                {/* <div className="col-lg-3">
-                  <div className="input-field-main">
-                    <label>Sender Bank Account No</label>
-                    <FormikSelect
-                      name="bankAccountNo"
-                      options={bankAccountDDL || []}
-                      value={values?.bankAccountNo}
-                      onChange={(valueOption) => {
-                        setValues((prev) => ({
-                          ...prev,
-                          bankAccountNo: valueOption,
-                        }));
-                        setRowDto([]);
-                      }}
-                      placeholder=""
-                      styles={customStyles}
-                      errors={errors}
-                      touched={touched}
-                    />
-                  </div>
-                </div> */}
                 <div className="col-lg-3">
                   <div className="input-field-main">
                     <label>Bank Name</label>
@@ -429,7 +630,13 @@ const BankAdviceReport = () => {
                     />
                   </div>
                 </div>
-                <div className="col-lg-3 mt-3">
+                <div
+                  className={
+                    values?.bankAdviceFor?.value === 2
+                      ? `mt-4 col-lg-3`
+                      : `mt-3 col-lg-3`
+                  }
+                >
                   <button
                     className="btn btn-green btn-green-disable"
                     type="submit"
@@ -468,7 +675,7 @@ const BankAdviceReport = () => {
                                 });
                               }
 
-                              excelGenerate((res) => {
+                              excelGenerate(values, (res) => {
                                 const total = Number(
                                   res
                                     ?.reduce(
@@ -511,7 +718,7 @@ const BankAdviceReport = () => {
                                 });
                               }
 
-                              excelGenerate((res) => {
+                              excelGenerate(values, (res) => {
                                 const total = Number(
                                   res
                                     ?.reduce(
@@ -536,39 +743,12 @@ const BankAdviceReport = () => {
                                   businessUnitDDL[0]?.BusinessUnitAddress
                                 );
                               });
-
-                              //   values?.bank?.label ===
-                              //     "Dutch Bangla Bank Agent Banking" ||
-                              //   values?.bank?.label === "DUTCH-BANGLA BANK LTD"
-                              // ) {
                             }}
                           >
                             <DownloadIcon />
                           </IconButton>
                         </Tooltip>
                       </li>
-                      {/* <li className="pr-2">
-                        <Tooltip title="Print" arrow>
-                          <IconButton
-                            style={{ color: "#101828" }}
-                            onClick={() => {
-                              if (values?.adviceTo?.type === 0) {
-                                getPDFAction(
-                                  `/PdfAndExcelReport/BankAdviceReportForIBBL?SalaryGenerateRequestId=${values?.adviceName?.value}&WorkplaceGroupId=${wgId}&MonthId=${values?.monthId}&YearId=${values?.yearId}&IntAccountId=${orgId}&IntBusinessUnitId=${buId}`,
-                                  setLoading
-                                );
-                              } else {
-                                getPDFAction(
-                                  `/PdfAndExcelReport/BankAdviceReportForBEFTN?SalaryGenerateRequestId=${values?.adviceName?.value}&WorkplaceGroupId=${wgId}&MonthId=${values?.monthId}&YearId=${values?.yearId}&IntAccountId=${orgId}&IntBusinessUnitId=${buId}`,
-                                  setLoading
-                                );
-                              }
-                            }}
-                          >
-                            <LocalPrintshopIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </li> */}
                     </>
                   )}
                   {values?.search && (
