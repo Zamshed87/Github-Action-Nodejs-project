@@ -664,7 +664,6 @@ const BankAdviceReport = () => {
                       options={[...bankAccountDDL] || []}
                       value={values?.account}
                       onChange={(valueOption) => {
-                        setWorkplaceDDL([]);
                         setFieldValue("account", valueOption);
                       }}
                       placeholder=""
