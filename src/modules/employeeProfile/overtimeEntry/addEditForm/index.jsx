@@ -61,7 +61,7 @@ export default function AddEditOverTime() {
   const [empBasic, setEmpBasic] = useState([]);
   const [singleData, setSingleData] = useState("");
   const history = useHistory();
-  const [otRate, getOtRate] = useAxiosGet([]);
+  const [, getOtRate] = useAxiosGet([]);
 
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
     (state) => state?.auth?.profileData,
