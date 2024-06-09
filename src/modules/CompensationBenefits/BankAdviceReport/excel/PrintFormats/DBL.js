@@ -48,7 +48,8 @@ export const formatDBL = (
   bankAccountNo,
   total,
   totalInWords,
-  buAddress
+  buAddress,
+  values
 ) => {
   const excel = {
     name: `DBL Report-${moment().format("ll")}`,
@@ -151,7 +152,7 @@ export const formatDBL = (
           ],
           [
             {
-              text: `Subject : REQUEST TO DISBURSE EMPLOYEE SALARY ${comapanyNameHeader.toUpperCase()}`,
+              text: `Subject : REQUEST TO DISBURSE EMPLOYEE ${values?.bankAdviceFor?.value === 2 ? "BONUS" : "SALARY"} ${comapanyNameHeader.toUpperCase()}`,
               fontSize: 10,
               bold: true,
               underline: true,
@@ -173,7 +174,7 @@ export const formatDBL = (
           ],
           [
             {
-              text: `With due respect, please disburse the net payable amount ${total} (${totalInWords} Only) as Employee Salary ${comapanyNameHeader} to the all-account holders as per attached sheet from our Company Account ${bankAccountNo} `,
+              text: `With due respect, please disburse the net payable amount ${total} (${totalInWords} Only) as Employee ${values?.bankAdviceFor?.value === 2 ? "bonus" : "salary"} ${comapanyNameHeader} to the all-account holders as per attached sheet from our Company Account ${bankAccountNo} `,
               fontSize: 9,
               cellRange: "A2:H1",
               merge: true,

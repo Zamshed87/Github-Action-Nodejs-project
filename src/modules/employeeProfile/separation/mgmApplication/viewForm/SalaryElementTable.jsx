@@ -1,8 +1,8 @@
-import React from 'react'
-import AntTable from 'common/AntTable';
-import { updatePayrollElementByIndex } from 'modules/employeeProfile/finalSettlement/utility/utils';
-import DefaultInput from 'common/DefaultInput';
-import { formatMoney } from 'utility/formatMoney';
+import React from "react";
+import AntTable from "common/AntTable";
+import { updatePayrollElementByIndex } from "modules/employeeProfile/finalSettlement/utility/utils";
+import DefaultInput from "common/DefaultInput";
+import { formatMoney } from "utility/formatMoney";
 
 const SalaryElementTable = ({
   title,
@@ -108,7 +108,14 @@ const SalaryElementTable = ({
                             });
                           }
                         }}
-                        disabled={isDisabled}
+                        disabled={
+                          record?.strAdditionTypeName ===
+                            "Others Manually Addition" ||
+                          record?.strAdditionTypeName ===
+                            "Others Manually Deduction"
+                            ? false
+                            : isDisabled
+                        }
                       />
                     </span>
                   ),
@@ -122,4 +129,4 @@ const SalaryElementTable = ({
   );
 };
 
-export default SalaryElementTable
+export default SalaryElementTable;

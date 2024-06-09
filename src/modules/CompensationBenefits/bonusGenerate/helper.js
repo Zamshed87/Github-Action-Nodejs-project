@@ -410,6 +410,12 @@ export const bonusGenerateColumn = (
       filter: false,
     },
     {
+      title: "Bonus Code",
+      dataIndex: "strBonusGenerateCode",
+      sorter: true,
+      filter: true,
+    },
+    {
       title: "Bonus System",
       dataIndex: "strBonusSystem",
       sorter: true,
