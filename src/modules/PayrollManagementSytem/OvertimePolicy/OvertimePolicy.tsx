@@ -88,10 +88,6 @@ const OvertimePolicyN: React.FC<TOvertimePolicy> = () => {
                   );
                 },
               },
-              {
-                type: "delete",
-                // onClick: () => {},
-              },
             ]}
           />
         );
