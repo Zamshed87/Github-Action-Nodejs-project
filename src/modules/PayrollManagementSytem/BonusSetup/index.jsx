@@ -241,7 +241,7 @@ export default function BonusSetupLanding() {
         render: (item) => (
           <>
             {item?.intMaximumServiceLengthMonth > 0
-              ? item?.intMaximumServiceLengthMonth
+              ? item?.intMinimumServiceLengthMonth
               : item?.intMinimumServiceLengthDays || "0"}
           </>
         ),
@@ -258,7 +258,7 @@ export default function BonusSetupLanding() {
               : item?.intMaximumServiceLengthDays || "-"}
           </>
         ),
-        sort: true,
+        sort: true, 
         filter: false,
       },
       {

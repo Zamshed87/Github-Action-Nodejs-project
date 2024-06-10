@@ -294,6 +294,8 @@ const BonusGenerateView = () => {
                     </th>
                     <th rowSpan="2">Employee Name</th>
                     <th rowSpan="2">Designation</th>
+                    <th rowSpan="2">HR Position</th>
+                    <th rowSpan="2">Section</th>
                     <th rowSpan="2">Date of Joining</th>
                     <th rowSpan="2">Job Duration</th>
                     <th
@@ -350,10 +352,10 @@ const BonusGenerateView = () => {
                         </thead>
                       </table>
                     </th>
-                    {/* <th rowSpan="2">Bonus Percentage</th> */}
+                    <th rowSpan="2">Bank Pay Amount</th>
+                    <th rowSpan="2">Cash Pay Amount</th>
                     <th rowSpan="2">Workplace Group</th>
                     <th rowSpan="2">Workplace</th>
-                  
                   </tr>
                 </thead>
                 <tbody>
@@ -421,6 +423,20 @@ const BonusGenerateView = () => {
                         {!item?.DeptName?.trim()
                           ? item?.strDesignationName
                           : null}
+                      </td>
+                      <td
+                        className={
+                          item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                        }
+                      >
+                        {item?.strHRPosition || null}
+                      </td>
+                      <td
+                        className={
+                          item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                        }
+                      >
+                        {item?.strSectionName || null}
                       </td>
                       <td
                         style={{ textAlign: "center" }}
@@ -501,7 +517,21 @@ const BonusGenerateView = () => {
                           ? item?.numBonusPercentage + " %"
                           : ""}
                       </td> */}
-                       <td
+                      <td
+                        className={
+                          item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                        }
+                      >
+                        {numberWithCommas(item?.numBankPayAmount) || null}
+                      </td>
+                      <td
+                        className={
+                          item?.DeptName === "Sub-Total:" ? "rowClass" : ""
+                        }
+                      >
+                        {numberWithCommas(item?.numCashPayAmount) || null}
+                      </td>
+                      <td
                         className={
                           item?.DeptName === "Sub-Total:" ? "rowClass" : ""
                         }
@@ -519,7 +549,6 @@ const BonusGenerateView = () => {
                           ? numberWithCommas(item?.strWorkPlaceName)
                           : null}
                       </td>
-                     
                     </tr>
                   ))}
                 </tbody>

@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getDownlloadFileView_Action } from "../../commonRedux/auth/actions";
 import { UploadOutlined } from "@ant-design/icons";
+import { LightTooltip } from "common/LightTooltip";
+import { InfoOutlined } from "@mui/icons-material";
+import { failColor, gray900 } from "utility/customColor";
 
 const FileUploadComponents = ({ propsObj }) => {
   const {
@@ -22,10 +25,12 @@ const FileUploadComponents = ({ propsObj }) => {
     buId,
     userId,
     makeApiReq = true,
+    isIcon = false,
     subText = "",
+    isErrorInfo = false,
   } = propsObj;
   const { tokenData } = useSelector((state) => state?.auth, shallowEqual);
-  let dispatch = useDispatch();
+  const dispatch = useDispatch();
   let apiAction = {};
   if (makeApiReq) {
     apiAction = {
@@ -94,7 +99,18 @@ const FileUploadComponents = ({ propsObj }) => {
       >
         {title ? title : "Upload Attachment"}
       </Button>
-      {subText ? (
+      {isIcon ? (
+        <LightTooltip title={subText} arrow>
+          {" "}
+          <InfoOutlined
+            sx={{
+              color: isErrorInfo ? failColor : gray900,
+              width: 16,
+              cursor: "pointer",
+            }}
+          />
+        </LightTooltip>
+      ) : subText ? (
         <sub style={{ margin: "0.5rem", color: "red" }}>({subText})</sub>
       ) : null}
     </Upload>
