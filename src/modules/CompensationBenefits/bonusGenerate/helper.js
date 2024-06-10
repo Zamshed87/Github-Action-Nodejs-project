@@ -225,6 +225,7 @@ const bonusExcelHeader = {
   intEmployeeId: "Employee Id",
   employeeName: "Employee Name",
   strWorkPlaceName: "Workplace Name",
+  DepartmentName: "Department",
   strDesignationName: "Designation",
   strHRPosition: "HR Position",
   strSectionName: "Section Name",
@@ -313,6 +314,13 @@ const getExcelTableData = (row) => {
       ).getCell(),
       new Cell(
         !item?.DeptName?.trim() ? item?.strWorkPlaceName : " ",
+        "left",
+        "text",
+        item?.DeptName?.trim() ? true : false,
+        item?.DeptName?.trim() ? 10 : 9
+      ).getCell(),
+      new Cell(
+        !item?.DeptName?.trim() ? item?.DepartmentName : " ",
         "left",
         "text",
         item?.DeptName?.trim() ? true : false,
