@@ -86,8 +86,8 @@ const BankDetails = ({ objProps, isEditBtn, editBtnHandler, empId }) => {
                     ) : (
                       <RadioButtonCheckedIcon className="bankRadio" />
                     )}
-                    <label className="bankRadioLabel" for="flexRadioDefault2">
-                      DIGITAL BANKING
+                    <label className="bankRadioLabel" htmlFor="flexRadioDefault2">
+                    MFS
                     </label>
                   </div>
                 </div>
