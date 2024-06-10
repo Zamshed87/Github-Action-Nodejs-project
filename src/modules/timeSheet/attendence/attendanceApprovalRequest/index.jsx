@@ -176,9 +176,9 @@ export default function AttendanceApprovalRequest() {
                   <div className="table-card-head-right">
                     {tableData?.filter((item) => item?.selectCheckbox).length >
                       0 && (
-                      <div className="d-flex actionIcon mr-3">
+                      <div className="d-flex actionIcon">
                         <Tooltip title="Edit" arrow>
-                          <button className="staticIconButton" type="button">
+                          {/* <button className="staticIconButton" type="button">
                             <EditOutlined
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -186,6 +186,23 @@ export default function AttendanceApprovalRequest() {
                                 setIsMulti(true);
                               }}
                             />
+                          </button> */}
+                          <button
+                            style={{
+                              height: "32px",
+                              width: "50px",
+                              fontSize: "12px",
+                              padding: "0px 12px 0px 12px",
+                            }}
+                            className="btn btn-default ml-3"
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenModal(true);
+                              setIsMulti(true);
+                            }}
+                          >
+                            Edit
                           </button>
                         </Tooltip>
                       </div>
