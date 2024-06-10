@@ -226,11 +226,15 @@ const bonusExcelHeader = {
   employeeName: "Employee Name",
   strWorkPlaceName: "Workplace Name",
   strDesignationName: "Designation",
+  strHRPosition: "HR Position",
+  strSectionName: "Section Name",
   dteJoiningDate: "Joining Date",
   strServiceLength: "Job Duration",
   numSalary: "Gross Salary (TK)",
   // numBonusPercentage: "Bonus Percentage",
   numBonusAmount: "Bonus Amount(TK)",
+  numBankPayAmount: "Bank Pay Amount",
+  numCashPayAmount: "Cash Pay Amount",
   remarks: "Remarks/Signature",
 };
 export const createBonusGenExcelHandeler = ({
@@ -322,6 +326,20 @@ const getExcelTableData = (row) => {
         item?.DeptName?.trim() ? 10 : 9
       ).getCell(),
       new Cell(
+        !item?.DeptName?.trim() ? item?.strHRPosition : " ",
+        "left",
+        "text",
+        item?.DeptName?.trim() ? true : false,
+        item?.DeptName?.trim() ? 10 : 9
+      ).getCell(),
+      new Cell(
+        !item?.DeptName?.trim() ? item?.strSectionName : " ",
+        "left",
+        "text",
+        item?.DeptName?.trim() ? true : false,
+        item?.DeptName?.trim() ? 10 : 9
+      ).getCell(),
+      new Cell(
         !item?.DeptName?.trim() ? dateFormatter(item?.dteJoiningDate) : " ",
         "center",
         "text",
@@ -363,6 +381,28 @@ const getExcelTableData = (row) => {
             ? `${numberWithCommas(item?.numBonusAmount)}`
             : ""
           : item?.numBonusAmount,
+        "right",
+        "amount",
+        item?.DeptName?.trim() ? true : false,
+        item?.DeptName?.trim() ? 10 : 9
+      ).getCell(),
+      new Cell(
+        item?.DeptName
+          ? item?.DeptName === "Sub-Total:"
+            ? `${numberWithCommas(item?.numBankPayAmount || 0)}`
+            : ""
+          : item?.numBankPayAmount,
+        "right",
+        "amount",
+        item?.DeptName?.trim() ? true : false,
+        item?.DeptName?.trim() ? 10 : 9
+      ).getCell(),
+      new Cell(
+        item?.DeptName
+          ? item?.DeptName === "Sub-Total:"
+            ? `${numberWithCommas(item?.numCashPayAmount || 0)}`
+            : ""
+          : item?.numCashPayAmount,
         "right",
         "amount",
         item?.DeptName?.trim() ? true : false,
