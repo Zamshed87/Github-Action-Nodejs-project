@@ -384,6 +384,8 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                         userId: employeeId,
                         buId,
                         maxCount: 1,
+                        isIcon: true,
+                        isErrorInfo: true,
                         subText:
                           "File formats : PDF, JPG and PNG. Max. Limit : 2MB",
                       }}
@@ -412,36 +414,32 @@ const TLeaveApplicationForm: React.FC<LeaveApplicationForm> = ({
                   ""
                 )}
               </div>
-              <div
-                // onClick={onButtonClick}
-                style={{ cursor: "pointer" }}
-                // style={{ cursor: "pointer", position: "relative" }}
-              >
-                <div style={{ fontSize: "" }}>
-                  {!imageFile?.globalFileUrlId ? (
-                    <>
-                      <FileUploadComponents
-                        propsObj={{
-                          isOpen,
-                          setIsOpen,
-                          destroyOnClose: false,
-                          attachmentList,
-                          setAttachmentList,
-                          accountId: orgId,
-                          tableReferrence: "LeaveAndMovement",
-                          documentTypeId: 15,
-                          userId: employeeId,
-                          buId,
-                          maxCount: 1,
-                          subText:
-                            "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
-                        }}
-                      />
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </div>
+              <div>
+                {!imageFile?.globalFileUrlId ? (
+                  <>
+                    <FileUploadComponents
+                      propsObj={{
+                        isOpen,
+                        setIsOpen,
+                        destroyOnClose: false,
+                        attachmentList,
+                        setAttachmentList,
+                        accountId: orgId,
+                        tableReferrence: "LeaveAndMovement",
+                        documentTypeId: 15,
+                        userId: employeeId,
+                        buId,
+                        maxCount: 1,
+                        isIcon: true,
+                        isErrorInfo: true,
+                        subText:
+                          "Recommended file formats are: PDF, JPG and PNG. Maximum file size is 2 MB",
+                      }}
+                    />
+                  </>
+                ) : (
+                  ""
+                )}
               </div>
             </Col>
             <Form.Item shouldUpdate noStyle>
