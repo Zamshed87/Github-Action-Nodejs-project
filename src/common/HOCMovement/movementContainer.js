@@ -36,11 +36,12 @@ const withMovementContainer = (WrappedComponent) => {
     const [allData, setAllData] = useState([]);
     const [movementTypeDDL, setMovementTypeDDL] = useState([]);
     const [showTooltip, setShowTooltip] = useState([]);
-    const [isSelfService, setIsSelfService] = useState(false);
+    const [isFromManagement, setIsFromManagement] = useState(false);
+
     useEffect(() => {
       const origin = window.location.pathname;
-      setIsSelfService(origin.includes("/profile/movementApplication"));
-    }, []);
+      setIsFromManagement(origin.includes("/profile/movementApplication"));
+    }, [origin]);
     // save
     const saveHandler = (values, cb) => {
       const employee = employeeInfo?.[0];
@@ -169,7 +170,7 @@ const withMovementContainer = (WrappedComponent) => {
         statusId: "",
         empId: values?.employee
           ? values?.employee?.value
-          : employee
+          : employee?.EmployeeId
           ? employee?.EmployeeId
           : employeeId,
       };
@@ -251,7 +252,7 @@ const withMovementContainer = (WrappedComponent) => {
           showTooltip,
           setShowTooltip,
           getMovementHistortyForTable,
-          isSelfService,
+          isFromManagement,
         }}
       />
     );

@@ -68,6 +68,9 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
       });
   };
 
+  const currentdate = new Date(); 
+  const datetime =  currentdate.getHours() +":"+ currentdate.getMinutes() + ":" + currentdate.getSeconds();
+  const endTime =  currentdate.getHours() + 1 +":"+ currentdate.getMinutes() + ":" + currentdate.getSeconds();
   return (
     <>
       <PForm
@@ -75,6 +78,8 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
         initialValues={{
           fromDate: moment(todayDate()),
           toDate: moment(todayDate()),
+          startTime: moment(datetime, "h:mma"),
+          endTime: moment(endTime, "h:mma"),
         }}
       >
         <PCardBody>

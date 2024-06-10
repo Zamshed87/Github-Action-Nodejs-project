@@ -1,5 +1,3 @@
-import { CircularProgress } from "@mui/material";
-import { APIUrl } from "App";
 import {
   DataTable,
   PButton,
@@ -10,93 +8,58 @@ import {
   PSelect,
 } from "Components";
 import { useApiRequest } from "Hooks";
-import { Col, Form, Modal, Row } from "antd";
+import { Col, Form, Row } from "antd";
+import EmployeeHeaderInfo from "common/HOCMovement/component/EmployeeHeaderInfo";
+import MovementApplicationForm from "common/HOCMovement/component/MovementApplicationForm";
+import withMovementContainer from "common/HOCMovement/movementContainer";
+import NoResult from "common/NoResult";
+import Loading from "common/loading/Loading";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import React, { useEffect } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import DemoImg from "../../../assets/images/demo.png";
-import { dateFormatter, monthFirstDate, monthLastDate } from "utility/dateFormatter";
-import NoResult from "common/NoResult";
+import { useDispatch } from "react-redux";
 import { gray500 } from "utility/customColor";
-import Loading from "common/loading/Loading";
-import withMovementContainer from "common/HOCMovement/movementContainer";
-import MovementApplicationForm from "common/HOCMovement/component/MovementApplicationForm";
-import EmployeeHeaderInfo from "common/HOCMovement/component/EmployeeHeaderInfo";
-import { todayDate } from "utility/todayDate";
+import { monthFirstDate, monthLastDate } from "utility/dateFormatter";
 
 type TEmMovementApplication = any;
 const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
-  // Data From Store
-  //   const { orgId, buId, wgId, wId, employeeId } = useSelector(
-  //     (state: any) => state?.auth?.profileData,
-  //     shallowEqual
-  //   );
   const dispatch = useDispatch();
-
-  // States
-  useEffect(() => {
-    dispatch(setFirstLevelNameAction("Employee Management"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    document.title = "Movement Application";
-  }, []);
-
+  // this component is used in management and self service 🔥
   const {
     allData,
     singleData,
     moveHistoryData,
-
     employeeInfo,
     isEdit,
-    isFilter,
     movementTypeDDL,
     loading,
     progress,
     loadingForInfo,
-
     getEmpInfoDetails,
     demoPopupForDelete,
     saveHandler,
     searchData,
     getData,
     setSingleData,
-    setImageFile,
     setIsEdit,
-    setIsFilter,
     setLoading,
     setMoveHistoryData,
     userName,
     employeeId,
-    setEmployeeInfo,
-    orgId,
     buId,
-    setAllData,
     wgId,
     permission,
-    isOfficeAdmin,
-    // demoPopupForDeleteAdmin,
     empMgmtMoveApplicationDto,
     showTooltip,
     setShowTooltip,
     handleIconHover,
     getMovementHistortyForTable,
-    isSelfService
+    isFromManagement,
   } = props?.propjObj;
-  // Form Instance
   const [form] = Form.useForm();
-
-  // Api Actions
   const CommonEmployeeDDL = useApiRequest([]);
-
-  // Life Cycle Hooks
-  useEffect(() => {
-    // const { empSearchType, date, employee } = form.getFieldsValue(true);
-    // empSearchType && date && employee();
-  }, [buId, wgId]);
-
   const getEmployee = (value: any) => {
     if (value?.length < 2) return CommonEmployeeDDL?.reset();
-
     CommonEmployeeDDL?.action({
       urlKey: "CommonEmployeeDDL",
       method: "GET",
@@ -114,11 +77,20 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
       },
     });
   };
+  // States
+  useEffect(() => {
+    dispatch(
+      setFirstLevelNameAction(
+        isFromManagement ? "Employee Management" : "Employee Self Service"
+      )
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    document.title = isFromManagement
+      ? "Movement Application"
+      : "Self Movement Application";
+  }, [isFromManagement]);
 
-  const values = form.getFieldsValue(true);
-  console.log(values)
-  console.log({isSelfService})
-
+  // this component is used in management and self service 🔥
   return (
     <PForm
       form={form}
@@ -148,40 +120,51 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
             />
           }
         >
-          <Form.Item shouldUpdate noStyle>
-            {() => {
-               const values = form.getFieldsValue(true);
-              return (
-                <Row gutter={[10, 2]} style={{ width: "500px" }}>
-                  <Col md={24} sm={12} xs={24}>
-                    <PSelect
-                      name="employee"
-                      placeholder="Search Min 2 char"
-                      options={CommonEmployeeDDL?.data || []}
-                      loading={CommonEmployeeDDL?.loading}
-                      onChange={(value, op) => {
-                        form.setFieldsValue({
-                          employee: op,
-                        });
-                        getEmpInfoDetails(value);
-                        getData(value);
-                        getMovementHistortyForTable({
-                          ...values,
-                          employee: op,
-                        });
-                      }}
-                      onSearch={(value) => {
-                        getEmployee(value);
-                      }}
-                      showSearch
-                      filterOption={false}
-                      allowClear
-                    />
-                  </Col>
-                </Row>
-              );
-            }}
-          </Form.Item>
+          {isFromManagement ? (
+            <Form.Item shouldUpdate noStyle>
+              {() => {
+                const values = form.getFieldsValue(true);
+                return (
+                  <Row gutter={[10, 2]} style={{ width: "500px" }}>
+                    <Col md={24} sm={12} xs={24}>
+                      <PSelect
+                        name="employee"
+                        placeholder="Search Min 2 char"
+                        options={CommonEmployeeDDL?.data || []}
+                        loading={CommonEmployeeDDL?.loading}
+                        onChange={(value, op) => {
+                          form.setFieldsValue({
+                            employee: op,
+                          });
+                          getEmpInfoDetails(value);
+                          getData(value);
+                          if(op){
+                            getMovementHistortyForTable({
+                              ...values,
+                              employee: op,
+                            });
+                          }else{
+                            getMovementHistortyForTable({
+                              ...values,
+                              employee: employeeId,
+                            });
+                          }
+                        }}
+                        onSearch={(value) => {
+                          getEmployee(value);
+                        }}
+                        showSearch
+                        filterOption={false}
+                        allowClear
+                      />
+                    </Col>
+                  </Row>
+                );
+              }}
+            </Form.Item>
+          ) : (
+            <></>
+          )}
         </PCardHeader>
         {/* style={{ marginTop: "-5.7rem" }} */}
         <Row gutter={[10, 2]}>
@@ -222,7 +205,7 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
                 // label="Reason"
                 name={"search"}
                 type="text"
-                placeholder="search"
+                placeholder="Search"
                 onChange={(e: any) => {
                   searchData(e.target.value, allData, setMoveHistoryData);
                 }}
@@ -247,7 +230,7 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
                           <PInput
                             type="date"
                             name="movementFromDate"
-                            label="Movement From Date"
+                            label="From Date"
                             placeholder="From Date"
                           />
                         </Col>
@@ -255,7 +238,7 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
                           <PInput
                             type="date"
                             name="movementToDate"
-                            label="Movement To Date"
+                            label="To Date"
                             placeholder="To Date"
                           />
                         </Col>
@@ -273,7 +256,7 @@ const EmMovementApplication: React.FC<TEmMovementApplication> = (props) => {
                             action="button"
                             onClick={() => {
                               const values = form.getFieldsValue(true);
-                              getMovementHistortyForTable(values)
+                              getMovementHistortyForTable(values);
                               // form.resetFields();
                             }}
                           />

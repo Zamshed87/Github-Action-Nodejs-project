@@ -136,7 +136,7 @@ export const empMgmtMoveApplicationDto = (
         <div className="d-flex">
           <div className="d-flex align-items-center">
             <LightTooltip
-              onMouseEnter={() => {
+              onClick={() => {
                 if (showTooltip?.data?.length > 0) {
                   // Do nothing
                 } else {
