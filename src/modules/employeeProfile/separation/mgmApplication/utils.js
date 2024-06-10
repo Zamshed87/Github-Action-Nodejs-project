@@ -3,7 +3,6 @@ import { Tag } from "antd";
 import FormikInput from "common/FormikInput";
 import moment from "moment";
 import { formatMoney } from "utility/formatMoney";
-import { todayDate } from "utility/todayDate";
 
 const approvalListHeader = ({
   type,
@@ -274,88 +273,36 @@ const dueAmountSaveHandler = (
   deductionRowDto,
   saveDueAmount,
   intEmployeeId,
+  orgId,
+  buId,
   cb
 ) => {
   const mergeData = [...duesRowDto, ...deductionRowDto];
   const payload = {
-    intFinalSettlementId: empBasicInfo?.intFinalSettlementId || 0,
-    intEmployeeId: empId || 0,
-    strEmployeeName: empBasicInfo?.strEmployeeName,
-    strEmployeeCode: empBasicInfo?.strEmployeeCode,
-    intSeparationId: separationId || 0,
-    strIdCard: empBasicInfo?.strIdCard || "",
-    strHealthCard: empBasicInfo?.strHealthCard || "",
-    strSalaryDues: empBasicInfo?.strSalaryDues || "",
-    strLastDrawnMonth: empBasicInfo?.strLastDrawnMonth || "",
-    strDueMonth: empBasicInfo?.strDueMonth || "",
-    strAdvanceDues: empBasicInfo?.strAdvanceDues || "",
-    strTaDaOtDues: empBasicInfo?.strTaDaOtDues || "",
-    strOtherDues: empBasicInfo?.strOtherDues || "",
-    strRemarksForHr: empBasicInfo?.strRemarksForHr || "",
-    strRemarksForStore: empBasicInfo?.strRemarksForStore || "",
-    intAccountId: empBasicInfo?.intAccountId,
-    intBusinessUnitId: empBasicInfo?.intBusinessUnitId,
-    intActionBy: intEmployeeId,
-    dteCreatedAt: todayDate(),
-    dteUpdatedAt: todayDate(),
-    isActive: true,
-    designationId: empBasicInfo?.designationId,
-    designationName: empBasicInfo?.designationName,
-    departmentId: empBasicInfo?.departmentId,
-    departmentName: empBasicInfo?.departmentName,
-    typeOfSeparation: empBasicInfo?.typeOfSeparation,
-    dateOfResign: empBasicInfo?.dateOfResign,
-    numTotalAmount: totalDuesAmount - totalDeductionAmount,
-    status: empBasicInfo?.status,
-    payrollElementPayment: mergeData?.map((item) => ({
+    header: {
+      intFinalSettlementId: empBasicInfo?.intFinalSettlementId || 0,
+      intEmployeeId: empId,
+      intSeparationId: +separationId,
+      numTotalAmount: totalDuesAmount - totalDeductionAmount,
+      intAccountId: orgId,
+      intBusinessUnitId: buId,
+      strRemarksForHr: "",
+      intActionBy: intEmployeeId,
+    },
+    row: mergeData?.map((item) => ({
       intFinalSettlementRowId: 0,
-      intFinalSettlementId: 0,
-      strPayrollElementName: item?.strAdditionTypeName,
+      strAdditionTypeName: item?.strAdditionTypeName,
       strRemarks: item?.strRemarks || "",
-      numAmount: item?.numAmount || 0,
-      intCalculationStatus: item?.isAddition,
-      strCalculationStatus: "",
+      numAmount: +item?.numAmount || 0,
+      isAddition: item?.isAddition,
     })),
-    primary: [
-      {
-        intPayrollElementTypeId: 0,
-        strPayrollElementName: "",
-        strCode: "",
-        isBasicSalary: true,
-        isPrimarySalary: true,
-        isAddition: true,
-        isDeduction: true,
-      },
-    ],
-    addition: [
-      {
-        intPayrollElementTypeId: 0,
-        strPayrollElementName: "",
-        strCode: "",
-        isBasicSalary: true,
-        isPrimarySalary: true,
-        isAddition: true,
-        isDeduction: true,
-      },
-    ],
-    deduction: [
-      {
-        intPayrollElementTypeId: 0,
-        strPayrollElementName: "",
-        strCode: "",
-        isBasicSalary: true,
-        isPrimarySalary: true,
-        isAddition: true,
-        isDeduction: true,
-      },
-    ],
   };
   saveDueAmount(
-    `/SaasMasterData/SaveEmpFinalSettlement`,
+    `/SaasMasterData/SaveFinalSettlementApprovedDueData`,
     payload,
     cb,
     true
-  )
+  );
 };
 
 export {

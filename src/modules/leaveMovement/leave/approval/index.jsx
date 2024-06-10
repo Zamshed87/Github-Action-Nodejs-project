@@ -35,7 +35,10 @@ import {
   greenColor,
   successColor,
 } from "../../../../utility/customColor";
-import { dateFormatter } from "../../../../utility/dateFormatter";
+import {
+  dateFormatter,
+  dateFormatterForInput,
+} from "../../../../utility/dateFormatter";
 import {
   getAllAnnouncement,
   getAllLeaveApplicatonListDataForApproval,
@@ -51,6 +54,7 @@ import "./leaveApproval.css";
 import ViewFormComponent from "./view-form";
 import ApproveRejectComp from "common/ApproveRejectComp";
 import FormikInput from "common/FormikInput";
+import { fromDateToDateDiff } from "utility/fromDateToDateDiff";
 
 const initData = {
   searchString: "",
@@ -544,6 +548,24 @@ export default function LeaveApproval() {
         ),
         filter: false,
         sorter: false,
+      },
+      {
+        title: "Total",
+        dataIndex: "",
+        render: (_, record) => {
+          return record?.HalfDay ? (
+            "0.5"
+          ) : (
+            <span>
+              {`${
+                +fromDateToDateDiff(
+                  dateFormatterForInput(record?.leaveApplication?.dteFromDate),
+                  dateFormatterForInput(record?.leaveApplication?.dteToDate)
+                )?.split(" ")[0] + 1
+              } Days`}{" "}
+            </span>
+          );
+        },
       },
       {
         title: "Application Date",

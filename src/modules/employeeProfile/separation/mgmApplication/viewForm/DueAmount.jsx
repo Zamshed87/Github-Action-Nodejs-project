@@ -25,6 +25,8 @@ const DueAmount = ({
   empBasicInfo,
   intEmployeeId,
   getSingleDataLoading,
+  orgId,
+  buId,
 }) => {
   const [, saveDueAmount, dueAmountLoading] = useAxiosPost({});
   useEffect(() => {
@@ -121,6 +123,8 @@ const DueAmount = ({
                       deductionRowDto,
                       saveDueAmount,
                       intEmployeeId,
+                      orgId,
+                      buId,
                       () => {
                         getData();
                         setOpenModal(false);

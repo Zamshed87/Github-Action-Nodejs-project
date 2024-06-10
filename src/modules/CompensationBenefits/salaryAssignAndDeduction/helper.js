@@ -25,6 +25,13 @@ export const allowanceAndDeductionColumn = (page, paginationSize) => {
       fieldType: "string",
     },
     {
+      title: "Employee ID",
+      dataIndex: "strEmployeeCode",
+      sort: true,
+      filter: false,
+      fieldType: "string",
+    },
+    {
       title: "Employee Name",
       dataIndex: "strEmployeeName",
       render: (record) => {
@@ -441,6 +448,7 @@ export const getAttendanceAdjustmentFilter = async (
 export const column = {
   sl: "SL",
   strWorkplace: "Workplace",
+  strEmployeeCode: "Employee ID",
   strEmployeeName: "Employee Name",
   strDesignation: "Designation",
   strDepartment: "Department",
