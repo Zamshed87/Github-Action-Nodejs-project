@@ -168,19 +168,19 @@ const JobConfirmationReport = () => {
     {
       title: "Work. Group/Location",
       dataIndex: "WorkplaceGroupName",
-      width: 120,
+      width: 150,
       fixed: "left",
     },
     {
       title: "Workplace/Concern",
       dataIndex: "WorkplaceName",
-      width: 120,
+      width: 130,
       fixed: "left",
     },
     {
       title: "Employee Id",
       dataIndex: "EmployeeCode",
-      width: 70,
+      width: 100,
       fixed: "left",
     },
 
@@ -222,33 +222,33 @@ const JobConfirmationReport = () => {
       title: "Employment Type",
       dataIndex: "strEmploymentType",
 
-      width: 100,
+      width: 120,
     },
     {
       title: "Date of Joining",
       dataIndex: "JoiningDate",
       render: (_: any, rec: any) => dateFormatter(rec?.JoiningDate),
-      width: 80,
+      width: 100,
     },
 
     {
       title: "Service Length",
       dataIndex: "ServiceLength",
-      width: 80,
+      width: 100,
     },
 
     {
       title: "Confirmation Date",
       dataIndex: "ConfirmationDate",
       render: (_: any, rec: any) => dateFormatter(rec?.ConfirmationDate),
-      width: 70,
+      width: 120,
     },
     {
       title: "Probation Close Date",
       dataIndex: "dteProbationaryCloseDate",
       render: (_: any, rec: any) =>
         dateFormatter(rec?.dteProbationaryCloseDate),
-      width: 80,
+      width: 150,
     },
   ];
   const searchFunc = debounce((value) => {
@@ -465,6 +465,7 @@ const JobConfirmationReport = () => {
                 pagination,
               });
             }}
+            scroll={{ x: 1500 }}
           />
         </PCard>
       </PForm>
