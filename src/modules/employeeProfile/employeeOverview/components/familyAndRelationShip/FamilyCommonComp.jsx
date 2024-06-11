@@ -188,13 +188,21 @@ function FamilyCommonComp({ mainTitle, typeId, typeName, subTitle, empId }) {
                         name="relationship"
                         options={[
                           { value: 1, label: "Father" },
-                          // { value: 2, label: "Sister" },
-                          // { value: 3, label: "Brother" },
                           { value: 4, label: "Mother" },
-                          // { value: 5, label: "Uncle" },
-                          // { value: 6, label: "Aunty" },
                           { value: 7, label: "Spouse" },
-                          // { value: 8, label: "Child" },
+                           { value: 2, label: "Sister" },
+                          { value: 3, label: "Brother" },
+                          { value: 5, label: "Uncle" },
+                          { value: 6, label: "Aunty" },
+                          { value: 8, label: "Child" },
+                          { value: 8, label: "Niece" },
+                          { value: 8, label: "Nephew" },
+                          { value: 8, label: "Daughter" },
+                          { value: 8, label: "Cousin" },
+                          { value: 8, label: "Father In-Law" },
+                          { value: 8, label: "Mother In-Law" },
+                          { value: 8, label: "Brother In-Law" },
+                          { value: 8, label: "Other" },
                         ]}
                         value={values?.relationship}
                         label=""
