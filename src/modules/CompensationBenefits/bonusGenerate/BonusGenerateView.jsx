@@ -228,7 +228,7 @@ const BonusGenerateView = () => {
                       style={{ minWidth: "120px" }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        const url = `/PdfAndExcelReport/GetCashPayPayslipforBonus?BonusHeaderId=${state?.intBonusId}`;
+                        const url = `/PdfAndExcelReport/GetCashPayPayslipforBonus?BonusHeaderId=${state?.intBonusHeaderId}`;
 
                         getPDFAction(url, setLoading);
                       }}
