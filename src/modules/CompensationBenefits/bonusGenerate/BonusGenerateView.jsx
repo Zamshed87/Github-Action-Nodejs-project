@@ -222,6 +222,20 @@ const BonusGenerateView = () => {
               </div>
               <div>
                 <ul className="d-flex flex-wrap align-items-center justify-content-center">
+                  <li className="pr-2">
+                    <button
+                      className="btn-green"
+                      style={{ minWidth: "120px" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const url = `/PdfAndExcelReport/GetCashPayPayslipforBonus?BonusHeaderId=${state?.intBonusId}`;
+
+                        getPDFAction(url, setLoading);
+                      }}
+                    >
+                      Cash Pay Slip
+                    </button>
+                  </li>
                   <li
                     onClick={(e) => {
                       e.stopPropagation();
@@ -353,7 +367,6 @@ const BonusGenerateView = () => {
                     {/* <th rowSpan="2">Bonus Percentage</th> */}
                     <th rowSpan="2">Workplace Group</th>
                     <th rowSpan="2">Workplace</th>
-                  
                   </tr>
                 </thead>
                 <tbody>
@@ -501,7 +514,7 @@ const BonusGenerateView = () => {
                           ? item?.numBonusPercentage + " %"
                           : ""}
                       </td> */}
-                       <td
+                      <td
                         className={
                           item?.DeptName === "Sub-Total:" ? "rowClass" : ""
                         }
@@ -519,7 +532,6 @@ const BonusGenerateView = () => {
                           ? numberWithCommas(item?.strWorkPlaceName)
                           : null}
                       </td>
-                     
                     </tr>
                   ))}
                 </tbody>
