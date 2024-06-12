@@ -222,6 +222,20 @@ const BonusGenerateView = () => {
               </div>
               <div>
                 <ul className="d-flex flex-wrap align-items-center justify-content-center">
+                  <li className="pr-2">
+                    <button
+                      className="btn-green"
+                      style={{ minWidth: "120px" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const url = `/PdfAndExcelReport/GetCashPayPayslipforBonus?BonusHeaderId=${state?.intBonusHeaderId}`;
+
+                        getPDFAction(url, setLoading);
+                      }}
+                    >
+                      Cash Pay Slip
+                    </button>
+                  </li>
                   <li
                     onClick={(e) => {
                       e.stopPropagation();

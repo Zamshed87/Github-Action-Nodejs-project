@@ -145,23 +145,22 @@ export const empMgmtMoveApplicationDto = (
               }}
               title={
                 <div>
-                  {showTooltip?.data?.length ? (
-                    showTooltip.data.map((tooltipItem, index) => (
+                  {showTooltip?.length && rec?.MovementId === showTooltip?.[0]?.applicationId ? (
+                    showTooltip.map((tooltipItem, index) => (
                       <div key={index} className="movement-tooltip p-1">
                         <div className="border-bottom">
                           <p className="tooltip-title">
-                            {tooltipItem?.strApproverName}
+                            Approved by: {tooltipItem?.strApproverName}
                           </p>
+                          <br />
                           <p className="tooltip-subTitle">
-                            {tooltipItem?.strComments}
+                            Remarks: {tooltipItem?.strComments}
                           </p>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="movement-tooltip p-1">
-                      <p className="tooltip-title">No Remarks</p>
-                    </div>
+                    null
                   )}
                 </div>
               }
@@ -171,6 +170,7 @@ export const empMgmtMoveApplicationDto = (
                   marginRight: "12px",
                   color: "rgba(0, 0, 0, 0.6)",
                   fontSize: "20px",
+                  cursor: "pointer",
                 }}
               />
             </LightTooltip>

@@ -218,7 +218,7 @@ const EmployeeList = () => {
       },
       sorter: true,
       fixed: "left",
-      width: 150,
+      width: 200,
     },
 
     {
@@ -273,7 +273,7 @@ const EmployeeList = () => {
       filter: true,
       filterKey: "strEmploymentTypeList",
       filterSearch: true,
-      width: 150,
+      width: 180,
     },
     {
       title: "Date of Joining",
@@ -284,15 +284,18 @@ const EmployeeList = () => {
     {
       title: "Service Length",
       dataIndex: "strServiceLength",
+      width: 120,
     },
 
     {
       title: "Salary Type",
       dataIndex: "strSalaryType",
+      width: 100,
     },
     {
       title: "Payroll Group",
       dataIndex: "payrollGroup",
+      width: 100,
     },
     {
       title: "Supervisor",
@@ -310,7 +313,7 @@ const EmployeeList = () => {
       filter: true,
       filterKey: "strDottedSupervisorNameList",
       filterSearch: true,
-      width: 150,
+      width: 180,
     },
     {
       title: "Line Manager",
@@ -325,32 +328,32 @@ const EmployeeList = () => {
       title: "Date of Permanent",
       dataIndex: "dateOfJoining",
       render: (_: any, rec: any) => dateFormatter(rec?.dateOfConfirmation),
-      width: 100,
+      width: 140,
     },
     {
       title: "Father's Name",
       dataIndex: "fatherName",
-      width: 100,
+      width: 120,
     },
     {
       title: "Mother's Name",
       dataIndex: "motherName",
-      width: 100,
+      width: 120,
     },
     {
       title: "Present Address",
       dataIndex: "presentAddress",
-      width: 100,
+      width: 200,
     },
     {
       title: "Permanent Address",
       dataIndex: "permanentAddress",
-      width: 100,
+      width: 200,
     },
     {
       title: "Employee Email",
       dataIndex: "email",
-      width: 100,
+      width: 200,
     },
     {
       title: "Place of Brith",
@@ -360,7 +363,7 @@ const EmployeeList = () => {
     {
       title: "Personal Email",
       dataIndex: "email",
-      width: 100,
+      width: 200,
     },
     {
       title: "Date of Birth",
@@ -391,7 +394,7 @@ const EmployeeList = () => {
     {
       title: "Personal Mobile",
       dataIndex: "personalMobile",
-      width: 100,
+      width: 120,
     },
     {
       title: "Official Mobile",
@@ -401,7 +404,7 @@ const EmployeeList = () => {
     {
       title: "Nominee Name",
       dataIndex: "nomineeName",
-      width: 100,
+      width: 120,
     },
     {
       title: "Relationship",
@@ -411,12 +414,12 @@ const EmployeeList = () => {
     {
       title: "Nominee NID/BRC",
       dataIndex: "nomineeNID",
-      width: 100,
+      width: 130,
     },
     {
       title: "Emergency Contact Number",
       dataIndex: "EmeregencyContact",
-      width: 100,
+      width: 200,
     },
     {
       title: "Employee NID",
@@ -436,7 +439,7 @@ const EmployeeList = () => {
     {
       title: "Bank Name",
       dataIndex: "bankName",
-      width: 100,
+      width: 200,
 
       // sorter: true,
       // filter: true,
@@ -452,7 +455,7 @@ const EmployeeList = () => {
     {
       title: "Account No",
       dataIndex: "accountNo",
-      width: 100,
+      width: 150,
     },
     {
       title: "Routing",
