@@ -501,7 +501,7 @@ export default function MovementApproval() {
       },
       {
         title: "Waiting Stage",
-        dataIndex: "currentStage",
+        dataIndex: "waitingStage",
         filter: false,
         sorter: false,
       },

@@ -244,7 +244,7 @@ const CardTable = ({ propsObj }) => {
     },
     {
       title: "Waiting Stage",
-      dataIndex: "currentStage",
+      dataIndex: "waitingStage",
       hidden: isOfficeAdmin,
     },
     {
