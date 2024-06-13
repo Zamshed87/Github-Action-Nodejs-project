@@ -34,6 +34,7 @@ import { getBuDetails } from "common/api";
 import { customStyles } from "utility/selectCustomStyle";
 import FormikSelect from "common/FormikSelect";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import { todayDate } from "utility/todayDate";
 
 const initData = {
   search: "",
@@ -59,7 +60,7 @@ const SalaryGenerateView = () => {
 
   // state
   const [loading, setLoading] = useState(false);
-  const [loadingForSum, setLoadingForSum] = useState(false)
+  const [loadingForSum, setLoadingForSum] = useState(false);
   const [rowDto, setRowDto] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [, setAllData] = useState([]);
@@ -341,7 +342,10 @@ const SalaryGenerateView = () => {
               setLoading={setLoading}
             />
             {values?.summary === "2" && (
-              <div className="card-style" style={{ margin: "10px 5px 15px 5px" }}>
+              <div
+                className="card-style"
+                style={{ margin: "10px 5px 15px 5px" }}
+              >
                 <div className="row">
                   <div className="col-md-6">
                     <div className="input-field-main">
@@ -555,7 +559,6 @@ const SalaryGenerateView = () => {
                         />
                       </div>
                     </div>
-                  
                   </div>
                 </div>
               </div>
@@ -574,7 +577,11 @@ const SalaryGenerateView = () => {
                             : state?.data?.strSalaryCode
                         }`;
 
-                        getPDFAction(url, setLoading);
+                        getPDFAction(
+                          url,
+                          setLoading,
+                          `Bonus Cash Pay Slip-${todayDate()}`
+                        );
                       }}
                     >
                       Cash Pay Slip
@@ -616,7 +623,7 @@ const SalaryGenerateView = () => {
                             if (detailsData?.length <= 0) {
                               return toast.warn("No Data Found");
                             }
-                           
+
                             const valueArrayHRPosition = (
                               values?.hrPosition || []
                             )?.map((obj) => obj.value);
@@ -670,8 +677,6 @@ const SalaryGenerateView = () => {
                         className="btn-save"
                         type="button"
                         onClick={() => {
-                        
-
                           if (detailsData?.length <= 0) {
                             return toast.warn("No Data Found");
                           } else {
@@ -723,173 +728,174 @@ const SalaryGenerateView = () => {
           <div>
             {values?.summary === "1" && (
               <>
-              {loading && <Loading/>}
-              <ScrollableTable
-                classes="salary-process-table"
-                secondClasses="table-card-styled tableOne scroll-table-height"
-                customClass="salary-summary-custom"
-              >
-                <thead>
-                  <tr>
-                    <th rowSpan="2" style={{ minWidth: "200px" }}>
-                      SL
-                    </th>
-                    <th colSpan={3} className="text-center">
-                      Employee Information
-                    </th>
-                    <th style={{ textAlign: "right" }} className="mr-2">
-                      Gross Salary
-                    </th>
-                    <th style={{ textAlign: "right" }} className=" mr-2">
-                      Total Allowance
-                    </th>
-                    <th style={{ textAlign: "right" }} className="mr-2">
-                      Total Deduction
-                    </th>
-                    <th
-                      style={{ textAlign: "right" }}
-                      className="th-inner-table mr-2"
-                    >
-                      Net Pay
-                    </th>
-                    <th style={{ textAlign: "right" }} className=" mr-2">
-                      Bank Pay
-                    </th>
-                    <th style={{ textAlign: "right" }} className="mr-2">
-                      Digital Bank Pay
-                    </th>
-                    <th style={{ textAlign: "right" }} className="mr-2">
-                      Cash Pay
-                    </th>
-                    <th colSpan={2} className="text-center">
-                      Attendance
-                    </th>
-                    <th rowSpan="2">Workplace</th>
-                    <th rowSpan="2">Workplace Group</th>
-                    <th rowSpan="2">Payroll Group</th>
-                  </tr>
-                  <tr>
-                    <th className="text-center" style={{ minWidth: "122px" }}>
-                      Employee ID
-                    </th>
-                    <th className="text-center">Employee Name</th>
-                    <th className="text-center">Designation</th>
-                    <th className="text-right">
-                      {numberWithCommas(
-                        getRowTotal(rowDto, "GrossSalary").toFixed(2)
-                      )}
-                    </th>
-                    <th className="text-right">
-                      {" "}
-                      {numberWithCommas(
-                        getRowTotal(rowDto, "TotalAllowance").toFixed(2)
-                      )}
-                    </th>
-                    <th className="text-right">
-                      {" "}
-                      {numberWithCommas(
-                        getRowTotal(rowDto, "TotalDeduction").toFixed(2)
-                      )}
-                    </th>
-                    <th className="text-right">
-                      {" "}
-                      {numberWithCommas(
-                        getRowTotal(rowDto, "NetPay").toFixed(2)
-                      )}
-                    </th>
-                    <th className="text-right">
-                      {numberWithCommas(
-                        getRowTotal(rowDto, "BankPay").toFixed(2)
-                      )}
-                    </th>
-                    <th className="text-right">
-                      {" "}
-                      {numberWithCommas(
-                        getRowTotal(rowDto, "DegitalBankPay").toFixed(2)
-                      )}
-                    </th>
-                    <th className="text-right">
-                      {" "}
-                      {numberWithCommas(
-                        getRowTotal(rowDto, "CashPay").toFixed(2)
-                      )}
-                    </th>
-                    <th className="text-center">Total Working Days</th>
-                    <th className="text-center">Total Attendance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rowDto?.map((item, index) => (
-                    <>
-                    {loading && <Loading/>}
-                    <tr key={index} colSpan={!item?.DeptName?.trim() ? 16 : 1}>
-                      <td>
-                        {item?.DeptName?.trim() ? (
-                          <b>Depertment: {item?.DeptName}</b>
-                        ) : (
-                          <>{item?.SL}</>
-                        )}
-                      </td>
-                      {!item?.DeptName?.trim() && (
-                        <>
-                          <td>{item?.EmployeeCode}</td>
-                          <td>
-                            <div className="d-flex align-items-center">
-                              <div className="emp-avatar">
-                                <AvatarComponent
-                                  classess=""
-                                  letterCount={1}
-                                  label={item?.EmployeeName}
-                                />
-                              </div>
-                              <div className="ml-2">
-                                <span className="tableBody-title">
-                                  {item?.EmployeeName}
-                                </span>
-                              </div>
-                            </div>
-                          </td>
-                          <td>{item?.DesignationName}</td>
-                          <td style={{ textAlign: "right" }}>
-                            {numberWithCommas(item?.GrossSalary) || "-"}
-                          </td>
-                          <td style={{ textAlign: "right" }}>
-                            {numberWithCommas(item?.TotalAllowance) || "-"}
-                          </td>
-                          <td style={{ textAlign: "right" }}>
-                            {numberWithCommas(item?.TotalDeduction) || "-"}
-                          </td>
-                          <td style={{ textAlign: "right" }}>
-                            {numberWithCommas(item?.NetPay) || "-"}
-                          </td>
-                          <td style={{ textAlign: "right" }}>
-                            {numberWithCommas(item?.BankPay) || "-"}
-                          </td>
-                          <td style={{ textAlign: "right" }}>
-                            {numberWithCommas(item?.DegitalBankPay) || "-"}
-                          </td>
-                          <td style={{ textAlign: "right" }}>
-                            {numberWithCommas(item?.CashPay) || "-"}
-                          </td>
-                          <td>{item?.TotalWorkingDays}</td>
-                          <td>{item?.PayableDays}</td>
-                          <td>{item?.WorkplaceName}</td>
-                          <td>{item?.WorkplaceGroupName}</td>
-                          <td>{item?.PayrollGroupName}</td>
-                        </>
-                      )}
+                {loading && <Loading />}
+                <ScrollableTable
+                  classes="salary-process-table"
+                  secondClasses="table-card-styled tableOne scroll-table-height"
+                  customClass="salary-summary-custom"
+                >
+                  <thead>
+                    <tr>
+                      <th rowSpan="2" style={{ minWidth: "200px" }}>
+                        SL
+                      </th>
+                      <th colSpan={3} className="text-center">
+                        Employee Information
+                      </th>
+                      <th style={{ textAlign: "right" }} className="mr-2">
+                        Gross Salary
+                      </th>
+                      <th style={{ textAlign: "right" }} className=" mr-2">
+                        Total Allowance
+                      </th>
+                      <th style={{ textAlign: "right" }} className="mr-2">
+                        Total Deduction
+                      </th>
+                      <th
+                        style={{ textAlign: "right" }}
+                        className="th-inner-table mr-2"
+                      >
+                        Net Pay
+                      </th>
+                      <th style={{ textAlign: "right" }} className=" mr-2">
+                        Bank Pay
+                      </th>
+                      <th style={{ textAlign: "right" }} className="mr-2">
+                        Digital Bank Pay
+                      </th>
+                      <th style={{ textAlign: "right" }} className="mr-2">
+                        Cash Pay
+                      </th>
+                      <th colSpan={2} className="text-center">
+                        Attendance
+                      </th>
+                      <th rowSpan="2">Workplace</th>
+                      <th rowSpan="2">Workplace Group</th>
+                      <th rowSpan="2">Payroll Group</th>
                     </tr>
-                    </>
-                  
-                  ))}
-                </tbody>
-              </ScrollableTable>
+                    <tr>
+                      <th className="text-center" style={{ minWidth: "122px" }}>
+                        Employee ID
+                      </th>
+                      <th className="text-center">Employee Name</th>
+                      <th className="text-center">Designation</th>
+                      <th className="text-right">
+                        {numberWithCommas(
+                          getRowTotal(rowDto, "GrossSalary").toFixed(2)
+                        )}
+                      </th>
+                      <th className="text-right">
+                        {" "}
+                        {numberWithCommas(
+                          getRowTotal(rowDto, "TotalAllowance").toFixed(2)
+                        )}
+                      </th>
+                      <th className="text-right">
+                        {" "}
+                        {numberWithCommas(
+                          getRowTotal(rowDto, "TotalDeduction").toFixed(2)
+                        )}
+                      </th>
+                      <th className="text-right">
+                        {" "}
+                        {numberWithCommas(
+                          getRowTotal(rowDto, "NetPay").toFixed(2)
+                        )}
+                      </th>
+                      <th className="text-right">
+                        {numberWithCommas(
+                          getRowTotal(rowDto, "BankPay").toFixed(2)
+                        )}
+                      </th>
+                      <th className="text-right">
+                        {" "}
+                        {numberWithCommas(
+                          getRowTotal(rowDto, "DegitalBankPay").toFixed(2)
+                        )}
+                      </th>
+                      <th className="text-right">
+                        {" "}
+                        {numberWithCommas(
+                          getRowTotal(rowDto, "CashPay").toFixed(2)
+                        )}
+                      </th>
+                      <th className="text-center">Total Working Days</th>
+                      <th className="text-center">Total Attendance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rowDto?.map((item, index) => (
+                      <>
+                        {loading && <Loading />}
+                        <tr
+                          key={index}
+                          colSpan={!item?.DeptName?.trim() ? 16 : 1}
+                        >
+                          <td>
+                            {item?.DeptName?.trim() ? (
+                              <b>Depertment: {item?.DeptName}</b>
+                            ) : (
+                              <>{item?.SL}</>
+                            )}
+                          </td>
+                          {!item?.DeptName?.trim() && (
+                            <>
+                              <td>{item?.EmployeeCode}</td>
+                              <td>
+                                <div className="d-flex align-items-center">
+                                  <div className="emp-avatar">
+                                    <AvatarComponent
+                                      classess=""
+                                      letterCount={1}
+                                      label={item?.EmployeeName}
+                                    />
+                                  </div>
+                                  <div className="ml-2">
+                                    <span className="tableBody-title">
+                                      {item?.EmployeeName}
+                                    </span>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>{item?.DesignationName}</td>
+                              <td style={{ textAlign: "right" }}>
+                                {numberWithCommas(item?.GrossSalary) || "-"}
+                              </td>
+                              <td style={{ textAlign: "right" }}>
+                                {numberWithCommas(item?.TotalAllowance) || "-"}
+                              </td>
+                              <td style={{ textAlign: "right" }}>
+                                {numberWithCommas(item?.TotalDeduction) || "-"}
+                              </td>
+                              <td style={{ textAlign: "right" }}>
+                                {numberWithCommas(item?.NetPay) || "-"}
+                              </td>
+                              <td style={{ textAlign: "right" }}>
+                                {numberWithCommas(item?.BankPay) || "-"}
+                              </td>
+                              <td style={{ textAlign: "right" }}>
+                                {numberWithCommas(item?.DegitalBankPay) || "-"}
+                              </td>
+                              <td style={{ textAlign: "right" }}>
+                                {numberWithCommas(item?.CashPay) || "-"}
+                              </td>
+                              <td>{item?.TotalWorkingDays}</td>
+                              <td>{item?.PayableDays}</td>
+                              <td>{item?.WorkplaceName}</td>
+                              <td>{item?.WorkplaceGroupName}</td>
+                              <td>{item?.PayrollGroupName}</td>
+                            </>
+                          )}
+                        </tr>
+                      </>
+                    ))}
+                  </tbody>
+                </ScrollableTable>
               </>
-             
             )}
             {values?.summary === "2" && (
               <>
-              {loading && <Loading/>}
+                {loading && <Loading />}
                 <div className="sme-scrollable-table">
                   <div
                     className="scroll-table scroll-table-height"
