@@ -580,7 +580,7 @@ const SalaryGenerateView = () => {
                         getPDFAction(
                           url,
                           setLoading,
-                          `Bonus Cash Pay Slip-${todayDate()}`
+                          `Salary Cash Pay Slip-${todayDate()}`
                         );
                       }}
                     >

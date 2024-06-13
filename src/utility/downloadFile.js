@@ -44,7 +44,7 @@ export const getPDFAction = async (url, setLoading, fileName = "") => {
           // Navigate the window to the PDF URL
           pdfWindow.location.href = fileURL;
         } else {
-          console.log("inner error pdfWindow");
+          console.log(fileName);
           // Create a temporary link element
           const link = document.createElement("a");
           link.href = fileURL;

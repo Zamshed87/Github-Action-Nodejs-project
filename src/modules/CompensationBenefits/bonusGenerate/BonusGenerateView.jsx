@@ -24,6 +24,7 @@ import { getPDFAction } from "../../../utility/downloadFile";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import NoResult from "../../../common/NoResult";
 import { getBuDetails } from "common/api";
+import { todayDate } from "utility/todayDate";
 
 const initData = {
   search: "",
@@ -82,7 +83,6 @@ const BonusGenerateView = () => {
         (res) => {
           setLoading(true);
           modifiedLanding(res);
-          console.log("res", res);
         }
       );
     } else {
@@ -157,7 +157,6 @@ const BonusGenerateView = () => {
       DeptName: "Sub-Total:",
     };
     setLandingData(temp);
-    console.log("temp", temp);
     setLoading(false);
   };
 
@@ -230,7 +229,11 @@ const BonusGenerateView = () => {
                         e.stopPropagation();
                         const url = `/PdfAndExcelReport/GetCashPayPayslipforBonus?BonusHeaderId=${state?.intBonusHeaderId}`;
 
-                        getPDFAction(url, setLoading);
+                        getPDFAction(
+                          url,
+                          setLoading,
+                          `Bonus Cash Pay Slip-${todayDate()}`
+                        );
                       }}
                     >
                       Cash Pay Slip
