@@ -616,10 +616,10 @@ export default function LeaveApproval() {
       },
       {
         title: "Waiting Stage",
-        dataIndex: "currentStage",
-        render: (currentStage) => (
+        dataIndex: "waitingStage",
+        render: (waitingStage) => (
           <div className="d-flex align-items-center">
-            <div>{currentStage}</div>
+            <div>{waitingStage}</div>
           </div>
         ),
         filter: true,

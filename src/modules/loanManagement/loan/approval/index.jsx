@@ -558,7 +558,7 @@ export default function LoanApproval() {
       },
       {
         title: "Waiting Stage",
-        dataIndex: "currentStage",
+        dataIndex: "waitingStage",
         filter: false,
         sorter: false,
         hidden: isOfficeAdmin ? false : true,

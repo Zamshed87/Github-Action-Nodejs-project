@@ -209,7 +209,7 @@ export const scheduleApprovalColumn = (
     },
     {
       title: "Waiting Stage",
-      dataIndex: "currentStage",
+      dataIndex: "waitingStage",
       filter: false,
       sorter: false,
     },

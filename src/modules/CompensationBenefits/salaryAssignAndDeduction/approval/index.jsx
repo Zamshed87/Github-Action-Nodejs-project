@@ -478,10 +478,10 @@ export default function AllowanceNDeductionApproval() {
       },
       {
         title: "Waiting Stage",
-        dataIndex: "currentStage",
-        render: (currentStage, record) => (
+        dataIndex: "waitingStage",
+        render: (waitingStage, record) => (
           <div className="d-flex align-items-center">
-            <div>{currentStage}</div>
+            <div>{waitingStage}</div>
           </div>
         ),
         filter: false,
