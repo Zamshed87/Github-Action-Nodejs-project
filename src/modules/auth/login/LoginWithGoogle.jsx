@@ -13,11 +13,8 @@ const LoginWithGoogle = ({ history, setLoading }) => {
   const dispatch = useDispatch();
 
   return (
-    <div
-      style={{ textAlign: "center !important" }}
-      className="d-flex justify-content-center"
-    >
-      <GoogleOAuthProvider clientId="631824641431-o0an7ks3k4cee4qqspbtomcgq2h2bvvq.apps.googleusercontent.com">
+    <div style={{ width: "100%", textAlign: "center !important" }}>
+      <GoogleOAuthProvider  clientId="631824641431-o0an7ks3k4cee4qqspbtomcgq2h2bvvq.apps.googleusercontent.com">
         <GoogleLogin
           width={"500px"}
           onSuccess={(credentialResponse) => {

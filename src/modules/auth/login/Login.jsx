@@ -14,6 +14,7 @@ import ForgetPinVerify from "./../../../common/ForgetPinVerify";
 import Loading from "./../../../common/loading/Loading";
 import ViewModal from "./../../../common/ViewModal";
 import LoginWithGoogle from "./LoginWithGoogle";
+import LoginWithFacebook from "./LoginWithFacebook";
 
 const initData = {
   username: "",
@@ -152,6 +153,16 @@ const LogIn = () => {
                             disabled={loading}
                           />
                         </div>
+                         <div
+                          style={{
+                            marginTop: 10,
+                          }}
+                        >
+                          <LoginWithFacebook
+                            history={history}
+                            setLoading={setLoading}
+                          />
+                        </div>
                         <div
                           style={{
                             marginTop: 10,
@@ -162,6 +173,7 @@ const LogIn = () => {
                             setLoading={setLoading}
                           />
                         </div>
+                       
                       </div>
                     </div>
                   </div>
