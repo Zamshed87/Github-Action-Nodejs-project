@@ -22,6 +22,7 @@ export default function AddEditForm({
   // const debounce = useDebounce();
   const [tableData, setTableData] = useState([]);
   const [deletedRow, setDeletedRow] = useState([]);
+  const [isStrStatus, setIsStrStatus] = useState(false);
 
   const savePipeline = useApiRequest({});
   const getPipelineDetails = useApiRequest({});
@@ -398,9 +399,10 @@ export default function AddEditForm({
             onChange={(value, op) => {
               form.setFieldsValue({
                 approver: op,
-                strTitle: `Approve By ${op?.label}`,
+                strTitle: `${op?.label}`,
                 userGroup: undefined,
               });
+              setIsStrStatus(true);
             }}
             // rules={[{ required: true, message: "Approver is required" }]}
           />
@@ -408,9 +410,11 @@ export default function AddEditForm({
         <Col md={12} sm={24}>
           <PInput
             type="text"
+            addOnBefore={isStrStatus && "Approved By"}
             name="strTitle"
             label="Approve Status"
             placeholder="Approve Status"
+            disabled={!form.getFieldValue("approver")}
             // rules={[{ required: true, message: "remarks is required" }]}
           />
         </Col>
@@ -555,7 +559,7 @@ export default function AddEditForm({
                         intShortOrder: sequence?.value,
                         isCreate: true,
                         isDelete: false,
-                        strStatusTitle: strTitle,
+                        strStatusTitle: `Approved By ${strTitle}`,
                       };
                       data.push(obj);
 
@@ -566,6 +570,7 @@ export default function AddEditForm({
                         strTitle: undefined,
                         userGroup: undefined,
                       });
+                      setIsStrStatus(false);
                     }}
                   >
                     Add
