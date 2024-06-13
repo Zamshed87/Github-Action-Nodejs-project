@@ -562,7 +562,8 @@ const SalaryGenerateView = () => {
                   </div>
                 </div>
               </div>
-
+              {console.log("state", state)}
+              {console.log("values", values)}
               <div>
                 <ul className="d-flex flex-wrap align-items-center justify-content-center">
                   <li className="pr-2">
@@ -570,12 +571,17 @@ const SalaryGenerateView = () => {
                       className="btn-green"
                       style={{ minWidth: "120px" }}
                       onClick={(e) => {
+                        const hrList = values?.hrPosition
+                          ?.map((item) => item?.value)
+                          .join(",");
                         e.stopPropagation();
                         const url = `/PdfAndExcelReport/GetCashPayPayslipMatador?accountId=${orgId}&salaryCode=${
                           !state?.data
                             ? state?.strSalaryCode
                             : state?.data?.strSalaryCode
-                        }`;
+                        }&businessUnitId=${buId}&hrPositions=${hrList || 0}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                          state?.intMonth
+                        }&intYearId=${state?.intYear}&intPaymentMethod=${values?.walletType?.value || 0}`;
 
                         getPDFAction(
                           url,

@@ -677,7 +677,7 @@ export default function TransferNPromotionApproval() {
       },
       {
         title: "Waiting Stage",
-        dataIndex: "currentStage",
+        dataIndex: "waitingStage",
         render: (data) => (
           <div className="d-flex align-items-center">
             <div>{data}</div>

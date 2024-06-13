@@ -285,7 +285,7 @@ const StyledTable = ({
     },
     {
       title: "Waiting Stage",
-      dataIndex: "currentStage",
+      dataIndex: "waitingStage",
       hidden: isOfficeAdmin,
     },
     {

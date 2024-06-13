@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Cancel, CheckCircle } from "@mui/icons-material";
-import { styled, Tooltip, tooltipClasses } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { Tooltip, styled, tooltipClasses } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AvatarComponent from "../../../../common/AvatarComponent";
@@ -11,7 +12,6 @@ import IConfirmModal from "../../../../common/IConfirmModal";
 import MuiIcon from "../../../../common/MuiIcon";
 import { gray600, gray900, greenColor } from "../../../../utility/customColor";
 import { dateFormatter } from "../../../../utility/dateFormatter";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 export const getWithdrawalListDataForApproval = async (
   payload,
   setter,
@@ -207,7 +207,7 @@ export const pfWithdrawApprovalLandingTableColumn = (propsObj) => {
     },
     {
       title: () => <span style={{ color: gray600 }}>Waiting Stage</span>,
-      dataIndex: "currentStage",
+      dataIndex: "waitingStage",
     },
     {
       title: () => <span style={{ color: gray600 }}>Status</span>,
