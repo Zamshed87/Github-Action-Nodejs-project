@@ -39,6 +39,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
       max,
       format,
       disabledDate,
+      addOnBefore,
     } = property;
 
     const Components =
@@ -64,14 +65,13 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           checked={checked}
         />
       ) : type === "time" ? (
-        <TimePicker 
+        <TimePicker
           value={value}
           disabled={disabled}
-          onChange={onChange as (time: any) => void}  
+          onChange={onChange as (time: any) => void}
           format={format || "HH:mm:ss"}
           style={{ width: "100%" }}
-          />
-          
+        />
       ) : type === "search" ? (
         <Input.Search
           placeholder={placeholder}
@@ -135,6 +135,7 @@ export const PInput = <T extends InputType>(property: InputProperty<T>) => {
           allowClear={allowClear}
           value={value}
           type={type || "text"}
+          addonBefore={addOnBefore && addOnBefore}
         />
       );
 

@@ -17,10 +17,11 @@ export const updateUerAndEmpNameAction = (name) => (dispatch) => {
 };
 
 export const setLoginAction =
-  (email, password, history, setLoading) => (dispatch) => {
+  (email, password, history, setLoading, isOAuth, creds, isGoogle) =>
+  (dispatch) => {
     setLoading(true);
     return requestFromServer
-      .loginApiCall(email, password)
+      .loginApiCall(email, password, isOAuth, creds, isGoogle)
       .then((res) => {
         const {
           strLoginId,
