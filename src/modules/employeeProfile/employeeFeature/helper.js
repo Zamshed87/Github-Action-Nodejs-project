@@ -343,6 +343,22 @@ export const getEmployeeProfileViewDataForAddress = async (
   }
 };
 
+export const getEmployeeProfileViewDataAuth = async (id, setter, setLoading) => {
+  setLoading && setLoading(true);
+  try {
+    const res = await axios.get(
+      `/Employee/EmployeeProfileView?employeeId=${id}`
+    );
+    if (res?.data) {
+      setter && setter(res?.data);
+      setLoading && setLoading(false);
+    }
+  } catch (error) {
+    setLoading && setLoading(false);
+  }
+};
+
+
 export const getEmployeeProfileViewData = async (
   id,
   setter,
