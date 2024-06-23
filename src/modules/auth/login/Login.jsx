@@ -153,16 +153,6 @@ const LogIn = () => {
                             disabled={loading}
                           />
                         </div>
-                         <div
-                          style={{
-                            marginTop: 10,
-                          }}
-                        >
-                          <LoginWithFacebook
-                            history={history}
-                            setLoading={setLoading}
-                          />
-                        </div>
                         <div
                           style={{
                             marginTop: 10,
@@ -173,7 +163,16 @@ const LogIn = () => {
                             setLoading={setLoading}
                           />
                         </div>
-                       
+                        <div
+                          style={{
+                            marginTop: 10,
+                          }}
+                        >
+                          <LoginWithFacebook
+                            history={history}
+                            setLoading={setLoading}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
