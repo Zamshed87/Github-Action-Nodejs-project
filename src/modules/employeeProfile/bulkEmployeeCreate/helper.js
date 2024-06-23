@@ -57,6 +57,7 @@ export const processBulkUploadEmployeeAction = async (
           : String(item["Phone Number"]).trim()
         : "-",
       strDisplayName: item["Display Name"] || "",
+      strReferenceId: item["Machine ID"] + "" || "",
       strUserType: item["User Type"] || "",
       strWingName: item["Wing"] || "",
       strSoleDepoName: item["Sole Depot"] || "",

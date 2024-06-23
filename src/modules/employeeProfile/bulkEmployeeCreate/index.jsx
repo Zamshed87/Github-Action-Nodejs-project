@@ -168,8 +168,8 @@ export default function BulkEmployeeCreate() {
                             downloadFile(
                               `${
                                 isDevServer
-                                  ? "/document/downloadfile?id=176"
-                                  : "/document/downloadfile?id=178"
+                                  ? "/document/downloadfile?id=10351"
+                                  : "/document/downloadfile?id=1372"
                               }`,
                               "Employee Bulk Upload",
                               "xlsx",
@@ -206,6 +206,9 @@ export default function BulkEmployeeCreate() {
                               </th>
                               <th>
                                 <div>Card Number</div>
+                              </th>
+                              <th>
+                                <div>Machine ID</div>
                               </th>
                               <th>
                                 <div>Designation</div>
@@ -325,6 +328,14 @@ export default function BulkEmployeeCreate() {
                                     style={{ width: "200px" }}
                                   >
                                     {data?.strCardNumber}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div
+                                    className="tableBody-title"
+                                    style={{ width: "200px" }}
+                                  >
+                                    {data?.strReferenceId}
                                   </div>
                                 </td>
                                 <td>
