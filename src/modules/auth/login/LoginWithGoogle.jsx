@@ -9,14 +9,20 @@ import { toast } from "react-toastify";
 
 // client-id-iBOS: 631824641431-o0an7ks3k4cee4qqspbtomcgq2h2bvvq.apps.googleusercontent.com
 
+
+
 const LoginWithGoogle = ({ history, setLoading }) => {
   const dispatch = useDispatch();
 
+  const containerStyle = {
+    width: "100%!important",
+    textAlign: "center!important"
+  };
+
   return (
-    <div style={{ width: "100%", textAlign: "center !important" }}>
+    <div style={containerStyle}>
       <GoogleOAuthProvider  clientId="631824641431-o0an7ks3k4cee4qqspbtomcgq2h2bvvq.apps.googleusercontent.com">
         <GoogleLogin
-          width={"500px"}
           onSuccess={(credentialResponse) => {
             dispatch(
               setLoginAction(
