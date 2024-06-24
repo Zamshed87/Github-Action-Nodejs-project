@@ -296,7 +296,7 @@ const MasterLocationRegistration = () => {
       },
       {
         title: "Waiting Stage",
-        dataIndex: "strStatus",
+        dataIndex: "waitingStage",
         filter: false,
         sorter: false,
         hidden: isOfficeAdmin ? false : true,

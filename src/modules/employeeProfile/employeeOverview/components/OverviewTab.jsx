@@ -10,6 +10,7 @@ import Identification from "./identification/Identification";
 import IncrementInfo from "./IncrementInfo";
 import Others from "./others/Others";
 import TransferAndPromotionInfo from "./TransferAndPromotionInfo";
+import OAuth from "./OAuth/OAuth";
 
 function OverviewTab({ empId, wgId, buId }) {
   const [index, setIndex] = useState(0);
@@ -24,6 +25,7 @@ function OverviewTab({ empId, wgId, buId }) {
     { name: "Family & Relationships" },
     { name: "Documents" },
     { name: "others" },
+    { name: "OAuth2" },
   ];
   return (
     <>
@@ -120,6 +122,7 @@ function OverviewTab({ empId, wgId, buId }) {
                     wgId={wgId}
                     buId={buId}
                   />
+                  <OAuth empId={empId} index={index} tabIndex={10} />
                 </div>
               </div>
             </div>

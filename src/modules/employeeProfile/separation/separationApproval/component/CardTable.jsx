@@ -331,9 +331,9 @@ const CardTable = ({ propsObj }) => {
       render: (_, record) => dateFormatter(record?.dteLastWorkingDate),
     },
     {
-      title: "Current Stage",
-      dataIndex: "currentStage",
-      render: (_, record) => <>{record?.currentStage}</>,
+      title: "Waiting Stage",
+      dataIndex: "waitingStage",
+      render: (_, record) => <>{record?.waitingStage}</>,
       hidden: isOfficeAdmin,
     },
     {

@@ -1,14 +1,24 @@
 import axios from "axios";
 import { APIUrl, domainUrl, prodUrl } from "./../../App";
 
-export function loginApiCall(email, password) {
-  return axios.post(`/Auth/Login`, {
-    strLoginId: email,
-    strPassword: password,
-    intUrlId: 0,
-    intAccountId: 1,
-    strUrl: domainUrl === prodUrl ? domainUrl : origin,
-  });
+export function loginApiCall(
+  email,
+  password,
+  isOAuth = false,
+  creds,
+  isGoogle = false
+) {
+  if (isOAuth && isGoogle) {
+    return axios.get(`/Auth/LoginOAuth2G?token=${creds?.credential}`);
+  } else {
+    return axios.post(`/Auth/Login`, {
+      strLoginId: email,
+      strPassword: password,
+      intUrlId: 0,
+      intAccountId: 1,
+      strUrl: domainUrl === prodUrl ? domainUrl : origin,
+    });
+  }
 }
 
 // otp api

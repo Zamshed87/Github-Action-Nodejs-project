@@ -127,6 +127,7 @@ type BaseProps = FormItemProps & {
   min?: number;
   max?: number;
   format?: string;
+  addOnBefore?: string;
   disabledDate?: (currentDate: Moment) => boolean;
 };
 

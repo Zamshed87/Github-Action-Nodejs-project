@@ -48,8 +48,11 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
   }, [singleData]);
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-    const { fromDate } = form.getFieldsValue(true);
+    const { fromDate, movementType } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
+    if (movementType?.label?.toLowerCase()?.includes("half")) {
+      return current && current !== fromDateMoment.startOf("day");
+    }
     return current && current < fromDateMoment.startOf("day");
   };
 
@@ -68,9 +71,20 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
       });
   };
 
-  const currentdate = new Date(); 
-  const datetime =  currentdate.getHours() +":"+ currentdate.getMinutes() + ":" + currentdate.getSeconds();
-  const endTime =  currentdate.getHours() + 1 +":"+ currentdate.getMinutes() + ":" + currentdate.getSeconds();
+  const currentdate = new Date();
+  const datetime =
+    currentdate.getHours() +
+    ":" +
+    currentdate.getMinutes() +
+    ":" +
+    currentdate.getSeconds();
+  const endTime =
+    currentdate.getHours() +
+    1 +
+    ":" +
+    currentdate.getMinutes() +
+    ":" +
+    currentdate.getSeconds();
   return (
     <>
       <PForm
@@ -92,8 +106,13 @@ const MovementApplicationForm: React.FC<MoveApplicationForm> = ({
                 name="movementType"
                 label="Movement Type"
                 placeholder="Movement Type"
-                onChange={(value, op) => {
+                onChange={(value, op: any) => {
                   form.setFieldValue("movementType", op);
+                  op?.label?.toLowerCase()?.includes("half") &&
+                    form.setFieldValue(
+                      "toDate",
+                      form.getFieldValue("fromDate")
+                    );
                 }}
                 rules={[
                   {

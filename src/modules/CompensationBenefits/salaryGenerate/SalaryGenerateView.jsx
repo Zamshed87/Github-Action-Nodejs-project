@@ -357,32 +357,33 @@ const SalaryGenerateView = () => {
                         value={values?.hrPosition}
                         onChange={(valueOption) => {
                           setFieldValue("hrPosition", valueOption);
-                          const valueArrayHRPosition = valueOption?.map(
-                            (obj) => obj.value
-                          );
 
-                          const parameter = {
-                            setterData: setDetailsData,
-                            setLoading: setDetailsReportLoading,
-                            url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
-                              !state?.data
-                                ? state?.intMonth
-                                : state?.data?.intMonth
-                            }&intYearId=${
-                              !state?.data
-                                ? state?.intYear
-                                : state?.data?.intYear
-                            }&strSalaryCode=${
-                              !state?.data
-                                ? state?.strSalaryCode
-                                : state?.data?.strSalaryCode
-                            }&strHrPositionList=${
-                              valueArrayHRPosition || 0
-                            }&intPaymentMethod=${
-                              values?.walletType?.value || 0
-                            }`,
-                          };
-                          getSalaryDetailsReportRDLC(parameter);
+                          // const valueArrayHRPosition = valueOption?.map(
+                          //   (obj) => obj.value
+                          // );
+
+                          // const parameter = {
+                          //   setterData: setDetailsData,
+                          //   setLoading: setDetailsReportLoading,
+                          //   url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                          //     !state?.data
+                          //       ? state?.intMonth
+                          //       : state?.data?.intMonth
+                          //   }&intYearId=${
+                          //     !state?.data
+                          //       ? state?.intYear
+                          //       : state?.data?.intYear
+                          //   }&strSalaryCode=${
+                          //     !state?.data
+                          //       ? state?.strSalaryCode
+                          //       : state?.data?.strSalaryCode
+                          //   }&strHrPositionList=${
+                          //     valueArrayHRPosition || ""
+                          //   }&intPaymentMethod=${
+                          //     values?.walletType?.value || 0
+                          //   }`,
+                          // };
+                          // getSalaryDetailsReportRDLC(parameter);
                         }}
                         styles={{
                           ...customStyles,
@@ -459,35 +460,68 @@ const SalaryGenerateView = () => {
                             ...prev,
                             walletType: valueOption,
                           }));
-                          const valueArrayHRPosition = (
-                            values?.hrPosition || []
-                          )?.map((obj) => obj.value);
 
-                          const parameter = {
-                            setterData: setDetailsData,
-                            setLoading: setDetailsReportLoading,
-                            url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
-                              !state?.data
-                                ? state?.intMonth
-                                : state?.data?.intMonth
-                            }&intYearId=${
-                              !state?.data
-                                ? state?.intYear
-                                : state?.data?.intYear
-                            }&strSalaryCode=${
-                              !state?.data
-                                ? state?.strSalaryCode
-                                : state?.data?.strSalaryCode
-                            }&strHrPositionList=${
-                              valueArrayHRPosition || 0
-                            }&intPaymentMethod=${valueOption?.value || 0}`,
-                          };
-                          getSalaryDetailsReportRDLC(parameter);
+                          // const valueArrayHRPosition = (
+                          //   values?.hrPosition || []
+                          // )?.map((obj) => obj.value);
+
+                          // const parameter = {
+                          //   setterData: setDetailsData,
+                          //   setLoading: setDetailsReportLoading,
+                          //   url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                          //     !state?.data
+                          //       ? state?.intMonth
+                          //       : state?.data?.intMonth
+                          //   }&intYearId=${
+                          //     !state?.data
+                          //       ? state?.intYear
+                          //       : state?.data?.intYear
+                          //   }&strSalaryCode=${
+                          //     !state?.data
+                          //       ? state?.strSalaryCode
+                          //       : state?.data?.strSalaryCode
+                          //   }&strHrPositionList=${
+                          //     valueArrayHRPosition || 0
+                          //   }&intPaymentMethod=${valueOption?.value || 0}`,
+                          // };
+                          // getSalaryDetailsReportRDLC(parameter);
                         }}
                         placeholder=""
                         styles={customStyles}
                       />
                     </div>
+                  </div>
+                  <div className="col-md-3 mt-4">
+                    <button
+                      className="btn-green"
+                      style={{ minWidth: "" }}
+                      onClick={(e) => {
+                        const valueArrayHRPosition = values?.hrPosition?.length
+                          ? values.hrPosition.map((obj) => obj.value)
+                          : "";
+
+                        const parameter = {
+                          setterData: setDetailsData,
+                          setLoading: setDetailsReportLoading,
+                          url: `/PdfAndExcelReport/GetSalaryLandingData_Matador?intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${
+                            !state?.data
+                              ? state?.intMonth
+                              : state?.data?.intMonth
+                          }&intYearId=${
+                            !state?.data ? state?.intYear : state?.data?.intYear
+                          }&strSalaryCode=${
+                            !state?.data
+                              ? state?.strSalaryCode
+                              : state?.data?.strSalaryCode
+                          }&strHrPositionList=${valueArrayHRPosition}&intPaymentMethod=${
+                            values?.walletType?.value || 0
+                          }`,
+                        };
+                        getSalaryDetailsReportRDLC(parameter);
+                      }}
+                    >
+                      View
+                    </button>
                   </div>
                 </div>
               </div>
@@ -570,17 +604,26 @@ const SalaryGenerateView = () => {
                       className="btn-green"
                       style={{ minWidth: "120px" }}
                       onClick={(e) => {
+                        const hrList = values?.hrPosition
+                          ?.map((item) => item?.value)
+                          .join(",");
                         e.stopPropagation();
                         const url = `/PdfAndExcelReport/GetCashPayPayslipMatador?accountId=${orgId}&salaryCode=${
                           !state?.data
                             ? state?.strSalaryCode
                             : state?.data?.strSalaryCode
+                        }&businessUnitId=${buId}&hrPositions=${
+                          hrList || ""
+                        }&intWorkplaceGroupId=${wgId}&intMonthId=${
+                          state?.intMonth
+                        }&intYearId=${state?.intYear}&intPaymentMethod=${
+                          values?.walletType?.value || ""
                         }`;
 
                         getPDFAction(
                           url,
                           setLoading,
-                          `Bonus Cash Pay Slip-${todayDate()}`
+                          `Salary Cash Pay Slip-${todayDate()}`
                         );
                       }}
                     >

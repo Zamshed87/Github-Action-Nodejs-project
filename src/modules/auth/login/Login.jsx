@@ -13,6 +13,8 @@ import ForgetEmail from "./../../../common/ForgetEmail";
 import ForgetPinVerify from "./../../../common/ForgetPinVerify";
 import Loading from "./../../../common/loading/Loading";
 import ViewModal from "./../../../common/ViewModal";
+import LoginWithGoogle from "./LoginWithGoogle";
+import LoginWithFacebook from "./LoginWithFacebook";
 
 const initData = {
   username: "",
@@ -41,7 +43,7 @@ const LogIn = () => {
       enableReinitialize={true}
       initialValues={initData}
       validationSchema={validationSchema}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
+      onSubmit={(values) => {
         dispatch(
           setLoginAction(
             values?.username,
@@ -53,18 +55,7 @@ const LogIn = () => {
         dispatch(setFirstLevelNameAction("Dashboard"));
       }}
     >
-      {({
-        handleSubmit,
-        resetForm,
-        values,
-        errors,
-        touched,
-        setFieldValue,
-        isValid,
-        setValues,
-        handleChange,
-        handleBlur,
-      }) => (
+      {({ values, errors, touched, setFieldValue }) => (
         <>
           <Form autoComplete="off">
             <div className="auth-wrapper-page">
@@ -102,7 +93,7 @@ const LogIn = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-12">
+                      <div className="col-12" style={{ marginTop: "-1em" }}>
                         <div className="input-field-main login-input-field">
                           <label>Password</label>
                           <FormikInput
@@ -153,13 +144,33 @@ const LogIn = () => {
                           </p>
                         </div>
                       </div> */}
-                      <div className="col-12">
+                      <div className="col-12" style={{ marginTop: "-1.3em" }}>
                         <div className="auth-log-submit">
                           <PrimaryButton
                             type="submit"
                             className="btn btn-green"
                             label="Log In"
                             disabled={loading}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            marginTop: 10,
+                          }}
+                        >
+                          <LoginWithGoogle
+                            history={history}
+                            setLoading={setLoading}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            marginTop: 10,
+                          }}
+                        >
+                          <LoginWithFacebook
+                            history={history}
+                            setLoading={setLoading}
                           />
                         </div>
                       </div>
