@@ -513,9 +513,9 @@ const SalaryGenerateView = () => {
                             !state?.data
                               ? state?.strSalaryCode
                               : state?.data?.strSalaryCode
-                          }&strHrPositionList=${
-                            valueArrayHRPosition
-                          }&intPaymentMethod=${values?.walletType?.value || 0}`,
+                          }&strHrPositionList=${valueArrayHRPosition}&intPaymentMethod=${
+                            values?.walletType?.value || 0
+                          }`,
                         };
                         getSalaryDetailsReportRDLC(parameter);
                       }}
@@ -596,8 +596,7 @@ const SalaryGenerateView = () => {
                   </div>
                 </div>
               </div>
-              {console.log("state", state)}
-              {console.log("values", values)}
+
               <div>
                 <ul className="d-flex flex-wrap align-items-center justify-content-center">
                   <li className="pr-2">
@@ -614,11 +613,11 @@ const SalaryGenerateView = () => {
                             ? state?.strSalaryCode
                             : state?.data?.strSalaryCode
                         }&businessUnitId=${buId}&hrPositions=${
-                          hrList || 0
+                          hrList || ""
                         }&intWorkplaceGroupId=${wgId}&intMonthId=${
                           state?.intMonth
                         }&intYearId=${state?.intYear}&intPaymentMethod=${
-                          values?.walletType?.value || 0
+                          values?.walletType?.value || ""
                         }`;
 
                         getPDFAction(
