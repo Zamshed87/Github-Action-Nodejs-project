@@ -37,8 +37,7 @@ export const onCreateCalendarSetupWithValidation = (
   createTimeSheetActionForCalender,
   setLoading,
   wgId,
-  tableData,
-  deleteRowData
+  tableData
 ) => {
   const demoStartTime = moment(values?.startTime, "HH:mm").subtract(
     12,
@@ -76,33 +75,37 @@ export const onCreateCalendarSetupWithValidation = (
       intBusinessUnitId: buId,
       intCreatedBy: employeeId,
       intCalenderRowId: item?.intCalenderRowId || 0,
-      isCreate: true,
-      isDelete: false,
+
+      /*======================================= changed according to taosif's instra ========================*/
+      // isCreate: true,
+      // isDelete: false,
     };
   });
 
-  const deleteList = deleteRowData?.map((item) => {
-    return {
-      calendarId: id || 0,
-      calenderName: values?.calendarName || "",
-      intWorkplaceId: item?.intWorkplaceId || 0,
-      strWorkplaceName: item?.strWorkplace || "",
-      intAccountId: orgId,
-      intBusinessUnitId: buId,
-      intCreatedBy: employeeId,
-      intCalenderRowId: item?.intCalenderRowId || 0,
-      isCreate: false,
-      isDelete: true,
-    };
-  });
+  /*======================================= changed according to taosif's instra ========================*/
+  // const deleteList = deleteRowData?.map((item) => {
+  //   return {
+  //     calendarId: id || 0,
+  //     calenderName: values?.calendarName || "",
+  //     intWorkplaceId: item?.intWorkplaceId || 0,
+  //     strWorkplaceName: item?.strWorkplace || "",
+  //     intAccountId: orgId,
+  //     intBusinessUnitId: buId,
+  //     intCreatedBy: employeeId,
+  //     intCalenderRowId: item?.intCalenderRowId || 0,
+  //     isCreate: false,
+  //     isDelete: true,
+  //   };
+  // });
 
-  const editList = [];
+  // const editList = [];
 
-  userList.map((itm) => {
-    if (itm?.intCalenderRowId <= 0) {
-      editList.push(itm);
-    }
-  });
+  // userList.map((itm) => {
+  //   if (itm?.intCalenderRowId <= 0) {
+  //     editList.push(itm);
+  //   }
+  // });
+
   const payload = {
     calenderId: id || 0,
     strCalenderCode: "",
@@ -144,7 +147,7 @@ export const onCreateCalendarSetupWithValidation = (
       ? moment(values?.officeCloseTime, "HH:mm").format("HH:mm:ss")
       : `${values?.officeCloseTime}:00` || "00:00:00",
     isNightShift: values?.nightShift || false,
-    timeSheetCalenderRows: id ? [...deleteList, ...editList] : userList,
+    timeSheetCalenderRows: userList,
   };
   if (values?.isEmployeeUpdate) {
     payload.dteEmployeeUpdateFromDate = values?.dteEmployeeUpdateFromDate;
@@ -155,6 +158,7 @@ export const onCreateCalendarSetupWithValidation = (
     onHide();
     getLanding();
   };
+
   createTimeSheetActionForCalender(payload, setLoading, callback);
 };
 
