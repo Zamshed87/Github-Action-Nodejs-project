@@ -16,6 +16,7 @@ export const getJoineeAttendanceData = async (
   srcTxt,
   pageNo,
   pageSize,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   forExcel = false,
   wgId,
   setPages,
@@ -142,8 +143,8 @@ export const joineeAttendanceReportColumns = (
   ];
 };
 // for excel
-export const getTableDataMonthlyAttendance = (row, keys, totalKey) => {
-  const data = row?.map((item, index) => {
+export const getTableDataMonthlyAttendance = (row, keys) => {
+  const data = row?.map((item) => {
     return keys?.map((key) => {
       return new Cell(
         item[key] || item[key] == 0 ? item[key] : "-",

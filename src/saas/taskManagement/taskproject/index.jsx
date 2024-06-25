@@ -20,7 +20,7 @@ const initData = {
 export default function TMProject() {
   const [value, setValue] = useState("running");
 
-  const [isHiddenFilter, setIsHiddenFilter] = useState(true);
+  const [isHiddenFilter] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,9 +36,9 @@ export default function TMProject() {
     cursor: "pointer",
   };
 
-  let history = useHistory();
+  const history = useHistory();
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     // setAnchorEl(event.currentTarget);
   };
 
@@ -46,13 +46,9 @@ export default function TMProject() {
     <>
       <Formik enableReinitialize={true} initialValues={initData}>
         {({
-          handleSubmit,
-          resetForm,
           values,
-          errors,
-          touched,
+
           setFieldValue,
-          isValid,
         }) => (
           <Form>
             <div className="table-card tmProject">

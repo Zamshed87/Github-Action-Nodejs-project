@@ -126,7 +126,7 @@ export const employeeIdCardLandingColumns = (
                 }}
                 type="button"
                 className="btn btn-default"
-                onClick={(e) => {
+                onClick={() => {
                   if (!permission?.isCreate)
                     return toast.warn("You don't have permission");
                   if (!permission?.isCreate)
@@ -173,7 +173,7 @@ export const downloadEmployeeCardFile = (
       setLoading && setLoading(false);
       link.click();
     })
-    .catch((err) => {
+    .catch(() => {
       setLoading && setLoading(false);
     });
 };

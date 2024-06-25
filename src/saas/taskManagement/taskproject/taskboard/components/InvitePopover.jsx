@@ -19,11 +19,8 @@ const InvitePopover = ({ propsObj }) => {
     <>
       <Formik initialValues={initData} validationSchema={validationSchema}>
         {({
-          handleSubmit,
-          resetForm,
           values,
-          errors,
-          touched,
+
           setFieldValue,
         }) => (
           <>
@@ -49,7 +46,7 @@ const InvitePopover = ({ propsObj }) => {
               }}
             >
               <div>
-                <div className="" styles={{ width: "100%" }}>
+                <div className="" style={{ width: "100%" }}>
                   <div>
                     <div
                       className="d-flex align-items-center py-2 px-3 "
@@ -89,7 +86,6 @@ const InvitePopover = ({ propsObj }) => {
                       }}
                       type="button"
                       className="btn mt-3"
-                      onClick={() => {}}
                     >
                       Send invitation
                     </button>

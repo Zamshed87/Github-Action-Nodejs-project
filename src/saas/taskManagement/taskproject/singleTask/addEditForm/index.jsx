@@ -77,18 +77,14 @@ export default function TMProjectSingleTaskForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const saveHandler = (values, cb) => {};
-
   return (
     <>
       <Formik
         enableReinitialize={true}
         initialValues={initData}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
         {({
@@ -98,7 +94,6 @@ export default function TMProjectSingleTaskForm() {
           errors,
           touched,
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>

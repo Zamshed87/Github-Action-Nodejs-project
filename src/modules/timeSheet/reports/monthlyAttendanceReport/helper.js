@@ -16,7 +16,7 @@ export const onGetMonthlyAttendanceReport = (
   IsPaginated = true,
   wId
 ) => {
-  let search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
+  const search = srcTxt ? `&SearchTxt=${srcTxt}` : "";
   getMonthlyAttendanceInformation(
     `/TimeSheetReport/TimeManagementDynamicPIVOTReport?ReportType=monthly_attendance_report_for_all_employee&AccountId=${orgId}&DteFromDate=${values?.fromDate}&DteToDate=${values?.toDate}&EmployeeId=0&WorkplaceGroupId=${wgId}&WorkplaceId=${wId}&PageNo=${pages.current}&PageSize=${pages.pageSize}&IsPaginated=${IsPaginated}${search}`,
     (data) => {
@@ -360,8 +360,8 @@ const createExcelFile = (
 }; */
 
 // for excel
-export const getTableDataMonthlyAttendance = (row, keys, totalKey) => {
-  const data = row?.map((item, index) => {
+export const getTableDataMonthlyAttendance = (row, keys) => {
+  const data = row?.map((item) => {
     return keys?.map((key) => {
       return new Cell(item[key] ? item[key] : "-", "center", "text").getCell();
     });

@@ -7,7 +7,7 @@ export const fromToDateList = (fromDate, toDate) => {
   fromDate = moment(fromDate, "YYYY-MM-DD");
   toDate = moment(toDate, "YYYY-MM-DD");
   const difference = moment(toDate, "YYYY-MM-DD").diff(fromDate, "days");
-  let dateList = [];
+  const dateList = [];
   for (let i = 0; i <= difference; i++) {
     const newDate = moment(fromDate).add(i, "days").format("YYYY-MM-DD");
     const dateLevel = moment(newDate, "YYYY-MM-DD").format("DD MMM, YYYY");
@@ -17,8 +17,8 @@ export const fromToDateList = (fromDate, toDate) => {
 };
 
 // genrating data
-const getTableData = (row, keys, totalKey) => {
-  const data = row?.map((item, index) => {
+const getTableData = (row, keys) => {
+  const data = row?.map((item) => {
     return keys?.map((key) => item[key]);
   });
   return data;
@@ -125,28 +125,28 @@ const createExcelFile = (
   isHiddenHeader,
   fileName
 ) => {
-  let workbook = new Workbook();
-  let worksheet = workbook.addWorksheet(comapanyNameHeader);
+  const workbook = new Workbook();
+  const worksheet = workbook.addWorksheet(comapanyNameHeader);
   if (!isHiddenHeader) {
     worksheet.getCell("A1").alignment = {
       horizontal: "center",
       wrapText: true,
     };
-    let businessUnitName = worksheet.addRow([businessUnit]);
+    const businessUnitName = worksheet.addRow([businessUnit]);
     businessUnitName.font = { size: 20, bold: true };
     notFullWidth
       ? worksheet.mergeCells(`A2:J2`)
       : worksheet.mergeCells(`A2:${exelHeading[endCell]}2`);
     worksheet.getCell("A2").alignment = { horizontal: "center" };
 
-    let companyLocation = worksheet.addRow([businessUnitAddress]);
+    const companyLocation = worksheet.addRow([businessUnitAddress]);
     companyLocation.font = { size: 14, bold: true };
     notFullWidth
       ? worksheet.mergeCells(`A3:J3`)
       : worksheet.mergeCells(`A3:${exelHeading[endCell]}3`);
     worksheet.getCell("A3").alignment = { horizontal: "center" };
 
-    let title = worksheet.addRow([comapanyNameHeader]);
+    const title = worksheet.addRow([comapanyNameHeader]);
     title.font = { size: 16, bold: true };
     notFullWidth
       ? worksheet.mergeCells(`A4:J4`)
@@ -161,7 +161,7 @@ const createExcelFile = (
       wrapText: true,
     };
 
-    let skipCell = ["A1", "A2", "A3", "A4", "A5", "A6"];
+    const skipCell = ["A1", "A2", "A3", "A4", "A5", "A6"];
 
     worksheet.columns.forEach(function (column, i) {
       var maxLength = 0;
@@ -177,7 +177,7 @@ const createExcelFile = (
     });
   }
 
-  let _tableHeader = worksheet.addRow(tableHeader);
+  const _tableHeader = worksheet.addRow(tableHeader);
   _tableHeader.font = { bold: true };
   _tableHeader.eachCell((cell) => {
     cell.alignment = { horizontal: "center" };
@@ -212,7 +212,7 @@ const createExcelFile = (
     wrapText: true,
   };
 
-  let footer = worksheet.addRow([
+  const footer = worksheet.addRow([
     `System Generated Report ${moment().format("ll")}`,
   ]); // footer default text
   footer.font = { size: 12 };
@@ -235,7 +235,7 @@ const createExcelFile = (
   }
 
   workbook.xlsx.writeBuffer().then((data) => {
-    let blob = new Blob([data], {
+    const blob = new Blob([data], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     fs.saveAs(blob, `${fileName || comapanyNameHeader}.xlsx`);

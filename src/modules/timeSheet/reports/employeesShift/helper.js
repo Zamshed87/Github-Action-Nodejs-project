@@ -32,13 +32,12 @@ export const onGetEmployeeShiftInformation = async (
   setLoading,
   pageNo,
   pageSize,
-  setPages,
-  IsPaginated = true
+  setPages
 ) => {
   setLoading && setLoading(true);
 
   try {
-    let apiUrl = `/TimeSheetReport/MonthlyRosterReportForSingleEmployee?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&EmployeeId=${employeeId}&FromDate=${formDate}&ToDate=${toDate}&PageNo=${pageNo}&PageSize=${pageSize}`;
+    const apiUrl = `/TimeSheetReport/MonthlyRosterReportForSingleEmployee?BusinessUnitId=${buId}&WorkplaceGroupId=${wgId}&EmployeeId=${employeeId}&FromDate=${formDate}&ToDate=${toDate}&PageNo=${pageNo}&PageSize=${pageSize}`;
 
     const res = await axios.get(apiUrl);
 

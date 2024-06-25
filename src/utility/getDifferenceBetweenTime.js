@@ -1,11 +1,11 @@
 import { dateFormatterForInput } from "./dateFormatter";
 
 export const getDifferenceBetweenTime = (date, startTime, endTime) => {
-  let date1 = new Date(`${date} ${startTime}`);
-  let date2 = new Date(`${date} ${endTime}`);
+  const date1 = new Date(`${date} ${startTime}`);
+  const date2 = new Date(`${date} ${endTime}`);
 
   function addDays(date, days) {
-    let result = new Date(date);
+    const result = new Date(date);
     result.setDate(result.getDate() + days);
     return dateFormatterForInput(result);
   }
@@ -13,8 +13,8 @@ export const getDifferenceBetweenTime = (date, startTime, endTime) => {
   let diff = date2.getTime() - date1.getTime();
 
   if (date2.getTime() < date1.getTime()) {
-    let nextDate = addDays(date, 1);
-    let nextDateTime = new Date(`${nextDate} ${endTime}`);
+    const nextDate = addDays(date, 1);
+    const nextDateTime = new Date(`${nextDate} ${endTime}`);
     diff = nextDateTime.getTime() - date1.getTime();
   }
 
@@ -36,7 +36,7 @@ export const getDifferenceBetweenTime = (date, startTime, endTime) => {
     ss = `0${ss}`;
   }
 
-  let difference = `${hh}:${mm}:${ss}`;
+  const difference = `${hh}:${mm}:${ss}`;
 
   return difference;
 };

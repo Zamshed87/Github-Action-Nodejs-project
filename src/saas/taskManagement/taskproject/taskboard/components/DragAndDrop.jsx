@@ -87,12 +87,11 @@ const onDragEnd = (result, columns, setColumns) => {
     });
   }
 };
-const saveHandler = (values) => {};
 
 function DragAndDrop() {
   const [columns, setColumns] = useState(columnsFromBackend);
   const [addCard, setAddCard] = useState(true);
-  const handleClickk = (e) => {
+  const handleClickk = () => {
     setAddCard(!addCard);
   };
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -110,20 +109,15 @@ function DragAndDrop() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
         {({
           handleSubmit,
-          resetForm,
           values,
-          errors,
-          touched,
+
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -137,7 +131,7 @@ function DragAndDrop() {
                 <DragDropContext
                   onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
                 >
-                  {Object.entries(columns).map(([columnId, column], index) => {
+                  {Object.entries(columns).map(([columnId, column]) => {
                     return (
                       <div
                         style={{
@@ -273,7 +267,7 @@ function DragAndDrop() {
                                   ) : (
                                     <div
                                       className="container px-0"
-                                      styles={{ width: "100%" }}
+                                      style={{ width: "100%" }}
                                     >
                                       <div style={{ height: "50px" }}>
                                         <FormikInput

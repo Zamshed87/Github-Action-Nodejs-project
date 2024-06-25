@@ -59,7 +59,7 @@ export default function ProjectDetails() {
         className="d-flex justify-content-center align-items-center"
       >
         <IconButton
-          onClick={(e) => {
+          onClick={() => {
             // setIsOpen(false);
             // getEmployeeSalaryInfo(setAllData, setRowDto, setLoading, {
             //   partType: "SalaryAssignLanding",
@@ -360,7 +360,7 @@ export default function ProjectDetails() {
               width: "556px",
             },
             "& .MuiDrawer-paperAnchorRight": {
-                overflowY: "visible",
+              overflowY: "visible",
               // overflowX: "hidden",
               // overflowY: "scroll !important",
             },

@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import PrimaryButton from "../../../../common/PrimaryButton";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
 // import Dnd from "../../../../modules/componentModule/pageModule/dragAndDropModule/Dnd";
-import { useHistory } from "react-router";
 import FormikSelect from "../../../../common/FormikSelect";
 import { customStylesSmall } from "../../../../utility/selectCustomStyle";
 import AddTaskPopover from "./components/AddTaskPopover";
@@ -24,10 +23,10 @@ import DragAndDrop from "./components/DragAndDrop";
 import InvitePopover from "./components/InvitePopover";
 import MemberPopover from "./components/MemberPopover";
 import ProjectDetails from "./components/ProjectDetails";
-const options = [
-  { value: 1, label: "one" },
-  { value: 2, label: "two" },
-];
+// const options = [
+//   { value: 1, label: "one" },
+//   { value: 2, label: "two" },
+// ];
 const initData = {
   eventType: "",
   firstLavel: "",
@@ -36,7 +35,7 @@ const initData = {
   path: "",
 };
 export default function TMProjectTaskBoard() {
-  const history = useHistory();
+  // const history = useHistory();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -70,13 +69,13 @@ export default function TMProjectTaskBoard() {
     setAnchorEl2(event.currentTarget);
   };
 
-  const [age, setAge] = React.useState("");
+  // const [age, setAge] = React.useState("");
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
+  // const handleChange = (event) => {
+  //   setAge(event.target.value);
+  // };
 
-  const saveHandler = (values, cb) => {};
+  // const saveHandler = (values, cb) => {};
 
   const [loading] = useState(false);
 
@@ -91,20 +90,14 @@ export default function TMProjectTaskBoard() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
         {({
           handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
+
           setFieldValue,
-          isValid,
         }) => (
           <>
             <Form onSubmit={handleSubmit}>
@@ -137,7 +130,7 @@ export default function TMProjectTaskBoard() {
                         placeholder="User journey map"
                         styles={{
                           ...customStylesSmall,
-                          control: (provided, state) => ({
+                          control: (provided) => ({
                             ...provided,
                             minHeight: "30px",
                             height: "30px",
@@ -182,7 +175,7 @@ export default function TMProjectTaskBoard() {
                           placeholder="Level 1"
                           styles={{
                             ...customStylesSmall,
-                            control: (provided, state) => ({
+                            control: (provided) => ({
                               ...provided,
                               minHeight: "30px",
                               height: "30px",
@@ -222,7 +215,7 @@ export default function TMProjectTaskBoard() {
                           placeholder="Open"
                           styles={{
                             ...customStylesSmall,
-                            control: (provided, state) => ({
+                            control: (provided) => ({
                               ...provided,
                               minHeight: "30px",
                               height: "30px",

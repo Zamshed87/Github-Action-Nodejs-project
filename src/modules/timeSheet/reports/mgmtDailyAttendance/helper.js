@@ -254,8 +254,8 @@ export const subHeaderColumn = {
 };
 
 // for excel
-export const getTableDataDailyAttendance = (row, keys, summary) => {
-  const data = row?.map((item, index) => {
+export const getTableDataDailyAttendance = (row, keys) => {
+  const data = row?.map((item) => {
     return keys?.map((key) => {
       return new Cell(item[key], "center", "text").getCell();
     });

@@ -1,14 +1,14 @@
 function TimeCalculator(seconds) {
-  let y = Math.floor(seconds / 31536000);
-  let mo = Math.floor((seconds % 31536000) / 2628000);
-  let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
+  const y = Math.floor(seconds / 31536000);
+  const mo = Math.floor((seconds % 31536000) / 2628000);
+  const d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
   // let h = Math.floor((seconds % (3600 * 24)) / 3600);
   // let m = Math.floor((seconds % 3600) / 60);
   // let s = Math.floor(seconds % 60);
 
-  let yDisplay = y > 0 ? y + (y === 1 ? " year " : " years ") : "";
-  let moDisplay = mo > 0 ? mo + (mo === 1 ? " month " : " months ") : "";
-  let dDisplay = d > 0 ? d + (d === 1 ? " day " : " days ") : "";
+  const yDisplay = y > 0 ? y + (y === 1 ? " year " : " years ") : "";
+  const moDisplay = mo > 0 ? mo + (mo === 1 ? " month " : " months ") : "";
+  const dDisplay = d > 0 ? d + (d === 1 ? " day " : " days ") : "";
   // let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : "";
   // let mDisplay = m > 0 ? m + (m === 1 ? " minute " : " minutes, ") : "";
   // let sDisplay = s > 0 ? s + (s === 1 ? " second" : " seconds ") : "";

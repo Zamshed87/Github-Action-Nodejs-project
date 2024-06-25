@@ -19,11 +19,8 @@ const AddTaskPopover = ({ propsObj }) => {
     <>
       <Formik initialValues={initData} validationSchema={validationSchema}>
         {({
-          handleSubmit,
-          resetForm,
           values,
-          errors,
-          touched,
+
           setFieldValue,
         }) => (
           <>
@@ -45,7 +42,7 @@ const AddTaskPopover = ({ propsObj }) => {
               }}
             >
               <div>
-                <div className="container my-2 " styles={{ width: "100%" }}>
+                <div className="container my-2 " style={{ width: "100%" }}>
                   <div className="input-field-main pt-3">
                     <FormikInput
                       classes="input-sm"

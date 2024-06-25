@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import {
-  Avatar,
   DataTable,
   PButton,
   PCard,
@@ -12,7 +12,7 @@ import {
 import type { RangePickerProps } from "antd/es/date-picker";
 
 import { useApiRequest } from "Hooks";
-import { Col, Form, Row, Tag, Tooltip } from "antd";
+import { Col, Form, Row } from "antd";
 import { getWorkplaceDetails } from "common/api";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
@@ -24,16 +24,10 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { dateFormatter, getDateOfYear } from "utility/dateFormatter";
-import { MdOutlineGroupAdd } from "react-icons/md";
 
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column } from "./helper";
-import IConfirmModal from "common/IConfirmModal";
-import useAxiosGet from "utility/customHooks/useAxiosGet";
-import { getCurrentMonthName } from "utility/monthIdToMonthName";
-import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import { empBasicInfo } from "../helper";
 import { getSerial } from "Utils";
 import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
@@ -42,7 +36,7 @@ const EmployeesShift = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, wId, orgId, buName, userName },
+    profileData: { buId, wgId, employeeId, orgId, buName, userName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -81,13 +75,6 @@ const EmployeesShift = () => {
   const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [pages, setPages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
-  });
-  const [, getExcelData, apiLoading] = useAxiosGet();
 
   const { id }: any = useParams();
   // Form Instance
@@ -246,11 +233,7 @@ const EmployeesShift = () => {
       width: 70,
     },
   ];
-  const searchFunc = debounce((value) => {
-    landingApiCall({
-      searchText: value,
-    });
-  }, 500);
+
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");
@@ -411,7 +394,7 @@ const EmployeesShift = () => {
                     form.setFieldsValue({
                       employee: op,
                     });
-                    empBasicInfo(buId, orgId, value, setEmpInfo, setLoading);
+                    empBasicInfo(buId, orgId, value, setEmpInfo);
                   }}
                   onSearch={(value) => {
                     getEmployee(value);
@@ -497,7 +480,6 @@ const EmployeesShift = () => {
           </PCardBody>
           <Form.Item shouldUpdate noStyle>
             {() => {
-              const { employee } = form.getFieldsValue(true);
               return (
                 <Row
                   className="mb-3"
