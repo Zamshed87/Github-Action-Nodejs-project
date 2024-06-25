@@ -27,11 +27,8 @@ const MemberPopover = ({ propsObj }) => {
     <>
       <Formik initialValues={initData} validationSchema={validationSchema}>
         {({
-          handleSubmit,
-          resetForm,
           values,
-          errors,
-          touched,
+
           setFieldValue,
         }) => (
           <>
@@ -55,8 +52,11 @@ const MemberPopover = ({ propsObj }) => {
               <div>
                 <div
                   className=""
-                  style={{ maxHeight: "468px", overflow: "auto" }}
-                  styles={{ width: "100%" }}
+                  style={{
+                    maxHeight: "468px",
+                    overflow: "auto",
+                    width: "100%",
+                  }}
                 >
                   <div>
                     <div

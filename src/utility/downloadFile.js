@@ -19,7 +19,7 @@ export const downloadFile = (url, fileName, extension, setLoading) => {
       setLoading && setLoading(false);
       link.click();
     })
-    .catch((err) => {
+    .catch(() => {
       setLoading && setLoading(false);
     });
 };

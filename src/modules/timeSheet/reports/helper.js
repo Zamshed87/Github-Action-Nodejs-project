@@ -52,7 +52,7 @@ export const getAttendenceReport = async (
   srcText,
   IsPaginated = true
 ) => {
-  let search = srcText ? `&SearchTxt=${srcText}` : "";
+  const search = srcText ? `&SearchTxt=${srcText}` : "";
 
   try {
     setLoading(true);
@@ -85,17 +85,17 @@ export const getAttendenceDetailsReport = async (
   setter,
   setLoading
 ) => {
-  setLoading(true);
+  setLoading && setLoading(true);
   try {
     const res = await axios.get(
       `/TimeSheetReport/GetAttendanceDetailsReport?TypeId=${typeId}&EmployeeId=${empId}&FromDate=${fromDate}&ToDate=${toDate}`
     );
     setter(res?.data);
-    setLoading(false);
+    setLoading && setLoading(false);
   } catch (error) {
     setter([]);
     toast.error(error?.response?.data?.message);
-    setLoading(false);
+    setLoading && setLoading(false);
   }
 };
 
@@ -120,7 +120,7 @@ export const getRosterReport = async (
   setPages,
   isPaginated = true
 ) => {
-  let search = srcText ? `&SearchTxt=${srcText}` : "";
+  const search = srcText ? `&SearchTxt=${srcText}` : "";
   setLoading?.(true);
   try {
     const res = await axios.get(
@@ -210,7 +210,7 @@ export const fromToDateList = (fromDate, toDate) => {
   fromDate = moment(fromDate, "YYYY-MM-DD");
   toDate = moment(toDate, "YYYY-MM-DD");
   const difference = moment(toDate, "YYYY-MM-DD").diff(fromDate, "days");
-  let dateList = [];
+  const dateList = [];
   for (let i = 0; i <= difference; i++) {
     const newDate = moment(fromDate).add(i, "days").format("YYYY-MM-DD");
     const dateLevel = moment(newDate, "YYYY-MM-DD").format("DD MMM, YYYY");

@@ -7,7 +7,7 @@ import {
 } from "./customColor";
 
 export const borderlessSelectStyle = {
-  control: (provided, state) => ({
+  control: (provided) => ({
     ...provided,
     minHeight: "30px",
     height: "30px",
@@ -19,22 +19,22 @@ export const borderlessSelectStyle = {
     },
     boxShadow: "unset",
   }),
-  valueContainer: (provided, state) => ({
+  valueContainer: (provided) => ({
     ...provided,
     height: "30px",
     padding: "0 6px",
     fontSize: "12px",
   }),
-  valueOption: (provided, state) => ({
+  valueOption: (provided) => ({
     ...provided,
     zIndex: 999999,
   }),
 
-  input: (provided, state) => ({
+  input: (provided) => ({
     ...provided,
     margin: "0px",
   }),
-  indicatorSeparator: (state) => ({
+  indicatorSeparator: () => ({
     display: "none",
   }),
   clearIndicator: (provided) => ({
@@ -46,7 +46,7 @@ export const borderlessSelectStyle = {
     padding: "0px",
     paddingRight: "3px",
   }),
-  indicatorsContainer: (provided, state) => ({
+  indicatorsContainer: (provided) => ({
     ...provided,
     height: "30px",
   }),
@@ -73,7 +73,7 @@ export const borderlessSelectStyle = {
     },
     zIndex: 99999999,
   }),
-  placeholder: (provided, state) => ({
+  placeholder: (provided) => ({
     ...provided,
     fontSize: 14,
     textOverflow: "ellipsis",

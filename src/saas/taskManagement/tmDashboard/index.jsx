@@ -128,7 +128,7 @@ export default function TMDashboard() {
   const day = moment().daysInMonth();
 
   const blankDay = (d, status) => {
-    let dArray = [];
+    const dArray = [];
     const restDay = day - d;
     for (let i = 1; i <= (status === "f" ? d - 1 : restDay); i++) {
       dArray.push(i);
@@ -137,7 +137,7 @@ export default function TMDashboard() {
   };
 
   const allDay = (d) => {
-    let dArray = [];
+    const dArray = [];
     for (let i = 1; i <= d; i++) {
       dArray.push(i);
     }
@@ -146,8 +146,8 @@ export default function TMDashboard() {
 
   return (
     <>
-      <Formik enableReinitialize={true} initialValues={initData} onSubmit={(values, { setSubmitting, resetForm }) => {}}>
-        {({ handleSubmit, resetForm, values, errors, touched, setFieldValue, isValid }) => (
+      <Formik enableReinitialize={true} initialValues={initData}>
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {false && <Loading />}
@@ -157,11 +157,16 @@ export default function TMDashboard() {
                     <div className="d-flex align-items-center employeeName">
                       <p>Md. Imran Uddin</p>
                     </div>
-                    <p className="welcome">User Experience (UX) Designer Executive</p>
+                    <p className="welcome">
+                      User Experience (UX) Designer Executive
+                    </p>
                   </div>
                   <div className="table-card-head-right current-situation d-flex flex-wrap">
                     {/* date & time */}
-                    <div className="d-flex align-items-center" style={{ marginRight: "5px" }}>
+                    <div
+                      className="d-flex align-items-center"
+                      style={{ marginRight: "5px" }}
+                    >
                       <Today sx={{ color: "#34A853" }} />
                       <p className="date">{dateFormatterForDashboard()}</p>
                     </div>
@@ -249,7 +254,13 @@ export default function TMDashboard() {
                   </div>
                 </div>
                 <div className="card card-shadow">
-                  <div className="card-body" style={{ padding: "0.5rem 0 0.75rem 0", margin: "0px 15px" }}>
+                  <div
+                    className="card-body"
+                    style={{
+                      padding: "0.5rem 0 0.75rem 0",
+                      margin: "0px 15px",
+                    }}
+                  >
                     <div className="table-card-heading pr-0">
                       <p className="cardTitle">Project Timeline</p>
                       <ul className="d-flex flex-wrap">
@@ -289,15 +300,30 @@ export default function TMDashboard() {
                         {/* td */}
                         {demoData.map((item, index) => (
                           <>
-                            <div className="flexDirection" key={index} style={{ borderTop: "none" }}>
-                              <div style={{ width: "250px", padding: "10px 5px" }}>
+                            <div
+                              className="flexDirection"
+                              key={index}
+                              style={{ borderTop: "none" }}
+                            >
+                              <div
+                                style={{ width: "250px", padding: "10px 5px" }}
+                              >
                                 <p className="cmnTxtTitle">{item?.taskTitle}</p>
                                 <p className="cmnTxt">{`${item?.startMonth} ${item?.startDate}, ${item?.startYear} - ${item?.endMonth} ${item?.endDate}, ${item?.endYear}`}</p>
                               </div>
-                              {blankDay(item?.startDate, "f")?.map((item, index) => (
-                                <p key={index} className="blankDay" />
-                              ))}
-                              <div style={{ width: `${item?.totalDay * 50}px`, backgroundColor: `${item?.color}`, height: "22px" }} className="taskStyle"></div>
+                              {blankDay(item?.startDate, "f")?.map(
+                                (item, index) => (
+                                  <p key={index} className="blankDay" />
+                                )
+                              )}
+                              <div
+                                style={{
+                                  width: `${item?.totalDay * 50}px`,
+                                  backgroundColor: `${item?.color}`,
+                                  height: "22px",
+                                }}
+                                className="taskStyle"
+                              ></div>
                               {blankDay(item?.endDate, "b")?.map((item, i) => (
                                 <p key={i} className="blankDay"></p>
                               ))}

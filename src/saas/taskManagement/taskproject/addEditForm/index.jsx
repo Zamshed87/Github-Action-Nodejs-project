@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Form, Formik } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import FormikInput from "../../../../common/FormikInput";
 import { setFirstLevelNameAction } from "../../../../commonRedux/reduxForLocalStorage/actions";
@@ -22,7 +22,6 @@ export default function TMProjectForm() {
   const [fileId, setFileId] = useState("");
   // let history = useHistory();
   const dispatch = useDispatch();
-  const inputFile = useRef(null);
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Task Management"));
@@ -41,15 +40,7 @@ export default function TMProjectForm() {
   return (
     <>
       <Formik enableReinitialize={true} initialValues={initData}>
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ values, errors, touched, setFieldValue }) => (
           <Form>
             <div className="table-card">
               <div className="table-card-heading heading pt-0">
@@ -88,7 +79,6 @@ export default function TMProjectForm() {
                         className="form-control"
                         errors={errors}
                         touched={touched}
-                        onChange={(e) => {}}
                       />
                     </div>
                   </div>
@@ -175,7 +165,6 @@ export default function TMProjectForm() {
                           display: "flex",
                           height: "30px",
                         }}
-                        component="form"
                       >
                         <IconButton
                           type="submit"

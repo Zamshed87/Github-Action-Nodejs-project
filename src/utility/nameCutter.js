@@ -1,6 +1,6 @@
 export const nameCutter = (start, end, name) => {
   if (!name) return false;
-  let newName = name.slice(start, end);
+  const newName = name.slice(start, end);
   if (name.length > end) {
     return `${newName}...`;
   } else {
@@ -8,10 +8,9 @@ export const nameCutter = (start, end, name) => {
   }
 };
 
-
 export const nameCutterTwo = (start, end, name) => {
   if (!name) return false;
-  let newName = name.slice(start, end);
+  const newName = name.slice(start, end);
   if (name.length > end) {
     return `${newName}...`;
   } else {

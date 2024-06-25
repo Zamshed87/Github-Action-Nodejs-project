@@ -41,7 +41,7 @@ const FileUploadComponents = ({ propsObj }) => {
     };
   } else {
     apiAction = {
-      customRequest: (res) => {},
+      customRequest: () => {},
     };
   }
   const props = {

@@ -25,7 +25,6 @@ import {} from "react-icons/md";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
 // import { debounce } from "lodash";
 
-import useAxiosGet from "utility/customHooks/useAxiosGet";
 import { downloadFile, getPDFAction } from "utility/downloadFile";
 
 const EmpCheckList = () => {

@@ -2,7 +2,6 @@
 import { Clear } from "@mui/icons-material";
 import { Popover } from "@mui/material";
 import { Form, Formik } from "formik";
-import { shallowEqual, useSelector } from "react-redux";
 import BorderlessSelect from "../../../../../common/BorderlessSelect";
 import DatePickerBorderLess from "../../../../../common/DatePickerBorderless";
 import { borderlessSelectStyle } from "../../../../../utility/BorderlessStyle";
@@ -17,13 +16,7 @@ const initData = {
   employee: "",
 };
 
-const FilterModal = ({ propsObj, children }) => {
-  const { buId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-  const saveHandler = (values) => {};
-
+const FilterModal = ({ propsObj }) => {
   const { id, open, anchorEl, handleClose, customStyleObj } = propsObj;
 
   return (
@@ -31,21 +24,11 @@ const FilterModal = ({ propsObj, children }) => {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               <Popover
@@ -69,7 +52,7 @@ const FilterModal = ({ propsObj, children }) => {
                   <div className="master-filter-header">
                     <h3>Advanced Filter</h3>
                     <button
-                      onClick={(e) => handleClose()}
+                      onClick={() => handleClose()}
                       className="btn btn-cross"
                     >
                       <Clear sx={{ fontSize: "18px" }} />
@@ -233,7 +216,7 @@ const FilterModal = ({ propsObj, children }) => {
                       <button
                         type="button"
                         className="btn btn-green btn-green-less"
-                        onClick={(e) => handleClose()}
+                        onClick={() => handleClose()}
                         style={{
                           marginRight: "10px",
                         }}
@@ -243,7 +226,7 @@ const FilterModal = ({ propsObj, children }) => {
                       <button
                         type="button"
                         className="btn btn-green"
-                        onClick={(e) => {
+                        onClick={() => {
                           handleClose();
                         }}
                       >

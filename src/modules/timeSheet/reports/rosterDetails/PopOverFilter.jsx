@@ -106,7 +106,7 @@ const PopOverFilter = ({
         <div className="master-filter-modal-container">
           <div className="master-filter-header">
             <h3>Advanced Filter</h3>
-            <button onClick={(e) => handleClose()} className="btn btn-cross">
+            <button onClick={() => handleClose()} className="btn btn-cross">
               <Clear sx={{ fontSize: "18px" }} />
             </button>
           </div>
@@ -300,7 +300,7 @@ const PopOverFilter = ({
               <button
                 type="button"
                 className="btn btn-green btn-green-less"
-                onClick={(e) => {
+                onClick={() => {
                   setFieldValue("workplace", "");
                   setFieldValue("department", "");
                   setFieldValue("designation", "");

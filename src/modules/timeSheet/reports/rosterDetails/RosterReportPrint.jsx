@@ -13,7 +13,7 @@ const tableData = [
 ];
 
 const RosterReportPrint = () => {
-  const [rowDto, setRowDto] = useState([...tableData]);
+  const [rowDto] = useState([...tableData]);
   return (
     <>
       <PrintView isSignature>

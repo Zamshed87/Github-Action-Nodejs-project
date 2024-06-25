@@ -4,7 +4,7 @@ import AvatarComponent from "../../../../../common/AvatarComponent";
 import SortingIcon from "../../../../../common/SortingIcon";
 
 const CardTable = ({ propsObj }) => {
-  const { rowDto, setRowDto } = propsObj;
+  const { rowDto } = propsObj;
   return (
     <div className="table-card-styled tableOne pt-3">
       <table className="table ">
@@ -98,11 +98,7 @@ const CardTable = ({ propsObj }) => {
                 <td>{data?.reason}</td>
                 <td>
                   <div className="d-flex align-items-center">
-                    <button
-                      type="button"
-                      className="iconButton"
-                      onClick={(e) => {}}
-                    >
+                    <button type="button" className="iconButton">
                       <LocalPrintshopOutlined />
                     </button>
                   </div>

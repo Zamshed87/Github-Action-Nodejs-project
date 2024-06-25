@@ -650,8 +650,7 @@ const MgmtDailyAttendance = () => {
                                             getTableData: () =>
                                               getTableDataDailyAttendance(
                                                 newData,
-                                                Object.keys(column),
-                                                landingApi?.data?.data
+                                                Object.keys(column)
                                               ),
                                             getSubTableData: () =>
                                               getTableDataSummaryHeadData(

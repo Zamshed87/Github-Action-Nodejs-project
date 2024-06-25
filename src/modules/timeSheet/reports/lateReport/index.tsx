@@ -311,8 +311,7 @@ const LateReport = () => {
                         getTableData: () =>
                           getTableDataDailyAttendance(
                             newData,
-                            Object.keys(column),
-                            res?.data
+                            Object.keys(column)
                           ),
                         // eslint-disable-next-line @typescript-eslint/no-empty-function
                         getSubTableData: () => {},

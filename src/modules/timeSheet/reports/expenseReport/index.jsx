@@ -4,7 +4,7 @@ import { NavigateNext } from "@mui/icons-material";
 import { Breadcrumbs, Stack, Typography } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import Loading from "../../../../common/loading/Loading";
 import MasterFilter from "../../../../common/MasterFilter";
@@ -83,15 +83,8 @@ export default function ExpenseReport() {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
   }, []);
 
-  const { orgId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-
-  const saveHandler = (values) => {};
-
   const [rowDto, setRowDto] = useState([...tableData]);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -125,21 +118,11 @@ export default function ExpenseReport() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}

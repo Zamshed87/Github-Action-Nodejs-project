@@ -111,7 +111,7 @@ export const getEmployeeAttendenceDetailsReport = async (
   allDayList
 ) => {
   try {
-    let res = await axios.get(
+    const res = await axios.get(
       `/Employee/GetAttendanceSummaryCalenderViewReport?EmployeeId=${empId}&Month=${month}&Year=${year}`
     );
     setter(matchDataset(allDayList, res?.data));

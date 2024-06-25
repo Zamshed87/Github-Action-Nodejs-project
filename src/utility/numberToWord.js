@@ -1,7 +1,7 @@
 /* eslint-disable no-redeclare */
 /* eslint-disable no-array-constructor */
 const convertNumberToWords = (amount) => {
-  let words = new Array();
+  const words = new Array();
   words[0] = "";
   words[1] = "One";
   words[2] = "Two";

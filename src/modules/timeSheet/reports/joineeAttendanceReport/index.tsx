@@ -29,7 +29,6 @@ import {
   monthLastDate,
 } from "utility/dateFormatter";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column, getTableDataMonthlyAttendance } from "./helper";
 import { fromToDateList } from "../helper";

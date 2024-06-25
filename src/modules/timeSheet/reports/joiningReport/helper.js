@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
 import AvatarComponent from "common/AvatarComponent";
 import { Cell } from "utility/customExcel/createExcelHelper";
@@ -16,7 +17,7 @@ export const getJoiningData = async (
   wId,
   orgId,
   fromDate,
-  toDate,
+  toDate
 ) => {
   setLoading && setLoading(true);
 
@@ -41,8 +42,8 @@ export const getJoiningData = async (
   }
 };
 // for excel
-export const getTableData = (row, keys, summary) => {
-  const data = row?.map((item, index) => {
+export const getTableData = (row, keys) => {
+  const data = row?.map((item) => {
     return keys?.map((key) => {
       return new Cell(item[key], "center", "text").getCell();
     });
@@ -52,7 +53,7 @@ export const getTableData = (row, keys, summary) => {
 };
 
 // UI Table columns
-export const joiningDtoCol = (page, paginationSize, wName, wgName) => {
+export const joiningDtoCol = (page, paginationSize) => {
   return [
     {
       title: "SL",

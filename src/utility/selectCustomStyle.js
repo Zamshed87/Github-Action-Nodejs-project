@@ -1,15 +1,15 @@
 import {
-  gray700,
   disableColor,
-  whiteColor,
   gray100,
   gray300,
-  success500,
   gray600,
+  gray700,
+  success500,
+  whiteColor,
 } from "./customColor";
 
 export const customStylesSmall = {
-  control: (provided, state) => ({
+  control: (provided) => ({
     ...provided,
     minHeight: "30px",
     height: "30px",
@@ -24,28 +24,28 @@ export const customStylesSmall = {
     boxShadow: `${success500}!important`,
     width: "200px",
   }),
-  valueContainer: (provided, state) => ({
+  valueContainer: (provided) => ({
     ...provided,
     height: "30px",
     padding: "0 6px",
   }),
-  valueOption: (provided, state) => ({
+  valueOption: (provided) => ({
     ...provided,
     zIndex: 999999,
   }),
-  singleValue: (provided, state) => ({
+  singleValue: (provided) => ({
     ...provided,
     fontSize: "14px",
     color: gray700,
   }),
-  input: (provided, state) => ({
+  input: (provided) => ({
     ...provided,
     margin: "0px",
   }),
-  indicatorSeparator: (state) => ({
+  indicatorSeparator: () => ({
     display: "none",
   }),
-  indicatorsContainer: (provided, state) => ({
+  indicatorsContainer: (provided) => ({
     ...provided,
     height: "30px",
   }),
@@ -72,7 +72,7 @@ export const customStylesSmall = {
     },
     zIndex: 99999999,
   }),
-  placeholder: (provided, state) => ({
+  placeholder: (provided) => ({
     ...provided,
     fontSize: 14,
     textOverflow: "ellipsis",
@@ -84,7 +84,7 @@ export const customStylesSmall = {
 };
 
 export const customStyles = {
-  control: (provided, state) => ({
+  control: (provided) => ({
     ...provided,
     minHeight: "30px",
     height: "30px",
@@ -98,30 +98,30 @@ export const customStyles = {
     },
     boxShadow: `${success500}!important`,
   }),
-  menu: (provided, state) => ({
+  menu: (provided) => ({
     ...provided,
     zIndex: 999,
   }),
-  valueContainer: (provided, state) => ({
+  valueContainer: (provided) => ({
     ...provided,
     height: "30px",
     padding: "0 6px",
   }),
-  valueOption: (provided, state) => ({
+  valueOption: (provided) => ({
     ...provided,
     zIndex: 999999,
   }),
-  singleValue: (provided, state) => ({
+  singleValue: (provided) => ({
     ...provided,
     fontSize: "14px",
     color: gray700,
     height: "26px",
   }),
-  input: (provided, state) => ({
+  input: (provided) => ({
     ...provided,
     margin: "0px",
   }),
-  indicatorSeparator: (state) => ({
+  indicatorSeparator: () => ({
     display: "none",
   }),
   clearIndicator: (provided) => ({
@@ -133,7 +133,7 @@ export const customStyles = {
     padding: "0px",
     paddingRight: "3px",
   }),
-  indicatorsContainer: (provided, state) => ({
+  indicatorsContainer: (provided) => ({
     ...provided,
     height: "30px",
   }),
@@ -160,7 +160,7 @@ export const customStyles = {
     },
     zIndex: 99999999,
   }),
-  placeholder: (provided, state) => ({
+  placeholder: (provided) => ({
     ...provided,
     fontSize: 14,
     fontWeight: 400,
@@ -173,29 +173,29 @@ export const customStyles = {
 };
 
 export const customStylesLarge = {
-  control: (provided, state) => ({
+  control: (provided) => ({
     ...provided,
     minHeight: "56px",
     height: "56px",
     borderRadius: "4px",
   }),
-  valueContainer: (provided, state) => ({
+  valueContainer: (provided) => ({
     ...provided,
     height: "56px",
     padding: "0 6px",
   }),
-  valueOption: (provided, state) => ({
+  valueOption: (provided) => ({
     ...provided,
     zIndex: 999999,
   }),
-  input: (provided, state) => ({
+  input: (provided) => ({
     ...provided,
     margin: "0px",
   }),
-  indicatorSeparator: (state) => ({
+  indicatorSeparator: () => ({
     display: "none",
   }),
-  indicatorsContainer: (provided, state) => ({
+  indicatorsContainer: (provided) => ({
     ...provided,
     height: "56px",
   }),
@@ -223,7 +223,7 @@ export const customStylesLarge = {
     },
     zIndex: 99999999,
   }),
-  placeholder: (provided, state) => ({
+  placeholder: (provided) => ({
     ...provided,
     // fontSize: 12,
     textOverflow: "ellipsis",
@@ -235,7 +235,7 @@ export const customStylesLarge = {
 };
 
 export const customAutoStyles = {
-  control: (provided, state) => ({
+  control: (provided) => ({
     ...provided,
     minHeight: "auto",
     height: "auto",
@@ -252,30 +252,30 @@ export const customAutoStyles = {
     },
     boxShadow: `${success500}!important`,
   }),
-  menu: (provided, state) => ({
+  menu: (provided) => ({
     ...provided,
     zIndex: 2,
   }),
-  valueContainer: (provided, state) => ({
+  valueContainer: (provided) => ({
     ...provided,
     height: "auto",
     padding: "0 6px",
   }),
-  valueOption: (provided, state) => ({
+  valueOption: (provided) => ({
     ...provided,
     zIndex: 999999,
   }),
-  singleValue: (provided, state) => ({
+  singleValue: (provided) => ({
     ...provided,
     fontSize: "14px",
     color: gray700,
     height: "26px",
   }),
-  input: (provided, state) => ({
+  input: (provided) => ({
     ...provided,
     margin: "0px",
   }),
-  indicatorSeparator: (state) => ({
+  indicatorSeparator: () => ({
     display: "none",
   }),
   clearIndicator: (provided) => ({
@@ -287,7 +287,7 @@ export const customAutoStyles = {
     padding: "0px",
     paddingRight: "3px",
   }),
-  indicatorsContainer: (provided, state) => ({
+  indicatorsContainer: (provided) => ({
     ...provided,
     height: "auto",
   }),
@@ -314,7 +314,7 @@ export const customAutoStyles = {
     },
     zIndex: 99999999,
   }),
-  placeholder: (provided, state) => ({
+  placeholder: (provided) => ({
     ...provided,
     fontSize: 14,
     fontWeight: 400,

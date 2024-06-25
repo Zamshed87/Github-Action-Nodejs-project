@@ -137,7 +137,7 @@ export const getfromToDateList = (fromDate, toDate) => {
   fromDate = moment(fromDate, "YYYY-MM-DD");
   toDate = moment(toDate, "YYYY-MM-DD");
   const difference = moment(toDate, "YYYY-MM-DD").diff(fromDate, "days");
-  let dateList = [];
+  const dateList = [];
   for (let i = 0; i <= difference; i++) {
     const newDate = moment(fromDate).add(i, "days").format("YYYY-MM-DD");
     const dateLevel = moment(newDate, "YYYY-MM-DD").format("DD MMM, YYYY");

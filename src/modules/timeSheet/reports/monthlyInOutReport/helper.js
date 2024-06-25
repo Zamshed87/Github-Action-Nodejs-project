@@ -26,8 +26,8 @@ export const montlyInOutXlCol = (fromDate, toDate) => {
 };
 
 // for excel
-export const getTableDataMonthlyInOut = (row, keys, totalKey) => {
-  const data = row?.map((item, index) => {
+export const getTableDataMonthlyInOut = (row, keys) => {
+  const data = row?.map((item) => {
     return keys?.map((key) => {
       return new Cell(item[key] ? item[key] : "-", "center", "text").getCell();
     });
