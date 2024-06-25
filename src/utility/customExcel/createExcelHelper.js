@@ -150,13 +150,13 @@ export const createFile = (excel, colWidth) => {
     }
     // generate rows
     // eslint-disable-next-line no-unused-expressions
-    sheet?.rows?.forEach((row, rowIndex) => {
+    sheet?.rows?.forEach((row) => {
       // preprocess row
       const _row = [];
 
       let lastCellIndex = 0;
       // eslint-disable-next-line no-unused-expressions
-      row?.forEach((cell, index) => {
+      row?.forEach((cell) => {
         if (cell === null) {
           cell = "";
         }
@@ -261,21 +261,21 @@ export const createFile = (excel, colWidth) => {
 };
 
 export class Cell {
-    constructor(label, align = "left", format, isBold = false, fontSize = 9) {
-      this.text = label;
-      this.alignment = `${align}:middle`;
-      this.format = format;
-      this.bold = isBold;
-      this.fontSize = fontSize;
-    }
-    getCell() {
-      return {
-        text: this.text,
-        fontSize: this.fontSize || 9,
-        border: "all 000000 thin",
-        alignment: this.alignment || "",
-        textFormat: this.format,
-        bold: this.bold || false,
-      };
-    }
+  constructor(label, align = "left", format, isBold = false, fontSize = 9) {
+    this.text = label;
+    this.alignment = `${align}:middle`;
+    this.format = format;
+    this.bold = isBold;
+    this.fontSize = fontSize;
   }
+  getCell() {
+    return {
+      text: this.text,
+      fontSize: this.fontSize || 9,
+      border: "all 000000 thin",
+      alignment: this.alignment || "",
+      textFormat: this.format,
+      bold: this.bold || false,
+    };
+  }
+}

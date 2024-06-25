@@ -44,7 +44,7 @@ export const getMonthName = (monthId) => {
 };
 
 export const getCurrentMonthName = () => {
-  let currentMonthInt = new Date().getMonth() + 1;
+  const currentMonthInt = new Date().getMonth() + 1;
 
   return getMonthName(currentMonthInt);
 };

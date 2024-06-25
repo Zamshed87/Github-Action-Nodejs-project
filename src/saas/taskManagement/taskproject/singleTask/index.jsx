@@ -24,7 +24,7 @@ export default function TMProjectSingleTask() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [tableData, setTableData] = useState([]);
+  const [tableData] = useState([]);
 
   // filter
   const [endDate, setEndDate] = useState("desc");
@@ -32,8 +32,7 @@ export default function TMProjectSingleTask() {
   const [level, setLevel] = useState("desc");
   const [status, setStatus] = useState("desc");
 
-  let history = useHistory();
-  const saveHandler = (values) => {};
+  const history = useHistory();
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -117,11 +116,6 @@ export default function TMProjectSingleTask() {
     },
   ];
 
-  const { orgId, buId, taskId } = useSelector(
-    (state) => state?.auth?.profileData,
-    shallowEqual
-  );
-
   const { permissionList } = useSelector((state) => state?.auth, shallowEqual);
 
   let permission = null;
@@ -136,21 +130,11 @@ export default function TMProjectSingleTask() {
       <Formik
         enableReinitialize={true}
         initialValues={initData}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit }) => (
           <>
             <Form onSubmit={handleSubmit}>
               <div className="overtime-entry singleTaskDetails">

@@ -35,7 +35,7 @@ export default function RosterDetails() {
 
   const [loading, setLoading] = useState(false);
 
-  let date = new Date();
+  const date = new Date();
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
   const [isFilter, setIsFilter] = useState({
@@ -89,11 +89,9 @@ export default function RosterDetails() {
     setYear(date.getFullYear());
   }, [month, year]);
 
-  const saveHandler = (values) => {};
-
   const masterFilterHandler = (values) => {
-    let month = Math.abs(values?.monthYear.split("").slice(-2).join(""));
-    let year = values?.monthYear.split("").slice(0, 4).join("");
+    const month = Math.abs(values?.monthYear.split("").slice(-2).join(""));
+    const year = values?.monthYear.split("").slice(0, 4).join("");
 
     let depStr = "";
     if (values?.department) {
@@ -137,21 +135,11 @@ export default function RosterDetails() {
           ...initData,
           monthYear: `${year}-${month}`,
         }}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          saveHandler(values, () => {
-            resetForm(initData);
-          });
+        onSubmit={(values, { resetForm }) => {
+          resetForm(initData);
         }}
       >
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <>
             <Form onSubmit={handleSubmit}>
               {loading && <Loading />}
@@ -164,7 +152,7 @@ export default function RosterDetails() {
                           <button
                             className="btn-save "
                             type="button"
-                            onClick={(e) => {
+                            onClick={() => {
                               // values?.monthYear.split("").slice(-2).join("")
                               downloadFile(
                                 `/PdfAndExcelReport/RosterDetailsReportExportAsExcel?monthId=${

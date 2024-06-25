@@ -29,12 +29,8 @@ import {
   monthLastDate,
 } from "utility/dateFormatter";
 // import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { column } from "./helper";
-import { fromToDateList } from "../helper";
-import { gray600 } from "utility/customColor";
-import { getChipStyle } from "modules/employeeProfile/dashboard/components/EmployeeSelfCalendar";
 import axios from "axios";
 import { getTableDataMonthlyAttendance } from "../joineeAttendanceReport/helper";
 
@@ -290,11 +286,7 @@ const JoiningReport = () => {
       },
     ];
   };
-  const searchFunc = debounce((value) => {
-    landingApiCall({
-      searchText: value,
-    });
-  }, 500);
+
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     const { fromDate } = form.getFieldsValue(true);
     const fromDateMoment = moment(fromDate, "MM/DD/YYYY");

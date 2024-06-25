@@ -3,13 +3,12 @@ export const yearDDLAction = (prev = 0, next = 10) => {
 
   const yearStart = year - prev;
   const yearEnd = year + next;
-  let years = [];
+  const years = [];
   for (let i = yearStart; i <= yearEnd; i++) {
     years.push({ value: i, label: i });
   }
   return years;
 };
-
 
 /* 
 Array of objects representing probation close date options.
@@ -58,4 +57,3 @@ export const probationCloseDateCustomDDL = [
   // { value: 36, label: "11 Months", count: "11month" },
   // { value: 37, label: "12 Months", count: "12month" },
 ];
-

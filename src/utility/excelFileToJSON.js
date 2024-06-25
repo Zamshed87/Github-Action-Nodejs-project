@@ -20,7 +20,7 @@ export const excelFileToArray = (file, sheetName) => {
         resolve(data);
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         reject(err);
       });
   });
@@ -30,7 +30,7 @@ export const excelFileToJSON = (file) => {
 };
 
 function createObject(keys, values) {
-  let obj = {};
+  const obj = {};
   for (let index = 0; index < keys.length; index++) {
     // eslint-disable-next-line eqeqeq
     if (keys[index] != null && keys[index] != undefined) {

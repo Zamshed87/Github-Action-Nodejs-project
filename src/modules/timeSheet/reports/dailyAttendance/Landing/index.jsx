@@ -15,14 +15,14 @@ function DailyAttendenceReport() {
     dispatch(setFirstLevelNameAction("Employee Self Service"));
   }, []);
 
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [value, setValue] = useState(moment());
   const [allDayList, setAllDayList] = useState([]);
 
   // Generate 1 month all day's
   useEffect(() => {
     const endDay = Number(moment(value).endOf("month").format("D"));
-    let finalDayList = [...(Array(endDay) + 1)]?.map((item, index) => {
+    const finalDayList = [...(Array(endDay) + 1)]?.map((item, index) => {
       if (index + 1 < 10) {
         return `0${index + 1}`;
       } else {

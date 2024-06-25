@@ -16,14 +16,7 @@ const TaskStatusPopover = ({ propsObj }) => {
   return (
     <>
       <Formik initialValues={initData} validationSchema={validationSchema}>
-        {({
-          handleSubmit,
-          resetForm,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-        }) => (
+        {() => (
           <>
             <Popover
               sx={{
@@ -47,7 +40,7 @@ const TaskStatusPopover = ({ propsObj }) => {
               }}
             >
               <div>
-                <div className="" styles={{ width: "100%" }}>
+                <div className="" style={{ width: "100%" }}>
                   {status?.map((item, index) => (
                     <p key={index} className="hover py-2 pl-3 ">
                       {item}

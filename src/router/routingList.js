@@ -985,9 +985,6 @@ const LeaveEncashment = lazy(() =>
 const LeaveEncashmentApproval = lazy(() =>
   import("../modules/leaveMovement/leave/leaveEncashmentApproval/index.jsx")
 );
-const MovementApplication = lazy(() =>
-  import("../modules/leaveMovement/movement/movementApplication/index.jsx")
-);
 const MovementApproval = lazy(() =>
   import("../modules/leaveMovement/movement/movementApproval/index.jsx")
 );
@@ -2012,8 +2009,7 @@ export const routingList = [
   {
     path: "/SelfService/leaveAndMovement/movementApplication",
     // component: MovementApplication,
-    component: EmMovementApplication,  // this component is used in management and self service 🔥
-
+    component: EmMovementApplication, // this component is used in management and self service 🔥
   },
   {
     path: "/SelfService/expense/expenseApplication/create",

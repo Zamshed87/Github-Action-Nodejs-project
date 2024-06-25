@@ -135,7 +135,7 @@ export const getAttendanceReport = async (
   srcText,
   IsPaginated = true
 ) => {
-  let search = srcText ? `&SearchTxt=${srcText}` : "";
+  const search = srcText ? `&SearchTxt=${srcText}` : "";
 
   try {
     setLoading(true);

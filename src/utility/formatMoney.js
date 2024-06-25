@@ -10,10 +10,10 @@ export const formatMoney = (
 
     const negativeSign = amount < 0 ? "-" : "";
 
-    let i = parseInt(
+    const i = parseInt(
       (amount = Math.abs(Number(amount) || 0).toFixed(decimalCount))
     ).toString();
-    let j = i.length > 3 ? i.length % 3 : 0;
+    const j = i.length > 3 ? i.length % 3 : 0;
 
     return (
       negativeSign +

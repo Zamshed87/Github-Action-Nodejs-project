@@ -10,9 +10,8 @@ import { getAttendenceDetailsReport } from "../helper";
 import "./attendanceReport.css";
 
 const GorForPrint = () => {
-  let location = useLocation();
-  const [loading, setLoading] = useState(false);
-  const { orgId, buId } = useSelector(
+  const location = useLocation();
+  const { buId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -22,26 +21,18 @@ const GorForPrint = () => {
 
   const [rowDto, setRowDto] = useState(null);
   const [empDto, setEmpDto] = useState(null);
-  const [allData, setAllData] = useState(null);
+  const [, setAllData] = useState(null);
   const [buDto, setBudto] = useState(null);
 
   useEffect(() => {
-    getAttendenceDetailsReport(
-      0,
-      empId,
-      fromDate,
-      toDate,
-      setRowDto,
-      setLoading
-    );
+    getAttendenceDetailsReport(0, empId, fromDate, toDate, setRowDto);
     getPeopleDeskAllLanding(
       "EmployeeBasicById",
       "",
       "",
       empId,
       setEmpDto,
-      setAllData,
-      setLoading
+      setAllData
     );
     getPeopleDeskAllLanding(
       "BusinessUnitById",
@@ -49,11 +40,9 @@ const GorForPrint = () => {
       "",
       buId,
       setBudto,
-      setAllData,
-      setLoading
+      setAllData
     );
   }, []);
-
 
   const { supervisor } = useSelector(
     (state) => state?.auth?.keywords,
