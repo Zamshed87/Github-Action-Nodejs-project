@@ -30,7 +30,7 @@ function Gmails({ empId }) {
   const [rowDto, setRowDto] = useState({});
   const [singleData, setSingleData] = useState("");
 
-  const { employeeId } = useSelector(
+  const { employeeId, strLoginId, intAccountId } = useSelector(
     (state) => state?.auth?.profileData,
     shallowEqual
   );
@@ -46,6 +46,8 @@ function Gmails({ empId }) {
         partType: "UpdateOAuthLoginGmailId",
         employeeId: employeeId,
         strWebhookUrl: values?.gemail || singleData,
+        strLoginId: strLoginId || 0,
+        accountId: intAccountId || 0,
       };
       const callback = () => {
         getEmployeeProfileViewDataAuth(empId, setRowDto, setLoading);
@@ -59,6 +61,8 @@ function Gmails({ empId }) {
         partType: "UpdateOAuthLoginGmailId",
         employeeId: empId,
         strWebhookUrl: values?.gemail,
+        strLoginId: strLoginId || 0,
+        accountId: intAccountId || 0,
       };
       const callback = () => {
         getEmployeeProfileViewDataAuth(empId, setRowDto, setLoading);
@@ -75,8 +79,10 @@ function Gmails({ empId }) {
       partType: "UpdateOAuthLoginGmailId",
       employeeId: empId,
       strWebhookUrl: "",
+      strLoginId: strLoginId || 0,
+      accountId: intAccountId || 0,
     };
-    
+
     const callback = () => {
       getEmployeeProfileViewDataAuth(empId, setRowDto, setLoading);
       setStatus("empty");
@@ -130,7 +136,7 @@ function Gmails({ empId }) {
                           touched={touched}
                           classes="input-sm"
                         />
-                          <div
+                        <div
                           className="d-flex flex-column flex-md-row  align-items-end  justify-content-end mt-md-3 mt-sm-0"
                           style={{ gap: "5px" }}
                         >
