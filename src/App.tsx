@@ -126,44 +126,51 @@ Axios.interceptors.response.use(
   },
   async function (error) {
     if (error?.response?.status === 401) {
-      // store
-      const state = store.getState();
-
-      const payload = {
-        accessToken: state?.auth?.profileData?.token,
-        refreshToken: state?.auth?.profileData?.refreshToken,
-      };
-
-      try {
-        const apiRefreshResponse = await Axios.post(
-          "/Auth/GenerateRefreshToken",
-          payload
-        );
-        if (apiRefreshResponse?.status === 200) {
-          const dispatch: any = store.dispatch;
-          dispatch(
-            refreshTokenAction({
-              ...state?.auth?.profileData,
-              token: apiRefreshResponse?.data?.accessToken,
-              refreshToken: apiRefreshResponse?.data?.refreshToken,
-            })
-          );
-
-          error.config.headers[
-            "Authorization"
-          ] = `Bearer ${apiRefreshResponse?.data?.accessToken}`;
-          window.location.reload();
-          // return Axios(originalConfig);
-        }
-      } catch (error) {
-        const dispatch: any = store.dispatch;
-        dispatch(setIsExpiredTokenAction(true));
-        dispatch(setLogoutAction());
-        if (!isToastDisplayed) {
-          toast.error("Session Expired, Please login again");
-          isToastDisplayed = true;
-        }
+      const dispatch: any = store.dispatch;
+      dispatch(setIsExpiredTokenAction(true));
+      dispatch(setLogoutAction());
+      if (!isToastDisplayed) {
+        toast.error("Session Expired, Please login again");
+        isToastDisplayed = true;
       }
+      // store
+      // const state = store.getState();
+
+      // const payload = {
+      //   accessToken: state?.auth?.profileData?.token,
+      //   refreshToken: state?.auth?.profileData?.refreshToken,
+      // };
+
+      // try {
+      //   const apiRefreshResponse = await Axios.post(
+      //     "/Auth/GenerateRefreshToken",
+      //     payload
+      //   );
+      //   if (apiRefreshResponse?.status === 200) {
+      //     const dispatch: any = store.dispatch;
+      //     dispatch(
+      //       refreshTokenAction({
+      //         ...state?.auth?.profileData,
+      //         token: apiRefreshResponse?.data?.accessToken,
+      //         refreshToken: apiRefreshResponse?.data?.refreshToken,
+      //       })
+      //     );
+
+      //     error.config.headers[
+      //       "Authorization"
+      //     ] = `Bearer ${apiRefreshResponse?.data?.accessToken}`;
+      //     window.location.reload();
+      //     // return Axios(originalConfig);
+      //   }
+      // } catch (error) {
+      //   const dispatch: any = store.dispatch;
+      //   dispatch(setIsExpiredTokenAction(true));
+      //   dispatch(setLogoutAction());
+      //   if (!isToastDisplayed) {
+      //     toast.error("Session Expired, Please login again");
+      //     isToastDisplayed = true;
+      //   }
+      // }
     }
     if (!isDevServer) {
       // error block for response
