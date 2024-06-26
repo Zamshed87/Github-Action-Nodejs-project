@@ -192,7 +192,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
               inDateTime: inTImeStr || null,
               outDateTime: outTimeStr || null,
 
-              status: item?.isPresent
+              currentStatus: item?.isPresent
                 ? "Present"
                 : item?.isLeave
                 ? "Leave"
@@ -237,7 +237,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       "YYYY-MM-DDTHH:mm:ss"
                     ) || null,
 
-              status: item?.isPresent
+              currentStatus: item?.isPresent
                 ? "Present"
                 : item?.isLeave
                 ? "Leave"
