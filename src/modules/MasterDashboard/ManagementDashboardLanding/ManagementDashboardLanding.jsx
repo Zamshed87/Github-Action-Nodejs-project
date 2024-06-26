@@ -75,26 +75,30 @@ const ManagementDashboardLanding = ({ setLoading }) => {
 
   useEffect(() => {
     getEmployeeStatusGraph(
-      `/Dashboard/EmployeeStatusGraph?IntYear=${currentYear}`
+      `/Dashboard/EmployeeStatusGraph?IntYear=${currentYear}&workplaceGroupId=${wgId}`
     );
-    getIouGraph(`/Dashboard/MonthWiseIOUGraph?IntYear=${currentYear}`);
+    getIouGraph(
+      `/Dashboard/MonthWiseIOUGraph?IntYear=${currentYear}&workplaceGroupId=${wgId}`
+    );
     getMonthWiseLeaveTaken(
-      `/Dashboard/MonthWiseLeaveTakenGraph?IntYear=${currentYear}&IntAccountId=${orgId}&IntBusinessUnitId=${buId}`
+      `/Dashboard/MonthWiseLeaveTakenGraph?IntYear=${currentYear}&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&workplaceGroupId=${wgId}`
     );
     getTopLevelDashboardDetails(`/Dashboard/TopLevelDashboard`);
     getTurnoverByDepartmentChartDetails(
       `Dashboard/EmployeeTurnOverRatio?&IntAccountId=${orgId}&IntWorkplaceGroupId=${wgId}`
     );
     getTurnoverLastFiveYearsChartDetails(
-      `/Dashboard/LastFiveYearEmployeeTurnOverRatio`
+      `/Dashboard/LastFiveYearEmployeeTurnOverRatio?workPlaceGroupId=${wgId}`
     );
-    getInitialSalaryRangeDetails(`/Dashboard/EmployeeCountBySalaryRange`);
+    getInitialSalaryRangeDetails(
+      `/Dashboard/EmployeeCountBySalaryRange?workplaceGroupId=${wgId}`
+    );
     getOnChangeSalaryRangeDetails(
-      `/Dashboard/EmployeeCountBySalaryRange?MinSalary&MaxSalary
+      `/Dashboard/EmployeeCountBySalaryRange?MinSalary&MaxSalary&workplaceGroupId=${wgId}
         `
     );
     getInternNProbationChartDetails(
-      `/Dashboard/InternNProbationPeriodGraphData?Year=${currentYear}
+      `/Dashboard/InternNProbationPeriodGraphData?Year=${currentYear}&workplaceGroupId=${wgId}
         `
     );
     getAttendanceCircleChartDetails(
@@ -116,13 +120,13 @@ const ManagementDashboardLanding = ({ setLoading }) => {
 
   const empStatusChartLabel =
     employeeStatusGraph?.employeeStatusGraphs?.length &&
-    employeeStatusGraph?.employeeStatusGraphs.map((item) => item?.graphText);
+    employeeStatusGraph?.employeeStatusGraphs?.map((item) => item?.graphText);
   const empStatusChartValue =
     employeeStatusGraph?.employeeStatusGraphs?.length &&
-    employeeStatusGraph?.employeeStatusGraphs.map((item) => item?.graphValue);
+    employeeStatusGraph?.employeeStatusGraphs?.map((item) => item?.graphValue);
   const leaveTakenChartValue =
     monthWiseLeaveTaken?.length &&
-    monthWiseLeaveTaken.map((item) => item?.leaveCount);
+    monthWiseLeaveTaken?.map((item) => item?.leaveCount);
   const iouChartValue = iouGraph.length && iouGraph?.map((item) => item?.iou);
   const turnoverByDepartmentChartValue =
     turnoverByDepartmentChartDetails.departmentWiseTurnoverRateViewModel
@@ -147,12 +151,12 @@ const ManagementDashboardLanding = ({ setLoading }) => {
 
   const attendanceCircleChartDetailsLabel =
     attendanceCircleChartDetails?.attendanceDonutChartData?.length &&
-    attendanceCircleChartDetails?.attendanceDonutChartData.map(
+    attendanceCircleChartDetails?.attendanceDonutChartData?.map(
       (item) => item?.name
     );
   const attendanceCircleChartDetailsValue =
     attendanceCircleChartDetails?.attendanceDonutChartData?.length &&
-    attendanceCircleChartDetails?.attendanceDonutChartData.map(
+    attendanceCircleChartDetails?.attendanceDonutChartData?.map(
       (item) => item?.value
     );
 
@@ -760,7 +764,9 @@ const ManagementDashboardLanding = ({ setLoading }) => {
     setFieldValue("fromSalaryRange", newValue[0]);
     setFieldValue("toSalaryRange", newValue[1]);
     getOnChangeSalaryRangeDetails(
-      `/Dashboard/EmployeeCountBySalaryRange?MinSalary=${newValue[0]}&MaxSalary=${newValue[1]}
+      `/Dashboard/EmployeeCountBySalaryRange?MinSalary=${
+        newValue[0] || 0
+      }&MaxSalary=${newValue[1]}&workplaceGroupId=${wgId}
       `
     );
   };
@@ -1265,7 +1271,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                 >
                   {topLevelDashboardDetailsDetails?.topLevelDashboardViewModel
                     ?.upcomingBirthdayEmployeeList?.length ? (
-                    topLevelDashboardDetailsDetails?.topLevelDashboardViewModel?.upcomingBirthdayEmployeeList.map(
+                    topLevelDashboardDetailsDetails?.topLevelDashboardViewModel?.upcomingBirthdayEmployeeList?.map(
                       (item, i) => (
                         <div
                           className="d-flex justify-content-between align-items-center"
@@ -1384,7 +1390,11 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                             setSliderValue([e.target.value, sliderValue[1]]);
                             setFieldValue("fromSalaryRange", e.target.value);
                             getOnChangeSalaryRangeDetails(
-                              `/Dashboard/EmployeeCountBySalaryRange?MinSalary=${e.target.value}&MaxSalary=${sliderValue[1]}
+                              `/Dashboard/EmployeeCountBySalaryRange?MinSalary=${
+                                e.target.value || 0
+                              }&MaxSalary=${
+                                sliderValue[1] || ""
+                              }&workplaceGroupId=${wgId || ""}
                               `
                             );
                           }
@@ -1405,7 +1415,11 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                             setSliderValue([sliderValue[0], e.target.value]);
                             setFieldValue("toSalaryRange", e.target.value);
                             getOnChangeSalaryRangeDetails(
-                              `/Dashboard/EmployeeCountBySalaryRange?MinSalary=${sliderValue[0]}&MaxSalary=${e.target.value}
+                              `/Dashboard/EmployeeCountBySalaryRange?MinSalary=${
+                                sliderValue[0] || 0
+                              }&MaxSalary=${
+                                e.target.value || ""
+                              }&workplaceGroupId=${wgId}
                               `
                             );
                           }
@@ -1512,7 +1526,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                       {topLevelDashboardDetailsDetails
                         ?.topLevelDashboardViewModel
                         ?.departmentWiseEmployeeSalaryCount.length &&
-                        topLevelDashboardDetailsDetails?.topLevelDashboardViewModel?.departmentWiseEmployeeSalaryCount.map(
+                        topLevelDashboardDetailsDetails?.topLevelDashboardViewModel?.departmentWiseEmployeeSalaryCount?.map(
                           (item, i) => (
                             <tr key={i}>
                               <td>
