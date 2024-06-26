@@ -27,10 +27,10 @@ import { _Ad_xcvbn_df__dfg_568_dfghfff_ } from "./utility/czy";
 import { withoutEncryptionList } from "./utility/withoutEncryptionApi";
 
 export const origin = window.location.origin;
-export const prodUrl = "https://app.peopledesk.io";
+export const prodUrl = "https://devapp.peopledesk.io";
 
-export const isDevServer = false;
- // origin.includes("dev") || process.env.NODE_ENV === "development";
+export const isDevServer =
+  origin.includes("dev") || process.env.NODE_ENV === "development";
 
 export const APIUrl =
   process.env.NODE_ENV === "development" ? `${prodUrl}/api` : `${origin}/api`;
