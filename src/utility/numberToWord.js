@@ -106,3 +106,69 @@ export const withDecimal = (n) => {
     return whole;
   }
 };
+
+
+export function convert_number_to_word(number) {
+  if ((number < 0) || (number > 999999999)) {
+      throw new Error("Number is out of range");
+  }
+  const Kt = Math.floor(number / 10000000); // Koti */
+  number -= Kt * 10000000;
+  const Gn = Math.floor(number / 100000);  //* lakh  */ 
+  number -= Gn * 100000;
+  const kn = Math.floor(number / 1000);     //* Thousands (kilo) */ 
+  number -= kn * 1000;
+  const Hn = Math.floor(number / 100);      //* Hundreds (hecto) */ 
+  number -= Hn * 100;
+  const Dn = Math.floor(number / 10);       //* Tens (deca) */ 
+  const n = number % 10;               /* Ones */
+
+  let res = "";
+
+  if (Kt) {
+      res += convert_number_to_word(Kt) + " Koti ";
+  }
+  if (Gn) {
+      res += convert_number_to_word(Gn) + " Lakh ";
+  }
+
+  if (kn) {
+      res += (res.length === 0 ? "" : " ") +
+      convert_number_to_word(kn) + " Thousand";
+  }
+
+  if (Hn) {
+      // arr.length === 0
+      res += (res.length === 0 ? "" : " ") +
+      convert_number_to_word(Hn) + " Hundred";
+  }
+
+  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six",
+      "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+      "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eightteen",
+      "Nineteen"];
+      const tens = ["", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty",
+      "Seventy", "Eigthy", "Ninety"];
+
+  if (Dn || n) {
+      if (res !== "") {
+          res += " and ";
+      }
+      if (Dn < 2) {
+          res += ones[Dn * 10 + n];
+      }
+      else {
+          res += tens[Dn];
+
+          if (n) {
+              res += "-" + ones[n];
+          }
+      }
+  }
+
+  if (res == null) {
+      res = "zero";
+  }
+
+  return res;
+}

@@ -20,7 +20,7 @@ import { setFirstLevelNameAction } from "../../../commonRedux/reduxForLocalStora
 import { gray500, gray600, success500 } from "../../../utility/customColor";
 import { monthYearFormatter } from "../../../utility/dateFormatter";
 import { getPDFAction } from "../../../utility/downloadFile";
-import { withDecimal } from "../../../utility/numberToWord";
+import { convert_number_to_word, withDecimal } from "../../../utility/numberToWord";
 import { customStyles } from "../../../utility/selectCustomStyle";
 import { generateExcelAction } from "./excel/excelConvert";
 import {
@@ -739,7 +739,8 @@ const BankAdviceReport = () => {
                                   res,
                                   values,
                                   total,
-                                  withDecimal(total),
+                                  // withDecimal(total),
+                                  convert_number_to_word(total),
                                   businessUnitDDL[0]?.BusinessUnitAddress
                                 );
                               });
@@ -782,7 +783,8 @@ const BankAdviceReport = () => {
                                   res,
                                   values?.account?.AccountNo,
                                   total,
-                                  withDecimal(total),
+                                  // withDecimal(total),
+                                  convert_number_to_word(total),
                                   businessUnitDDL[0]?.BusinessUnitAddress
                                 );
                               });
