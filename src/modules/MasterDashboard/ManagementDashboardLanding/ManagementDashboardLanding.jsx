@@ -83,7 +83,9 @@ const ManagementDashboardLanding = ({ setLoading }) => {
     getMonthWiseLeaveTaken(
       `/Dashboard/MonthWiseLeaveTakenGraph?IntYear=${currentYear}&IntAccountId=${orgId}&IntBusinessUnitId=${buId}&workplaceGroupId=${wgId}`
     );
-    getTopLevelDashboardDetails(`/Dashboard/TopLevelDashboard`);
+    getTopLevelDashboardDetails(
+      `/Dashboard/TopLevelDashboard?workPlaceGroupId=${wgId}`
+    );
     getTurnoverByDepartmentChartDetails(
       `Dashboard/EmployeeTurnOverRatio?&IntAccountId=${orgId}&IntWorkplaceGroupId=${wgId}`
     );
@@ -102,7 +104,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
         `
     );
     getAttendanceCircleChartDetails(
-      `/Dashboard/AttendanceGraphData?intDay=1
+      `/Dashboard/AttendanceGraphData?intDay=1&workplaceGroupId=${wgId}
       `
     );
     // eslint-disable-next-line
@@ -818,7 +820,7 @@ const ManagementDashboardLanding = ({ setLoading }) => {
                       onChange={(valueOption) => {
                         setFieldValue("attendance", valueOption);
                         getAttendanceCircleChartDetails(
-                          `/Dashboard/AttendanceGraphData?intDay=${valueOption?.value}`
+                          `/Dashboard/AttendanceGraphData?intDay=${valueOption?.value}&workplaceGroupId=${wgId}`
                         );
                       }}
                       styles={customStyles}
