@@ -74,6 +74,7 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
       attendanceStatus: attendanceStatus || "all",
       punchStatus: attendanceStatus || "all",
       attendanceDate: moment(date).format("YYYY-MM-DD"),
+      dteAttendanceFromDate: moment(date).format("YYYY-MM-DD"),
       jobTypeId: 0,
       pageNo: 1,
       pageSize: 25,
@@ -91,13 +92,13 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
             ? {
                 ...payload,
 
-                attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
+                dteAttendanceToDate: moment(tdate).format("YYYY-MM-DD"),
               }
             : payload
           : {
               ...payload,
 
-              attendanceToDate: moment(tdate).format("YYYY-MM-DD"),
+              dteAttendanceToDate: moment(tdate).format("YYYY-MM-DD"),
             },
     });
   };
