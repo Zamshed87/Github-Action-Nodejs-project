@@ -1,3 +1,5 @@
+import { Cell } from "utility/customExcel/createExcelHelper";
+
 const renderConditionalColumnData = (fieldName) => (_, record) => {
   if (!record?.StrDepartmantName && !record?.StrWorkplaceName) {
     return (
@@ -8,6 +10,24 @@ const renderConditionalColumnData = (fieldName) => (_, record) => {
   } else if (record.StrDepartmantName && !record?.StrWorkplaceName) {
     return <span>{record[fieldName]}</span>;
   }
+};
+
+const dynamicExcelTD = (record) => {
+  if (!record.StrDepartmantName && record?.StrWorkplaceName) {
+    return record.StrWorkplaceName;
+  } else if (!record?.StrDepartmantName && !record?.StrWorkplaceName) {
+    return "Sub Total: ";
+  } else if (record.StrDepartmantName) {
+    return record.StrDepartmantName;
+  } else return " ";
+};
+const conditionalTD = (record, fieldName) => {
+  if (
+    (!record?.StrDepartmantName && !record?.StrWorkplaceName) ||
+    (record.StrDepartmantName && !record?.StrWorkplaceName)
+  ) {
+    return record[fieldName];
+  } else return "-";
 };
 
 export const summaryHeaders = () => {
@@ -140,3 +160,101 @@ export const attendanceSummaryReportColumn = [
     render: renderConditionalColumnData("NumAbsentPercentage"),
   },
 ];
+
+export const excelHeadAttandanceSummaryDataForExcel = {
+  StrDepartmantName: "Department",
+  IntTotalEmp: "Total Employee",
+  IntLeave: "Leave",
+  IntHoliday: "Holiday",
+  IntWeekend: "Weekend",
+  IntAbsent: "Absent",
+  IntPresent: "Present",
+  NumPresentPercentage: "Present (%)",
+  NumAbsentPercentage: "Absent (%)",
+};
+export const generateAttandanceSummaryDataForExcel = (arryData) => {
+  return arryData?.map((item) => {
+    return [
+      new Cell(
+        dynamicExcelTD(item),
+        "center",
+        "text",
+        (!item.StrDepartmantName && item?.StrWorkplaceName) ||
+        (!item?.StrDepartmantName && !item?.StrWorkplaceName)
+          ? true
+          : false,
+        (!item.StrDepartmantName && item?.StrWorkplaceName) ||
+        (!item?.StrDepartmantName && !item?.StrWorkplaceName)
+          ? 11
+          : 9
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "IntTotalEmp") || 0,
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "IntLeave") || 0,
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "IntHoliday") || 0,
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "IntWeekend") || 0,
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "IntAbsent") || 0,
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "IntPresent") || 0,
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "NumPresentPercentage") || 0,
+        "center",
+        "text"
+      ).getCell(),
+      new Cell(
+        conditionalTD(item, "NumAbsentPercentage") || 0,
+        "center",
+        "text"
+      ).getCell(),
+    ];
+  });
+};
+
+export const generateSubTableDataForExcel = (arryData = []) => {
+  const lastObject = calculateSummaryObj(arryData);
+
+  const res =  arryData
+    ?.concat(lastObject)
+    .map((item) => [
+      new Cell(
+        item?.strWorkplace,
+        "center",
+        "text",
+        (!item.StrDepartmantName && item?.StrWorkplaceName) ||
+        (!item?.StrDepartmantName && !item?.StrWorkplaceName)
+          ? true
+          : false,
+        (!item.StrDepartmantName && item?.StrWorkplaceName) ||
+        (!item?.StrDepartmantName && !item?.StrWorkplaceName)
+          ? 11
+          : 9
+      ).getCell(),
+      new Cell(item?.TotapEmp, "center", "text").getCell(),
+      new Cell(item?.IntPresent, "center", "text").getCell(),
+      new Cell(item?.IntAbsent, "center", "text").getCell(),
+      new Cell(item?.IntAbsentPercentage, "center", "text").getCell(),
+    ]);
+    return res;
+};

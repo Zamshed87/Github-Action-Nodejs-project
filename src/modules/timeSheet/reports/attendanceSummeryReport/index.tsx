@@ -22,12 +22,14 @@ import { toast } from "react-toastify";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
 import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import { getCurrentMonthName } from "utility/monthIdToMonthName";
-import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
 import { todayDate } from "utility/todayDate";
 import { column } from "../attendanceReport/helper";
 import {
   attendanceSummaryReportColumn,
   calculateSummaryObj,
+  excelHeadAttandanceSummaryDataForExcel,
+  generateAttandanceSummaryDataForExcel,
+  generateSubTableDataForExcel,
   summaryHeaders,
 } from "./helper";
 
@@ -139,40 +141,49 @@ const AttendanceSummeryReport = () => {
             exportIcon={true}
             title={`Total ${landingApiSummary?.data?.length || 0} workplace`}
             onExport={() => {
+              if (
+                !landingApiSummary?.data?.length ||
+                !landingApiTable?.data?.length
+              ) {
+                return toast.warn("No data found to export");
+              }
               const excelLanding = async () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
-
-                  const newData = landingApiTable?.data?.data?.map(
-                    (item: any, index: any) => {
-                      return {
-                        ...item,
-                        sl: index + 1,
-                      };
-                    }
-                  );
                   createCommonExcelFile({
-                    titleWithDate: `Employees Attendance Report ${getCurrentMonthName()}-${currentYear()}`,
+                    titleWithDate: `Attendance Summary Report ${getCurrentMonthName()}-${currentYear()}`,
                     fromDate: "",
                     toDate: "",
-                    buAddress: (buDetails as any)?.strAddress,
-                    businessUnit: values?.workplaceGroup?.value
-                      ? (buDetails as any)?.strWorkplace
-                      : buName,
-                    tableHeader: column,
+                    buAddress: values?.workplaceGroup?.label,
+                    businessUnit: (buDetails as any)?.strWorkplace || buName,
+                    tableHeader: excelHeadAttandanceSummaryDataForExcel,
                     getTableData: () =>
-                      getTableDataInactiveEmployees(
-                        newData,
-                        Object.keys(column)
+                      generateAttandanceSummaryDataForExcel(
+                        landingApiTable?.data
                       ),
-                    getSubTableData: () => {},
+                    getSubTableData: () => {
+                      console.log(
+                        generateSubTableDataForExcel(landingApiSummary?.data)
+                      );
+                      return generateSubTableDataForExcel(
+                        landingApiSummary?.data
+                      );
+                    },
                     subHeaderInfoArr: [],
-                    subHeaderColumn: [],
+                    subHeaderColumn: {
+                      strWorkplace: "Concern",
+                      TotapEmp: "Total Employee",
+                      IntPresent: "Present",
+                      IntAbsent: "Absent",
+                      IntAbsentPercentage: "Absent %",
+                    },
                     tableFooter: [],
                     extraInfo: {},
                     tableHeadFontSize: 10,
                     widthList: {
+                      A: 30,
+                      B: 20,
                       C: 30,
                       D: 30,
                       E: 25,
@@ -180,9 +191,8 @@ const AttendanceSummeryReport = () => {
                       G: 25,
                       H: 25,
                       I: 25,
-                      K: 20,
                     },
-                    commonCellRange: "A1:J1",
+                    commonCellRange: "A1:I1",
                     CellAlignment: "left",
                   });
 
