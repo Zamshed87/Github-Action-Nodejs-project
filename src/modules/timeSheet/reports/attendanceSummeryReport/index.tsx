@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import {
-  Avatar,
   DataTable,
   PButton,
   PCard,
@@ -10,35 +9,33 @@ import {
   PInput,
   PSelect,
 } from "Components";
-import type { RangePickerProps } from "antd/es/date-picker";
 import { useApiRequest } from "Hooks";
 import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
-import { paginationSize } from "common/peopleDeskTable";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getDateOfYear } from "utility/dateFormatter";
-
-// import { downloadEmployeeCardFile } from "../employeeIDCard/helper";
-import { debounce } from "lodash";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-
-import { getCurrentMonthName } from "utility/monthIdToMonthName";
 import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
-
+import { getCurrentMonthName } from "utility/monthIdToMonthName";
 import { getTableDataInactiveEmployees } from "modules/employeeProfile/inactiveEmployees/helper";
+import { todayDate } from "utility/todayDate";
 import { column } from "../attendanceReport/helper";
+import {
+  attendanceSummaryReportColumn,
+  calculateSummaryObj,
+  summaryHeaders,
+} from "./helper";
 
 const AttendanceSummeryReport = () => {
   const dispatch = useDispatch();
   const {
     permissionList,
-    profileData: { buId, wgId, employeeId, orgId, buName },
+    profileData: { buId, wgId, employeeId, buName, wgName },
   } = useSelector((state: any) => state?.auth, shallowEqual);
 
   const permission = useMemo(
@@ -48,24 +45,18 @@ const AttendanceSummeryReport = () => {
   // menu permission
   const employeeFeature: any = permission;
 
-  const landingApi = useApiRequest({});
+  const landingApiTable = useApiRequest({});
+  const landingApiSummary = useApiRequest({});
   //   const debounce = useDebounce();
 
-  const [, setFilterList] = useState({});
   const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
-  const [pages] = useState({
-    current: 1,
-    pageSize: paginationSize,
-    total: 0,
-  });
-
   const { id }: any = useParams();
   // Form Instance
   const [form] = Form.useForm();
   //   api states
   const workplaceGroup = useApiRequest([]);
-  const workplace = useApiRequest([]);
+
   // navTitle
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Employee Management"));
@@ -74,8 +65,6 @@ const AttendanceSummeryReport = () => {
       document.title = "PeopleDesk";
     };
   }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   // workplace wise
   const getWorkplaceGroup = () => {
@@ -97,156 +86,65 @@ const AttendanceSummeryReport = () => {
     });
   };
 
-  const getWorkplace = () => {
-    const { workplaceGroup } = form.getFieldsValue(true);
-    workplace?.action({
-      urlKey: "PeopleDeskAllDDL",
+  const landingApiCall = () => {
+    const values = form.getFieldsValue(true);
+    landingApiTable.action({
+      urlKey: "EmployeeMasterAttendanceReport",
       method: "GET",
       params: {
-        DDLType: "Workplace",
-        BusinessUnitId: buId,
-        WorkplaceGroupId: workplaceGroup?.value,
-        intId: employeeId,
-      },
-      onSuccess: (res: any) => {
-        res.forEach((item: any, i: any) => {
-          res[i].label = item?.strWorkplace;
-          res[i].value = item?.intWorkplaceId;
-        });
+        typeId: 1,
+        WorkPlaceGroupId: values?.workplaceGroup?.value,
+        Tdate: moment(values?.toDate).format("YYYY-MM-DD"),
       },
     });
   };
-
-  type TLandingApi = {
-    pagination?: {
-      current?: number;
-      pageSize?: number;
-    };
-    filerList?: any;
-    searchText?: string;
-    excelDownload?: boolean;
-    IsForXl?: boolean;
-    date?: string;
-  };
-  const landingApiCall = ({
-    pagination = { current: 1, pageSize: paginationSize },
-    searchText = "",
-  }: TLandingApi = {}) => {
+  const landingSummaryAPICall = () => {
     const values = form.getFieldsValue(true);
-
-    landingApi.action({
-      urlKey: "GetEmpAttendanceReport",
+    landingApiSummary.action({
+      urlKey: "EmployeeMasterAttendanceReport",
       method: "GET",
       params: {
-        AccountId: orgId,
-        IntBusinessUnitId: buId,
-        IsXls: false,
-        IsPaginated: true,
-
-        IntWorkplaceGroupId: values?.workplaceGroup?.value,
-        IntWorkplaceId: values?.workplace?.value,
-        PageNo: pagination.current || 1,
-        PageSize: pagination.pageSize || 25,
-        FromDate: moment(values?.fromDate).format("YYYY-MM-DD"),
-        ToDate: moment(values?.toDate).format("YYYY-MM-DD"),
-        SearchTxt: searchText,
+        typeId: 2,
+        WorkPlaceGroupId: values?.workplaceGroup?.value,
+        Tdate: moment(values?.toDate).format("YYYY-MM-DD"),
       },
     });
   };
 
   useEffect(() => {
-    getWorkplaceGroup();
+    landingSummaryAPICall();
     landingApiCall();
+    getWorkplaceGroup();
   }, []);
-
-  const header: any = [
-    // {
-    //   title: "SL",
-    //   render: (_: any, rec: any, index: number) =>
-    //     (pages?.current - 1) * pages?.pageSize + index + 1,
-    //   fixed: "left",
-    //   width: 35,
-    //   align: "center",
-    // },
-
-    {
-      title: "Department",
-      dataIndex: "workplaceGroup",
-    },
-    {
-      title: "Total Emp",
-      dataIndex: "workplace",
-    },
-    {
-      title: "Leave",
-      dataIndex: "employeeCode",
-    },
-    {
-      title: "Holiday",
-      dataIndex: "employeeCode",
-    },
-    {
-      title: "Weekend",
-      dataIndex: "employeeCode",
-    },
-    {
-      title: "Absent",
-      dataIndex: "employeeCode",
-    },
-    {
-      title: "Present",
-      dataIndex: "employeeCode",
-    },
-    {
-      title: "Present (%)",
-      dataIndex: "employeeCode",
-    },
-    {
-      title: "Absent (%)",
-      dataIndex: "employeeCode",
-    },
-  ];
-  const searchFunc = debounce((value) => {
-    landingApiCall({
-      searchText: value,
-    });
-  }, 500);
 
   return employeeFeature?.isView ? (
     <>
       <PForm
         form={form}
         initialValues={{
-          fromDate: moment(getDateOfYear("first")),
-          toDate: moment(getDateOfYear("last")),
+          toDate: moment(todayDate()),
+          workplaceGroup: {
+            label: wgName,
+            value: wgId,
+          },
         }}
         onFinish={() => {
-          landingApiCall({
-            pagination: {
-              current: landingApi?.data?.currentPage,
-              pageSize: landingApi?.data?.totalCount,
-            },
-          });
+          landingApiCall();
+          landingSummaryAPICall();
         }}
       >
         <PCard>
           {excelLoading && <Loading />}
           <PCardHeader
             exportIcon={true}
-            title={`Total ${landingApi?.data?.totalCount || 0} employees`}
-            // onSearch={(e) => {
-            //   searchFunc(e?.target?.value);
-            //   form.setFieldsValue({
-            //     search: e?.target?.value,
-            //   });
-            // }}
+            title={`Total ${landingApiSummary?.data?.length || 0} workplace`}
             onExport={() => {
               const excelLanding = async () => {
                 setExcelLoading(true);
                 try {
                   const values = form.getFieldsValue(true);
 
-                  const newData = landingApi?.data?.data?.map(
+                  const newData = landingApiTable?.data?.data?.map(
                     (item: any, index: any) => {
                       return {
                         ...item,
@@ -326,13 +224,7 @@ const AttendanceSummeryReport = () => {
                       workplaceGroup: op,
                       workplace: undefined,
                     });
-                    getWorkplace();
                   }}
-                  rules={
-                    [
-                      //   { required: true, message: "Workplace Group is required" },
-                    ]
-                  }
                 />
               </Col>
 
@@ -345,28 +237,28 @@ const AttendanceSummeryReport = () => {
               </Col>
             </Row>
           </PCardBody>
-
-          <DataTable
-            bordered
-            data={landingApi?.data?.data || []}
-            loading={landingApi?.loading}
-            header={header}
-            pagination={{
-              pageSize: landingApi?.data?.pageSize,
-              total: landingApi?.data?.totalCount,
-            }}
-            onChange={(pagination, filters, sorter, extra) => {
-              // Return if sort function is called
-              if (extra.action === "sort") return;
-              setFilterList(filters);
-
-              landingApiCall({
-                pagination,
-              });
-            }}
-
-            // scroll={{ x: 2000 }}
-          />
+          {landingApiSummary?.data?.length > 0 && (
+            <DataTable
+              bordered
+              data={
+                [
+                  ...landingApiSummary?.data,
+                  calculateSummaryObj(landingApiSummary?.data),
+                ] || []
+              }
+              loading={landingApiSummary?.loading}
+              header={summaryHeaders()}
+              wrapperClassName="mb-3"
+            />
+          )}
+          {landingApiTable?.data?.length > 0 && (
+            <DataTable
+              bordered
+              data={landingApiTable?.data || []}
+              loading={landingApiTable?.loading}
+              header={attendanceSummaryReportColumn}
+            />
+          )}
         </PCard>
       </PForm>
     </>
