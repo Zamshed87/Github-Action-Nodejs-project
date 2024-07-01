@@ -582,6 +582,7 @@ const CreateAndEditEmploye = () => {
         form={form}
         initialValues={{
           generateDate: moment(todayDate()),
+          dteLastInactiveDate: moment(todayDate()),
           salaryType: { value: 2, label: "Hourly" },
           otType: {
             value: 1,
@@ -1089,7 +1090,7 @@ const CreateAndEditEmploye = () => {
                   />
                 </Col>
                 {empId && (employeeFeature?.isEdit || isOfficeAdmin) ? (
-                  <Col className="mt-2" md={6} sm={24}>
+                  <Col  md={6} sm={24}>
                     <PSelect
                       options={employeeStatusDDL?.data || []}
                       name="employeeStatus"
@@ -1109,6 +1110,30 @@ const CreateAndEditEmploye = () => {
                     />
                   </Col>
                 ) : undefined}
+                <Form.Item shouldUpdate noStyle>
+                  {() => {
+                    const { employeeStatus } = form.getFieldsValue(true);
+                    if (employeeStatus?.value === 2) {
+                      return (
+                        <Col md={6} sm={24}>
+                          <PInput
+                            type="date"
+                            name="dteLastInactiveDate"
+                            label="Inactive Date"
+                            placeholder="Inactive Date"
+                            onChange={(value) => {
+                              form.setFieldsValue({
+                                dteLastInactiveDate: value,
+                              });
+                            }}
+                            disabledDate={(current) => moment(current) > moment()}
+                            // disabled={params?.id}
+                          />
+                        </Col>
+                      );
+                    } else return null;
+                  }}
+                </Form.Item>
 
                 <Form.Item shouldUpdate noStyle>
                   {() => {

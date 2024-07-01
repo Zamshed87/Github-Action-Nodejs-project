@@ -92,6 +92,7 @@ export const createEditEmpAction = async (
       intEmploymentTypeId: values?.employeeType?.value,
       strEmploymentType: values?.employeeType?.label,
       intEmployeeStatusId: values?.employeeStatus?.value || 1,
+      dteLastInactiveDate: values?.employeeStatus?.value === 2 ? moment(values?.dteLastInactiveDate).format("YYYY-MM-DD") : null,
       strEmployeeStatus: values?.employeeStatus?.label || "Active",
       intCalenderId: 0,
       strCalenderName: "",
