@@ -94,94 +94,105 @@ export const formatBEFTN = (
               alignment: "center",
             },
           ],
-          ["_blank*2"],
           [
             {
-              text: "To",
-              fontSize: 9,
-              bold: true,
-              cellRange: "A1:J1",
-              merge: true,
-              alignment: "left:middle",
-            },
-            {
-              text: comapanyNameHeader,
-              fontSize: 9,
-              bold: true,
-              cellRange: "K1:L1",
-              merge: true,
-            },
-          ],
-          [
-            {
-              text: "The Manager",
-              fontSize: 9,
-              bold: true,
-              cellRange: "A1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: bankAccountNo?.BankName,
-              fontSize: 9,
-              cellRange: "A1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "",
-              fontSize: 9,
-              cellRange: "A1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: `Subject : Payment Instruction by BEFTN for ${comapanyNameHeader}`,
-              fontSize: 9,
-              bold: true,
+              text: `${values?.bankAdviceFor?.value === 2 ? "Bonus" : "Salary"} For the month of ${comapanyNameHeader.toUpperCase()}`,
+              fontSize: 12,
               underline: true,
-              cellRange: "A1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "Dear Sir,",
-              fontSize: 9,
               bold: true,
-              cellRange: "A1:L1",
+              cellRange: "A1:F1",
               merge: true,
-              alignment: "left:middle",
+              alignment: "center",
             },
           ],
-          [
-            {
-              text: `We do hereby requesting you to make payment by transferring the amount to the respective Account Holder as shown below in detailed `,
-              fontSize: 8,
-              italic: true,
-              cellRange: "A1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: `by debiting our CD Account No. ${bankAccountNo.label} `,
-              fontSize: 8,
-              bold: true,
-              italic: true,
-              cellRange: "A1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
+          ["_blank*2"],
+          // [
+          //   {
+          //     text: "To",
+          //     fontSize: 9,
+          //     bold: true,
+          //     cellRange: "A1:J1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          //   {
+          //     text: comapanyNameHeader,
+          //     fontSize: 9,
+          //     bold: true,
+          //     cellRange: "K1:L1",
+          //     merge: true,
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "The Manager",
+          //     fontSize: 9,
+          //     bold: true,
+          //     cellRange: "A1:L1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: bankAccountNo?.BankName,
+          //     fontSize: 9,
+          //     cellRange: "A1:L1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "",
+          //     fontSize: 9,
+          //     cellRange: "A1:L1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: `Subject : Payment Instruction by BEFTN for ${comapanyNameHeader}`,
+          //     fontSize: 9,
+          //     bold: true,
+          //     underline: true,
+          //     cellRange: "A1:L1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "Dear Sir,",
+          //     fontSize: 9,
+          //     bold: true,
+          //     cellRange: "A1:L1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: `We do hereby requesting you to make payment by transferring the amount to the respective Account Holder as shown below in detailed `,
+          //     fontSize: 8,
+          //     italic: true,
+          //     cellRange: "A1:L1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: `by debiting our CD Account No. ${bankAccountNo.label} `,
+          //     fontSize: 8,
+          //     bold: true,
+          //     italic: true,
+          //     cellRange: "A1:L1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
           [
             {
               text: "Detailed particulars of each Account Holder:",
