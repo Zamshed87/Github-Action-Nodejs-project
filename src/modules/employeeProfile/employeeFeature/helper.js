@@ -607,6 +607,7 @@ export const getEmployeeProfileViewData = async (
               }
             : undefined,
           isActive: empBasic?.employeeProfileLandingView?.userStatus,
+          dteLastInactiveDate: empBasic?.employeeProfileLandingView?.dteLastInactiveDate ? moment(empBasic?.employeeProfileLandingView?.dteLastInactiveDate) : null,
           officePhone:
             empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
           officeEmail:
