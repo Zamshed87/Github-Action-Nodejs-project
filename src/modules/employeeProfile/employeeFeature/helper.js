@@ -92,6 +92,7 @@ export const createEditEmpAction = async (
       intEmploymentTypeId: values?.employeeType?.value,
       strEmploymentType: values?.employeeType?.label,
       intEmployeeStatusId: values?.employeeStatus?.value || 1,
+      dteLastInactiveDate: values?.employeeStatus?.value === 2 ? moment(values?.dteLastInactiveDate).format("YYYY-MM-DD") : null,
       strEmployeeStatus: values?.employeeStatus?.label || "Active",
       intCalenderId: 0,
       strCalenderName: "",
@@ -606,6 +607,7 @@ export const getEmployeeProfileViewData = async (
               }
             : undefined,
           isActive: empBasic?.employeeProfileLandingView?.userStatus,
+          dteLastInactiveDate: empBasic?.employeeProfileLandingView?.dteLastInactiveDate ? moment(empBasic?.employeeProfileLandingView?.dteLastInactiveDate) : null,
           officePhone:
             empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
           officeEmail:
