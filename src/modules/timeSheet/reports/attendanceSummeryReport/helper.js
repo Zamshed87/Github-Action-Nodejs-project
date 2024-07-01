@@ -235,26 +235,44 @@ export const generateAttandanceSummaryDataForExcel = (arryData) => {
 export const generateSubTableDataForExcel = (arryData = []) => {
   const lastObject = calculateSummaryObj(arryData);
 
-  const res =  arryData
+  const res = arryData
     ?.concat(lastObject)
     .map((item) => [
       new Cell(
-        item?.strWorkplace,
+        !item?.strWorkplace ? "Total: " : item?.strWorkplace,
         "center",
         "text",
-        (!item.StrDepartmantName && item?.StrWorkplaceName) ||
-        (!item?.StrDepartmantName && !item?.StrWorkplaceName)
-          ? true
-          : false,
-        (!item.StrDepartmantName && item?.StrWorkplaceName) ||
-        (!item?.StrDepartmantName && !item?.StrWorkplaceName)
-          ? 11
-          : 9
+        !item?.strWorkplace ? true : false,
+        !item?.strWorkplace ? 11 : 9
       ).getCell(),
-      new Cell(item?.TotapEmp, "center", "text").getCell(),
-      new Cell(item?.IntPresent, "center", "text").getCell(),
-      new Cell(item?.IntAbsent, "center", "text").getCell(),
-      new Cell(item?.IntAbsentPercentage, "center", "text").getCell(),
+      new Cell(
+        item?.TotapEmp,
+        "center",
+        "text",
+        !item?.strWorkplace ? true : false,
+        !item?.strWorkplace ? 11 : 9
+      ).getCell(),
+      new Cell(
+        item?.IntPresent,
+        "center",
+        "text",
+        !item?.strWorkplace ? true : false,
+        !item?.strWorkplace ? 11 : 9
+      ).getCell(),
+      new Cell(
+        item?.IntAbsent,
+        "center",
+        "text",
+        !item?.strWorkplace ? true : false,
+        !item?.strWorkplace ? 11 : 9
+      ).getCell(),
+      new Cell(
+        item?.IntAbsentPercentage,
+        "center",
+        "text",
+        !item?.strWorkplace ? true : false,
+        !item?.strWorkplace ? 11 : 9
+      ).getCell(),
     ]);
-    return res;
+  return res;
 };

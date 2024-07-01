@@ -14,16 +14,15 @@ import { Col, Form, Row } from "antd";
 import Loading from "common/loading/Loading";
 import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 import { setFirstLevelNameAction } from "commonRedux/reduxForLocalStorage/actions";
+import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { currentYear } from "modules/CompensationBenefits/reports/salaryReport/helper";
 import { getCurrentMonthName } from "utility/monthIdToMonthName";
 import { todayDate } from "utility/todayDate";
-import { column } from "../attendanceReport/helper";
 import {
   attendanceSummaryReportColumn,
   calculateSummaryObj,
@@ -51,7 +50,6 @@ const AttendanceSummeryReport = () => {
   const landingApiSummary = useApiRequest({});
   //   const debounce = useDebounce();
 
-  const [buDetails, setBuDetails] = useState({});
   const [excelLoading, setExcelLoading] = useState(false);
   const { id }: any = useParams();
   // Form Instance
@@ -156,20 +154,14 @@ const AttendanceSummeryReport = () => {
                     fromDate: "",
                     toDate: "",
                     buAddress: values?.workplaceGroup?.label,
-                    businessUnit: (buDetails as any)?.strWorkplace || buName,
+                    businessUnit: buName,
                     tableHeader: excelHeadAttandanceSummaryDataForExcel,
                     getTableData: () =>
                       generateAttandanceSummaryDataForExcel(
                         landingApiTable?.data
                       ),
-                    getSubTableData: () => {
-                      console.log(
-                        generateSubTableDataForExcel(landingApiSummary?.data)
-                      );
-                      return generateSubTableDataForExcel(
-                        landingApiSummary?.data
-                      );
-                    },
+                    getSubTableData: () =>
+                      generateSubTableDataForExcel(landingApiSummary?.data),
                     subHeaderInfoArr: [],
                     subHeaderColumn: {
                       strWorkplace: "Concern",
@@ -194,13 +186,13 @@ const AttendanceSummeryReport = () => {
                     },
                     commonCellRange: "A1:I1",
                     CellAlignment: "left",
+                    multiSubtable: true,
                   });
 
                   setExcelLoading(false);
                 } catch (error: any) {
                   toast.error("Failed to download excel");
                   setExcelLoading(false);
-                  // console.log(error?.message);
                 }
               };
               excelLanding();
@@ -247,6 +239,7 @@ const AttendanceSummeryReport = () => {
               </Col>
             </Row>
           </PCardBody>
+          <h4 className="mb-2">Attendance Summary By Workplace</h4>
           {landingApiSummary?.data?.length > 0 && (
             <DataTable
               bordered
@@ -261,6 +254,8 @@ const AttendanceSummeryReport = () => {
               wrapperClassName="mb-3"
             />
           )}
+
+          <h4 className="mb-2">Attendance Summary By Department</h4>
           {landingApiTable?.data?.length > 0 && (
             <DataTable
               bordered
