@@ -19,6 +19,7 @@ export const createCommonExcelFile = ({
   getSubTableData,
   subHeaderInfoArr = [],
   subHeaderColumn = {},
+  multiSubtable = false
 }) => {
   const tableHead = Object.values(tableHeader);
   const subHeader =
@@ -47,6 +48,7 @@ export const createCommonExcelFile = ({
     subHeader,
     getSubTableData,
     subHeaderInfo,
+    multiSubtable
   });
 };
 const createExcelFile = ({
@@ -66,6 +68,7 @@ const createExcelFile = ({
   subHeader,
   getSubTableData,
   subHeaderInfo,
+  multiSubtable
 }) => {
   let dateStringRangeObj = {};
   if (fromDate && toDate) {
@@ -97,6 +100,7 @@ const createExcelFile = ({
   const subHeaderInfoModifed = subHeaderInfoCell.map((item) => [item]);
   const tableBody = getTableData?.() || [];
   const subTableBody = getSubTableData?.() || [];
+
   const excel = {
     name: `${titleWithDate} - ${todayDate()}`,
     sheets: [
@@ -141,7 +145,8 @@ const createExcelFile = ({
           [subHeaderInfoModifed.length > 0 ? "_blank" : null],
           [subHeaderList.length > 0 ? "_blank" : null],
           subHeaderList.length > 0 ? [...subHeaderList] : [null],
-          subTableBody.length > 0 ? subTableBody : [null],
+          subTableBody.length > 0 && !multiSubtable ? subTableBody : [null],
+          ...(multiSubtable ? subTableBody : [null]),
           ["_blank"],
           [...tableHeader],
           ...tableBody,
@@ -163,7 +168,6 @@ const createExcelFile = ({
       },
     ],
   };
-  // console.log(excel?.sheets?.[0]?.rows);
   createFile(excel, widthList);
 };
 
@@ -189,3 +193,5 @@ const customCell = (
   });
   return cellArry;
 };
+
+
