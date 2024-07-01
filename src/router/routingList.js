@@ -46,6 +46,9 @@ import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx"
 import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 
+const AttendanceSummeryReport = lazy(() =>
+  import("modules/timeSheet/reports/attendanceSummeryReport")
+);
 const CreateAndEditEmploye = lazy(() =>
   import("modules/employeeProfile/employeeFeature/createEmployee")
 );
@@ -1570,6 +1573,10 @@ export const routingList = [
   {
     path: "/profile/reports/attendanceReport",
     component: AttendanceReport,
+  },
+  {
+    path: "/profile/reports/attendanceSummaryReport",
+    component: AttendanceSummeryReport,
   },
   {
     path: "/profile/reports/dailyAttendanceReport",
