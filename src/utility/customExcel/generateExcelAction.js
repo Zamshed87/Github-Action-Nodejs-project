@@ -19,7 +19,7 @@ export const createCommonExcelFile = ({
   getSubTableData,
   subHeaderInfoArr = [],
   subHeaderColumn = {},
-  multiSubtable = false
+  multiSubtable = false,
 }) => {
   const tableHead = Object.values(tableHeader);
   const subHeader =
@@ -48,7 +48,7 @@ export const createCommonExcelFile = ({
     subHeader,
     getSubTableData,
     subHeaderInfo,
-    multiSubtable
+    multiSubtable,
   });
 };
 const createExcelFile = ({
@@ -68,7 +68,7 @@ const createExcelFile = ({
   subHeader,
   getSubTableData,
   subHeaderInfo,
-  multiSubtable
+  multiSubtable = false,
 }) => {
   let dateStringRangeObj = {};
   if (fromDate && toDate) {
@@ -85,15 +85,15 @@ const createExcelFile = ({
     tableHead?.length > 0
       ? customCell(tableHead, tableHeadFontSize, "center")
       : [];
-      const subHeaderList =
+  const subHeaderList =
     subHeader?.length > 0
       ? customCell(subHeader, tableHeadFontSize, "center")
       : [];
-      const tableFooterData =
+  const tableFooterData =
     tableFooter?.length > 0
       ? customCell(tableFooter, tableHeadFontSize, CellAlignment)
       : [];
-      const subHeaderInfoCell =
+  const subHeaderInfoCell =
     subHeaderInfo?.length > 0
       ? customCell(subHeaderInfo, 9, "left", true, "A1:C1", false)
       : [];
@@ -101,74 +101,78 @@ const createExcelFile = ({
   const tableBody = getTableData?.() || [];
   const subTableBody = getSubTableData?.() || [];
 
-  const excel = {
-    name: `${titleWithDate} - ${todayDate()}`,
-    sheets: [
-      {
-        name: `${titleWithDate} - ${todayDate()}`,
-        gridLine: false,
-        rows: [
-          ["_blank*2"],
-          [
-            {
-              text: businessUnit,
-              fontSize: 18,
-              bold: true,
-              cellRange: commonCellRange || "A1:J1",
-              merge: true,
-              alignment: "center:middle",
-            },
-          ],
-          [
-            {
-              text: buAddress,
-              fontSize: 15,
-              bold: true,
-              cellRange: commonCellRange || "A1:J1",
-              merge: true,
-              alignment: "center:middle",
-            },
-          ],
-          [
-            {
-              text: titleWithDate,
-              fontSize: 15,
-              bold: true,
-              cellRange: commonCellRange || "A1:J1",
-              merge: true,
-              alignment: "center:middle",
-            },
-          ],
-          [fromDate && toDate ? dateStringRangeObj : null],
-          [subHeaderInfoModifed.length > 0 ? "_blank" : null],
-          ...subHeaderInfoModifed,
-          [subHeaderInfoModifed.length > 0 ? "_blank" : null],
-          [subHeaderList.length > 0 ? "_blank" : null],
-          subHeaderList.length > 0 ? [...subHeaderList] : [null],
-          subTableBody.length > 0 && !multiSubtable ? subTableBody : [null],
-          ...(multiSubtable ? subTableBody : [null]),
-          ["_blank"],
-          [...tableHeader],
-          ...tableBody,
-          [...tableFooterData],
-          ["_blank*2"],
-          [extraInfo?.text ? extraInfo : null],
-          ["_blank*2"],
-          [
-            {
-              text: `System Generated Report ${moment().format("ll")}`,
-              fontSize: 12,
-              bold: true,
-              cellRange: "A1:J1",
-              merge: true,
-              alignment: "center:middle",
-            },
-          ],
-        ].filter((element) => element.length > 0 && !element.includes(null)),
-      },
-    ],
-  };
-  createFile(excel, widthList);
+  try {
+    const excel = {
+      name: `${titleWithDate} - ${todayDate()}`,
+      sheets: [
+        {
+          name: `${titleWithDate} - ${todayDate()}`,
+          gridLine: false,
+          rows: [
+            ["_blank*2"],
+            [
+              {
+                text: businessUnit,
+                fontSize: 18,
+                bold: true,
+                cellRange: commonCellRange || "A1:J1",
+                merge: true,
+                alignment: "center:middle",
+              },
+            ],
+            [
+              {
+                text: buAddress,
+                fontSize: 15,
+                bold: true,
+                cellRange: commonCellRange || "A1:J1",
+                merge: true,
+                alignment: "center:middle",
+              },
+            ],
+            [
+              {
+                text: titleWithDate,
+                fontSize: 15,
+                bold: true,
+                cellRange: commonCellRange || "A1:J1",
+                merge: true,
+                alignment: "center:middle",
+              },
+            ],
+            [fromDate && toDate ? dateStringRangeObj : null],
+            [subHeaderInfoModifed.length > 0 ? "_blank" : null],
+            ...subHeaderInfoModifed,
+            [subHeaderInfoModifed.length > 0 ? "_blank" : null],
+            [subHeaderList.length > 0 ? "_blank" : null],
+            subHeaderList.length > 0 ? [...subHeaderList] : [null],
+            subTableBody?.length > 0 && !multiSubtable ? subTableBody : [null],
+            ...(multiSubtable ? subTableBody : [null]),
+            ["_blank"],
+            [...tableHeader],
+            ...tableBody,
+            [...tableFooterData],
+            ["_blank*2"],
+            [extraInfo?.text ? extraInfo : null],
+            ["_blank*2"],
+            [
+              {
+                text: `System Generated Report ${moment().format("ll")}`,
+                fontSize: 12,
+                bold: true,
+                cellRange: "A1:J1",
+                merge: true,
+                alignment: "center:middle",
+              },
+            ],
+          ].filter((element) => element?.length > 0 && !element.includes(null)),
+        },
+      ],
+    };
+    createFile(excel, widthList);
+  } catch (error) {
+    console.log({ error });
+  }
 };
 
 const customCell = (
@@ -193,5 +197,3 @@ const customCell = (
   });
   return cellArry;
 };
-
-

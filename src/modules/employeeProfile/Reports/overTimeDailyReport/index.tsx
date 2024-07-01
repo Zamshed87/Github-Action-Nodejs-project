@@ -180,8 +180,6 @@ const EmOverTimeDailyReport = () => {
     });
     const sectionList = sectionMerge?.join(",") || "";
 
-    console.log("values",values)
-
     const payload = {
       accountId: orgId,
       strSectionIdList: sectionList || "",
@@ -367,8 +365,6 @@ const EmOverTimeDailyReport = () => {
           fromDate: moment(todayDate()),
         }}
         onFinish={() => {
-          const values = form.getFieldsValue(true);
-          console.log("values", values);
           landingApiCall({
             pagination: {
               current: landingApi?.data?.page,
@@ -449,7 +445,10 @@ const EmOverTimeDailyReport = () => {
                     `/Payroll/GetDailyOvertimeEmployeeList`,
                     payload
                   );
-                  const totalAmount = res?.data.reduce((sum:any, employee:any) => sum + employee.numTotalAmount, 0);
+                  const totalAmount = res?.data.reduce(
+                    (sum: any, employee: any) => sum + employee.numTotalAmount,
+                    0
+                  );
                   if (res?.data?.length < 1) {
                     setExcelLoading(false);
                     return toast.error("No data found");
