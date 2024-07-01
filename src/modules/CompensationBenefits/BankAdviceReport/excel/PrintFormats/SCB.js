@@ -90,125 +90,136 @@ export const formatSCB = (
               alignment: "center",
             },
           ],
-          ["_blank*2"],
           [
             {
-              text: `${moment().format("DD-MMMM-yyyy")}`,
-              fontSize: 10,
-              bold: true,
-              cellRange: "A1:C1",
-              merge: true,
-              alignment: "left",
-            },
-          ],
-          [
-            {
-              text: "To,",
-              fontSize: 10,
-              bold: true,
-              cellRange: "A1:D1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "Branch Manager",
-              fontSize: 10,
-              bold: true,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "Standard Chartered Bank",
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "Dhanmondi Road# 5 Branch ",
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "House 6, Road 5, Dhanmondi R/A, Dhaka-1209.",
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "",
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: `Subject : REQUEST TO DISBURSE EMPLOYEE ${values?.bankAdviceFor?.value === 2 ? "BONUS" : "SALARY"} ${comapanyNameHeader.toUpperCase()}`,
-              fontSize: 10,
-              bold: true,
+              text: `${values?.bankAdviceFor?.value === 2 ? "Bonus" : "Salary"} For the month of ${comapanyNameHeader.toUpperCase()}`,
+              fontSize: 12,
               underline: true,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          ["_blank*1"],
-          [
-            {
-              text: "Dear Recipients,",
-              fontSize: 9,
               bold: true,
               cellRange: "A1:F1",
               merge: true,
-              alignment: "left:middle",
+              alignment: "center",
             },
           ],
-          [
-            {
-              text: `With due respect, please disburse the net payable amount BDT ${total} (${totalInWords} Only) as Employee ${values?.bankAdviceFor?.value === 2 ? "Bonus" : "Salary"} ${comapanyNameHeader} to the all-account holders as per attached sheet from our Company Account ${bankAccountNo} `,
-              fontSize: 9,
-              cellRange: "A2:H1",
-              merge: true,
-              alignment: "left:middle",
-              wrapText: true,
-            },
-          ],
-          ["_blank*1"],
-          [
-            {
-              text: "We are looking forward for your kind cooperation.",
-              fontSize: 9,
-              cellRange: "A1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          ["_blank*1"],
-          [
-            {
-              text: "Thanking You",
-              fontSize: 9,
-              cellRange: "A1:L1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
+          ["_blank*2"],
+          // [
+          //   {
+          //     text: `${moment().format("DD-MMMM-yyyy")}`,
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "A1:C1",
+          //     merge: true,
+          //     alignment: "left",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "To,",
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "A1:D1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "Branch Manager",
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "Standard Chartered Bank",
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "Dhanmondi Road# 5 Branch ",
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "House 6, Road 5, Dhanmondi R/A, Dhaka-1209.",
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "",
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: `Subject : REQUEST TO DISBURSE EMPLOYEE ${values?.bankAdviceFor?.value === 2 ? "BONUS" : "SALARY"} ${comapanyNameHeader.toUpperCase()}`,
+          //     fontSize: 10,
+          //     bold: true,
+          //     underline: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // ["_blank*1"],
+          // [
+          //   {
+          //     text: "Dear Recipients,",
+          //     fontSize: 9,
+          //     bold: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: `With due respect, please disburse the net payable amount BDT ${total} (${totalInWords} Only) as Employee ${values?.bankAdviceFor?.value === 2 ? "Bonus" : "Salary"} ${comapanyNameHeader} to the all-account holders as per attached sheet from our Company Account ${bankAccountNo} `,
+          //     fontSize: 9,
+          //     cellRange: "A2:H1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //     wrapText: true,
+          //   },
+          // ],
+          // ["_blank*1"],
+          // [
+          //   {
+          //     text: "We are looking forward for your kind cooperation.",
+          //     fontSize: 9,
+          //     cellRange: "A1:L1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // ["_blank*1"],
+          // [
+          //   {
+          //     text: "Thanking You",
+          //     fontSize: 9,
+          //     cellRange: "A1:L1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
           ["_blank*1"],
           [
             {

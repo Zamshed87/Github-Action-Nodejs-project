@@ -751,7 +751,7 @@ const BankAdviceReport = () => {
                         </Tooltip>
                       </li>
                       <li className="pr-2">
-                        <Tooltip title="Export CSV" arrow>
+                        <Tooltip title="Export Details CSV" arrow>
                           <IconButton
                             style={{ color: "#101828" }}
                             onClick={(e) => {
