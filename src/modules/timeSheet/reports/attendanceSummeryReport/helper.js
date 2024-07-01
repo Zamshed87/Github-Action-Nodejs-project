@@ -267,7 +267,7 @@ export const generateSubTableDataForExcel = (arryData = []) => {
         !item?.strWorkplace ? 11 : 9
       ).getCell(),
       new Cell(
-        item?.IntAbsentPercentage,
+        !item?.strWorkplace ? parseInt((item?.IntAbsent / item?.TotapEmp) * 100) || 0 : item?.IntAbsentPercentage,
         "center",
         "text",
         !item?.strWorkplace ? true : false,
