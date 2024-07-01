@@ -4,19 +4,20 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import { Menu } from "@mui/icons-material";
 import axios from "axios";
 // import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import authLogo from "../../assets/images/logo.svg";
 // import { getTotalNotificationsCount } from "./helper";
-import url from "./notification.mp3";
+import { origin } from "App";
+import AutoCompleteWithHint from "./AutoComplete";
 import NotificationMenu from "./NotificationMenu";
 import ProfileMenu from "./ProfileMenu";
 import QuickAccess from "./QuickAccess";
 import ResourcesDropdown from "./ResourcesDropdown";
+import url from "./notification.mp3";
 import { useAudio } from "./useAudio";
-import AutoCompleteWithHint from "./AutoComplete";
 
 export default function TopNavigation({
   setIsOpenSidebar,
@@ -58,7 +59,10 @@ export default function TopNavigation({
     notificationCount();
   }, []);
 
-  const appName = "people_desk_saas_" + orgId + "_" + employeeId;
+  const appName =
+    "people_desk_saas_" + origin.includes("dev")
+      ? "devapp.peopledesk.io"
+      : "app.peopledesk.io" + "_" + orgId + "_" + employeeId;
 
   useEffect(() => {
     if (connection) {
