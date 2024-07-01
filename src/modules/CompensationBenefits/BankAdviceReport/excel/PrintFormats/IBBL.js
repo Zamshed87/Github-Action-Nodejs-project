@@ -43,7 +43,8 @@ export const formatIbbl = (
   bankAccountNo,
   total,
   totalInWords,
-  buAddress
+  buAddress,
+  values
 ) => {
   const excel = {
     name: "Bank Advice",
@@ -85,94 +86,105 @@ export const formatIbbl = (
               alignment: "center",
             },
           ],
-          ["_blank*2"],
           [
             {
-              text: "To,",
-              fontSize: 10,
-              bold: true,
-              cellRange: "A1:D1",
-              merge: true,
-              alignment: "left:middle",
-            },
-            {
-              text: `Date : ${moment().format("DD-MMMM-yyyy")}`,
-              fontSize: 10,
-              bold: true,
-              cellRange: "E1:F1",
-              merge: true,
-              alignment: "right:right",
-            },
-          ],
-          [
-            {
-              text: "The Manager",
-              fontSize: 10,
-              bold: true,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: bankAccountNo?.BankName,
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: bankAccountNo?.BranchName,
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "",
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: `Subject : Bank Advice for ${comapanyNameHeader}`,
-              fontSize: 10,
-              bold: true,
+              text: `${values?.bankAdviceFor?.value === 2 ? "Bonus" : "Salary"} For the month of ${comapanyNameHeader.toUpperCase()}`,
+              fontSize: 12,
               underline: true,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          ["_blank*1"],
-          [
-            {
-              text: "Dear Sir,",
-              fontSize: 9,
               bold: true,
               cellRange: "A1:F1",
               merge: true,
-              alignment: "left:middle",
+              alignment: "center",
             },
           ],
-          [
-            {
-              text: `We do hereby requesting you to make payment by transferring the amount to the respective account holder as shown below in detailed by debiting our CD Account No. ${bankAccountNo.label}`,
-              fontSize: 9,
-              cellRange: "A2:F1",
-              merge: true,
-              alignment: "left:middle",
-              wrapText: true,
-            },
-          ],
+          ["_blank*2"],
+          // [
+          //   {
+          //     text: "To,",
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "A1:D1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          //   {
+          //     text: `Date : ${moment().format("DD-MMMM-yyyy")}`,
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "E1:F1",
+          //     merge: true,
+          //     alignment: "right:right",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "The Manager",
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: bankAccountNo?.BankName,
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: bankAccountNo?.BranchName,
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "",
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: `Subject : Bank Advice for ${comapanyNameHeader}`,
+          //     fontSize: 10,
+          //     bold: true,
+          //     underline: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // ["_blank*1"],
+          // [
+          //   {
+          //     text: "Dear Sir,",
+          //     fontSize: 9,
+          //     bold: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: `We do hereby requesting you to make payment by transferring the amount to the respective account holder as shown below in detailed by debiting our CD Account No. ${bankAccountNo.label}`,
+          //     fontSize: 9,
+          //     cellRange: "A2:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //     wrapText: true,
+          //   },
+          // ],
           ["_blank*1"],
           [
             {
