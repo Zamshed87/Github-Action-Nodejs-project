@@ -214,11 +214,19 @@ const StyledTable = ({
       isDate: true,
     },
     {
-      title: "In-Time",
+      title: "Actual In-Time",
+      dataIndex: "dteStartTime",
+    },
+    {
+      title: "Actual Out-Time",
+      dataIndex: "dteEndTime",
+    },
+    {
+      title: "Requested In-Time",
       dataIndex: "timeInTime",
     },
     {
-      title: "Out-Time",
+      title: "Requested Out-Time",
       dataIndex: "timeOutTime",
     },
     {
