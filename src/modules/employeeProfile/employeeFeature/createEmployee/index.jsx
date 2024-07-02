@@ -1397,6 +1397,22 @@ const CreateAndEditEmploye = () => {
                 </Col>
                 <Col md={6} sm={24}>
                   <PInput
+                    name="personalEmail"
+                    type="email"
+                    placeholder="Personal Email"
+                    label="Personal Email"
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PInput
+                    name="personalMobile"
+                    type="text"
+                    placeholder="Personal Contact No."
+                    label="Personal Contact No."
+                  />
+                </Col>
+                <Col md={6} sm={24}>
+                  <PInput
                     name="nid"
                     type="text"
                     placeholder="NID"
