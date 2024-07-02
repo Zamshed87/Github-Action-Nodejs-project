@@ -84,115 +84,126 @@ export const formatCity = (
               alignment: "center",
             },
           ],
-          ["_blank*2"],
           [
             {
-              text: `${moment().format("DD-MMMM-yyyy")}`,
-              fontSize: 10,
-              bold: true,
-              cellRange: "A1:C1",
-              merge: true,
-              alignment: "left",
-            },
-          ],
-          [
-            {
-              text: "To,",
-              fontSize: 10,
-              bold: true,
-              cellRange: "A1:D1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "Branch Manager",
-              fontSize: 10,
-              bold: true,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "Gulshan Avenue Branch",
-              fontSize: 10,
-              bold: true,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "The City Bank Limited",
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "136, Gulshan Avenue branch, Gulshan 2 ",
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "Dhaka – 1212",
-              fontSize: 10,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: "",
-              fontSize: 10,
-              cellRange: "A1:H1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          [
-            {
-              text: `Subject : ${values?.bankAdviceFor?.value === 2 ? "Bonus" : "Salary"} Disbursement for the month of ${comapanyNameHeader} of "10MS Limited" employees.`,
-              fontSize: 10,
-              bold: true,
+              text: `${values?.bankAdviceFor?.value === 2 ? "Bonus" : "Salary"} For the month of ${comapanyNameHeader.toUpperCase()}`,
+              fontSize: 12,
               underline: true,
-              cellRange: "A1:F1",
-              merge: true,
-              alignment: "left:middle",
-            },
-          ],
-          ["_blank*1"],
-          [
-            {
-              text: "Dear Sir,",
-              fontSize: 9,
               bold: true,
               cellRange: "A1:F1",
               merge: true,
-              alignment: "left:middle",
+              alignment: "center",
             },
           ],
-          [
-            {
-              text: `With due respect, we are requesting you to transfer the ${values?.bankAdviceFor?.value === 2 ? "bonus" : "salary"} for the month of ${comapanyNameHeader} of ‘10MS Limited’ employees. Please debit BDT  ${total}  from our company account no. ${bankAccountNo}  to disburse salaries as mentioned below. `,
-              fontSize: 9,
-              cellRange: "A2:H1",
-              merge: true,
-              alignment: "left:middle",
-              wrapText: true,
-            },
-          ],
+          ["_blank*2"],
+          // [
+          //   {
+          //     text: `${moment().format("DD-MMMM-yyyy")}`,
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "A1:C1",
+          //     merge: true,
+          //     alignment: "left",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "To,",
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "A1:D1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "Branch Manager",
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "Gulshan Avenue Branch",
+          //     fontSize: 10,
+          //     bold: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "The City Bank Limited",
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "136, Gulshan Avenue branch, Gulshan 2 ",
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "Dhaka – 1212",
+          //     fontSize: 10,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: "",
+          //     fontSize: 10,
+          //     cellRange: "A1:H1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: `Subject : ${values?.bankAdviceFor?.value === 2 ? "Bonus" : "Salary"} Disbursement for the month of ${comapanyNameHeader} of "10MS Limited" employees.`,
+          //     fontSize: 10,
+          //     bold: true,
+          //     underline: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // ["_blank*1"],
+          // [
+          //   {
+          //     text: "Dear Sir,",
+          //     fontSize: 9,
+          //     bold: true,
+          //     cellRange: "A1:F1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //   },
+          // ],
+          // [
+          //   {
+          //     text: `With due respect, we are requesting you to transfer the ${values?.bankAdviceFor?.value === 2 ? "bonus" : "salary"} for the month of ${comapanyNameHeader} of ‘10MS Limited’ employees. Please debit BDT  ${total}  from our company account no. ${bankAccountNo}  to disburse salaries as mentioned below. `,
+          //     fontSize: 9,
+          //     cellRange: "A2:H1",
+          //     merge: true,
+          //     alignment: "left:middle",
+          //     wrapText: true,
+          //   },
+          // ],
           ["_blank*1"],
           [
             {
