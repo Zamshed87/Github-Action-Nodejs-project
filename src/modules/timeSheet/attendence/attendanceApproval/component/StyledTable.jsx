@@ -222,11 +222,11 @@ const StyledTable = ({
       dataIndex: "dteEndTime",
     },
     {
-      title: "Requested In-Time",
+      title: "Request In-Time",
       dataIndex: "timeInTime",
     },
     {
-      title: "Requested Out-Time",
+      title: "Request Out-Time",
       dataIndex: "timeOutTime",
     },
     {
