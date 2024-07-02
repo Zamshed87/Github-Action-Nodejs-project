@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import authLogo from "../../assets/images/logo.svg";
 // import { getTotalNotificationsCount } from "./helper";
-import { origin } from "App";
 import AutoCompleteWithHint from "./AutoComplete";
 import NotificationMenu from "./NotificationMenu";
 import ProfileMenu from "./ProfileMenu";
@@ -59,17 +58,25 @@ export default function TopNavigation({
     notificationCount();
   }, []);
 
-  const appName =
-    "people_desk_saas_" + origin.includes("dev")
-      ? "devapp.peopledesk.io"
-      : "app.peopledesk.io" + "_" + orgId + "_" + employeeId;
+  // const app_Name =
+  //   "people_desk_saas_" + origin.includes("dev")
+  //     ? "devapp.peopledesk.io"
+  //     : "app.peopledesk.io" + "_" + orgId + "_" + employeeId;
+
+  const notify_KEY =
+    "people_desk_saas_" +
+    (origin.includes("dev") ? "devapp.peopledesk.io" : "app.peopledesk.io") +
+    "_" +
+    orgId +
+    "_" +
+    employeeId;
 
   useEffect(() => {
     if (connection) {
       connection
         .start()
         .then(() => {
-          connection.on(`sendTo_${appName}`, (count) => {
+          connection.on(`sendTo_${notify_KEY}`, (count) => {
             setMyCount(myCount + count);
             if (count) {
               toast.info("A new notification has come!!", {
