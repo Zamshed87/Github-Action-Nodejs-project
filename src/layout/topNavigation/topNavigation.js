@@ -65,7 +65,7 @@ export default function TopNavigation({
 
   const notify_KEY =
     "people_desk_saas_" +
-    (origin.includes("dev") ? "devapp.peopledesk.io" : "devapp.peopledesk.io") +
+    (origin.includes("dev") ? "devapp.peopledesk.io" : "app.peopledesk.io") +
     "_" +
     orgId +
     "_" +
