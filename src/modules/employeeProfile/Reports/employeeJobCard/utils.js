@@ -1,7 +1,7 @@
 import Chips from "common/Chips";
 import { Cell } from "utility/customExcel/createExcelHelper";
 import { createCommonExcelFile } from "utility/customExcel/generateExcelAction";
-import { dateFormatter, dateFormatterForInput } from "utility/dateFormatter";
+import { dateFormatter } from "utility/dateFormatter";
 
 export const createJobCardExcelHandler = ({
   BuDetails,
@@ -120,25 +120,31 @@ export const createJobCardExcelHandler = ({
     },
   });
 };
+const dateFormatterForInputUpdate = (date) => {
+  return date.toISOString().split('T')[0]; // Example: '2024-04-26'
+};
 
-export const custom26to25LandingDataHandler = (cb) => {
+export const custom26to25LandingDataHandler = (selectedDate, cb) => {
   try {
-    const currentDate = new Date();
-    // Get the current month and year
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
-    const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-    const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+    const selectedDateObj = new Date(selectedDate);
+    const selectedMonth = selectedDateObj.getMonth();
+    const selectedYear = selectedDateObj.getFullYear();
 
-    // Set the dates
-    const previousMonthDate = new Date(previousYear, previousMonth, 26);
-    const currentMonthDate = new Date(currentYear, currentMonth, 25);
+    // Calculate the previous month and year
+    const previousMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
+    const previousYear = selectedMonth === 0 ? selectedYear - 1 : selectedYear;
+
+    // Set the dates for the custom range
+    const previousMonthStartDate = new Date(previousYear, previousMonth, 27);
+    const currentMonthEndDate = new Date(selectedYear, selectedMonth, 26);
 
     cb(
-      dateFormatterForInput(previousMonthDate),
-      dateFormatterForInput(currentMonthDate)
+      dateFormatterForInputUpdate(previousMonthStartDate),
+      dateFormatterForInputUpdate(currentMonthEndDate)
     );
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error in custom26to25LandingDataHandler", error);
+  }
 };
 
 export const JobCardTableHeadColumn = (page, paginationSize) => {

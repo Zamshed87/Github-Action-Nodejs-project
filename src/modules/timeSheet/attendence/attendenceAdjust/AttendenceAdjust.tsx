@@ -697,11 +697,16 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                     type="primary"
                     content="Custom [26 - 25]"
                     onClick={() => {
+                      const { date } = form.getFieldsValue(true);
                       custom26to25LandingDataHandler(
-                        (previousMonthDate: any, currentMonthDate: any) => {
+                        date,
+                        (
+                          previousMonthStartDate: any,
+                          currentMonthEndDate: any
+                        ) => {
                           form.setFieldsValue({
-                            date: moment(previousMonthDate),
-                            tdate: moment(currentMonthDate),
+                            date: moment(previousMonthStartDate),
+                            tdate: moment(currentMonthEndDate),
                           });
 
                           viewHandler(true);
