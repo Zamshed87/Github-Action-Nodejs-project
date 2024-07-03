@@ -9,12 +9,13 @@ export const getAllNotificationsActions = async (
   pageSize,
   employeeId,
   accId,
-  setNotificationLoading
+  setNotificationLoading,
+  isSeen = ""
 ) => {
   setNotificationLoading && setNotificationLoading(true);
   try {
     const res = await axios.get(
-      `/Notification/GetAllNotificationByUser?pageNo=${pageNo}&pageSize=${pageSize}&employeeId=${employeeId}&accountId=${accId}`
+      `/Notification/GetAllNotificationByUser?pageNo=${pageNo}&pageSize=${pageSize}&employeeId=${employeeId}&accountId=${accId}&isSeen=${isSeen}`
     );
     setTimeout(() => {
       setNotificationLoading && setNotificationLoading(false);
@@ -22,6 +23,31 @@ export const getAllNotificationsActions = async (
     setter([...rowDto, ...res?.data]);
   } catch (error) {
     setNotificationLoading && setNotificationLoading(false);
+    setter([]);
+  }
+};
+export const setNotificationMarkAsSeenAPI = async ({
+  notificationId,
+  employeeId,
+  accountId,
+  rowDto = [],
+  setter,
+}) => {
+  try {
+    const res = await axios.put(
+      `/Notification/MarkAsSeen?notificationId=${notificationId}&employeeId=${employeeId}&accountId=${accountId}`
+    );
+    if(res?.data?.intId === notificationId || res?.status === 200){
+      const newData = rowDto.map((item) => {
+        if (item?.id === notificationId) {
+          return { ...item, isSeenRealTimeNotify: true };
+        }
+        return item;
+      });
+      console.log(newData)
+      setter?.(newData);
+    }
+  } catch (error) {
     setter([]);
   }
 };

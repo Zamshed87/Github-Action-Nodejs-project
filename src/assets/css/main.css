@@ -113,6 +113,8 @@ font-family: 'Inter', sans-serif;
 
   /* gray blue */
   --grayBlue100: #eaecf5 !important;
+  --grayBlue200: #eaf3ff !important;
+  --grayBlue300: #f0f2f5 !important;
 
   /* success */
   --success25: #f6fef9 !important;

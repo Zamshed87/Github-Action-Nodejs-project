@@ -36,8 +36,8 @@ const NotificationPopUp = ({ propsObj }) => {
           // maxHeight: "360px",
           // padding: "0px 5px",
           "&::-webkit-scrollbar": {
-            display: "none"
-          }
+            display: "none",
+          },
         },
       }}
       id={id}
@@ -60,9 +60,7 @@ const NotificationPopUp = ({ propsObj }) => {
                 e.stopPropagation();
               }}
             >
-              <Close
-                sx={{ fontSize: "20px", color: blackColor60 }}
-              />
+              <Close sx={{ fontSize: "20px", color: blackColor60 }} />
             </IconButton>
           </div>
         </div>
@@ -71,7 +69,7 @@ const NotificationPopUp = ({ propsObj }) => {
           style={{ overflowY: "scroll", overflowX: "hidden", height: "360px" }}
           onScroll={(e) => {
             e.stopPropagation();
-            debounce(() => {
+            anchorEl && debounce(() => {
               setPageNo(pageNo + 1);
               getAllNotificationsActions(
                 data,
@@ -93,43 +91,15 @@ const NotificationPopUp = ({ propsObj }) => {
               orgId={orgId}
               handleClose={handleClose}
               setLoading={setLoading}
+              data={data}
+              setData={setData}
+              employeeId={employeeId}
             />
           ))}
         </div>
         <div style={{ padding: "5px 0px" }} className="text-center my-5">
           {notficationLoading && <LinearProgress color="success" />}
         </div>
-        {/* <div className="notification-popover-footer">
-          <div
-            style={{ cursor: "pointer" }}
-            className="btn btn-cancel"
-            onClick={() => handleClose()}
-          >
-            Close
-          </div>
-          <div>
-            {data?.length > 0 && (
-              <button
-                type="button"
-                className="btn btn-green btn-green-disable"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPageNo(pageNo + 1);
-                  getAllNotificationsActions(
-                    data,
-                    setData,
-                    pageNo + 1,
-                    pageSize,
-                    employeeId,
-                    orgId
-                  );
-                }}
-              >
-                Next
-              </button>
-            )}
-          </div>
-        </div> */}
       </div>
     </Popover>
   );
