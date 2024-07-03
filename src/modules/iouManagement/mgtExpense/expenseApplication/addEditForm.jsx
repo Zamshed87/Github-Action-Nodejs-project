@@ -111,13 +111,13 @@ const MgtExpenseApplicationCreate = () => {
       intBusinessUnitId: buId,
       intWorkplaceGroupId: wgId,
     };
-
-    saveExpenseType(
-      `/Employee/ExpenseApplicationCreateEdit`,
-      payload,
-      cb,
-      true
-    );
+    console.log(payload);
+    // saveExpenseType(
+    //   `/Employee/ExpenseApplicationCreateEdit`,
+    //   payload,
+    //   cb,
+    //   true
+    // );
   };
 
   const getExpenseTypeDDL = (orgId) => {
@@ -154,6 +154,7 @@ const MgtExpenseApplicationCreate = () => {
 
   useEffect(() => {
     if (params?.id) {
+      getData();
       getExpenseApplicationById(+params?.id, buId, setSingleData, setLoading);
     }
   }, [buId, params?.id]);
