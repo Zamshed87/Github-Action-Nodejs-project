@@ -120,7 +120,10 @@ const NotiBodyContent = ({
                     >
                       {strModule?.toUpperCase() || ""}
                     </h6>
-                    <h6>
+                    <h6 style={{
+                      fontSize: "10px",
+                      marginLeft: "5px",
+                    }}>
                       {timeDifference === "now"
                         ? timeDifference
                         : `${timeDifference}`}
