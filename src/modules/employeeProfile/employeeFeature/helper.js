@@ -98,9 +98,9 @@ export const createEditEmpAction = async (
       strCalenderName: "",
       intHrpositionId: values?.hrPosition?.value || 0,
       strHrpostionName: values?.hrPosition?.label || "",
-      strPersonalMail: values?.email || "",
+      strPersonalMail: values?.personalEmail || "",
       strOfficeMail: values?.officeEmail || values?.workMail || "",
-      strPersonalMobile: values?.phone || "",
+      strPersonalMobile: values?.personalMobile || "",
       strOfficeMobile: values?.workPhone || values?.officePhone || "",
       isCreateUser: values?.isUsersection,
       calendarAssignViewModel: null,
@@ -612,6 +612,10 @@ export const getEmployeeProfileViewData = async (
             empBasic?.employeeProfileLandingView?.strOfficeMobile || "",
           officeEmail:
             empBasic?.employeeProfileLandingView?.strOfficeMail || "",
+            personalMobile:
+            empBasic?.employeeProfileLandingView?.strPersonalMobile || "",
+          personalEmail:
+            empBasic?.employeeProfileLandingView?.strPersonalMail || "",
           probationayClosedBy:
             probationCloseDateCustomDDL.find(
               (dt) =>
