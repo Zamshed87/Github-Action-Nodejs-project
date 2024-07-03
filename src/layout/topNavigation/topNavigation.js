@@ -58,11 +58,6 @@ export default function TopNavigation({
     notificationCount();
   }, []);
 
-  // const app_Name =
-  //   "people_desk_saas_" + origin.includes("dev")
-  //     ? "devapp.peopledesk.io"
-  //     : "app.peopledesk.io" + "_" + orgId + "_" + employeeId;
-
   const notify_KEY =
     "people_desk_saas_" +
     (origin.includes("dev") ? "devapp.peopledesk.io" : "app.peopledesk.io") +
