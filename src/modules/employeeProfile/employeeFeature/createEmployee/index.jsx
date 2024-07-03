@@ -1395,7 +1395,7 @@ const CreateAndEditEmploye = () => {
                     label="Office Contact No."
                   />
                 </Col>
-                <Col md={6} sm={24}>
+                <Col md={6} sm={24} className="d-none">
                   <PInput
                     name="personalEmail"
                     type="email"
@@ -1403,7 +1403,7 @@ const CreateAndEditEmploye = () => {
                     label="Personal Email"
                   />
                 </Col>
-                <Col md={6} sm={24}>
+                <Col md={6} sm={24} className="d-none">
                   <PInput
                     name="personalMobile"
                     type="text"
