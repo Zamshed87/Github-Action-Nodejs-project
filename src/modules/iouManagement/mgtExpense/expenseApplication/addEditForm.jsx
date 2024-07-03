@@ -111,13 +111,12 @@ const MgtExpenseApplicationCreate = () => {
       intBusinessUnitId: buId,
       intWorkplaceGroupId: wgId,
     };
-    console.log(payload);
-    // saveExpenseType(
-    //   `/Employee/ExpenseApplicationCreateEdit`,
-    //   payload,
-    //   cb,
-    //   true
-    // );
+    saveExpenseType(
+      `/Employee/ExpenseApplicationCreateEdit`,
+      payload,
+      cb,
+      true
+    );
   };
 
   const getExpenseTypeDDL = (orgId) => {
@@ -164,11 +163,13 @@ const MgtExpenseApplicationCreate = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId]);
 
+  console.log(editImageRow);
+
   useEffect(() => {
     if (params?.id && imgRow?.length) {
       const modifyImageArray = imgRow.map((image) => {
         return {
-          globalFileUrlId: image?.intDocURLId,
+          globalFileUrlId: image?.intDocUrlid,
         };
       });
       setEditImageRow(modifyImageArray);
@@ -479,7 +480,7 @@ const MgtExpenseApplicationCreate = () => {
                           onClick={() => {
                             dispatch(
                               getDownlloadFileView_Action(
-                                image?.globalFileUrlId || image?.intDocURLId
+                                image?.globalFileUrlId || image?.intDocUrlid
                               )
                             );
                           }}
