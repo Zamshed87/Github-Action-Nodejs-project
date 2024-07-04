@@ -7,6 +7,19 @@ import { blackColor60 } from "./../../utility/customColor";
 import { getAllNotificationsActions } from "./helper";
 import NotiBodyContent from "./NotiBodyContent";
 
+const styleObj = {
+  borderRadius: "50%",
+  backgroundColor: "#eaf3ff",
+  padding: "5px",
+  marginTop: "5px",
+  textAlign: "center",
+  color: "blue",
+  fontWeight: "bold",
+  marginLeft: "5px",
+  fontSize: "10px",
+  width: "20px",
+};
+
 const NotificationPopUp = ({ propsObj }) => {
   const {
     id,
@@ -23,11 +36,11 @@ const NotificationPopUp = ({ propsObj }) => {
     setPageNo,
     pageSize,
     setLoading,
+    filterLatestNthDayData,
   } = propsObj;
 
   const [notficationLoading, setNotificationLoading] = useState(false);
   const debounce = useDebounce();
-
   return (
     <Popover
       sx={{
@@ -69,20 +82,42 @@ const NotificationPopUp = ({ propsObj }) => {
           style={{ overflowY: "scroll", overflowX: "hidden", height: "360px" }}
           onScroll={(e) => {
             e.stopPropagation();
-            anchorEl && debounce(() => {
-              setPageNo(pageNo + 1);
-              getAllNotificationsActions(
-                data,
-                setData,
-                pageNo + 1,
-                pageSize,
-                employeeId,
-                orgId,
-                setNotificationLoading
-              );
-            }, 500);
+            anchorEl &&
+              debounce(() => {
+                setPageNo(pageNo + 1);
+                getAllNotificationsActions(
+                  data,
+                  setData,
+                  pageNo + 1,
+                  pageSize,
+                  employeeId,
+                  orgId,
+                  setNotificationLoading
+                );
+              }, 500);
           }}
         >
+          <p className="py-1 px-1">
+            <b>New </b>
+            <span style={styleObj}>{filterLatestNthDayData?.length}</span>
+          </p>
+          {filterLatestNthDayData?.map((item) => (
+            <NotiBodyContent
+              key={item?.id}
+              content={item}
+              buId={buId}
+              orgId={orgId}
+              handleClose={handleClose}
+              setLoading={setLoading}
+              data={data}
+              setData={setData}
+              employeeId={employeeId}
+            />
+          ))}
+          <p className={`py-1 px-1 ${data?.length > 0 ? "" : "d-none"}`}>
+            <b>Earlier </b>
+            <span style={styleObj}>{data?.length}</span>
+          </p>
           {data?.map((item) => (
             <NotiBodyContent
               key={item?.id}

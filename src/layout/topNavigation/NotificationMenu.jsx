@@ -15,6 +15,7 @@ export default function NotificationMenu({ myCount, setMyCount }) {
   const [pageSize, setPageSize] = useState(10);
   const [anchorEl, setAnchorEl] = useState(null);
   const [data, setData] = useState([]);
+  const [filterLatestNthDayData, setFilterLatestNthDayData] = useState([]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -23,6 +24,7 @@ export default function NotificationMenu({ myCount, setMyCount }) {
     setPageNo(1);
     // getAllNotificationsActions(data, setData, 1, pageSize, userId);
     setData([]);
+    setFilterLatestNthDayData([]);
     setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
@@ -41,7 +43,10 @@ export default function NotificationMenu({ myCount, setMyCount }) {
             pageNo,
             pageSize,
             employeeId,
-            orgId
+            orgId,
+            undefined,
+            undefined,
+            setFilterLatestNthDayData
           );
           handleClick(e);
         }}
@@ -79,6 +84,7 @@ export default function NotificationMenu({ myCount, setMyCount }) {
           pageSize,
           setPageSize,
           setLoading,
+          filterLatestNthDayData
         }}
       />
     </>
