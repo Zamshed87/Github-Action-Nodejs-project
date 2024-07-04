@@ -1,7 +1,7 @@
 import Excel from "exceljs";
 import { toast } from "react-toastify";
 
-export const excelFileToArray = (file, sheetName) => {
+export const excelFileToArray = (file, sheetName, firstRow = 1) => {
   return new Promise((resolve, reject) => {
     const workbook = new Excel.Workbook();
     const data = [];
@@ -10,7 +10,7 @@ export const excelFileToArray = (file, sheetName) => {
       .then(function () {
         const worksheet = workbook.getWorksheet(sheetName);
         if (!worksheet) return toast.warning("Sheet name does not match");
-        const firstRowValues = worksheet.getRow(1).values;
+        const firstRowValues = worksheet.getRow(firstRow).values;
 
         worksheet.eachRow((row, rowIndex) => {
           if (rowIndex !== 1) {
