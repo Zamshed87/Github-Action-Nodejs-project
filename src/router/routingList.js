@@ -410,11 +410,16 @@ const SalaryDetailsReport = lazy(() =>
     "../modules/CompensationBenefits/reports/salaryDetailsReport/index.jsx"
   )
 );
+const IncrementReport = lazy(() =>
+  import("../modules/CompensationBenefits/reports/IncrementReport/index.js")
+);
 const SalaryRequisitionReport = lazy(() =>
   import(
     "../modules/CompensationBenefits/reports/salaryRequisitionReport/index.jsx"
   )
 );
+
+
 const SalaryCostCenterReport = lazy(() =>
   import(
     "../modules/CompensationBenefits/reports/SalaryCostCenterReport/index.jsx"
@@ -1787,6 +1792,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/holidaySetup/:id",
     component: UnderCreateHolidaySetup,
+  },
+  {
+    path: "/compensationAndBenefits/reports/incrementReport",
+    component: IncrementReport,
   },
   {
     path: "/administration/timeManagement/calendarSetup",
