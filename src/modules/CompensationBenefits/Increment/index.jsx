@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import BtnActionMenu from "../../../common/BtnActionMenu";
 import DefaultInput from "../../../common/DefaultInput";
-import FilterBadgeComponent from "../../../common/FilterBadgeComponent";
 import Loading from "../../../common/loading/Loading";
 import MasterFilter from "../../../common/MasterFilter";
 import NoResult from "../../../common/NoResult";
@@ -29,7 +28,6 @@ import {
   columns,
   getAllIncrementAndPromotionLanding,
   incrementColumnData,
-  searchData,
 } from "./helper";
 import PeopleDeskTable, {
   paginationSize,
@@ -75,7 +73,7 @@ function IncrementLanding() {
 
   // row data
   const [rowDto, setRowDto] = useState([]);
-  const [allData, setAllData] = useState([]);
+  const [, setAllData] = useState([]);
 
   // const [page, setPage] = useState(1);
   const [pages, setPages] = useState({
@@ -85,15 +83,7 @@ function IncrementLanding() {
   });
   // const [paginationSize, setPaginationSize] = useState(15);
 
-  const {
-    setFieldValue,
-    setValues,
-    values,
-    errors,
-    touched,
-    handleSubmit,
-    resetForm,
-  } = useFormik({
+  const { setFieldValue, values, errors, touched, handleSubmit } = useFormik({
     enableReinitialize: true,
     validationSchema,
     initialValues: {
@@ -104,7 +94,6 @@ function IncrementLanding() {
       filterToDate:
         compensationBenefits?.incrementLanding?.toDate || todayDate(),
     },
-    onSubmit: () => {},
   });
 
   // const handleSearch = (values) => {
@@ -157,7 +146,7 @@ function IncrementLanding() {
   };
 
   const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
 
@@ -192,11 +181,12 @@ function IncrementLanding() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [transferNpromotion, getTransferNpromotion, loading1] = useAxiosGet();
+  const [, getTransferNpromotion, loading1] = useAxiosGet();
+  const [, processIncrement, loading2] = useAxiosGet();
 
   return (
     <>
-      {(loading || loading1) && <Loading />}
+      {(loading || loading1 || loading2) && <Loading />}
       <form onSubmit={handleSubmit} className="employeeProfile-form-main">
         <div className="employee-profile-main">
           {/* box-employee-profile  */}
@@ -359,6 +349,19 @@ function IncrementLanding() {
                         },
                       ]}
                     />
+                  </li>
+                  <li>
+                    <button
+                      style={{ minWidth: "150px" }}
+                      className="btn-green ml-2"
+                      onClick={() => {
+                        processIncrement(
+                          `/EmployeeIncrement/manualIncrementProcess?accountId=${orgId}`
+                        );
+                      }}
+                    >
+                      Process Manually
+                    </button>
                   </li>
                 </ul>
               </div>
