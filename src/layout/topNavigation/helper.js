@@ -24,7 +24,7 @@ export const getAllNotificationsActions = async (
     }, 500);
 
     if (typeof setFilterLatestNthDayData === "function") {
-      const filterData = filterLastNthDays(res?.data) || [];
+      const filterData = getLastSevenDaysEntries(res?.data) || [];
       setFilterLatestNthDayData?.(filterData);
       const result = res?.data.filter(obj1 => !filterData.some(obj2 => obj1.intId === obj2.intId));
       setter(result);
@@ -140,12 +140,82 @@ export function filterLastNthDays(data, day = 7) {
   return data.filter((item) => new Date(item.dteCreateAt) >= cutoffDate);
 }
 
+function getLastSevenDaysEntries(data) {
+  // Get today's date and set the time to 00:00:00 for accurate comparison
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // Calculate the date 7 days ago from today
+  const sevenDaysAgo = new Date(today);
+  sevenDaysAgo.setDate(today.getDate() - 7);
+  // Filter the data to get entries between today and the last 7 days
+  const filteredData = data.filter(item => {
+    const itemDate = new Date(item.dteCreateAt);
+    return itemDate >= sevenDaysAgo;
+  });
+  return filteredData;
+}
+
 const fakeData = [
   {
     intId: 3,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Policy",
+    strModule: "Policy 4",
+    strFeature: "policy",
+    intFeatureTableAutoId: 4,
+    intEmployeeId: 0,
+    intReceiverId: 3917,
+    isRealTimeNotify: false,
+    isSeenRealTimeNotify: false,
+    strRealTimeNotifyTitle: null,
+    strRealTimeNotifyDetails: null,
+    dteSeenAt: "2024-07-04T11:15:28.567",
+    dteCreateAt: "2024-07-04T11:15:28.18",
+    intCreatedBy: 0,
+    timeDifference: "1d",
+    notification: {
+      intId: 3,
+      intAccountId: 4,
+      intModuleId: 1,
+      strModule: "Policy",
+      strFeature: "policy",
+      intFeatureTableAutoId: 4,
+      intEmployeeId: 0,
+      intReceiverId: 3917,
+      isRealTimeNotify: false,
+      isSeenRealTimeNotify: false,
+      strRealTimeNotifyTitle: null,
+      strRealTimeNotifyDetails: null,
+      strRealTimeNotifyDetilsHtml: null,
+      isPushNotify: true,
+      isSendPushNotify: true,
+      strPushNotifyTitle: "Organization Policy",
+      strPushNotifyDetails: "test",
+      strPushNotifyDetilsHtml: null,
+      isMail: false,
+      isSendMail: false,
+      strMailTo: null,
+      strCcList: null,
+      strBccList: null,
+      strMailTitle: null,
+      strMailBody: null,
+      strMailBodyHtml: null,
+      isSms: false,
+      isSendSms: false,
+      strSmsTitle: null,
+      strSmsBody: null,
+      dteSeenAt: "2024-07-02T21:15:28.567",
+      dteCreateAt: "2024-07-02T15:15:28.18",
+      intCreatedBy: 0,
+      isActive: true,
+    },
+  },
+  {
+    intId: 3,
+    intAccountId: 4,
+    intModuleId: 1,
+    strModule: "Policy 2",
     strFeature: "policy",
     intFeatureTableAutoId: 4,
     intEmployeeId: 0,
@@ -199,7 +269,7 @@ const fakeData = [
     intId: 4,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Policy",
+    strModule: "Policy 1",
     strFeature: "policy",
     intFeatureTableAutoId: 4,
     intEmployeeId: 0,
@@ -253,7 +323,7 @@ const fakeData = [
     intId: 5,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Policy",
+    strModule: "Policy 21 6",
     strFeature: "policy",
     intFeatureTableAutoId: 4,
     intEmployeeId: 0,
@@ -262,8 +332,8 @@ const fakeData = [
     isSeenRealTimeNotify: false,
     strRealTimeNotifyTitle: null,
     strRealTimeNotifyDetails: null,
-    dteSeenAt: "2024-06-28T21:15:28.567",
-    dteCreateAt: "2024-06-28T15:15:28.18",
+    dteSeenAt: "2024-06-30T21:15:28.567",
+    dteCreateAt: "2024-06-30T15:15:28.18",
     intCreatedBy: 0,
     timeDifference: "1d",
     notification: {
@@ -307,7 +377,7 @@ const fakeData = [
     intId: 6,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Policy",
+    strModule: "Policy 20 6",
     strFeature: "policy",
     intFeatureTableAutoId: 4,
     intEmployeeId: 0,
@@ -361,7 +431,7 @@ const fakeData = [
     intId: 7,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Policy",
+    strModule: "Policy 19 6",
     strFeature: "policy",
     intFeatureTableAutoId: 4,
     intEmployeeId: 0,
@@ -370,8 +440,8 @@ const fakeData = [
     isSeenRealTimeNotify: false,
     strRealTimeNotifyTitle: null,
     strRealTimeNotifyDetails: null,
-    dteSeenAt: "2024-06-15T21:15:28.567",
-    dteCreateAt: "2024-06-15T15:15:28.18",
+    dteSeenAt: "2024-06-20T21:15:28.567",
+    dteCreateAt: "2024-06-20T15:15:28.18",
     intCreatedBy: 0,
     timeDifference: "1d",
     notification: {
@@ -415,7 +485,7 @@ const fakeData = [
     intId: 8,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Policy",
+    strModule: "Policy 18 6",
     strFeature: "policy",
     intFeatureTableAutoId: 4,
     intEmployeeId: 0,
@@ -469,7 +539,7 @@ const fakeData = [
     intId: 9,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Policy",
+    strModule: "Policy 17 6",
     strFeature: "policy",
     intFeatureTableAutoId: 4,
     intEmployeeId: 0,
@@ -523,7 +593,7 @@ const fakeData = [
     intId: 10,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Policy",
+    strModule: "Policy 16 6",
     strFeature: "policy",
     intFeatureTableAutoId: 4,
     intEmployeeId: 0,
@@ -577,7 +647,7 @@ const fakeData = [
     intId: 36,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Policy",
+    strModule: "Policy 10 6",
     strFeature: "policy",
     intFeatureTableAutoId: 4,
     intEmployeeId: 0,
@@ -631,7 +701,7 @@ const fakeData = [
     intId: 2,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Employee Management",
+    strModule: "Employee Management 10 6",
     strFeature: "movement_application",
     intFeatureTableAutoId: 10256,
     intEmployeeId: 3509,
@@ -688,7 +758,7 @@ const fakeData = [
     intId: 1,
     intAccountId: 4,
     intModuleId: 1,
-    strModule: "Employee Management",
+    strModule: "Employee Management 7 6",
     strFeature: "leave_application",
     intFeatureTableAutoId: 12930,
     intEmployeeId: 3509,
@@ -698,8 +768,8 @@ const fakeData = [
     strRealTimeNotifyTitle: "Leave Application",
     strRealTimeNotifyDetails:
       "Mr. 10MS Ltd._Test Apply For 1 day Casual Leave.",
-    dteSeenAt: "2024-06-1T21:15:28.567",
-    dteCreateAt: "2024-06-11T15:15:28.18",
+    dteSeenAt: "2024-06-07T21:15:28.567",
+    dteCreateAt: "2024-06-07T15:15:28.18",
     intCreatedBy: 0,
     timeDifference: "1d",
     notification: {

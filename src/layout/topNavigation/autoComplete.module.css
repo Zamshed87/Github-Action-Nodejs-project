@@ -13,3 +13,17 @@
     font-size: 14px !important;
     min-width: 250px;
 }
+
+.notification_load_more_btn{
+    text-align: center;
+    width: 100%;
+    padding: 5px 0;
+    cursor: pointer;
+    background-color: var(--gray200);
+    font-weight: bold;
+}
+.notification_load_more_btn:hover{
+
+    background-color: #d6e8ff;
+    color: black;
+}

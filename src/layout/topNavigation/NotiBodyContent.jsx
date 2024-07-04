@@ -63,6 +63,14 @@ const NotiBodyContent = ({
             const win = window.open("/approval/movementApproval", "_blank");
             win.focus();
           }
+          if (strFeature === "salary_generate") {
+            const win = window.open("/approval/salaryApproval", "_blank");
+            win.focus();
+          }
+          if (strFeature === "manual_attendance") {
+            const win = window.open("/approval/attendanceApproval", "_blank");
+            win.focus();
+          }
           if (strFeature === "policy" && intFeatureTableAutoId) {
             // const win = window.open("/administration/policyUpload", "_blank");
             // win.focus();
@@ -137,11 +145,11 @@ const NotiBodyContent = ({
                   <div>
                     <div
                       style={{
-                        width: "12px",
-                        height: "12px",
+                        width: "8px",
+                        height: "8px",
                         borderRadius: "50%",
                         backgroundColor: "#5bcb4f",
-                        padding: "5px",
+                        padding: "3px",
                         marginTop: "5px",
                       }}
                     ></div>

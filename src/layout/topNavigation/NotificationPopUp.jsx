@@ -6,6 +6,7 @@ import Loading from "./../../common/loading/Loading";
 import { blackColor60 } from "./../../utility/customColor";
 import { getAllNotificationsActions } from "./helper";
 import NotiBodyContent from "./NotiBodyContent";
+import style from "./autoComplete.module.css";
 
 const styleObj = {
   borderRadius: "50%",
@@ -40,6 +41,7 @@ const NotificationPopUp = ({ propsObj }) => {
   } = propsObj;
 
   const [notficationLoading, setNotificationLoading] = useState(false);
+  const [loadMore, setLoadMore] = useState(false);
   const debounce = useDebounce();
   return (
     <Popover
@@ -56,7 +58,10 @@ const NotificationPopUp = ({ propsObj }) => {
       id={id}
       open={open}
       anchorEl={anchorEl}
-      onClose={handleClose}
+      onClose={() => {
+        setLoadMore(false);
+        handleClose();
+      }}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "left",
@@ -70,6 +75,7 @@ const NotificationPopUp = ({ propsObj }) => {
             <IconButton
               onClick={(e) => {
                 handleClose();
+                setLoadMore(false);
                 e.stopPropagation();
               }}
             >
@@ -97,23 +103,37 @@ const NotificationPopUp = ({ propsObj }) => {
               }, 500);
           }}
         >
-          <p className="py-1 px-1">
-            <b>New </b>
-            <span style={styleObj}>{filterLatestNthDayData?.length}</span>
-          </p>
-          {filterLatestNthDayData?.map((item) => (
-            <NotiBodyContent
-              key={item?.id}
-              content={item}
-              buId={buId}
-              orgId={orgId}
-              handleClose={handleClose}
-              setLoading={setLoading}
-              data={data}
-              setData={setData}
-              employeeId={employeeId}
-            />
-          ))}
+          {filterLatestNthDayData?.length > 0 && (
+            <>
+              <p className="py-1 px-1">
+                <b>New </b>
+                <span style={styleObj}>{filterLatestNthDayData?.length}</span>
+              </p>
+              {filterLatestNthDayData
+                ?.slice(0, !loadMore ? 2 : filterLatestNthDayData?.length)
+                ?.map((item) => (
+                  <NotiBodyContent
+                    key={item?.id}
+                    content={item}
+                    buId={buId}
+                    orgId={orgId}
+                    handleClose={handleClose}
+                    setLoading={setLoading}
+                    data={data}
+                    setData={setData}
+                    employeeId={employeeId}
+                  />
+                ))}
+              <p
+                className={`${loadMore ? "d-none" : ""} ${
+                  style?.notification_load_more_btn
+                }`}
+                onClick={() => setLoadMore(!loadMore)}
+              >
+                Load More {filterLatestNthDayData?.length - 2}
+              </p>
+            </>
+          )}
           <p className={`py-1 px-1 ${data?.length > 0 ? "" : "d-none"}`}>
             <b>Earlier </b>
             <span style={styleObj}>{data?.length}</span>
