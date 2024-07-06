@@ -304,7 +304,16 @@ export default function TransferAndPromotion() {
                               className="btn-green"
                               onClick={() => {
                                 processTransfer(
-                                  `/Employee/promotionManualProcess`
+                                  `/Employee/promotionManualProcess`,
+                                  (res) => {
+                                    if (res?.statusCode === 200) {
+                                      return toast.success(res?.message);
+                                    } else {
+                                      return toast.warning(
+                                        "Something went wrong!!"
+                                      );
+                                    }
+                                  }
                                 );
                               }}
                             >
