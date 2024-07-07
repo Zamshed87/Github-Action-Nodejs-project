@@ -3,7 +3,7 @@ import { AddOutlined } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import FilterBadgeComponent from "../../../../common/FilterBadgeComponent";
 import FormikSelect from "../../../../common/FormikSelect";
@@ -49,6 +49,7 @@ const initData = {
 const SalaryAssign = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const history = useHistory();
 
   useEffect(() => {
     dispatch(setFirstLevelNameAction("Compensation & Benefits"));
@@ -89,7 +90,7 @@ const SalaryAssign = () => {
   // for increment modal
   const handleIncrementClose = () => {
     setOpenIncrement(false);
-    setOpenBank(false)
+    setOpenBank(false);
     setSideDrawer(true);
   };
 
@@ -391,6 +392,28 @@ const SalaryAssign = () => {
                     }}
                   />
                 </li>
+                <li className="pr-2 ml-1">
+                  <PrimaryButton
+                    type="button"
+                    className="btn btn-default flex-center"
+                    label="Bulk Upload"
+                    icon={
+                      <AddOutlined
+                        sx={{
+                          marginRight: "0px",
+                          fontSize: "15px",
+                        }}
+                      />
+                    }
+                    onClick={() => {
+                      if (permission?.isCreate) {
+                        history.push("/compensationAndBenefits/employeeSalary/salaryAssign/bulk");
+                      } else {
+                        toast.warn("You don't have permission");
+                      }
+                    }}
+                  />
+                </li>
               </ul>
             </div>
             <FilterBadgeComponent
@@ -568,7 +591,8 @@ const SalaryAssign = () => {
           onHide={handleIncrementClose}
           size="lg"
           backdrop="static"
-          classes="default-modal"setFieldValue
+          classes="default-modal"
+          setFieldValue
           orgId={orgId}
           buId={buId}
           singleData={singleData[0]}

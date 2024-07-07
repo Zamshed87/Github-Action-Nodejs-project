@@ -355,6 +355,9 @@ const PayRollMonth = lazy(() =>
 const SalaryAssign = lazy(() =>
   import("../modules/CompensationBenefits/employeeSalary/salaryAssign/index.js")
 );
+const BulkUpload = lazy(() =>
+  import("../modules/CompensationBenefits/employeeSalary/salaryAssign/BulkUpload/BulkMovementCreate.jsx")
+);
 const IncomeTaxAssign = lazy(() =>
   import("../modules/CompensationBenefits/IncomeTaxAssign/index.jsx")
 );
@@ -2300,6 +2303,10 @@ export const routingList = [
   {
     path: "/compensationAndBenefits/employeeSalary/salaryAssign",
     component: SalaryAssign,
+  },
+  {
+    path: "/compensationAndBenefits/employeeSalary/salaryAssign/bulk",
+    component: BulkUpload,
   },
   {
     path: "/compensationAndBenefits/employeeSalary/bulkSalaryAssign",

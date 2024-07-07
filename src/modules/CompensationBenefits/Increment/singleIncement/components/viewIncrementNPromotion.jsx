@@ -255,7 +255,7 @@ const ViewIncrementNPromotion = () => {
 
             <div className="d-flex">
               {/* Increment Button */}
-              <IconButton
+              {/* <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
                   // dispatch(getDownlloadFileView_Action());
@@ -300,10 +300,10 @@ const ViewIncrementNPromotion = () => {
                     }}
                   />
                 </div>
-              </IconButton>
+              </IconButton> */}
 
               {/* Promotion Button */}
-              {incrementNpromotion?.isPromotion && (
+              {/* {incrementNpromotion?.isPromotion && (
                 <div className="ml-4">
                   <IconButton
                     onClick={(e) => {
@@ -353,7 +353,7 @@ const ViewIncrementNPromotion = () => {
                     </div>
                   </IconButton>
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Role extension table */}
