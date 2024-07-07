@@ -356,7 +356,14 @@ function IncrementLanding() {
                       className="btn-green ml-2"
                       onClick={() => {
                         processIncrement(
-                          `/EmployeeIncrement/manualIncrementProcess?accountId=${orgId}`
+                          `/EmployeeIncrement/manualIncrementProcess?accountId=${orgId}`,
+                          (res) => {
+                            if (res?.statusCode === 200) {
+                              return toast.success(res?.message);
+                            } else {
+                              return toast.warning("Something went wrong!!");
+                            }
+                          }
                         );
                       }}
                     >
@@ -491,6 +498,18 @@ function IncrementLanding() {
                     )}
                     pages={pages}
                     rowDto={rowDto}
+                    onRowClick={(item) => {
+                      history.push(
+                        `/compensationAndBenefits/increment/singleIncrement/view/${item?.intIncrementId}`,
+                        {
+                          employeeId: item?.intEmployeeId,
+                          buId: item?.intBusinessUnitId,
+                          wgId: item?.intWorkplaceGroupId,
+                          showButton:
+                            item?.strStatus !== "Pending" ? false : true,
+                        }
+                      );
+                    }}
                     setRowDto={setRowDto}
                     handleChangePage={(e, newPage) =>
                       handleChangePage(e, newPage, values?.searchString)
