@@ -276,17 +276,15 @@ function MonthlyOffdayAssignLanding() {
     const intEmployeeId = singleAssign
       ? [selectedSingleEmployee[0]?.employeeId]
       : checkedList?.map((data) => empArr.push(data?.employeeId));
-    console.log("singleAssign", singleAssign);
     const payload = {
       intEmployeeId: singleAssign
         ? intEmployeeId
         : isAssignAll
-        ? empIDString?.split(",")
+        ? empIDString?.split(",").map(id => parseInt(id.trim(),10))
         : empArr,
       offdays: offdays?.filter((data) => data?.isOffDay === true),
       intActionBy: employeeId,
     };
-
     const callback = () => {
       setCalendarData([]);
       setCheckedList([]);
