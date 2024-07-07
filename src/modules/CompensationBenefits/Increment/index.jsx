@@ -498,6 +498,18 @@ function IncrementLanding() {
                     )}
                     pages={pages}
                     rowDto={rowDto}
+                    onRowClick={(item) => {
+                      history.push(
+                        `/compensationAndBenefits/increment/singleIncrement/view/${item?.intIncrementId}`,
+                        {
+                          employeeId: item?.intEmployeeId,
+                          buId: item?.intBusinessUnitId,
+                          wgId: item?.intWorkplaceGroupId,
+                          showButton:
+                            item?.strStatus !== "Pending" ? false : true,
+                        }
+                      );
+                    }}
                     setRowDto={setRowDto}
                     handleChangePage={(e, newPage) =>
                       handleChangePage(e, newPage, values?.searchString)
