@@ -14,8 +14,6 @@ const ViewModalCalender = ({ propsObj }) => {
     shallowEqual
   );
 
-
-
   const {
     singleAssign,
     checkedList,
