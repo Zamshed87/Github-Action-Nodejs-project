@@ -356,7 +356,14 @@ function IncrementLanding() {
                       className="btn-green ml-2"
                       onClick={() => {
                         processIncrement(
-                          `/EmployeeIncrement/manualIncrementProcess?accountId=${orgId}`
+                          `/EmployeeIncrement/manualIncrementProcess?accountId=${orgId}`,
+                          (res) => {
+                            if (res?.statusCode === 200) {
+                              return toast.success(res?.message);
+                            } else {
+                              return toast.warning("Something went wrong!!");
+                            }
+                          }
                         );
                       }}
                     >
