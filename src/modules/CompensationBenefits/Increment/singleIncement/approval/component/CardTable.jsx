@@ -264,7 +264,8 @@ const CardTable = ({ propsObj }) => {
                 <Tooltip title="Accept">
                   <div
                     className="mx-2 muiIconHover success "
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       demoPopup("approve", "Approve", record);
                     }}
                   >
@@ -274,7 +275,8 @@ const CardTable = ({ propsObj }) => {
                 <Tooltip title="Reject">
                   <div
                     className="muiIconHover danger"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       demoPopup("reject", "Reject", record);
                     }}
                   >
@@ -296,6 +298,7 @@ const CardTable = ({ propsObj }) => {
     <>
       {allData?.listData?.length > 0 ? (
         <AntTable
+          rowClassName="pointer"
           rowSelection={{
             type: "checkbox",
           }}
@@ -306,6 +309,8 @@ const CardTable = ({ propsObj }) => {
               `/compensationAndBenefits/increment/singleIncrement/view/${dataRow?.application?.intIncrementId}`,
               {
                 employeeId: dataRow?.intEmployeeId,
+                buId: dataRow?.intBusinessUnitId,
+                wgId: dataRow?.intWorkplaceGroupId,
                 approval: true,
               }
             );
