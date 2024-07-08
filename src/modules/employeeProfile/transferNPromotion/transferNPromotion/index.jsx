@@ -37,6 +37,7 @@ import { customStyles } from "../../../../utility/selectCustomStyle";
 import { getAllTransferAndPromotionLanding } from "../helper";
 import TransferPromotionTable from "./components/transferPromotionTable";
 import { releaseEmpTransferNPromotion } from "./helper";
+import useAxiosGet from "utility/customHooks/useAxiosGet";
 
 const initialValues = {
   search: "",
@@ -53,6 +54,8 @@ export default function TransferAndPromotion() {
   const dispatch = useDispatch();
   const history = useHistory();
   const debounce = useDebounce();
+
+  const [, processTransfer, loading2] = useAxiosGet();
 
   // redux
   const { orgId, buId, employeeId, wgId, wId } = useSelector(
@@ -105,7 +108,7 @@ export default function TransferAndPromotion() {
     );
   };
 
-  const handleChangePage = (_, newPage, searchText) => {
+  const handleChangePage = (_, newPage) => {
     setPages((prev) => {
       return { ...prev, current: newPage };
     });
@@ -117,8 +120,8 @@ export default function TransferAndPromotion() {
     });
   };
 
-  const handleChangeRowsPerPage = (event, searchText) => {
-    setPages((prev) => {
+  const handleChangeRowsPerPage = (event) => {
+    setPages(() => {
       return { current: 1, total: pages?.total, pageSize: +event.target.value };
     });
     getData({
@@ -178,18 +181,10 @@ export default function TransferAndPromotion() {
         enableReinitialize={true}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {}}
       >
-        {({
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          setFieldValue,
-          isValid,
-        }) => (
+        {({ handleSubmit, values, errors, touched, setFieldValue }) => (
           <form onSubmit={handleSubmit}>
-            {loading && <Loading />}
+            {(loading || loading2) && <Loading />}
             <div className="overtime-entry">
               {permission?.isView ? (
                 <div>
@@ -303,6 +298,28 @@ export default function TransferAndPromotion() {
                               }}
                             />
                           </li>
+                          <li>
+                            <button
+                              style={{ minWidth: "150px" }}
+                              className="btn-green"
+                              onClick={() => {
+                                processTransfer(
+                                  `/Employee/promotionManualProcess`,
+                                  (res) => {
+                                    if (res?.statusCode === 200) {
+                                      return toast.success(res?.message);
+                                    } else {
+                                      return toast.warning(
+                                        "Something went wrong!!"
+                                      );
+                                    }
+                                  }
+                                );
+                              }}
+                            >
+                              Process Manually
+                            </button>
+                          </li>
                         </ul>
                       </div>
                     </div>
@@ -411,9 +428,7 @@ export default function TransferAndPromotion() {
                                     width: "200px",
                                   }}
                                 >
-                                  <div>
-                                    B.Unit, Workplace Group, Workplace
-                                  </div>
+                                  <div>B.Unit, Workplace Group, Workplace</div>
                                 </td>
                                 <td
                                   style={{
@@ -429,9 +444,7 @@ export default function TransferAndPromotion() {
                                     width: "200px",
                                   }}
                                 >
-                                  <div>
-                                  B.Unit, Workplace Group, Workplace
-                                  </div>
+                                  <div>B.Unit, Workplace Group, Workplace</div>
                                 </td>
                                 <td
                                   style={{
