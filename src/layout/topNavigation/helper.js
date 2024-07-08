@@ -16,7 +16,7 @@ export const getAllNotificationsActions = async (
   setNotificationLoading && setNotificationLoading(true);
   try {
     const res = await axios.get(
-      `/Notification/GetAllNotificationByUser?pageNo=${pageNo}&pageSize=${pageSize}&employeeId=${employeeId}&accountId=${accId}&isSeen=${isSeen}`
+      `/Notification/GetAllNotificationByUser?pageNo=${pageNo}&pageSize=${pageNo === 1 ? 50 : pageSize}&employeeId=${employeeId}&accountId=${accId}&isSeen=${isSeen}`
     );
     // const res = { data: fakeData };
     setTimeout(() => {
@@ -125,21 +125,6 @@ export const notificationLeaveApproveReject = async (
   }
 };
 
-export function filterLastNthDays(data, day = 7) {
-  // Convert date strings to Date objects
-  const dates = data.map((item) => new Date(item.dteCreateAt));
-
-  // Find the latest date
-  const latestDate = new Date(Math.max(...dates));
-
-  // Calculate the cutoff date (7 days before the latest date)
-  const cutoffDate = new Date(latestDate);
-  cutoffDate.setDate(latestDate.getDate() - day);
-
-  // Filter the data for objects created within the last 7 days from the latest date
-  return data.filter((item) => new Date(item.dteCreateAt) >= cutoffDate);
-}
-
 function getLastSevenDaysEntries(data) {
   // Get today's date and set the time to 00:00:00 for accurate comparison
   const today = new Date();
@@ -147,8 +132,8 @@ function getLastSevenDaysEntries(data) {
   
   // Calculate the date 7 days ago from today
   const sevenDaysAgo = new Date(today);
-  sevenDaysAgo.setDate(today.getDate() - 7);
-  // Filter the data to get entries between today and the last 7 days
+  sevenDaysAgo.setDate(today.getDate() - 3);
+  // Filter the data to get entries between today and the last 3 days
   const filteredData = data.filter(item => {
     const itemDate = new Date(item.dteCreateAt);
     return itemDate >= sevenDaysAgo;

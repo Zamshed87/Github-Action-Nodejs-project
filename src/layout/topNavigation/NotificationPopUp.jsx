@@ -106,7 +106,7 @@ const NotificationPopUp = ({ propsObj }) => {
           {filterLatestNthDayData?.length > 0 && (
             <>
               <p className="py-1 px-1">
-                <b>New </b>
+                <b>New <small>Last 3 days</small></b>
                 <span style={styleObj}>{filterLatestNthDayData?.length}</span>
               </p>
               {filterLatestNthDayData
