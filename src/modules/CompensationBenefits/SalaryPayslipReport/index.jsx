@@ -532,15 +532,15 @@ const SalaryPayslipReport = () => {
                             )
                             .map((item, index) => (
                               <tr key={index}>
-                                <td style={{ textAlign: "right" }}>
+                                <td style={{ textAlign: "left" }}>
                                   <p>{item?.strPayrollElement}</p>
                                 </td>
-                                <td style={{ textAlign: "right" }}>
+                                <td colSpan="3" style={{ textAlign: "right" }}>
                                   <p>{numberWithCommas(item?.numAmount)}</p>
                                 </td>
                               </tr>
                             ))}
-                          <tr>
+                          {/* <tr>
                             <td style={{ textAlign: "left" }}>
                               <p>Tax</p>
                             </td>
@@ -569,9 +569,11 @@ const SalaryPayslipReport = () => {
                               <p>Others</p>
                             </td>
                             <td style={{ textAlign: "right" }} colSpan="3">
-                              <p>{salaryHeaderData[0]?.numOthersDeduction || 0}</p>
+                              <p>
+                                {salaryHeaderData[0]?.numOthersDeduction || 0}
+                              </p>
                             </td>
-                          </tr>
+                          </tr> */}
                           <tr>
                             <th>
                               <p style={thStyles} className="pl-1">
@@ -604,7 +606,9 @@ const SalaryPayslipReport = () => {
                               <p>Cash Pay Amount</p>
                             </td>
                             <td style={{ textAlign: "right" }} colSpan="3">
-                              <p>{salaryHeaderData[0]?.numCashPayAmount || 0}</p>
+                              <p>
+                                {salaryHeaderData[0]?.numCashPayAmount || 0}
+                              </p>
                             </td>
                           </tr>
 
@@ -613,7 +617,9 @@ const SalaryPayslipReport = () => {
                               <p>Digita Pay Amount</p>
                             </td>
                             <td style={{ textAlign: "right" }} colSpan="3">
-                              <p>{salaryHeaderData[0]?.numDigitalPayAmount || 0}</p>
+                              <p>
+                                {salaryHeaderData[0]?.numDigitalPayAmount || 0}
+                              </p>
                             </td>
                           </tr>
                           <tr>
@@ -659,7 +665,7 @@ const SalaryPayslipReport = () => {
 export default SalaryPayslipReport;
 
 const thStyles = {
-  fontWeight: 600,
+  fontWeight: 700,
   fontSize: "12px !important",
   lineHeight: "18px !important",
   color: `${gray600} !important`,
