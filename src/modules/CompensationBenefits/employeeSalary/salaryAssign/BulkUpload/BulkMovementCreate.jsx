@@ -43,7 +43,6 @@ const BulkMovementCreate = () => {
 
   // const [open, setOpen] = useState(false);
   const [errorData, setErrorData] = useState([]);
-  console.log("errorData", errorData);
 
   // const handleClose = () => {
   //   setOpen(false);
@@ -86,8 +85,6 @@ const BulkMovementCreate = () => {
     },
   });
 
-  console.log(process.env.NODE_ENV);
-
   return (
     <>
       {isLoading && <Loading />}
@@ -119,7 +116,7 @@ const BulkMovementCreate = () => {
                   label="Download Demo"
                   onClick={() => {
                     downloadFile(
-                      `/Payroll/download-excel-employeeList?workPlaceGroupId=${wgId}&numberOfRow=${numberOfRow}`,
+                      `/PdfAndExcelReport/downloadexcelemployeeList?workPlaceGroupId=${wgId}&numberOfRow=${numberOfRow}`,
                       "Employees Salary",
                       "xlsx",
                       setIsLoading
