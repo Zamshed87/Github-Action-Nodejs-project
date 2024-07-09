@@ -125,7 +125,6 @@ const CreateLoanApplicationModal = ({
     );
   }, [employeeId, wgId]);
 
-  console.log("singleData",singleData)
 
   const saveHandler = (values, cb) => {
     // approveLoanAmount approveInstallmentNumber approveAmountPerInstallment
@@ -624,14 +623,14 @@ const CreateLoanApplicationModal = ({
                   )}
                   <div className="col-4">
                     <label>
-                      Effective Date <Required />
+                      Effective Month <Required />
                     </label>
                     <FormikInput
                       classes="input-sm"
                       value={values?.effectiveDate}
                       name="effectiveDate"
                       disabled={singleData}
-                      type="date"
+                      type="month"
                       onChange={(e) => {
                         setFieldValue("effectiveDate", e.target.value);
                       }}
