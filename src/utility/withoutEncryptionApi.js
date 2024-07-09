@@ -38,4 +38,5 @@ export const withoutEncryptionList = [
   "/PdfAndExcelReport/GetSalaryCostCenterReportMatador",
   "/PdfAndExcelReport/GetCashPayPayslipforBonus",
   "/Payroll/download-excel-employeeList",
+  "/PdfAndExcelReport/downloadexcelemployeeList"
 ];
