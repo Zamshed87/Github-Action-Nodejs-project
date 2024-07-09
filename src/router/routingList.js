@@ -46,6 +46,9 @@ import TLeaveApplication from "../modules/leaveMovement/leave/application/T.tsx"
 import MonthlyLeaveReport from "modules/timeSheet/reports/monthlyLeaveReport";
 import { lazy } from "react";
 
+const HolidayOffdaySwapAssign = lazy(() =>
+  import("modules/TimeManagement/HolidayOffdaySwap/HolidayOffdaySwapAssign")
+);
 const AttendanceSummeryReport = lazy(() =>
   import("modules/timeSheet/reports/attendanceSummeryReport")
 );
@@ -356,7 +359,9 @@ const SalaryAssign = lazy(() =>
   import("../modules/CompensationBenefits/employeeSalary/salaryAssign/index.js")
 );
 const BulkUpload = lazy(() =>
-  import("../modules/CompensationBenefits/employeeSalary/salaryAssign/BulkUpload/BulkMovementCreate.jsx")
+  import(
+    "../modules/CompensationBenefits/employeeSalary/salaryAssign/BulkUpload/BulkMovementCreate.jsx"
+  )
 );
 const IncomeTaxAssign = lazy(() =>
   import("../modules/CompensationBenefits/IncomeTaxAssign/index.jsx")
@@ -421,7 +426,6 @@ const SalaryRequisitionReport = lazy(() =>
     "../modules/CompensationBenefits/reports/salaryRequisitionReport/index.jsx"
   )
 );
-
 
 const SalaryCostCenterReport = lazy(() =>
   import(
@@ -1855,6 +1859,10 @@ export const routingList = [
   {
     path: "/administration/timeManagement/multiCalendarAssign",
     component: MultiCalendarAssign,
+  },
+  {
+    path: "/administration/timeManagement/holidayOffdaySwap/assign",
+    component: HolidayOffdaySwapAssign,
   },
   {
     path: "/administration/timeManagement/holidayOffdaySwap",
