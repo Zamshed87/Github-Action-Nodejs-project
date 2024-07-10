@@ -261,6 +261,9 @@ const EmployeeJobCard = () => {
             {record?.AttStatus === "Leave" && (
               <Tag color="purple">{record?.AttStatus}</Tag>
             )}
+            {record?.AttStatus === "Leave without pay" && (
+              <Tag color="purple">{record?.AttStatus}</Tag>
+            )}
             {record?.AttStatus === "Holiday" && (
               <Tag style={{ color: "black" }} color="secondary">
                 {record?.AttStatus}

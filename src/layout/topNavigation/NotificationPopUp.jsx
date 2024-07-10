@@ -6,6 +6,20 @@ import Loading from "./../../common/loading/Loading";
 import { blackColor60 } from "./../../utility/customColor";
 import { getAllNotificationsActions } from "./helper";
 import NotiBodyContent from "./NotiBodyContent";
+import style from "./autoComplete.module.css";
+
+const styleObj = {
+  borderRadius: "50%",
+  backgroundColor: "#eaf3ff",
+  padding: "5px",
+  marginTop: "5px",
+  textAlign: "center",
+  color: "blue",
+  fontWeight: "bold",
+  marginLeft: "5px",
+  fontSize: "10px",
+  width: "20px",
+};
 
 const NotificationPopUp = ({ propsObj }) => {
   const {
@@ -23,11 +37,12 @@ const NotificationPopUp = ({ propsObj }) => {
     setPageNo,
     pageSize,
     setLoading,
+    filterLatestNthDayData,
   } = propsObj;
 
   const [notficationLoading, setNotificationLoading] = useState(false);
+  const [loadMore, setLoadMore] = useState(false);
   const debounce = useDebounce();
-
   return (
     <Popover
       sx={{
@@ -36,14 +51,17 @@ const NotificationPopUp = ({ propsObj }) => {
           // maxHeight: "360px",
           // padding: "0px 5px",
           "&::-webkit-scrollbar": {
-            display: "none"
-          }
+            display: "none",
+          },
         },
       }}
       id={id}
       open={open}
       anchorEl={anchorEl}
-      onClose={handleClose}
+      onClose={() => {
+        setLoadMore(false);
+        handleClose();
+      }}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "left",
@@ -57,12 +75,11 @@ const NotificationPopUp = ({ propsObj }) => {
             <IconButton
               onClick={(e) => {
                 handleClose();
+                setLoadMore(false);
                 e.stopPropagation();
               }}
             >
-              <Close
-                sx={{ fontSize: "20px", color: blackColor60 }}
-              />
+              <Close sx={{ fontSize: "20px", color: blackColor60 }} />
             </IconButton>
           </div>
         </div>
@@ -71,20 +88,56 @@ const NotificationPopUp = ({ propsObj }) => {
           style={{ overflowY: "scroll", overflowX: "hidden", height: "360px" }}
           onScroll={(e) => {
             e.stopPropagation();
-            debounce(() => {
-              setPageNo(pageNo + 1);
-              getAllNotificationsActions(
-                data,
-                setData,
-                pageNo + 1,
-                pageSize,
-                employeeId,
-                orgId,
-                setNotificationLoading
-              );
-            }, 500);
+            anchorEl &&
+              debounce(() => {
+                setPageNo(pageNo + 1);
+                getAllNotificationsActions(
+                  data,
+                  setData,
+                  pageNo + 1,
+                  pageSize,
+                  employeeId,
+                  orgId,
+                  setNotificationLoading
+                );
+              }, 500);
           }}
         >
+          {filterLatestNthDayData?.length > 0 && (
+            <>
+              <p className="py-1 px-1">
+                <b>New <small>Last 3 days</small></b>
+                <span style={styleObj}>{filterLatestNthDayData?.length}</span>
+              </p>
+              {filterLatestNthDayData
+                ?.slice(0, !loadMore ? 2 : filterLatestNthDayData?.length)
+                ?.map((item) => (
+                  <NotiBodyContent
+                    key={item?.id}
+                    content={item}
+                    buId={buId}
+                    orgId={orgId}
+                    handleClose={handleClose}
+                    setLoading={setLoading}
+                    data={data}
+                    setData={setData}
+                    employeeId={employeeId}
+                  />
+                ))}
+              <p
+                className={`${loadMore ? "d-none" : ""} ${
+                  style?.notification_load_more_btn
+                }`}
+                onClick={() => setLoadMore(!loadMore)}
+              >
+                Load More {filterLatestNthDayData?.length - 2}
+              </p>
+            </>
+          )}
+          <p className={`py-1 px-1 ${data?.length > 0 ? "" : "d-none"}`}>
+            <b>Earlier </b>
+            <span style={styleObj}>{data?.length}</span>
+          </p>
           {data?.map((item) => (
             <NotiBodyContent
               key={item?.id}
@@ -93,43 +146,15 @@ const NotificationPopUp = ({ propsObj }) => {
               orgId={orgId}
               handleClose={handleClose}
               setLoading={setLoading}
+              data={data}
+              setData={setData}
+              employeeId={employeeId}
             />
           ))}
         </div>
         <div style={{ padding: "5px 0px" }} className="text-center my-5">
           {notficationLoading && <LinearProgress color="success" />}
         </div>
-        {/* <div className="notification-popover-footer">
-          <div
-            style={{ cursor: "pointer" }}
-            className="btn btn-cancel"
-            onClick={() => handleClose()}
-          >
-            Close
-          </div>
-          <div>
-            {data?.length > 0 && (
-              <button
-                type="button"
-                className="btn btn-green btn-green-disable"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPageNo(pageNo + 1);
-                  getAllNotificationsActions(
-                    data,
-                    setData,
-                    pageNo + 1,
-                    pageSize,
-                    employeeId,
-                    orgId
-                  );
-                }}
-              >
-                Next
-              </button>
-            )}
-          </div>
-        </div> */}
       </div>
     </Popover>
   );
