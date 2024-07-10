@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { PModal } from "Components/Modal";
 import AddEditFormComponentN from "./addEditForm";
 import { PlusOutlined } from "@ant-design/icons";
+import NotPermittedPage from "common/notPermitted/NotPermittedPage";
 
 type TUserInfo = {};
 const UserInfoN: React.FC<TUserInfo> = () => {
@@ -213,58 +214,46 @@ const UserInfoN: React.FC<TUserInfo> = () => {
           history.push(`/administration/roleManagement/usersInfo/create`);
         }}
       >
-        <PCard>
-          <PCardHeader
-            title={`Total ${
-              EmployeeListForUserLandingPagination?.data?.totalCount || 0
-            } employees`}
-            onSearch={(e) => {
-              searchFunc(e?.target?.value);
-            }}
-            submitText="Create"
-            submitIcon={<PlusOutlined />}
-          />
+        {permission?.isView ? (
+          <PCard>
+            <PCardHeader
+              title={`Total ${
+                EmployeeListForUserLandingPagination?.data?.totalCount || 0
+              } employees`}
+              onSearch={(e) => {
+                searchFunc(e?.target?.value);
+              }}
+              submitText="Create"
+              submitIcon={<PlusOutlined />}
+            />
 
-          <DataTable
-            header={header}
-            bordered
-            data={EmployeeListForUserLandingPagination?.data?.data || []}
-            filterData={
-              EmployeeListForUserLandingPagination?.data?.calendarAssignHeader // Filter Object From Api Response
-            }
-            pagination={{
-              current: EmployeeListForUserLandingPagination?.data?.currentPage, // Current Page From Api Response
-              pageSize: EmployeeListForUserLandingPagination?.data?.pageSize, // Page Size From Api Response
-              total: EmployeeListForUserLandingPagination?.data?.totalCount, // Total Count From Api Response
-            }}
-            loading={EmployeeListForUserLandingPagination?.loading}
-            scroll={{ x: 1000 }}
-            onChange={(pagination, filters, sorter, extra) => {
-              if (extra.action === "sort") return;
-              landingApi({
-                pagination,
-                filerList: filters,
-              });
-            }}
-          />
-        </PCard>
-
-        {/* View Form Modal */}
-        {/* <ViewFormComponent
-          show={viewModal}
-          title={"User Details"}
-          onHide={handleViewClose}
-          size="lg"
-          backdrop="static"
-          singelUser={singelUser}
-          classes="default-modal"
-          handleOpen={handleOpen}
-          orgId={orgId}
-          buId={buId}
-          singleData={singleData}
-          setSingleData={setSingleData}
-        /> */}
-
+            <DataTable
+              header={header}
+              bordered
+              data={EmployeeListForUserLandingPagination?.data?.data || []}
+              filterData={
+                EmployeeListForUserLandingPagination?.data?.calendarAssignHeader // Filter Object From Api Response
+              }
+              pagination={{
+                current:
+                  EmployeeListForUserLandingPagination?.data?.currentPage, // Current Page From Api Response
+                pageSize: EmployeeListForUserLandingPagination?.data?.pageSize, // Page Size From Api Response
+                total: EmployeeListForUserLandingPagination?.data?.totalCount, // Total Count From Api Response
+              }}
+              loading={EmployeeListForUserLandingPagination?.loading}
+              scroll={{ x: 1000 }}
+              onChange={(pagination, filters, sorter, extra) => {
+                if (extra.action === "sort") return;
+                landingApi({
+                  pagination,
+                  filerList: filters,
+                });
+              }}
+            />
+          </PCard>
+        ) : (
+          <NotPermittedPage />
+        )}
         {/* addEdit form Modal */}
       </PForm>
       <PModal
