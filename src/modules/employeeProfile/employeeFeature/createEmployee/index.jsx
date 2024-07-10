@@ -742,21 +742,19 @@ const CreateAndEditEmploye = () => {
                     }
                   />
                 </Col>
-                {empId && (
+
                   <Col md={6} sm={24}>
                     <PInput
                       type="text"
                       name="strReferenceId"
                       label="Reference ID"
                       placeholder="Reference ID"
-                      // rules={[{ required: true, message: "Employee ID is required" }]}
-                      // disabled={params?.id}
-                      disabled={
-                        empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
-                      }
+                      // disabled={
+                      //   empId && (!employeeFeature?.isEdit || !isOfficeAdmin)
+                      // }
                     />
                   </Col>
-                )}
+
                 <Col md={6} sm={24}>
                   <PSelect
                     options={workplaceGroup.data || []}
