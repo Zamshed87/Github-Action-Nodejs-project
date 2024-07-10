@@ -1,6 +1,4 @@
 import axios from "axios";
-import IConfirmModal from "../../../../common/IConfirmModal";
-
 import MasterFilter from "common/MasterFilter";
 import MultiCheckedSelect from "common/MultiCheckedSelect";
 import { useFormik } from "formik";
@@ -13,6 +11,7 @@ import AntTable from "../../../../common/AntTable";
 import BackButton from "../../../../common/BackButton";
 import DefaultInput from "../../../../common/DefaultInput";
 import FormikSelect from "../../../../common/FormikSelect";
+import IConfirmModal from "../../../../common/IConfirmModal";
 import NoResult from "../../../../common/NoResult";
 import { getPeopleDeskAllDDL } from "../../../../common/api";
 import Loading from "../../../../common/loading/Loading";
