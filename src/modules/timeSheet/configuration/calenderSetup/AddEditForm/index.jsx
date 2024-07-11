@@ -611,15 +611,9 @@ const CalendarSetupModal = ({
                               timesState(
                                 e.target.value,
                                 values?.breakStartTime
-                              ) === "after" ||
-                              timesState(
-                                e.target.value,
-                                values?.officeCloseTime
-                              ) === "before" ||
-                              timesState(
-                                e.target.value,
-                                values?.officeCloseTime
-                              ) === "equal"
+                              ) === "after" &&
+                              timesState(e.target.value, values?.endTime) ===
+                                "before"
                             ) {
                               setFieldValue("breakEndTime", e.target.value);
                             } else {
