@@ -17,6 +17,8 @@ import {
 import { currentYear } from "../utilities/currentYear";
 import useDebounce from "utility/customHooks/useDebounce";
 import useAxiosGet from "utility/customHooks/useAxiosGet";
+import ChangedInOutTimeEmpListModal from "../component/ChangedInOutTime";
+import moment from "moment";
 
 const initData = {
   businessUnit: "",
@@ -59,6 +61,10 @@ export default function AddEditFormComponent({
   ddlMonth,
   ddlYear,
   selectTableData,
+  selectedData,
+  setSelectedData,
+  setSelectedPayloadState,
+  selectedPayloadState,
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -74,10 +80,18 @@ export default function AddEditFormComponent({
   let currentMonth = new Date().getMonth() + 1;
 
   const saveHandler = (values, cb) => {
-    console.log({ values });
+    console.log("selectedPayloadState",selectedPayloadState)
     if (isMulti) {
       const payload = [];
-      tableData.forEach((item) => {
+      selectedPayloadState.forEach((item) => {
+        const inTImeStr =
+          item?.inDateUpdate +
+          "T" +
+          moment(item?.intimeUpdate).format("HH:mm:ss");
+        const outTimeStr =
+          item?.outDateUpdate +
+          "T" +
+          moment(item?.outtimeUpdate).format("HH:mm:ss");
         if (item?.selectCheckbox) {
           payload.push({
             id: item?.strRequestStatus ? item?.intId : 0,
@@ -99,7 +113,7 @@ export default function AddEditFormComponent({
                 ? "Absent"
                 : "",
             requestStatus: values?.inputFieldType?.label,
-            remarks: values?.code,
+            remarks: item?.reasonUpdate || values?.code,
             isApproved: item?.isApproved || false,
             isActive: item?.isActive,
             intCreatedBy: employeeId,
@@ -108,6 +122,8 @@ export default function AddEditFormComponent({
             accountId: orgId,
             workPlaceGroup: buId,
             businessUnitId: wgId,
+            inDateTime: inTImeStr || null,
+            outDateTime: outTimeStr || null,
           });
         }
       });
@@ -245,6 +261,11 @@ export default function AddEditFormComponent({
                                     label: "Late",
                                     icon: <Info sx={{ fontSize: "18px" }} />,
                                   },
+                                  {
+                                    value: 2,
+                                    label: "Changed In/Out Time",
+                                    icon: <Info sx={{ fontSize: "18px" }} />,
+                                  },
                                 ] || []
                               }
                               value={values?.inputFieldType}
@@ -309,22 +330,33 @@ export default function AddEditFormComponent({
                               </div>
                             </>
                           )}
-                          <div className="col-12">
-                            <label>Remarks</label>
-                            <FormikInput
-                              classes="input-sm"
-                              value={values?.code}
-                              name="code"
-                              type="text"
-                              className="form-control"
-                              placeholder=" "
-                              onChange={(e) => {
-                                setFieldValue("code", e.target.value);
-                              }}
-                              errors={errors}
-                              touched={touched}
-                            />
-                          </div>
+                          {values?.inputFieldType?.value == 2 && (
+                            <>
+                              <ChangedInOutTimeEmpListModal
+                                selectedData={selectedData}
+                                rowDto={selectedPayloadState}
+                                setRowDto={setSelectedPayloadState}
+                              />
+                            </>
+                          )}
+                          {values?.inputFieldType?.value !== 2 && (
+                            <div className="col-12">
+                              <label>Remarks</label>
+                              <FormikInput
+                                classes="input-sm"
+                                value={values?.code}
+                                name="code"
+                                type="text"
+                                className="form-control"
+                                placeholder=" "
+                                onChange={(e) => {
+                                  setFieldValue("code", e.target.value);
+                                }}
+                                errors={errors}
+                                touched={touched}
+                              />
+                            </div>
+                          )}
                         </div>
                         <div className="col-12"></div>
                       </div>
