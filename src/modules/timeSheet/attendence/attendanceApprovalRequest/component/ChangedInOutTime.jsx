@@ -3,23 +3,19 @@ import { TimePicker } from "antd";
 import moment from "moment";
 import { memo, useEffect, useState } from "react";
 
-const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto) => {
+const tableHeadColumn = (
+  updateRowDto,
+  apply,
+  setApply,
+  updateByApplyAll,
+  rowDto
+) => {
   return [
     {
       title: "SL",
       render: (value, row, index) => index + 1,
       align: "center",
       width: 30,
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "EmployeeName",
-      width: 120,
-    },
-    {
-      title: "Employee ID",
-      dataIndex: "EmployeeCode",
-      width: 90,
     },
     {
       title: "Select From Date",
@@ -54,13 +50,13 @@ const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto
             <PInput
               label="Apply All?"
               type="checkbox"
-              checked={apply.inTime}
+              checked={apply.dteStartTime}
               layout="horizontal"
               onChange={(e) => {
-                setApply({ ...apply, inTime: e.target.checked });
+                setApply({ ...apply, dteStartTime: e.target.checked });
                 e.target.checked && updateByApplyAll("intimeUpdate");
               }}
-              disabled={rowDto?.[0]?.intimeUpdate ? false : true }
+              disabled={rowDto?.[0]?.intimeUpdate ? false : true}
             />
           </div>
         );
@@ -76,7 +72,7 @@ const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto
             }}
             format={"hh:mm A"}
             style={{ width: "100%" }}
-            disabled={apply.inTime && idx !== 0 ? true : false}
+            disabled={apply.dteStartTime && idx !== 0 ? true : false}
             allowClear={false}
           />
         </div>
@@ -113,15 +109,14 @@ const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto
             <PInput
               label="Apply All?"
               type="checkbox"
-              // name={apply.outTime}
-              checked={apply.outTime}
+              // name={apply.dteEndTime}
+              checked={apply.dteEndTime}
               layout="horizontal"
               onChange={(e) => {
-                setApply({ ...apply, outTime: e.target.checked });
+                setApply({ ...apply, dteEndTime: e.target.checked });
                 e.target.checked && updateByApplyAll("outtimeUpdate");
               }}
-              disabled={rowDto?.[0]?.outtimeUpdate ? false : true }
-
+              disabled={rowDto?.[0]?.outtimeUpdate ? false : true}
             />
           </div>
         );
@@ -137,7 +132,7 @@ const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto
             }}
             format={"hh:mm A"}
             style={{ width: "100%" }}
-            disabled={apply.outTime && idx !== 0 ? true : false}
+            disabled={apply.dteEndTime && idx !== 0 ? true : false}
             allowClear={false}
           />
         </div>
@@ -164,7 +159,7 @@ const tableHeadColumn = (updateRowDto, apply, setApply, updateByApplyAll, rowDto
 };
 
 const ChangedInOutTimeEmpListModal = ({
-  selectedRow = [],
+  selectedData = [],
   rowDto = [],
   setRowDto,
 }) => {
@@ -174,8 +169,8 @@ const ChangedInOutTimeEmpListModal = ({
     setRowDto(data);
   };
   const [apply, setApply] = useState({
-    inTime: false,
-    outTime: false,
+    dteStartTime: false,
+    dteEndTime: false,
   });
   const updateByApplyAll = (fieldName) => {
     const firstIndex = moment(
@@ -192,29 +187,35 @@ const ChangedInOutTimeEmpListModal = ({
     });
     setRowDto(updateState);
   };
-console.log("selectedRow",selectedRow)
+
   useEffect(() => {
     setRowDto([
-      ...selectedRow.map((info) => ({
+      ...selectedData.map((info) => ({
         ...info,
-        inDateUpdate: info?.AttendanceDate
-          ? moment(info?.AttendanceDate).format("YYYY-MM-DD")
+        inDateUpdate: info?.dteAttendanceDate
+          ? moment(info?.dteAttendanceDate).format("YYYY-MM-DD")
           : null,
-        outDateUpdate: info?.AttendanceDate
-          ? moment(info?.AttendanceDate).format("YYYY-MM-DD")
+        outDateUpdate: info?.dteAttendanceDate
+          ? moment(info?.dteAttendanceDate).format("YYYY-MM-DD")
           : null,
-        intimeUpdate: info?.InTime ? moment(info?.InTime, "h:mma") : null,
-        outtimeUpdate: info?.OutTime ? moment(info?.OutTime, "h:mma") : null,
+        intimeUpdate: info?.dteStartTime ? moment(info?.dteStartTime, "h:mma") : null,
+        outtimeUpdate: info?.dteEndTime ? moment(info?.dteEndTime, "h:mma") : null,
         reasonUpdate: "",
       })),
     ]);
-  }, [selectedRow]);
+  }, [selectedData]);
 
   return (
     <div>
       {rowDto.length > 0 ? (
         <DataTable
-          header={tableHeadColumn(updateRowDto, apply, setApply, updateByApplyAll, rowDto)}
+          header={tableHeadColumn(
+            updateRowDto,
+            apply,
+            setApply,
+            updateByApplyAll,
+            rowDto
+          )}
           bordered
           data={rowDto || []}
           checkBoxColWidth={50}

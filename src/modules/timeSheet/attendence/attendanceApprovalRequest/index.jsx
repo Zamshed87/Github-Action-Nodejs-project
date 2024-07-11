@@ -2,7 +2,6 @@
 import { MenuItem } from "@material-ui/core";
 import {
   ArrowDropDown,
-  EditOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Select, Tooltip } from "@mui/material";
@@ -81,6 +80,8 @@ export default function AttendanceApprovalRequest() {
   const [isMulti, setIsMulti] = useState(false);
   const [ddlMonth, setDDLMonth] = useState("");
   const [ddlYear, setDDLYear] = useState("");
+  const [selectedData, setSelectedData] = useState([]);
+  const [selectedPayloadState, setSelectedPayloadState] = useState([]);
 
   let currentMonth = new Date().getMonth() + 1;
 
@@ -418,6 +419,7 @@ export default function AttendanceApprovalRequest() {
                           setFieldValue={setFieldValue}
                           setTableData={setTableData}
                           setSingleRowData={setSingleRowData}
+                          setSelectedData={setSelectedData}
                         ></StyledTable>
                       </tbody>
                     </table>
@@ -429,7 +431,7 @@ export default function AttendanceApprovalRequest() {
                 show={openModal}
                 title="Request Attendance Change"
                 onHide={handleCloseModal}
-                size="lg"
+                size="xl"
                 backdrop="static"
                 classes="default-modal"
                 id={id}
@@ -442,6 +444,10 @@ export default function AttendanceApprovalRequest() {
                 ddlMonth={ddlMonth}
                 ddlYear={ddlYear}
                 selectTableData={selectTableData}
+                selectedData={selectedData}
+                setSelectedData={setSelectedData}
+                setSelectedPayloadState={setSelectedPayloadState}
+                selectedPayloadState={selectedPayloadState}
               />
             </Form>
           </>
