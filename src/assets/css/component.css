@@ -1554,22 +1554,24 @@ span.cross-chips-icon {
   padding: 7px 0;
   transition: all linear 0.3s;
 }
+/*  notification css here --- */
 .notification-popover-body-main-content.unseen {
-  background: var(--grayBlue100);
+  background: var(--grayBlue200);
 }
 
 .notification-popover-body-main-content:hover {
-  background: #f2f2f7;
+  /* background: #f2f2f7; */
+  background: var(--grayBlue100);;
 }
 
 .notification-popover-body-main-content.unseen {
-  background: var(--grayBlue100);
+  background: var(--grayBlue200);
 }
 
-.notification-popover-body-main-content.unseen:hover {
+/* .notification-popover-body-main-content.unseen:hover {
   background: #f2f2f7;
-}
-
+} */
+/*  notification css ends --- */
 .notification-popover-body-main-content-avatar {
   text-align: center;
   margin-left: 8px;

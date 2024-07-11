@@ -355,21 +355,7 @@ export const submitHandler = ({
   if (isUserCheckMsg?.statusCode !== 200 && values?.isUsersection === true) {
     return toast.warn("Please provide a valid user !!!");
   }
-  // if (
-  //   values?.employeeType?.ParentId === 1 &&
-  //   !values?.dteProbationaryCloseDate
-  // ) {
-  //   return toast.warn("Please provide probation  duration !!!");
-  // }
 
-  // if (
-  //   (values?.employeeType?.isManual === 1 ||
-  //     values?.employeeType?.isManual === true) &&
-  //   values?.employeeType?.ParentId === 3 &&
-  //   !values?.dteInternCloseDate
-  // ) {
-  //   return toast.warn("Please provide intern duration !!!");
-  // }
   if (
     values?.employeeType?.EmploymentType === "Probationary" &&
     !values?.dteProbationaryCloseDate
@@ -390,24 +376,6 @@ export const submitHandler = ({
     if (!values?.startingCalender)
       return toast.warn("Starting calender is required");
   }
-
-  // if (values?.workplaceGroup?.label === "Marketing") {
-  //   if (!values?.wing) {
-  //     return toast.warn("Wing is required");
-  //   }
-  //   if (!values?.soleDepo) {
-  //     return toast.warn("Sole Depo is required");
-  //   }
-  //   // if (!values?.region) {
-  //   //   return toast.warn("Region is required");
-  //   // }
-  //   // if (!values?.area) {
-  //   //   return toast.warn("Area is required");
-  //   // }
-  //   // if (!values?.territory) {
-  //   //   return toast.warn("Territory is required");
-  //   // }
-  // }
 
   createEditEmpAction(
     { ...values, intSignature },

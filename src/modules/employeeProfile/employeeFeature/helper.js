@@ -37,6 +37,7 @@ export const createEditEmpAction = async (
       intPayscaleGradeId: values?.payScaleGrade?.value,
       strPayscaleGradeName: values?.payScaleGrade?.label,
       intSalaryTypeId: values?.salaryType?.value,
+      strReferenceId: values?.strReferenceId || "",
       strSalaryTypeName: values?.salaryType?.label,
       intEmployeeBasicInfoId: values?.empId || 0,
       strEmployeeCode: String(values?.employeeCode),

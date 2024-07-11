@@ -257,3 +257,17 @@ export function calculateNextDateAntd(inputDate, n) {
   const resultDate = `${dayStr}/${monthStr}/${yearStr}`;
   return resultDate;
 }
+export function getPreviousDayDate(dateString, daysToSubtract) {
+  // Convert the input date string to a Date object
+  const date = new Date(dateString);
+  
+  // Subtract the specified number of days
+  date.setDate(date.getDate() - daysToSubtract);
+  
+  // Format the resulting date to "YYYY-MM-DD"
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+  const day = date.getDate().toString().padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+}
