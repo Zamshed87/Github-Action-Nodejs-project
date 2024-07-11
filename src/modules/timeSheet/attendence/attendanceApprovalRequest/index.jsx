@@ -2,7 +2,6 @@
 import { MenuItem } from "@material-ui/core";
 import {
   ArrowDropDown,
-  EditOutlined,
   SettingsBackupRestoreOutlined,
 } from "@mui/icons-material";
 import { Select, Tooltip } from "@mui/material";
@@ -56,7 +55,7 @@ export default function AttendanceApprovalRequest() {
     strDesignation,
   } = useSelector((state) => state?.auth?.profileData, shallowEqual);
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
