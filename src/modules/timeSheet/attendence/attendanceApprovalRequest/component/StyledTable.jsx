@@ -107,6 +107,9 @@ const StyledTable = (props) => {
             {data?.strRequestStatus === "Absent" && (
               <Chips label="Absent" classess="danger" />
             )}
+            {data?.strRequestStatus === "Changed In/Out Time" && (
+              <Chips label="Changed In/Out Time" classess="success" />
+            )}
             {!data?.strRequestStatus && "-"}
           </td>
           <td>{data?.strRemarks ? data?.strRemarks : "-"}</td>
