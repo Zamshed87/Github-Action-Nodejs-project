@@ -10,12 +10,7 @@ import { useHistory } from "react-router-dom";
 const StyledTable = (props) => {
   const history = useHistory();
 
-  const {
-    tableData,
-    setOpenModal,
-    setTableData,
-    setSingleRowData,
-  } = props;
+  const { tableData, setOpenModal, setTableData, setSingleRowData, setSelectedData } = props;
 
   const getWeek = (day) => {
     if (day === 0) {
@@ -61,6 +56,10 @@ const StyledTable = (props) => {
                   let data = [...tableData];
                   data[index].selectCheckbox = e.target.checked;
                   setTableData([...data]);
+                  const selectedObjects = tableData.filter(
+                    (item) => item.selectCheckbox
+                  );
+                  setSelectedData(selectedObjects)
                 }}
                 disabled={
                   data?.ApplicationStatus === "Approved" ||
@@ -108,61 +107,52 @@ const StyledTable = (props) => {
             {data?.strRequestStatus === "Absent" && (
               <Chips label="Absent" classess="danger" />
             )}
-            {!data?.strRequestStatus && ("-")}
+            {data?.strRequestStatus === "Changed In/Out Time" && (
+              <Chips label="Changed In/Out Time" classess="success" />
+            )}
+            {!data?.strRequestStatus && "-"}
           </td>
-          <td>
-            {data?.strRemarks ? data?.strRemarks : "-"}
-          </td>
+          <td>{data?.strRemarks ? data?.strRemarks : "-"}</td>
           <td className="text-center">
             {data?.ApplicationStatus === "Approved" && (
-              <Chips
-                label="Approved"
-                classess="success p-2"
-              />
+              <Chips label="Approved" classess="success p-2" />
             )}
             {data?.ApplicationStatus === "Pending" && (
-              <Chips
-                label="Pending"
-                classess="warning p-2"
-              />
+              <Chips label="Pending" classess="warning p-2" />
             )}
             {data?.ApplicationStatus === "Process" && (
-              <Chips
-                label="Process"
-                classess="primary p-2"
-              />
+              <Chips label="Process" classess="primary p-2" />
             )}
             {data?.ApplicationStatus === "Rejected" && (
-              <Chips
-                label="Rejected"
-                classess="danger p-2 mr-2"
-              />
+              <Chips label="Rejected" classess="danger p-2 mr-2" />
             )}
           </td>
           <td>
-            {(data?.ApplicationStatus !== "Approved" && data?.ApplicationStatus !== "Rejected" && !data?.selectCheckbox) && (
-              <Tooltip title="Edit">
-                <button
-                  className="iconButton"
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSingleRowData(data);
-                    setOpenModal(true);
-                    history.push({
-                      singleRowData: data,
-                    });
-                  }}
-                  disabled={
-                    data?.selectCheckbox ||
-                    data?.ApplicationStatus === "Approved" ||
-                    data?.ApplicationStatus === "Rejected"
-                  }
-                >
-                  <CreateOutlined />
-                </button>
-              </Tooltip>
-            )}
+            {data?.ApplicationStatus !== "Approved" &&
+              data?.ApplicationStatus !== "Rejected" &&
+              !data?.selectCheckbox && (
+                <Tooltip title="Edit">
+                  <button
+                    className="iconButton"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSingleRowData(data);
+                      setOpenModal(true);
+                      history.push({
+                        singleRowData: data,
+                      });
+                    }}
+                    disabled={
+                      data?.selectCheckbox ||
+                      data?.ApplicationStatus === "Approved" ||
+                      data?.ApplicationStatus === "Rejected"
+                    }
+                  >
+                    <CreateOutlined />
+                  </button>
+                </Tooltip>
+              )}
           </td>
         </tr>
       ))}
