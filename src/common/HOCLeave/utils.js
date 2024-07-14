@@ -88,11 +88,7 @@ export const empMgmtLeaveApplicationDto = (
       dataIndex: "AppliedToDate",
       render: (date) => dateFormatter(date),
     },
-    {
-      title: "Application Date",
-      dataIndex: "ApplicationDate",
-      render: (date) => dateFormatter(date),
-    },
+
     {
       title: "Application Date",
       dataIndex: "ApplicationDate",
