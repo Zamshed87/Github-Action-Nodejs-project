@@ -70,10 +70,10 @@ const SelfSalaryPayslipReport = () => {
       `/Employee/EmployeeProfileView?employeeId=${employeeId}&businessUnitId=${buId}&workplaceGroupId=${wgId}`
     );
     getViewPaySlipData(
-      `/Payroll/SalarySelectQueryAll?partName=SalaryPaySlipByEmployeeId&intMonthId=${values?.inMonth}&intYearId=${values?.intYear}&IntEmployeeId=${employeeId}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intWorkplaceGroupId=${wgId}`
+      `/Payroll/SalarySelectQueryAll?partName=SalaryPaySlipByEmployeeId&intMonthId=${values?.inMonth}&intYearId=${values?.intYear}&IntEmployeeId=${employeeId}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intWorkplaceGroupId=${wgId}&intBusinessUnitId=${buId}`
     );
     getSalaryHeader(
-      `/Payroll/SalarySelectQueryAll?partName=SalaryGenerateHeaderByEmployeeId&intMonthId=${values?.inMonth}&intYearId=${values?.intYear}&IntEmployeeId=${employeeId}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intWorkplaceGroupId=${wgId}`
+      `/Payroll/SalarySelectQueryAll?partName=SalaryGenerateHeaderByEmployeeId&intMonthId=${values?.inMonth}&intYearId=${values?.intYear}&IntEmployeeId=${employeeId}&intSalaryGenerateRequestId=${values?.adviceName?.value}&intWorkplaceGroupId=${wgId}&intBusinessUnitId=${buId}`
     );
   };
 
