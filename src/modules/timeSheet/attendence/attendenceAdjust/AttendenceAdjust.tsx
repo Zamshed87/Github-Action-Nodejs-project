@@ -829,7 +829,6 @@ const AttendenceAdjustN: React.FC<TAttendenceAdjust> = () => {
                       </>
                     ) : (
                       <>
-                      {console.log("selectedPayloadState",selectedPayloadState)}
                         <ChangedInOutTimeEmpListModal
                           selectedRow={selectedRow}
                           rowDto={selectedPayloadState}
