@@ -254,7 +254,7 @@ export default function SalaryDetailsReport() {
                             if (costCenterData?.length <= 0) {
                               return toast.warn("No Data Found");
                             }
-                            const url = `/PdfAndExcelReport/GetSalaryAllowanceNCostCenterReport_Matador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
+                            const url = `/PdfAndExcelReport/GetSalaryCostCenterReportMatador?strPartName=excelView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
                             downloadFile(
                               url,
                               "Salary Details Report",
@@ -288,7 +288,7 @@ export default function SalaryDetailsReport() {
                           if (costCenterData?.length <= 0) {
                             return toast.warn("No Data Found");
                           } else {
-                            const url = `/PdfAndExcelReport/GetSalaryAllowanceNCostCenterReport_Matador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
+                            const url = `/PdfAndExcelReport/GetSalaryCostCenterReportMatador?strPartName=pdfView&intAccountId=${orgId}&intBusinessUnitId=${buId}&intWorkplaceGroupId=${wgId}&intMonthId=${values?.monthId}&intYearId=${values?.yearId}&strSalaryCode=${values?.payrollPolicy?.value}`;
 
                             getPDFAction(url, setLoading);
                           }
