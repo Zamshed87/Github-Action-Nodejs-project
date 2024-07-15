@@ -13,9 +13,27 @@ import FormikSelect from "./../../../../../common/FormikSelect";
 import Loading from "./../../../../../common/loading/Loading";
 import { customStyles } from "./../../../../../utility/selectCustomStyle";
 import { todayDate } from "./../../../../../utility/todayDate";
+import { monthLastDate } from "utility/dateFormatter";
+
+const ifPrevousDateSelected = (date) => {
+  const selectedDate = new Date(date);
+  const currentDate = new Date();
+  const selectedMonth = selectedDate.getMonth(); // getMonth() returns month index (0-11)
+  const currentMonth = currentDate.getMonth();
+  const selectedYear = selectedDate.getFullYear();
+  const currentYear = currentDate.getFullYear();
+  if (
+    selectedYear < currentYear ||
+    (selectedYear === currentYear && selectedMonth < currentMonth)
+  ) {
+    return true;
+  }
+  return false;
+};
 
 const initData = {
   generateDate: todayDate(),
+  generateEndDate: monthLastDate(),
   calenderType: "",
   calender: "",
   startingCalender: "",
@@ -86,6 +104,7 @@ export default function AddEditFormComponent({
   const [calenderDDL, setCalenderDDL] = useState([]);
   const [calenderRoasterDDL, setCalenderRoasterDDL] = useState([]);
   const [startingCalenderDDL, setStartingCalenderDDL] = useState([]);
+  const [isPrevousDate, setIsPrevousDate] = useState(false);
 
   const getDDL = (value) => {
     let ddlType = value === 1 ? "Calender" : "RosterGroup";
@@ -141,7 +160,7 @@ export default function AddEditFormComponent({
       calendarType: values?.calenderType?.label,
       rosterGroupId:
         values?.calenderType?.value === 2 ? values?.calender?.value : 0,
-      generateEndDate: null,
+      generateEndDate: values?.generateEndDate ? values?.generateEndDate : null,
       isAutoGenerate: false,
     };
     rosterGenerateAction(payload, setLoading, cb);
@@ -216,7 +235,7 @@ export default function AddEditFormComponent({
                       <div className="modalBody p-0">
                         <div className="row mx-0">
                           <div className="col-12">
-                            <label>Generate Date</label>
+                            <label>Generate From Date</label>
                             <FormikInput
                               classes="input-sm"
                               type="date"
@@ -224,7 +243,29 @@ export default function AddEditFormComponent({
                               value={values?.generateDate}
                               name="generateDate"
                               onChange={(e) => {
+                                if (ifPrevousDateSelected(e.target.value)) {
+                                  setIsPrevousDate(true);
+                                } else {
+                                  setIsPrevousDate(false);
+                                }
                                 setFieldValue("generateDate", e.target.value);
+                              }}
+                              errors={errors}
+                              touched={touched}
+                            />
+                          </div>
+                        </div>
+                        <div className={isPrevousDate ? "row mx-0" : "d-none"}>
+                          <div className="col-12">
+                            <label>Generate End Date</label>
+                            <FormikInput
+                              classes="input-sm"
+                              type="date"
+                              // label="Generate Date"
+                              value={values?.generateEndDate}
+                              name="generateEndDate"
+                              onChange={(e) => {
+                                setFieldValue("generateEndDate", e.target.value);
                               }}
                               errors={errors}
                               touched={touched}

@@ -33,8 +33,6 @@ const RoasterInfoPopover = ({ propsObj, isOnlyDate }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, item]);
 
-  console.log(item);
-
   return (
     <Popover
       sx={{
