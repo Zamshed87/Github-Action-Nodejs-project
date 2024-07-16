@@ -145,7 +145,6 @@ function Calendar() {
     }
     // eslint-disable-next-line
   }, [singleShiftData]);
-  isDevServer && console.log({headerList, rowDto})
 
   return (
     <>
